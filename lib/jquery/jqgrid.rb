@@ -6,7 +6,7 @@ module ActionView
       js << capture { javascript_include_tag 'jquery.jqGrid.min' }  
     end
 
-    def jquery_grid(name, opts={})
+    def jqgrid_from_yaml(name, opts={})
       @@grid_name = name.to_s
       grid_data = YAML::load_file("#{RAILS_ROOT}/config/jquery/jqGrid/#{name}.yml")
     
@@ -206,7 +206,7 @@ module ActionView
             var subgrid_table_id, pager_id;
             subgrid_table_id = subgrid_id+"_t";
             pager_id = "p_"+subgrid_table_id;
-            $("#"+subgrid_id).html("<table id='"+subgrid_table_id+"' class='scroll'></table><div id='"+pager_id+"' class='scroll'></div>");
+            jQuery("#"+subgrid_id).html("<table id='"+subgrid_table_id+"' class='scroll'></table><div id='"+pager_id+"' class='scroll'></div>");
             jQuery("#"+subgrid_table_id).jqGrid({
               url:"#{options[:subgrid][:url]}?q=2&id="+row_id,
               editurl:'#{options[:subgrid][:edit_url]}?parent_id='+row_id,

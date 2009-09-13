@@ -12,7 +12,7 @@ module ActionController
     private
   
     def refresh_grid(grid_id)
-      "$('##{grid_id}').trigger('reloadGrid');"
+      "jQuery('##{grid_id}').trigger('reloadGrid');"
     end    
   end
 end

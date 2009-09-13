@@ -8,7 +8,7 @@ module ActionController
     private
     
     def close_dialog(dialog_id)
-      "$('##{dialog_id}').dialog('close');"
+      "jQuery('##{dialog_id}').dialog('close');"
     end    
   end
 end

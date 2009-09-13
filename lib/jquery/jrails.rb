@@ -5,7 +5,7 @@ module ActionView
       if locale != :en
         js = capture { javascript_include_tag "i18n/jquery.ui/datepicker-#{locale}.min.js" }  
         js << capture { '<script type="text/javascript">' }   
-        js << capture { "  $.datepicker.setDefaults($.datepicker.regional['#{locale}']);" }   
+        js << capture { "  jQuery.datepicker.setDefaults(jQuery.datepicker.regional['#{locale}']);" }   
         js << capture { '</script>' }
       end
     end
