@@ -2,8 +2,8 @@ module CompassJqueryPlugin#:nodoc:
 
   class VERSION #:nodoc:
     
-    PATCH = 4 # Set to nil for official release
-    TINY  = 1
+    PATCH = 0 # Set to nil for official release
+    TINY  = 2
     MINOR = 2
     MAJOR = 0
 
