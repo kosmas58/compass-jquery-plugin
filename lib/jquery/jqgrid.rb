@@ -6,7 +6,7 @@ module ActionView
       js << capture { javascript_include_tag 'jquery.jqGrid.min' }  
     end
 
-    def jqgrid_from_yaml(name, opts={})
+    def jqgrid_from_xml(name, opts={})
       @@grid_name = name.to_s
       grid_data = YAML::load_file("#{RAILS_ROOT}/config/jquery/jqGrid/#{name}.yml")
     
@@ -53,7 +53,9 @@ module ActionView
     end
 
 
-    def jqgrid(title, id, action, columns = {}, options = {}, edit_options = "", add_options = "", del_options = "", search_options = "")
+    def jqgrid(title, id, action, columns = {}, 
+               options = {}, edit_options = "", add_options = "", del_options = "", search_options = "",
+               custom1_button = nil, custom2_button = nil, custom3_button = nil, custom4_button = nil, custom5_button = nil )
       # Default options
       options[:autowidth] = false if options[:autowidth].blank?
       options[:hidegrid] = true if options[:hidegrid].nil?
@@ -281,7 +283,11 @@ module ActionView
         {afterSubmit:function(r,data){return #{options[:error_handler_return_value]}(r,data,'delete');} #{del_options}},
         {#{search_options}}
         )
-        .navButtonAdd("##{id}_pager",{caption:"Search",title:"Toggle Search",buttonimg:'/images/jquery/search.png',
+     
+        .navButtonAdd("##{id}_pager",{
+          caption:"#{I18n.t('jquery.jqgrid.search')}",
+          title:"#{I18n.t('jquery.jqgrid.toogle_search')}",
+          buttonicon:"ui-icon-search",
           onClickButton:function(){ 
             if(jQuery("#t_#{id}").css("display")=="none") {
               jQuery("#t_#{id}").css("display","");

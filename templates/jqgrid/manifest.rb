@@ -2,6 +2,8 @@
 # Install with: compass -f jquery -p jqgrid
 
 file 'config/initializers/jqgrid.rb'
+file 'config/locales/jquery/jqgrid/de.yml'
+file 'config/locales/jquery/jqgrid/en.yml'
 javascript 'jquery.jqGrid.js'
 javascript 'jquery.jqGrid.min.js'
 javascript 'i18n/jqgrid/locale-bg.js'
