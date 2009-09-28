@@ -10,7 +10,7 @@ spec = Gem::Specification.new do |s|
   s.description = s.summary
   #s.executables = ["jrails"]
   s.files = %w[MIT-LICENSE Rakefile README.textile] + Dir["lib/**/*"] + Dir["templates/**/*"]
-  s.add_dependency("chriseppstein-compass", [">= 0.8.16"])
+  s.add_dependency("chriseppstein-compass", [">= 0.8.17"])
 end
 
 Rake::GemPackageTask.new(spec) do |package|
