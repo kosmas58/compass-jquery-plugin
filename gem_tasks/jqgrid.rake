@@ -22,6 +22,7 @@ all_scripts = [
   'js/grid.formedit.js',
   'js/grid.import.js',  
   'js/grid.inlinedit.js',
+  'js/grid.jqueryui.js',
   'js/grid.postext.js',
   'js/grid.setcolumns.js',
   'js/grid.subgrid.js',
