@@ -1,6 +1,9 @@
 h1. compass-jquery-plugin
 
-Get it from <b>"here":http://github.com/kosmas58/compass-jquery-plugin</b>.
+Get gem from <b>"Gemcutter":http://gemcutter.org/gems/compass-jquery-plugin</b>.
+Get source from <b>"github":http://github.com/kosmas58/compass-jquery-plugin</b>.
+
+http://gemcutter.org/gems/compass-jquery-plugin
 
 h2. Description
 
