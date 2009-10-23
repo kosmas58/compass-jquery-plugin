@@ -16,12 +16,14 @@ Gem::Specification.new do |s|
     "README.textile"
   ]
   s.files = [
-    ".gitignore",
+    ".document",
+     ".gitignore",
      ".loadpath",
      ".project",
      "MIT-LICENSE",
      "README.textile",
      "Rakefile",
+     "VERSION.yml",
      "compass-jquery-plugin.gemspec",
      "gem_tasks/calendar.rake",
      "gem_tasks/dynatree.rake",
