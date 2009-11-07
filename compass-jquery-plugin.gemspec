@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kosmas Schuetz"]
-  s.date = %q{2009-10-23}
+  s.date = %q{2009-11-07}
   s.description = %q{A compass plugin that integrates jRails, jQuery, jQuery UI and Themes, jqGrid and more into the Compass Sass framework.}
   s.email = %q{kosmas.schuetz@gmx.com}
   s.extra_rdoc_files = [
@@ -709,12 +709,12 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<chriseppstein-compass>, [">= 0.8.17"])
+      s.add_runtime_dependency(%q<compass>, [">= 0.8.17"])
     else
-      s.add_dependency(%q<chriseppstein-compass>, [">= 0.8.17"])
+      s.add_dependency(%q<compass>, [">= 0.8.17"])
     end
   else
-    s.add_dependency(%q<chriseppstein-compass>, [">= 0.8.17"])
+    s.add_dependency(%q<compass>, [">= 0.8.17"])
   end
 end
 
