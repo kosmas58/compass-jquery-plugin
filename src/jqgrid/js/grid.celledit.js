@@ -21,9 +21,11 @@
  * afterSubmitCell(if cellsubmit remote (ajax)),
  * afterSaveCell,
  * errorCell,
+ * serializeCellData - new
  * Options
  * cellsubmit (remote,clientArray) (added in grid options)
  * cellurl
+ * ajaxCellOptions
 * */
 $.jgrid.extend({
 	editCell : function (iRow,iCol, ed){
@@ -56,8 +58,8 @@ $.jgrid.extend({
 			}
 			nm = $t.p.colModel[iCol].name;
 			if (nm=='subgrid' || nm=='cb' || nm=='rn') {return;}
-			if ($t.p.colModel[iCol].editable===true && ed===true) {
-				cc = $("td:eq("+iCol+")",$t.rows[iRow]);
+			cc = $("td:eq("+iCol+")",$t.rows[iRow]);
+			if ($t.p.colModel[iCol].editable===true && ed===true && !cc.hasClass("not-editable-cell")) {
 				if(parseInt($t.p.iCol)>=0  && parseInt($t.p.iRow)>=0) {
 					$("td:eq("+$t.p.iCol+")",$t.rows[$t.p.iRow]).removeClass("edit-cell ui-state-highlight");
 					$($t.rows[$t.p.iRow]).removeClass("selected-row ui-state-hover");
@@ -76,14 +78,21 @@ $.jgrid.extend({
 					if(tmp2 != undefined ) {tmp = tmp2;}
 				}
 				var opt = $.extend({}, $t.p.colModel[iCol].editoptions || {} ,{id:iRow+"_"+nm,name:nm});
-				var elc = createEl($t.p.colModel[iCol].edittype,opt,tmp,true);
+				var elc = createEl($t.p.colModel[iCol].edittype,opt,tmp,true,$.extend({},$.jgrid.ajaxOptions,$t.p.ajaxSelectOptions || {}));
 				if ($.isFunction($t.p.beforeEditCell)) {
 					$t.p.beforeEditCell($t.rows[iRow].id,nm,tmp,iRow,iCol);
 				}
 				$(cc).html("").append(elc).attr("tabindex","0");
 				window.setTimeout(function () { $(elc).focus();},0);
 				$("input, select, textarea",cc).bind("keydown",function(e) { 
-					if (e.keyCode === 27) {$($t).jqGrid("restoreCell",iRow,iCol);} //ESC
+					if (e.keyCode === 27) {
+						if($("input.hasDatepicker",cc).length >0) {
+							if( $(".ui-datepicker").is(":hidden") )  $($t).jqGrid("restoreCell",iRow,iCol);
+							else $("input.hasDatepicker",cc).datepicker('hide');
+						}
+						else 
+							$($t).jqGrid("restoreCell",iRow,iCol);
+					} //ESC
 					if (e.keyCode === 13) {$($t).jqGrid("saveCell",iRow,iCol);}//Enter
 					if (e.keyCode == 9)  {
 						if (e.shiftKey) {$($t).jqGrid("prevCell",iRow,iCol);} //Shift TAb
@@ -99,10 +108,10 @@ $.jgrid.extend({
 					$("td:eq("+$t.p.iCol+")",$t.rows[$t.p.iRow]).removeClass("edit-cell ui-state-highlight");
 					$($t.rows[$t.p.iRow]).removeClass("selected-row ui-state-hover");
 				}
-				$("td:eq("+iCol+")",$t.rows[iRow]).addClass("edit-cell ui-state-highlight");
+				cc.addClass("edit-cell ui-state-highlight");
 				$($t.rows[iRow]).addClass("selected-row ui-state-hover"); 
 				if ($.isFunction($t.p.onSelectCell)) {
-					tmp = $("td:eq("+iCol+")",$t.rows[iRow]).html().replace(/\&nbsp\;/ig,'');
+					tmp = cc.html().replace(/\&nbsp\;/ig,'');
 					$t.p.onSelectCell($t.rows[iRow].id,nm,tmp,iRow,iCol);
 				}
 			}
@@ -116,10 +125,10 @@ $.jgrid.extend({
 			if ( $t.p.savedRow.length >= 1) {fr = 0;} else {fr=null;} 
 			if(fr != null) {
 				var cc = $("td:eq("+iCol+")",$t.rows[iRow]),v,v2,
-				nm = $t.p.colModel[iCol].name, nmjq = $.jgrid.jqID(nm);
-				switch ($t.p.colModel[iCol].edittype) {
+				cm = $t.p.colModel[iCol], nm = cm.name, nmjq = $.jgrid.jqID(nm) ;
+				switch (cm.edittype) {
 					case "select":
-						if(!$t.p.colModel[iCol].editoptions.multiple) {
+						if(!cm.editoptions.multiple) {
 							v = $("#"+iRow+"_"+nmjq+">option:selected",$t.rows[iRow]).val();
 							v2 = $("#"+iRow+"_"+nmjq+">option:selected",$t.rows[iRow]).text();
 						} else {
@@ -133,12 +142,12 @@ $.jgrid.extend({
 							);
 							v2 = selectedText.join(",");
 						}
-						if($t.p.colModel[iCol].formatter) v2 = v;
+						if(cm.formatter) v2 = v;
 						break;
 					case "checkbox":
 						var cbv  = ["Yes","No"];
-						if($t.p.colModel[iCol].editoptions){
-							cbv = $t.p.colModel[iCol].editoptions.value.split(":");
+						if(cm.editoptions){
+							cbv = cm.editoptions.value.split(":");
 						}
 						v = $("#"+iRow+"_"+nmjq,$t.rows[iRow]).attr("checked") ? cbv[0] : cbv[1];
 						v2=v;
@@ -149,6 +158,18 @@ $.jgrid.extend({
 					case "button" :
 						v = !$t.p.autoencode ? $("#"+iRow+"_"+nmjq,$t.rows[iRow]).val() : $.jgrid.htmlEncode($("#"+iRow+"_"+nmjq,$t.rows[iRow]).val());
 						v2=v;
+						break;
+					case 'custom' :
+						try {
+							if(cm.editoptions && $.isFunction(cm.editoptions.custom_value)) {
+								v = cm.editoptions.custom_value($(".customelement",cc));
+								if (v===undefined) throw "e2"; else v2=v;
+							} else throw "e1";
+						} catch (e) {
+							if (e=="e1") info_dialog(jQuery.jgrid.errors.errcap,"function 'custom_value' "+$.jgrid.edit.msg.nodefined,jQuery.jgrid.edit.bClose);
+							if (e=="e2") info_dialog(jQuery.jgrid.errors.errcap,"function 'custom_value' "+$.jgrid.edit.msg.novalue,jQuery.jgrid.edit.bClose);
+							else info_dialog(jQuery.jgrid.errors.errcap,e.message,jQuery.jgrid.edit.bClose);
+						}
 						break;
 				}
 				// The common approach is if nothing changed do not do anything
@@ -165,15 +186,16 @@ $.jgrid.extend({
 							if (!addpost) {addpost={};}
 						}
 						if(v2=="") v2=" ";
+						if( $("input.hasDatepicker",cc).length >0) $("input.hasDatepicker",cc).datepicker('hide');
 						if ($t.p.cellsubmit == 'remote') {
 							if ($t.p.cellurl) {
 								var postdata = {};
 								postdata[nm] = v;
 								postdata["id"] = $t.rows[iRow].id;
 								postdata = $.extend(addpost,postdata);
-								$.ajax({
+								$.ajax( $.extend( {
 									url: $t.p.cellurl,
-									data :postdata,
+									data :$.isFunction($t.p.serializeCellData) ? $t.p.serializeCellData(postdata) : postdata,
 									type: "POST",
 									complete: function (result, stat) {
 										if (stat == 'success') {
@@ -213,7 +235,7 @@ $.jgrid.extend({
 											$($t).jqGrid("restoreCell",iRow,iCol);
 										}
 									}
-								});
+								}, $.jgrid.ajaxOptions, $t.p.ajaxCellOptions || {}));
 							} else {
 								try {
 									info_dialog($.jgrid.errors.errcap,$.jgrid.errors.nourl,$.jgrid.edit.bClose);
@@ -312,13 +334,19 @@ $.jgrid.extend({
 			var  $t = this;
 			if (!$t.grid || $t.p.cellEdit !== true ) {return;}
 			// trick to process keydown on non input elements
-			$t.p.knv = $("table:first",$t.grid.bDiv).attr("id") + "_kn";
+			$t.p.knv = $t.p.id + "_kn";
 			var selection = $("<span style='width:0px;height:0px;background-color:black;' tabindex='0'><span tabindex='-1' style='width:0px;height:0px;background-color:grey' id='"+$t.p.knv+"'></span></span>"),
-			i;
+			i, kdir;
 			$(selection).insertBefore($t.grid.cDiv);
-			$("#"+$t.p.knv).focus();
-			$("#"+$t.p.knv).keydown(function (e){
-				switch (e.keyCode) {
+			$("#"+$t.p.knv)
+			.focus()
+			.keydown(function (e){
+				kdir = e.keyCode;
+				if($t.p.direction == "rtl") {
+					if(kdir==37) kdir = 39;
+					else if (kdir==39) kdir = 37;
+				}
+				switch (kdir) {
 					case 38:
 						if ($t.p.iRow-1 >=0 ) {
 							scrollGrid($t.p.iRow-1,$t.p.iCol,'vu');

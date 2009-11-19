@@ -16,7 +16,7 @@ $.jgrid.extend({
 			ind = $($t).jqGrid("getInd",rowid,true);
 			if( ind == false ) {return;}
 			editable = $(ind).attr("editable") || "0";
-			if (editable == "0") {
+			if (editable == "0" && !$(ind).hasClass("not-editable-row")) {
 				cm = $t.p.colModel;
 				$('td',ind).each( function(i) {
 					nm = cm[i].name;
@@ -37,7 +37,7 @@ $.jgrid.extend({
 							else $(this).html("");
 							var opt = $.extend({},cm[i].editoptions || {},{id:rowid+"_"+nm,name:nm});
 							if(!cm[i].edittype) { cm[i].edittype = "text"; }
-							var elc = createEl(cm[i].edittype,opt,tmp,true);
+							var elc = createEl(cm[i].edittype,opt,tmp,true,$.extend({},$.jgrid.ajaxOptions,$t.p.ajaxSelectOptions || {}));
 							$(elc).addClass("editable");
 							if(treeg) $("span:first",this).append(elc);
 							else $(this).append(elc);
@@ -113,6 +113,18 @@ $.jgrid.extend({
 							}
 							if(cm.formatter && cm.formatter == 'select') tmp2={};
 							break;
+						case 'custom' :
+							try {
+								if(cm.editoptions && $.isFunction(cm.editoptions.custom_value)) {
+									tmp[nm] = cm.editoptions.custom_value($(".customelement",this));
+									if (tmp[nm] === undefined) throw "e2";
+								} else throw "e1";
+							} catch (e) {
+								if (e=="e1") info_dialog(jQuery.jgrid.errors.errcap,"function 'custom_value' "+$.jgrid.edit.msg.nodefined,jQuery.jgrid.edit.bClose);
+								if (e=="e2") info_dialog(jQuery.jgrid.errors.errcap,"function 'custom_value' "+$.jgrid.edit.msg.novalue,jQuery.jgrid.edit.bClose);
+								else info_dialog(jQuery.jgrid.errors.errcap,e.message,jQuery.jgrid.edit.bClose);
+							}
+							break;
 					}
 					cv = checkValues(tmp[nm],i,$t);
 					if(cv[0] === false) {
@@ -143,8 +155,9 @@ $.jgrid.extend({
 					if(fr >= 0) { $t.p.savedRow.splice(fr,1); }
 					if( $.isFunction(aftersavefunc) ) { aftersavefunc(rowid,resp); }
 				} else {
-					$.ajax({url:url,
-						data: tmp,
+					$.ajax($.extend({
+						url:url,
+						data: $.isFunction($t.p.serializeRowData) ? $t.p.serializeRowData(tmp) : tmp,
 						type: "POST",
 						complete: function(res,stat){
 							if (stat === "success"){
@@ -159,7 +172,7 @@ $.jgrid.extend({
 										if( $t.p.savedRow[k].id == rowid) {fr = k; break;}
 									};
 									if(fr >= 0) { $t.p.savedRow.splice(fr,1); }
-									if( $.isFunction(aftersavefunc) ) { aftersavefunc(rowid,res.responseText); }
+									if( $.isFunction(aftersavefunc) ) { aftersavefunc(rowid,res); }
 								} else { $($t).jqGrid("restoreRow",rowid, afterrestorefunc); }
 							}
 						},
@@ -170,7 +183,7 @@ $.jgrid.extend({
 								alert("Error Row: "+rowid+" Result: " +res.status+":"+res.statusText+" Status: "+stat);
 							}
 						}
-					});
+					}, $.jgrid.ajaxOptions, $t.p.ajaxRowOptions || {}));
 				}
 				$t.grid.hDiv.loading = false;
 				$("div.loading",$t.grid.hDiv).fadeOut("fast");
@@ -195,7 +208,7 @@ $.jgrid.extend({
 					} catch (e) {}
 				}
 				$($t).jqGrid("setRowData",rowid,$t.p.savedRow[fr]);
-				$(ind).attr("editable","0");
+				$(ind).attr("editable","0").unbind("keydown");
 				$t.p.savedRow.splice(fr,1);
 			}
 			if ($.isFunction(afterrestorefunc))

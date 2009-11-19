@@ -12,7 +12,7 @@ setSubGrid : function () {
 	return this.each(function (){
 		var $t = this, cm;
 		$t.p.colNames.unshift("");
-		$t.p.colModel.unshift({name:'subgrid',width: $.browser.safari ?  $t.p.subGridWidth+$t.p.cellLayout : $t.p.subGridWidth,sortable: false,resizable:false,hidedlg:true,search:false});
+		$t.p.colModel.unshift({name:'subgrid',width: $.browser.safari ?  $t.p.subGridWidth+$t.p.cellLayout : $t.p.subGridWidth,sortable: false,resizable:false,hidedlg:true,search:false,fixed:true});
 		cm = $t.p.subGridModel;
 		if(cm[0]) {
 			cm[0].align = $.extend([],cm[0].align || []);
@@ -52,7 +52,7 @@ addSubGrid : function(t,pos) {
 				$.each(ts.p.colModel,function(i,v){
 					if(this.hidden === true || this.name == 'rn' || this.name == 'cb') {nhc++;}
 				});
-				subdata = "<tr role='row' class='ui-subgrid'>"+atd+"<td><span class='ui-icon ui-icon-carat-1-sw'/></td><td colspan='"+parseInt(ts.p.colNames.length-1-nhc)+"' class='ui-widget-content subgrid-data'><div id="+pID+"_"+_id+" class='tablediv'>";
+				subdata = "<tr role='row' class='ui-subgrid'>"+atd+"<td class='ui-widget-content subgrid-cell'><span class='ui-icon ui-icon-carat-1-sw'/></td><td colspan='"+parseInt(ts.p.colNames.length-1-nhc)+"' class='ui-widget-content subgrid-data'><div id="+pID+"_"+_id+" class='tablediv'>";
 				$(this).parent().after( subdata+ "</div></td></tr>" );
 				if( $.isFunction(ts.p.subGridRowExpanded)) {
 					ts.p.subGridRowExpanded(pID+"_"+ _id,_id);
@@ -92,13 +92,25 @@ addSubGrid : function(t,pos) {
 				ts.grid.hDiv.loading = true;
 				$("#load_"+ts.p.id).show();
 				if(!ts.p.subgridtype) ts.p.subgridtype = ts.p.datatype;
+				ts.p.subgridtype = ts.p.subgridtype.toLowerCase();
 				if($.isFunction(ts.p.subgridtype)) {ts.p.subgridtype(dp);}
 				switch(ts.p.subgridtype) {
 					case "xml":
-					$.ajax({type:ts.p.mtype, url: ts.p.subGridUrl, dataType:"xml",data: dp, complete: function(sxml) { subGridXml(sxml.responseXML, sid); sxml=null; } });
-					break;
 					case "json":
-					$.ajax({type:ts.p.mtype, url: ts.p.subGridUrl, dataType:"text",data: dp, complete: function(json) { subGridJson($.jgrid.parse(json.responseText),sid); json = null;} });
+					$.ajax($.extend({
+						type:ts.p.mtype,
+						url: ts.p.subGridUrl,
+						dataType:ts.p.subgridtype,
+						data: $.isFunction(ts.p.serializeSubGridData)? ts.p.serializeSubGridData(dp) : dp,
+						complete: function(sxml) {
+							if(ts.p.subgridtype == "xml")
+								subGridXml(sxml.responseXML, sid);
+							else {
+								subGridJson($.jgrid.parse(sxml.responseText),sid);
+							}
+							sxml=null;
+						}
+					}, $.jgrid.ajaxOptions, ts.p.ajaxSubgridOptions || {}));
 					break;
 				}
 			}
@@ -113,7 +125,7 @@ addSubGrid : function(t,pos) {
 			dummy = $("<table cellspacing='0' cellpadding='0' border='0'><tbody></tbody></table>"),
 			trdiv = $("<tr></tr>");
 			for (i = 0; i<ts.p.subGridModel[0].name.length; i++) {
-				tddiv = $("<th class='ui-state-default ui-th-column'></th>");
+				tddiv = $("<th class='ui-state-default ui-th-column ui-th-"+ts.p.direction+"'></th>");
 				$(tddiv).html(ts.p.subGridModel[0].name[i]);
 				$(tddiv).width( ts.p.subGridModel[0].width[i]);
 				$(trdiv).append(tddiv);
@@ -149,7 +161,7 @@ addSubGrid : function(t,pos) {
 			dummy = $("<table cellspacing='0' cellpadding='0' border='0'><tbody></tbody></table>"),
 			trdiv = $("<tr></tr>");
 			for (i = 0; i<ts.p.subGridModel[0].name.length; i++) {
-				tddiv = $("<th class='ui-state-default ui-th-column'></th>");
+				tddiv = $("<th class='ui-state-default ui-th-column ui-th-"+ts.p.direction+"'></th>");
 				$(tddiv).html(ts.p.subGridModel[0].name[i]);
 				$(tddiv).width( ts.p.subGridModel[0].width[i]);
 				$(trdiv).append(tddiv);
