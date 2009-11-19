@@ -2,7 +2,8 @@ module ActionView
   module Helpers
     
     def jqgrid_javascripts(locale)
-      js = capture { javascript_include_tag "i18n/jqgrid/locale-#{locale}.min" }    
+      js = capture { javascript_include_tag "i18n/jqgrid/locale-#{locale}.min" } 
+      js << capture {javascript_tag "jQuery.jgrid.no_legacy_api = true;" }
       js << capture { javascript_include_tag 'jquery.jqGrid.min' }  
     end
 
@@ -224,9 +225,9 @@ module ActionView
                 #{subgrid_inline_edit}
                 #{subgrid_direct_link}
                 height: '100%'
-            })
-            .navGrid("#"+pager_id,{edit:#{options[:subgrid][:edit]},add:#{options[:subgrid][:add]},del:#{options[:subgrid][:delete]},search:false})
-            .navButtonAdd("#"+pager_id,{caption:"Search",title:"Toggle Search",buttonimg:'/images/jquery/search.png',
+            });
+            jQuery("#"+subgrid_table_id).jqGrid('navGrid',"#"+pager_id,{edit:#{options[:subgrid][:edit]},add:#{options[:subgrid][:add]},del:#{options[:subgrid][:delete]},search:false});
+            jQuery("#"+subgrid_table_id).jqGrid('navButtonAdd',"#"+pager_id,{caption:"Search",title:"Toggle Search",buttonimg:'/images/jquery/search.png',
               onClickButton:function(){ 
                 if(jQuery("#t_"+subgrid_table_id).css("display")=="none") {
                   jQuery("#t_"+subgrid_table_id).css("display","");
@@ -235,7 +236,7 @@ module ActionView
                 }
               } 
             });
-            jQuery("#t_"+subgrid_table_id).height(25).hide().filterGrid(""+subgrid_table_id,{gridModel:true,gridToolbar:true});
+            jQuery("#t_"+subgrid_table_id).height(25).hide().jqGrid('filterGrid',""+subgrid_table_id,{gridModel:true,gridToolbar:true});
           },
           subGridRowColapsed: function(subgrid_id, row_id) {
           },
@@ -248,7 +249,7 @@ module ActionView
         <script type="text/javascript">
         var lastsel_#{id};
         jQuery(document).ready(function(){
-        jQuery("##{id}").jqGrid({
+          jQuery("##{id}").jqGrid({
             // adding ?nd='+new Date().getTime() prevent IE caching
             url:'#{action}?nd='+new Date().getTime(),
             editurl:'#{options[:edit_url]}',
@@ -274,17 +275,17 @@ module ActionView
             caption: "#{title}", 
             hidegrid: #{options[:hidegrid]}
         });
-        jQuery("#t_#{id}").height(25).hide().filterGrid("#{id}",{gridModel:true,gridToolbar:true});
+        jQuery("#t_#{id}").height(25).hide().jqGrid('filterGrid',"#{id}",{gridModel:true,gridToolbar:true});
         #{multihandler}
         #{selection_link}
-        jQuery("##{id}").navGrid('##{id}_pager',{edit:#{edit_button},add:#{options[:add]},del:#{options[:delete]},search:false,refresh:true},
+        jQuery("##{id}").jqGrid('navGrid','##{id}_pager',{edit:#{edit_button},add:#{options[:add]},del:#{options[:delete]},search:false,refresh:true},
         {afterSubmit:function(r,data){return #{options[:error_handler_return_value]}(r,data,'edit');} #{edit_options}},
         {afterSubmit:function(r,data){return #{options[:error_handler_return_value]}(r,data,'add');} #{add_options}},
         {afterSubmit:function(r,data){return #{options[:error_handler_return_value]}(r,data,'delete');} #{del_options}},
         {#{search_options}}
-        )
+        );
      
-        .navButtonAdd("##{id}_pager",{
+        jQuery("##{id}").jqGrid('navButtonAdd',"##{id}_pager",{
           caption:"#{I18n.t('jquery.jqgrid.search')}",
           title:"#{I18n.t('jquery.jqgrid.toogle_search')}",
           buttonicon:"ui-icon-search",

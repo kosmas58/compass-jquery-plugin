@@ -57,7 +57,7 @@
 		fieldEvent: function(el, obs) {
 			var field = el[0] || el, e = 'change';
 			if (field.type == 'radio' || field.type == 'checkbox') e = 'click';
-			else if (obs && (field.type == 'text' || field.type == 'textarea' || field.type == 'password')) e = 'keyup';
+			else if (obs && field.type == 'text' || field.type == 'textarea') e = 'keyup';
 			return e;
 		}
 	});
@@ -117,14 +117,9 @@
 
 (function($) {
 	$.fn.extend({
-		visualEffect : function(o, options) {
-			if (options) {
-        speed = options.duration * 1000;
-      } else {
-        speed = null;
-      }
+		visualEffect : function(o) {
 			e = o.replace(/\_(.)/g, function(m, l){return l.toUpperCase()});
-			return eval('$(this).'+e+'('+ speed + ')');
+			return eval('$(this).'+e+'()');
 		},
 		appear : function(speed, callback) {
 			return this.fadeIn(speed, callback);

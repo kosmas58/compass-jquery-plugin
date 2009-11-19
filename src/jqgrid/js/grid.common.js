@@ -15,9 +15,10 @@ var closeModal = function(h) {
 	if(h.o) { h.o.remove(); }
 };
 var createModal = function(aIDs, content, p, insertSelector, posSelector, appendsel) {
-	var mw  = document.createElement('div');
+	var mw  = document.createElement('div'), rtlsup;
+	rtlsup = jQuery(p.gbox).attr("dir") == "rtl" ? true : false;
 	mw.className= "ui-widget ui-widget-content ui-corner-all ui-jqdialog";
-	mw.id = aIDs.themodal;
+	mw.id = aIDs.themodal; 
 	var mh = document.createElement('div');
 	mh.className = "ui-jqdialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix";
 	mh.id = aIDs.modalhead;
@@ -27,6 +28,15 @@ var createModal = function(aIDs, content, p, insertSelector, posSelector, append
 		   function(){ahr.removeClass('ui-state-hover');})
 	.append("<span class='ui-icon ui-icon-closethick'></span>");
 	jQuery(mh).append(ahr);
+	if(rtlsup) {
+		mw.dir = "rtl";
+		jQuery(".ui-jqdialog-title",mh).css("float","right");
+		jQuery(".ui-jqdialog-titlebar-close",mh).css("left",0.3+"em");
+	} else {
+		mw.dir = "ltr";
+		jQuery(".ui-jqdialog-title",mh).css("float","left");
+		jQuery(".ui-jqdialog-titlebar-close",mh).css("right",0.3+"em");
+	}
 	var mc = document.createElement('div');
 	jQuery(mc).addClass("ui-jqdialog-content ui-widget-content").attr("id",aIDs.modalcontent);
 	jQuery(mc).append(content);
@@ -35,6 +45,7 @@ var createModal = function(aIDs, content, p, insertSelector, posSelector, append
 	if(appendsel===true) { jQuery('body').append(mw); } //append as first child in body -for alert dialog
 	else {jQuery(mw).insertBefore(insertSelector);}
 	if(typeof p.jqModal === 'undefined') {p.jqModal = true;} // internal use
+	var coord = {};
 	if ( jQuery.fn.jqm && p.jqModal === true) {
 		if(p.left ==0 && p.top==0) {
 			var pos = [];
@@ -42,6 +53,11 @@ var createModal = function(aIDs, content, p, insertSelector, posSelector, append
 			p.left = pos[0] + 4;
 			p.top = pos[1] + 4;
 		}
+		coord.top = p.top+"px";
+		coord.left = p.left;
+	} else if(p.left !=0 || p.top!=0) {
+		coord.left = p.left;
+		coord.top = p.top+"px";
 	}
 	jQuery("a.ui-jqdialog-titlebar-close",mh).click(function(e){
 		var oncm = jQuery("#"+aIDs.themodal).data("onClose") || p.onClose;
@@ -52,14 +68,19 @@ var createModal = function(aIDs, content, p, insertSelector, posSelector, append
 	if (p.width == 0 || !p.width) {p.width = 300;}
 	if(p.height==0 || !p.height) {p.height =200;}
 	if(!p.zIndex) {p.zIndex = 950;}
-	jQuery(mw).css({
-		top: p.top+"px",
-		left: p.left+"px",
+	var rtlt = 0;
+	if( rtlsup && coord.left && !appendsel) {
+		rtlt = jQuery(p.gbox).width()- (!isNaN(p.width) ? parseInt(p.width) :0) - 8; // to do
+		// just in case
+		coord.left = parseInt(coord.left) + parseInt(rtlt);
+	}
+	if(coord.left) coord.left += "px";
+	jQuery(mw).css(jQuery.extend({
 		width: isNaN(p.width) ? "auto": p.width+"px",
 		height:isNaN(p.height) ? "auto" : p.height + "px",
 		zIndex:p.zIndex,
 		overflow: 'hidden'
-	})
+	},coord))
 	.attr({tabIndex: "-1","role":"dialog","aria-labelledby":aIDs.modalhead,"aria-hidden":"true"});
 	if(typeof p.drag == 'undefined') { p.drag=true;}
 	if(typeof p.resize == 'undefined') {p.resize=true;}
@@ -79,7 +100,7 @@ var createModal = function(aIDs, content, p, insertSelector, posSelector, append
 			jQuery("#"+aIDs.themodal).jqResize(".jqResize",aIDs.scrollelm ? "#"+aIDs.scrollelm : false);
 		} else {
 			try {
-				jQuery(mw).resizable({handles: 'se',alsoResize: aIDs.scrollelm ? "#"+aIDs.scrollelm : false});
+				jQuery(mw).resizable({handles: 'se, sw',alsoResize: aIDs.scrollelm ? "#"+aIDs.scrollelm : false});
 			} catch (e) {}
 		}
 	}
@@ -141,23 +162,38 @@ function info_dialog(caption, content,c_b, modalopt) {
 		caption:"<b>"+caption+"</b>",
 		left:250,
 		top:170,
+		zIndex : 1000,
 		jqModal : true,
 		closeOnEscape : true,
 		align: 'center',
-		buttonalign : 'center'
+		buttonalign : 'center',
+		buttons : []
+		// {text:'textbutt', id:"buttid", onClick : function(){...}}
+		// if the id is not provided we set it like info_button_+ the index in the array - i.e info_button_0,info_button_1...
 	};
 	jQuery.extend(mopt,modalopt || {});
 	var jm = mopt.jqModal;
 	if(jQuery.fn.jqm && !jm) jm = false;
 	// in case there is no jqModal
+	var buttstr ="";
+	if(mopt.buttons.length > 0) {
+		for(var i=0;i<mopt.buttons.length;i++) {
+			if(typeof mopt.buttons[i].id == "undefined") mopt.buttons[i].id = "info_button_"+i;
+			buttstr += "<a href='javascript:void(0)' id='"+mopt.buttons[i].id+"' class='fm-button ui-state-default ui-corner-all'>"+mopt.buttons[i].text+"</a>";
+		}
+	}
 	var dh = isNaN(mopt.dataheight) ? mopt.dataheight : mopt.dataheight+"px",
 	cn = "text-align:"+mopt.align+";";
 	var cnt = "<div id='info_id'>";
 	cnt += "<div id='infocnt' style='margin:0px;padding-bottom:1em;width:100%;overflow:auto;position:relative;height:"+dh+";"+cn+"'>"+content+"</div>";
-	cnt += c_b ? "<div class='ui-widget-content ui-helper-clearfix' style='text-align:"+mopt.buttonalign+";padding-bottom:0.8em;padding-top:0.5em;background-image: none;border-width: 1px 0 0 0;'><a href='javascript:void(0)' id='closedialog' class='fm-button ui-state-default ui-corner-all'>"+c_b+"</a></div>" : "";
+	cnt += c_b ? "<div class='ui-widget-content ui-helper-clearfix' style='text-align:"+mopt.buttonalign+";padding-bottom:0.8em;padding-top:0.5em;background-image: none;border-width: 1px 0 0 0;'><a href='javascript:void(0)' id='closedialog' class='fm-button ui-state-default ui-corner-all'>"+c_b+"</a>"+buttstr+"</div>" : "";
 	cnt += "</div>";
 
-	try {jQuery("#info_dialog").remove();} catch (e){}
+	try {
+		if(jQuery("#info_dialog").attr("aria-hidden") == "false")
+			hideModal("#info_dialog",{jqm:jm});
+		jQuery("#info_dialog").remove();
+	} catch (e){}
 	createModal({
 		themodal:'info_dialog',
 		modalhead:'info_head',
@@ -167,6 +203,12 @@ function info_dialog(caption, content,c_b, modalopt) {
 		mopt,
 		'','',true
 	);
+	// attach onclick after inserting into the dom
+	if(buttstr) {
+		jQuery.each(mopt.buttons,function(i){
+			jQuery("#"+this.id,"#info_id").bind('click',function(){mopt.buttons[i].onClick.call(jQuery("#info_dialog")); return false;});
+		});
+	}
 	jQuery("#closedialog", "#info_id").click(function(e){
 		hideModal("#info_dialog",{jqm:jm});
 		return false;
@@ -204,7 +246,7 @@ function isArray(obj) {
 	}
 }
 // Form Functions
-function createEl(eltype,options,vl,autowidth) {
+function createEl(eltype,options,vl,autowidth, ajaxso) {
 	var elem = "";
 	if(options.defaultValue) delete options['defaultValue'];
 	function bindEv (el, opt) {
@@ -267,26 +309,49 @@ function createEl(eltype,options,vl,autowidth) {
 			break;
 		case "select" :
 			elem = document.createElement("select");
-			var msl = options.multiple===true ? true : false;
+			var msl, ovm = [];
+			if(options.multiple===true) {
+				msl = true;
+				elem.multiple="multiple";
+			} else msl = false;
 			if(options.dataUrl != null) {
-				jQuery.get(options.dataUrl,{_nsd : (new Date().getTime())},function(data){
-					try {delete options['dataUrl'];delete options['value'];} catch (e){}
-					var a = jQuery(data).html();
-					jQuery(elem).append(a);
-					options = bindEv(elem,options);
-					if(typeof options.size === 'undefined') { options.size =  msl ? 3 : 1;}
-					jQuery(elem).attr(options);
-					setTimeout(function(){
-						jQuery("option",elem).each(function(i){
-							if(jQuery(this).text()==vl || jQuery(this).val()==vl) {
-								this.selected= "selected";
-								return false;
+				jQuery.ajax(jQuery.extend({
+					url: options.dataUrl,
+					type : "GET",
+					complete: function(data,status){
+						try {delete options['dataUrl'];delete options['value'];} catch (e){}
+						var a;
+						if(options.buildSelect != null) {
+							var b = options.buildSelect(data);
+							a = jQuery(b).html();
+							delete options['buildSelect'];
+						} else 
+							a = jQuery(data.responseText).html();
+						if(a) {
+							jQuery(elem).append(a);
+							options = bindEv(elem,options);
+							if(typeof options.size === 'undefined') { options.size =  msl ? 3 : 1;}
+							if(msl) {
+								ovm = vl.split(",");
+								ovm = jQuery.map(ovm,function(n){return jQuery.trim(n)});
+							} else {
+								ovm[0] = vl;
 							}
-						});
-					},0);
-				},'html');
+							jQuery(elem).attr(options);
+							setTimeout(function(){
+								jQuery("option",elem).each(function(i){
+									if(i==0) this.selected = "";
+									if(jQuery.inArray(jQuery(this).text(),ovm) > -1 || jQuery.inArray(jQuery(this).val(),ovm)>-1) {
+										this.selected= "selected";
+										if(!msl) return false;
+									}
+								});
+							},0);
+						}
+					}
+				},ajaxso || {}));
 			} else if(options.value) {
-				var ovm = [], i;
+				var i;
 				if(msl) {
 					ovm = vl.split(",");
 					ovm = jQuery.map(ovm,function(n){return jQuery.trim(n)});
@@ -307,9 +372,7 @@ function createEl(eltype,options,vl,autowidth) {
 					}
 				} else if (typeof options.value === 'object') {
 					var oSv = options.value;
-					i=0;
 					for ( var key in oSv) {
-						i++;
 						ov = document.createElement("option");
 						ov.value = key; ov.innerHTML = oSv[key];
 						if (!msl &&  (key == vl ||oSv[key]==vl) ) ov.selected ="selected";
@@ -342,6 +405,23 @@ function createEl(eltype,options,vl,autowidth) {
 			elem.type = eltype;
 			options = bindEv(elem,options);
 			jQuery(elem).attr(options);
+			break;
+		case "custom" :
+			elem = document.createElement("span");
+			try {
+				if(jQuery.isFunction(options.custom_element)) {
+					var celm = options.custom_element.call(this,vl,options);
+					if(celm) {
+						celm = jQuery(celm).addClass("customelement").attr({id:options.id,name:options.name});
+						jQuery(elem).empty().append(celm);
+					}
+					else throw "e2";
+				} else 	throw "e1";
+			} catch (e) {
+				if (e=="e1") info_dialog(jQuery.jgrid.errors.errcap,"function 'custom_element' "+jQuery.jgrid.edit.msg.nodefined, jQuery.jgrid.edit.bClose);
+				if (e=="e2") info_dialog(jQuery.jgrid.errors.errcap,"function 'custom_element' "+jQuery.jgrid.edit.msg.novalue,jQuery.jgrid.edit.bClose);
+				else info_dialog(jQuery.jgrid.errors.errcap,e.message,jQuery.jgrid.edit.bClose);
+			}
 			break;
 	}
 	return elem;
@@ -409,6 +489,20 @@ function checkValues(val, valref,g) {
                 if(!filter.test(val)) {return [false,nm+": "+jQuery.jgrid.edit.msg.url,""];}
             }
         }
+		if(edtrul.custom === true) {
+            if( !(rqfield === false && isEmpty(val)) ) {
+				if(jQuery.isFunction(edtrul.custom_func)) {
+					var ret = edtrul.custom_func.call(g,val,nm);
+					if(jQuery.isArray(ret)) {
+						return ret;
+					} else {
+						return [false,jQuery.jgrid.edit.msg.customarray,""];
+					}
+				} else {
+					return [false,jQuery.jgrid.edit.msg.customfcheck,""];
+				}
+			}
+		}
 	}
 	return [true,"",""];
 }
