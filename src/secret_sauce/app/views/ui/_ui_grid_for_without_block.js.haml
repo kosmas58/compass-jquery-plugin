@@ -1,14 +1,17 @@
 %script{ :type => "text/javascript" }
   $(document).ready(function() {
+  $.jgrid.no_legacy_api = true;
   $('##{name}_table').jqGrid(
   = options.to_json
-  ).navGrid("##{name}_pager",
+  );
+  $('##{name}_table').jqGrid(
+  'navGrid',"##{name}_pager",
   = nav.to_json
   );
   
   - if actions
     - if actions[:destroy]    
-      $("##{name}_table").navButtonAdd("##{name}_pager", {
+      $("##{name}_table").jqGrid('navButtonAdd',"##{name}_pager", {
       caption: "",
       position: "first",
       buttonicon: "ui-icon-trash",
@@ -32,7 +35,7 @@
       });
       
     - if actions[:update]
-      $("##{name}_table").navButtonAdd("##{name}_pager", {
+      $("##{name}_table").jqGrid('navButtonAdd',"##{name}_pager", {
       caption: "",
       position: "first",
       buttonicon: "ui-icon-pencil",
@@ -86,7 +89,7 @@
       });
       
     - if actions[:create]
-      $("##{name}_table").navButtonAdd("##{name}_pager", {
+      $("##{name}_table").jqGrid('navButtonAdd',"##{name}_pager", {
       caption: "",
       position: "first",
       buttonicon: "ui-icon-plus",

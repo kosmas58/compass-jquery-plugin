@@ -2,7 +2,8 @@ module ActionView
   module Helpers
     
     def jqgrid_javascripts(locale)
-      js = capture { javascript_include_tag "i18n/jqgrid/locale-#{locale}.min" }    
+      js = capture { javascript_include_tag "i18n/jqgrid/locale-#{locale}.min" } 
+      js << capture {javascript_tag "jQuery.jgrid.no_legacy_api = true;" }
       js << capture { javascript_include_tag 'jquery.jqGrid.min' }  
     end
 
@@ -248,7 +249,7 @@ module ActionView
         <script type="text/javascript">
         var lastsel_#{id};
         jQuery(document).ready(function(){
-        jQuery("##{id}").jqGrid({
+          jQuery("##{id}").jqGrid({
             // adding ?nd='+new Date().getTime() prevent IE caching
             url:'#{action}?nd='+new Date().getTime(),
             editurl:'#{options[:edit_url]}',
