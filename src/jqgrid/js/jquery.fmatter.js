@@ -208,6 +208,7 @@
 			op = $.extend({},op,opts.colModel.formatoptions);
 		}
 		if(op.disabled===true) {ds = "disabled";} else {ds="";}
+		if(isEmpty(cval) || isUndefined(cval) ) cval = $.fn.fmatter.defaultFormat(cval,op);
 		cval=cval+""; cval=cval.toLowerCase();
 		var bchk = cval.search(/(false|0|no|off)/i)<0 ? " checked='checked' " : "";
         return "<input type=\"checkbox\" " + bchk  + " value=\""+ cval+"\" offval=\"no\" "+ds+ "/>";
@@ -284,14 +285,13 @@
 	};
 	$.fn.fmatter.select = function (cellval,opts, act) {
 		// jqGrid specific
-		if (!cellval)  cellval = "";
-		var oSelect = false;
+		cellval = cellval + "";
+		var oSelect = false, ret=[];
 		if(!isUndefined(opts.colModel.editoptions)){
 			oSelect= opts.colModel.editoptions.value;
 		}
 		if (oSelect) {
-			var ret = [],
-			msl =  opts.colModel.editoptions.multiple === true ? true : false,
+			var	msl =  opts.colModel.editoptions.multiple === true ? true : false,
 			scell = [], sv;
 			if(msl) { scell = cellval.split(","); scell = $.map(scell,function(n){return $.trim(n);})}
 			if (isString(oSelect)) {
@@ -319,8 +319,9 @@
 					ret[0] = oSelect[cellval] || "";
 				}
 			}
-			return ret.join(", ");
 		}
+		cellval = ret.join(", ");
+		return  cellval == "" ? $.fn.fmatter.defaultFormat(cellval,opts) : cellval;
 	};
 	$.unformat = function (cellval,options,pos,cnt) {
 		// specific for jqGrid only
@@ -329,7 +330,7 @@
 		re = /([\.\*\_\'\(\)\{\}\+\?\\])/g;
 		unformatFunc = options.colModel.unformat||($.fn.fmatter[formatType] && $.fn.fmatter[formatType].unformat);
 		if(typeof unformatFunc !== 'undefined' && isFunction(unformatFunc) ) {
-			ret = unformatFunc($(cellval).text(), options);
+			ret = unformatFunc($(cellval).text(), options, cellval);
 		} else if(typeof formatType !== 'undefined' && isString(formatType) ) {
 			var opts = $.jgrid.formatter || {}, stripTag;
 			switch(formatType) {
@@ -343,13 +344,13 @@
 					op = $.extend({},opts.number,op);
 					sep = op.thousandsSeparator.replace(re,"\\$1");
 					stripTag = new RegExp(sep, "g");
-					ret = $(cellval).text().replace(op.decimalSeparator,'.').replace(stripTag,"");
+					ret = $(cellval).text().replace(stripTag,"").replace(op.decimalSeparator,'.');
 					break;
 				case 'currency':
 					op = $.extend({},opts.currency,op);
 					sep = op.thousandsSeparator.replace(re,"\\$1");
 					stripTag = new RegExp(sep, "g");
-					ret = $(cellval).text().replace(op.decimalSeparator,'.').replace(op.prefix,'').replace(op.suffix,'').replace(stripTag,'');
+					ret = $(cellval).text().replace(stripTag,'').replace(op.decimalSeparator,'.').replace(op.prefix,'').replace(op.suffix,'');
 					break;
 				case 'checkbox' :
 					var cbv = (options.colModel.editoptions) ? options.colModel.editoptions.value.split(":") : ["Yes","No"];

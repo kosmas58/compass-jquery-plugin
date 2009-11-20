@@ -37,11 +37,10 @@ module ActionView
 
     end
     
-    module PrototypeHelper      
-      USE_PROTECTION = const_defined?(:DISABLE_JQUERY_FORGERY_PROTECTION) ? !DISABLE_JQUERY_FORGERY_PROTECTION : true
-
+    module PrototypeHelper
+      
       unless const_defined? :JQUERY_VAR
-        JQUERY_VAR = 'jQuery'
+        JQUERY_VAR = '$'
       end
           
       unless const_defined? :JQCALLBACKS
@@ -158,7 +157,7 @@ module ActionView
           end
         end
         
-        if USE_PROTECTION && respond_to?('protect_against_forgery?') && protect_against_forgery?
+        if respond_to?('protect_against_forgery?') && protect_against_forgery?
           if js_options['data']
             js_options['data'] << " + '&"
           else
@@ -207,11 +206,10 @@ module ActionView
       def build_callbacks(options)
         callbacks = {}
         options[:beforeSend] = '';
-        [:uninitialized,:loading].each do |key|
+        [:uninitialized,:loading,:loaded].each do |key|
           options[:beforeSend] << (options[key].last == ';' ? options.delete(key) : options.delete(key) << ';') if options[key]
         end
         options.delete(:beforeSend) if options[:beforeSend].blank?
-        options[:complete] = options.delete(:loaded) if options[:loaded] 
         options[:error] = options.delete(:failure) if options[:failure]
         if options[:update]
           if options[:update].is_a?(Hash)
@@ -326,7 +324,7 @@ module ActionView
           js_options = js_options.merge(effect[:options]) if effect[:options]
         end
         
-        [:color, :direction, :startcolor, :endcolor].each do |option|
+        [:color, :direction].each do |option|
           js_options[option] = "'#{js_options[option]}'" if js_options[option]
         end
         
@@ -363,9 +361,9 @@ module ActionView
         options[:dropOnEmpty] = false unless options[:dropOnEmpty]
         options[:helper] = "'clone'" if options[:ghosting] == true
         options[:axis] = case options.delete(:constraint)
-          when "vertical", :vertical
+          when "vertical"
             "y"
-          when "horizontal", :horizontal
+          when "horizontal"
             "x"
           when false
             nil
@@ -377,13 +375,7 @@ module ActionView
         options.delete(:ghosting)
         
         if options[:onUpdate] || options[:url]
-          if options[:format]
-            options[:with] ||= "#{JQUERY_VAR}(this).sortable('serialize',{key:'#{element_id}[]', expression:#{options[:format]}})"
-            options.delete(:format)
-          else
-            options[:with] ||= "#{JQUERY_VAR}(this).sortable('serialize',{key:'#{element_id}[]'})"
-          end
-          
+          options[:with] ||= "#{JQUERY_VAR}(this).sortable('serialize',{key:'#{element_id}[]'})"
           options[:onUpdate] ||= "function(){" + remote_function(options) + "}"
         end
         
@@ -421,7 +413,7 @@ module ActionView
         end
         
         %(#{JQUERY_VAR}('#{jquery_id(element_id)}').droppable(#{options_for_javascript(options)});)
-      end      
+      end
     end    
   end
 end

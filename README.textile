@@ -10,7 +10,7 @@ h2. Description
 A Sass-based Meta-Framework for Compass that allows you to mix and match any of the following:
 
 * jRails with jQuery and jQuery.UI including themes
-* jqGrid V3.5
+* jqGrid V3.6
 * dynatree V0.5.1
 
 This library requires <b>"Compass":http://wiki.github.com/chriseppstein/compass</b>.
@@ -38,7 +38,7 @@ h3. jQuery Dynatree Plugin
 
 Use compass to install the jQuery Dynatree javascript library into your project.
 
-<pre>compass -f jquery -p dynatree <project name></pre>
+<pre>compass -r jquery -f jquery -p dynatree <project name></pre>
 
 You will find all the stylesheets in easy-to-read Sass format at:
 
@@ -54,7 +54,7 @@ h3. jqGrid
 
 Use compass to install the jqGrid javascript library into your project.
 
-<pre>compass -f jquery -p jqgrid <project name></pre>
+<pre>compass -r jquery  -f jquery -p jqgrid <project name></pre>
 
 You will find all the stylesheets in easy-to-read Sass format at:
 
@@ -72,7 +72,7 @@ h3. Secret Sauce
 
 Use compass to install the Secret Sauce for jqGrid javascript library into your project.
 
-<pre>compass -f jquery -p secret_sauce <project name></pre>
+<pre>compass -r jquery  -f jquery -p secret_sauce <project name></pre>
 
 You will find all the stylesheets in easy-to-read Sass format.
 
@@ -88,7 +88,7 @@ h3. Calendar
 
 Use compass to install the calendar javascript library into your project.
 
-<pre>compass -f jquery -p calendar <project name></pre>
+<pre>compass -r jquery -f jquery -p calendar <project name></pre>
 
 You will find all the stylesheets in easy-to-read Sass format.
 
@@ -122,7 +122,7 @@ h3. jQuery Plugins included
 * Kyle LeNeau for <b>"jMonthCalendar":http://www.bytecyclist.com/projects/jmonthcalendar</b>
 
 h2. Note on Patches/Pull Requests
- 
+
 * Fork the project.
 * Make your feature addition or bug fix.
 * Add tests for it. This is important so I don't break it in a
