@@ -108,7 +108,7 @@ h3. Rails
 * David Turnbull for <b>"compass-jquery":http://github.com/dturnbull/compass-jquery/tree/master</b>
 * ahe for <b>"2dc_jqgrid":http://github.com/ahe/2dc_jqgrid/tree/master</b>
 * scrubber for <b>"jquery_grid_for_rails":http://github.com/scrubber/jquery_grid_for_rails/tree/master</b>
-* ariesroyaal for <b>"secret_sauce":http://github.com/ariesroyaal/secret_sauce/tree/master</b>
+* ariesroyaal for <b>"secret_sauce":http://github.com/ariesroyaal/secret_sauce/tree/master</b> now <b>at:http://github.com/fugufish/secret_sauce/network</b>.
 
 h3. jQuery Plugins included
 
