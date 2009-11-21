@@ -83,7 +83,7 @@ module ActionView
         multiselect = %Q/multiselect: true,/
         multihandler = %Q/
           jQuery("##{id}_select_button").click( function() { 
-            var s; s = jQuery("##{id}").getGridParam('selarrrow'); 
+            var s; s = jQuery("##{id}").jqGrid('getGridParam','selarrrow'); 
             #{options[:selection_handler]}(s); 
             return false;
           });/
@@ -96,18 +96,18 @@ module ActionView
           onSelectRow: function(ids) { 
             if(ids == null) { 
               ids=0; 
-              if(jQuery("##{id}_details").getGridParam('records') >0 ) 
+              if(jQuery("##{id}_details").jqGrid('getGridParam','records') >0 ) 
               { 
-                jQuery("##{id}_details").setGridParam({url:"#{options[:details_url]}?q=1&id="+ids,page:1})
-                .setCaption("#{options[:details_caption]}: "+ids)
-                .trigger('reloadGrid'); 
+                jQuery("##{id}_details").jqGrid('setGridParam',{url:"#{options[:details_url]}?q=1&id="+ids,page:1})
+                jQuery("##{id}_details").jqGrid('setCaption',"#{options[:details_caption]}: "+ids)
+                jQuery("##{id}_details").trigger('reloadGrid'); 
               } 
             } 
             else 
             { 
-              jQuery("##{id}_details").setGridParam({url:"#{options[:details_url]}?q=1&id="+ids,page:1})
-              .setCaption("#{options[:details_caption]} : "+ids)
-              .trigger('reloadGrid'); 
+              jQuery("##{id}_details").jqGrid('setGridParam',{url:"#{options[:details_url]}?q=1&id="+ids,page:1})
+              jQuery("##{id}_details").jqGrid('setCaption',"#{options[:details_caption]} : "+ids)
+              jQuery("##{id}_details").trigger('reloadGrid'); 
             } 
           },/
       end
@@ -118,7 +118,7 @@ module ActionView
       if (options[:direct_selection].blank? || options[:direct_selection] == false) && options[:selection_handler].present? && (options[:multi_selection].blank? || options[:multi_selection] == false)
         selection_link = %Q/
         jQuery("##{id}_select_button").click( function(){ 
-          var id = jQuery("##{id}").getGridParam('selrow'); 
+          var id = jQuery("##{id}").jqGrid('getGridParam','selrow'); 
           if (id) { 
             #{options[:selection_handler]}(id); 
           } else { 
@@ -158,8 +158,8 @@ module ActionView
         editable = %Q/
         onSelectRow: function(id){ 
           if(id && id!==lastsel_#{id}){ 
-            jQuery('##{id}').restoreRow(lastsel_#{id});
-            jQuery('##{id}').editRow(id, true, #{options[:inline_edit_handler]}, #{options[:error_handler]});
+            jQuery('##{id}').jqGrid('restoreRow',lastsel_#{id});
+            jQuery('##{id}').jqGrid('editRow',id, true, #{options[:inline_edit_handler]}, #{options[:error_handler]});
             lastsel_#{id}=id; 
           } 
         },/
@@ -184,8 +184,8 @@ module ActionView
           subgrid_inline_edit = %Q/
           onSelectRow: function(id){ 
             if(id && id!==lastsel_#{id}){ 
-              jQuery('#'+subgrid_table_id).restoreRow(lastsel_#{id});
-              jQuery('#'+subgrid_table_id).editRow(id,true); 
+              jQuery('#'+subgrid_table_id).jqGrid('restoreRow',lastsel_#{id});
+              jQuery('#'+subgrid_table_id).jqGrid('editRow',id,true); 
               lastsel_#{id}=id; 
             } 
           },
@@ -279,10 +279,10 @@ module ActionView
         #{multihandler}
         #{selection_link}
         jQuery("##{id}").jqGrid('navGrid','##{id}_pager',{edit:#{edit_button},add:#{options[:add]},del:#{options[:delete]},search:false,refresh:true},
-        {afterSubmit:function(r,data){return #{options[:error_handler_return_value]}(r,data,'edit');} #{edit_options}},
-        {afterSubmit:function(r,data){return #{options[:error_handler_return_value]}(r,data,'add');} #{add_options}},
-        {afterSubmit:function(r,data){return #{options[:error_handler_return_value]}(r,data,'delete');} #{del_options}},
-        {#{search_options}}
+          {afterSubmit:function(r,data){return #{options[:error_handler_return_value]}(r,data,'edit');} #{edit_options}},
+          {afterSubmit:function(r,data){return #{options[:error_handler_return_value]}(r,data,'add');} #{add_options}},
+          {afterSubmit:function(r,data){return #{options[:error_handler_return_value]}(r,data,'delete');} #{del_options}},
+          {#{search_options}}
         );
      
         jQuery("##{id}").jqGrid('navButtonAdd',"##{id}_pager",{
