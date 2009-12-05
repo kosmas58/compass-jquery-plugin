@@ -57,25 +57,47 @@ module ActionView
     def jqgrid(title, id, action, columns = {}, 
                options = {}, edit_options = "", add_options = "", del_options = "", search_options = "",
                custom1_button = nil, custom2_button = nil, custom3_button = nil, custom4_button = nil, custom5_button = nil )
+               
       # Default options
-      options[:autowidth] = false if options[:autowidth].blank?
-      options[:hidegrid] = true if options[:hidegrid].nil?
-      options[:rows_per_page] = "10" if options[:rows_per_page].blank?
-      options[:sort_column] = "id" if options[:sort_column].blank?
-      options[:sort_order] = "asc" if options[:sort_order].blank?
-      options[:height] = "150" if options[:height].blank?
-      options[:error_handler] = 'null' if options[:error_handler].blank?
-      options[:error_handler_return_value] = options[:error_handler]
-      options[:error_handler_return_value] = "true;" if options[:error_handler_return_value] == 'null'
-      options[:inline_edit_handler] = 'null' if options[:inline_edit_handler].blank?      
-
-      options[:add] = (options[:add].blank?) ? "false" : options[:add].to_s    
-      options[:delete] = (options[:delete].blank?) ? "false" : options[:delete].to_s
-      options[:inline_edit] = (options[:inline_edit].blank?) ? "false" : options[:inline_edit].to_s
-      edit_button = (options[:edit] == true && options[:inline_edit] == "false") ? "true" : "false" 
+      options = 
+        { 
+          :rows_per_page       => '10',
+          :sort_column         => '',
+          :sort_order          => '',
+          :height              => '150',
+          :gridview            => 'false',
+          :error_handler       => 'null',
+          :inline_edit_handler => 'null',
+          :add                 => 'false',
+          :delete              => 'false',
+          :search              => 'true',
+          :edit                => 'false',          
+          :inline_edit         => 'false',
+          :autowidth           => 'false',
+          :hidegrid            => 'true',
+          :rownumbers          => 'false'                    
+        }.merge(options)
+      
+      # Stringify options values
+      options.inject({}) do |options, (key, value)|
+        options[key] = (key != :subgrid) ? value.to_s : value
+        options
+      end
+      
+      options[:error_handler_return_value] = (options[:error_handler] == 'null') ? 'true;' : options[:error_handler]
+      edit_button = (options[:edit] == 'true' && options[:inline_edit] == 'false').to_s
 
       # Generate columns data
       col_names, col_model = gen_columns(columns)
+
+      # Enable filtering (by default)
+      search = ""
+      filter_toolbar = ""
+      if options[:search] == 'true'
+        search = %Q/.navButtonAdd("##{id}_pager",{caption:"",title:"Toggle Search Toolbar", buttonicon :'ui-icon-search', onClickButton:function(){ mygrid[0].toggleToolbar() } })/
+        filter_toolbar = "mygrid.filterToolbar();"
+        filter_toolbar << "mygrid[0].toggleToolbar()"
+      end
 
       # Enable multi-selection (checkboxes)
       multiselect = ""
