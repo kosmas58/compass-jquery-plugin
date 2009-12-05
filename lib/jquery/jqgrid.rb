@@ -100,7 +100,7 @@ module ActionView
       end
 
       # Enable multi-selection (checkboxes)
-      multiselect = ""
+      multiselect = "multiselect: false,"
       if options[:multi_selection]
         multiselect = %Q/multiselect: true,/
         multihandler = %Q/
@@ -133,11 +133,11 @@ module ActionView
             } 
           },/
       end
-
+      
       # Enable selection link, button
       # The javascript function created by the user (options[:selection_handler]) will be called with the selected row id as a parameter
       selection_link = ""
-      if (options[:direct_selection].blank? || options[:direct_selection] == false) && options[:selection_handler].present? && (options[:multi_selection].blank? || options[:multi_selection] == false)
+      if options[:direct_selection].blank? && options[:selection_handler].present? && options[:multi_selection].blank?
         selection_link = %Q/
         jQuery("##{id}_select_button").click( function(){ 
           var id = jQuery("##{id}").jqGrid('getGridParam','selrow'); 
@@ -161,7 +161,7 @@ module ActionView
           } 
         },/
       end
-
+      
       # Enable grid_loaded callback
       # When data are loaded into the grid, call the Javascript function options[:grid_loaded] (defined by the user)
       grid_loaded = ""
@@ -172,20 +172,20 @@ module ActionView
         },
         /
       end
-
+      
       # Enable inline editing
       # When a row is selected, all fields are transformed to input types
       editable = ""
-      if options[:edit] && options[:inline_edit] == "true"
+      if options[:edit] && options[:inline_edit] == 'true'
         editable = %Q/
         onSelectRow: function(id){ 
-          if(id && id!==lastsel_#{id}){ 
-            jQuery('##{id}').jqGrid('restoreRow',lastsel_#{id});
+          if(id && id!==lastsel){  
+            jQuery('##{id}').jqGrid('restoreRow',lastsel);
             jQuery('##{id}').jqGrid('editRow',id, true, #{options[:inline_edit_handler]}, #{options[:error_handler]});
-            lastsel_#{id}=id; 
+            lastsel=id; 
           } 
         },/
-      end
+      end      
       
       # Enable subgrids
       subgrid = ""
