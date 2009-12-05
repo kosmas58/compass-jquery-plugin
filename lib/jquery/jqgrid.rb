@@ -186,29 +186,41 @@ module ActionView
           } 
         },/
       end      
-      
+       
       # Enable subgrids
       subgrid = ""
       subgrid_enabled = "subGrid:false,"
-      if options[:subgrid]
+
+      if options[:subgrid].present?
+        
         subgrid_enabled = "subGrid:true,"
-        options[:subgrid][:rows_per_page] = "10" if options[:subgrid][:rows_per_page].blank?
-        options[:subgrid][:sort_column] = "id" if options[:subgrid][:sort_column].blank?
-        options[:subgrid][:sort_order] = "asc" if options[:subgrid][:sort_order].blank?
-        subgrid_search = (options[:subgrid][:search].blank?) ? "false" : options[:subgrid][:search]
-        options[:subgrid][:add] = (options[:subgrid][:add].blank?) ? "false" : options[:subgrid][:add].to_s    
-        options[:subgrid][:delete] = (options[:subgrid][:delete].blank?) ? "false" : options[:subgrid][:delete].to_s
-        options[:subgrid][:edit] = (options[:subgrid][:edit].blank?) ? "false" : options[:subgrid][:edit].to_s   
+        
+        options[:subgrid] = 
+          {
+            :rows_per_page => '10',
+            :sort_column   => 'id',
+            :sort_order    => 'asc',
+            :add           => 'false',
+            :edit          => 'false',
+            :delete        => 'false',
+            :search        => 'false'
+          }.merge(options[:subgrid])
+
+        # Stringify options values
+        options[:subgrid].inject({}) do |suboptions, (key, value)|
+          suboptions[key] = value.to_s
+          suboptions
+        end
         
         subgrid_inline_edit = ""
         if options[:subgrid][:inline_edit] == true
           options[:subgrid][:edit] = "false"
           subgrid_inline_edit = %Q/
           onSelectRow: function(id){ 
-            if(id && id!==lastsel_#{id}){ 
-              jQuery('#'+subgrid_table_id).jqGrid('restoreRow',lastsel_#{id});
+            if(id && id!==lastsel){ 
+              jQuery('#'+subgrid_table_id).jqGrid('restoreRow',lastsel);
               jQuery('#'+subgrid_table_id).jqGrid('editRow',id,true); 
-              lastsel_#{id}=id; 
+              lastsel=id; 
             } 
           },
           /
@@ -222,9 +234,9 @@ module ActionView
             } 
           },
           /
-        end     
+        end
         
-        sub_col_names, sub_col_model = gen_columns(options[:subgrid][:columns])
+        sub_col_names, sub_col_model = gen_columns(options[:subgrid][:columns])        
         
         subgrid = %Q(
         subGridRowExpanded: function(subgrid_id, row_id) {
