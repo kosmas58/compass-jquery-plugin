@@ -44,15 +44,8 @@ $.jgrid.extend({
 						return;
 					}
 				}
-				// if so check to see if the content is changed
-				var vl = $("td:eq("+$t.p.savedRow[0].ic+")>#"+$t.p.savedRow[0].id+"_"+$.jgrid.jqID($t.p.savedRow[0].name),$t.rows[$t.p.savedRow[0].id]).val();
-				if ($t.p.savedRow[0].v !=  vl) {
-					// save it
-					$($t).jqGrid("saveCell",$t.p.savedRow[0].id,$t.p.savedRow[0].ic)
-				} else {
-					// restore it
-					$($t).jqGrid("restoreCell",$t.p.savedRow[0].id,$t.p.savedRow[0].ic);
-				}
+				// save the cell
+				$($t).jqGrid("saveCell",$t.p.savedRow[0].id,$t.p.savedRow[0].ic)
 			} else {
 				window.setTimeout(function () { $("#"+$t.p.knv).attr("tabindex","-1").focus();},0);
 			}
@@ -111,7 +104,7 @@ $.jgrid.extend({
 				cc.addClass("edit-cell ui-state-highlight");
 				$($t.rows[iRow]).addClass("selected-row ui-state-hover"); 
 				if ($.isFunction($t.p.onSelectCell)) {
-					tmp = cc.html().replace(/\&nbsp\;/ig,'');
+					tmp = cc.html().replace(/\&#160\;/ig,'');
 					$t.p.onSelectCell($t.rows[iRow].id,nm,tmp,iRow,iCol);
 				}
 			}
@@ -162,7 +155,7 @@ $.jgrid.extend({
 					case 'custom' :
 						try {
 							if(cm.editoptions && $.isFunction(cm.editoptions.custom_value)) {
-								v = cm.editoptions.custom_value($(".customelement",cc));
+								v = cm.editoptions.custom_value($(".customelement",cc),'get');
 								if (v===undefined) throw "e2"; else v2=v;
 							} else throw "e1";
 						} catch (e) {

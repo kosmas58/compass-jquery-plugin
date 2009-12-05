@@ -315,14 +315,20 @@ module ActionView
       col_names.chop! << "]"
       col_model.chop! << "]"
       [col_names, col_model]
-    end
-
+    end    
+    
     # Generate a list of attributes for related column (align:'right', sortable:true, resizable:false, ...)
     def get_attributes(column)
       options = ","
       column.except(:field, :label).each do |couple|
         if couple[0] == :editoptions
-          options << "editoptions:#{get_edit_options(couple[1])},"
+          options << "editoptions:#{get_sub_options(couple[1])},"
+        elsif couple[0] == :formoptions
+          options << "formoptions:#{get_sub_options(couple[1])},"
+        elsif couple[0] == :searchoptions
+          options << "searchoptions:#{get_sub_options(couple[1])},"
+        elsif couple[0] == :editrules
+          options << "editrules:#{get_sub_options(couple[1])},"
         else
           if couple[1].class == String
             options << "#{couple[0]}:'#{couple[1]}',"
@@ -335,7 +341,7 @@ module ActionView
     end
 
     # Generate options for editable fields (value, data, width, maxvalue, cols, rows, ...)
-    def get_edit_options(editoptions)
+    def get_sub_options(editoptions)
       options = "{"
       editoptions.each do |couple|
         if couple[0] == :value # :value => [[1, "Rails"], [2, "Ruby"], [3, "jQuery"]]
@@ -346,33 +352,67 @@ module ActionView
           options.chop! << %Q/",/
         elsif couple[0] == :data # :data => [Category.all, :id, :title])
           options << %Q/value:"/
-          couple[1].first.each do |v|
-            options << "#{v[couple[1].second]}:#{v[couple[1].third]};"
+          couple[1].first.each do |obj|
+            options << "%s:%s;" % [obj.send(couple[1].second), obj.send(couple[1].third)]
           end
           options.chop! << %Q/",/
         else # :size => 30, :rows => 5, :maxlength => 20, ...
-          options << %Q/#{couple[0]}:"#{couple[1]}",/
+          if couple[1].instance_of?(Fixnum) || couple[1] == 'true' || couple[1] == 'false' || couple[1] == true || couple[1] == false
+            options << %Q/#{couple[0]}:#{couple[1]},/
+          else
+            options << %Q/#{couple[0]}:"#{couple[1]}",/            
+          end
         end
       end
       options.chop! << "}"
-    end 
-  end
+    end   
+end
 end
 
 module JqgridJson
+  include ActionView::Helpers::JavaScriptHelper
+
   def to_jqgrid_json(attributes, current_page, per_page, total)
-    json = %Q({"page":"#{current_page}","total":#{total/per_page.to_i+1},"records":"#{total}","rows":[)
-    each do |elem|
-      json << %Q({"id":"#{elem.id}","cell":[)
-      couples = elem.attributes.symbolize_keys
-      attributes.each do |atr|
-        value = couples[atr]
-        value = elem.try(atr) if elem.respond_to?(:try) && value.blank?
-        json << %Q("#{value}",)
+    json = %Q({"page":"#{current_page}","total":#{total/per_page.to_i+1},"records":"#{total}")
+    if total > 0
+      json << %Q(,"rows":[)
+      each do |elem|
+        elem.id ||= index(elem)
+        json << %Q({"id":"#{elem.id}","cell":[)
+        couples = elem.attributes.symbolize_keys
+        attributes.each do |atr|
+          value = get_atr_value(elem, atr, couples)
+          value = escape_javascript(value) if value and value.is_a? String
+          json << %Q("#{value}",)
+        end
+        json.chop! << "]},"
       end
-      json.chop! << "]},"
+      json.chop! << "]}"
+    else
+      json << "}"
     end
-    json.chomp!(',') << "]}"
+  end
+  
+  private
+  
+  def get_atr_value(elem, atr, couples)
+    if atr.to_s.include?('.')
+      value = get_nested_atr_value(elem, atr.to_s.split('.').reverse) 
+    else
+      value = couples[atr]
+      value = elem.send(atr.to_sym) if value.blank? && elem.respond_to?(atr) # Required for virtual attributes
+    end
+    value
+  end
+  
+  def get_nested_atr_value(elem, hierarchy)
+    return nil if hierarchy.size == 0
+    atr = hierarchy.pop
+    raise ArgumentError, "#{atr} doesn't exist on #{elem.inspect}" unless elem.respond_to?(atr)
+    nested_elem = elem.send(atr)
+    return "" if nested_elem.nil?
+    value = get_nested_atr_value(nested_elem, hierarchy)
+    value.nil? ? nested_elem : value
   end
 end
 
