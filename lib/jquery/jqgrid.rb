@@ -60,23 +60,23 @@ module ActionView
                
       # Default options
       options = 
-        { 
-          :rows_per_page       => '10',
-          :sort_column         => '',
-          :sort_order          => '',
-          :height              => '150',
-          :gridview            => 'false',
-          :error_handler       => 'null',
-          :inline_edit_handler => 'null',
-          :add                 => 'false',
-          :delete              => 'false',
-          :search              => 'true',
-          :edit                => 'false',          
-          :inline_edit         => 'false',
-          :autowidth           => 'false',
-          :hidegrid            => 'true',
-          :rownumbers          => 'false'                    
-        }.merge(options)
+      { 
+        :rows_per_page       => '10',
+        :sort_column         => '',
+        :sort_order          => '',
+        :height              => '150',
+        :gridview            => 'false',
+        :error_handler       => 'null',
+        :inline_edit_handler => 'null',
+        :add                 => 'false',
+        :delete              => 'false',
+        :search              => 'true',
+        :edit                => 'false',          
+        :inline_edit         => 'false',
+        :autowidth           => 'false',
+        :hidegrid            => 'true',
+        :rownumbers          => 'false'                    
+      }.merge(options)
       
       # Stringify options values
       options.inject({}) do |options, (key, value)|
@@ -94,7 +94,7 @@ module ActionView
       search = ""
       filter_toolbar = ""
       if options[:search] == 'true'
-        search = %Q/.navButtonAdd("##{id}_pager",{caption:"",title:"Toggle Search Toolbar", buttonicon :'ui-icon-search', onClickButton:function(){ mygrid[0].toggleToolbar() } })/
+        search = %Q/jQuery("##{id}").jqGrid('navButtonAdd', "##{id}_pager",{caption:"",title:"Toggle Search Toolbar", buttonicon :'ui-icon-search', onClickButton:function(){ mygrid[0].toggleToolbar() } })/
         filter_toolbar = "mygrid.filterToolbar();"
         filter_toolbar << "mygrid[0].toggleToolbar()"
       end
@@ -102,10 +102,10 @@ module ActionView
       # Enable multi-selection (checkboxes)
       multiselect = "multiselect: false,"
       if options[:multi_selection]
-        multiselect = %Q/multiselect: true,/
+        multiselect = "multiselect: true,"
         multihandler = %Q/
           jQuery("##{id}_select_button").click( function() { 
-            var s; s = jQuery("##{id}").jqGrid('getGridParam','selarrrow'); 
+            var s; s = jQuery("##{id}").jqGrid('getGridParam', 'selarrrow'); 
             #{options[:selection_handler]}(s); 
             return false;
           });/
@@ -118,29 +118,29 @@ module ActionView
           onSelectRow: function(ids) { 
             if(ids == null) { 
               ids=0; 
-              if(jQuery("##{id}_details").jqGrid('getGridParam','records') >0 ) 
+              if(jQuery("##{id}_details").jqGrid('getGridParam', 'records') >0 ) 
               { 
-                jQuery("##{id}_details").jqGrid('setGridParam',{url:"#{options[:details_url]}?q=1&id="+ids,page:1})
-                jQuery("##{id}_details").jqGrid('setCaption',"#{options[:details_caption]}: "+ids)
+                jQuery("##{id}_details").jqGrid('setGridParam', {url:"#{options[:details_url]}?q=1&id="+ids,page:1})
+                jQuery("##{id}_details").jqGrid('setCaption', "#{options[:details_caption]}: "+ids)
                 jQuery("##{id}_details").trigger('reloadGrid'); 
               } 
             } 
             else 
             { 
-              jQuery("##{id}_details").jqGrid('setGridParam',{url:"#{options[:details_url]}?q=1&id="+ids,page:1})
-              jQuery("##{id}_details").jqGrid('setCaption',"#{options[:details_caption]} : "+ids)
+              jQuery("##{id}_details").jqGrid('setGridParam', {url:"#{options[:details_url]}?q=1&id="+ids,page:1})
+              jQuery("##{id}_details").jqGrid('setCaption', "#{options[:details_caption]} : "+ids)
               jQuery("##{id}_details").trigger('reloadGrid'); 
             } 
           },/
       end
-      
+
       # Enable selection link, button
       # The javascript function created by the user (options[:selection_handler]) will be called with the selected row id as a parameter
       selection_link = ""
       if options[:direct_selection].blank? && options[:selection_handler].present? && options[:multi_selection].blank?
         selection_link = %Q/
         jQuery("##{id}_select_button").click( function(){ 
-          var id = jQuery("##{id}").jqGrid('getGridParam','selrow'); 
+          var id = jQuery("##{id}").jqGrid('getGridParam', 'selrow'); 
           if (id) { 
             #{options[:selection_handler]}(id); 
           } else { 
@@ -161,7 +161,7 @@ module ActionView
           } 
         },/
       end
-      
+
       # Enable grid_loaded callback
       # When data are loaded into the grid, call the Javascript function options[:grid_loaded] (defined by the user)
       grid_loaded = ""
@@ -172,21 +172,21 @@ module ActionView
         },
         /
       end
-      
+
       # Enable inline editing
       # When a row is selected, all fields are transformed to input types
       editable = ""
       if options[:edit] && options[:inline_edit] == 'true'
         editable = %Q/
         onSelectRow: function(id){ 
-          if(id && id!==lastsel){  
-            jQuery('##{id}').jqGrid('restoreRow',lastsel);
-            jQuery('##{id}').jqGrid('editRow',id, true, #{options[:inline_edit_handler]}, #{options[:error_handler]});
+          if(id && id!==lastsel){ 
+            jQuery('##{id}').jqGrid('restoreRow', lastsel);
+            jQuery('##{id}').jqGrid('editRow', id, true, #{options[:inline_edit_handler]}, #{options[:error_handler]});
             lastsel=id; 
           } 
         },/
-      end      
-       
+      end
+      
       # Enable subgrids
       subgrid = ""
       subgrid_enabled = "subGrid:false,"
@@ -214,12 +214,12 @@ module ActionView
         
         subgrid_inline_edit = ""
         if options[:subgrid][:inline_edit] == true
-          options[:subgrid][:edit] = "false"
+          options[:subgrid][:edit] = 'false'
           subgrid_inline_edit = %Q/
           onSelectRow: function(id){ 
             if(id && id!==lastsel){ 
-              jQuery('#'+subgrid_table_id).jqGrid('restoreRow',lastsel);
-              jQuery('#'+subgrid_table_id).jqGrid('editRow',id,true); 
+              jQuery('#'+subgrid_table_id).jqGrid('restoreRow', lastsel);
+              jQuery('#'+subgrid_table_id).jqGrid('editRow', id,true); 
               lastsel=id; 
             } 
           },
@@ -234,34 +234,35 @@ module ActionView
             } 
           },
           /
-        end
+        end     
         
-        sub_col_names, sub_col_model = gen_columns(options[:subgrid][:columns])        
+        sub_col_names, sub_col_model = gen_columns(options[:subgrid][:columns])
         
         subgrid = %Q(
         subGridRowExpanded: function(subgrid_id, row_id) {
             var subgrid_table_id, pager_id;
             subgrid_table_id = subgrid_id+"_t";
             pager_id = "p_"+subgrid_table_id;
-            jQuery("#"+subgrid_id).html("<table id='"+subgrid_table_id+"' class='scroll'></table><div id='"+pager_id+"' class='scroll'></div>");
+            $("#"+subgrid_id).html("<table id='"+subgrid_table_id+"' class='scroll'></table><div id='"+pager_id+"' class='scroll'></div>");
             jQuery("#"+subgrid_table_id).jqGrid({
               url:"#{options[:subgrid][:url]}?q=2&id="+row_id,
-              editurl:'#{options[:subgrid][:edit_url]}?parent_id='+row_id,
+              editurl:'#{options[:subgrid][:edit_url]}?parent_id='+row_id,                            
               datatype: "json",
               colNames: #{sub_col_names},
               colModel: #{sub_col_model},
-                rowNum:#{options[:subgrid][:rows_per_page]},
-                pager: pager_id,
-                sortname: '#{options[:subgrid][:sort_column]}',
-                sortorder: '#{options[:subgrid][:sort_order]}',
-                viewrecords: true,
-                toolbar : [true,"top"], 
-                #{subgrid_inline_edit}
-                #{subgrid_direct_link}
-                height: '100%'
+              rowNum:#{options[:subgrid][:rows_per_page]},
+              pager: pager_id,
+              imgpath: '/images/jqgrid',
+              sortname: '#{options[:subgrid][:sort_column]}',
+              sortorder: '#{options[:subgrid][:sort_order]}',
+              viewrecords: true,
+              toolbar : [true,"top"], 
+              #{subgrid_inline_edit}
+              #{subgrid_direct_link}
+              height: '100%'
             });
-            jQuery("#"+subgrid_table_id).jqGrid('navGrid',"#"+pager_id,{edit:#{options[:subgrid][:edit]},add:#{options[:subgrid][:add]},del:#{options[:subgrid][:delete]},search:false});
-            jQuery("#"+subgrid_table_id).jqGrid('navButtonAdd',"#"+pager_id,{caption:"Search",title:"Toggle Search",buttonimg:'/images/jquery/search.png',
+            jQuery("#"+subgrid_table_id).jqGrid('navGrid', "#"+pager_id,{edit:#{options[:subgrid][:edit]},add:#{options[:subgrid][:add]},del:#{options[:subgrid][:delete]},search:false})
+            jQuery("#"+subgrid_table_id).jqGrid('navButtonAdd', "#"+pager_id,{caption:"Search",title:"Toggle Search",buttonimg:'/images/jqgrid/search.png',
               onClickButton:function(){ 
                 if(jQuery("#t_"+subgrid_table_id).css("display")=="none") {
                   jQuery("#t_"+subgrid_table_id).css("display","");
@@ -270,71 +271,56 @@ module ActionView
                 }
               } 
             });
-            jQuery("#t_"+subgrid_table_id).height(25).hide().jqGrid('filterGrid',""+subgrid_table_id,{gridModel:true,gridToolbar:true});
+            jQuery("#t_"+subgrid_table_id).height(25).hide().jqGrid('filterGrid', ""+subgrid_table_id,{gridModel:true,gridToolbar:true});
           },
           subGridRowColapsed: function(subgrid_id, row_id) {
           },
         )
       end
-     
 
       # Generate required Javascript & html to create the jqgrid
       %Q(
         <script type="text/javascript">
-        var lastsel_#{id};
-        jQuery(document).ready(function(){
-          jQuery("##{id}").jqGrid({
-            // adding ?nd='+new Date().getTime() prevent IE caching
-            url:'#{action}?nd='+new Date().getTime(),
-            editurl:'#{options[:edit_url]}',
-            datatype: "json",
-            colNames:#{col_names},
-            colModel:#{col_model},
-            pager: jQuery('##{id}_pager'),
-            rowNum:#{options[:rows_per_page]},
-            rowList:[10,25,50,100],
-            sortname: '#{options[:sort_column]}',
-            viewrecords: true,
-            height: #{options[:height]}, 
-            toolbar : [true,"top"],
-            autowidth: #{options[:autowidth]},
-            sortorder: "#{options[:sort_order]}",
-            #{multiselect}
-            #{masterdetails}
-            #{grid_loaded}
-            #{direct_link}
-            #{editable}
-            #{subgrid_enabled}
-            #{subgrid}
-            caption: "#{title}", 
-            hidegrid: #{options[:hidegrid]}
-        });
-        jQuery("#t_#{id}").height(25).hide().jqGrid('filterGrid',"#{id}",{gridModel:true,gridToolbar:true});
-        #{multihandler}
-        #{selection_link}
-        jQuery("##{id}").jqGrid('navGrid','##{id}_pager',{edit:#{edit_button},add:#{options[:add]},del:#{options[:delete]},search:false,refresh:true},
-          {afterSubmit:function(r,data){return #{options[:error_handler_return_value]}(r,data,'edit');} #{edit_options}},
-          {afterSubmit:function(r,data){return #{options[:error_handler_return_value]}(r,data,'add');} #{add_options}},
-          {afterSubmit:function(r,data){return #{options[:error_handler_return_value]}(r,data,'delete');} #{del_options}},
-          {#{search_options}}
-        );
-     
-        jQuery("##{id}").jqGrid('navButtonAdd',"##{id}_pager",{
-          caption:"#{I18n.t('jquery.jqgrid.search')}",
-          title:"#{I18n.t('jquery.jqgrid.toogle_search')}",
-          buttonicon:"ui-icon-search",
-          onClickButton:function(){ 
-            if(jQuery("#t_#{id}").css("display")=="none") {
-              jQuery("#t_#{id}").css("display","");
-            } else {
-              jQuery("#t_#{id}").css("display","none");
-            }
-          } 
-        });
-        });
+          var lastsel;
+          jQuery(document).ready(function(){
+            var mygrid = jQuery("##{id}").jqGrid({
+              url:'#{action}?q=1',
+              editurl:'#{options[:edit_url]}',
+              datatype: "json",
+              colNames:#{col_names},
+              colModel:#{col_model},
+              pager: '##{id}_pager',
+              rowNum:#{options[:rows_per_page]},
+              rowList:[10,25,50,100],
+              imgpath: '/images/jqgrid',
+              sortname: '#{options[:sort_column]}',
+              viewrecords: true,
+              height: #{options[:height]},
+              sortorder: '#{options[:sort_order]}',
+              gridview: #{options[:gridview]},
+              hidegrid: #{options[:hidegrid]},
+              scrollrows: true,
+              autowidth: #{options[:autowidth]},
+              rownumbers: #{options[:rownumbers]},
+              #{multiselect}
+              #{masterdetails}
+              #{grid_loaded}
+              #{direct_link}
+              #{editable}
+              #{subgrid_enabled}
+              #{subgrid}
+              caption: "#{title}"
+            });
+            jQuery("##{id}").jqGrid('navGrid', '##{id}_pager',
+              {edit:#{edit_button},add:#{options[:add]},del:#{options[:delete]},search:false,refresh:true},
+              {afterSubmit:function(r,data){return #{options[:error_handler_return_value]}(r,data,'edit');}},
+              {afterSubmit:function(r,data){return #{options[:error_handler_return_value]}(r,data,'add');}},
+              {afterSubmit:function(r,data){return #{options[:error_handler_return_value]}(r,data,'delete');}}
+            );
+          });
         </script>
       )
-    end
+    end     
 
     private
     
@@ -400,7 +386,7 @@ module ActionView
       end
       options.chop! << "}"
     end   
-end
+  end
 end
 
 module JqgridJson
