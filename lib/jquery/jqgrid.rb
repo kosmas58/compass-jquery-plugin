@@ -90,15 +90,6 @@ module ActionView
       # Generate columns data
       col_names, col_model = gen_columns(columns)
 
-      # Enable filtering (by default)
-      search = ""
-      filter_toolbar = ""
-      if options[:search] == 'true'
-        search = %Q/jQuery("##{id}").jqGrid('navButtonAdd', "##{id}_pager",{caption:"",title:"Toggle Search Toolbar", buttonicon :'ui-icon-search', onClickButton:function(){ mygrid[0].toggleToolbar() } })/
-        filter_toolbar = "mygrid.filterToolbar();"
-        filter_toolbar << "mygrid[0].toggleToolbar()"
-      end
-
       # Enable multi-selection (checkboxes)
       multiselect = "multiselect: false,"
       if options[:multi_selection]
@@ -261,7 +252,7 @@ module ActionView
               #{subgrid_direct_link}
               height: '100%'
             });
-            jQuery("#"+subgrid_table_id).jqGrid('navGrid', "#"+pager_id,{edit:#{options[:subgrid][:edit]},add:#{options[:subgrid][:add]},del:#{options[:subgrid][:delete]},search:false})
+            jQuery("#"+subgrid_table_id).jqGrid('navGrid', "#"+pager_id,{edit:#{options[:subgrid][:edit]},add:#{options[:subgrid][:add]},del:#{options[:subgrid][:delete]},search:#{options[:subgrid][:search]}})
             jQuery("#"+subgrid_table_id).jqGrid('navButtonAdd', "#"+pager_id,{caption:"Search",title:"Toggle Search",buttonimg:'/images/jqgrid/search.png',
               onClickButton:function(){ 
                 if(jQuery("#t_"+subgrid_table_id).css("display")=="none") {
@@ -283,7 +274,7 @@ module ActionView
         <script type="text/javascript">
           var lastsel;
           jQuery(document).ready(function(){
-            var mygrid = jQuery("##{id}").jqGrid({
+            jQuery("##{id}").jqGrid({
               url:'#{action}?q=1',
               editurl:'#{options[:edit_url]}',
               datatype: "json",
@@ -292,16 +283,16 @@ module ActionView
               pager: '##{id}_pager',
               rowNum:#{options[:rows_per_page]},
               rowList:[10,25,50,100],
-              imgpath: '/images/jqgrid',
               sortname: '#{options[:sort_column]}',
+              sortorder: '#{options[:sort_order]}',
               viewrecords: true,
               height: #{options[:height]},
-              sortorder: '#{options[:sort_order]}',
+              toolbar : [true,"top"],
               gridview: #{options[:gridview]},
               hidegrid: #{options[:hidegrid]},
               scrollrows: true,
-              autowidth: #{options[:autowidth]},
               rownumbers: #{options[:rownumbers]},
+              autowidth: #{options[:autowidth]},
               #{multiselect}
               #{masterdetails}
               #{grid_loaded}
@@ -312,11 +303,14 @@ module ActionView
               caption: "#{title}"
             });
             jQuery("##{id}").jqGrid('navGrid', '##{id}_pager',
-              {edit:#{edit_button},add:#{options[:add]},del:#{options[:delete]},search:false,refresh:true},
+              {edit:#{edit_button},add:#{options[:add]},del:#{options[:delete]},search:#{options[:search]},refresh:true},
               {afterSubmit:function(r,data){return #{options[:error_handler_return_value]}(r,data,'edit');}},
               {afterSubmit:function(r,data){return #{options[:error_handler_return_value]}(r,data,'add');}},
-              {afterSubmit:function(r,data){return #{options[:error_handler_return_value]}(r,data,'delete');}}
+              {afterSubmit:function(r,data){return #{options[:error_handler_return_value]}(r,data,'delete');}},
+              {#{search_options}}
             );
+            #{multihandler}
+            #{selection_link}
           });
         </script>
       )
