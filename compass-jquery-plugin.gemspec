@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kosmas Schuetz"]
-  s.date = %q{2009-12-06}
+  s.date = %q{2009-12-12}
   s.description = %q{A compass plugin that integrates jRails, jQuery, jQuery UI and Themes, jqGrid and more into the Compass Sass framework.}
   s.email = %q{kosmas.schuetz@gmx.com}
   s.extra_rdoc_files = [
@@ -135,7 +135,6 @@ Gem::Specification.new do |s|
      "templates/dynatree/jquery.ui/dynatree.vista/folder.png",
      "templates/dynatree/jquery.ui/dynatree.vista/folder_docs.png",
      "templates/dynatree/jquery.ui/dynatree.vista/folder_images.png",
-     "templates/dynatree/jquery.ui/dynatree.vista/folder_open.png",
      "templates/dynatree/jquery.ui/dynatree.vista/folder_page.png",
      "templates/dynatree/jquery.ui/dynatree.vista/ltDoc.png",
      "templates/dynatree/jquery.ui/dynatree.vista/ltError.png",
