@@ -74,7 +74,7 @@ module ActionView
         :edit                => 'false',          
         :inline_edit         => 'false',
         :autowidth           => 'false',
-        :hidegrid            => 'true',
+        :hidegrid            => 'false',
         :rownumbers          => 'false'                    
       }.merge(options)
       
@@ -252,7 +252,7 @@ module ActionView
               #{subgrid_direct_link}
               height: '100%'
             });
-            jQuery("#"+subgrid_table_id).jqGrid('navGrid', "#"+pager_id,{edit:#{options[:subgrid][:edit]},add:#{options[:subgrid][:add]},del:#{options[:subgrid][:delete]},search:#{options[:subgrid][:search]}})
+            jQuery("#"+subgrid_table_id).jqGrid('navGrid', "#"+pager_id,{edit:#{options[:subgrid][:edit]},add:#{options[:subgrid][:add]},del:#{options[:subgrid][:delete]},search:false})
             jQuery("#"+subgrid_table_id).jqGrid('navButtonAdd', "#"+pager_id,{caption:"Search",title:"Toggle Search",buttonimg:'/images/jqgrid/search.png',
               onClickButton:function(){ 
                 if(jQuery("#t_"+subgrid_table_id).css("display")=="none") {
