@@ -16,9 +16,9 @@ all_scripts = [
   'js/jquery.dynatree.js'
 ].collect {|filename| File.read(File.join(DYNATREE_SRC, filename))}.join "\n\n"
 
-namespace :dynatree do
+namespace :build do
   desc 'Build the stylesheets and templates for dynatree.'
-  task :build do    
+  task :dynatree do    
     
     FileUtils.remove_dir DYNATREE_DEST_TEMPLATES if File.exists? DYNATREE_DEST_TEMPLATES 
     FileUtils.mkdir_p(File.join(DYNATREE_DEST_TEMPLATES, 'config', 'initializers'))

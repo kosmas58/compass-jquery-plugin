@@ -1,3 +1,6 @@
 desc 'Build all stylesheets and templates.'
-task :build_all => ["jrails:build", "dynatree:build", "jqgrid:build", "secret_sauce:build", "calendar:build", "jqtouch:build"] do
+
+namespace :build do
+  task :all => ["build:jrails", "build:dynatree", "build:jqgrid", "build:secret_sauce", "build:calendar", "build:jqtouch"] do
+  end
 end

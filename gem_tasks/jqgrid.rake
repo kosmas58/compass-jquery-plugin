@@ -45,9 +45,9 @@ all_stylesheets = [
   'plugins/ui.multiselect.css'  
 ].collect {|filename| File.read(File.join(JQGRID_SRC, filename))}.join "\n\n"
 
-namespace :jqgrid do
+namespace :build do
   desc 'Build the stylesheets and templates for jqGrid.'
-  task :build do
+  task :jqgrid do
     
     FileUtils.remove_dir JQGRID_DEST_TEMPLATES if File.exists? JQGRID_DEST_TEMPLATES   
     FileUtils.mkdir_p(File.join(JQGRID_DEST_TEMPLATES, 'config', 'initializers')) 
