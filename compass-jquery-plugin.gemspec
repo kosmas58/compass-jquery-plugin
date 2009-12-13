@@ -262,6 +262,7 @@ Gem::Specification.new do |s|
      "templates/jqtouch/jqtouch/apple/toolbar.png",
      "templates/jqtouch/jqtouch/apple/whiteButton.png",
      "templates/jqtouch/jqtouch/icons/iphone_16x16.png",
+     "templates/jqtouch/jqtouch/iphone-emulator.sass",
      "templates/jqtouch/jqtouch/iphone_fullsize.png",
      "templates/jqtouch/jqtouch/jqt.sass",
      "templates/jqtouch/jqtouch/jqt/back_button.png",
