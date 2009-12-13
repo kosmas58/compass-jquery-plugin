@@ -4,6 +4,7 @@
 file 'config/initializers/jqtouch.rb'
 javascript 'jquery.jqtouch.js'
 javascript 'jquery.jqtouch.min.js'
+stylesheet 'jqtouch/iphone-emulator.sass'
 stylesheet 'jqtouch/jqtouch.sass'
 image 'jqtouch/iphone_fullsize.png'
 image 'jqtouch/icons/iphone_16x16.png'
