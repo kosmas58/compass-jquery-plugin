@@ -278,6 +278,7 @@ Gem::Specification.new do |s|
      "templates/jqtouch/jqtouch/jqt/toggleOn.png",
      "templates/jqtouch/jqtouch/jqt/toolbar.png",
      "templates/jqtouch/jqtouch/jqt/whiteButton.png",
+     "templates/jqtouch/jqtouch/jqtouch.sass",
      "templates/jqtouch/jquery.jqtouch.js",
      "templates/jqtouch/jquery.jqtouch.min.js",
      "templates/jqtouch/manifest.rb",

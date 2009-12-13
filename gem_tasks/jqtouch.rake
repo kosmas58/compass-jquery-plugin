@@ -59,7 +59,7 @@ namespace :build do
         open(File.join(JQTOUCH_DEST_THEMES, file.gsub(/\.css$/,'.sass')), 'w') do |f|
           f.write JQTOUCH_MESSAGE2 + sass
         end
-        manifest.print "stylesheet 'jqtouch/jqtouch/#{file.gsub(/\.css$/,'.sass')}'\n"
+        manifest.print "stylesheet 'jqtouch/#{file.gsub(/\.css$/,'.sass')}'\n"
       end      
 
 

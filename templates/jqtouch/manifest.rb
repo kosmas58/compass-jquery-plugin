@@ -4,7 +4,7 @@
 file 'config/initializers/jqtouch.rb'
 javascript 'jquery.jqtouch.js'
 javascript 'jquery.jqtouch.min.js'
-stylesheet 'jqtouch/jqtouch/jqtouch.sass'
+stylesheet 'jqtouch/jqtouch.sass'
 image 'jqtouch/iphone_fullsize.png'
 image 'jqtouch/icons/iphone_16x16.png'
 stylesheet 'jqtouch/apple.sass', :media => 'screen, projection'
