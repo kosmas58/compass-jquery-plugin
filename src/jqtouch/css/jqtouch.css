@@ -1,12 +1,13 @@
-* {
+.jqt * {
     margin: 0;
     padding: 0;
 }
-a {
+
+.jqt a {
     -webkit-tap-highlight-color: rgba(0,0,0,0);
 }
 
-body {
+.jqt body {
     overflow-x: hidden;
     -webkit-user-select: none;
     -webkit-text-size-adjust: none;
@@ -14,10 +15,12 @@ body {
     -webkit-perspective: 800;
     -webkit-transform-style: preserve-3d;
 }
-.selectable, input, textarea {
+
+.jqt.selectable, .jqt input, .jqt textarea {
     -webkit-user-select: auto;
 }
-body > * {
+
+.jqt body > * {
     -webkit-backface-visibility: hidden;
     -webkit-box-sizing: border-box;
     display: none;
@@ -27,37 +30,39 @@ body > * {
     -webkit-transform: translate3d(0,0,0) rotate(0) scale(1);
     min-height: 420px !important;
 }
-body.fullscreen > * {
+
+.jqt body.fullscreen > * {
     min-height: 460px !important;
 }
-body.fullscreen.black-translucent > * {
+
+.jqt body.fullscreen.black-translucent > * {
     min-height: 480px !important;
 }
-body.landscape > * {
+
+.jqt body.landscape > * {
     min-height: 320px;
 }
-body > .current {
+
+.jqt body > .current {
     display: block !important;
 }
 
-.in, .out {
+.jqt.in, .jqt.out {
 	-webkit-animation-timing-function: ease-in-out;
 	-webkit-animation-duration: 350ms;
 }
 
-.slide.in {
+.jqt.slide.in {
 	-webkit-animation-name: slideinfromright;
 }
-
-.slide.out {
+.jqt.slide.out {
 	-webkit-animation-name: slideouttoleft;
 }
-
-.slide.in.reverse {
+.jqt.slide.in.reverse {
 	-webkit-animation-name: slideinfromleft;
 }
 
-.slide.out.reverse {
+.jqt.slide.out.reverse {
 	-webkit-animation-name: slideouttoright;
 }
 
@@ -91,43 +96,41 @@ body > .current {
     to { opacity: 0; }
 }
 
-.fade.in {
+.jqt.fade.in {
 	z-index: 10;
 	-webkit-animation-name: fadein;
 }
-.fade.out {
+.jqt.fade.out {
 	z-index: 0;
 }
 
-.dissolve.in {
+.jqt.dissolve.in {
 	-webkit-animation-name: fadein;
 }
 
-.dissolve.out {
+.jqt.dissolve.out {
 	-webkit-animation-name: fadeout;	
 }
 
-
-
-.flip {
+.jqt.flip {
 	-webkit-animation-duration: .65s;
 }
 
-.flip.in {
+.jqt.flip.in {
 	-webkit-animation-name: flipinfromleft;
 }
 
-.flip.out {
+.jqt.flip.out {
 	-webkit-animation-name: flipouttoleft;
 }
 
 /* Shake it all about */
 
-.flip.in.reverse {
+.jqt.flip.in.reverse {
 	-webkit-animation-name: flipinfromright;
 }
 
-.flip.out.reverse {
+.jqt.flip.out.reverse {
 	-webkit-animation-name: flipouttoright;
 }
 
@@ -151,22 +154,22 @@ body > .current {
     to { -webkit-transform: rotateY(180deg) scale(.8); }
 }
 
-.slideup.in {
+.jqt.slideup.in {
 	-webkit-animation-name: slideup;
 	z-index: 10;
 }
 
-.slideup.out {
+.jqt.slideup.out {
 	-webkit-animation-name: dontmove;
 	z-index: 0;
 }
 
-.slideup.out.reverse {
+.jqt.slideup.out.reverse {
 	z-index: 10;
 	-webkit-animation-name: slidedown;
 }
 
-.slideup.in.reverse {
+.jqt.slideup.in.reverse {
 	z-index: 0;
 	-webkit-animation-name: dontmove;
 }
@@ -182,8 +185,6 @@ body > .current {
     to { -webkit-transform: translateY(100%); }
 }
 
-
-
 /* Hackish, but reliable. */
 
 @-webkit-keyframes dontmove {
@@ -191,23 +192,26 @@ body > .current {
     to { opacity: 1; }
 }
 
-.swap {
+.jqt.swap {
 	-webkit-transform: perspective(800);
 	-webkit-animation-duration: .7s;
 }
-.swap.out {
+
+.jqt.swap.out {
 	-webkit-animation-name: swapouttoleft;
 }
-.swap.in {
+
+.jqt.swap.in {
 	-webkit-animation-name: swapinfromright;
 }
-.swap.out.reverse {
+
+.jqt.swap.out.reverse {
 	-webkit-animation-name: swapouttoright;
 }
-.swap.in.reverse {
+
+.jqt.swap.in.reverse {
 	-webkit-animation-name: swapinfromleft;
 }
-
 
 @-webkit-keyframes swapouttoright {
     0% {
@@ -265,23 +269,23 @@ body > .current {
     }
 }
 
-.cube {
+.jqt.cube {
     -webkit-animation-duration: .55s;
 }
 
-.cube.in {
+.jqt.cube.in {
 	-webkit-animation-name: cubeinfromright;
     -webkit-transform-origin: 0% 50%;
 }
-.cube.out {
+.jqt.cube.out {
 	-webkit-animation-name: cubeouttoleft;
     -webkit-transform-origin: 100% 50%;
 }
-.cube.in.reverse {
+.jqt.cube.in.reverse {
 	-webkit-animation-name: cubeinfromleft;	
     -webkit-transform-origin: 100% 50%;
 }
-.cube.out.reverse {
+.jqt.cube.out.reverse {
 	-webkit-animation-name: cubeouttoright;
     -webkit-transform-origin: 0% 50%;
 
@@ -297,6 +301,7 @@ body > .current {
         opacity: 1;
     }
 }
+
 @-webkit-keyframes cubeouttoright {
     from {
         -webkit-transform: rotateY(0deg) translateX(0);
@@ -307,6 +312,7 @@ body > .current {
         opacity: .5;
     }
 }
+
 @-webkit-keyframes cubeinfromright {
     from {
         -webkit-transform: rotateY(90deg) translateZ(320px);
@@ -317,6 +323,7 @@ body > .current {
         opacity: 1;
     }
 }
+
 @-webkit-keyframes cubeouttoleft {
     from {
         -webkit-transform: rotateY(0deg) translateZ(0);
@@ -328,24 +335,21 @@ body > .current {
     }
 }
 
-
-
-
-.pop {
+.jqt.pop {
 	-webkit-transform-origin: 50% 50%;
 }
 
-.pop.in {
+.jqt.pop.in {
 	-webkit-animation-name: popin;
 	z-index: 10;
 }
 
-.pop.out.reverse {
+.jqt.pop.out.reverse {
 	-webkit-animation-name: popout;
 	z-index: 10;
 }
 
-.pop.in.reverse {
+.jqt.pop.in.reverse {
 	z-index: 0;
 	-webkit-animation-name: dontmove;
 }

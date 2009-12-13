@@ -37,6 +37,8 @@ namespace :build do
       end
       manifest.print "file 'config/initializers/jqtouch.rb'\n"  
     
+      #JavaScripts
+    
       open File.join(JQTOUCH_DEST_TEMPLATES, 'jquery.jqtouch.js'), 'w' do |f|
         f.print concat_files(all_scripts)
       end
@@ -46,14 +48,28 @@ namespace :build do
         f.print compress_js(all_scripts)
       end
       manifest.print "javascript 'jquery.jqtouch.min.js'\n"
-    
-      #iPhone Images 
+      
+      # Stylesheets
+      FileUtils.mkdir_p JQTOUCH_DEST_THEMES
+      Dir.foreach File.join(JQTOUCH_SRC, 'css') do |file|
+        next unless /\.css$/ =~ file
+        css = File.read File.join(JQTOUCH_SRC, 'css', file)
+        sass = ''
+        IO.popen("css2sass", 'r+') { |f| f.print(css); f.close_write; sass = f.read }
+        open(File.join(JQTOUCH_DEST_THEMES, file.gsub(/\.css$/,'.sass')), 'w') do |f|
+          f.write JQTOUCH_MESSAGE2 + sass
+        end
+        manifest.print "stylesheet 'jqtouch/jqtouch/#{file.gsub(/\.css$/,'.sass')}'\n"
+      end      
+
+
+      # iPhone Images 
       FileUtils.mkdir_p(File.join(JQTOUCH_DEST_IMAGES, 'icons'))
       
       FileUtils.cp(File.join(JQTOUCH_SRC, 'images', 'iphone_fullsize.png'), JQTOUCH_DEST_IMAGES) 
       manifest.print "image 'jqtouch/iphone_fullsize.png'\n"
       
-      #iPhone Icons
+      # iPhone Icons
       src_dir = File.join(JQTOUCH_SRC_IMAGES, 'icons')
       dest_dir = File.join(JQTOUCH_DEST_IMAGES, 'icons')      
       Dir.foreach(src_dir) do |image|

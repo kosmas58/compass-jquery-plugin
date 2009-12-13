@@ -1,18 +1,18 @@
-body {
+.jqt body {
     background: #000;
     color: #ddd;
 }
-body > * {
+.jqt body > * {
     background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#333), to(#5e5e65));
 }
-h1, h2 {
+.jqt h1, .jqt h2 {
     font: bold 18px Helvetica;
     text-shadow: rgba(255,255,255,.2) 0 1px 1px;
     color: #000;
     margin: 10px 20px 5px;
 }
 /* @group Toolbar */
-.toolbar {
+.jqt.toolbar {
     -webkit-box-sizing: border-box;
     border-bottom: 1px solid #000;
     padding: 10px;
@@ -20,10 +20,10 @@ h1, h2 {
     background: url("/images/jqtouch/jqt/toolbar.png") #000000 repeat-x;
     position: relative;
 }
-.black-translucent .toolbar {
+.jqt.black-translucent .toolbar {
 	margin-top: 20px;
 }
-.toolbar > h1 {
+.jqt.toolbar > h1 {
     position: absolute;
     overflow: hidden;
     left: 50%;
@@ -40,11 +40,11 @@ h1, h2 {
     white-space: nowrap;
     color: #fff;
 }
-body.landscape .toolbar > h1 {
+.jqt body.landscape .toolbar > h1 {
     margin-left: -125px;
     width: 250px;
 }
-.button, .back, .cancel, .add {
+.jqt.button, .jqt.back, .jqt.cancel, .jqt.add {
     position: absolute;
     overflow: hidden;
     top: 8px;
@@ -66,11 +66,11 @@ body.landscape .toolbar > h1 {
     background: none;
     -webkit-border-image: url("/images/jqtouch/jqt/button.png") 0 5 0 5;
 }
-.blueButton {
+.jqt.blueButton {
     -webkit-border-image: url("/images/jqtouch/jqt/blueButton.png") 0 5 0 5;
     border-width: 0 5px;
 }
-.back {
+.jqt.back {
     left: 6px;
     right: auto;
     padding: 0;
@@ -78,21 +78,21 @@ body.landscape .toolbar > h1 {
     border-width: 0 8px 0 14px;
     -webkit-border-image: url("/images/jqtouch/jqt/back_button.png") 0 8 0 14;
 }
-.back.active {
+.jqt.back.active {
     -webkit-border-image: url("/images/jqtouch/jqt/back_button_clicked.png") 0 8 0 14;
     color: #aaa;
 }
-.leftButton, .cancel {
+.jqt.leftButton, .jqt.cancel {
     left: 6px;
     right: auto;
 }
-.add {
+.jqt.add {
     font-size: 24px;
     line-height: 24px;
     font-weight: bold;
 }
-.whiteButton,
-.grayButton {
+.jqt.whiteButton,
+.jqt.grayButton {
     display: block;
     border-width: 0 12px;
     padding: 10px;
@@ -102,40 +102,40 @@ body.landscape .toolbar > h1 {
     text-decoration: inherit;
     color: inherit;
 }
-.whiteButton {
+.jqt.whiteButton {
     -webkit-border-image: url("/images/jqtouch/jqt/whiteButton.png") 0 12 0 12;
     text-shadow: rgba(255, 255, 255, 0.7) 0 1px 0;
 }
-.grayButton {
+.jqt.grayButton {
     -webkit-border-image: url("/images/jqtouch/jqt/grayButton.png") 0 12 0 12;
     color: #FFFFFF;
 }
 /* @end */
 /* @group Lists */
-h1 + ul, h2 + ul, h3 + ul, h4 + ul, h5 + ul, h6 + ul {
+.jqt h1 + ul, .jqt h2 + ul, .jqt h3 + ul, .jqt h4 + ul, .jqt h5 + ul, .jqt h6 + ul {
     margin-top: 0;
 }
-ul {
+.jqt ul {
     color: #aaa;
     border: 1px solid #333333;
     font: bold 18px Helvetica;
     padding: 0;
     margin: 15px 10px 17px 10px;
 }
-ul.rounded {
+.jqt ul.rounded {
     -webkit-border-radius: 8px;
     -webkit-box-shadow: rgba(0,0,0,.3) 1px 1px 3px;
 }
-ul.rounded li:first-child, ul.rounded li:first-child a {
+.jqt ul.rounded li:first-child, .jqt ul.rounded li:first-child a {
     border-top: 0;
     -webkit-border-top-left-radius: 8px;
     -webkit-border-top-right-radius: 8px;
 }
-ul.rounded li:last-child, ul.rounded li:last-child a {
+.jqt ul.rounded li:last-child, .jqt ul.rounded li:last-child a {
     -webkit-border-bottom-left-radius: 8px;
     -webkit-border-bottom-right-radius: 8px;
 }
-ul li {
+.jqt ul li {
     color: #666;
     border-top: 1px solid #333;
     border-bottom: #555858;
@@ -144,18 +144,18 @@ ul li {
     background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#4c4d4e), to(#404142));
     overflow: hidden;
 }
-ul li.arrow {
+.jqt ul li.arrow {
     background-image: url("/images/jqtouch/jqt/chevron.png"), -webkit-gradient(linear, 0% 0%, 0% 100%, from(#4c4d4e), to(#404142));
     background-position: right center;
     background-repeat: no-repeat;
 }
-ul li.forward {
+.jqt ul li.forward {
     background-image: url("/images/jqtouch/jqt/chevron_circle.png"), -webkit-gradient(linear, 0% 0%, 0% 100%, from(#4c4d4e), to(#404142));
     background-position: right center;
     background-repeat: no-repeat;
 }
 /* universal links on list */
-ul li a, li.img a + a {
+.jqt ul li a, .jqt li.img a + a {
     color: #fff;
     text-decoration: none;
     text-overflow: ellipsis;
@@ -167,52 +167,52 @@ ul li a, li.img a + a {
     -webkit-tap-highlight-color: rgba(0,0,0,0);
     text-shadow: rgba(0,0,0,.2) 0 1px 1px;
 }
-ul li a.active, ul li a.button {
+.jqt ul li a.active, .jqt ul li a.button {
     background-color: #53b401;
     color: #fff;
 }
-ul li a.active.loading {
+.jqt ul li a.active.loading {
     background-image: url("/images/jqtouch/jqt/loading.gif);
     background-position: 95% center;
     background-repeat: no-repeat;
 }
-ul li.arrow a.active {
+.jqt ul li.arrow a.active {
     background-image: url("/images/jqtouch/jqt/chevron.png");
     background-position: right center;
     background-repeat: no-repeat;
 }
-ul li.forward a.active {
+.jqt ul li.forward a.active {
     background-image: url("/images/jqtouch/jqt/chevron_circle.png");
     background-position: right center;
     background-repeat: no-repeat;
 }
-ul li.img a + a {
+.jqt ul li.img a + a {
     margin: -10px 10px -20px -5px;
     font-size: 17px;
     font-weight: bold;
 }
-ul li.img a + a + a {
+.jqt ul li.img a + a + a {
     font-size: 14px;
     font-weight: normal;
     margin-left: -10px;
     margin-bottom: -10px;
     margin-top: 0;
 }
-ul li.img a + small + a {
+.jqt ul li.img a + small + a {
     margin-left: -5px;
 }
-ul li.img a + small + a + a {
+.jqt ul li.img a + small + a + a {
     margin-left: -10px;
     margin-top: -20px;
     margin-bottom: -10px;
     font-size: 14px;
     font-weight: normal;
 }
-ul li.img a + small + a + a + a {
+.jqt ul li.img a + small + a + a + a {
     margin-left: 0px !important;
     margin-bottom: 0;
 }
-ul li a + a {
+.jqt ul li a + a {
     color: #000;
     font: 14px Helvetica;
     text-overflow: ellipsis;
@@ -222,7 +222,7 @@ ul li a + a {
     margin: 0;
     padding: 0;
 }
-ul li a + a + a, ul li.img a + a + a + a, ul li.img a + small + a + a + a {
+.jqt ul li a + a + a, .jqt ul li.img a + a + a + a, .jqt ul li.img a + small + a + a + a {
     color: #666;
     font: 13px Helvetica;
     margin: 0;
@@ -235,16 +235,16 @@ ul li a + a + a, ul li.img a + a + a + a, ul li.img a + small + a + a + a {
 /*
 @end */
 /* @group Forms */
-ul.form li {
+.jqt ul.form li {
     padding: 7px 10px;
 }
-ul.form li.error {
+.jqt ul.form li.error {
     border: 2px solid red;
 }
-ul.form li.error + li.error {
+.jqt ul.form li.error + li.error {
     border-top: 0;
 }
-ul li input[type="text"], ul li input[type="password"], ul li textarea, ul li select {
+.jqt ul li input[type="text"], .jqt ul li input[type="password"], .jqt ul li textarea, .jqt ul li select {
     color: #777;
     background: transparent url(../.png);
     border: 0;
@@ -255,23 +255,23 @@ ul li input[type="text"], ul li input[type="password"], ul li textarea, ul li se
     width: 100%;
     -webkit-appearance: textarea;
 }
-ul li textarea {
+.jqt ul li textarea {
     height: 120px;
     padding: 0;
     text-indent: -2px;
 }
-ul li select {
+.jqt ul li select {
     text-indent: 0px;
     background: transparent url("/images/jqtouch/jqt/chevron.png") no-repeat right center;
     -webkit-appearance: textfield;
     margin-left: -6px;
     width: 104%;
 }
-ul li input[type="checkbox"], ul li input[type="radio"] {
+.jqt ul li input[type="checkbox"], .jqt ul li input[type="radio"] {
     margin: 0;
     padding: 10px 10px;
 }
-ul li input[type="checkbox"]:after, ul li input[type="radio"]:after {
+.jqt ul li input[type="checkbox"]:after, .jqt ul li input[type="radio"]:after {
     content: attr(title);
     font: 17px Helvetica;
     display: block;
@@ -281,7 +281,7 @@ ul li input[type="checkbox"]:after, ul li input[type="radio"]:after {
 }
 /* @end */
 /* @group Mini Label */
-ul li small {
+.jqt ul li small {
     color: #64c114;
     font: 17px Helvetica;
     text-align: right;
@@ -293,10 +293,10 @@ ul li small {
     float: right;
     padding: 0;
 }
-ul li.arrow small {
+.jqt ul li.arrow small {
     padding: 0 15px;
 }
-ul li small.counter {
+.jqt ul li small.counter {
     font-size: 17px;
     line-height: 13px;
     font-weight: bold;
@@ -309,12 +309,12 @@ ul li small.counter {
     margin-top: -22px;
     -webkit-box-shadow: rgba(255,255,255,.1) 0 1px 0;
 }
-ul li.arrow small.counter {
+.jqt ul li.arrow small.counter {
     margin-right: 15px;
 }
 /* @end */
 /* @group Individual */
-ul.individual {
+.jqt ul.individual {
     border: 0;
     background: none;
     clear: both;
@@ -322,7 +322,7 @@ ul.individual {
     padding-bottom: 3px;
     -webkit-box-shadow: none;
 }
-ul.individual li {
+.jqt ul.individual li {
     background: #4c4d4e;
     border: 1px solid #333;
     font-size: 14px;
@@ -336,10 +336,10 @@ ul.individual li {
     -webkit-box-shadow: rgba(0,0,0,.2) 1px 1px 3px;
     background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#4c4d4e), to(#404142));
 }
-ul.individual li + li {
+.jqt ul.individual li + li {
     float: right;
 }
-ul.individual li a {
+.jqt ul.individual li a {
     color: #fff;
     line-height: 16px;
     margin: -11px -10px -14px -10px;
@@ -348,7 +348,7 @@ ul.individual li a {
 }
 /* @end */
 /* @group Toggle */
-.toggle {
+.jqt.toggle {
     width: 94px;
     position: relative;
     height: 27px;
@@ -356,10 +356,10 @@ ul.individual li a {
     overflow: hidden;
     float: right;
 }
-.toggle input[type="checkbox"]:checked {
+.jqt.toggle input[type="checkbox"]:checked {
     left: 0px;
 }
-.toggle input[type="checkbox"] {
+.jqt.toggle input[type="checkbox"] {
     -webkit-appearance: textarea;
     -webkit-border-radius: 5px;
     -webkit-tap-highlight-color: rgba(0,0,0,0);
@@ -377,7 +377,7 @@ ul.individual li a {
 }
 /* @end */
 /* @group Info */
-.info {
+.jqt.info {
     background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#ccc), to(#aaa), color-stop(.6,#CCCCCC));
     font-size: 12px;
     line-height: 16px;
@@ -390,19 +390,19 @@ ul.individual li a {
 }
 /* @end */
 /* @group Edge to edge */
-ul.edgetoedge {
+.jqt ul.edgetoedge {
     border-width: 1px 0;
     margin: 0;
     padding: 0;
 }
-ul.edgetoedge li {
+.jqt ul.edgetoedge li {
     background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#1e1f21), to(#272729));
     border-bottom: 2px solid #000;
     border-top: 1px solid #4a4b4d;
     font-size: 20px;
     margin-bottom: -1px;
 }
-ul.edgetoedge li.sep {
+.jqt ul.edgetoedge li.sep {
     background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(0,0,0,0)), to(rgba(0,0,0,.5)));
     border-bottom: 1px solid #111113;
     border-top: 1px solid #666;
@@ -412,16 +412,16 @@ ul.edgetoedge li.sep {
     padding: 2px 10px;
     text-shadow: #000 0 1px 0;
 }
-ul.edgetoedge li em {
+.jqt ul.edgetoedge li em {
     font-weight: normal;
     font-style: normal;
 }
 /* @end */
 /* @group Plastic */
-#plastic {
+.jqt #plastic {
     background: #17181a;
 }
-ul.plastic {
+.jqt ul.plastic {
     background: #17181a;
     color: #aaa;
     font: bold 18px Helvetica;
@@ -429,7 +429,7 @@ ul.plastic {
     padding: 0;
     border-width: 0 0 1px 0;
 }
-ul.plastic li {
+.jqt ul.plastic li {
     border-width: 1px 0;
     border-style: solid;
     border-top-color: #222;
@@ -439,63 +439,63 @@ ul.plastic li {
     overflow: hidden;
     padding: 10px 10px 10px 10px;
 }
-ul.plastic li a.active.loading {
+.jqt ul.plastic li a.active.loading {
     background-image: url("/images/jqtouch/jqt/loading.gif);
     background-position: 95% center;
     background-repeat: no-repeat;
 }
-ul.plastic li small {
+.jqt ul.plastic li small {
     color: #888;
     font-size: 13px;
     font-weight: bold;
     line-height: 24px;
     text-transform: uppercase;
 }
-ul.plastic li:nth-child(odd) {
+.jqt ul.plastic li:nth-child(odd) {
     background-color: #1c1c1f;
 }
-ul.plastic li.arrow {
+.jqt ul.plastic li.arrow {
     background-image: url("/images/jqtouch/jqt/chevron.png");
     background-position: right center;
     background-repeat: no-repeat;
 }
-ul.plastic li.arrow a.active {
+.jqt ul.plastic li.arrow a.active {
     background-image: url("/images/jqtouch/jqt/chevron.png");
     background-position: right center;
     background-repeat: no-repeat;
 }
-ul.plastic li.forward {
+.jqt ul.plastic li.forward {
     background-image: url("/images/jqtouch/jqt/chevron_circle.png");
     background-position: right center;
     background-repeat: no-repeat;
 }
-ul.plastic li.forward a.active {
+.jqt ul.plastic li.forward a.active {
     background-image: url("/images/jqtouch/jqt/chevron_circle.png");
     background-position: right center;
     background-repeat: no-repeat;
 }
 /* @group Metal */
-ul.metal {
+.jqt ul.metal {
     border-bottom: 0;
     border-left: 0;
     border-right: 0;
     border-top: 0;
     margin: 0;
 }
-ul.metal li {
+.jqt ul.metal li {
     background-image: none;
     border-top: 1px solid #fff;
     border-bottom: 1px solid #666;
     font-size: 26px;
     background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(238,238,238,1)), to(rgba(156,158,160,1)));
 }
-ul.metal li a {
+.jqt ul.metal li a {
     line-height: 26px;
     margin: 0;
     text-shadow: #fff 0 1px 0;
     padding: 13px 0;
 }
-ul.metal li a em {
+.jqt ul.metal li a em {
     display: block;
     font-size: 14px;
     font-style: normal;
@@ -503,16 +503,16 @@ ul.metal li a em {
     width: 50%;
     line-height: 14px;
 }
-ul.metal li a.active {
+.jqt ul.metal li a.active {
     color: rgb(0,0,0);
 }
-ul.metal li small {
+.jqt ul.metal li small {
     float: right;
     position: relative;
     margin-top: 10px;
     font-weight: bold;
 }
-ul.metal li.arrow {
+.jqt ul.metal li.arrow {
     background-image: url("/images/jqtouch/jqt/chevron.png");
     background-position: right center;
     background-repeat: no-repeat;
@@ -520,7 +520,7 @@ ul.metal li.arrow {
     background-repeat: no-repeat;
     background-position: right center;
 }
-ul.metal li.arrow a small {
+.jqt ul.metal li.arrow a small {
     padding-right: 15px;
     line-height: 17px;
 }
