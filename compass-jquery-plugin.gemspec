@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{compass-jquery-plugin}
-  s.version = "0.2.4.99"
+  s.version = "0.2.4.100"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kosmas Schuetz"]
@@ -368,6 +368,8 @@ Gem::Specification.new do |s|
      "templates/jrails/i18n/jquery.ui/datepicker-zh-TW.min.js",
      "templates/jrails/jquery-ui.js",
      "templates/jrails/jquery-ui.min.js",
+     "templates/jrails/jquery.1.3.2.js",
+     "templates/jrails/jquery.1.3.2.min.js",
      "templates/jrails/jquery.compat-1.3.js",
      "templates/jrails/jquery.compat-1.3.min.js",
      "templates/jrails/jquery.js",

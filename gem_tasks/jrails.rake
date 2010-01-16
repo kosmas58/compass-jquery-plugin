@@ -5,8 +5,10 @@ require 'lib/handle_js_files'
 JRAILS_SRC = File.join(GEM_ROOT, 'src', 'jrails')
 JRAILS_SRC_SCRIPTS = JRAILS_SRC + "/*.js"
 
-JQUERY_SRC = File.join(GEM_ROOT, 'src', 'jquery-1.4')
-JQUERY_SRC_SCRIPTS = JQUERY_SRC + "/*.js"
+JQUERY_13_SRC = File.join(GEM_ROOT, 'src', 'jquery-1.3.2')
+JQUERY_13_SRC_SCRIPTS = JQUERY_13_SRC + "/*.js"
+JQUERY_14_SRC = File.join(GEM_ROOT, 'src', 'jquery-1.4')
+JQUERY_14_SRC_SCRIPTS = JQUERY_14_SRC + "/*.js"
 
 JQUERY_UI_SRC = File.join(GEM_ROOT, 'src', 'jquery.ui-1.7.2')
 JQUERY_UI_SRC_SCRIPTS = File.join(JQUERY_UI_SRC, 'js') + "/*.js"
@@ -49,38 +51,37 @@ namespace :build do
       end
       manifest.print "javascript 'jrails.min.js'\n" 
     
-      # jQuery
+      # jQuery 1.4
     
       open File.join(JRAILS_DEST_TEMPLATES, 'jquery.js'), 'w' do |f|
-        f.print concat_files(all_files(JQUERY_SRC_SCRIPTS))
+        f.print concat_files(all_files(JQUERY_14_SRC_SCRIPTS))
       end
       manifest.print "javascript 'jquery.js'\n" 
     
       open File.join(JRAILS_DEST_TEMPLATES, 'jquery.min.js'), 'w' do |f|
-        f.print compress_js(all_files(JQUERY_SRC_SCRIPTS))
+        f.print compress_js(all_files(JQUERY_14_SRC_SCRIPTS))
       end
       manifest.print "javascript 'jquery.min.js'\n" 
       
       # jQuery 1.3 compatibility
     
       open File.join(JRAILS_DEST_TEMPLATES, 'jquery.compat-1.3.js'), 'w' do |f|
-        f.print concat_files(all_files(JQUERY_SRC + "/jquery.compat-1.3.js"))
+        f.print concat_files(all_files(JQUERY_14_SRC + "/jquery.compat-1.3.js"))
       end
       manifest.print "javascript 'jquery.compat-1.3.js'\n" 
     
       open File.join(JRAILS_DEST_TEMPLATES, 'jquery.compat-1.3.min.js'), 'w' do |f|
-        f.print compress_js(all_files(JQUERY_SRC + "/jquery.compat-1.3.js"))
+        f.print compress_js(all_files(JQUERY_14_SRC + "/jquery.compat-1.3.js"))
       end
       manifest.print "javascript 'jquery.compat-1.3.min.js'\n" 
+         
       
-      
-      
-      # jQuery Plugins
+      # jQuery 1.4 Plugins
       
       ['plugins'].each do |path|
-        Dir.foreach File.join(JQUERY_SRC, path) do |file|
+        Dir.foreach File.join(JQUERY_14_SRC, path) do |file|
           next unless /\.js$/ =~ file
-          js = File.read File.join(JQUERY_SRC, path, file)
+          js = File.read File.join(JQUERY_14_SRC, path, file)
           manifest.print "javascript '#{file}'\n"
           open File.join(JRAILS_DEST_TEMPLATES, file), 'w' do |f|
             f.write js
@@ -92,6 +93,36 @@ namespace :build do
           end
         end
       end 
+      
+      # jQuery 1.3
+    
+      open File.join(JRAILS_DEST_TEMPLATES, 'jquery.1.3.2.js'), 'w' do |f|
+        f.print concat_files(all_files(JQUERY_13_SRC_SCRIPTS))
+      end
+      manifest.print "javascript 'jquery.1.3.2.js'\n" 
+    
+      open File.join(JRAILS_DEST_TEMPLATES, 'jquery.1.3.2.min.js'), 'w' do |f|
+        f.print compress_js(all_files(JQUERY_13_SRC_SCRIPTS))
+      end
+      manifest.print "javascript 'jquery.1.3.2.min.js'\n" 
+      
+      # jQuery 1.3 Plugins
+      
+      ['plugins'].each do |path|
+        Dir.foreach File.join(JQUERY_13_SRC, path) do |file|
+          next unless /\.js$/ =~ file
+          js = File.read File.join(JQUERY_13_SRC, path, file)
+          manifest.print "javascript '#{file}'\n"
+          open File.join(JRAILS_DEST_TEMPLATES, file), 'w' do |f|
+            f.write js
+          end               
+          file.gsub!(/\.js$/, '.min.js')
+          manifest.print "javascript '#{file}'\n"
+          open File.join(JRAILS_DEST_TEMPLATES, file), 'w' do |f|
+            f.write compress_js(js)
+          end
+        end
+      end       
     
       # jQuery.UI
     
