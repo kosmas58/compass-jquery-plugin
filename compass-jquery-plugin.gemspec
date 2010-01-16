@@ -368,6 +368,8 @@ Gem::Specification.new do |s|
      "templates/jrails/i18n/jquery.ui/datepicker-zh-TW.min.js",
      "templates/jrails/jquery-ui.js",
      "templates/jrails/jquery-ui.min.js",
+     "templates/jrails/jquery.compat-1.3.js",
+     "templates/jrails/jquery.compat-1.3.min.js",
      "templates/jrails/jquery.js",
      "templates/jrails/jquery.min.js",
      "templates/jrails/jquery.pngFix.js",
