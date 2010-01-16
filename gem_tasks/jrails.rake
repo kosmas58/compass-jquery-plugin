@@ -61,6 +61,20 @@ namespace :build do
       end
       manifest.print "javascript 'jquery.min.js'\n" 
       
+      # jQuery 1.3 compatibility
+    
+      open File.join(JRAILS_DEST_TEMPLATES, 'jquery.compat-1.3.js'), 'w' do |f|
+        f.print concat_files(all_files(JQUERY_SRC + "/jquery.compat-1.3.js"))
+      end
+      manifest.print "javascript 'jquery.compat-1.3.js'\n" 
+    
+      open File.join(JRAILS_DEST_TEMPLATES, 'jquery.compat-1.3.min.js'), 'w' do |f|
+        f.print compress_js(all_files(JQUERY_SRC + "/jquery.compat-1.3.js"))
+      end
+      manifest.print "javascript 'jquery.compat-1.3.min.js'\n" 
+      
+      
+      
       # jQuery Plugins
       
       ['plugins'].each do |path|
