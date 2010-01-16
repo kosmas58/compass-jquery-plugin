@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{compass-jquery-plugin}
-  s.version = "0.2.4.5"
+  s.version = "0.2.4.99"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kosmas Schuetz"]
-  s.date = %q{2009-12-05}
+  s.date = %q{2010-01-16}
   s.description = %q{A compass plugin that integrates jRails, jQuery, jQuery UI and Themes, jqGrid and more into the Compass Sass framework.}
   s.email = %q{kosmas.schuetz@gmx.com}
   s.extra_rdoc_files = [
@@ -28,6 +28,7 @@ Gem::Specification.new do |s|
      "gem_tasks/calendar.rake",
      "gem_tasks/dynatree.rake",
      "gem_tasks/jqgrid.rake",
+     "gem_tasks/jqtouch.rake",
      "gem_tasks/jrails.rake",
      "gem_tasks/rubygems.rake",
      "gem_tasks/secret_sauce.rake",
@@ -37,6 +38,9 @@ Gem::Specification.new do |s|
      "lib/jquery/compass_plugin.rb",
      "lib/jquery/dynatree.rb",
      "lib/jquery/jqgrid.rb",
+     "lib/jquery/jqgrid/jqgrid.rb",
+     "lib/jquery/jqgrid/jqgrid2xml.rb",
+     "lib/jquery/jqtouch.rb",
      "lib/jquery/jrails.rb",
      "lib/jquery/secret_sauce.rb",
      "lib/jquery/secret_sauce/controller/ui_dialog_controls.rb",
@@ -135,7 +139,6 @@ Gem::Specification.new do |s|
      "templates/dynatree/jquery.ui/dynatree.vista/folder.png",
      "templates/dynatree/jquery.ui/dynatree.vista/folder_docs.png",
      "templates/dynatree/jquery.ui/dynatree.vista/folder_images.png",
-     "templates/dynatree/jquery.ui/dynatree.vista/folder_open.png",
      "templates/dynatree/jquery.ui/dynatree.vista/folder_page.png",
      "templates/dynatree/jquery.ui/dynatree.vista/ltDoc.png",
      "templates/dynatree/jquery.ui/dynatree.vista/ltError.png",
@@ -239,6 +242,47 @@ Gem::Specification.new do |s|
      "templates/jqgrid/jquery.ui/jqGrid.sass",
      "templates/jqgrid/manifest.rb",
      "templates/jqgrid/public/stylesheets/ellipsis-xbl.xml",
+     "templates/jqtouch/config/initializers/jqtouch.rb",
+     "templates/jqtouch/jqtouch/apple.sass",
+     "templates/jqtouch/jqtouch/apple/backButton.png",
+     "templates/jqtouch/jqtouch/apple/blueButton.png",
+     "templates/jqtouch/jqtouch/apple/cancel.png",
+     "templates/jqtouch/jqtouch/apple/chevron.png",
+     "templates/jqtouch/jqtouch/apple/grayButton.png",
+     "templates/jqtouch/jqtouch/apple/listArrowSel.png",
+     "templates/jqtouch/jqtouch/apple/listGroup.png",
+     "templates/jqtouch/jqtouch/apple/loading.gif",
+     "templates/jqtouch/jqtouch/apple/on_off.png",
+     "templates/jqtouch/jqtouch/apple/pinstripes.png",
+     "templates/jqtouch/jqtouch/apple/selection.png",
+     "templates/jqtouch/jqtouch/apple/thumb.png",
+     "templates/jqtouch/jqtouch/apple/toggle.png",
+     "templates/jqtouch/jqtouch/apple/toggleOn.png",
+     "templates/jqtouch/jqtouch/apple/toolButton.png",
+     "templates/jqtouch/jqtouch/apple/toolbar.png",
+     "templates/jqtouch/jqtouch/apple/whiteButton.png",
+     "templates/jqtouch/jqtouch/icons/iphone_16x16.png",
+     "templates/jqtouch/jqtouch/iphone-emulator.sass",
+     "templates/jqtouch/jqtouch/iphone_fullsize.png",
+     "templates/jqtouch/jqtouch/jqt.sass",
+     "templates/jqtouch/jqtouch/jqt/back_button.png",
+     "templates/jqtouch/jqtouch/jqt/back_button_clicked.png",
+     "templates/jqtouch/jqtouch/jqt/button.png",
+     "templates/jqtouch/jqtouch/jqt/button_clicked.png",
+     "templates/jqtouch/jqtouch/jqt/chevron.png",
+     "templates/jqtouch/jqtouch/jqt/chevron_circle.png",
+     "templates/jqtouch/jqtouch/jqt/grayButton.png",
+     "templates/jqtouch/jqtouch/jqt/loading.gif",
+     "templates/jqtouch/jqtouch/jqt/on_off.png",
+     "templates/jqtouch/jqtouch/jqt/rowhead.png",
+     "templates/jqtouch/jqtouch/jqt/toggle.png",
+     "templates/jqtouch/jqtouch/jqt/toggleOn.png",
+     "templates/jqtouch/jqtouch/jqt/toolbar.png",
+     "templates/jqtouch/jqtouch/jqt/whiteButton.png",
+     "templates/jqtouch/jqtouch/jqtouch.sass",
+     "templates/jqtouch/jquery.jqtouch.js",
+     "templates/jqtouch/jquery.jqtouch.min.js",
+     "templates/jqtouch/manifest.rb",
      "templates/jrails/config/initializers/jrails.rb",
      "templates/jrails/i18n/jquery.ui/datepicker-ar.js",
      "templates/jrails/i18n/jquery.ui/datepicker-ar.min.js",

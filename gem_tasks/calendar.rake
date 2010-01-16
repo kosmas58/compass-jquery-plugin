@@ -21,9 +21,9 @@ all_stylesheets = [
   'jMonthCalendar.css'
 ].collect {|filename| File.read(File.join(CALENDAR_SRC, 'css', filename))}.join "\n\n"
 
-namespace :calendar do
+namespace :build do
   desc 'Build the stylesheets and templates for calendar.'
-  task :build do
+  task :calendar do
     
     FileUtils.remove_dir CALENDAR_DEST_TEMPLATES if File.exists? CALENDAR_DEST_TEMPLATES   
     FileUtils.mkdir_p(File.join(CALENDAR_DEST_TEMPLATES, 'config', 'initializers'))
