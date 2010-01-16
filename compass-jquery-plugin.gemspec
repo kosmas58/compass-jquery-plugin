@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{compass-jquery-plugin}
-  s.version = "0.2.4.10"
+  s.version = "0.2.4.99"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kosmas Schuetz"]
-  s.date = %q{2009-12-13}
+  s.date = %q{2010-01-16}
   s.description = %q{A compass plugin that integrates jRails, jQuery, jQuery UI and Themes, jqGrid and more into the Compass Sass framework.}
   s.email = %q{kosmas.schuetz@gmx.com}
   s.extra_rdoc_files = [

@@ -5,7 +5,7 @@ require 'lib/handle_js_files'
 JRAILS_SRC = File.join(GEM_ROOT, 'src', 'jrails')
 JRAILS_SRC_SCRIPTS = JRAILS_SRC + "/*.js"
 
-JQUERY_SRC = File.join(GEM_ROOT, 'src', 'jquery-1.3.2')
+JQUERY_SRC = File.join(GEM_ROOT, 'src', 'jquery-1.4')
 JQUERY_SRC_SCRIPTS = JQUERY_SRC + "/*.js"
 
 JQUERY_UI_SRC = File.join(GEM_ROOT, 'src', 'jquery.ui-1.7.2')
