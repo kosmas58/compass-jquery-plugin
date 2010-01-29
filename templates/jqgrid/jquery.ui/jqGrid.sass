@@ -306,6 +306,17 @@ tr.ui-search-toolbar
       width: auto
       height: auto
 
+  .ui-jqgrid-toppager
+    border-left: 0px none !important
+    border-right: 0px none !important
+    border-top: 0px none !important
+    margin: 0px !important
+    padding: 0px !important
+    position: relative
+    height: 25px !important
+    white-space: nowrap
+    overflow: hidden
+
   .ui-jqgrid-btable .ui-sgcollapsed span
     display: block
 
@@ -332,6 +343,9 @@ tr.ui-search-toolbar
 
       &.subgrid-cell
         border-width: 0px 0px 1px 0px
+
+  .ui-th-subgrid
+    height: 20px
 
   .loading
     position: absolute
@@ -483,6 +497,9 @@ tr.ui-search-toolbar
     border-bottom: 0px none
     vertical-align: top
 
+  .form-view-data
+    white-space: pre
+
 
 .fm-button
   display: inline-block
@@ -602,14 +619,12 @@ tr.ui-search-toolbar
     -moz-binding: url('ellipsis-xbl.xml#ellipsis')
 
 
-﻿.ui-searchFilter
+.ui-searchFilter
   display: none
   position: absolute
   z-index: 770
   overflow: visible
 
-
-.ui-searchFilter
   table
     position: relative
     margin: 0em

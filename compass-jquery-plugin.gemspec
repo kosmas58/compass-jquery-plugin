@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{compass-jquery-plugin}
-  s.version = "0.2.4.100"
+  s.version = "0.2.5"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kosmas Schuetz"]
-  s.date = %q{2010-01-16}
+  s.date = %q{2010-01-29}
   s.description = %q{A compass plugin that integrates jRails, jQuery, jQuery UI and Themes, jqGrid and more into the Compass Sass framework.}
   s.email = %q{kosmas.schuetz@gmx.com}
   s.extra_rdoc_files = [
@@ -191,6 +191,8 @@ Gem::Specification.new do |s|
      "templates/jqgrid/i18n/jqgrid/locale-bg1251.min.js",
      "templates/jqgrid/i18n/jqgrid/locale-cat.js",
      "templates/jqgrid/i18n/jqgrid/locale-cat.min.js",
+     "templates/jqgrid/i18n/jqgrid/locale-cn.js",
+     "templates/jqgrid/i18n/jqgrid/locale-cn.min.js",
      "templates/jqgrid/i18n/jqgrid/locale-cs.js",
      "templates/jqgrid/i18n/jqgrid/locale-cs.min.js",
      "templates/jqgrid/i18n/jqgrid/locale-de.js",
@@ -370,10 +372,6 @@ Gem::Specification.new do |s|
      "templates/jrails/jquery-ui.min.js",
      "templates/jrails/jquery.1.3.2.js",
      "templates/jrails/jquery.1.3.2.min.js",
-     "templates/jrails/jquery.compat-1.3.js",
-     "templates/jrails/jquery.compat-1.3.min.js",
-     "templates/jrails/jquery.js",
-     "templates/jrails/jquery.min.js",
      "templates/jrails/jquery.pngFix.js",
      "templates/jrails/jquery.pngFix.min.js",
      "templates/jrails/jquery.ui/_theme.sass",

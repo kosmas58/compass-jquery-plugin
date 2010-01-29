@@ -60,7 +60,7 @@ $.jgrid.extend({
 				$(cc).addClass("edit-cell ui-state-highlight");
 				$($t.rows[iRow]).addClass("selected-row ui-state-hover");
 				try {
-					tmp =  $.unformat(cc,{colModel:$t.p.colModel[iCol]},iCol);
+					tmp =  $.unformat(cc,{rowId: $t.rows[iRow].id, colModel:$t.p.colModel[iCol]},iCol);
 				} catch (_) {
 					tmp = $(cc).html();
 				}
@@ -88,8 +88,12 @@ $.jgrid.extend({
 					} //ESC
 					if (e.keyCode === 13) {$($t).jqGrid("saveCell",iRow,iCol);}//Enter
 					if (e.keyCode == 9)  {
-						if (e.shiftKey) {$($t).jqGrid("prevCell",iRow,iCol);} //Shift TAb
-						else {$($t).jqGrid("nextCell",iRow,iCol);} //Tab
+						if(!$t.grid.hDiv.loading ) {
+							if (e.shiftKey) {$($t).jqGrid("prevCell",iRow,iCol);} //Shift TAb
+							else {$($t).jqGrid("nextCell",iRow,iCol);} //Tab
+						} else {
+							return false;
+						}
 					}
 					e.stopPropagation();
 				});
@@ -184,13 +188,22 @@ $.jgrid.extend({
 							if ($t.p.cellurl) {
 								var postdata = {};
 								postdata[nm] = v;
-								postdata["id"] = $t.rows[iRow].id;
+								var idname,oper, opers;
+								opers = $t.p.prmNames;
+								idname = opers.id;
+								oper = opers.oper;
+								postdata[idname] = $t.rows[iRow].id;
+								postdata[oper] = opers.editoper;
 								postdata = $.extend(addpost,postdata);
+								$("#lui_"+$t.p.id).show();
+								$t.grid.hDiv.loading = true;
 								$.ajax( $.extend( {
 									url: $t.p.cellurl,
 									data :$.isFunction($t.p.serializeCellData) ? $t.p.serializeCellData(postdata) : postdata,
 									type: "POST",
 									complete: function (result, stat) {
+										$("#lui_"+$t.p.id).hide();
+										$t.grid.hDiv.loading = false;
 										if (stat == 'success') {
 											if ($.isFunction($t.p.afterSubmitCell)) {
 												var ret = $t.p.afterSubmitCell(result,postdata.id,nm,v,iRow,iCol);
@@ -219,7 +232,9 @@ $.jgrid.extend({
 											}
 										}
 									},
-									error:function(res,stat){
+									error:function(res,stat) {
+										$("#lui_"+$t.p.id).hide();
+										$t.grid.hDiv.loading = false;
 										if ($.isFunction($t.p.errorCell)) {
 											$t.p.errorCell(res,stat);
 											$($t).jqGrid("restoreCell",iRow,iCol);
@@ -442,14 +457,14 @@ $.jgrid.extend({
 							if (mthd=='dirty') {
 								if ($(this).hasClass('dirty-cell')) {
 									try {
-										res[nm] = $.unformat(this,{colModel:$t.p.colModel[i]},i);
+										res[nm] = $.unformat(this,{rowId:$t.rows[j].id, colModel:$t.p.colModel[i]},i);
 									} catch (e){
 										res[nm] = $.jgrid.htmlDecode($(this).html());
 									}
 								}
 							} else {
 								try {
-									res[nm] = $.unformat(this,{colModel:$t.p.colModel[i]},i);
+									res[nm] = $.unformat(this,{rowId:$t.rows[j].id,colModel:$t.p.colModel[i]},i);
 								} catch (e) {
 									res[nm] = $.jgrid.htmlDecode($(this).html());
 								}

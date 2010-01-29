@@ -57,6 +57,7 @@ tr.ui-search-toolbar select {margin: 1px 0px 0px 0px}
 .ui-jqgrid .ui-jqgrid-pager .ui-pg-div  span.ui-icon {float:left;margin:0 2px;}
 .ui-jqgrid td input, .ui-jqgrid td select .ui-jqgrid td textarea { margin: 0em;}
 .ui-jqgrid td textarea {width:auto;height:auto;}
+.ui-jqgrid .ui-jqgrid-toppager {border-left: 0px none !important;border-right: 0px none !important; border-top: 0px none !important; margin: 0px !important; padding: 0px !important; position: relative; height: 25px !important;white-space: nowrap;overflow: hidden;}
 /*subgrid*/
 .ui-jqgrid .ui-jqgrid-btable .ui-sgcollapsed span {display: block;}
 .ui-jqgrid .ui-subgrid {margin:0em;padding:0em; width:100%;}
@@ -64,6 +65,7 @@ tr.ui-search-toolbar select {margin: 1px 0px 0px 0px}
 .ui-jqgrid .ui-subgrid tr.ui-subtblcell td {height:18px;border-right-width: 1px; border-right-color: inherit; border-right-style: solid;border-bottom-width: 1px; border-bottom-color: inherit; border-bottom-style: solid;}
 .ui-jqgrid .ui-subgrid td.subgrid-data {border-top:  0px none !important;}
 .ui-jqgrid .ui-subgrid td.subgrid-cell {border-width: 0px 0px 1px 0px;}
+.ui-jqgrid .ui-th-subgrid {height:20px;}
 /* loading */
 .ui-jqgrid .loading {position: absolute; top: 45%;left: 45%;width: auto;z-index:101;padding: 6px; margin: 5px;text-align: center;font-weight: bold;display: none;border-width: 2px !important;}
 .ui-jqgrid .jqgrid-overlay {display:none;z-index:100;}
@@ -94,6 +96,7 @@ tr.ui-search-toolbar select {margin: 1px 0px 0px 0px}
 
 .ui-jqdialog-content .CaptionTD {text-align: left; vertical-align: top;border-left: 0px none;border-right: 0px none; border-bottom: 0px none; padding: 1px;white-space: nowrap;}
 .ui-jqdialog-content .DataTD {padding: 1px;border-left: 0px none;border-right: 0px none; border-bottom: 0px none; vertical-align: top;}
+.ui-jqdialog-content .form-view-data {white-space:pre}
 .fm-button { display: inline-block; margin:0 4px 0 0; padding: .4em .5em; text-decoration:none !important; cursor:pointer; position: relative; text-align: center; zoom: 1; }
 .fm-button-icon-left { padding-left: 1.9em; }
 .fm-button-icon-right { padding-right: 1.9em; }

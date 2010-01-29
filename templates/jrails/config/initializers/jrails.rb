@@ -18,11 +18,6 @@ ActionView::Helpers::AssetTagHelper::JAVASCRIPT_DEFAULT_SOURCES = ['jquery.min',
 ActionView::Helpers::AssetTagHelper::reset_javascript_include_default
 
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :jquery => ['jquery.min', 'jquery-ui.min']
-ActionView::Helpers::AssetTagHelper.register_javascript_expansion :jquery_compat => ['jquery.min', 'jquery.compat-1.3.min', 'jquery-ui.min']
-ActionView::Helpers::AssetTagHelper.register_javascript_expansion :defaults_compat => ['jquery.min', 'jquery.compat-1.3.min', 'jquery-ui.min', 'jrails.min']
-
-ActionView::Helpers::AssetTagHelper.register_javascript_expansion :jquery_13 => ['jquery.1.3.2.min', 'jquery-ui.min']
-ActionView::Helpers::AssetTagHelper.register_javascript_expansion :defaults_13 => ['jquery.1.3.2.min', 'jquery-ui.min', 'jrails.min']
 
 #ActionView::Helpers::AssetTagHelper.register_stylesheet_expansion :jrails => ['compiled/jquery.ui/ui.theme.css']
 #ActionView::Helpers::AssetTagHelper.register_stylesheet_expansion :jquery => ['compiled/jquery.ui/ui.theme.css']

@@ -95,7 +95,8 @@ $.jgrid.extend({
 	},
     columnChooser : function(opts) {
         var self = this;
-        var selector = $('<div style="position:relative;overflow:hidden"><div><select multiple="multiple"></select></div></div>');
+		if($("#colchooser_"+self[0].p.id).length ) return;
+        var selector = $('<div id="colchooser_'+self[0].p.id+'" style="position:relative;overflow:hidden"><div><select multiple="multiple"></select></div></div>');
         var select = $('select', selector);
 
         opts = $.extend({
@@ -263,6 +264,11 @@ $.jgrid.extend({
 				opts.update = function (ev,ui) {
 					$(ui.item).css("border-width","");
 					$t.updateColumns();
+					if($t.p.rownumbers === true) {
+						$("td.jqgrid-rownum",$t.rows).each(function(i){
+							$(this).html(i+1);
+						});
+					}
 					if(opts._update_) {
 						opts._update_.apply(this,[ev,ui]);
 					}
@@ -306,9 +312,9 @@ $.jgrid.extend({
 						// hack
 						// drag and drop does not insert tr in table, when the table has no rows
 						// we try to insert new empty row on the target(s)
-						for (var i=0;i<opts.connectWith.length;i++){
-							if($(opts.connectWith[i]).jqGrid('getGridParam','reccount') == "0" ){
-								$(opts.connectWith[i]).jqGrid('addRowData','jqg_empty_row',{});
+						for (var i=0;i<$.data($t,"dnd").connectWith.length;i++){
+							if($($.data($t,"dnd").connectWith[i]).jqGrid('getGridParam','reccount') == "0" ){
+								$($.data($t,"dnd").connectWith[i]).jqGrid('addRowData','jqg_empty_row',{});
 							}
 						}
 						ui.helper.addClass("ui-state-highlight");
@@ -322,9 +328,9 @@ $.jgrid.extend({
 							var ids = $(ui.helper).attr("id");
 							$($t).jqGrid('delRowData',ids );
 						}
-						// if we have a empty row inserted from start event try to delete it 
-						for (var i=0;i<opts.connectWith.length;i++){
-							$(opts.connectWith[i]).jqGrid('delRowData','jqg_empty_row');
+						// if we have a empty row inserted from start event try to delete it
+						for (var i=0;i<$.data($t,"dnd").connectWith.length;i++){
+							$($.data($t,"dnd").connectWith[i]).jqGrid('delRowData','jqg_empty_row');
 						}
 						if(opts.onstop && $.isFunction(opts.onstop) ) opts.onstop.call($($t),ev,ui);
 					}
@@ -334,8 +340,11 @@ $.jgrid.extend({
 				return $.extend({
 					accept: function(d) {
 						var tid = $(d).closest("table.ui-jqgrid-btable");
-						var cn = $.data(tid[0],"dnd").connectWith;
-						return $.inArray('#'+this.id,cn) != -1 ? true : false;
+						if($.data(tid[0],"dnd") != undefined) {
+						    var cn = $.data(tid[0],"dnd").connectWith;
+						    return $.inArray('#'+this.id,cn) != -1 ? true : false;
+						}
+						return d;
 					},
 					drop: function(ev, ui) {
 						var accept = $(ui.draggable).attr("id");
