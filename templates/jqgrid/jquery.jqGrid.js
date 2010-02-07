@@ -2359,6 +2359,7 @@ $.jgrid.extend({
 				} catch (_) {
 					tmp = $(cc).html();
 				}
+				if($t.p.autoencode) tmp = $.jgrid.htmlDecode(tmp);
 				if (!$t.p.colModel[iCol].edittype) {$t.p.colModel[iCol].edittype = "text";}
 				$t.p.savedRow.push({id:iRow,ic:iCol,name:nm,v:tmp});
 				if($.isFunction($t.p.formatCell)) {
@@ -2448,7 +2449,7 @@ $.jgrid.extend({
 					case "text":
 					case "textarea":
 					case "button" :
-						v = !$t.p.autoencode ? $("#"+iRow+"_"+nmjq,$t.rows[iRow]).val() : $.jgrid.htmlEncode($("#"+iRow+"_"+nmjq,$t.rows[iRow]).val());
+						v = $("#"+iRow+"_"+nmjq,$t.rows[iRow]).val();
 						v2=v;
 						break;
 					case 'custom' :
@@ -2482,6 +2483,7 @@ $.jgrid.extend({
 						if ($t.p.cellsubmit == 'remote') {
 							if ($t.p.cellurl) {
 								var postdata = {};
+								if($t.p.autoencode) v = $.jgrid.htmlEncode(v);
 								postdata[nm] = v;
 								var idname,oper, opers;
 								opers = $t.p.prmNames;
@@ -3175,7 +3177,7 @@ function createEl(eltype,options,vl,autowidth, ajaxso) {
 		case "button" :
 			elem = document.createElement("input");
 			elem.type = eltype;
-			elem.value = jQuery.jgrid.htmlDecode(vl);
+			elem.value = vl;
 			options = bindEv(elem,options);
 			if(eltype != "button"){
 				if(autowidth) {
@@ -4230,7 +4232,7 @@ $.jgrid.extend({
 			multipleSearch : false,
 			// translation
 			// if you want to change or remove the order change it in sopt
-			// ['bw','eq','ne','lt','le','gt','ge','ew','cn'] 
+			// ['bw','eq','ne','lt','le','gt','ge','ew','cn']
 			sopt: null,
 			onClose : null
 			// these are common options
@@ -4797,9 +4799,10 @@ $.jgrid.extend({
 						case "textarea":
 						case "button":
 							postdata[this.name] = $(this).val();
-							postdata[this.name] = !$t.p.autoencode ? postdata[this.name] : $.jgrid.htmlEncode(postdata[this.name]);
+							
 						break;
 					}
+					if($t.p.autoencode) postdata[this.name] = $.jgrid.htmlEncode(postdata[this.name]);
 					}
 				});
 				return true;
@@ -4844,6 +4847,7 @@ $.jgrid.extend({
 							tmp = $.isFunction(opt.defaultValue) ? opt.defaultValue() : opt.defaultValue; 
 						}
 						if(!this.edittype) this.edittype = "text";
+						if($t.p.autoencode) tmp = $.jgrid.htmlDecode(tmp);
 						elc = createEl(this.edittype,opt,tmp,false,$.extend({},$.jgrid.ajaxOptions,obj.p.ajaxSelectOptions || {}));
 						if(tmp == "" && this.edittype == "checkbox") {tmp = $(elc).attr("offval");}
 						if(rp_ge.checkOnSubmit || rp_ge.checkOnUpdate) rp_ge._savedData[nm] = tmp;
@@ -4929,6 +4933,7 @@ $.jgrid.extend({
 								tmp = $(this).html();
 							}
 						}
+						if($t.p.autoencode) tmp = $.jgrid.htmlDecode(tmp);
 						if(rp_ge.checkOnSubmit===true || rp_ge.checkOnUpdate) rp_ge._savedData[nm] = tmp;
 						nm = $.jgrid.jqID(nm);
 						switch (cm[i].edittype) {
@@ -4936,7 +4941,6 @@ $.jgrid.extend({
 							case "text":
 							case "button" :
 							case "image":
-								tmp = $.jgrid.htmlDecode(tmp);
 								$("#"+nm,"#"+fmid).val(tmp);
 								break;
 							case "textarea":
@@ -5055,6 +5059,11 @@ $.jgrid.extend({
 									}
 								});
 								postdata = $.extend(postdata,extpost);
+								if($t.p.autoencode) {
+									$.each(postdata,function(n,v){
+										postdata[n] = $.jgrid.htmlDecode(v);
+									});
+								}
 								// the action is add
 								if(postdata[oper] == opers.addoper ) {
 									//id processing
@@ -6096,6 +6105,7 @@ $.jgrid.extend({
 						}
 					}
 					if ( nm != 'cb' && nm != 'subgrid' && nm != 'rn') {
+						if($t.p.autoencode) tmp = $.jgrid.htmlDecode(tmp);
 						svr[nm]=tmp;
 						if(cm[i].editable===true) {
 							if(focus===null) { focus = i; }
@@ -6162,7 +6172,7 @@ $.jgrid.extend({
 						case 'password':
 						case 'textarea':
 						case "button" :
-							tmp[nm]= !$t.p.autoencode ? $("input, textarea",this).val() : $.jgrid.htmlEncode($("input, textarea",this).val());
+							tmp[nm]=$("input, textarea",this).val();
 							break;
 						case 'select':
 							if(!cm.editoptions.multiple) {
@@ -6199,6 +6209,7 @@ $.jgrid.extend({
 						cv[1] = tmp[nm] + " " + cv[1];
 						return false;
 					}
+					if($t.p.autoencode) tmp[nm] = $.jgrid.htmlEncode(tmp[nm]);
 				}
 			});
 			if (cv[0] === false){
@@ -6221,6 +6232,11 @@ $.jgrid.extend({
 			}
 			if (url == 'clientArray') {
 				tmp = $.extend({},tmp, tmp2);
+				if($t.p.autoencode) {
+					$.each(tmp,function(n,v){
+						tmp[n] = $.jgrid.htmlDecode(v);
+					});
+				}
 				var resp = $($t).jqGrid("setRowData",rowid,tmp);
 				$(ind).attr("editable","0");
 				for( var k=0;k<$t.p.savedRow.length;k++) {
@@ -6241,6 +6257,11 @@ $.jgrid.extend({
 							if( $.isFunction(succesfunc)) { ret = succesfunc(res);}
 							else ret = true;
 							if (ret===true) {
+								if($t.p.autoencode) {
+									$.each(tmp,function(n,v){
+										tmp[n] = $.jgrid.htmlDecode(v);
+									});
+								}
 								tmp = $.extend({},tmp, tmp2);
 								$($t).jqGrid("setRowData",rowid,tmp);
 								$(ind).attr("editable","0");
