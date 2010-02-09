@@ -1,11 +1,11 @@
 ;(function ($) {
 /*
- * jqGrid  3.6.2 - jQuery Grid
+ * jqGrid  3.6.3 - jQuery Grid
  * Copyright (c) 2008, Tony Tomov, tony@trirand.com
  * Dual licensed under the MIT and GPL licenses
  * http://www.opensource.org/licenses/mit-license.php
  * http://www.gnu.org/licenses/gpl.html
- * Date: 2009-12-10
+ * Date: 2010-02-07
  */
 $.jgrid = $.jgrid || {};
 $.extend($.jgrid,{
@@ -457,13 +457,15 @@ $.fn.jqGrid = function( pin ) {
 			    if ( typeof expr === 'string' ) {
 					prm = expr.split('.');
 				}
-				if(prm.length) {
-					ret = obj;
-				    while (ret && prm.length) {
-						p = prm.shift();
-						ret = ret[p];
+				try {
+					if(prm.length) {
+						ret = obj;
+					    while (ret && prm.length) {
+							p = prm.shift();
+							ret = ret[p];
+						}
 					}
-				}
+				} catch (e) {}
 			}
 			return ret;
 		},
@@ -6479,10 +6481,14 @@ $.jgrid.extend({
                     }
                 });
                 
-                var perm = fixedCols.slice(0);
+                var perm = [];
+				//fixedCols.slice(0);
                 $('option[selected]',select).each(function() { perm.push(parseInt(this.value)) });
-                $.each(perm, function() { delete colMap[colModel[this].name] });
-                $.each(colMap, function() { perm.push(parseInt(this)) });
+                $.each(perm, function() { delete colMap[colModel[parseInt(this)].name] });
+                $.each(colMap, function() {
+					var ti = parseInt(this);
+					perm = insert(perm,ti,ti);
+				});
                 if (opts.done) {
                     opts.done.call(self, perm);
                 }
@@ -6497,7 +6503,8 @@ $.jgrid.extend({
                 if (calldone && opts.done) {
                     opts.done.call(self);
                 }
-            }
+            },
+			"msel_opts" : {}
         }, $.jgrid.col, opts || {});
 
         if (opts.caption) {
@@ -6532,6 +6539,15 @@ $.jgrid.extend({
             select.append("<option value='"+i+"' "+
                           (this.hidden?"":"selected='selected'")+">"+colNames[i]+"</option>");
         });
+		function insert(perm,i,v) {
+			if(i>=0){
+				var a = perm.slice();
+				var b = a.splice(i);
+				if(i>perm.length) i = perm.length;
+				a[i] = v;
+				return a.concat(b);
+			}
+		}
         function call(fn, obj) {
             if (!fn) return;
             if (typeof fn == 'string') {
@@ -6546,7 +6562,7 @@ $.jgrid.extend({
         var dopts = $.isFunction(opts.dlog_opts) ? opts.dlog_opts.call(self, opts) : opts.dlog_opts;
         call(opts.dlog, selector, dopts);
         var mopts = $.isFunction(opts.msel_opts) ? opts.msel_opts.call(self, opts) : opts.msel_opts;
-        call(opts.msel, select, opts.msel_opts);
+        call(opts.msel, select, mopts);
     },
 	sortableRows : function (opts) {
 		// Can accept all sortable options and events
@@ -7811,7 +7827,7 @@ $.jqDnR={
   	},
 	stop:function(){
 		//E.css('opacity',M.o);
-		$().unbind('mousemove',J.drag).unbind('mouseup',J.stop);
+		$(document).unbind('mousemove',J.drag).unbind('mouseup',J.stop);
 	}
 };
 var J=$.jqDnR,M=J.dnr,E=J.e,E1,
@@ -7845,7 +7861,7 @@ i=function(e,h,k,aR){
 				};
 			} else {M1 = false;}			
  			//E.css({opacity:0.8});
- 			$().mousemove($.jqDnR.drag).mouseup($.jqDnR.stop);
+ 			$(document).mousemove($.jqDnR.drag).mouseup($.jqDnR.stop);
  			return false;
  		});
 	});
@@ -7918,7 +7934,7 @@ params:{}};
 var s=0,H=$.jqm.hash,A=[],ie6=$.browser.msie&&($.browser.version == "6.0"),F=false,
 e=function(h){var i=$('<iframe src="javascript:false;document.write(\'\');" class="jqm"></iframe>').css({opacity:0});if(ie6)if(h.o)h.o.html('<p style="width:100%;height:100%"/>').prepend(i);else if(!$('iframe.jqm',h.w)[0])h.w.prepend(i); f(h);},
 f=function(h){try{$(':input:visible',h.w)[0].focus();}catch(_){}},
-L=function(t){$()[t]("keypress",m)[t]("keydown",m)[t]("mousedown",m);},
+L=function(t){$(document)[t]("keypress",m)[t]("keydown",m)[t]("mousedown",m);},
 m=function(e){var h=H[A[A.length-1]],r=(!$(e.target).parents('.jqmID'+h.s)[0]);if(r)f(h);return !r;},
 hs=function(w,t,c){return w.each(function(){var s=this._jqm;$(t).each(function() {
  if(!this[c]){this[c]=[];$(this).click(function(){for(var i in {jqmShow:1,jqmHide:1})for(var s in this[i])if(H[this[i][s]])H[this[i][s]].w[i](this);return F;});}this[c].push(s);});});};

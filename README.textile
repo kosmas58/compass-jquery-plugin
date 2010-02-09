@@ -10,7 +10,7 @@ h2. Description
 A Sass-based Meta-Framework for Compass that allows you to mix and match any of the following:
 
 * jRails with jQuery 1.3.2 and jQuery.UI 1.7.2 including themes
-* jqGrid V3.6.2
+* jqGrid V3.6.3
 * dynatree V0.5.2
 * jQTouch V1.0b2
 
