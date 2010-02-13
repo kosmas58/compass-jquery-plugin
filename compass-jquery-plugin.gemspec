@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{compass-jquery-plugin}
-  s.version = "0.2.5.3"
+  s.version = "0.2.5.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kosmas Schuetz"]
-  s.date = %q{2010-02-09}
+  s.date = %q{2010-02-13}
   s.description = %q{A compass plugin that integrates jRails, jQuery, jQuery UI and Themes, jqGrid and more into the Compass Sass framework.}
   s.email = %q{kosmas.schuetz@gmx.com}
   s.extra_rdoc_files = [
@@ -51,6 +51,7 @@ Gem::Specification.new do |s|
      "lib/jquery/secret_sauce/helpers/ui_grid_helper.rb",
      "lib/jquery/secret_sauce/helpers/ui_theme_helper.rb",
      "lib/jquery/secret_sauce/model/find_for_grid.rb",
+     "lib/yuicompressor-2.4.2.jar",
      "templates/calendar/config/initializers/calendar.rb",
      "templates/calendar/jquery.calendar.js",
      "templates/calendar/jquery.calendar.min.js",
