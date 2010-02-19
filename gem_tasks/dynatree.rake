@@ -2,7 +2,7 @@ require 'fileutils'
 require 'lib/handle_js_files'
 
 # Compass generator for dynatree 3.5+
-DYNATREE_SRC = File.join(GEM_ROOT, 'src', 'dynatree')
+DYNATREE_SRC = File.join(GEM_ROOT, 'src', 'dynatree.0.5.2')
 DYNATREE_SRC_SKINS = File.join(DYNATREE_SRC, 'skins')
 
 DYNATREE_DEST_TEMPLATES = File.join(GEM_ROOT, 'templates', 'dynatree')
@@ -37,7 +37,7 @@ namespace :build do
       manifest.print "javascript 'jquery.dynatree.js'\n"
     
       open File.join(DYNATREE_DEST_TEMPLATES, 'jquery.dynatree.min.js'), 'w' do |f|
-        f.print compress_js(all_scripts)
+        f.print compress_js(all_scripts, "google")
       end
       manifest.print "javascript 'jquery.dynatree.min.js'\n"
     

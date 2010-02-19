@@ -1,5 +1,3 @@
-README.rdoc
+README.textile
 lib/**/*.rb
-bin/*
-features/**/*.feature
-LICENSE
+MIT-LICENSE

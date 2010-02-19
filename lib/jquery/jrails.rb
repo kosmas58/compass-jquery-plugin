@@ -39,8 +39,10 @@ module ActionView
     
     module PrototypeHelper
       
+      USE_PROTECTION = const_defined?(:DISABLE_JQUERY_FORGERY_PROTECTION) ? !DISABLE_JQUERY_FORGERY_PROTECTION : true
+
       unless const_defined? :JQUERY_VAR
-        JQUERY_VAR = '$'
+        JQUERY_VAR = 'jQuery'
       end
           
       unless const_defined? :JQCALLBACKS
@@ -157,7 +159,7 @@ module ActionView
           end
         end
         
-        if respond_to?('protect_against_forgery?') && protect_against_forgery?
+        if USE_PROTECTION && respond_to?('protect_against_forgery?') && protect_against_forgery?
           if js_options['data']
             js_options['data'] << " + '&"
           else
@@ -206,10 +208,11 @@ module ActionView
       def build_callbacks(options)
         callbacks = {}
         options[:beforeSend] = '';
-        [:uninitialized,:loading,:loaded].each do |key|
+        [:uninitialized,:loading].each do |key|
           options[:beforeSend] << (options[key].last == ';' ? options.delete(key) : options.delete(key) << ';') if options[key]
         end
         options.delete(:beforeSend) if options[:beforeSend].blank?
+        options[:complete] = options.delete(:loaded) if options[:loaded] 
         options[:error] = options.delete(:failure) if options[:failure]
         if options[:update]
           if options[:update].is_a?(Hash)
@@ -324,7 +327,7 @@ module ActionView
           js_options = js_options.merge(effect[:options]) if effect[:options]
         end
         
-        [:color, :direction].each do |option|
+        [:color, :direction, :startcolor, :endcolor].each do |option|
           js_options[option] = "'#{js_options[option]}'" if js_options[option]
         end
         
@@ -336,11 +339,13 @@ module ActionView
         end
         
         if ['fadeIn','fadeOut','fadeToggle'].include?(name)
-          javascript = "#{JQUERY_VAR}('#{jquery_id(element_id)}').#{name}("
+          # 090905 - Jake - changed ' to \" so it passes assert_select_rjs with an id
+          javascript = "#{JQUERY_VAR}(\"#{jquery_id(element_id)}\").#{name}("
           javascript << "#{speed}" unless speed.nil?
           javascript << ");"
         else
-          javascript = "#{JQUERY_VAR}('#{jquery_id(element_id)}').#{mode || 'effect'}('#{name}'"
+          # 090905 - Jake - changed ' to \" so it passes "assert_select_rjs :effect, ID"
+          javascript = "#{JQUERY_VAR}(\"#{jquery_id(element_id)}\").#{mode || 'effect'}('#{name}'"
           javascript << ",#{options_for_javascript(js_options)}" unless speed.nil? && js_options.empty?
           javascript << ",#{speed}" unless speed.nil?
           javascript << ");"
@@ -361,9 +366,9 @@ module ActionView
         options[:dropOnEmpty] = false unless options[:dropOnEmpty]
         options[:helper] = "'clone'" if options[:ghosting] == true
         options[:axis] = case options.delete(:constraint)
-          when "vertical"
+          when "vertical", :vertical
             "y"
-          when "horizontal"
+          when "horizontal", :horizontal
             "x"
           when false
             nil
@@ -375,7 +380,13 @@ module ActionView
         options.delete(:ghosting)
         
         if options[:onUpdate] || options[:url]
-          options[:with] ||= "#{JQUERY_VAR}(this).sortable('serialize',{key:'#{element_id}[]'})"
+          if options[:format]
+            options[:with] ||= "#{JQUERY_VAR}(this).sortable('serialize',{key:'#{element_id}[]', expression:#{options[:format]}})"
+            options.delete(:format)
+          else
+            options[:with] ||= "#{JQUERY_VAR}(this).sortable('serialize',{key:'#{element_id}[]'})"
+          end
+          
           options[:onUpdate] ||= "function(){" + remote_function(options) + "}"
         end
         
@@ -414,6 +425,7 @@ module ActionView
         
         %(#{JQUERY_VAR}('#{jquery_id(element_id)}').droppable(#{options_for_javascript(options)});)
       end
+      
     end    
   end
 end

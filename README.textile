@@ -10,9 +10,6 @@ h2. Description
 A Sass-based Meta-Framework for Compass that allows you to mix and match any of the following:
 
 * jRails with jQuery 1.3.2 and jQuery.UI 1.7.2 including themes
-* jqGrid V3.6.3
-* dynatree V0.5.2
-* jQTouch V1.0b2
 
 This library requires <b>"Compass":http://wiki.github.com/chriseppstein/compass</b>.
 
@@ -35,94 +32,6 @@ To use the localized stylesheets and javacripts for jQuery 1.3 include:
 
 into your layouts.
 
-h3. jQuery Dynatree Plugin
-
-Use compass to install the jQuery Dynatree javascript library into your project.
-
-<pre>compass -r jquery -f jquery -p dynatree <project name></pre>
-
-You will find all the stylesheets in easy-to-read Sass format at:
-
-<pre>stylesheets/jquery.ui</pre>
-
-To use the localized stylesheets and javacripts include:
-
-<pre>
-	= stylesheet_link_tag 'compiled/jquery.ui/dynatree.[skin].css', :media => 'screen, projection'
- 	= javascript_include_tag :dynatree</pre>
-
-h3. jqGrid
-
-Use compass to install the jqGrid javascript library into your project.
-
-<pre>compass -r jquery  -f jquery -p jqgrid <project name></pre>
-
-You will find all the stylesheets in easy-to-read Sass format at:
-
-<pre>stylesheets/jquery.ui</pre>
-
-To use the localized stylesheets and javacripts include:
-
-<pre>
-  = stylesheet_link_tag 'compiled/jquery.ui/jqGrid.css', :media => 'screen, projection'
-  = jqgrid_javascripts I18n.locale</pre>
-
-jqGrid now uses the jQuery UI Themes. jqGrid has been included as a subproject. You do not need to check it out unless you want to use a different version.
-
-h3. Secret Sauce
-
-Use compass to install the Secret Sauce for jqGrid javascript library into your project.
-
-<pre>compass -r jquery  -f jquery -p secret_sauce <project name></pre>
-
-You will find all the stylesheets in easy-to-read Sass format.
-
-<pre>stylesheets/jquery.ui</pre>
-
-To use the localized stylesheets and javacripts include:
-
-<pre>
-  = stylesheet_link_tag 'compiled/jquery.ui/secret_sauce.css', :media => 'screen, projection'
-  = javascript_include_tag :secret_sauce</pre>
-
-h3. Calendar
-
-Use compass to install the calendar javascript library into your project.
-
-<pre>compass -r jquery -f jquery -p calendar <project name></pre>
-
-You will find all the stylesheets in easy-to-read Sass format.
-
-<pre>stylesheets/jquery.ui</pre>
-
-To use the (localized) stylesheets and javacripts include:
-
-<pre>
-  = stylesheet_link_tag 'compiled/jquery.ui/calendar.css', :media => 'screen, projection'
-  = javascript_include_tag :calendar</pre>
-
-h3. jQTouch
-
-Use compass to install the JQTouch javascript library into your project.
-
-<pre>compass -r jquery -f jquery -p jqtouch <project name></pre>
-
-You will find all the stylesheets in easy-to-read Sass format at:
-
-<pre>stylesheets/jqtouch</pre>
-
-To use the localized stylesheets and javacripts include:
-
-<pre>
-	= stylesheet_link_tag 'compiled/jqtouch/[theme].css', :media => 'screen, projection'
- 	= javascript_include_tag :jqtouch'</pre>
-
-There is iPhone lookalike stylesheet using an IFrame available for tests without a iPhone. You can include it by
-
-<pre>
-	= stylesheet_link_tag 'compiled/jqtouch/iphone-emulator.css', :media => 'screen, projection'</pre>
-
-
 h2. Thanks to the Contributors:
 
 h3. Rails
@@ -139,11 +48,6 @@ h3. jQuery Plugins included
 * Kalus Hartl for <b>"jQuery Cookie Plugin":http://stilbuero.de</b>
 * Fabrizio Balliano and Fabrizio Balliano for <b>"jQuery Layout Plugin":http://www.fabrizioballiano.net/</b>
 * John Reisig et. al. for <b>"jQuery Form Plugin":http://malsup.com/jquery/form//</b>
-* Martin Wendt for <b>"jQuery Dynatree Plugin":http://www.wwwendt.de</b>
-* Tony Tomov for <b>"jQuery Grid Plugin":http://www.trirand.com/blog/</b>
-* Rob Monie for <b>"jQuery.weekCalendar":http://www.redredred.com.au/</b>
-* Kyle LeNeau for <b>"jMonthCalendar":http://www.bytecyclist.com/projects/jmonthcalendar</b>
-* David Kaneda for <b>"jQTouch":http://www.jqtouch.com/</b>
 
 h2. Note on Patches/Pull Requests
 
