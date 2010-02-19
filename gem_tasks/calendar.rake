@@ -42,7 +42,7 @@ namespace :build do
       manifest.print "javascript 'jquery.calendar.js'\n"
     
       open File.join(CALENDAR_DEST_TEMPLATES, 'jquery.calendar.min.js'), 'w' do |f|
-        f.print compress_js(all_scripts)
+        f.print compress_js(all_scripts, "yui")
       end
       manifest.print "javascript 'jquery.calendar.min.js'\n"
 
@@ -59,7 +59,7 @@ namespace :build do
 #          file.gsub!(/\.js$/, '.min.js')
 #          manifest.print "javascript '#{File.join(path, 'calendar', file)}'\n"
 #          open File.join(CALENDAR_DEST_TRANSLATIONS, file), 'w' do |f|
-#            f.write compress_js(js)
+#            f.write compress_js(js, "yui")
 #          end
 #        end
 #      end

@@ -45,7 +45,7 @@ namespace :build do
       manifest.print "javascript 'jquery.jqtouch.js'\n"
     
       open File.join(JQTOUCH_DEST_TEMPLATES, 'jquery.jqtouch.min.js'), 'w' do |f|
-        f.print compress_js(all_scripts)
+        f.print compress_js(all_scripts, "google")
       end
       manifest.print "javascript 'jquery.jqtouch.min.js'\n"
       

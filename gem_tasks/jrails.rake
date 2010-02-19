@@ -45,7 +45,7 @@ namespace :build do
       manifest.print "javascript 'jrails.js'\n" 
     
       open File.join(JRAILS_DEST_TEMPLATES, 'jrails.min.js'), 'w' do |f|
-        f.print compress_js(all_files(JRAILS_SRC_SCRIPTS))
+        f.print compress_js(all_files(JRAILS_SRC_SCRIPTS), "yui")
       end
       manifest.print "javascript 'jrails.min.js'\n" 
       
@@ -57,7 +57,7 @@ namespace :build do
       manifest.print "javascript 'jquery.js'\n" 
     
       open File.join(JRAILS_DEST_TEMPLATES, 'jquery.min.js'), 'w' do |f|
-        f.print compress_js(all_files(JQUERY_SRC_SCRIPTS))
+        f.print compress_js(all_files(JQUERY_SRC_SCRIPTS), "yui")
       end
       manifest.print "javascript 'jquery.min.js'\n" 
       
@@ -74,7 +74,7 @@ namespace :build do
           file.gsub!(/\.js$/, '.min.js')
           manifest.print "javascript '#{file}'\n"
           open File.join(JRAILS_DEST_TEMPLATES, file), 'w' do |f|
-            f.write compress_js(js)
+            f.write compress_js(js, "yui")
           end
         end
       end       
@@ -119,7 +119,7 @@ namespace :build do
       manifest.print "javascript 'jquery-ui.js'\n"
     
       open File.join(JRAILS_DEST_TEMPLATES, 'jquery-ui.min.js'), 'w' do |f|
-        f.print compress_js(all_jquery_ui_scripts)
+        f.print compress_js(all_jquery_ui_scripts, "yui")
       end
       manifest.print "javascript 'jquery-ui.min.js'\n"
       
@@ -132,7 +132,7 @@ namespace :build do
 #      manifest.print "javascript 'i18n/jquery.ui.locale.js'\n"
 #          
 #      open File.join(JRAILS_DEST_TEMPLATES, 'i18n', 'jquery.ui.locale.min.js'), 'w' do |f|
-#        f.print compress_js(all_files(JQUERY_UI_SRC_TRANSLATIONS))
+#        f.print compress_js(all_files(JQUERY_UI_SRC_TRANSLATIONS), "google")
 #      end
 #      manifest.print "javascript 'i18n/jquery.ui.locale.min.js'\n"
   
@@ -152,7 +152,7 @@ namespace :build do
           file.gsub!(/\.js$/, '.min.js')
           manifest.print "javascript '#{File.join(path, 'jquery.ui', file)}'\n"
           open File.join(JRAILS_DEST_TRANSLATIONS, file), 'w' do |f|
-            f.write compress_js(js)
+            f.write compress_js(js, "google")
           end
         end
       end

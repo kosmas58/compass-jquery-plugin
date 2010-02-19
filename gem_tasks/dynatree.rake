@@ -37,7 +37,7 @@ namespace :build do
       manifest.print "javascript 'jquery.dynatree.js'\n"
     
       open File.join(DYNATREE_DEST_TEMPLATES, 'jquery.dynatree.min.js'), 'w' do |f|
-        f.print compress_js(all_scripts)
+        f.print compress_js(all_scripts, "google")
       end
       manifest.print "javascript 'jquery.dynatree.min.js'\n"
     

@@ -44,7 +44,7 @@ namespace :build do
       manifest.print "javascript 'secret_sauce.js'\n"
     
       open File.join(SECRET_SAUCE_DEST_TEMPLATES, 'secret_sauce.min.js'), 'w' do |f|
-        f.print compress_js(all_files(SECRET_SAUCE_SRC_SCRIPTS))
+        f.print compress_js(all_files(SECRET_SAUCE_SRC_SCRIPTS), "google")
       end
       manifest.print "javascript 'secret_sauce.min.js'\n"
     

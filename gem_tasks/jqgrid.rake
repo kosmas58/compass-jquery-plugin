@@ -78,7 +78,7 @@ namespace :build do
       manifest.print "javascript 'jquery.jqGrid.js'\n"
     
       open File.join(JQGRID_DEST_TEMPLATES, 'jquery.jqGrid.min.js'), 'w' do |f|
-        f.print compress_js(all_scripts)
+        f.print compress_js(all_scripts, "google")
       end
       manifest.print "javascript 'jquery.jqGrid.min.js'\n"
 
@@ -95,7 +95,7 @@ namespace :build do
           file.gsub!(/\.js$/, '.min.js')
           manifest.print "javascript '#{File.join(path, 'jqgrid', file)}'\n"
           open File.join(JQGRID_DEST_TRANSLATIONS, file), 'w' do |f|
-            f.write compress_js(js)
+            f.write compress_js(js, "google")
           end
         end
       end
