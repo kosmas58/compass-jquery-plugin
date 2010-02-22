@@ -21,8 +21,10 @@ $.jgrid.extend({
 			afterShowSearch : null,
 			onInitializeSearch: null,
 			closeAfterSearch : false,
+			closeAfterReset: false,
 			closeOnEscape : false,
 			multipleSearch : false,
+			cloneSearchRowOnAdd: true,
 			// translation
 			// if you want to change or remove the order change it in sopt
 			// ['bw','eq','ne','lt','le','gt','ge','ew','cn']
@@ -107,7 +109,7 @@ $.jgrid.extend({
 					});
 					if(fields.length>0){
 						$("<div id='"+fid+"' role='dialog' tabindex='-1'></div>").insertBefore("#gview_"+$t.p.id);
-						$("#"+fid).searchFilter(fields, { groupOps: p.groupOps, operators: oprtr, onClose:hideFilter, resetText: p.Reset, searchText: p.Find, windowTitle: p.caption,  rulesText:p.rulesText, matchText:p.matchText, onSearch: searchFilters, onReset: resetFilters,stringResult:p.multipleSearch, ajaxSelectOptions: $.extend({},$.jgrid.ajaxOptions,$t.p.ajaxSelectOptions ||{}) });
+						$("#"+fid).searchFilter(fields, { groupOps: p.groupOps, operators: oprtr, onClose:hideFilter, resetText: p.Reset, searchText: p.Find, windowTitle: p.caption,  rulesText:p.rulesText, matchText:p.matchText, onSearch: searchFilters, onReset: resetFilters,stringResult:p.multipleSearch, ajaxSelectOptions: $.extend({},$.jgrid.ajaxOptions,$t.p.ajaxSelectOptions ||{}), clone: p.cloneSearchRowOnAdd });
 						$(".ui-widget-overlay","#"+fid).remove();
 						if($t.p.direction=="rtl") $(".ui-closer","#"+fid).css("float","left");
 						if (p.drag===true) {
@@ -164,6 +166,7 @@ $.jgrid.extend({
 				}
 				$.extend(grid[0].p.postData,sdata);
 				grid.trigger("reloadGrid",[{page:1}]);
+				if(p.closeAfterReset) hideFilter($("#"+fid));
 			}
 			function hideFilter(selector) {
 				if(p.onClose){
@@ -305,7 +308,7 @@ $.jgrid.extend({
 					maxRows = Math.max(maxRows, fmto ? fmto.rowpos || 0 : 0 );
 				});
 				var dh = isNaN(p.dataheight) ? p.dataheight : p.dataheight+"px";
-				var flr, frm = $("<form name='FormPost' id='"+frmgr+"' class='FormGrid' style='width:100%;overflow:auto;position:relative;height:"+dh+";'></form>").data("disabled",false),
+				var flr, frm = $("<form name='FormPost' id='"+frmgr+"' class='FormGrid' onSubmit='return false;' style='width:100%;overflow:auto;position:relative;height:"+dh+";'></form>").data("disabled",false),
 				tbl =$("<table id='"+frmtb+"' class='EditTable' cellspacing='0' cellpading='0' border='0'><tbody></tbody></table>");
 				$(frm).append(tbl);
 				flr = $("<tr id='FormError' style='display:none'><td class='ui-state-error' colspan='"+(maxCols*2)+"'></td></tr>");
@@ -1547,7 +1550,7 @@ $.jgrid.extend({
 						try {
 							var gID = $t.p.id;
 							$("#fbox_"+gID).searchFilter().reset();
-	                        $t.clearToolbar(false);
+	                        if($.isFunction($t.clearToolbar)) $t.clearToolbar(false);
 						} catch (e) {}
 						switch (o.refreshstate) {
 							case 'firstpage':
