@@ -50,15 +50,15 @@ namespace :build do
       
       # jQuery 1.3
     
-      open File.join(JRAILS_13_DEST_TEMPLATES, 'jquery.1.3.2.js'), 'w' do |f|
+      open File.join(JRAILS_13_DEST_TEMPLATES, 'jquery-1.3.2.js'), 'w' do |f|
         f.print concat_files(all_files(JQUERY_13_SRC_SCRIPTS))
       end
-      manifest.print "javascript 'jquery.1.3.2.js'\n" 
+      manifest.print "javascript 'jquery-1.3.2.js'\n" 
     
-      open File.join(JRAILS_13_DEST_TEMPLATES, 'jquery.1.3.2.min.js'), 'w' do |f|
+      open File.join(JRAILS_13_DEST_TEMPLATES, 'jquery-1.3.2.min.js'), 'w' do |f|
         f.print compress_js(all_files(JQUERY_13_SRC_SCRIPTS), "google")
       end
-      manifest.print "javascript 'jquery.1.3.2.min.js'\n" 
+      manifest.print "javascript 'jquery-1.3.2.min.js'\n" 
       
       # jQuery 1.3 Plugins
       

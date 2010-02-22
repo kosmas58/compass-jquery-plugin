@@ -49,15 +49,15 @@ namespace :build do
       
       # jQuery 1.4
     
-      open File.join(JRAILS_14_DEST_TEMPLATES, 'jquery.1.4.1.js'), 'w' do |f|
+      open File.join(JRAILS_14_DEST_TEMPLATES, 'jquery-1.4.1.js'), 'w' do |f|
         f.print concat_files(all_files(JQUERY_14_SRC_SCRIPTS))
       end
-      manifest.print "javascript 'jquery.1.4.1.js'\n" 
+      manifest.print "javascript 'jquery-1.4.1.js'\n" 
     
-      open File.join(JRAILS_14_DEST_TEMPLATES, 'jquery.1.4.1.min.js'), 'w' do |f|
+      open File.join(JRAILS_14_DEST_TEMPLATES, 'jquery-1.4.1.min.js'), 'w' do |f|
         f.print compress_js(all_files(JQUERY_14_SRC_SCRIPTS), "google")
       end
-      manifest.print "javascript 'jquery.1.4.1.min.js'\n" 
+      manifest.print "javascript 'jquery-1.4.1.min.js'\n" 
       
       # jQuery 1.4 Comapt 1.3
       
