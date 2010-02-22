@@ -14,7 +14,7 @@ JQUERY_UI_17_SRC_SCRIPTS = File.join(JQUERY_UI_17_SRC, 'js') + "/*.js"
 JQUERY_UI_17_SRC_THEMES = File.join(JQUERY_UI_17_SRC, 'themes')
 JQUERY_UI_17_SRC_TRANSLATIONS = File.join(JQUERY_UI_17_SRC, 'js', 'i18n') #+ "/*.js"
 
-JRAILS_13_DEST_TEMPLATES = File.join(GEM_ROOT, 'templates', 'jrails.1.3.2')
+JRAILS_13_DEST_TEMPLATES = File.join(GEM_ROOT, 'templates', 'jrails-1.3.2')
 JRAILS_13_DEST_TRANSLATIONS = File.join(JRAILS_13_DEST_TEMPLATES, 'i18n', 'jquery.ui')
 JRAILS_13_DEST_THEMES = File.join(JRAILS_13_DEST_TEMPLATES, 'jquery.ui')
 JRAILS_13_DEST_IMAGES = File.join(JRAILS_13_DEST_TEMPLATES, 'jquery.ui')
