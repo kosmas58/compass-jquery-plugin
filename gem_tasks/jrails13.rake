@@ -26,6 +26,7 @@ namespace :build do
     
     FileUtils.remove_dir JRAILS_13_DEST_TEMPLATES if File.exists? JRAILS_13_DEST_TEMPLATES   
     FileUtils.mkdir_p(File.join(JRAILS_13_DEST_TEMPLATES, 'config', 'initializers'))
+    FileUtils.mkdir_p(File.join(JRAILS_13_DEST_THEMES))
     
     open File.join(JRAILS_13_DEST_TEMPLATES, 'manifest.rb'), 'w' do |manifest|
    
@@ -64,6 +65,17 @@ namespace :build do
       
       ['plugins'].each do |path|
         Dir.foreach File.join(JQUERY_13_SRC, path) do |file|
+          if /\.css$/ =~ file
+            css = File.read File.join(JQUERY_13_SRC, path, file)
+            sass = ''
+            IO.popen("css2sass", 'r+') { |f| f.print(css); f.close_write; sass = f.read }
+            file.gsub!(/\.css$/, '.sass')
+            open File.join(JRAILS_13_DEST_THEMES, file), 'w' do |f|
+              f.write sass
+            end
+            manifest.print "stylesheet 'jquery.ui/#{file}', :media => 'screen, projection'\n"    
+          end     
+          
           next unless /\.js$/ =~ file
           js = File.read File.join(JQUERY_13_SRC, path, file)
           manifest.print "javascript '#{file}'\n"
@@ -156,8 +168,6 @@ namespace :build do
       end
 
       # jQuery UI Themes
-
-      FileUtils.mkdir_p(File.join(JRAILS_13_DEST_THEMES))
       
       ui = JqueryUiTheme.new(File.join(JQUERY_UI_17_SRC_THEMES, 'base')) 
       ui.convert_css(File.join(JRAILS_13_DEST_THEMES, '_partials'))

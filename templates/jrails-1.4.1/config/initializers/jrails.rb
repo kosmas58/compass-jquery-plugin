@@ -20,8 +20,5 @@ ActionView::Helpers::AssetTagHelper::reset_javascript_include_default
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :jquery => ['jquery-1.4.1.min', 'jquery-ui-1.8rc1.min']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :jrails => ['jrails.min']
 
-#ActionView::Helpers::AssetTagHelper.register_stylesheet_expansion :jrails => ['compiled/jquery.ui/ui.theme.css']
-#ActionView::Helpers::AssetTagHelper.register_stylesheet_expansion :jquery => ['compiled/jquery.ui/ui.theme.css']
-
 require 'jquery/jrails'
 require 'jquery/jquery_selector_assertions' if RAILS_ENV == 'test'
