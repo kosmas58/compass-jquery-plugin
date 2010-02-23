@@ -69,7 +69,7 @@ namespace :build do
             css = File.read File.join(JQUERY_13_SRC, path, file)
             sass = ''
             IO.popen("css2sass", 'r+') { |f| f.print(css); f.close_write; sass = f.read }
-            file.gsub!(/\.css$/, '.sass')
+            file.gsub!(/^jquery\./,'').gsub!(/\.css$/, '.sass')
             open File.join(JRAILS_13_DEST_THEMES, file), 'w' do |f|
               f.write sass
             end
