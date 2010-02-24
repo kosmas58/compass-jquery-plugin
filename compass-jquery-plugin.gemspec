@@ -39,6 +39,7 @@ Gem::Specification.new do |s|
      "lib/jquery/jqgrid.rb",
      "lib/jquery/jqgrid/jqgrid.rb",
      "lib/jquery/jqgrid/jqgrid2xml.rb",
+     "lib/jquery/jqgrid/unused/2dc_jqgrid_mod.rb",
      "lib/jquery/jqgrid/unused/2dc_jqrid.rb",
      "lib/jquery/jqgrid/unused/jqgrid_old.rb",
      "lib/jquery/jquery_selector_assertions.rb",
