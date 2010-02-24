@@ -2,7 +2,7 @@ require 'fileutils'
 require 'lib/handle_js_files'
 
 # Compass generator for jqGrid 3.5+
-JQGRID_SRC = File.join(GEM_ROOT, 'src', 'jqgrid')
+JQGRID_SRC = File.join(GEM_ROOT, 'src', 'jqgrid.3.6.4')
 JQGRID_SRC_LOCALES = File.join(JQGRID_SRC, 'config', 'locales') 
 JQGRID_SRC_TRANSLATIONS = File.join(JQGRID_SRC, 'js', 'i18n') + "/*.js"
 

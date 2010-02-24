@@ -196,11 +196,10 @@ module ActionView
               colModel: #{sub_col_model},
               rowNum:#{options[:subgrid][:rows_per_page]},
               pager: pager_id,
-              imgpath: '/images/jqgrid',
               sortname: '#{options[:subgrid][:sort_column]}',
               sortorder: '#{options[:subgrid][:sort_order]}',
               viewrecords: true,
-              toolbar : [true,"top"], 
+              #toolbar : [true,"top"], 
               #{subgrid_inline_edit}
               #{subgrid_direct_link}
               height: '100%'
@@ -240,7 +239,7 @@ module ActionView
               sortorder: '#{options[:sort_order]}',
               viewrecords: true,
               height: #{options[:height]},
-              toolbar : [true,"top"],
+              #toolbar : [true,"top"],
               gridview: #{options[:gridview]},
               hidegrid: #{options[:hidegrid]},
               scrollrows: true,
