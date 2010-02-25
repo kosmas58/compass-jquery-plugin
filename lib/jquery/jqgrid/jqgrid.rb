@@ -270,7 +270,7 @@ module ActionView
               // onHeaderClick: null,
               viewrecords: true,
               // loadonce: false,
-              // multiselect: false,
+              #{multiselect}
               // multikey: false,
               editurl:'#{options[:edit_url]}',
               // search: false,
