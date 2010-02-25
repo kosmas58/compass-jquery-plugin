@@ -270,7 +270,6 @@ module ActionView
               // onHeaderClick: null,
               viewrecords: true,
               // loadonce: false,
-              #{multiselect}
               // multikey: false,
               editurl:'#{options[:edit_url]}',
               // search: false,
@@ -317,6 +316,13 @@ module ActionView
               // remapColumns : [],
               // ajaxGridOptions :{},
               // direction : "ltr",
+              #{multiselect}
+              #{masterdetails}
+              #{grid_loaded}
+              #{direct_link}
+              #{editable}
+              #{subgrid_enabled}
+              #{subgrid}
               // toppager: false      
             });
             jQuery("##{id}").jqGrid('navGrid', '##{id}_pager',
