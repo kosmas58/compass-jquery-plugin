@@ -1100,7 +1100,7 @@ $.fn.jqGrid = function( pin ) {
 				ts.p.page = 1;
 			}
 			if(sor) {
-				if(ts.p.lastsort == idxcol && ts.p.sortorder == sor) return;
+				if(ts.p.lastsort == idxcol && ts.p.sortorder == sor && !reload) return;
 				else ts.p.sortorder = sor;
 			}
 			var thd= $("thead:first",ts.grid.hDiv).get(0);
@@ -1928,7 +1928,7 @@ $.jgrid.extend({
 					if(pos==='first' || (pos==='before' && sind <= 1) ||  t.rows.length === 1 ){
 						t.updateColumns();
 					}
-					if(air) t.p.afterInsertRow(t,rowid,data);
+					if(air) t.p.afterInsertRow.call(t,rowid,data,data);
 					k++;
 				}
 				if( t.p.altRows === true && !aradd) {

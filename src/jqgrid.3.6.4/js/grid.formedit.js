@@ -747,10 +747,10 @@ $.jgrid.extend({
 								var opv = tmp.split(",");
 								opv = $.map(opv,function(n){return $.trim(n)});
 								$("#"+nm+" option","#"+fmid).each(function(j){
-									if (!cm[i].editoptions.multiple && (opv[0] == $(this).text() || opv[0] == $(this).val()) ){
+									if (!cm[i].editoptions.multiple && (opv[0] == $.trim($(this).text()) || opv[0] == $.trim($(this).val())) ){
 										this.selected= true;
 									} else if (cm[i].editoptions.multiple){
-										if(  $.inArray($(this).text(), opv ) > -1 || $.inArray($(this).val(), opv ) > -1  ){
+										if(  $.inArray($.trim($(this).text()), opv ) > -1 || $.inArray($.trim($(this).val()), opv ) > -1  ){
 											this.selected = true;
 										}else{
 											this.selected = false;
@@ -762,13 +762,24 @@ $.jgrid.extend({
 								break;
 							case "checkbox":
 								tmp = tmp+"";
-								tmp = tmp.toLowerCase();
-								if(tmp.search(/(false|0|no|off|undefined)/i)<0 && tmp!=="") {
-									$("#"+nm,"#"+fmid).attr("checked",true);
-									$("#"+nm,"#"+fmid).attr("defaultChecked",true); //ie
+								if(cm[i].editoptions && cm[i].editoptions.value) {
+									var cb = cm[i].editoptions.value.split(":");
+									if(cb[0] == tmp) {
+										$("#"+nm,"#"+fmid).attr("checked",true);
+										$("#"+nm,"#"+fmid).attr("defaultChecked",true); //ie
+									} else {
+										$("#"+nm,"#"+fmid).attr("checked",false);
+										$("#"+nm,"#"+fmid).attr("defaultChecked",""); //ie
+									}
 								} else {
-									$("#"+nm,"#"+fmid).attr("checked",false);
-									$("#"+nm,"#"+fmid).attr("defaultChecked",""); //ie
+									tmp = tmp.toLowerCase();
+									if(tmp.search(/(false|0|no|off|undefined)/i)<0 && tmp!=="") {
+										$("#"+nm,"#"+fmid).attr("checked",true);
+										$("#"+nm,"#"+fmid).attr("defaultChecked",true); //ie
+									} else {
+										$("#"+nm,"#"+fmid).attr("checked",false);
+										$("#"+nm,"#"+fmid).attr("defaultChecked",""); //ie
+									}
 								}
 								break;
 							case 'custom' :

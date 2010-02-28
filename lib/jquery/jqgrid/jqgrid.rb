@@ -199,7 +199,7 @@ module ActionView
               sortname: '#{options[:subgrid][:sort_column]}',
               sortorder: '#{options[:subgrid][:sort_order]}',
               viewrecords: true,
-              #toolbar : [true,"top"], 
+              //toolbar : [true,"top"], 
               #{subgrid_inline_edit}
               #{subgrid_direct_link}
               height: '100%'
