@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{compass-jquery-plugin}
-  s.version = "0.3.0.pre2"
+  s.version = "0.3.0.pre3"
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kosmas Schuetz"]
@@ -36,6 +36,13 @@ Gem::Specification.new do |s|
      "lib/jquery.ui.rb",
      "lib/jquery/compass_plugin.rb",
      "lib/jquery/dynatree.rb",
+     "lib/jquery/gridify.rb",
+     "lib/jquery/gridify/assertions.rb",
+     "lib/jquery/gridify/grid.rb",
+     "lib/jquery/gridify/grid_column.rb",
+     "lib/jquery/gridify/grid_finder.rb",
+     "lib/jquery/gridify/grid_options.rb",
+     "lib/jquery/gridify/grid_view.rb",
      "lib/jquery/jqgrid.rb",
      "lib/jquery/jqgrid/jqgrid.rb",
      "lib/jquery/jqgrid/jqgrid2xml.rb",
