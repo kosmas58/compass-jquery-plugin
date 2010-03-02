@@ -323,7 +323,8 @@ module ActionView
               #{editable}
               #{subgrid_enabled}
               #{subgrid}
-              // toppager: false      
+              // toppager: false,
+              // headertitles: false      
             });
             jQuery("##{id}").jqGrid('navGrid', '##{id}_pager',
               {edit:#{edit_button},add:#{options[:add]},del:#{options[:delete]},search:#{options[:search]},refresh:true},
