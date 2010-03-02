@@ -298,7 +298,7 @@ module Gridify
             grids.each(function(index) {
               gridId = jQuery(this).attr('id');
               gridParentWidth = jQuery('#gbox_' + gridId).parent().width();
-              jQuery('#' + gridId).setGridWidth(gridParentWidth);
+              jQuery('#' + gridId).jqGrid('setGridWidth', gridParentWidth);
             });
           }
         };
