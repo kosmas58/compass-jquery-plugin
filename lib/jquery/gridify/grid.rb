@@ -1,8 +1,8 @@
-require 'gridify/assertions'
-require 'gridify/grid_options'
-require 'gridify/grid_view'
-require 'gridify/grid_column'
-require 'gridify/grid_finder'
+require 'jquery/gridify/assertions'
+require 'jquery/gridify/grid_options'
+require 'jquery/gridify/grid_view'
+require 'jquery/gridify/grid_column'
+require 'jquery/gridify/grid_finder'
 
 # NOTE: for readablity/clarity, native jqGrid options should be string; Ruby ones as syms
 
