@@ -198,10 +198,14 @@ module Gridify
       else
         s << %Q^ grid = jQuery("##{dom_id}").jqGrid(#{to_json})^
       end
+      
+      s << '; '
 
       # tag the grid as fluid so we can find it on resize events  
       if width_fit == :fluid 
-        s << %Q^ .addClass("fluid")^                    
+        s << %Q(
+          jQuery("##{dom_id}").addClass("fluid");
+        )                    
       end
 
       # override tableToGrid colmodel options as needed (sortable)
@@ -209,10 +213,10 @@ module Gridify
 
       # resize method
       if resizable
-        s << %Q^ .jqGrid('gridResize', #{resizable.to_json})^  
+        s << %Q(
+          jQuery("##{dom_id}").jqGrid('gridResize', #{resizable.to_json});
+        )  
       end
-      
-      s << '; '
 
       # pager buttons (navGrid)
       if pager
