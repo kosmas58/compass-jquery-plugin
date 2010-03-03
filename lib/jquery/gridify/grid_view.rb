@@ -211,6 +211,8 @@ module Gridify
       if resizable
         s << %Q^ .jqGrid('gridResize', #{resizable.to_json})^  
       end
+      
+      s << '; '
 
       # pager buttons (navGrid)
       if pager
@@ -223,24 +225,28 @@ module Gridify
           'refresh' => refresh_button.present?
         }.merge(jqgrid_nav_options||{})
         
-        s << %Q^ .navGrid('##{pager}',
-                      #{nav_params.to_json},
-                      #{edit_button_options.to_json_with_js},
-                      #{add_button_options.to_json_with_js},
-                      #{delete_button_options.to_json_with_js},
-                      #{search_button_options.to_json_with_js},
-                      #{view_button_options.to_json_with_js}
-                    )^
+        s << %Q(
+          jQuery("##{dom_id}").jqGrid('navGrid', '##{pager}',
+                 #{nav_params.to_json},
+                 #{edit_button_options.to_json_with_js},
+                 #{add_button_options.to_json_with_js},
+                 #{delete_button_options.to_json_with_js},
+                 #{search_button_options.to_json_with_js},
+                 #{view_button_options.to_json_with_js}
+                 );
+          )
       end
       
       if arranger_type.include?(:hide_show)
-        s << %Q^ .jqGrid('navButtonAdd','##{pager}',{ 
-                      caption: "Columns", 
-                      title: "Hide/Show Columns", 
-                      onClickButton : function (){ jQuery("##{dom_id}").jqGrid('setColumns',
-                        #{arranger_options(:hide_show).to_json_with_js} );
-                        }
-                      })^
+        s << %Q(
+          jQuery("##{dom_id}").jqGrid('navButtonAdd','##{pager}',{ 
+                 caption: "Columns", 
+                 title: "Hide/Show Columns", 
+                 onClickButton : function (){ jQuery("##{dom_id}").jqGrid('setColumns',
+                   #{arranger_options(:hide_show).to_json_with_js} );
+                  }
+          });
+        )
       end
       if arranger_type.include?(:chooser)
         # hackey way to build the string but gets it done
@@ -257,24 +263,26 @@ module Gridify
           'title' => 'Arrange Columns',
           'onClickButton' => 'chooser_code'
         }.merge(arranger_options(:chooser))
-        s << %Q^ .jqGrid('navButtonAdd','##{pager}', #{chooser_opts.to_json.gsub('"chooser_code"', chooser_code)} )^
+        s << %Q^ jQuery("##{dom_id}").jqGrid('navButtonAdd','##{pager}', #{chooser_opts.to_json.gsub('"chooser_code"', chooser_code)} );^
       end
       
       if search_toolbar
         # I wish we could put this in the header rather than the pager
-        s << %Q^ .jqGrid('navButtonAdd',"##{pager}", { caption:"Toggle", title:"Toggle Search Toolbar", buttonicon: 'ui-icon-pin-s', onClickButton: function(){ grid[0].toggleToolbar() } })  
-                 .jqGrid('navButtonAdd',"##{pager}", { caption:"Clear", title:"Clear Search", buttonicon: 'ui-icon-refresh', onClickButton: function(){ grid[0].clearToolbar() } }) 
-                 .jqGrid('filterToolbar')^
+        s << %Q(
+          jQuery("##{dom_id}").jqGrid('navButtonAdd',"##{pager}", { caption:"Toggle", title:"Toggle Search Toolbar", buttonicon: 'ui-icon-pin-s', onClickButton: function(){ grid[0].toggleToolbar() } });  
+          jQuery("##{dom_id}").jqGrid('navButtonAdd',"##{pager}", { caption:"Clear", title:"Clear Search", buttonicon: 'ui-icon-refresh', onClickButton: function(){ grid[0].clearToolbar() } }); 
+          jQuery("##{dom_id}").jqGrid('filterToolbar');
+        )
       end
       
       # TODO: built in event handlers, eg
       # loadError 
       # onSelectRow, onDblClickRow, onRightClickRow etc
       
-      s << '; '
-      
       unless search_toolbar == :visible
-        s << %Q^ grid[0].toggleToolbar(); ^
+        s << %Q(
+         grid[0].toggleToolbar();
+         )
       end
 
       # # keep page controls centered (jqgrid bug) [eg appears when :width_fit => :scroll]
@@ -293,7 +301,8 @@ module Gridify
       
       # afterSubmit: display error message in response
       
-      %Q^ function gridify_fluid_recalc_width(){
+      %Q(
+        function gridify_fluid_recalc_width(){
           if (grids = jQuery('.fluid.ui-jqgrid-btable:visible')) {
             grids.each(function(index) {
               gridId = jQuery(this).attr('id');
@@ -312,7 +321,7 @@ module Gridify
             return true;
           }
         }
-      ^
+      )
     end
 
 
