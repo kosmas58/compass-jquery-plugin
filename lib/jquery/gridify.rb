@@ -30,8 +30,8 @@ module Gridify
       @grids || {}
     end
     
-    def grid
-      grids[:grid]  
+    def grid(name=nil)
+      name ? grids[name] : grids[:grid]  
     end
     
     

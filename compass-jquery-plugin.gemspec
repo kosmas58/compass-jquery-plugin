@@ -227,6 +227,8 @@ Gem::Specification.new do |s|
      "templates/jqgrid/i18n/jqgrid/locale-ro.min.js",
      "templates/jqgrid/i18n/jqgrid/locale-ru.js",
      "templates/jqgrid/i18n/jqgrid/locale-ru.min.js",
+     "templates/jqgrid/i18n/jqgrid/locale-sk.js",
+     "templates/jqgrid/i18n/jqgrid/locale-sk.min.js",
      "templates/jqgrid/i18n/jqgrid/locale-sp.js",
      "templates/jqgrid/i18n/jqgrid/locale-sp.min.js",
      "templates/jqgrid/i18n/jqgrid/locale-sv.js",
