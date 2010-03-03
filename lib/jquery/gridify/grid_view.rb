@@ -13,22 +13,30 @@ module Gridify
       
       s = ''
       if options[:script]
-        s << %Q^<script type="text/javascript">^       
+        s << %Q^
+        <script type="text/javascript">
+        ^       
       end
 
       s << js_helpers
 
       if options[:ready]
-        s << %Q^jQuery(document).ready(function(){^    
+        s << %Q^
+        jQuery(document).ready(function(){
+        ^
       end
       
       s << jqgrid_javascript(options)
                   
       if options[:ready]
-        s << %Q^});^ 
+        s << %Q^
+        });
+        ^ 
       end
       if options[:script]
-        s << %Q^</script>^
+        s << %Q^
+        </script>
+        ^
       end
       s     
     end
@@ -193,19 +201,25 @@ module Gridify
       s = ''
 
       if table_to_grid
-        s << %Q^ tableToGrid("##{dom_id}", #{to_json});^
-        s << %Q^ grid = jQuery("##{dom_id}") ^ 
+        s << %Q^
+        tableToGrid("##{dom_id}", #{to_json});
+        ^
+        s << %Q^
+        grid = jQuery("##{dom_id}")
+        ^ 
       else
-        s << %Q^ grid = jQuery("##{dom_id}").jqGrid(#{to_json})^
+        s << %Q^
+        grid = jQuery("##{dom_id}").jqGrid(#{to_json})
+        ^
       end
       
-      s << '; '
+      s << ';'
 
       # tag the grid as fluid so we can find it on resize events  
       if width_fit == :fluid 
-        s << %Q(
-          jQuery("##{dom_id}").addClass("fluid");
-        )                    
+        s << %Q^
+        jQuery("##{dom_id}").addClass("fluid");
+        ^                    
       end
 
       # override tableToGrid colmodel options as needed (sortable)
@@ -213,9 +227,9 @@ module Gridify
 
       # resize method
       if resizable
-        s << %Q(
-          jQuery("##{dom_id}").jqGrid('gridResize', #{resizable.to_json});
-        )  
+        s << %Q^
+        jQuery("##{dom_id}").jqGrid('gridResize', #{resizable.to_json});
+        ^  
       end
 
       # pager buttons (navGrid)
@@ -229,28 +243,28 @@ module Gridify
           'refresh' => refresh_button.present?
         }.merge(jqgrid_nav_options||{})
         
-        s << %Q(
-          jQuery("##{dom_id}").jqGrid('navGrid', '##{pager}',
-                 #{nav_params.to_json},
-                 #{edit_button_options.to_json_with_js},
-                 #{add_button_options.to_json_with_js},
-                 #{delete_button_options.to_json_with_js},
-                 #{search_button_options.to_json_with_js},
-                 #{view_button_options.to_json_with_js}
-                 );
-          )
+        s << %Q^
+        jQuery("##{dom_id}").jqGrid('navGrid', '##{pager}',
+               #{nav_params.to_json},
+               #{edit_button_options.to_json_with_js},
+               #{add_button_options.to_json_with_js},
+               #{delete_button_options.to_json_with_js},
+               #{search_button_options.to_json_with_js},
+               #{view_button_options.to_json_with_js}
+               );
+        ^
       end
       
       if arranger_type.include?(:hide_show)
-        s << %Q(
-          jQuery("##{dom_id}").jqGrid('navButtonAdd','##{pager}',{ 
-                 caption: "Columns", 
-                 title: "Hide/Show Columns", 
-                 onClickButton : function (){ jQuery("##{dom_id}").jqGrid('setColumns',
-                   #{arranger_options(:hide_show).to_json_with_js} );
-                  }
-          });
-        )
+        s << %Q^
+        jQuery("##{dom_id}").jqGrid('navButtonAdd','##{pager}',{ 
+               caption: "Columns", 
+               title: "Hide/Show Columns", 
+               onClickButton : function (){ jQuery("##{dom_id}").jqGrid('setColumns',
+                 #{arranger_options(:hide_show).to_json_with_js} );
+               }
+        });
+        ^
       end
       if arranger_type.include?(:chooser)
         # hackey way to build the string but gets it done
@@ -267,16 +281,18 @@ module Gridify
           'title' => 'Arrange Columns',
           'onClickButton' => 'chooser_code'
         }.merge(arranger_options(:chooser))
-        s << %Q^ jQuery("##{dom_id}").jqGrid('navButtonAdd','##{pager}', #{chooser_opts.to_json.gsub('"chooser_code"', chooser_code)} );^
+        s << %Q^
+        jQuery("##{dom_id}").jqGrid('navButtonAdd','##{pager}', #{chooser_opts.to_json.gsub('"chooser_code"', chooser_code)} );
+        ^
       end
       
       if search_toolbar
         # I wish we could put this in the header rather than the pager
-        s << %Q(
-          jQuery("##{dom_id}").jqGrid('navButtonAdd',"##{pager}", { caption:"Toggle", title:"Toggle Search Toolbar", buttonicon: 'ui-icon-pin-s', onClickButton: function(){ grid[0].toggleToolbar() } });  
-          jQuery("##{dom_id}").jqGrid('navButtonAdd',"##{pager}", { caption:"Clear", title:"Clear Search", buttonicon: 'ui-icon-refresh', onClickButton: function(){ grid[0].clearToolbar() } }); 
-          jQuery("##{dom_id}").jqGrid('filterToolbar');
-        )
+        s << %Q^
+        jQuery("##{dom_id}").jqGrid('navButtonAdd',"##{pager}", { caption:"Toggle", title:"Toggle Search Toolbar", buttonicon: 'ui-icon-pin-s', onClickButton: function(){ grid[0].toggleToolbar() } });
+        jQuery("##{dom_id}").jqGrid('navButtonAdd',"##{pager}", { caption:"Clear", title:"Clear Search", buttonicon: 'ui-icon-refresh', onClickButton: function(){ grid[0].clearToolbar() } });
+        jQuery("##{dom_id}").jqGrid('filterToolbar');
+        ^
       end
       
       # TODO: built in event handlers, eg
@@ -284,9 +300,9 @@ module Gridify
       # onSelectRow, onDblClickRow, onRightClickRow etc
       
       unless search_toolbar == :visible
-        s << %Q(
-         grid[0].toggleToolbar();
-         )
+        s << %Q^
+        grid[0].toggleToolbar();
+        ^
       end
 
       # # keep page controls centered (jqgrid bug) [eg appears when :width_fit => :scroll]
@@ -305,27 +321,26 @@ module Gridify
       
       # afterSubmit: display error message in response
       
-      %Q(
-        function gridify_fluid_recalc_width(){
-          if (grids = jQuery('.fluid.ui-jqgrid-btable:visible')) {
-            grids.each(function(index) {
-              gridId = jQuery(this).attr('id');
-              gridParentWidth = jQuery('#gbox_' + gridId).parent().width();
-              jQuery('#' + gridId).jqGrid('setGridWidth', gridParentWidth);
-            });
-          }
-        };
-
-        jQuery(window).bind('resize', gridify_fluid_recalc_width);
-        
-        function gridify_action_error_handler(r, data, action){
-          if (r.responseText != '') {
-            return [false, r.responseText];
-          } else  {
-            return true;
-          }
+      %Q^
+      function gridify_fluid_recalc_width(){
+        if (grids = jQuery('.fluid.ui-jqgrid-btable:visible')) {
+          grids.each(function(index) {
+            gridId = jQuery(this).attr('id');
+            gridParentWidth = jQuery('#gbox_' + gridId).parent().width();
+            jQuery('#' + gridId).jqGrid('setGridWidth', gridParentWidth);
+          });
         }
-      )
+      };
+            
+      jQuery(window).bind('resize', gridify_fluid_recalc_width);
+      function gridify_action_error_handler(r, data, action){
+        if (r.responseText != '') {
+          return [false, r.responseText];
+        } else  {
+          return true;
+        }
+      }
+      ^
     end
 
 
