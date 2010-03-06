@@ -3,18 +3,18 @@ require 'lib/handle_js_files'
 require 'lib/jquery.ui'
 
 # Compass generator for jrails 0.1+
-JRAILS_14_SRC = File.join(GEM_ROOT, 'src', 'jrails.1.4.1')
+JRAILS_14_SRC = File.join(GEM_ROOT, 'src', 'jrails.1.4.2')
 JRAILS_14_SRC_SCRIPTS = JRAILS_14_SRC + "/*.js"
 
-JQUERY_14_SRC = File.join(GEM_ROOT, 'src', 'jquery.1.4.1')
+JQUERY_14_SRC = File.join(GEM_ROOT, 'src', 'jquery.1.4.2')
 JQUERY_14_SRC_SCRIPTS = JQUERY_14_SRC + "/*.js"
 
-JQUERY_UI_18_SRC = File.join(GEM_ROOT, 'src', 'jquery.ui.1.8rc1')
+JQUERY_UI_18_SRC = File.join(GEM_ROOT, 'src', 'jquery.ui.1.8rc3')
 JQUERY_UI_18_SRC_SCRIPTS = File.join(JQUERY_UI_18_SRC, 'js') + "/*.js"
 JQUERY_UI_18_SRC_THEMES = File.join(JQUERY_UI_18_SRC, 'themes')
 JQUERY_UI_18_SRC_TRANSLATIONS = File.join(JQUERY_UI_18_SRC, 'js', 'i18n') #+ "/*.js"
 
-JRAILS_14_DEST_TEMPLATES = File.join(GEM_ROOT, 'templates', 'jrails-1.4.1')
+JRAILS_14_DEST_TEMPLATES = File.join(GEM_ROOT, 'templates', 'jrails-1.4.2')
 JRAILS_14_DEST_TRANSLATIONS = File.join(JRAILS_14_DEST_TEMPLATES, 'i18n', 'jquery.ui')
 JRAILS_14_DEST_THEMES = File.join(JRAILS_14_DEST_TEMPLATES, 'jquery.ui')
 JRAILS_14_DEST_IMAGES = File.join(JRAILS_14_DEST_TEMPLATES, 'jquery.ui')
@@ -49,15 +49,15 @@ namespace :build do
       
       # jQuery 1.4
     
-      open File.join(JRAILS_14_DEST_TEMPLATES, 'jquery-1.4.1.js'), 'w' do |f|
+      open File.join(JRAILS_14_DEST_TEMPLATES, 'jquery-1.4.2.js'), 'w' do |f|
         f.print concat_files(all_files(JQUERY_14_SRC_SCRIPTS))
       end
-      manifest.print "javascript 'jquery-1.4.1.js'\n" 
+      manifest.print "javascript 'jquery-1.4.2.js'\n" 
     
-      open File.join(JRAILS_14_DEST_TEMPLATES, 'jquery-1.4.1.min.js'), 'w' do |f|
+      open File.join(JRAILS_14_DEST_TEMPLATES, 'jquery-1.4.2.min.js'), 'w' do |f|
         f.print compress_js(all_files(JQUERY_14_SRC_SCRIPTS), "google")
       end
-      manifest.print "javascript 'jquery-1.4.1.min.js'\n" 
+      manifest.print "javascript 'jquery-1.4.2.min.js'\n" 
       
       # jQuery 1.4 Comapt 1.3
       
@@ -95,7 +95,7 @@ namespace :build do
         end
       end       
     
-      # jQuery.UI 1.8rc1
+      # jQuery.UI 1.8rc3
     
       # Scripts
       
@@ -107,7 +107,7 @@ namespace :build do
         'jquery.effects.core.js',
         'jquery.effects.drop.js',
         'jquery.effects.explode.js',
-        'jquery.effects.fade.js',
+        #'jquery.effects.fade.js',
         'jquery.effects.fold.js',
         'jquery.effects.highlight.js',
         'jquery.effects.pulsate.js',
@@ -134,15 +134,15 @@ namespace :build do
         'jquery.ui.widget.js'
       ].collect {|filename| File.read(File.join(JQUERY_UI_18_SRC, 'js', filename))}.join "\n\n"  
       
-      open File.join(JRAILS_14_DEST_TEMPLATES, 'jquery-ui-1.8rc1.js'), 'w' do |f|
+      open File.join(JRAILS_14_DEST_TEMPLATES, 'jquery-ui-1.8rc3.js'), 'w' do |f|
         f.print concat_files(all_jquery_ui_scripts)
       end
-      manifest.print "javascript 'jquery-ui-1.8rc1.js'\n"
+      manifest.print "javascript 'jquery-ui-1.8rc3.js'\n"
     
-      open File.join(JRAILS_14_DEST_TEMPLATES, 'jquery-ui-1.8rc1.min.js'), 'w' do |f|
+      open File.join(JRAILS_14_DEST_TEMPLATES, 'jquery-ui-1.8rc3.min.js'), 'w' do |f|
         f.print compress_js(all_jquery_ui_scripts, "google")
       end
-      manifest.print "javascript 'jquery-ui-1.8rc1.min.js'\n"
+      manifest.print "javascript 'jquery-ui-1.8rc3.min.js'\n"
       
       # jQuery UI locales
       
