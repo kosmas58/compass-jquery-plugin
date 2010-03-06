@@ -53,19 +53,33 @@ class JqueryUiTheme
   end
   
   # Convert all the ui.*.css files into sass goodness
-  def convert_css(stylesheets)
+  def convert_css(version, stylesheets)
     FileUtils.mkdir_p(File.join(stylesheets))
-    Dir.foreach @base_theme_directory do |file|
-      next unless /^ui\..*\.css$/ =~ file
-      next if %w{ui.all.css ui.base.css}.include? file
-      css = File.read(File.join(@base_theme_directory, file))
-      open File.join(stylesheets, '_' + file.gsub(/\.css$/,'.sass').gsub(/^ui\./,'')), 'w' do |f|
-        if file == THEME_FILENAME
-          f.print(self.class.theme_css2sass(@base_theme))
-        else
-          f.print(self.class.css2sass(css))
+    Dir.foreach @base_theme_directory do |file|      
+      if version == 14
+        next unless /^jquery.ui\..*\.css$/ =~ file
+        next if %w{jquery.ui.all.css jquery.ui.base.css}.include? file
+        css = File.read(File.join(@base_theme_directory, file))
+        open File.join(stylesheets, '_' + file.gsub(/\.css$/,'.sass').gsub(/^jquery.ui\./,'')), 'w' do |f|
+          if file == THEME_FILENAME
+            f.print(self.class.theme_css2sass(@base_theme))
+          else
+            f.print(self.class.css2sass(css))
+          end
+          f.close
         end
-        f.close
+      else
+        next unless /^ui\..*\.css$/ =~ file
+        next if %w{ui.all.css ui.base.css}.include? file
+        css = File.read(File.join(@base_theme_directory, file))
+        open File.join(stylesheets, '_' + file.gsub(/\.css$/,'.sass').gsub(/^ui\./,'')), 'w' do |f|
+          if file == THEME_FILENAME
+            f.print(self.class.theme_css2sass(@base_theme))
+          else
+            f.print(self.class.css2sass(css))
+          end
+          f.close
+        end
       end
     end
   end
