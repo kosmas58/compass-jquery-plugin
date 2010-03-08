@@ -13,8 +13,9 @@
 	$Version:$
 	$Revision:$
 
- 	@depends: jquery.js
- 	@depends: ui.core.js
+ 	@depends: jquery-1.4.2.min.js
+ 	@depends: jquery.ui.core.js
+ 	@depends: jquery.ui.widget.js
     @depends: jquery.cookie.js
 *************************************************************************/
 
@@ -114,7 +115,7 @@ DynaTreeNode.prototype = {
 //		this.isRead = false; // Lazy content not yet read
 		this.isLoading = false; // Lazy content is being loaded
 		this.hasSubSel = false;
-		this.bExpanded = true;
+		this.bExpanded = true; // Needed to work with jQuery 1.4.2 and jQuery UI 1.8rc3
 	},
 
 	toString: function() {
