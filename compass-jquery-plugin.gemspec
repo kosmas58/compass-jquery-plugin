@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kosmas Schuetz"]
-  s.date = %q{2010-03-08}
+  s.date = %q{2010-03-09}
   s.description = %q{A compass plugin that integrates jRails, jQuery, jQuery UI and Themes, jqGrid and more into the Compass Sass framework.}
   s.email = %q{kosmas.schuetz@gmx.com}
   s.extra_rdoc_files = [
@@ -116,36 +116,6 @@ Gem::Specification.new do |s|
      "templates/dynatree/jquery.ui/dynatree.crystal/rbIntermediate_hover.png",
      "templates/dynatree/jquery.ui/dynatree.crystal/rbUnchecked.png",
      "templates/dynatree/jquery.ui/dynatree.crystal/rbUnchecked_hover.png",
-     "templates/dynatree/jquery.ui/dynatree.vista.sass",
-     "templates/dynatree/jquery.ui/dynatree.vista/cbChecked.png",
-     "templates/dynatree/jquery.ui/dynatree.vista/cbChecked_hover.png",
-     "templates/dynatree/jquery.ui/dynatree.vista/cbIntermediate.png",
-     "templates/dynatree/jquery.ui/dynatree.vista/cbIntermediate_hover.png",
-     "templates/dynatree/jquery.ui/dynatree.vista/cbUnchecked.png",
-     "templates/dynatree/jquery.ui/dynatree.vista/cbUnchecked_hover.png",
-     "templates/dynatree/jquery.ui/dynatree.vista/collapsed.png",
-     "templates/dynatree/jquery.ui/dynatree.vista/collapsed_hover.png",
-     "templates/dynatree/jquery.ui/dynatree.vista/customDoc1.png",
-     "templates/dynatree/jquery.ui/dynatree.vista/customFolder1.png",
-     "templates/dynatree/jquery.ui/dynatree.vista/doc_with_children.png",
-     "templates/dynatree/jquery.ui/dynatree.vista/document.png",
-     "templates/dynatree/jquery.ui/dynatree.vista/empty.png",
-     "templates/dynatree/jquery.ui/dynatree.vista/expanded.png",
-     "templates/dynatree/jquery.ui/dynatree.vista/expanded_hover.png",
-     "templates/dynatree/jquery.ui/dynatree.vista/folder.png",
-     "templates/dynatree/jquery.ui/dynatree.vista/folder_docs.png",
-     "templates/dynatree/jquery.ui/dynatree.vista/folder_images.png",
-     "templates/dynatree/jquery.ui/dynatree.vista/folder_page.png",
-     "templates/dynatree/jquery.ui/dynatree.vista/ltDoc.png",
-     "templates/dynatree/jquery.ui/dynatree.vista/ltError.png",
-     "templates/dynatree/jquery.ui/dynatree.vista/ltWait.ani",
-     "templates/dynatree/jquery.ui/dynatree.vista/ltWait.gif",
-     "templates/dynatree/jquery.ui/dynatree.vista/rbChecked.png",
-     "templates/dynatree/jquery.ui/dynatree.vista/rbChecked_hover.png",
-     "templates/dynatree/jquery.ui/dynatree.vista/rbIntermediate.png",
-     "templates/dynatree/jquery.ui/dynatree.vista/rbIntermediate_hover.png",
-     "templates/dynatree/jquery.ui/dynatree.vista/rbUnchecked.png",
-     "templates/dynatree/jquery.ui/dynatree.vista/rbUnchecked_hover.png",
      "templates/dynatree/jquery.ui/dynatree.xp.sass",
      "templates/dynatree/jquery.ui/dynatree.xp/cbChecked.png",
      "templates/dynatree/jquery.ui/dynatree.xp/cbChecked_hover.png",
