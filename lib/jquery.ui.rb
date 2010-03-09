@@ -5,14 +5,19 @@ class JqueryUiTheme
   
   VARIABLE_NAME_BASE = 'ui_'
   VARIABLE_MATCHER = /(\S*)\/\*\{(\w*)\}\*\//
-  THEME_FILENAME = 'ui.theme.css'
   
   attr_accessor :base_theme
   
   # Initialize with the base theme
-  def initialize(base_theme_directory)
+  def initialize(version, base_theme_directory)
+    if version == 14
+      @prefix = 'jquery.ui'
+    else
+      @prefix = 'ui'
+    end
+    @theme_filename = "#{@prefix}.theme.css"
     @base_theme_directory = base_theme_directory
-    @base_theme = File.read(File.join(@base_theme_directory, THEME_FILENAME))
+    @base_theme = File.read(File.join(@base_theme_directory, @theme_filename))
     if @base_theme[3775..3794] == "#363636/*{fcError}*/"
       print "Fixing up bug in 1.7.1 template\n"
       @base_theme[3775..3794] == "#cd0a0a/*{fcError}*/"
@@ -53,33 +58,19 @@ class JqueryUiTheme
   end
   
   # Convert all the ui.*.css files into sass goodness
-  def convert_css(version, stylesheets)
+  def convert_css(stylesheets)
     FileUtils.mkdir_p(File.join(stylesheets))
-    Dir.foreach @base_theme_directory do |file|      
-      if version == 14
-        next unless /^jquery.ui\..*\.css$/ =~ file
-        next if %w{jquery.ui.all.css jquery.ui.base.css}.include? file
-        css = File.read(File.join(@base_theme_directory, file))
-        open File.join(stylesheets, '_' + file.gsub(/\.css$/,'.sass').gsub(/^jquery.ui\./,'')), 'w' do |f|
-          if file == THEME_FILENAME
-            f.print(self.class.theme_css2sass(@base_theme))
-          else
-            f.print(self.class.css2sass(css))
-          end
-          f.close
+    Dir.foreach @base_theme_directory do |file|    
+      next unless /^#{@prefix}\..*\.css$/ =~ file
+      next if ["{#{@prefix}.ui.all.css", "#{@prefix}.base.css"].include? file
+      css = File.read(File.join(@base_theme_directory, file))
+      open File.join(stylesheets, '_' + file.gsub(/\.css$/,'.sass').gsub(/^#{@prefix}\./,'')), 'w' do |f|
+        if file == @theme_filename
+          f.print(self.class.theme_css2sass(@base_theme))
+        else
+          f.print(self.class.css2sass(css))
         end
-      else
-        next unless /^ui\..*\.css$/ =~ file
-        next if %w{ui.all.css ui.base.css}.include? file
-        css = File.read(File.join(@base_theme_directory, file))
-        open File.join(stylesheets, '_' + file.gsub(/\.css$/,'.sass').gsub(/^ui\./,'')), 'w' do |f|
-          if file == THEME_FILENAME
-            f.print(self.class.theme_css2sass(@base_theme))
-          else
-            f.print(self.class.css2sass(css))
-          end
-          f.close
-        end
+        f.close
       end
     end
   end
@@ -89,7 +80,7 @@ class JqueryUiTheme
     if name == 'base'
       theme = @base_theme
     else
-      theme = File.read(File.join(dir, THEME_FILENAME))
+      theme = File.read(File.join(dir, @theme_filename))
     end
     FileUtils.mkdir_p stylesheets
     # Figure out the variables with the regexp

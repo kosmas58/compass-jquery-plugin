@@ -169,8 +169,8 @@ namespace :build do
 
       # jQuery UI Themes
       
-      ui = JqueryUiTheme.new(File.join(JQUERY_UI_17_SRC_THEMES, 'base')) 
-      ui.convert_css(13, File.join(JRAILS_13_DEST_THEMES, '_partials'))
+      ui = JqueryUiTheme.new(13, File.join(JQUERY_UI_17_SRC_THEMES, 'base')) 
+      ui.convert_css(File.join(JRAILS_13_DEST_THEMES, '_partials'))
        
       all_jquery_ui_stylesheets = [
         '_core.sass',

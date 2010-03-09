@@ -182,12 +182,14 @@ namespace :build do
 
       FileUtils.mkdir_p(File.join(JRAILS_14_DEST_THEMES))
       
-      ui = JqueryUiTheme.new(File.join(JQUERY_UI_18_SRC_THEMES, 'base')) 
-      ui.convert_css(14, File.join(JRAILS_14_DEST_THEMES, '_partials'))
+      ui = JqueryUiTheme.new(14, File.join(JQUERY_UI_18_SRC_THEMES, 'base')) 
+      ui.convert_css(File.join(JRAILS_14_DEST_THEMES, '_partials'))
        
       all_jquery_ui_stylesheets = [
         '_core.sass',
         '_accordion.sass',
+        '_autocomplete.sass',
+        '_button.sass',
         '_datepicker.sass',
         '_dialog.sass',
         '_progressbar.sass',
