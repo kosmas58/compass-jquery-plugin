@@ -2,7 +2,9 @@ module ActionView
   module Helpers  
     
     def jrails_javascripts(locale)
-      if locale != 'en'
+      if locale == 'en'
+        ;
+      else
         js = capture { javascript_include_tag "i18n/jquery.ui/datepicker-#{locale}.min.js" }  
         js << capture { '<script type="text/javascript">' }   
         js << capture { "  jQuery.datepicker.setDefaults(jQuery.datepicker.regional['#{locale}']);" }   
