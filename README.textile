@@ -3,13 +3,17 @@ h1. compass-jquery-plugin
 Get gem from <b>"Gemcutter":http://gemcutter.org/gems/compass-jquery-plugin</b>.
 Get source from <b>"github":http://github.com/kosmas58/compass-jquery-plugin</b>.
 
-http://gemcutter.org/gems/compass-jquery-plugin
 
 h2. Description
 
 A Sass-based Meta-Framework for Compass that allows you to mix and match any of the following:
 
-* jRails with jQuery 1.3.2 and jQuery.UI 1.7.2 including themes
+* jRails with 
+** jQuery 1.4.2 and jQuery.UI 1.8 including themes
+or
+** jQuery 1.3.2 and jQuery.UI 1.7.2 including themes
+* jqGrid V3.6.4
+* dynatree V0.5.2	
 
 This library requires <b>"Compass":http://wiki.github.com/chriseppstein/compass</b>.
 
@@ -17,20 +21,65 @@ h3. jRails, jQuery and jQuery.UI including themes
 
 Use compass to install the jRails, jQuery and jQuery.UI javascript library including themes into your project.
 
-<pre>compass -r jquery -f jquery -p jrails <project name></pre>
+For jQuery 1.4.x:
+<pre>compass [-r jquery] -f jquery -p jrails-1.4.2 <project name></pre>
+
+For jQuery 1.3.x
+<pre>compass [-r jquery] -f jquery -p jrails-1.3.2 <project name></pre>
 
 You will find all the stylesheets in easy-to-read Sass format at:
 
 <pre>stylesheets/jquery.ui</pre>
 
-To use the localized stylesheets and javacripts for jQuery 1.3 include:
+To use the localized stylesheets and javacripts for jQuery include (using the rails_xss plugin):
 
 <pre>
-	= stylesheet_link_tag 'compiled/jquery.ui/[theme].css', :media => 'screen, projection'	
+	= stylesheet_link_tag "compiled/jquery.ui/[theme].css", :media => 'screen, projection'
 	= javascript_include_tag :defaults
-	= jrails_javascripts I18n.locale</pre>
+    = raw jrails_javascripts(I18n.locale)</pre>
+
+alternatively you can include: 
+<pre>
+	= stylesheet_link_tag "compiled/jquery.ui/[theme].css", :media => 'screen, projection'
+    = javascript_include_tag :jquery_142 (or :jquery_132)
+    = javascript_include_tag :jrails
+    = raw jrails_javascripts(I18n.locale)</pre>
 
 into your layouts.
+
+h3. jQuery Dynatree Plugin
+
+Use compass to install the jQuery Dynatree javascript library into your project.
+
+<pre>compass [-r jquery] -f jquery -p dynatree <project name></pre>
+
+You will find all the stylesheets in easy-to-read Sass format at:
+
+<pre>stylesheets/jquery.ui</pre>
+
+To use the localized stylesheets and javacripts include:
+
+<pre>
+	= stylesheet_link_tag 'compiled/jquery.ui/dynatree.[skin].css', :media => 'screen, projection'
+ 	= javascript_include_tag :dynatree</pre>
+
+h3. jqGrid
+
+Use compass to install the jqGrid javascript library into your project.
+
+<pre>compass [-r jquery]  -f jquery -p jqgrid <project name></pre>
+
+You will find the jqGrid stylesheet in easy-to-read Sass format at:
+
+<pre>stylesheets/jquery.ui</pre>
+
+To use the localized stylesheets and javacripts include:
+
+<pre>
+    = stylesheet_link_tag 'compiled/jquery.ui/jqGrid.css', :media => 'screen, projection'
+    = raw jqgrid_javascripts(I18n.locale)</pre>
+
+jqGrid now uses the jQuery UI Themes.
 
 h2. Thanks to the Contributors:
 
@@ -38,6 +87,7 @@ h3. Rails
 
 * aaron for <b>"jRails":http://code.google.com/p/ennerchi/</b>
 * David Turnbull for <b>"compass-jquery":http://github.com/dturnbull/compass-jquery/tree/master</b>
+* Jonathan Linowes for <b>"gridify":http://github.com/linoj/gridify</b>
 * ahe for <b>"2dc_jqgrid":http://github.com/ahe/2dc_jqgrid/tree/master</b>
 * scrubber for <b>"jquery_grid_for_rails":http://github.com/scrubber/jquery_grid_for_rails/tree/master</b>
 * ariesroyaal for <b>"secret_sauce":http://github.com/ariesroyaal/secret_sauce/tree/master</b> now <b>"at":http://github.com/fugufish/secret_sauce</b>.
@@ -47,7 +97,17 @@ h3. jQuery Plugins included
 * Andreas Eberhard for <b>"jQuery PngFix Plugin (for IE)":http://jquery.andreaseberhard.de/</b>
 * Kalus Hartl for <b>"jQuery Cookie Plugin":http://stilbuero.de</b>
 * Fabrizio Balliano and Fabrizio Balliano for <b>"jQuery Layout Plugin":http://www.fabrizioballiano.net/</b>
-* John Reisig et. al. for <b>"jQuery Form Plugin":http://malsup.com/jquery/form//</b>
+* John Reisig et. al. for <b>"jQuery Form Plugin":http://malsup.com/jquery/form/</b>
+* Martin Wendt for <b>"jQuery Dynatree Plugin":http://www.wwwendt.de</b>
+* Tony Tomov for <b>"jQuery Grid Plugin":http://www.trirand.com/blog/</b>
+* Chris Domigan for <b>"jQuery ContextMenu Plugin":http://www.trendskitchens.co.nz/jquery/contextmenu/</b>
+* Denis Howlett for <b>"jQuery Table Drag and Drop Plugin":http://www.isocra.com/2008/02/table-drag-and-drop-jquery-plugin/</b>
+* Michael Aufreiter for <b>"jQuery UI Multiselect Plugin":http://quasipartikel.at</b>
+
+* Working on integration of:
+** Rob Monie for <b>"jQuery.weekCalendar":http://www.redredred.com.au/</b>
+** Kyle LeNeau for <b>"jMonthCalendar":http://www.bytecyclist.com/projects/jmonthcalendar</b>
+** David Kaneda for <b>"jQTouch":http://www.jqtouch.com/</b>
 
 h2. Note on Patches/Pull Requests
 
