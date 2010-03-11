@@ -107,7 +107,7 @@ namespace :build do
         'jquery.effects.core.js',
         'jquery.effects.drop.js',
         'jquery.effects.explode.js',
-        #'jquery.effects.fade.js',
+        'jquery.effects.fade.js',
         'jquery.effects.fold.js',
         'jquery.effects.highlight.js',
         'jquery.effects.pulsate.js',
