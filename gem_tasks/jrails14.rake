@@ -145,17 +145,6 @@ namespace :build do
       manifest.print "javascript 'jquery-ui-1.8rc3.min.js'\n"
       
       # jQuery UI locales
-      
-#      FileUtils.mkdir_p File.join(JRAILS_14_DEST_TEMPLATES, 'i18n')
-#      open File.join(JRAILS_14_DEST_TEMPLATES, 'i18n', 'jquery.ui.locale.js'), 'w' do |f|
-#        f.print concat_files(all_files(JQUERY_UI_18_SRC_TRANSLATIONS))
-#      end
-#      manifest.print "javascript 'i18n/jquery.ui.locale.js'\n"
-#          
-#      open File.join(JRAILS_14_DEST_TEMPLATES, 'i18n', 'jquery.ui.locale.min.js'), 'w' do |f|
-#        f.print compress_js(all_files(JQUERY_UI_18_SRC_TRANSLATIONS), "google")
-#      end
-#      manifest.print "javascript 'i18n/jquery.ui.locale.min.js'\n"
   
       ['i18n'].each do |path|
         FileUtils.mkdir_p File.join(JRAILS_14_DEST_TRANSLATIONS)
@@ -219,11 +208,18 @@ namespace :build do
         dest_dir = File.join(JRAILS_14_DEST_IMAGES, theme)
         FileUtils.mkdir_p dest_dir
         
+        # Fix for Autocomplete
+        if theme != :base 
+          image = 'ui-anim_basic_16x16.gif'
+          FileUtils.cp(File.join(JQUERY_UI_18_SRC_THEMES, 'base/images', image), dest_dir) 
+          manifest.print "image 'jquery.ui/#{theme}/#{image}'\n"
+        end
+        
         Dir.foreach(src_dir) do |image|
           next if /^\./ =~ image
           FileUtils.cp(File.join(src_dir, image), dest_dir)    
           manifest.print "image 'jquery.ui/#{theme}/#{image}'\n"
-        end
+        end     
       end
     end   
   end
