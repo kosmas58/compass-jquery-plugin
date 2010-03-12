@@ -427,7 +427,6 @@ module ActionView
         
         %(#{JQUERY_VAR}('#{jquery_id(element_id)}').droppable(#{options_for_javascript(options)});)
       end
-      
     end    
   end
 end

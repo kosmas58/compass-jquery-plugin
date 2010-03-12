@@ -26,3 +26,4 @@ ActionView::Helpers::AssetTagHelper.register_javascript_expansion :pngFix => ['j
 
 require 'jquery/jrails'
 require 'jquery/jquery_selector_assertions' if RAILS_ENV == 'test'
+require 'jquery/jquery_auto_complete'

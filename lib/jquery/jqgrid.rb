@@ -3,3 +3,4 @@ end
 
 require 'jquery/jqgrid/jqgrid'
 require 'jquery/jqgrid/jqgrid2xml'
+reuqire 'handle_attributes'
