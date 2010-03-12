@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{compass-jquery-plugin}
-  s.version = "0.3.0.pre4"
+  s.version = "0.3.0.pre5"
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kosmas Schuetz"]
-  s.date = %q{2010-03-11}
+  s.date = %q{2010-03-12}
   s.description = %q{A compass plugin that integrates jRails, jQuery, jQuery UI and Themes, jqGrid and more into the Compass Sass framework.}
   s.email = %q{kosmas.schuetz@gmx.com}
   s.extra_rdoc_files = [
@@ -31,6 +31,7 @@ Gem::Specification.new do |s|
      "gem_tasks/jrails14.rake",
      "gem_tasks/rubygems.rake",
      "lib/compiler.jar",
+     "lib/handle_attributes.rb",
      "lib/handle_js_files.rb",
      "lib/jquery.rb",
      "lib/jquery.ui.rb",
@@ -49,6 +50,7 @@ Gem::Specification.new do |s|
      "lib/jquery/jqgrid/unused/2dc_jqgrid_mod.rb",
      "lib/jquery/jqgrid/unused/2dc_jqrid.rb",
      "lib/jquery/jqgrid/unused/jqgrid_old.rb",
+     "lib/jquery/jquery_auto_complete.rb",
      "lib/jquery/jquery_selector_assertions.rb",
      "lib/jquery/jrails.rb",
      "lib/yuicompressor-2.4.2.jar",
