@@ -3,18 +3,18 @@ require 'lib/handle_js_files'
 require 'lib/jquery.ui'
 
 # Compass generator for jrails 0.1+
-JRAILS_14_SRC = File.join(GEM_ROOT, 'src', 'jrails.1.4.2')
+JRAILS_14_SRC = File.join(GEM_ROOT, 'src', '1.4', 'jrails.1.4.2')
 JRAILS_14_SRC_SCRIPTS = JRAILS_14_SRC + "/*.js"
 
-JQUERY_14_SRC = File.join(GEM_ROOT, 'src', 'jquery.1.4.2')
+JQUERY_14_SRC = File.join(GEM_ROOT, 'src', '1.4', 'jquery.1.4.2')
 JQUERY_14_SRC_SCRIPTS = JQUERY_14_SRC + "/*.js"
 
-JQUERY_UI_18_SRC = File.join(GEM_ROOT, 'src', 'jquery.ui.1.8rc3')
+JQUERY_UI_18_SRC = File.join(GEM_ROOT, 'src', '1.4', 'jquery.ui.1.8rc3')
 JQUERY_UI_18_SRC_SCRIPTS = File.join(JQUERY_UI_18_SRC, 'js') + "/*.js"
 JQUERY_UI_18_SRC_THEMES = File.join(JQUERY_UI_18_SRC, 'themes')
 JQUERY_UI_18_SRC_TRANSLATIONS = File.join(JQUERY_UI_18_SRC, 'js', 'i18n') #+ "/*.js"
 
-JRAILS_14_DEST_TEMPLATES = File.join(GEM_ROOT, 'templates', 'jrails-1.4.2')
+JRAILS_14_DEST_TEMPLATES = File.join(GEM_ROOT, 'templates', 'jrails-1.4')
 JRAILS_14_DEST_TRANSLATIONS = File.join(JRAILS_14_DEST_TEMPLATES, 'i18n', 'jquery.ui')
 JRAILS_14_DEST_THEMES = File.join(JRAILS_14_DEST_TEMPLATES, 'jquery.ui')
 JRAILS_14_DEST_IMAGES = File.join(JRAILS_14_DEST_TEMPLATES, 'jquery.ui')
