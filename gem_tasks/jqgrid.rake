@@ -34,7 +34,7 @@ all_scripts = [
   'js/jquery.fmatter.js',
   'js/jquery.searchFilter.js',
   'js/JsonXml.js',
-  'plugins/jquery.contextmenu.js',
+  #'plugins/jquery.contextmenu.js',
   'plugins/jquery.tablednd.js',
   'plugins/ui.multiselect.js'
 ].collect {|filename| File.read(File.join(JQGRID_SRC, filename))}.join "\n\n"
