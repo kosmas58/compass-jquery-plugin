@@ -149,12 +149,12 @@ namespace :build do
       ['i18n'].each do |path|
         FileUtils.mkdir_p File.join(JRAILS_14_DEST_TRANSLATIONS)
         Dir.foreach JQUERY_UI_18_SRC_TRANSLATIONS do |file|
-          next unless /^ui\.datepicker-(.+)\.js$/ =~ file
+          next unless /^jquery.ui\.datepicker-(.+)\.js$/ =~ file
           lang = file
           #lang.gsub!(/^ui\.datepicker-(.+)\.js$/, '')
           #puts lang
           js = File.read File.join(JQUERY_UI_18_SRC_TRANSLATIONS, file)
-          file.gsub!(/^ui\./,'')          
+          file.gsub!(/^jquery.ui\./,'')          
           manifest.print "javascript '#{File.join(path, 'jquery.ui', file)}'\n"
           open File.join(JRAILS_14_DEST_TRANSLATIONS, file), 'w' do |f|
             f.write js
