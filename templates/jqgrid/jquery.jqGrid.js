@@ -183,7 +183,8 @@ $.fn.jqGrid = function( pin ) {
 			ajaxGridOptions :{},
 			direction : "ltr",
 			toppager: false,
-			headertitles: false
+			headertitles: false,
+			scrollTimeout: 200
 		}, $.jgrid.defaults, pin || {});
 		var grid={
 			headers:[],
@@ -292,7 +293,7 @@ $.fn.jqGrid = function( pin ) {
 						return;
 					}
 					if (grid.hDiv.loading) {
-						grid.timer = setTimeout(grid.populateVisible, 200);
+						grid.timer = setTimeout(grid.populateVisible, p.scrollTimeout);
 					} else {
 						p.page = page;
 						if (empty) {
@@ -1699,20 +1700,15 @@ $.jgrid.extend({
 	},
 	setSelection : function(selection,onsr) {
 		return this.each(function(){
-			var $t = this, stat,pt, olr, ner, ia, tpsr;
+			var $t = this, stat,pt, ner, ia, tpsr;
 			if(selection === undefined) return;
 			onsr = onsr === false ? false : true;
 			pt=$t.rows.namedItem(selection+"");
 			if(!pt) return;
-			if($t.p.selrow && $t.p.scrollrows===true) {
-				olr = $t.rows.namedItem($t.p.selrow).rowIndex;
+			if($t.p.scrollrows===true) {
 				ner = $t.rows.namedItem(selection).rowIndex;
 				if(ner >=0 ){
-					if(ner > olr ) {
-						scrGrid(ner,'d');
-					} else {
-						scrGrid(ner,'u');
-					}
+					scrGrid(ner);
 				}
 			}
 			if(!$t.p.multiselect) {
@@ -1741,16 +1737,16 @@ $.jgrid.extend({
 					$t.p.selrow = (tpsr === undefined) ? null : tpsr;
 				}
 			}
-			function scrGrid(iR,tp){
+			function scrGrid(iR){
 				var ch = $($t.grid.bDiv)[0].clientHeight,
 				st = $($t.grid.bDiv)[0].scrollTop,
-				nROT = $t.rows[iR].offsetTop+$t.rows[iR].clientHeight,
-				pROT = $t.rows[iR].offsetTop-$t.rows[iR].clientHeight;
-				if(tp == 'd') {
-					if(pROT+22 > ch) { $($t.grid.bDiv)[0].scrollTop = nROT-22; }
-				}
-				if(tp == 'u'){
-					if (pROT < st) { $($t.grid.bDiv)[0].scrollTop = nROT-22; }
+				rpos = $t.rows[iR].offsetTop,
+				rh = $t.rows[iR].clientHeight;
+				if(rpos+rh >= ch+st) { $($t.grid.bDiv)[0].scrollTop = rpos-(ch+st)+rh+st; }
+				else if(rpos < ch+st) {
+					if(rpos < st) {
+						$($t.grid.bDiv)[0].scrollTop = rpos;
+					}
 				}
 			}
 		});
@@ -4259,7 +4255,7 @@ $.jgrid.extend({
  * Dual licensed under the MIT and GPL licenses:
  * http://www.opensource.org/licenses/mit-license.php
  * http://www.gnu.org/licenses/gpl.html
-**/ 
+**/
 var rp_ge = null;
 $.jgrid.extend({
 	searchGrid : function (p) {
@@ -4270,6 +4266,7 @@ $.jgrid.extend({
 			sValue:'searchString',
 			sOper: 'searchOper',
 			sFilter: 'filters',
+            loadDefaults: false, // this options activates loading of default filters from grid's postData for Multipe Search only.
 			beforeShowSearch: null,
 			afterShowSearch : null,
 			onInitializeSearch: null,
@@ -4282,6 +4279,7 @@ $.jgrid.extend({
 			// if you want to change or remove the order change it in sopt
 			// ['bw','eq','ne','lt','le','gt','ge','ew','cn']
 			sopt: null,
+			stringResult:true,
 			onClose : null
 			// these are common options
 		}, $.jgrid.search, p || {});
@@ -4289,6 +4287,42 @@ $.jgrid.extend({
 			var $t = this;
 			if(!$t.grid) {return;}
 			if($.fn.searchFilter) {
+
+                function applyDefaultFilters(gridDOMobj, filterSettings) {
+                    /*
+                     gridDOMobj = ointer to grid DOM object ( $(#list)[0] )
+                      What we need from gridDOMobj:
+                      gridDOMobj.SearchFilter is the pointer to the Search box, once it's created.
+                      gridDOMobj.p.postData - dictionary of post settings. These can be overriden at grid creation to
+                         contain default filter settings. We will parse these and will populate the search with defaults.
+                     filterSettings - same settings object you (would) pass to $().jqGrid('searchGrid', filterSettings);
+                    */
+
+                    // Pulling default filter settings out of postData property of grid's properties.:
+                    var defaultFilters = gridDOMobj.p.postData[filterSettings['sFilter']];
+                    // example of what we might get: {"groupOp":"and","rules":[{"field":"amount","op":"eq","data":"100"}]}
+
+                    if (defaultFilters) {
+                        if (defaultFilters['groupOp']) {
+                            gridDOMobj.SearchFilter.setGroupOp(defaultFilters['groupOp']);
+                        }
+                        if (defaultFilters['rules']) {
+                            var f;
+                            for (var i = 0, li = defaultFilters['rules'].length; i < li; i++) {
+                                f = defaultFilters['rules'][i]
+                                // we are not trying to counter all issues with filter declaration here. Just the basics to avoid lookup exceptions.
+                                if (f['field'] != undefined && f['op'] != undefined && f['data'] != undefined) {
+                                    gridDOMobj.SearchFilter.setFilter({
+                                        'sfref':gridDOMobj.SearchFilter.$.find(".sf:last"),
+                                        'filter':$.extend({},f)
+                                    })
+                                    gridDOMobj.SearchFilter.add();
+                                }
+                            }
+                        }
+                    }
+                } // end of applyDefaultFilters
+
 				var fid = "fbox_"+$t.p.id;
 				if(p.recreateFilter===true) {$("#"+fid).remove();}
 				if( $("#"+fid).html() != null ) {
@@ -4362,7 +4396,8 @@ $.jgrid.extend({
 					});
 					if(fields.length>0){
 						$("<div id='"+fid+"' role='dialog' tabindex='-1'></div>").insertBefore("#gview_"+$t.p.id);
-						$("#"+fid).searchFilter(fields, { groupOps: p.groupOps, operators: oprtr, onClose:hideFilter, resetText: p.Reset, searchText: p.Find, windowTitle: p.caption,  rulesText:p.rulesText, matchText:p.matchText, onSearch: searchFilters, onReset: resetFilters,stringResult:p.multipleSearch, ajaxSelectOptions: $.extend({},$.jgrid.ajaxOptions,$t.p.ajaxSelectOptions ||{}), clone: p.cloneSearchRowOnAdd });
+                        // we really need to preserve the return value somewhere. Otherwise we loose easy access to .add() and other good methods.
+						$t.SearchFilter = $("#"+fid).searchFilter(fields, { groupOps: p.groupOps, operators: oprtr, onClose:hideFilter, resetText: p.Reset, searchText: p.Find, windowTitle: p.caption,  rulesText:p.rulesText, matchText:p.matchText, onSearch: searchFilters, onReset: resetFilters,stringResult:p.stringResult, ajaxSelectOptions: $.extend({},$.jgrid.ajaxOptions,$t.p.ajaxSelectOptions ||{}), clone: p.cloneSearchRowOnAdd });
 						$(".ui-widget-overlay","#"+fid).remove();
 						if($t.p.direction=="rtl") $(".ui-closer","#"+fid).css("float","left");
 						if (p.drag===true) {
@@ -4379,6 +4414,9 @@ $.jgrid.extend({
 							$(".ui-del, .ui-add, .ui-del, .ui-add-last, .matchText, .rulesText", "#"+fid).hide();
 							$("select[name='groupOp']","#"+fid).hide();
 						}
+                        if (p.multipleSearch === true && p.loadDefaults === true) {
+                            applyDefaultFilters($t, p);
+                        }
 						if ( $.isFunction(p.onInitializeSearch) ) { p.onInitializeSearch( $("#"+fid) ); };
 						if ( $.isFunction(p.beforeShowSearch) ) { p.beforeShowSearch($("#"+fid)); };
 						showFilter();
@@ -8675,6 +8713,7 @@ jQuery.fn.searchFilter = function(fields, options) {
         };
 
 
+
         //---------------------------------------------------------------
         // "CONSTRUCTOR" (in air quotes)
         //---------------------------------------------------------------
@@ -8934,9 +8973,9 @@ jQuery.fn.searchFilter = function(fields, options) {
                 return false;
             });
             jQ.find(".ui-search").click(function(e) {
-                var ui = jQuery(jQ.selector);
+                var ui = jQuery(jQ.selector); // pointer to search box wrapper element
                 var ruleGroup;
-                var group_op = ui.find("select[name='groupOp'] :selected").val();
+                var group_op = ui.find("select[name='groupOp'] :selected").val(); // puls "AND" or "OR"
                 if (!opts.stringResult) {
                     ruleGroup = {
                         groupOp: group_op,
@@ -8990,9 +9029,105 @@ jQuery.fn.searchFilter = function(fields, options) {
                 newRow.find("select[name='field']").change();
                 return false;
             });
-        }
-    }
 
+            this.setGroupOp = function(setting) {
+                /* a "setter" for groupping argument.
+                 *  ("AND" or "OR")
+                 *
+                 * Inputs:
+                 *  setting - a string
+                 *
+                 * Returns:
+                 *  Does not return anything. May add success / failure reporting in future versions.
+                 *
+                 *  author: Daniel Dotsenko (dotsa@hotmail.com)
+                 */
+                selDOMobj = this.$.find("select[name='groupOp']")[0];
+                var indexmap = {}, l = selDOMobj.options.length, i;
+                for (i=0; i<l; i++) {
+                    indexmap[selDOMobj.options[i].value] = i;
+                }
+                selDOMobj.selectedIndex = indexmap[setting];
+                $(selDOMobj).change();
+            }
+
+            this.setFilter = function(settings) {
+                /* a "setter" for an arbitrary SearchFilter's filter line.
+                 * designed to abstract the DOM manipulations required to infer
+                 * a particular filter is a fit to the search box.
+                 *
+                 * Inputs:
+                 *  settings - an "object" (dictionary)
+                 *   index (optional*) (to be implemented in the future) : signed integer index (from top to bottom per DOM) of the filter line to fill.
+                 *           Negative integers (rooted in -1 and lower) denote position of the line from the bottom.
+                 *   sfref (optional*) : DOM object referencing individual '.sf' (normally a TR element) to be populated. (optional)
+                 *   filter (mandatory) : object (dictionary) of form {'field':'field_value','op':'op_value','data':'data value'}
+                 *
+                 * * It is mandatory to have either index or sfref defined.
+                 *
+                 * Returns:
+                 *  Does not return anything. May add success / failure reporting in future versions.
+                 *
+                 *  author: Daniel Dotsenko (dotsa@hotmail.com)
+                 */
+
+                var o = settings['sfref'], filter = settings['filter'];
+                
+                // setting up valueindexmap that we will need to manipulate SELECT elements.
+                var fields = [],
+                    valueindexmap = {};
+                    // example of valueindexmap:
+                    // {'field1':{'index':0,'ops':{'eq':0,'ne':1}},'fieldX':{'index':1,'ops':{'eq':0,'ne':1},'data':{'true':0,'false':1}}},
+                    // if data is undefined it's a INPUT field. If defined, it's SELECT
+                selDOMobj = o.find("select[name='field']")[0];
+                for (var i=0, l=selDOMobj.options.length; i<l; i++) {
+                    valueindexmap[selDOMobj.options[i].value] = {'index':i,'ops':{}};
+                    fields.push(selDOMobj.options[i].value);
+                }
+                for (var i=0, li=fields.length; i < li; i++) {
+                    selDOMobj = o.find(".ops > select[class='field"+i+"']")[0];
+                    if (selDOMobj) {
+                        for (var j=0, lj=selDOMobj.options.length; j<lj; j++) {
+                            valueindexmap[fields[i]]['ops'][selDOMobj.options[j].value] = j;
+                        }
+                    }
+                    selDOMobj = o.find(".data > select[class='field"+i+"']")[0];
+                    if (selDOMobj) {
+                        valueindexmap[fields[i]]['data'] = {}; // this setting is the flag that 'data' is contained in a SELECT
+                        for (var j=0, lj=selDOMobj.options.length; j<lj; j++) {
+                            valueindexmap[fields[i]]['data'][selDOMobj.options[j].value] = j;
+                        }
+                    }
+                } // done populating valueindexmap
+
+                // preparsing the index values for SELECT elements.
+                var fieldvalue, fieldindex, opindex, datavalue, dataindex;
+                fieldvalue = filter['field'];
+                fieldindex = valueindexmap[fieldvalue]['index'];
+                if (fieldindex != undefined) {
+                    opindex = valueindexmap[fieldvalue]['ops'][filter['op']];
+                    datavalue = filter['data'];
+                    if (valueindexmap[fieldvalue]['data'] == undefined) {
+                        dataindex = -1; // 'data' is not SELECT, Making the var 'defined'
+                    } else {
+                        dataindex = valueindexmap[fieldvalue]['data'][datavalue]; // 'undefined' may come from here.
+                    }
+                }
+
+                // only if values for 'field' and 'op' and 'data' are 'found' in mapping...
+                if (fieldindex != undefined && opindex != undefined && dataindex != undefined) {
+                    o.find("select[name='field']")[0].selectedIndex = fieldindex;
+                    o.find("select[name='field']").change();
+                    o.find("select[name='op']")[0].selectedIndex = opindex;
+                    o.find("input.vdata").val(datavalue); // if jquery does not find any INPUT, it does not set any. This means we deal with SELECT
+                    o = o.find("select.vdata")[0];
+                    if (o) {
+                        o.selectedIndex = dataindex;
+                    }
+                }
+            } // end of this.setFilter fn
+        } // end of if fields != null
+    }
     return new SearchFilter(this, fields, options);
 };
 
