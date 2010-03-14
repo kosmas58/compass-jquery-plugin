@@ -69,7 +69,7 @@ span.custom2 span.ui-dynatree-icon { background-image: url("/images/jquery.ui/dy
 .ui-dynatree-selected span.ui-dynatree-radio:hover { background-image: url("/images/jquery.ui/dynatree.aero/rbChecked_hover.png"); }
 
 .ui-dynatree-folder span.ui-dynatree-icon { background-image: url("/images/jquery.ui/dynatree.aero/folder.png"); }
-.ui-dynatree-folder.ui-dynatree-expanded span.ui-dynatree-icon { background-image: url("/images/jquery.ui/dynatree.aero/folder_open.png"); }
+.ui-dynatree-folder.ui-dynatree-expanded span.ui-dynatree-icon { background-image: url("/images/jquery.ui/dynatree.aero/folder.png"); }
 
 .ui-dynatree-statusnode-wait span.ui-dynatree-icon { background-image: url("/images/jquery.ui/dynatree.aero/ltWait.gif"); }
 

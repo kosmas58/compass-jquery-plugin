@@ -93,7 +93,22 @@ namespace :build do
             f.write compress_js(js, "google")
           end
         end
-      end       
+      end     
+      
+      Dir.foreach File.join(JQUERY_14_SRC, 'plugins', 'images')  do |plugin|
+        next if /^\./ =~ plugin
+  
+        # Copy the theme images directory
+        src_dir = File.join(JQUERY_14_SRC, 'plugins', 'images', plugin)
+        dest_dir = File.join(JRAILS_14_DEST_IMAGES, plugin)
+        FileUtils.mkdir_p dest_dir
+        
+        Dir.foreach(src_dir) do |image|
+          next if /^\./ =~ image
+          FileUtils.cp(File.join(src_dir, image), dest_dir)    
+          manifest.print "image 'jquery.ui/#{plugin}/#{image}'\n"
+        end
+      end      
     
       # jQuery.UI 1.8rc3
     

@@ -89,6 +89,21 @@ namespace :build do
           end
         end
       end       
+      
+      Dir.foreach File.join(JQUERY_13_SRC, 'plugins', 'images')  do |plugin|
+        next if /^\./ =~ plugin
+  
+        # Copy the theme images directory
+        src_dir = File.join(JQUERY_13_SRC, 'plugins', 'images', plugin)
+        dest_dir = File.join(JRAILS_13_DEST_IMAGES, plugin)
+        FileUtils.mkdir_p dest_dir
+        
+        Dir.foreach(src_dir) do |image|
+          next if /^\./ =~ image
+          FileUtils.cp(File.join(src_dir, image), dest_dir)    
+          manifest.print "image 'jquery.ui/#{plugin}/#{image}'\n"
+        end
+      end
     
       # jQuery.UI 1.7.2
     
@@ -135,17 +150,6 @@ namespace :build do
       
       # jQuery UI locales
       
-#      FileUtils.mkdir_p File.join(JRAILS_13_DEST_TEMPLATES, 'i18n')
-#      open File.join(JRAILS_13_DEST_TEMPLATES, 'i18n', 'jquery.ui.locale.js'), 'w' do |f|
-#        f.print concat_files(all_files(JQUERY_UI_17_SRC_TRANSLATIONS))
-#      end
-#      manifest.print "javascript 'i18n/jquery.ui.locale.js'\n"
-#          
-#      open File.join(JRAILS_13_DEST_TEMPLATES, 'i18n', 'jquery.ui.locale.min.js'), 'w' do |f|
-#        f.print compress_js(all_files(JQUERY_UI_17_SRC_TRANSLATIONS), "google")
-#      end
-#      manifest.print "javascript 'i18n/jquery.ui.locale.min.js'\n"
-  
       ['i18n'].each do |path|
         FileUtils.mkdir_p File.join(JRAILS_13_DEST_TRANSLATIONS)
         Dir.foreach JQUERY_UI_17_SRC_TRANSLATIONS do |file|
