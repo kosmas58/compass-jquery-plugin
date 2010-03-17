@@ -1322,7 +1322,7 @@ Gem::Specification.new do |s|
      "templates/jrails-1.4/jquery.ui/themeSwitcher/theme_90_swanky_purse.png",
      "templates/jrails-1.4/jquery.ui/themeSwitcher/theme_90_trontastic.png",
      "templates/jrails-1.4/jquery.ui/themeSwitcher/theme_90_ui_dark.png",
-     "templates/jrails-1.4/jquery.ui/themeSwitcher/theme_90_ui_light.png.gif",
+     "templates/jrails-1.4/jquery.ui/themeSwitcher/theme_90_ui_light.png",
      "templates/jrails-1.4/jquery.ui/themeSwitcher/theme_90_windoze.png",
      "templates/jrails-1.4/jquery.ui/trontastic.sass",
      "templates/jrails-1.4/jquery.ui/trontastic/ui-anim_basic_16x16.gif",
