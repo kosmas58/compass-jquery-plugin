@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kosmas Schuetz"]
-  s.date = %q{2010-03-15}
+  s.date = %q{2010-03-17}
   s.description = %q{A compass plugin that integrates jRails, jQuery, jQuery UI and Themes, jqGrid and more into the Compass Sass framework.}
   s.email = %q{kosmas.schuetz@gmx.com}
   s.extra_rdoc_files = [
@@ -950,6 +950,8 @@ Gem::Specification.new do |s|
      "templates/jrails-1.4/jquery.metadata.min.js",
      "templates/jrails-1.4/jquery.pngFix.js",
      "templates/jrails-1.4/jquery.pngFix.min.js",
+     "templates/jrails-1.4/jquery.themeswitchertool.js",
+     "templates/jrails-1.4/jquery.themeswitchertool.min.js",
      "templates/jrails-1.4/jquery.ui/_theme.sass",
      "templates/jrails-1.4/jquery.ui/base.sass",
      "templates/jrails-1.4/jquery.ui/base/ui-anim_basic_16x16.gif",
@@ -1295,6 +1297,33 @@ Gem::Specification.new do |s|
      "templates/jrails-1.4/jquery.ui/swanky-purse/ui-icons_f2ec64_256x240.png",
      "templates/jrails-1.4/jquery.ui/swanky-purse/ui-icons_f9f2bd_256x240.png",
      "templates/jrails-1.4/jquery.ui/swanky-purse/ui-icons_ff7519_256x240.png",
+     "templates/jrails-1.4/jquery.ui/themeSwitcher/buttonbg.png",
+     "templates/jrails-1.4/jquery.ui/themeSwitcher/icon_color_arrow.gif",
+     "templates/jrails-1.4/jquery.ui/themeSwitcher/menuhoverbg.png",
+     "templates/jrails-1.4/jquery.ui/themeSwitcher/theme_90_black_matte.png",
+     "templates/jrails-1.4/jquery.ui/themeSwitcher/theme_90_black_tie.png",
+     "templates/jrails-1.4/jquery.ui/themeSwitcher/theme_90_blitzer.png",
+     "templates/jrails-1.4/jquery.ui/themeSwitcher/theme_90_cupertino.png",
+     "templates/jrails-1.4/jquery.ui/themeSwitcher/theme_90_dark_hive.png",
+     "templates/jrails-1.4/jquery.ui/themeSwitcher/theme_90_dot_luv.png",
+     "templates/jrails-1.4/jquery.ui/themeSwitcher/theme_90_eggplant.png",
+     "templates/jrails-1.4/jquery.ui/themeSwitcher/theme_90_excite_bike.png",
+     "templates/jrails-1.4/jquery.ui/themeSwitcher/theme_90_flick.png",
+     "templates/jrails-1.4/jquery.ui/themeSwitcher/theme_90_hot_sneaks.png",
+     "templates/jrails-1.4/jquery.ui/themeSwitcher/theme_90_humanity.png",
+     "templates/jrails-1.4/jquery.ui/themeSwitcher/theme_90_le_frog.png",
+     "templates/jrails-1.4/jquery.ui/themeSwitcher/theme_90_mint_choco.png",
+     "templates/jrails-1.4/jquery.ui/themeSwitcher/theme_90_overcast.png",
+     "templates/jrails-1.4/jquery.ui/themeSwitcher/theme_90_pepper_grinder.png",
+     "templates/jrails-1.4/jquery.ui/themeSwitcher/theme_90_smoothness.png",
+     "templates/jrails-1.4/jquery.ui/themeSwitcher/theme_90_south_street.png",
+     "templates/jrails-1.4/jquery.ui/themeSwitcher/theme_90_start_menu.png",
+     "templates/jrails-1.4/jquery.ui/themeSwitcher/theme_90_sunny.png",
+     "templates/jrails-1.4/jquery.ui/themeSwitcher/theme_90_swanky_purse.png",
+     "templates/jrails-1.4/jquery.ui/themeSwitcher/theme_90_trontastic.png",
+     "templates/jrails-1.4/jquery.ui/themeSwitcher/theme_90_ui_dark.png",
+     "templates/jrails-1.4/jquery.ui/themeSwitcher/theme_90_ui_light.png.gif",
+     "templates/jrails-1.4/jquery.ui/themeSwitcher/theme_90_windoze.png",
      "templates/jrails-1.4/jquery.ui/trontastic.sass",
      "templates/jrails-1.4/jquery.ui/trontastic/ui-anim_basic_16x16.gif",
      "templates/jrails-1.4/jquery.ui/trontastic/ui-bg_diagonals-small_50_262626_40x40.png",
