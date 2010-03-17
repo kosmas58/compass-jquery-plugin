@@ -52,7 +52,7 @@ $.fn.themeswitcher = function(settings){
 
 	//function to append a new theme stylesheet with the new style changes
 	function updateCSS(locStr){
-		var cssLink = $('<link href="'+locStr+'" type="text/css" rel="Stylesheet" class="ui-theme" />');
+		var cssLink = $('<link href="/stylesheets/'+locStr+'" type="text/css" rel="Stylesheet" class="ui-theme" />');
 		$("head").append(cssLink);
 
 
