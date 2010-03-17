@@ -96,8 +96,6 @@ $.fn.themeswitcher = function(settings){
 		outline: '0'
 	};
 
-
-
 	//button css
 	button.css(button_default)
 	.hover(
@@ -181,8 +179,6 @@ $.fn.themeswitcher = function(settings){
 		margin: '3px 0'
 	}).end();
 
-
-
 	$(this).append(button);
 	$('body').append(switcherpane);
 	switcherpane.hide();
@@ -190,6 +186,5 @@ $.fn.themeswitcher = function(settings){
 		var themeName = $.cookie(options.cookieName) || options.loadTheme;
 		switcherpane.find('a:contains('+ themeName +')').trigger('click');
 	}
-
 	return this;
 };
