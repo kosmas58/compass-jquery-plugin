@@ -21,6 +21,7 @@ ActionView::Helpers::AssetTagHelper.register_javascript_expansion :jquery_142 =>
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :jrails => ['jrails.min']
 ActionView::Helpers::AssetTagHelper.register_stylesheet_expansion :contextMenu => ['compiled/jquery.ui/contextMenu.css']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :contextMenu => ['jquery.contextMenu.min']
+ActionView::Helpers::AssetTagHelper.register_javascript_expansion :themeSwitcher => ['jquery.themeswitchertool.min']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :pngFix => ['jquery.pngFix.min']
 
 
