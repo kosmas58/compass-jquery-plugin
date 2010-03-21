@@ -150,7 +150,7 @@ $.fn.jqGrid = function( pin ) {
 			treeANode : -1,
 			ExpandColumn: null,
 			tree_root_level : 0,
-			prmNames: {page:"page",rows:"rows", sort: "sidx",order: "sord", search:"_search", nd:"nd", id:"id",oper:"oper",editoper:"edit",addoper:"add",deloper:"del", subgridid:"id"},
+			prmNames: {page:"page",rows:"rows", sort: "sidx",order: "sord", search:"_search", nd:"nd", id:"id",oper:"oper",editoper:"edit",addoper:"add",deloper:"del"},
 			forceFit : false,
 			gridstate : "visible",
 			cellEdit: false,
@@ -183,10 +183,9 @@ $.fn.jqGrid = function( pin ) {
 			ajaxGridOptions :{},
 			direction : "ltr",
 			toppager: false,
-			headertitles: false,
-			scrollTimeout: 200
+			headertitles: false
 		}, $.jgrid.defaults, pin || {});
-		var grid={
+		var grid={         
 			headers:[],
 			cols:[],
 			footers: [],
@@ -293,7 +292,7 @@ $.fn.jqGrid = function( pin ) {
 						return;
 					}
 					if (grid.hDiv.loading) {
-						grid.timer = setTimeout(grid.populateVisible, p.scrollTimeout);
+						grid.timer = setTimeout(grid.populateVisible, 200);
 					} else {
 						p.page = page;
 						if (empty) {
@@ -960,12 +959,6 @@ $.fn.jqGrid = function( pin ) {
 				date = date.split(/[\\\/:_;.\t\T\s-]/);
 				format = format.split(/[\\\/:_;.\t\T\s-]/);
 				var dfmt  = $.jgrid.formatter.date.monthNames;
-				var afmt  = $.jgrid.formatter.date.AmPm;
-				var h12to24 = function(ampm, h){
-					if (ampm === 0){ h = (h == 12) ? 0       : h; }
-					          else { h = (h != 12) ? h += 12 : h; }                
-					return h;
-				}; 
 				for(k=0,hl=format.length;k<hl;k++){
 					if(format[k] == 'M') {
 						dM = $.inArray(date[k],dfmt);
@@ -974,20 +967,6 @@ $.fn.jqGrid = function( pin ) {
 					if(format[k] == 'F') {
 						dM = $.inArray(date[k],dfmt);
 						if(dM !== -1 && dM > 11){date[k] = dM+1-12;}
-					}
-					if(format[k] == 'a') {
-						dM = $.inArray(date[k],afmt);
-						if(dM !== -1 && dM < 2 && date[k] == afmt[dM]){
-							date[k] = dM;
-							tsp.h = h12to24(date[k], tsp.h);
-						}
-					}
-					if(format[k] == 'A') {
-						dM = $.inArray(date[k],afmt);
-						if(dM !== -1 && dM > 1 && date[k] == afmt[dM]){
-							date[k] = dM-2;
-							tsp.h = h12to24(date[k], tsp.h);
-						}
 					}
 					tsp[format[k].toLowerCase()] = parseInt(date[k],10);
 				}
@@ -1004,12 +983,10 @@ $.fn.jqGrid = function( pin ) {
 			pgl="<table cellspacing='0' cellpadding='0' border='0' style='table-layout:auto;' class='ui-pg-table'><tbody><tr>",
 			str="", pgcnt, lft, cent, rgt, twd, tdw, i,
 			clearVals = function(onpaging){
-				var ret;
-				if ($.isFunction(ts.p.onPaging) ) ret = ts.p.onPaging.call(ts,onpaging);
 				ts.p.selrow = null;
 				if(ts.p.multiselect) {ts.p.selarrrow =[];$('#cb_'+$.jgrid.jqID(ts.p.id),ts.grid.hDiv).attr("checked",false);}
 				ts.p.savedRow = [];
-				if(ret=='stop') {return false;}
+				if ($.isFunction(ts.p.onPaging) ) {if(ts.p.onPaging.call(ts,onpaging)=='stop') return false;}
 				return true;
 			};
 			//pgid= $(ts.p.pager).attr("id") || 'pager',
@@ -1700,15 +1677,20 @@ $.jgrid.extend({
 	},
 	setSelection : function(selection,onsr) {
 		return this.each(function(){
-			var $t = this, stat,pt, ner, ia, tpsr;
+			var $t = this, stat,pt, olr, ner, ia, tpsr;
 			if(selection === undefined) return;
 			onsr = onsr === false ? false : true;
 			pt=$t.rows.namedItem(selection+"");
 			if(!pt) return;
-			if($t.p.scrollrows===true) {
+			if($t.p.selrow && $t.p.scrollrows===true) {
+				olr = $t.rows.namedItem($t.p.selrow).rowIndex;
 				ner = $t.rows.namedItem(selection).rowIndex;
 				if(ner >=0 ){
-					scrGrid(ner);
+					if(ner > olr ) {
+						scrGrid(ner,'d');
+					} else {
+						scrGrid(ner,'u');
+					}
 				}
 			}
 			if(!$t.p.multiselect) {
@@ -1737,16 +1719,16 @@ $.jgrid.extend({
 					$t.p.selrow = (tpsr === undefined) ? null : tpsr;
 				}
 			}
-			function scrGrid(iR){
+			function scrGrid(iR,tp){
 				var ch = $($t.grid.bDiv)[0].clientHeight,
 				st = $($t.grid.bDiv)[0].scrollTop,
-				rpos = $t.rows[iR].offsetTop,
-				rh = $t.rows[iR].clientHeight;
-				if(rpos+rh >= ch+st) { $($t.grid.bDiv)[0].scrollTop = rpos-(ch+st)+rh+st; }
-				else if(rpos < ch+st) {
-					if(rpos < st) {
-						$($t.grid.bDiv)[0].scrollTop = rpos;
-					}
+				nROT = $t.rows[iR].offsetTop+$t.rows[iR].clientHeight,
+				pROT = $t.rows[iR].offsetTop;
+				if(tp == 'd') {
+					if(nROT >= ch) { $($t.grid.bDiv)[0].scrollTop = st + nROT-pROT; }
+				}
+				if(tp == 'u'){
+					if (pROT < st) { $($t.grid.bDiv)[0].scrollTop = st - nROT+pROT; }
 				}
 			}
 		});
@@ -1892,15 +1874,15 @@ $.jgrid.extend({
 					}
 				}
 				cn = t.p.altclass;
-				var k = 0, cna ="",
-				air = $.isFunction(t.p.afterInsertRow) ? true : false;
+				var k = 0;
+				var air = $.isFunction(t.p.afterInsertRow) ? true : false;
 				while(k < datalen) {
 					data = rdata[k];
 					row="";
 					if(aradd) {
 						try {rowid = data[cnm];}
 						catch (e) {rowid = t.p.records+1;}
-						cna = t.p.altRows === true ?  (t.rows.length-1)%2 == 0 ? cn : "" : "";
+						var cna = t.p.altRows === true ?  (t.rows.length-1)%2 == 0 ? cn : "" : "";
 					}
 					if(ni){
 						prp = t.formatCol(ni,1,'');
@@ -3005,8 +2987,7 @@ function info_dialog(caption, content,c_b, modalopt) {
 	cn = "text-align:"+mopt.align+";";
 	var cnt = "<div id='info_id'>";
 	cnt += "<div id='infocnt' style='margin:0px;padding-bottom:1em;width:100%;overflow:auto;position:relative;height:"+dh+";"+cn+"'>"+content+"</div>";
-	cnt += c_b ? "<div class='ui-widget-content ui-helper-clearfix' style='text-align:"+mopt.buttonalign+";padding-bottom:0.8em;padding-top:0.5em;background-image: none;border-width: 1px 0 0 0;'><a href='javascript:void(0)' id='closedialog' class='fm-button ui-state-default ui-corner-all'>"+c_b+"</a>"+buttstr+"</div>" :
-		buttstr != ""  ? "<div class='ui-widget-content ui-helper-clearfix' style='text-align:"+mopt.buttonalign+";padding-bottom:0.8em;padding-top:0.5em;background-image: none;border-width: 1px 0 0 0;'>"+buttstr+"</div>" : "";
+	cnt += c_b ? "<div class='ui-widget-content ui-helper-clearfix' style='text-align:"+mopt.buttonalign+";padding-bottom:0.8em;padding-top:0.5em;background-image: none;border-width: 1px 0 0 0;'><a href='javascript:void(0)' id='closedialog' class='fm-button ui-state-default ui-corner-all'>"+c_b+"</a>"+buttstr+"</div>" : "";
 	cnt += "</div>";
 
 	try {
@@ -3162,7 +3143,7 @@ function createEl(eltype,options,vl,autowidth, ajaxso) {
 							setTimeout(function(){
 								jQuery("option",elem).each(function(i){
 									if(i==0) this.selected = "";
-									if(jQuery.inArray(jQuery.trim(jQuery(this).text()),ovm) > -1 || jQuery.inArray(jQuery.trim(jQuery(this).val()),ovm) > -1 ) {
+									if(jQuery.inArray(jQuery.trim(jQuery(this).text()),ovm) > -1 || jQuery.inArray(jQuery.trim(jQuery(this).val(),ovm)) > -1 ) {
 										this.selected= "selected";
 										if(!msl) return false;
 									}
@@ -3536,7 +3517,6 @@ $.jgrid.extend({
             if(state == 'hidden'){
 				$(".ui-jqgrid-bdiv, .ui-jqgrid-hdiv","#gview_"+$t.p.id).slideUp("fast");
 				if($t.p.pager) {$($t.p.pager).slideUp("fast");}
-				if(ts.p.toppager) {$(ts.p.toppager).slideUp("fast");}
 				if($t.p.toolbar[0]===true) {
 					if( $t.p.toolbar[1]=='both') {
 						$($t.grid.ubDiv).slideUp("fast");
@@ -3549,7 +3529,6 @@ $.jgrid.extend({
             } else if(state=='visible') {
 				$(".ui-jqgrid-hdiv, .ui-jqgrid-bdiv","#gview_"+$t.p.id).slideDown("fast");
 				if($t.p.pager) {$($t.p.pager).slideDown("fast");}
-				if(ts.p.toppager) {$(ts.p.toppager).slideDown("fast");}
 				if($t.p.toolbar[0]===true) {
 					if( $t.p.toolbar[1]=='both') {
 						$($t.grid.ubDiv).slideDown("fast");
@@ -4255,7 +4234,7 @@ $.jgrid.extend({
  * Dual licensed under the MIT and GPL licenses:
  * http://www.opensource.org/licenses/mit-license.php
  * http://www.gnu.org/licenses/gpl.html
-**/
+**/ 
 var rp_ge = null;
 $.jgrid.extend({
 	searchGrid : function (p) {
@@ -4266,7 +4245,6 @@ $.jgrid.extend({
 			sValue:'searchString',
 			sOper: 'searchOper',
 			sFilter: 'filters',
-            loadDefaults: false, // this options activates loading of default filters from grid's postData for Multipe Search only.
 			beforeShowSearch: null,
 			afterShowSearch : null,
 			onInitializeSearch: null,
@@ -4279,7 +4257,6 @@ $.jgrid.extend({
 			// if you want to change or remove the order change it in sopt
 			// ['bw','eq','ne','lt','le','gt','ge','ew','cn']
 			sopt: null,
-			stringResult:true,
 			onClose : null
 			// these are common options
 		}, $.jgrid.search, p || {});
@@ -4287,42 +4264,6 @@ $.jgrid.extend({
 			var $t = this;
 			if(!$t.grid) {return;}
 			if($.fn.searchFilter) {
-
-                function applyDefaultFilters(gridDOMobj, filterSettings) {
-                    /*
-                     gridDOMobj = ointer to grid DOM object ( $(#list)[0] )
-                      What we need from gridDOMobj:
-                      gridDOMobj.SearchFilter is the pointer to the Search box, once it's created.
-                      gridDOMobj.p.postData - dictionary of post settings. These can be overriden at grid creation to
-                         contain default filter settings. We will parse these and will populate the search with defaults.
-                     filterSettings - same settings object you (would) pass to $().jqGrid('searchGrid', filterSettings);
-                    */
-
-                    // Pulling default filter settings out of postData property of grid's properties.:
-                    var defaultFilters = gridDOMobj.p.postData[filterSettings['sFilter']];
-                    // example of what we might get: {"groupOp":"and","rules":[{"field":"amount","op":"eq","data":"100"}]}
-
-                    if (defaultFilters) {
-                        if (defaultFilters['groupOp']) {
-                            gridDOMobj.SearchFilter.setGroupOp(defaultFilters['groupOp']);
-                        }
-                        if (defaultFilters['rules']) {
-                            var f;
-                            for (var i = 0, li = defaultFilters['rules'].length; i < li; i++) {
-                                f = defaultFilters['rules'][i]
-                                // we are not trying to counter all issues with filter declaration here. Just the basics to avoid lookup exceptions.
-                                if (f['field'] != undefined && f['op'] != undefined && f['data'] != undefined) {
-                                    gridDOMobj.SearchFilter.setFilter({
-                                        'sfref':gridDOMobj.SearchFilter.$.find(".sf:last"),
-                                        'filter':$.extend({},f)
-                                    })
-                                    gridDOMobj.SearchFilter.add();
-                                }
-                            }
-                        }
-                    }
-                } // end of applyDefaultFilters
-
 				var fid = "fbox_"+$t.p.id;
 				if(p.recreateFilter===true) {$("#"+fid).remove();}
 				if( $("#"+fid).html() != null ) {
@@ -4396,8 +4337,7 @@ $.jgrid.extend({
 					});
 					if(fields.length>0){
 						$("<div id='"+fid+"' role='dialog' tabindex='-1'></div>").insertBefore("#gview_"+$t.p.id);
-                        // we really need to preserve the return value somewhere. Otherwise we loose easy access to .add() and other good methods.
-						$t.SearchFilter = $("#"+fid).searchFilter(fields, { groupOps: p.groupOps, operators: oprtr, onClose:hideFilter, resetText: p.Reset, searchText: p.Find, windowTitle: p.caption,  rulesText:p.rulesText, matchText:p.matchText, onSearch: searchFilters, onReset: resetFilters,stringResult:p.stringResult, ajaxSelectOptions: $.extend({},$.jgrid.ajaxOptions,$t.p.ajaxSelectOptions ||{}), clone: p.cloneSearchRowOnAdd });
+						$("#"+fid).searchFilter(fields, { groupOps: p.groupOps, operators: oprtr, onClose:hideFilter, resetText: p.Reset, searchText: p.Find, windowTitle: p.caption,  rulesText:p.rulesText, matchText:p.matchText, onSearch: searchFilters, onReset: resetFilters,stringResult:p.multipleSearch, ajaxSelectOptions: $.extend({},$.jgrid.ajaxOptions,$t.p.ajaxSelectOptions ||{}), clone: p.cloneSearchRowOnAdd });
 						$(".ui-widget-overlay","#"+fid).remove();
 						if($t.p.direction=="rtl") $(".ui-closer","#"+fid).css("float","left");
 						if (p.drag===true) {
@@ -4414,9 +4354,6 @@ $.jgrid.extend({
 							$(".ui-del, .ui-add, .ui-del, .ui-add-last, .matchText, .rulesText", "#"+fid).hide();
 							$("select[name='groupOp']","#"+fid).hide();
 						}
-                        if (p.multipleSearch === true && p.loadDefaults === true) {
-                            applyDefaultFilters($t, p);
-                        }
 						if ( $.isFunction(p.onInitializeSearch) ) { p.onInitializeSearch( $("#"+fid) ); };
 						if ( $.isFunction(p.beforeShowSearch) ) { p.beforeShowSearch($("#"+fid)); };
 						showFilter();
@@ -7172,7 +7109,7 @@ addSubGrid : function(t,pos) {
 			var res,sid,dp, i, j;
 			sid = $(rd).attr("id");
 			dp = {nd_: (new Date().getTime())};
-			dp[ts.p.prmNames['subgridid']]=sid;
+			dp[ts.p.idName]=sid;
 			if(!ts.p.subGridModel[0]) { return false; }
 			if(ts.p.subGridModel[0].params) {
 				for(j=0; j < ts.p.subGridModel[0].params.length; j++) {
@@ -8395,20 +8332,16 @@ hs=function(w,t,c){return w.each(function(){var s=this._jqm;$(t).each(function()
 		}
 	};
 	$.fn.fmatter.actions = function(cellval,opts, rwd) {
-		var op ={keys:false, editbutton:true, delbutton:true};
+		var op ={keys:false};
 		if(!isUndefined(opts.colModel.formatoptions)) {
 			op = $.extend(op,opts.colModel.formatoptions);
 		}
-		var rowid = opts.rowId, str="",ocl;
+		var rowid = opts.rowId;
 		if(typeof(rowid) =='undefined' || isEmpty(rowid)) return "";
-		if(op.editbutton){
-			ocl = "onclick=$.fn.fmatter.rowactions('"+rowid+"','"+opts.gid+"','edit',"+op.keys+");"
-			str =str+ "<div style='margin-left:8px;'><div title='"+$.jgrid.nav.edittitle+"' style='float:left;cursor:pointer;' class='ui-pg-div ui-inline-edit' "+ocl+"><span class='ui-icon ui-icon-pencil'></span></div>";
-		}
-		if(op.delbutton) {
-			ocl = "onclick=jQuery('#"+opts.gid+"').jqGrid('delGridRow','"+rowid+"');"
-			str = str+"<div title='"+$.jgrid.nav.deltitle+"' style='float:left;margin-left:5px;' class='ui-pg-div ui-inline-del' "+ocl+"><span class='ui-icon ui-icon-trash'></span></div>";
-		}
+		var ocl = "onclick=$.fn.fmatter.rowactions('"+rowid+"','"+opts.gid+"','edit',"+op.keys+");"
+		var str = "<div style='margin-left:8px;'><div title='"+$.jgrid.nav.edittitle+"' style='float:left;cursor:pointer;' class='ui-pg-div ui-inline-edit' "+ocl+"><span class='ui-icon ui-icon-pencil'></span></div>";
+		ocl = "onclick=jQuery('#"+opts.gid+"').jqGrid('delGridRow','"+rowid+"');"
+		str = str+"<div title='"+$.jgrid.nav.deltitle+"' style='float:left;margin-left:5px;' class='ui-pg-div ui-inline-del' "+ocl+"><span class='ui-icon ui-icon-trash'></span></div>";
 		ocl = "onclick=$.fn.fmatter.rowactions('"+rowid+"','"+opts.gid+"','save',false);"
 		str = str+"<div title='"+$.jgrid.edit.bSubmit+"' style='float:left;display:none' class='ui-pg-div ui-inline-save'><span class='ui-icon ui-icon-disk' "+ocl+"></span></div>";
 		ocl = "onclick=$.fn.fmatter.rowactions('"+rowid+"','"+opts.gid+"','cancel',false);"
@@ -8717,7 +8650,6 @@ jQuery.fn.searchFilter = function(fields, options) {
         };
 
 
-
         //---------------------------------------------------------------
         // "CONSTRUCTOR" (in air quotes)
         //---------------------------------------------------------------
@@ -8977,9 +8909,9 @@ jQuery.fn.searchFilter = function(fields, options) {
                 return false;
             });
             jQ.find(".ui-search").click(function(e) {
-                var ui = jQuery(jQ.selector); // pointer to search box wrapper element
+                var ui = jQuery(jQ.selector);
                 var ruleGroup;
-                var group_op = ui.find("select[name='groupOp'] :selected").val(); // puls "AND" or "OR"
+                var group_op = ui.find("select[name='groupOp'] :selected").val();
                 if (!opts.stringResult) {
                     ruleGroup = {
                         groupOp: group_op,
@@ -9033,105 +8965,9 @@ jQuery.fn.searchFilter = function(fields, options) {
                 newRow.find("select[name='field']").change();
                 return false;
             });
-
-            this.setGroupOp = function(setting) {
-                /* a "setter" for groupping argument.
-                 *  ("AND" or "OR")
-                 *
-                 * Inputs:
-                 *  setting - a string
-                 *
-                 * Returns:
-                 *  Does not return anything. May add success / failure reporting in future versions.
-                 *
-                 *  author: Daniel Dotsenko (dotsa@hotmail.com)
-                 */
-                selDOMobj = this.$.find("select[name='groupOp']")[0];
-                var indexmap = {}, l = selDOMobj.options.length, i;
-                for (i=0; i<l; i++) {
-                    indexmap[selDOMobj.options[i].value] = i;
-                }
-                selDOMobj.selectedIndex = indexmap[setting];
-                $(selDOMobj).change();
-            }
-
-            this.setFilter = function(settings) {
-                /* a "setter" for an arbitrary SearchFilter's filter line.
-                 * designed to abstract the DOM manipulations required to infer
-                 * a particular filter is a fit to the search box.
-                 *
-                 * Inputs:
-                 *  settings - an "object" (dictionary)
-                 *   index (optional*) (to be implemented in the future) : signed integer index (from top to bottom per DOM) of the filter line to fill.
-                 *           Negative integers (rooted in -1 and lower) denote position of the line from the bottom.
-                 *   sfref (optional*) : DOM object referencing individual '.sf' (normally a TR element) to be populated. (optional)
-                 *   filter (mandatory) : object (dictionary) of form {'field':'field_value','op':'op_value','data':'data value'}
-                 *
-                 * * It is mandatory to have either index or sfref defined.
-                 *
-                 * Returns:
-                 *  Does not return anything. May add success / failure reporting in future versions.
-                 *
-                 *  author: Daniel Dotsenko (dotsa@hotmail.com)
-                 */
-
-                var o = settings['sfref'], filter = settings['filter'];
-                
-                // setting up valueindexmap that we will need to manipulate SELECT elements.
-                var fields = [],
-                    valueindexmap = {};
-                    // example of valueindexmap:
-                    // {'field1':{'index':0,'ops':{'eq':0,'ne':1}},'fieldX':{'index':1,'ops':{'eq':0,'ne':1},'data':{'true':0,'false':1}}},
-                    // if data is undefined it's a INPUT field. If defined, it's SELECT
-                selDOMobj = o.find("select[name='field']")[0];
-                for (var i=0, l=selDOMobj.options.length; i<l; i++) {
-                    valueindexmap[selDOMobj.options[i].value] = {'index':i,'ops':{}};
-                    fields.push(selDOMobj.options[i].value);
-                }
-                for (var i=0, li=fields.length; i < li; i++) {
-                    selDOMobj = o.find(".ops > select[class='field"+i+"']")[0];
-                    if (selDOMobj) {
-                        for (var j=0, lj=selDOMobj.options.length; j<lj; j++) {
-                            valueindexmap[fields[i]]['ops'][selDOMobj.options[j].value] = j;
-                        }
-                    }
-                    selDOMobj = o.find(".data > select[class='field"+i+"']")[0];
-                    if (selDOMobj) {
-                        valueindexmap[fields[i]]['data'] = {}; // this setting is the flag that 'data' is contained in a SELECT
-                        for (var j=0, lj=selDOMobj.options.length; j<lj; j++) {
-                            valueindexmap[fields[i]]['data'][selDOMobj.options[j].value] = j;
-                        }
-                    }
-                } // done populating valueindexmap
-
-                // preparsing the index values for SELECT elements.
-                var fieldvalue, fieldindex, opindex, datavalue, dataindex;
-                fieldvalue = filter['field'];
-                fieldindex = valueindexmap[fieldvalue]['index'];
-                if (fieldindex != undefined) {
-                    opindex = valueindexmap[fieldvalue]['ops'][filter['op']];
-                    datavalue = filter['data'];
-                    if (valueindexmap[fieldvalue]['data'] == undefined) {
-                        dataindex = -1; // 'data' is not SELECT, Making the var 'defined'
-                    } else {
-                        dataindex = valueindexmap[fieldvalue]['data'][datavalue]; // 'undefined' may come from here.
-                    }
-                }
-
-                // only if values for 'field' and 'op' and 'data' are 'found' in mapping...
-                if (fieldindex != undefined && opindex != undefined && dataindex != undefined) {
-                    o.find("select[name='field']")[0].selectedIndex = fieldindex;
-                    o.find("select[name='field']").change();
-                    o.find("select[name='op']")[0].selectedIndex = opindex;
-                    o.find("input.vdata").val(datavalue); // if jquery does not find any INPUT, it does not set any. This means we deal with SELECT
-                    o = o.find("select.vdata")[0];
-                    if (o) {
-                        o.selectedIndex = dataindex;
-                    }
-                }
-            } // end of this.setFilter fn
-        } // end of if fields != null
+        }
     }
+
     return new SearchFilter(this, fields, options);
 };
 
