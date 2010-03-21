@@ -150,7 +150,7 @@ $.fn.jqGrid = function( pin ) {
 			treeANode : -1,
 			ExpandColumn: null,
 			tree_root_level : 0,
-			prmNames: {page:"page",rows:"rows", sort: "sidx",order: "sord", search:"_search", nd:"nd", id:"id",oper:"oper",editoper:"edit",addoper:"add",deloper:"del"},
+			prmNames: {page:"page",rows:"rows", sort: "sidx",order: "sord", search:"_search", nd:"nd", id:"id",oper:"oper",editoper:"edit",addoper:"add",deloper:"del", subgridid:"id"},
 			forceFit : false,
 			gridstate : "visible",
 			cellEdit: false,
@@ -183,9 +183,10 @@ $.fn.jqGrid = function( pin ) {
 			ajaxGridOptions :{},
 			direction : "ltr",
 			toppager: false,
-			headertitles: false
+			headertitles: false,
+			scrollTimeout: 200
 		}, $.jgrid.defaults, pin || {});
-		var grid={         
+		var grid={
 			headers:[],
 			cols:[],
 			footers: [],
@@ -292,7 +293,7 @@ $.fn.jqGrid = function( pin ) {
 						return;
 					}
 					if (grid.hDiv.loading) {
-						grid.timer = setTimeout(grid.populateVisible, 200);
+						grid.timer = setTimeout(grid.populateVisible, p.scrollTimeout);
 					} else {
 						p.page = page;
 						if (empty) {
@@ -959,6 +960,12 @@ $.fn.jqGrid = function( pin ) {
 				date = date.split(/[\\\/:_;.\t\T\s-]/);
 				format = format.split(/[\\\/:_;.\t\T\s-]/);
 				var dfmt  = $.jgrid.formatter.date.monthNames;
+				var afmt  = $.jgrid.formatter.date.AmPm;
+				var h12to24 = function(ampm, h){
+					if (ampm === 0){ h = (h == 12) ? 0       : h; }
+					          else { h = (h != 12) ? h += 12 : h; }                
+					return h;
+				}; 
 				for(k=0,hl=format.length;k<hl;k++){
 					if(format[k] == 'M') {
 						dM = $.inArray(date[k],dfmt);
@@ -967,6 +974,20 @@ $.fn.jqGrid = function( pin ) {
 					if(format[k] == 'F') {
 						dM = $.inArray(date[k],dfmt);
 						if(dM !== -1 && dM > 11){date[k] = dM+1-12;}
+					}
+					if(format[k] == 'a') {
+						dM = $.inArray(date[k],afmt);
+						if(dM !== -1 && dM < 2 && date[k] == afmt[dM]){
+							date[k] = dM;
+							tsp.h = h12to24(date[k], tsp.h);
+						}
+					}
+					if(format[k] == 'A') {
+						dM = $.inArray(date[k],afmt);
+						if(dM !== -1 && dM > 1 && date[k] == afmt[dM]){
+							date[k] = dM-2;
+							tsp.h = h12to24(date[k], tsp.h);
+						}
 					}
 					tsp[format[k].toLowerCase()] = parseInt(date[k],10);
 				}
@@ -983,10 +1004,12 @@ $.fn.jqGrid = function( pin ) {
 			pgl="<table cellspacing='0' cellpadding='0' border='0' style='table-layout:auto;' class='ui-pg-table'><tbody><tr>",
 			str="", pgcnt, lft, cent, rgt, twd, tdw, i,
 			clearVals = function(onpaging){
+				var ret;
+				if ($.isFunction(ts.p.onPaging) ) ret = ts.p.onPaging.call(ts,onpaging);
 				ts.p.selrow = null;
 				if(ts.p.multiselect) {ts.p.selarrrow =[];$('#cb_'+$.jgrid.jqID(ts.p.id),ts.grid.hDiv).attr("checked",false);}
 				ts.p.savedRow = [];
-				if ($.isFunction(ts.p.onPaging) ) {if(ts.p.onPaging.call(ts,onpaging)=='stop') return false;}
+				if(ret=='stop') {return false;}
 				return true;
 			};
 			//pgid= $(ts.p.pager).attr("id") || 'pager',
@@ -1677,20 +1700,15 @@ $.jgrid.extend({
 	},
 	setSelection : function(selection,onsr) {
 		return this.each(function(){
-			var $t = this, stat,pt, olr, ner, ia, tpsr;
+			var $t = this, stat,pt, ner, ia, tpsr;
 			if(selection === undefined) return;
 			onsr = onsr === false ? false : true;
 			pt=$t.rows.namedItem(selection+"");
 			if(!pt) return;
-			if($t.p.selrow && $t.p.scrollrows===true) {
-				olr = $t.rows.namedItem($t.p.selrow).rowIndex;
+			if($t.p.scrollrows===true) {
 				ner = $t.rows.namedItem(selection).rowIndex;
 				if(ner >=0 ){
-					if(ner > olr ) {
-						scrGrid(ner,'d');
-					} else {
-						scrGrid(ner,'u');
-					}
+					scrGrid(ner);
 				}
 			}
 			if(!$t.p.multiselect) {
@@ -1719,16 +1737,16 @@ $.jgrid.extend({
 					$t.p.selrow = (tpsr === undefined) ? null : tpsr;
 				}
 			}
-			function scrGrid(iR,tp){
+			function scrGrid(iR){
 				var ch = $($t.grid.bDiv)[0].clientHeight,
 				st = $($t.grid.bDiv)[0].scrollTop,
-				nROT = $t.rows[iR].offsetTop+$t.rows[iR].clientHeight,
-				pROT = $t.rows[iR].offsetTop;
-				if(tp == 'd') {
-					if(nROT >= ch) { $($t.grid.bDiv)[0].scrollTop = st + nROT-pROT; }
-				}
-				if(tp == 'u'){
-					if (pROT < st) { $($t.grid.bDiv)[0].scrollTop = st - nROT+pROT; }
+				rpos = $t.rows[iR].offsetTop,
+				rh = $t.rows[iR].clientHeight;
+				if(rpos+rh >= ch+st) { $($t.grid.bDiv)[0].scrollTop = rpos-(ch+st)+rh+st; }
+				else if(rpos < ch+st) {
+					if(rpos < st) {
+						$($t.grid.bDiv)[0].scrollTop = rpos;
+					}
 				}
 			}
 		});
@@ -1874,15 +1892,15 @@ $.jgrid.extend({
 					}
 				}
 				cn = t.p.altclass;
-				var k = 0;
-				var air = $.isFunction(t.p.afterInsertRow) ? true : false;
+				var k = 0, cna ="",
+				air = $.isFunction(t.p.afterInsertRow) ? true : false;
 				while(k < datalen) {
 					data = rdata[k];
 					row="";
 					if(aradd) {
 						try {rowid = data[cnm];}
 						catch (e) {rowid = t.p.records+1;}
-						var cna = t.p.altRows === true ?  (t.rows.length-1)%2 == 0 ? cn : "" : "";
+						cna = t.p.altRows === true ?  (t.rows.length-1)%2 == 0 ? cn : "" : "";
 					}
 					if(ni){
 						prp = t.formatCol(ni,1,'');
@@ -2187,7 +2205,7 @@ $.jgrid.extend({
 			}
 		});
 	},
-	setCell : function(rowid,colname,nData,cssp,attrp) {
+	setCell : function(rowid,colname,nData,cssp,attrp, forceupd) {
 		return this.each(function(){
 			var $t = this, pos =-1,v, title;
 			if(!$t.grid) {return;}
@@ -2202,7 +2220,7 @@ $.jgrid.extend({
 				var ind = $t.rows.namedItem(rowid);
 				if (ind){
 					var tcell = $("td:eq("+pos+")",ind);
-					if(nData !== "") {
+					if(nData !== "" || forceupd === true) {
 						v = $t.formatter(rowid, nData, pos,ind,'edit');
 						title = $t.p.colModel[pos].title ? {"title":$.jgrid.stripHtml(v)} : {};
 						if($t.p.treeGrid && $(".tree-wrap",$(tcell)).length>0)
@@ -2211,8 +2229,7 @@ $.jgrid.extend({
 							$(tcell).html(v).attr(title);
 					}
 					if(typeof cssp === 'string'){
-						if(cssp) {$(tcell).addClass(cssp);}
-						else {$(tcell).removeClass();}
+						$(tcell).addClass(cssp);
 					} else if(cssp) {
 						$(tcell).css(cssp);
 					}
