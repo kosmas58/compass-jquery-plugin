@@ -504,7 +504,8 @@ $.fn.jqGrid = function( pin ) {
 			else {
 				getId = function( trow, k) {return trow.getAttribute(idn.replace(/[\[\]]/g,"")) || k;};
 			}
-			$(ts.p.xmlReader.page,xml).each(function() {ts.p.page = this.textContent  || this.text || 1; });
+			ts.p.userData = {};
+			$(ts.p.xmlReader.page,xml).each(function() {ts.p.page = this.textContent  || this.text || 0; });
 			$(ts.p.xmlReader.total,xml).each(function() {ts.p.lastpage = this.textContent  || this.text; if(ts.p.lastpage===undefined) ts.p.lastpage=1; }  );
 			$(ts.p.xmlReader.records,xml).each(function() {ts.p.records = this.textContent  || this.text  || 0; }  );
 			$(ts.p.xmlReader.userdata,xml).each(function() {ts.p.userData[this.getAttribute("name")]=this.textContent || this.text;});
@@ -592,7 +593,7 @@ $.fn.jqGrid = function( pin ) {
 				} else { rcnt = rcnt > 0 ? rcnt :0; }
 			} else { return; }
 			var ir=0,v,i,j,row,f=[],F,cur,gi=0,si=0,ni=0,len,drows,idn,rd={}, fpos,rl = ts.rows.length,idr,rowData=[],ari=0,cn=(ts.p.altRows === true) ? " "+ts.p.altclass:"",cn1,lp;
-			ts.p.page = getAccessor(data,ts.p.jsonReader.page) || 1;
+			ts.p.page = getAccessor(data,ts.p.jsonReader.page) || 0;
 			lp = getAccessor(data,ts.p.jsonReader.total);
 			ts.p.lastpage= lp === undefined ? 1 : lp;
 			ts.p.records= getAccessor(data,ts.p.jsonReader.records) || 0;
@@ -619,7 +620,7 @@ $.fn.jqGrid = function( pin ) {
 			var afterInsRow = $.isFunction(ts.p.afterInsertRow);
 			while (i<len) {
 				cur = drows[i];
-				idr = cur[idn];
+				idr = getAccessor(cur,idn);
 				if(idr === undefined) {
 					idr = br+i;
 					if(f.length===0){
@@ -689,7 +690,9 @@ $.fn.jqGrid = function( pin ) {
 		},
 		updatepager = function(rn, dnd) {
 			var cp, last, base,bs, from,to,tot,fmt, pgboxes = "";
-			base = (parseInt(ts.p.page,10)-1)*parseInt(ts.p.rowNum,10);
+			base = parseInt(ts.p.page,10)-1;
+			if(base < 0) base = 0;
+			base = base*parseInt(ts.p.rowNum,10);
 			to = base + ts.p.reccount;
 			if (ts.p.scroll) {
 				var rows = $("tbody:first > tr", ts.grid.bDiv);
@@ -710,8 +713,8 @@ $.fn.jqGrid = function( pin ) {
 					ts.p.lastpage = ts.page =1;
 					$(".selbox",pgboxes).attr("disabled",true);
 				} else {
-					cp = IntNum(ts.p.page,1);
-					last = IntNum(ts.p.lastpage,1);
+					cp = IntNum(ts.p.page);
+					last = IntNum(ts.p.lastpage);
 					$(".selbox",pgboxes).attr("disabled",false);
 				}
 				if(ts.p.pginput===true) {
@@ -734,15 +737,15 @@ $.fn.jqGrid = function( pin ) {
 					}
 				}
 				if(ts.p.pgbuttons===true) {
-					if(cp<=0) {cp = last = 1;}
-					if(cp==1) {
+					if(cp<=0) {cp = last = 0;}
+					if(cp==1 || cp == 0) {
 						$("#first, #prev",ts.p.pager).addClass('ui-state-disabled').removeClass('ui-state-hover');
 						if(ts.p.toppager) $("#first_t, #prev_t",ts.p.toppager).addClass('ui-state-disabled').removeClass('ui-state-hover');
 					} else {
 						$("#first, #prev",ts.p.pager).removeClass('ui-state-disabled');
 						if(ts.p.toppager) $("#first_t, #prev_t",ts.p.toppager).removeClass('ui-state-disabled');
 					}
-					if(cp==last) {
+					if(cp==last || cp == 0) {
 						$("#next, #last",ts.p.pager).addClass('ui-state-disabled').removeClass('ui-state-hover');
 						if(ts.p.toppager) $("#next_t, #last_t",ts.p.toppager).addClass('ui-state-disabled').removeClass('ui-state-hover');
 					} else {
@@ -8138,7 +8141,7 @@ hs=function(w,t,c){return w.each(function(){var s=this._jqm;$(t).each(function()
 				while (value.length < length) value = '0' + value;
 				return value;
 			},
-		    ts = {m : 1, d : 1, y : 1970, h : 0, i : 0, s : 0},
+		    ts = {m : 1, d : 1, y : 1970, h : 0, i : 0, s : 0, u:0},
 		    timestamp=0, dM, k,hl,
 		    dateFormat=["i18n"];
 			// Internationalization strings
@@ -8165,7 +8168,7 @@ hs=function(w,t,c){return w.each(function(){var s=this._jqm;$(t).each(function()
 		    var ty = ts.y;
 		    if (ty >= 70 && ty <= 99) ts.y = 1900+ts.y;
 		    else if (ty >=0 && ty <=69) ts.y= 2000+ts.y;
-		    timestamp = new Date(ts.y, ts.m, ts.d, ts.h, ts.i, ts.s,0);
+		    timestamp = new Date(ts.y, ts.m, ts.d, ts.h, ts.i, ts.s, ts.u);
 			if( newformat in opts.masks )  {
 				newformat = opts.masks[newformat];
 			} else if ( !newformat ) {
