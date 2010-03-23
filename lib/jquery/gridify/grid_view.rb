@@ -111,8 +111,9 @@ module Gridify
       vals['url']               = url if url
       vals['restful']           = true if restful
       vals['postData']          = { :grid => name } #identify which grid making the request
-      # vals['colNames']          = column_names if columns.present?
-      vals['colModel']          = column_model if columns.present?
+      #vals['colNames']          = column_names if colNames.present?
+      vals['colNames']          = colNames if colNames.present?
+      vals['colModel']          = column_model if colModel.present?
       vals['datatype']          = data_type if data_type
       if data_format.present?
         if data_type == :xml
