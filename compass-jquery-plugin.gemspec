@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kosmas Schuetz"]
-  s.date = %q{2010-03-23}
+  s.date = %q{2010-03-24}
   s.description = %q{A compass plugin that integrates jRails, jQuery, jQuery UI and Themes, jqGrid and more into the Compass Sass framework.}
   s.email = %q{kosmas.schuetz@gmx.com}
   s.extra_rdoc_files = [
@@ -898,6 +898,8 @@ Gem::Specification.new do |s|
      "templates/jrails-1.4/i18n/jquery.ui/datepicker-fa.min.js",
      "templates/jrails-1.4/i18n/jquery.ui/datepicker-fi.js",
      "templates/jrails-1.4/i18n/jquery.ui/datepicker-fi.min.js",
+     "templates/jrails-1.4/i18n/jquery.ui/datepicker-fo.js",
+     "templates/jrails-1.4/i18n/jquery.ui/datepicker-fo.min.js",
      "templates/jrails-1.4/i18n/jquery.ui/datepicker-fr-CH.js",
      "templates/jrails-1.4/i18n/jquery.ui/datepicker-fr-CH.min.js",
      "templates/jrails-1.4/i18n/jquery.ui/datepicker-fr.js",
@@ -950,6 +952,8 @@ Gem::Specification.new do |s|
      "templates/jrails-1.4/i18n/jquery.ui/datepicker-sr.min.js",
      "templates/jrails-1.4/i18n/jquery.ui/datepicker-sv.js",
      "templates/jrails-1.4/i18n/jquery.ui/datepicker-sv.min.js",
+     "templates/jrails-1.4/i18n/jquery.ui/datepicker-ta.js",
+     "templates/jrails-1.4/i18n/jquery.ui/datepicker-ta.min.js",
      "templates/jrails-1.4/i18n/jquery.ui/datepicker-th.js",
      "templates/jrails-1.4/i18n/jquery.ui/datepicker-th.min.js",
      "templates/jrails-1.4/i18n/jquery.ui/datepicker-tr.js",
@@ -966,8 +970,8 @@ Gem::Specification.new do |s|
      "templates/jrails-1.4/i18n/jquery.ui/datepicker-zh-TW.min.js",
      "templates/jrails-1.4/jquery-1.4.2.js",
      "templates/jrails-1.4/jquery-1.4.2.min.js",
-     "templates/jrails-1.4/jquery-ui-1.8rc3.js",
-     "templates/jrails-1.4/jquery-ui-1.8rc3.min.js",
+     "templates/jrails-1.4/jquery-ui-1.8.js",
+     "templates/jrails-1.4/jquery-ui-1.8.min.js",
      "templates/jrails-1.4/jquery.bgiframe.js",
      "templates/jrails-1.4/jquery.bgiframe.min.js",
      "templates/jrails-1.4/jquery.compat-1.3.js",
