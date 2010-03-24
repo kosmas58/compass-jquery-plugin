@@ -24,7 +24,7 @@ module Gridify
       build_model = options.delete(:build_model) == false ? false : true
       only = options.delete(:only)
       except = options.delete(:except)
-      col_presets = options.delete(:colModel)
+      col_presets = options.delete(:columns)
       
       # assign options
       update options
@@ -69,7 +69,7 @@ module Gridify
           :sortable => sortable,
           :editable => edit
         }.merge(options)
-        colModel << GridColumn.new( args)
+        columns << GridColumn.new( args)
         
       else
         # create column from scratch
@@ -80,21 +80,21 @@ module Gridify
           :sortable => sortable,
           :editable => edit
         }.merge(options)
-        colModel << GridColumn.new( args)
+        columns << GridColumn.new( args)
       end
     end
   
     def column_names
-      colModel.collect {|col| col.name.titleize }
+      columns.collect {|col| col.name.titleize }
     end
     
     def column_model
-      colModel.collect {|col| col.properties }
+      columns.collect {|col| col.properties }
     end
     
     # normally we need to keep columns an ordered array, sometimes its convenient to have a hash
     def columns_hash
-      colModel.inject({}) {|h, col| h[col.name] = col; h }
+      columns.inject({}) {|h, col| h[col.name] = col; h }
     end
     
     protected
@@ -120,7 +120,7 @@ module Gridify
       presets ||= {}
       presets.stringify_keys!
       
-      self.colModel = klass.columns.collect do |ar|
+      self.columns = klass.columns.collect do |ar|
         #debugger
         next if only.present? && !only.include?(ar.name)
         next if except.present? && except.include?(ar.name)

@@ -117,7 +117,7 @@
 
 
 .ui-autocomplete-loading
-  background: white url(images/ui-anim_basic_16x16.gif) right center no-repeat
+  background: white url('images/ui-anim_basic_16x16.gif') right center no-repeat
 
 
 * html .ui-autocomplete
@@ -143,6 +143,7 @@
       display: block
       padding: .2em .4em
       line-height: 1.5
+      zoom: 1
 
       &.ui-state-hover, &.ui-state-active
         margin: -1px
@@ -169,11 +170,11 @@ button.ui-button-icon-only
 
 
 .ui-button-icons-only
-  width: 3em
+  width: 3.4em
 
 
 button.ui-button-icons-only
-  width: 3.2em
+  width: 3.7em
 
 
 .ui-button .ui-button-text
@@ -191,12 +192,13 @@ button.ui-button-icons-only
 
 
 .ui-button-text-icon .ui-button-text
-  padding: .4em 1em .4em 1.8em
+  padding: .4em 1em .4em 2.1em
 
 
 .ui-button-text-icons .ui-button-text
-  padding: .4em 1em .4em 1.8em
-  padding-right: 1.8em
+  padding: .4em 1em .4em 2.1em
+  padding-left: 2.1em
+  padding-right: 2.1em
 
 
 input.ui-button
@@ -214,7 +216,7 @@ input.ui-button
   margin-left: -8px
 
 
-.ui-button-text-icon .ui-icon-primary, .ui-button-text-icons .ui-icon-primary, .ui-button-icons-only .ui-icon-primary
+.ui-button-text-icon .ui-button-icon-primary, .ui-button-text-icons .ui-button-icon-primary, .ui-button-icons-only .ui-button-icon-primary
   left: .5em
 
 
@@ -222,7 +224,7 @@ input.ui-button
   right: .5em
 
 
-.ui-button-set
+.ui-buttonset
   margin-right: 7px
 
   .ui-button
@@ -445,7 +447,6 @@ button.ui-button::-moz-focus-inner
       padding: 0
 
   .ui-dialog-content
-    position: relative
     border: 0
     padding: .5em 1em
     background: none

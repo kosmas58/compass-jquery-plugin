@@ -10,9 +10,9 @@ module Gridify
                                         # used as basis for all RESTful requests and data format
 
     # model
-                  :colModel,            # incoming: hash of presets (native jqGrid); internally: array of GridColumn objects
+                  :columns,             # incoming: hash of presets (native jqGrid); internally: array of GridColumn objects
                                         # { :body => { "title" => {"width" => 98} }} 
-                  :colNames,
+                  #:colNames,
 
                   #:widths,             # hash of column width (key = data type)
                   :searchable,          # default: true (used in generating columns, changing has no effect on existing cols)

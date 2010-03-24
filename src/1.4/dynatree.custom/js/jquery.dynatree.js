@@ -115,7 +115,7 @@ DynaTreeNode.prototype = {
 //		this.isRead = false; // Lazy content not yet read
 		this.isLoading = false; // Lazy content is being loaded
 		this.hasSubSel = false;
-		this.bExpanded = true; // Needed to work with jQuery 1.4.2 and jQuery UI 1.8rc3
+		this.bExpanded = true; // Needed to work with jQuery 1.4.2 and jQuery UI 1.8
 	},
 
 	toString: function() {

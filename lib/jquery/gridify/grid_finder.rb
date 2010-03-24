@@ -149,7 +149,7 @@ module Gridify
           # toolbar search
           self.search_rules = []
           self.search_rules_op = :and
-          colModel.each do |col|  
+          columns.each do |col|  
             name = col.name
             data = params[name.to_sym]        
             self.search_rules << { "field" => name, "op" => "cn", "data" => data } if data
