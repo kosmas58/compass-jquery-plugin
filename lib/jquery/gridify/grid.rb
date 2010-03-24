@@ -142,6 +142,6 @@ module Gridify
         # create column with default args merged with options given for this column
         GridColumn.new args.merge( presets[ar.name]||{} )
       end.compact      
-    end    
+    end
   end
 end

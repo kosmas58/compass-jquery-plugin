@@ -31,8 +31,8 @@ module Gridify
     end
     
     def grid(name=nil)
-      name ? grids[name] : grids[:grid]  
-    end  
+      name ? grids[name] : grids[:grid]
+    end
   end
 end
  
