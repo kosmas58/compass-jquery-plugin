@@ -31,6 +31,28 @@ module Gridify
                   # visiblity
                   #:always_hidden,          # (false)
                   :hidden                   # initial hide state (false)
+
+#      top : 0,
+#      left: 0,
+#      width: 200,
+#      height: 'auto',
+#      dataheight: 'auto',
+#      modal: false,
+#      drag: true,
+#      beforeShowForm: null,
+#      afterShowForm: null,
+#      afterSubmitForm: null,
+#      closeOnEscape : true,
+#      ShrinkToFit : false,
+#      jqModal : false,
+#      saveicon: [true,"left","ui-icon-disk"],
+#      closeicon: [true,"left","ui-icon-close"],
+#      onClose : null,
+#      colnameview : true,
+#      closeAfterSubmit : true,
+#      updateAfterCheck : false,
+#      recreateForm : false
+#    
     
     def initialize(options)
       update options
