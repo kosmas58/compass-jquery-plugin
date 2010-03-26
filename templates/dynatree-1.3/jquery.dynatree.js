@@ -2,7 +2,7 @@
 	jquery.dynatree.js
 	Dynamic tree view control, with support for lazy loading of branches.
 
-	Copyright (c) 2008-2009  Martin Wendt (http://wwWendt.de)
+	Copyright (c) 2008-2010  Martin Wendt (http://wwWendt.de)
 	Licensed under the MIT License (MIT-License.txt)
 
 	A current version and some documentation is available at
@@ -10,8 +10,8 @@
 
 	Let me know, if you find bugs or improvements (martin at domain wwWendt.de).
 
-	$Version: 0.5.2$
-	$Revision: 296, 2009-12-20 11:04:25$
+	$Version: 0.5.3$
+	$Revision: 313, 2010-03-15 15:55:09$
 
  	@depends: jquery.js
  	@depends: ui.core.js
@@ -330,7 +330,9 @@ DynaTreeNode.prototype = {
 		}
 	},
 
-	setLazyNodeStatus: function(lts) {
+	setLazyNodeStatus: function(lts, opts) {
+		var tooltip = (opts && opts.tooltip) ? opts.tooltip : null;
+		var info = (opts && opts.info) ? " (" + opts.info + ")" : "";
 		switch( lts ) {
 			case DTNodeStatus_Ok:
 				this._setStatusNode(null);
@@ -349,14 +351,16 @@ DynaTreeNode.prototype = {
 			case DTNodeStatus_Loading:
 				this.isLoading = true;
 				this._setStatusNode({
-					title: this.tree.options.strings.loading,
+					title: this.tree.options.strings.loading + info,
+					tooltip: tooltip,
 					addClass: this.tree.options.classNames.nodeWait
 				});
 				break;
 			case DTNodeStatus_Error:
 				this.isLoading = false;
 				this._setStatusNode({
-					title: this.tree.options.strings.loadError,
+					title: this.tree.options.strings.loadError + info,
+					tooltip: tooltip,
 					addClass: this.tree.options.classNames.nodeError
 				});
 				break;
@@ -701,8 +705,9 @@ DynaTreeNode.prototype = {
 				this.tree.logDebug("_loadContent: succeeded - %o", this);
 			}
 		} catch(e) {
-			alert(e);
+//			alert(e);
 			this.setLazyNodeStatus(DTNodeStatus_Error);
+			this.tree.logWarning("_loadContent: failed - %o", e);
 		}
 	},
 	
@@ -1228,8 +1233,9 @@ DynaTreeNode.prototype = {
        			},
        		error: function(XMLHttpRequest, textStatus, errorThrown){
        		    // <this> is the request options  
-//				self.tree.logDebug("appendAjax().error");
-				self.setLazyNodeStatus(DTNodeStatus_Error);
+// 				self.tree.logWarning("appendAjax failed: %o:\n%o\n%o", textStatus, XMLHttpRequest, errorThrown);
+   				self.tree.logWarning("appendAjax failed:", textStatus, ":\n", XMLHttpRequest, "\n", errorThrown);
+				self.setLazyNodeStatus(DTNodeStatus_Error, {info: textStatus, tooltip: ""+errorThrown});
 				if( orgError )
 					orgError.call(options, self, XMLHttpRequest, textStatus, errorThrown);
        			}
@@ -1362,7 +1368,7 @@ var DynaTree = Class.create();
 
 // --- Static members ----------------------------------------------------------
 
-DynaTree.version = "$Version: 0.5.2$"; 
+DynaTree.version = "$Version: 0.5.3$"; 
 /*
 DynaTree._initTree = function() {
 };
@@ -1752,9 +1758,21 @@ $.widget("ui.dynatree", {
         return this._init();
     },
 
-	_init: function() {
-    	logMsg("Dynatree._init(): version='%s', debugLevel=%o.", DynaTree.version, this.options.debugLevel);
+ 	_init: function() {
+		if( parseFloat($.ui.version) < 1.8 ) {
+	        // jquery.ui.core 1.8 renamed _init() to _create(): this stub assures backward compatibility
+	        _log("warn", "ui.dynatree._init() was called; you should upgrade to jquery.ui.core.js v1.8 or higher.");
+			return this._create();
+		}
+		// jquery.ui.core 1.8 still uses _init() to perform "default functionality" 
+    	_log("debug", "ui.dynatree._init() was called; no current default functionality.");
+    },
 
+	_create: function() {
+    	if( parseFloat($.ui.version) >= 1.8 ) {
+    		this.options = $.extend(true, $[this.namespace][this.widgetName].defaults, this.options);
+    	}
+    	logMsg("Dynatree._create(): version='%s', debugLevel=%o.", DynaTree.version, this.options.debugLevel);
     	var opts = this.options;
     	// The widget framework supplies this.element and this.options.
     	this.options.event += ".dynatree"; // namespace event
@@ -1768,7 +1786,7 @@ $.widget("ui.dynatree", {
     	// Create the DynaTree object
     	this.tree = new DynaTree(this);
     	this.tree._load();
-    	this.tree.logDebug("Dynatree._init(): done.");
+    	this.tree.logDebug("Dynatree._create(): done.");
 	},
 
 	bind: function() {

@@ -1,39 +1,13 @@
-ul.ui-dynatree-container { font-family: lucida, arial, helvetica, sans-serif; font-size: 0.8em; white-space: nowrap; padding: 3px; background-color: white; border: 1px dotted #aaaaaa; -moz-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px; }
-ul.ui-dynatree-container img { width: 16px; height: 16px; margin-left: 3px; vertical-align: top; }
-ul.ui-dynatree-container a { color: black; text-decoration: none; vertical-align: top; margin: 0px; margin-left: 3px; border: 1px solid white; }
-ul.ui-dynatree-container a:hover { text-decoration: underline; }
-ul.ui-dynatree-container a:focus { background-color: #EFEBDE; }
+div.ui-dynatree-container { font-family: segoe ui, tahoma, verdana, arial, helvetica, sans-serif; font-size: 0.8em; white-space: nowrap; padding: 3px; background-color: white; border: 1px dotted #aaaaaa; -moz-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px; }
+div.ui-dynatree-container img { width: 16px; height: 16px; margin-left: 3px; vertical-align: top; }
+div.ui-dynatree-container a { color: black; text-decoration: none; vertical-align: top; margin: 0px; margin-left: 3px; border: 1px solid white; }
+div.ui-dynatree-container a:hover { text-decoration: underline; }
+div.ui-dynatree-container a:focus { background-color: #EFEBDE; }
 
-ul.ui-dynatree-container ul
-{
-    padding: 0 0 0 16px;
-}
-
-ul.ui-dynatree-container li
-{
-    list-style-image: none;
-    list-style-position: outside;
-    list-style-type: none;
-    -moz-background-clip:border;
-    -moz-background-inline-policy: continuous;
-    -moz-background-origin: padding;
-    background-attachment: scroll;
-    background-color: transparent;
-    background-position: 0 0;
-    background-repeat: repeat-y;
-    
-    margin:0;
-/*    padding:3px 0 3px 16px;*/
-/*    padding:3px 0 3px 0;*/
-    padding:1px 0 0 0;
-}
-ul.ui-dynatree-container li.vline
-{
-    background-image: url("/images/jquery.ui/dynatree.aqua/empty.png");
-}
-.ui-dynatree-disabled ul.ui-dynatree-container { opacity: 0.5; background-color: silver; }
+.ui-dynatree-disabled div.ui-dynatree-container { opacity: 0.5; background-color: silver; }
 
 span.ui-dynatree-empty, span.ui-dynatree-vline, span.ui-dynatree-connector { width: 16px; height: 16px; display: -moz-inline-box; display: inline-block; vertical-align: top; background-repeat: no-repeat; background-position: left; }
+span.ui-dynatree-vline { background-image: url("/images/jquery.ui/dynatree.aero/empty.png"); }
 span.ui-dynatree-expander { width: 16px; height: 16px; display: -moz-inline-box; display: inline-block; vertical-align: top; background-repeat: no-repeat; background-position: left; background-image: url("/images/jquery.ui/dynatree.aqua/collapsed.png"); }
 span.ui-dynatree-expander:hover { background-image: url("/images/jquery.ui/dynatree.aqua/collapsed_hover.png"); }
 span.ui-dynatree-icon { width: 16px; height: 16px; display: -moz-inline-box; display: inline-block; vertical-align: top; background-repeat: no-repeat; background-position: left; margin-left: 3px; background-image: url("/images/jquery.ui/dynatree.aqua/document.png"); }
