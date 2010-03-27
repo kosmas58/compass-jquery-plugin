@@ -12,8 +12,8 @@ A Sass-based Meta-Framework for Compass that allows you to mix and match any of 
 ** jQuery 1.4.2 and jQuery.UI 1.8 including themes
 or
 ** jQuery 1.3.2 and jQuery.UI 1.7.2 including themes
+* dynatree V0.5.3
 * jqGrid V3.6.4
-* dynatree V0.5.2	
 
 This library requires <b>"Compass":http://wiki.github.com/chriseppstein/compass</b>.
 

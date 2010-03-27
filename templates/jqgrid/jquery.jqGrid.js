@@ -767,6 +767,7 @@ $.fn.jqGrid = function( pin ) {
 			if(!ts.grid.hDiv.loading) {
 				var pvis = ts.p.scroll && npage == false;
 				var prm = {}, dt, dstr, pN=ts.p.prmNames;
+				if(ts.p.page <=0) ts.p.page = 1;
 				if(pN.search !== null) prm[pN.search] = ts.p.search; if(pN.nd != null) prm[pN.nd] = new Date().getTime();
 				if(pN.rows !== null) prm[pN.rows]= ts.p.rowNum; if(pN.page !== null) prm[pN.page]= ts.p.page;
 				if(pN.sort !== null) prm[pN.sort]= ts.p.sortname; if(pN.order !== null) prm[pN.order]= ts.p.sortorder;
@@ -1195,7 +1196,7 @@ $.fn.jqGrid = function( pin ) {
 				initwidth =0;
 				$.each(ts.p.colModel, function(i) {
 					if(this.hidden === false && !this.fixed){
-						cw = Math.round(aw*this.width/ts.p.tblwidth);
+						cw = Math.round(aw*this.width/(ts.p.tblwidth-tw));
 						this.width =cw;
 						initwidth += cw;
 						lvc = i;
@@ -2135,7 +2136,7 @@ $.jgrid.extend({
 				$.each($t.p.colModel, function(i) {
 					var tn = this.name;
 					if(this.hidden === false && !this.fixed){
-						cw = Math.round(aw*this.width/$t.p.tblwidth);
+						cw = Math.round(aw*this.width/($t.p.tblwidth-tw));
 						if (cw < 0) return;
 						this.width =cw;
 						initwidth += cw;
@@ -6333,7 +6334,8 @@ $.jgrid.extend({
 				idname = opers.id;
 				tmp[oper] = opers.editoper;
 				tmp[idname] = rowid;
-				if(extraparam) { tmp = $.extend({},tmp,extraparam);}
+				if(typeof($t.p.inlineData) == 'undefined') $t.p.inlineData ={};
+				if(extraparam) { tmp = $.extend({},tmp,$t.p.inlineData,extraparam);}
 			}
 			if (url == 'clientArray') {
 				tmp = $.extend({},tmp, tmp2);
@@ -8377,22 +8379,22 @@ hs=function(w,t,c){return w.each(function(){var s=this._jqm;$(t).each(function()
 		{
 			case 'edit':
 				var restorerow = function()	{
-					$(".ui-inline-edit, .ui-inline-del","#"+rid).show();
-					$(".ui-inline-save, .ui-inline-cancel","#"+rid).hide();
+					$("tr#"+rid+" div.ui-inline-edit, "+"tr#"+rid+" div.ui-inline-del","#"+gid).show();
+					$("tr#"+rid+" div.ui-inline-save, "+"tr#"+rid+" div.ui-inline-cancel","#"+gid).hide();
 				}
 				$('#'+gid).jqGrid('editRow',rid,keys,null,null,null,{oper:'edit'},restorerow,null,restorerow);
-				$(".ui-inline-edit, .ui-inline-del","#"+rid).hide();
-				$(".ui-inline-save, .ui-inline-cancel","#"+rid).show();
+				$("tr#"+rid+" div.ui-inline-edit, "+"tr#"+rid+" div.ui-inline-del","#"+gid).hide();
+				$("tr#"+rid+" div.ui-inline-save, "+"tr#"+rid+" div.ui-inline-cancel","#"+gid).show();
 			break;
 			case 'save':
-				$('#'+gid).jqGrid('saveRow',rid,null,null,{oper:'edit'});
-				$(".ui-inline-edit, .ui-inline-del","#"+rid).show();
-				$(".ui-inline-save, .ui-inline-cancel","#"+rid).hide();
+				$('#'+gid).jqGrid('saveRow',rid,null,null,{oper:'edit'} );
+				$("tr#"+rid+" div.ui-inline-edit, "+"tr#"+rid+" div.ui-inline-del","#"+gid).show();
+				$("tr#"+rid+" div.ui-inline-save, "+"tr#"+rid+" div.ui-inline-cancel","#"+gid).hide();
 				break;
 			case 'cancel' :
 				$('#'+gid).jqGrid('restoreRow',rid);
-				$(".ui-inline-edit, .ui-inline-del","#"+rid).show();
-				$(".ui-inline-save, .ui-inline-cancel","#"+rid).hide();
+				$("tr#"+rid+" div.ui-inline-edit, "+"tr#"+rid+" div.ui-inline-del","#"+gid).show();
+				$("tr#"+rid+" div.ui-inline-save, "+"tr#"+rid+" div.ui-inline-cancel","#"+gid).hide();
 				break;
 		}
 	};
