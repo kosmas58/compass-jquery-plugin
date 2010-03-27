@@ -28,29 +28,27 @@ module Gridify
     # grid layout options
                   :width,                 # in pixels, or nil (nil means calculated based on overflow setting)
                   :width_fit,             # :fluid, :scroll, or :visible
-                                          #   :fluid will always fit container (presently ignores width option)
-                                          #   :scroll uses horizontal scrollbars
-                                          #   :fitted scales columns to fit in width, not fluid
+                                          # :fluid will always fit container (presently ignores width option)
+                                          # :scroll uses horizontal scrollbars
+                                          # :fitted scales columns to fit in width, not fluid
                   
                   :height,                # in pixels, '100%', or :auto (150) 
-                                          #   :auto means makes it as tall as needed per number of rows
+                                          # :auto means makes it as tall as needed per number of rows
 
                   :resizable,             # allow gride resize with mouse, (true) (or {}) for default options; 
-                                          #   nil or false for disabled; or hash of jqUI options
-                                          #   see http://jqueryui.com/demos/resizable/
-                                          #   defaults (differ from jqUI ones) "minWidth" => 150, "minHeight" => 80
-                                          #   when overflow is fluid, "handles" => 's', otherwise 'e, s, se'
+                                          # nil or false for disabled; or hash of jqUI options
+                                          # see http://jqueryui.com/demos/resizable/
+                                          # defaults (differ from jqUI ones) "minWidth" => 150, "minHeight" => 80
+                                          # when overflow is fluid, "handles" => 's', otherwise 'e, s, se'
 
-                  :arranger,           # :sortable, :hide_show, :chooser, or nil for none (nil) , 
-                                          #   can combine with array of options
-                                          #   or can be a hash with options
-                                          #   see http://www.trirand.com/jqgridwiki/doku.php?id=wiki:show_hide_columns
+                  :arranger,              # :sortable, :hide_show, :chooser, or nil for none (nil) , 
+                                          # can combine with array of options
+                                          # or can be a hash with options
+                                          # see http://www.trirand.com/jqgridwiki/doku.php?id=wiki:show_hide_columns
     
     # rows    
                   :alt_rows,              # true for odd/even row classes, or odd row style name string (nil)
-
                   :row_numbers,           # true to display row numbers in left column; or numeric width in pixels (nil)
-
                   :select_rows,           # true for rows are selectable (eg for pager buttons); or js function when row is selected, false disables hover (true if pager buttons else false)
 
     # header layer
@@ -82,30 +80,29 @@ module Gridify
                   :restful,               # use restful url and mtype (true) for all actions
                   :finder,                # default: :find
                   :url,                   # request url (required unless table_to_grid or derived from resource)
-                                          #   if nil, uses "/#{resource}" eg "/notes"
-                                          #   note, to force "editurl" use jqgrid_options
+                                          # if nil, uses "/#{resource}" eg "/notes"
+                                          # note, to force "editurl" use jqgrid_options
                   
                   :data_type,             # :xml, :json, and other defined in jqGrid options doc (xml)
                   :data_format,           # (defaults to rails conventin based on resource) <chickens><chicken><title><body> format
-                                          #   set false for jqGrid default <rows><records><row><cell> format
+                                          # set false for jqGrid default <rows><records><row><cell> format
                   
-                  :sort_by,           # name of sort column of next request
+                  :sort_by,               # name of sort column of next request
                   :sort_order,            # sort direction of next request, 'asc' or 'desc' ('asc')
                   :case_sensitive,        # sort and search are case sensitive (false)
                   
-                  :current_page,                 # current page requested
+                  :current_page,          # current page requested
                   :rows_per_page,         # number of items to be requested in the next request (paging_choices.first or -1 if pager false)
                   
                   :table_to_grid,         # when true generates tableToGrid (false) from html table, then use as local data
-                                          #   note, we assume table rows are not selectable. 
-                                          #   (tableToGrid sets multiselect when first col has checkboxes or radio buttons, 
-                                          #   we dont know to preserve this so you also need to set in options)
+                                          # note, we assume table rows are not selectable. 
+                                          # (tableToGrid sets multiselect when first col has checkboxes or radio buttons, 
+                                          # we dont know to preserve this so you also need to set in options)
                                           
                   :load_once,             # true to use local data after first load (false)
                   :error_handler,         # javacript: method for crud error handling (default to "after_submit")
                   :error_container,       # selector for posting error/flash messages (.errorExplanation)
-                                          
-               
+                                                        
                   :z
         
 #      url: "",

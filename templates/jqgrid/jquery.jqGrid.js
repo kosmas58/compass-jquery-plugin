@@ -4293,7 +4293,7 @@ $.jgrid.extend({
 
                 function applyDefaultFilters(gridDOMobj, filterSettings) {
                     /*
-                     gridDOMobj = ointer to grid DOM object ( $(#list)[0] )
+                     gridDOMobj = pointer to grid DOM object ( $(#list)[0] )
                       What we need from gridDOMobj:
                       gridDOMobj.SearchFilter is the pointer to the Search box, once it's created.
                       gridDOMobj.p.postData - dictionary of post settings. These can be overriden at grid creation to
@@ -4438,9 +4438,15 @@ $.jgrid.extend({
 				var hasFilters = (filters !== undefined),
 				grid = $("#"+$t.p.id), sdata={};
 				if(p.multipleSearch===false) {
-					sdata[p.sField] = filters.rules[0].field;
-					sdata[p.sValue] = filters.rules[0].data;
-					sdata[p.sOper] = filters.rules[0].op;
+				    //->Bugfix start
+					var stuff = JSON.parse(filters);
+					sdata[p.sField] = stuff.rules[0].field;
+					sdata[p.sValue] = stuff.rules[0].data;
+					sdata[p.sOper]  = stuff.rules[0].op;					
+					// sdata[p.sField] = filters.rules[0].field;
+					// sdata[p.sValue] = filters.rules[0].data;
+					// sdata[p.sOper]  = filters.rules[0].op;
+				    //->Bugfix end
 				} else {
 					sdata[p.sFilter] = filters;
 				}
