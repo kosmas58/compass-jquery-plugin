@@ -51,11 +51,7 @@ h3. jQuery Dynatree Plugin
 
 Use compass to install the jQuery Dynatree javascript library into your project.
 
-For jQuery 1.4.x:
-<pre>compass [-r jquery] -f jquery -p dynatree-1.4 <project name></pre>
-
-For jQuery 1.3.x
-<pre>compass [-r jquery] -f jquery -p dynatree-1.3 <project name></pre>
+<pre>compass [-r jquery] -f jquery -p dynatree <project name></pre>
 
 You will find all the stylesheets in easy-to-read Sass format at:
 
