@@ -41,7 +41,7 @@ $.jgrid.extend({
 
                 function applyDefaultFilters(gridDOMobj, filterSettings) {
                     /*
-                     gridDOMobj = pointer to grid DOM object ( $(#list)[0] )
+                     gridDOMobj = ointer to grid DOM object ( $(#list)[0] )
                       What we need from gridDOMobj:
                       gridDOMobj.SearchFilter is the pointer to the Search box, once it's created.
                       gridDOMobj.p.postData - dictionary of post settings. These can be overriden at grid creation to
@@ -146,6 +146,7 @@ $.jgrid.extend({
 						}
 					});
 					if(fields.length>0){
+						if(p.multipleSearch === false) p.stringResult = false;
 						$("<div id='"+fid+"' role='dialog' tabindex='-1'></div>").insertBefore("#gview_"+$t.p.id);
                         // we really need to preserve the return value somewhere. Otherwise we loose easy access to .add() and other good methods.
 						$t.SearchFilter = $("#"+fid).searchFilter(fields, { groupOps: p.groupOps, operators: oprtr, onClose:hideFilter, resetText: p.Reset, searchText: p.Find, windowTitle: p.caption,  rulesText:p.rulesText, matchText:p.matchText, onSearch: searchFilters, onReset: resetFilters,stringResult:p.stringResult, ajaxSelectOptions: $.extend({},$.jgrid.ajaxOptions,$t.p.ajaxSelectOptions ||{}), clone: p.cloneSearchRowOnAdd });
@@ -186,15 +187,9 @@ $.jgrid.extend({
 				var hasFilters = (filters !== undefined),
 				grid = $("#"+$t.p.id), sdata={};
 				if(p.multipleSearch===false) {
-				    //->Bugfix start
-					var stuff = JSON.parse(filters);
-					sdata[p.sField] = stuff.rules[0].field;
-					sdata[p.sValue] = stuff.rules[0].data;
-					sdata[p.sOper]  = stuff.rules[0].op;					
-					// sdata[p.sField] = filters.rules[0].field;
-					// sdata[p.sValue] = filters.rules[0].data;
-					// sdata[p.sOper]  = filters.rules[0].op;
-				    //->Bugfix end
+					sdata[p.sField] = filters.rules[0].field;
+					sdata[p.sValue] = filters.rules[0].data;
+					sdata[p.sOper] = filters.rules[0].op;
 				} else {
 					sdata[p.sFilter] = filters;
 				}
@@ -694,6 +689,7 @@ $.jgrid.extend({
 						if($t.p.autoencode) tmp = $.jgrid.htmlDecode(tmp);
 						elc = createEl(this.edittype,opt,tmp,false,$.extend({},$.jgrid.ajaxOptions,obj.p.ajaxSelectOptions || {}));
 						if(tmp == "" && this.edittype == "checkbox") {tmp = $(elc).attr("offval");}
+						if(tmp == "" && this.edittype == "select") {tmp = $("option:eq(0)",elc).text();}
 						if(rp_ge.checkOnSubmit || rp_ge.checkOnUpdate) rp_ge._savedData[nm] = tmp;
 						$(elc).addClass("FormElement");
 						trdata = $(tb).find("tr[rowpos="+rp+"]");
@@ -718,13 +714,13 @@ $.jgrid.extend({
 					var idrow = $("<tr class='FormData' style='display:none'><td class='CaptionTD'></td><td colspan='"+ (maxcols*2-1)+"' class='DataTD'><input class='FormElement' id='id_g' type='text' name='"+obj.p.id+"_id' value='"+rowid+"'/></td></tr>");
 					idrow[0].rp = cnt+999;
 					$(tb).append(idrow);
-					if(rp_ge.checkOnSubmit || rp_ge.checkOnUpdate) rp_ge._savedData.id = rowid;
+					if(rp_ge.checkOnSubmit || rp_ge.checkOnUpdate) rp_ge._savedData[obj.p.id+"_id"] = rowid;
 				}
 				return retpos;
 			}
 			function fillData(rowid,obj,fmid){
 				var nm, hc,cnt=0,tmp, fld,opt,vl,vlc;
-				if(rp_ge.checkOnSubmit || rp_ge.checkOnUpdate) {rp_ge._savedData = {};rp_ge._savedData.id=rowid;}
+				if(rp_ge.checkOnSubmit || rp_ge.checkOnUpdate) {rp_ge._savedData = {};rp_ge._savedData[obj.p.id+"_id"]=rowid;}
 				var cm = obj.p.colModel;
 				if(rowid == '_empty') {
 					$(cm).each(function(i){
@@ -962,7 +958,12 @@ $.jgrid.extend({
 							rp_ge.processing=false;
 							if(rp_ge.checkOnSubmit || rp_ge.checkOnUpdate) {
 								$("#"+frmgr).data("disabled",false);
-								if(rp_ge._savedData.id !="_empty") rp_ge._savedData = postdata;
+								if(rp_ge._savedData[$t.p.id+"_id"] !="_empty"){
+									for(key in rp_ge._savedData) {
+										if(postdata[key])
+											rp_ge._savedData[key] = postdata[key];
+									}
+								}
 							}
 							$("#sData", "#"+frmtb+"_2").removeClass('ui-state-active');
 							try{$(':input:visible',"#"+frmgr)[0].focus();} catch (e){}
@@ -1573,8 +1574,15 @@ $.jgrid.extend({
 						} else {
 							dr = $t.p.selrow;
 						}
-						if (dr) { $($t).jqGrid("delGridRow",dr,pDel); }
-						else  {viewModal("#"+alertIDs.themodal,{gbox:"#gbox_"+$t.p.id,jqm:true}); $("#jqg_alrt").focus(); }
+						if(dr){
+							if("function" == typeof o.delfunc){
+								o.delfunc(dr);
+							}else{
+								$($t).jqGrid("delGridRow",dr,pDel);
+							}
+						} else  {
+							viewModal("#"+alertIDs.themodal,{gbox:"#gbox_"+$t.p.id,jqm:true}); $("#jqg_alrt").focus();
+						}
 						return false;
 					}).hover(function () {$(this).addClass("ui-state-hover");},
 						function () {$(this).removeClass("ui-state-hover");}
