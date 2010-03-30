@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{compass-jquery-plugin}
-  s.version = "0.3.0.pre9"
+  s.version = "0.3.0.pre10"
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kosmas Schuetz"]
-  s.date = %q{2010-03-28}
+  s.date = %q{2010-03-30}
   s.description = %q{A compass plugin that integrates jRails, jQuery, jQuery UI and Themes, jqGrid and more into the Compass Sass framework.}
   s.email = %q{kosmas.schuetz@gmx.com}
   s.extra_rdoc_files = [
@@ -29,6 +29,7 @@ Gem::Specification.new do |s|
      "gem_tasks/jqgrid.rake",
      "gem_tasks/jrails13.rake",
      "gem_tasks/jrails14.rake",
+     "gem_tasks/ribbon.rake",
      "gem_tasks/rubygems.rake",
      "lib/compiler.jar",
      "lib/handle_attributes.rb",
@@ -1297,7 +1298,57 @@ Gem::Specification.new do |s|
      "templates/jrails-1.4/jquery.ui/vader/ui-icons_f29a00_256x240.png",
      "templates/jrails-1.4/jrails.js",
      "templates/jrails-1.4/jrails.min.js",
-     "templates/jrails-1.4/manifest.rb"
+     "templates/jrails-1.4/manifest.rb",
+     "templates/ribbon/config/initializers/ribbon.rb",
+     "templates/ribbon/jquery.ribbon.js",
+     "templates/ribbon/jquery.ribbon.min.js",
+     "templates/ribbon/jquery.ui/ribbon.simple.sass",
+     "templates/ribbon/jquery.ui/ribbon.simple/arrow.png",
+     "templates/ribbon/jquery.ui/ribbon.simple/arrow_down.png",
+     "templates/ribbon/jquery.ui/ribbon.simple/bg.png",
+     "templates/ribbon/jquery.ui/ribbon.simple/item_background.png",
+     "templates/ribbon/jquery.ui/ribbon.simple/item_small_background.png",
+     "templates/ribbon/jquery.ui/ribbon.simple/menu_background.png",
+     "templates/ribbon/jquery.ui/ribbon.simple/menu_bottom.png",
+     "templates/ribbon/jquery.ui/ribbon.simple/menu_dropdownitembg.png",
+     "templates/ribbon/jquery.ui/ribbon.simple/menu_dropdownitembghover.png",
+     "templates/ribbon/jquery.ui/ribbon.simple/menu_item_hover.png",
+     "templates/ribbon/jquery.ui/ribbon.simple/menu_middle.png",
+     "templates/ribbon/jquery.ui/ribbon.simple/menu_top.png",
+     "templates/ribbon/jquery.ui/ribbon.simple/menuitem_background.png",
+     "templates/ribbon/jquery.ui/ribbon.simple/orb.png",
+     "templates/ribbon/jquery.ui/ribbon.simple/orb_hover.png",
+     "templates/ribbon/jquery.ui/ribbon.simple/orb_submenu_item_hover.png",
+     "templates/ribbon/jquery.ui/ribbon.simple/top_background.png",
+     "templates/ribbon/jquery.ui/ribbon.windows7.sass",
+     "templates/ribbon/jquery.ui/ribbon.windows7/arrow.png",
+     "templates/ribbon/jquery.ui/ribbon.windows7/arrow_down.png",
+     "templates/ribbon/jquery.ui/ribbon.windows7/bg.png",
+     "templates/ribbon/jquery.ui/ribbon.windows7/item_background.png",
+     "templates/ribbon/jquery.ui/ribbon.windows7/item_small_background.png",
+     "templates/ribbon/jquery.ui/ribbon.windows7/menu_background.png",
+     "templates/ribbon/jquery.ui/ribbon.windows7/menu_bottom.png",
+     "templates/ribbon/jquery.ui/ribbon.windows7/menu_dropdownitembg.png",
+     "templates/ribbon/jquery.ui/ribbon.windows7/menu_dropdownitembghover.png",
+     "templates/ribbon/jquery.ui/ribbon.windows7/menu_item_hover.png",
+     "templates/ribbon/jquery.ui/ribbon.windows7/menu_middle.png",
+     "templates/ribbon/jquery.ui/ribbon.windows7/menu_top.png",
+     "templates/ribbon/jquery.ui/ribbon.windows7/menu_top_backstage.png",
+     "templates/ribbon/jquery.ui/ribbon.windows7/menu_top_backstage2.png",
+     "templates/ribbon/jquery.ui/ribbon.windows7/menuitem_background.png",
+     "templates/ribbon/jquery.ui/ribbon.windows7/orb.png",
+     "templates/ribbon/jquery.ui/ribbon.windows7/orb_hover.png",
+     "templates/ribbon/jquery.ui/ribbon.windows7/orb_office.png",
+     "templates/ribbon/jquery.ui/ribbon.windows7/orb_office_hover.png",
+     "templates/ribbon/jquery.ui/ribbon.windows7/orb_submenu_item_hover.png",
+     "templates/ribbon/jquery.ui/ribbon.windows7/ribbon-backstage-firstLevel-hover.png",
+     "templates/ribbon/jquery.ui/ribbon.windows7/ribbon-backstage-rightColumn-wide.png",
+     "templates/ribbon/jquery.ui/ribbon.windows7/ribbon-backstage-subMenu-item-hover.png",
+     "templates/ribbon/jquery.ui/ribbon.windows7/ribbon-backstage-subMenu-item.png",
+     "templates/ribbon/jquery.ui/ribbon.windows7/ribbon-backstage-subMenu-itemSquare-hover.png",
+     "templates/ribbon/jquery.ui/ribbon.windows7/ribbon-backstage-subMenu-itemSquare.png",
+     "templates/ribbon/jquery.ui/ribbon.windows7/top_background.png",
+     "templates/ribbon/manifest.rb"
   ]
   s.homepage = %q{http://github.com/kosmas58/compass-jquery-plugin}
   s.rdoc_options = ["--charset=UTF-8"]

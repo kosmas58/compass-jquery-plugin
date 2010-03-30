@@ -41,7 +41,7 @@ namespace :build do
       end
       manifest.print "javascript 'jquery.dynatree.min.js'\n"
     
-      # jQuery DynaTreee Skins
+      # jQuery DynaTree Skins
 
       FileUtils.mkdir_p(File.join(DYNATREE_DEST_SKINS))
       
