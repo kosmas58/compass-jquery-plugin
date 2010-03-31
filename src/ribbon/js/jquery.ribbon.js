@@ -101,7 +101,11 @@ Feel free to use this script as long as you don't remove this comment.
             $('.orb li:first ul:first').prepend('<img src="/images/jquery.ui/ribbon.' + settings.theme + '/menu_top.png" style="margin-left: -10px; margin-top: -22px;" />');
         }
 
-        $('.ribbon-list div').each(function() { if ($(this).children('ul').length > 0) { $(this).append('<img src="/images/jquery.ui/ribbon.' + settings.theme + '/arrow_down.png" style="float: right; margin-top: 5px;" />') } });
+        $('.ribbon-list div').each(function() {
+			if ($(this).children('ul').length > 0) { 
+				$(this).append('<img src="/images/jquery.ui/ribbon.' + settings.theme + '/arrow_down.png" style="float: right; margin-top: 5px;" />')
+			}
+		});
 
         //Hack for IE 7.
         if (navigator.appVersion.indexOf('MSIE 6.0') > -1 || navigator.appVersion.indexOf('MSIE 7.0') > -1) {
