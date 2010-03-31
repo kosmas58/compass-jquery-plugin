@@ -13,6 +13,7 @@ A Sass-based Meta-Framework for Compass that allows you to mix and match any of 
 or
 ** jQuery 1.3.2 and jQuery.UI 1.7.2 including themes
 * dynatree V0.5.3
+* ribbon
 * jqGrid V3.6.4
 
 This library requires <b>"Compass":http://wiki.github.com/chriseppstein/compass</b>.
@@ -99,6 +100,7 @@ h3. jQuery Plugins included
 * Fabrizio Balliano and Fabrizio Balliano for <b>"jQuery Layout Plugin":http://www.fabrizioballiano.net/</b>
 * John Reisig et. al. for <b>"jQuery Form Plugin":http://malsup.com/jquery/form/</b>
 * Martin Wendt for <b>"jQuery Dynatree Plugin":http://www.wwwendt.de</b>
+* Mikael Soederstroem for <b>"jQuery Ribbon Plugin":http://jqueryribbon.codeplex.com/</b>
 * Tony Tomov for <b>"jQuery Grid Plugin":http://www.trirand.com/blog/</b>
 * Chris Domigan for <b>"jQuery ContextMenu Plugin":http://www.trendskitchens.co.nz/jquery/contextmenu/</b>
 * Denis Howlett for <b>"jQuery Table Drag and Drop Plugin":http://www.isocra.com/2008/02/table-drag-and-drop-jquery-plugin/</b>
