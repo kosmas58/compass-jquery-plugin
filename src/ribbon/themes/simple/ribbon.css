@@ -51,7 +51,7 @@ ul.ribbon .orb
     display: block;
     width: 56px;
     height: 22px;
-    background-image: url("/images/jquery.ui/ribbon.simple/images/orb.png");
+    background-image: url("/images/jquery.ui/ribbon.simple/orb.png");
     background-position: right bottom;
     background-repeat: no-repeat;
     cursor: pointer;
