@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kosmas Schuetz"]
-  s.date = %q{2010-04-01}
+  s.date = %q{2010-04-02}
   s.description = %q{A compass plugin that integrates jRails, jQuery, jQuery UI and Themes, jqGrid and more into the Compass Sass framework.}
   s.email = %q{kosmas.schuetz@gmx.com}
   s.extra_rdoc_files = [
@@ -132,7 +132,6 @@ Gem::Specification.new do |s|
      "templates/dynatree/jquery.ui/dynatree.crystal/customFolder1.png",
      "templates/dynatree/jquery.ui/dynatree.crystal/doc_with_children.png",
      "templates/dynatree/jquery.ui/dynatree.crystal/document.png",
-     "templates/dynatree/jquery.ui/dynatree.crystal/edit_add.png",
      "templates/dynatree/jquery.ui/dynatree.crystal/empty.png",
      "templates/dynatree/jquery.ui/dynatree.crystal/expanded.png",
      "templates/dynatree/jquery.ui/dynatree.crystal/expanded_hover.png",
@@ -180,7 +179,6 @@ Gem::Specification.new do |s|
      "templates/dynatree/jquery.ui/dynatree.xp/rbIntermediate_hover.png",
      "templates/dynatree/jquery.ui/dynatree.xp/rbUnchecked.png",
      "templates/dynatree/jquery.ui/dynatree.xp/rbUnchecked_hover.png",
-     "templates/dynatree/jquery.ui/dynatree.xp/ui.dynatree.css",
      "templates/dynatree/manifest.rb",
      "templates/jqgrid/config/initializers/jqgrid.rb",
      "templates/jqgrid/config/locales/jquery/jqgrid/de.yml",
