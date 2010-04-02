@@ -179,6 +179,7 @@ Gem::Specification.new do |s|
      "templates/dynatree/jquery.ui/dynatree.xp/rbIntermediate_hover.png",
      "templates/dynatree/jquery.ui/dynatree.xp/rbUnchecked.png",
      "templates/dynatree/jquery.ui/dynatree.xp/rbUnchecked_hover.png",
+     "templates/dynatree/jquery.ui/dynatree.xp/vline.png",
      "templates/dynatree/manifest.rb",
      "templates/jqgrid/config/initializers/jqgrid.rb",
      "templates/jqgrid/config/locales/jquery/jqgrid/de.yml",

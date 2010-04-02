@@ -1,4 +1,4 @@
-ul.ui-dynatree-container { 
+div.ui-dynatree-container { 
 	font-family: segoe ui, Verdana, Geneva, Arial, Helvetica, sans-serif; 
 	font-size: 0.8em;
 	white-space: nowrap;
@@ -10,13 +10,13 @@ ul.ui-dynatree-container {
 	border-radius: 4px;
 }
 
-ul.ui-dynatree-container img {
+div.ui-dynatree-container img {
 	width: 16px; height: 16px;
 	margin-left: 3px;
 	vertical-align: top;
 }
 
-ul.ui-dynatree-container a {
+div.ui-dynatree-container a {
 	color: black;
 	text-decoration: none;
 	vertical-align: top;
@@ -25,15 +25,15 @@ ul.ui-dynatree-container a {
 	border: 1px solid white;
 }
 
-ul.ui-dynatree-container a:hover {
+div.ui-dynatree-container a:hover {
 	text-decoration: underline;
 }
 
-ul.ui-dynatree-container a:focus {
+div.ui-dynatree-container a:focus {
 	background-color: #EFEBDE;
 }
 
-.ui-dynatree-disabled ul.ui-dynatree-container {
+.ui-dynatree-disabled div.ui-dynatree-container {
 	opacity: 0.5;
 	background-color: silver;
 }
