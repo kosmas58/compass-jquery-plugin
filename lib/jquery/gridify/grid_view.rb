@@ -109,9 +109,10 @@ module Gridify
      
       # data and request options
       vals['url']               = url if url
+      vals['editurl']           = url if editable
       vals['restful']           = true if restful
+      vals['inline_edit']       = false if !inline_edit 
       vals['postData']          = { :grid => name } #identify which grid making the request
-      #vals['colNames']          = column_names if colNames.present?
       vals['colNames']          = colNames if colNames.present?
       vals['colModel']          = column_model if colModel.present?
       vals['datatype']          = data_type if data_type
@@ -166,12 +167,13 @@ module Gridify
       vals['altrows']           = true if alt_rows
       vals['altclass']          = alt_rows if alt_rows.is_a?(String)
       
-      vals['rowNumbers']        = true if row_numbers
+      vals['rownumbers']        = true if row_numbers
       vals['rownumWidth']       = row_numbers if row_numbers.is_a?(Numeric)
       
       if select_rows.present?
         vals['scrollrows']      = true
-        #handler...
+        vals['onSelectRow']     = select_rows
+        vals['multiselect']     = true if multi_select
       else
         vals['hoverrows']       = false
         vals['beforeSelectRow'] = "javascript: function(){ false; }"
@@ -206,11 +208,11 @@ module Gridify
         tableToGrid("##{dom_id}", #{to_json});
         ^
         s << %Q^
-        grid = jQuery("##{dom_id}")
+        grid_#{dom_id} = jQuery("##{dom_id}")
         ^ 
       else
         s << %Q^
-        grid = jQuery("##{dom_id}").jqGrid(#{to_json})
+        grid_#{dom_id} = jQuery("##{dom_id}").jqGrid(#{to_json})
         ^
       end
       
@@ -290,8 +292,8 @@ module Gridify
       if search_toolbar
         # I wish we could put this in the header rather than the pager
         s << %Q^
-        jQuery("##{dom_id}").jqGrid('navButtonAdd',"##{pager}", { caption:"Toggle", title:"Toggle Search Toolbar", buttonicon: 'ui-icon-pin-s', onClickButton: function(){ grid[0].toggleToolbar() } });
-        jQuery("##{dom_id}").jqGrid('navButtonAdd',"##{pager}", { caption:"Clear", title:"Clear Search", buttonicon: 'ui-icon-refresh', onClickButton: function(){ grid[0].clearToolbar() } });
+        jQuery("##{dom_id}").jqGrid('navButtonAdd',"##{pager}", { caption:"Toggle", title:"Toggle Search Toolbar", buttonicon: 'ui-icon-pin-s', onClickButton: function(){ grid_#{dom_id}[0].toggleToolbar() } });
+        jQuery("##{dom_id}").jqGrid('navButtonAdd',"##{pager}", { caption:"Clear", title:"Clear Search", buttonicon: 'ui-icon-refresh', onClickButton: function(){ grid_#{dom_id}[0].clearToolbar() } });
         jQuery("##{dom_id}").jqGrid('filterToolbar');
         ^
       end
@@ -300,11 +302,11 @@ module Gridify
       # loadError 
       # onSelectRow, onDblClickRow, onRightClickRow etc
       
-      unless search_toolbar == :visible
-        s << %Q^
-        grid[0].toggleToolbar();
-        ^
-      end
+      #unless search_toolbar == :visible
+      #  s << %Q^
+      #  grid_#{dom_id}[0].toggleToolbar();
+      #  ^
+      #end
 
       # # keep page controls centered (jqgrid bug) [eg appears when :width_fit => :scroll]
       # s << %Q^ $("##{pager}_left").css("width", "auto"); ^

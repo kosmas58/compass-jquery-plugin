@@ -5,20 +5,20 @@ module Gridify
     #             :only
     #             :except     
              
-    attr_accessor :name,                # name of the table (required)
-                  :resource,            # based on AR model class (assume tableized, plural, string)
-                                        # used as basis for all RESTful requests and data format
+    attr_accessor :name,                  # name of the table (required)
+                  :resource,              # based on AR model class (assume tableized, plural, string)
+                                          # used as basis for all RESTful requests and data format
 
     # model
-                  :colModel,            # incoming: hash of presets (native jqGrid); internally: array of GridColumn objects
-                                        # { :body => { "title" => {"width" => 98} }} 
-                  :colNames,
+                  :colModel,              # incoming: hash of presets (native jqGrid); internally: array of GridColumn objects
+                                          # { :body => { "title" => {"width" => 98} }} 
+                  :colNames,              # Column names
 
-                  #:widths,             # hash of column width (key = data type)
-                  :searchable,          # default: true (used in generating columns, changing has no effect on existing cols)
-                  :sortable,            # default: true (used in generating columns, changing has no effect on existing cols)
-                  :editable,            # default: false (used in generating columns, changing has no effect on existing cols)
-                      
+                  #:widths,               # hash of column width (key = data type)
+                  :searchable,            # default: true (used in generating columns, changing has no effect on existing cols)
+                  :sortable,              # default: true (used in generating columns, changing has no effect on existing cols)
+                  :editable,              # default: false (used in generating columns, changing has no effect on existing cols)
+                  :inline_edit, 
     # grid
                   :dom_id,                # defaults to #{resource}_#{name} eg "notes_grid"
                   
@@ -50,6 +50,7 @@ module Gridify
                   :alt_rows,              # true for odd/even row classes, or odd row style name string (nil)
                   :row_numbers,           # true to display row numbers in left column; or numeric width in pixels (nil)
                   :select_rows,           # true for rows are selectable (eg for pager buttons); or js function when row is selected, false disables hover (true if pager buttons else false)
+                  :multi_select,
 
     # header layer
                   :title,                 # title string (aka caption), or true for resource.titleize, nil for no title (nil)
@@ -102,109 +103,19 @@ module Gridify
                   :load_once,             # true to use local data after first load (false)
                   :error_handler,         # javacript: method for crud error handling (default to "after_submit")
                   :error_container,       # selector for posting error/flash messages (.errorExplanation)
-                                                        
-                  :z
-        
-#      url: "",
-#      height: 150,
-#      page: 1,
-#      rowNum: 20,
-#      records: 0,
-#      pager: "",
-#      pgbuttons: true,
-#      pginput: true,
-#      colModel: [],
-#      rowList: [],
-#      colNames: [],
-#      sortorder: "asc",
-#      sortname: "",
-#      datatype: "xml",
-#      mtype: "GET",
-#      altRows: false,
-#      selarrrow: [],
-#      savedRow: [],
-#      shrinkToFit: true,
-#      xmlReader: {},
-#      jsonReader: {},
-#      subGrid: false,
-#      subGridModel :[],
-#      reccount: 0,
-#      lastpage: 0,
-#      lastsort: 0,
-#      selrow: null,
-#      beforeSelectRow: null,
-#      onSelectRow: null,
-#      onSortCol: null,
-#      ondblClickRow: null,
-#      onRightClickRow: null,
-#      onPaging: null,
-#      onSelectAll: null,
-#      loadComplete: null,
-#      gridComplete: null,
-#      loadError: null,
-#      loadBeforeSend: null,
-#      afterInsertRow: null,
-#      beforeRequest: null,
-#      onHeaderClick: null,
-#      viewrecords: false,
-#      loadonce: false,
-#      multiselect: false,
-#      multikey: false,
-#      editurl: null,
-#      search: false,
-#      caption: "",
-#      hidegrid: true,
-#      hiddengrid: false,
-#      postData: {},
-#      userData: {},
-#      treeGrid : false,
-#      treeGridModel : 'nested',
-#      treeReader : {},
-#      treeANode : -1,
-#      ExpandColumn: null,
-#      tree_root_level : 0,
-#      prmNames: {page:"page",rows:"rows", sort: "sidx",order: "sord", search:"_search", nd:"nd", id:"id",oper:"oper",editoper:"edit",addoper:"add",deloper:"del", subgridid:"id"},
-#      forceFit : false,
-#      gridstate : "visible",
-#      cellEdit: false,
-#      cellsubmit: "remote",
-#      nv:0,
-#      loadui: "enable",
-#      toolbar: [false,""],
-#      scroll: false,
-#      multiboxonly : false,
-#      deselectAfterSort : true,
-#      scrollrows : false,
-#      autowidth: false,
-#      scrollOffset :18,
-#      cellLayout: 5,
-#      subGridWidth: 20,
-#      multiselectWidth: 20,
-#      gridview: false,
-#      rownumWidth: 25,
-#      rownumbers : false,
-#      pagerpos: 'center',
-#      recordpos: 'right',
-#      footerrow : false,
-#      userDataOnFooter : false,
-#      hoverrows : true,
-#      altclass : 'ui-priority-secondary',
-#      viewsortcols : [false,'vertical',true],
-#      resizeclass : '',
-#      autoencode : false,
-#      remapColumns : [],
-#      ajaxGridOptions :{},
-#      direction : "ltr",
-#      toppager: false,
-#      headertitles: false,
-#      scrollTimeout: 200
-        
+                                                      
+                  :z        
+
     # ----------------------  
     # attribute defaults and special value handling
     # (sure it'd be easier to initialize defaults using a hash but we want nil to mean the jqGrid default - might be true - and not pass a value at all)
     
     def restful
       @restful==false ? false : true
+    end
+    
+    def inline_edit
+      @inline_edit==true ? true : false  
     end
     
     def finder
@@ -217,8 +128,7 @@ module Gridify
     
     def sortable
       @sortable==false ? false : true
-    end
-        
+    end        
             
     def dom_id
       @dom_id || "#{resource}_#{name}"

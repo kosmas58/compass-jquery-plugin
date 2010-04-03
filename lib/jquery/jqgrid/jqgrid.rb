@@ -228,7 +228,7 @@ module ActionView
           jQuery(document).ready(function(){
             jQuery("##{id}").jqGrid({            
               url:'#{action}?q=1',
-              height: #{options[:height]},
+              height: "#{options[:height]}",
               // page: 1,
               rowNum:#{options[:rows_per_page]},
               // records: 0,
@@ -403,7 +403,7 @@ module ActionView
         end
       end
       options.chop! << "}"
-    end   
+    end
   end
 end
 

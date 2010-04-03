@@ -133,7 +133,7 @@ module Gridify
           :name => ar.name,
           :value_type => ar.type,
           :key => is_key,
-          :hidden => is_key,
+          #:hidden => is_key,
           :searchable => searchable,
           :sortable => sortable,
           :editable => edit
