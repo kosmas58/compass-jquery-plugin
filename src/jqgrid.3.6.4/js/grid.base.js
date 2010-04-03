@@ -181,7 +181,8 @@ $.fn.jqGrid = function( pin ) {
 			direction : "ltr",
 			toppager: false,
 			headertitles: false,
-			scrollTimeout: 200
+			scrollTimeout: 200,
+			restul: false
 		}, $.jgrid.defaults, pin || {});
 		var grid={
 			headers:[],

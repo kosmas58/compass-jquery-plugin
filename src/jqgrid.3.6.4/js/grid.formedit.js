@@ -41,7 +41,7 @@ $.jgrid.extend({
 
                 function applyDefaultFilters(gridDOMobj, filterSettings) {
                     /*
-                     gridDOMobj = ointer to grid DOM object ( $(#list)[0] )
+                     gridDOMobj = pointer to grid DOM object ( $(#list)[0] )
                       What we need from gridDOMobj:
                       gridDOMobj.SearchFilter is the pointer to the Search box, once it's created.
                       gridDOMobj.p.postData - dictionary of post settings. These can be overriden at grid creation to
@@ -858,7 +858,7 @@ $.jgrid.extend({
 					if( $.isFunction( rp_ge.onclickSubmit)) { onCS = rp_ge.onclickSubmit(rp_ge,postdata) || {}; }
 					if( $.isFunction(rp_ge.beforeSubmit))  { ret = rp_ge.beforeSubmit(postdata,$("#"+frmgr)); }
 				}
-				gurl = rp_ge.url ? rp_ge.url : $($t).jqGrid('getGridParam','editurl');
+				gurl = rp_ge.url ? rp_ge.url : $($t).jqGrid('getGridParam','editurl');			
 				if(ret[0]) {
 					if(!gurl) { ret[0]=false; ret[1] += " "+$.jgrid.errors.nourl; }
 				}
@@ -882,6 +882,10 @@ $.jgrid.extend({
 					}
 					delete postdata[$t.p.id+"_id"];
 					postdata = $.extend(postdata,rp_ge.editData,onCS);
+					if($t.p.restful) { 
+					  rp_ge.mtype = postdata.id == "_empty" ? "POST" : "PUT";
+					  gurl = postdata.id == "_empty" ? $t.p.url : $t.p.url+"/"+postdata.id;	
+					}
 					$.ajax( $.extend({
 						url:gurl,
 						type: rp_ge.mtype,
@@ -1369,6 +1373,10 @@ $.jgrid.extend({
 							postd[oper] = opers.deloper;
 							idname = opers.id;
 							postd[idname] = postdata;
+							if($t.p.restful) { 
+							  p.mtype = "DELETE";
+							  gurl = $t.p.url+"/"+postdata;
+							};
 							$.ajax( $.extend({
 								url:gurl,
 								type: p.mtype,
