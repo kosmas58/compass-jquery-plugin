@@ -15,6 +15,7 @@ or
 * dynatree V0.5.3
 * ribbon
 * jqGrid V3.6.4 (with minor changes to make in RESTful)
+* jQTouch V1.0b2
 
 This library requires <b>"Compass":http://wiki.github.com/chriseppstein/compass</b>.
 
@@ -80,7 +81,26 @@ To use the localized stylesheets and javacripts include:
     = stylesheet_link_tag 'compiled/jquery.ui/jqGrid.css', :media => 'screen, projection'
     = raw jqgrid_javascripts(I18n.locale)</pre>
 
-jqGrid now uses the jQuery UI Themes.
+h3. jQTouch
+
+Use compass to install the jQTouch javascript library into your project.
+
+<pre>compass [-r jquery] -f jquery -p jqtouch <project name></pre>
+
+You will find all the stylesheets in easy-to-read Sass format at:
+
+<pre>stylesheets/jqtouch</pre>
+
+To use the localized stylesheets and javacripts include:
+
+<pre>
+	= stylesheet_link_tag 'compiled/jqtouch/[theme].css', :media => 'screen, projection'
+ 	= javascript_include_tag :jqtouch'</pre>
+
+There is iPhone lookalike stylesheet using an IFrame available for tests without a iPhone. You can include it by
+
+<pre>
+	= stylesheet_link_tag 'compiled/jqtouch/iphone-emulator.css', :media => 'screen, projection'</pre>
 
 h2. Thanks to the Contributors:
 
@@ -102,6 +122,7 @@ h3. jQuery Plugins included
 * Martin Wendt for <b>"jQuery Dynatree Plugin":http://www.wwwendt.de</b>
 * Mikael Soederstroem for <b>"jQuery Ribbon Plugin":http://jqueryribbon.codeplex.com/</b>
 * Tony Tomov for <b>"jQuery Grid Plugin":http://www.trirand.com/blog/</b>
+* David Kaneda for <b>"jQTouch":http://www.jqtouch.com/</b>
 * Chris Domigan for <b>"jQuery ContextMenu Plugin":http://www.trendskitchens.co.nz/jquery/contextmenu/</b>
 * Denis Howlett for <b>"jQuery Table Drag and Drop Plugin":http://www.isocra.com/2008/02/table-drag-and-drop-jquery-plugin/</b>
 * Michael Aufreiter for <b>"jQuery UI Multiselect Plugin":http://quasipartikel.at</b>
@@ -109,7 +130,6 @@ h3. jQuery Plugins included
 * Working on integration of:
 ** Rob Monie for <b>"jQuery.weekCalendar":http://www.redredred.com.au/</b>
 ** Kyle LeNeau for <b>"jMonthCalendar":http://www.bytecyclist.com/projects/jmonthcalendar</b>
-** David Kaneda for <b>"jQTouch":http://www.jqtouch.com/</b>
 
 h2. Note on Patches/Pull Requests
 
