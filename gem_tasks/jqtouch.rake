@@ -50,7 +50,7 @@ namespace :build do
       manifest.print "javascript 'jquery.jqtouch.min.js'\n"
       
       # Stylesheets
-      FileUtils.mkdir_p JQTOUCH_DEST_THEMES
+      FileUtils.mkdir_p(JQTOUCH_DEST_THEMES)
       Dir.foreach File.join(JQTOUCH_SRC, 'css') do |file|
         next unless /\.css$/ =~ file
         css = File.read File.join(JQTOUCH_SRC, 'css', file)
@@ -60,16 +60,24 @@ namespace :build do
           f.write JQTOUCH_MESSAGE2 + sass
         end
         manifest.print "stylesheet 'jqtouch/#{file.gsub(/\.css$/,'.sass')}'\n"
-      end      
-
+      end
 
       # iPhone Images 
+      FileUtils.mkdir_p(JQTOUCH_DEST_IMAGES)
+      
+      # Copy the images directory
+      src_dir = JQTOUCH_SRC_IMAGES
+      dest_dir = JQTOUCH_DEST_IMAGES
+      
+      Dir.foreach(src_dir) do |image|
+        next if /^\./ =~ image
+        FileUtils.cp(File.join(src_dir, image), dest_dir)    
+        manifest.print "image 'jqtouch/#{image}'\n"
+      end
+      
+      # iPhone Icons      
       FileUtils.mkdir_p(File.join(JQTOUCH_DEST_IMAGES, 'icons'))
       
-      FileUtils.cp(File.join(JQTOUCH_SRC, 'images', 'iphone_fullsize.png'), JQTOUCH_DEST_IMAGES) 
-      manifest.print "image 'jqtouch/iphone_fullsize.png'\n"
-      
-      # iPhone Icons
       src_dir = File.join(JQTOUCH_SRC_IMAGES, 'icons')
       dest_dir = File.join(JQTOUCH_DEST_IMAGES, 'icons')      
       Dir.foreach(src_dir) do |image|
