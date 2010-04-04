@@ -172,10 +172,17 @@ $.jgrid.extend({
 				if( $.isFunction(aftersavefunc) ) { aftersavefunc(rowid,resp); }
 			} else {
 				$("#lui_"+$t.p.id).show();
+				if($t.p.restful) { 
+				  mtype = "PUT";
+				  url = url+"/"+rowid;	
+				}
+				else {
+				  mtype = "POST";
+				}
 				$.ajax($.extend({
 					url:url,
 					data: $.isFunction($t.p.serializeRowData) ? $t.p.serializeRowData(tmp) : tmp,
-					type: "POST",
+					type: mtype,
 					complete: function(res,stat){
 						$("#lui_"+$t.p.id).hide();
 						if (stat === "success"){
