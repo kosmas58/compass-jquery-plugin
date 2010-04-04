@@ -62,22 +62,20 @@ namespace :build do
         manifest.print "stylesheet 'jqtouch/#{file.gsub(/\.css$/,'.sass')}'\n"
       end
 
-      # iPhone Images 
-      FileUtils.mkdir_p(JQTOUCH_DEST_IMAGES)
+      # iPhone Images     
+      FileUtils.mkdir_p(File.join(JQTOUCH_DEST_IMAGES, 'icons'))
       
       # Copy the images directory
       src_dir = JQTOUCH_SRC_IMAGES
       dest_dir = JQTOUCH_DEST_IMAGES
       
       Dir.foreach(src_dir) do |image|
-        next if /^\./ =~ image
+        next unless /\.png$/ =~ image
         FileUtils.cp(File.join(src_dir, image), dest_dir)    
         manifest.print "image 'jqtouch/#{image}'\n"
       end
       
-      # iPhone Icons      
-      FileUtils.mkdir_p(File.join(JQTOUCH_DEST_IMAGES, 'icons'))
-      
+      # iPhone Icons        
       src_dir = File.join(JQTOUCH_SRC_IMAGES, 'icons')
       dest_dir = File.join(JQTOUCH_DEST_IMAGES, 'icons')      
       Dir.foreach(src_dir) do |image|
