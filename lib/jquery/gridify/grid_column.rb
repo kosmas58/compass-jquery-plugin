@@ -20,7 +20,8 @@ module Gridify
                   :sortable,                # t/f (true) or jqGrid sorttype: :integer, :float, :currency, :date, :text (true)
                   :searchable,              # true/false (true) or text or select
                   #:search_options,
-                  :editable,                # true/false (false) or text, textarea, select, checkbox, password, button, image and file (based on value_type)
+                  :editable,                # true/false (false),
+                  :edit_type,               # text, textarea, select, checkbox, password, button, image and file (based on value_type)
                   :edit_options,            # html input field options, depends on editable type (eg {"size" => 10, "maxlength" => 15}) see http://www.trirand.com/jqgridwiki/doku.php?id=wiki:common_rules
                   :validations,             # jqGrid editrules (TODO derive from AR model validations) see http://www.trirand.com/jqgridwiki/doku.php?id=wiki:common_rules
                                             # "required" "integer" "email" "url" etc
@@ -106,10 +107,12 @@ module Gridify
         vals[:formatter] = 'date'
         vals[:formatoptions] = { :srcformat => 'UniversalSortableDateTime', :newformat => 'FullDateTime' }
       end
-      vals[:hidden]     = true          if hidden
-      vals[:width]      = width         if width
+      vals[:hidden]      = true         if hidden
+      vals[:width]       = width        if width
+      vals[:edittype]    = edit_type    if editable && edit_type
+      vals[:formoptions] = form_options if editable && form_options
       vals[:editoptions] = edit_options if editable && edit_options
-      vals[:editrules]  = validations   if editable && validations
+      vals[:editrules]   = validations  if editable && validations
         # and more...
         
       vals

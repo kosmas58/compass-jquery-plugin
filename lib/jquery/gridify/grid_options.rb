@@ -18,12 +18,17 @@ module Gridify
                   :searchable,            # default: true (used in generating columns, changing has no effect on existing cols)
                   :sortable,              # default: true (used in generating columns, changing has no effect on existing cols)
                   :editable,              # default: false (used in generating columns, changing has no effect on existing cols)
-                  :inline_edit, 
+                  :inline_edit,
+                  :inline_edit_handler,
     # grid
                   :dom_id,                # defaults to #{resource}_#{name} eg "notes_grid"
                   
                   :jqgrid_options,        # hash of additional jqGrid options that override any other settings
 
+    #subgrid
+                  :sub_grid,
+                  :sub_grid_url,
+                  :sub_grid_model,
 
     # grid layout options
                   :width,                 # in pixels, or nil (nil means calculated based on overflow setting)
@@ -117,6 +122,10 @@ module Gridify
     def inline_edit
       @inline_edit==true ? true : false  
     end
+    
+    def inline_edit_handler
+      @inline_edit_handler || 'null'  
+    end 
     
     def finder
       @finder || :find

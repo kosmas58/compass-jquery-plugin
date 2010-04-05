@@ -15,6 +15,7 @@ module Gridify
       if options[:script]
         s << %Q^
         <script type="text/javascript">
+        var lastsel_#{dom_id};
         ^       
       end
 
@@ -65,8 +66,8 @@ module Gridify
       #         {afterSubmit:function(r,data){return #{options[:error_handler_return_value]}(r,data,'edit');}},
       
       # note, closeAfterEdit will not close if response returns a non-empty string (even if "success" message)
-      merge_options_defaults( edit_button, 
-        'reloadAfterSubmit' => false, 
+      merge_options_defaults( edit_button || inline_edit, 
+        'reloadAfterSubmit' => true, 
         'closeAfterEdit' => true,
         'afterSubmit' => "javascript: function(r,data){return #{error_handler_return_value}(r,data,'edit');}"
       )
@@ -75,8 +76,8 @@ module Gridify
     def add_button_options
       # 'url' => '/notes', 'mtype' => 'POST'
       merge_options_defaults( add_button, 
-        'reloadAfterSubmit' => false, 
-        'closeAfterEdit' => true,
+        'reloadAfterSubmit' => true, 
+        'closeAfterAdd' => true,
         'afterSubmit' => "javascript: function(r,data){return #{error_handler_return_value}(r,data,'add');}"
       )
     end
@@ -84,7 +85,7 @@ module Gridify
     def delete_button_options
       # 'url' => '/notes/{id}', 'mtype' => 'DELETE'
       merge_options_defaults( delete_button, 
-        'reloadAfterSubmit' => false,
+        'reloadAfterSubmit' => true,
         'afterSubmit' => "javascript: function(r,data){return #{error_handler_return_value}(r,data,'delete');}"
       )
     end
@@ -108,91 +109,105 @@ module Gridify
       vals                     = {}
      
       # data and request options
-      vals['url']               = url if url
-      vals['editurl']           = url if editable
-      vals['restful']           = true if restful
-      vals['inline_edit']       = false if !inline_edit 
-      vals['postData']          = { :grid => name } #identify which grid making the request
-      vals['colNames']          = colNames if colNames.present?
-      vals['colModel']          = column_model if colModel.present?
-      vals['datatype']          = data_type if data_type
+      vals[:url]               = url if url
+      vals[:editurl]           = url if editable
+      vals[:restful]           = true if restful
+      vals[:inline_edit]       = inline_edit if inline_edit.present? 
+      vals[:postData]          = { :grid => name } #identify which grid making the request
+      vals[:colNames]          = colNames if colNames.present?
+      vals[:colModel]          = column_model if colModel.present?
+      vals[:datatype]          = data_type if data_type
       if data_format.present?
         if data_type == :xml
-          vals['xmlReader']     = data_format
+          vals[:xmlReader]     = data_format
         elsif data_type == :json
-          vals['jsonReader']    = data_format
+          vals[:jsonReader]    = data_format
         end
       end
         
-      vals['loadonce']          = load_once if load_once
+      vals[:loadonce]          = load_once if load_once
 
-      vals['sortname']          = sort_by if sort_by
-      vals['sortorder']         = sort_order if sort_order && sort_by
-      vals['rowNum']            = rows_per_page if rows_per_page
-      vals['page']              = current_page if current_page
+      vals[:sortname]          = sort_by if sort_by
+      vals[:sortorder]         = sort_order if sort_order && sort_by
+      vals[:rowNum]            = rows_per_page if rows_per_page
+      vals[:page]              = current_page if current_page
 
        # grid options
-       vals['height']           = height if height
-       vals['gridview']         = true      # faster views, NOTE theres cases when this needs to be disabled
+       vals[:height]           = height if height
+       vals[:gridview]         = true      # faster views, NOTE theres cases when this needs to be disabled
       
       case width_fit
         when :fitted
           #vals[:autowidth]    = false #default
           #vals[:shrinkToFit]  = true #default
-          vals['forceFit']      = true
-          vals['width']         = width if width
+          vals[:forceFit]      = true
+          vals[:width]         = width if width
         
         when :scroll
           #vals[:autowidth]    = false #default
-          vals['shrinkToFit']   = false
-          #vals['forceFit']     = #ignored by jqGrid
-          vals['width']         = width if width
+          vals[:shrinkToFit]   = false
+          #vals[:forceFit]     = #ignored by jqGrid
+          vals[:width]         = width if width
         
         else #when :fluid
-          vals['autowidth']     = true
-          #vals['shrinkToFit']  = true #default
-          vals['forceFit']      = true
-          #vals['width']        = is ignored
-          vals['resizeStop']    = 'javascript: gridify_fluid_recalc_width'
+          vals[:autowidth]     = true
+          #vals[:shrinkToFit]  = true #default
+          vals[:forceFit]      = true
+          #vals[:width]        = is ignored
+          vals[:resizeStop]    = 'javascript: gridify_fluid_recalc_width'
       end
       
-      vals['sortable']          = true if arranger_type.include?(:sortable)
+      vals[:sortable]          = true if arranger_type.include?(:sortable)
       
       # header layer
-      vals['caption']           = title if title
-      vals['hidegrid']          = false unless collapsible
-      vals['hiddengrid']        = true if collapsed
+      vals[:caption]           = title if title
+      vals[:hidegrid]          = false unless collapsible
+      vals[:hiddengrid]        = true if collapsed
       
       # row formatting
-      vals['altrows']           = true if alt_rows
-      vals['altclass']          = alt_rows if alt_rows.is_a?(String)
+      vals[:altrows]           = true if alt_rows
+      vals[:altclass]          = alt_rows if alt_rows.is_a?(String)
       
-      vals['rownumbers']        = true if row_numbers
-      vals['rownumWidth']       = row_numbers if row_numbers.is_a?(Numeric)
+      vals[:rownumbers]        = true if row_numbers
+      vals[:rownumWidth]       = row_numbers if row_numbers.is_a?(Numeric)
       
-      if select_rows.present?
-        vals['scrollrows']      = true
-        vals['onSelectRow']     = select_rows
-        vals['multiselect']     = true if multi_select
+      if inline_edit 
+        vals[:scrollrows]      = true
+        vals[:multiselect]     = true if multi_select
+        vals[:onSelectRow]     = "javascript: function(id, status) { if(id && id!==lastsel_#{dom_id}) { jQuery('##{dom_id}').jqGrid('restoreRow', lastsel_#{dom_id}); jQuery('##{dom_id}').jqGrid('editRow', id, true, #{inline_edit_handler}, #{error_handler}); lastsel_#{dom_id}=id}}"      
+        #vals[:onSelectRow]     = "javascript: function(id, status) { if(id && id!==lastsel_#{dom_id}) { jQuery('##{dom_id}').jqGrid('restoreRow', lastsel_#{dom_id}); jQuery('##{dom_id}').jqGrid('editRow', id, true, #{inline_edit_handler}, gridify_action_error_handler(r, data, 'edit')); lastsel_#{dom_id}=id}}"      
+     
+      
+      elsif select_rows #.present?
+        vals[:scrollrows]      = true
+        vals[:onSelectRow]     = select_rows
+        vals[:multiselect]     = true if multi_select
       else
-        vals['hoverrows']       = false
-        vals['beforeSelectRow'] = "javascript: function(){ false; }"
+        vals[:hoverrows]       = false
+        vals[:beforeSelectRow] = "javascript: function(){ false; }"
       end
       
       # pager layer
       if pager
-        vals['pager']           = "##{pager}" 
-        vals['viewrecords']     = true     # display total records in the query (eg "1 - 10 of 25")
-        vals['rowList']         = paging_choices
+        vals[:pager]           = "##{pager}" 
+        vals[:viewrecords]     = true     # display total records in the query (eg "1 - 10 of 25")
+        vals[:rowList]         = paging_choices
         if paging_controls.is_a?(Hash)
           # allow override of jqGrid pager options
           vals.merge!(paging_controls)
         elsif !paging_controls
-          vals['rowList']       = []
-          vals['pgbuttons']     = false
-          vals['pginput']       = false
-          vals['recordtext']    = "{2} records"
+          vals[:rowList]       = []
+          vals[:pgbuttons]     = false
+          vals[:pginput]       = false
+          vals[:recordtext]    = "{2} records"
         end
+      end
+      
+      #subgrid
+      if sub_grid      
+        vals[:subGrid]      = sub_grid
+        vals[:subGridUrl]   = sub_grid_url
+        vals[:subGridModel] = sub_grid_model
       end
       
       # allow override of native jqGrid options
