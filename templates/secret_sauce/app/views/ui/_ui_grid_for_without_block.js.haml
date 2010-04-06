@@ -4,7 +4,7 @@
     $('##{name}_table').jqGrid(#{options.to_json});
     $('##{name}_table').jqGrid('navGrid',"##{name}_pager", #{nav.to_json});
   });
-  
+
 - if actions
   - if actions[:destroy]
     :javascript
@@ -14,14 +14,17 @@
           position: "first",
           buttonicon: "ui-icon-trash",
           onClickButton: function() {
-            var rowId = $("#{name}_table").getGridParam("selrow")
+            var rowId = $("##{name}_table").jqGrid('getGridParam', "selrow");
             if(rowId == null) {
               alert("You must first select a row.");
             } else {
               var sure = confirm("Are you sure?")
               if(sure) {
-                $.ajax({url: "#{name}/"+rowId,
-                  type: "delete",
+                ////////////////////////////////////
+                //$.ajax({url: "#{name}/"+rowId,
+                $.ajax({url: "/jqgrid/#{name}/"+rowId,
+                ////////////////////////////////////
+                  type: "DELETE",
                   data: {authenticity_token: "#{form_authenticity_token}"},
                   success: function() {
                     $("##{name}_table").trigger("reloadGrid");
@@ -32,20 +35,23 @@
           }
         });
       });
-      
+
   - if actions[:update]
     :javascript
-      $(document).ready(function() {  
+      $(document).ready(function() {
         $("##{name}_table").jqGrid('navButtonAdd',"##{name}_pager", {
           caption: "",
           position: "first",
           buttonicon: "ui-icon-pencil",
           onClickButton: function() {
-            var rowId = $("##{name}_table").getGridParam("selrow")
+            var rowId = $("##{name}_table").jqGrid('getGridParam', "selrow")
             if(rowId == null) {
               alert("You must first select a row.");
             } else {
-              $.ajax({method: "get", url: "/#{name}#{actions[:update]}/"+rowId,
+              ////////////////////////////////////
+              //$.ajax({method: "PUT", url: "/#{name}#{actions[:update]}/"+rowId,
+              $.ajax({method: "GET", url: "/jqgrid/#{name}#{actions[:update]}/"+rowId,
+              ////////////////////////////////////
                 success: function(data, status) {
                   var dWidth = $(data).css("width")
                   var dHeight = $(data).css("height")
@@ -53,9 +59,11 @@
                   $("#widget_submit").hide(); // HACK: easy way to make submit on enter work
                   $("##{name}_update_dialog").find("form").submit(function() {
                     $(this).ajaxSubmit({
-                      url: $(this).attr("action"),
-                      data: $(this).serialize(),
-                      type: "put",
+                      url: "/jqgrid/#{name}/"+rowId,
+                      //url: $(this).attr("action"),
+                      //data: {authenticity_token: "#{form_authenticity_token}"},
+                      //data: $(this).serialize(),
+                      type: "PUT",
                       success: function(response, status) {
                         if(!$(response).is("form")) {
                           $("##{name}_update_dialog").dialog('close');
@@ -81,6 +89,7 @@
                     close: function() {
                       $(this).dialog('destroy');
                       $("##{name}_update_dialog").children().remove();
+                      $("##{name}_table").trigger("reloadGrid");
                     }
                   });
                 }
@@ -89,16 +98,19 @@
           }
         });
       });
-      
+
   - if actions[:create]
     :javascript
-      $(document).ready(function() {  
+      $(document).ready(function() {
         $("##{name}_table").jqGrid('navButtonAdd',"##{name}_pager", {
           caption: "",
           position: "first",
           buttonicon: "ui-icon-plus",
           onClickButton: function() {
-            $.ajax({method: "get", url: "/#{name}#{actions[:create]}",
+            ////////////////////////////////////
+            //$.ajax({method: "POST", url: "/#{name}#{actions[:create]}",
+            $.ajax({method: "GET", url: "/jqgrid/#{name}#{actions[:create]}",
+            ////////////////////////////////////
               success: function(data, status) {
                 var dWidth = $(data).css("width");
                 var dHeight = $(data).css("height");
@@ -108,36 +120,37 @@
                   $(this).ajaxSubmit({
                     url: $(this).attr("action"),
                     data: $(this).serialize(),
-                    type: "post",
+                    type: "POST",
                     success: function(response, status) {
                       if(!$(response).is("form")) {
                         $("##{name}_create_dialog").dialog('close');
                         $("##{name}_table").trigger("reloadGrid");
                       } else {
                         $("##{name}_create_dialog").find("form").replaceWith(response);
+                      }
                     }
+                  });
+                  return false;
+                });
+                $("##{name}_create_dialog").dialog({
+                  buttons: {
+                    "Save": function() {$(this).find("form").submit();},
+                    "Cancel": function() {$(this).dialog('close');}
+                  },
+                  title: "New",
+                  width: dWidth,
+                  height: dHeight,
+                  modal: true,
+                  draggable: false,
+                  resizable: false,
+                  close: function() {
+                    $(this).dialog('destroy');
+                    $("##{name}_create_dialog").children().remove();
+                    $("##{name}_table").trigger("reloadGrid");
                   }
                 });
-                return false;
-              });
-              $("##{name}_create_dialog").dialog({
-                buttons: {
-                  "Save": function() {$(this).find("form").submit();},
-                  "Cancel": function() {$(this).dialog('close');}
-                },
-                title: "New",
-                width: dWidth,
-                height: dHeight,
-                modal: true,
-                draggable: false,
-                resizable: false,
-                close: function() {
-                  $(this).dialog('destroy');
-                  $("##{name}_create_dialog").children().remove();
-                }
-              });
-            }
-          });
-        } 
+              }
+            });
+          }
+        });
       });
-  
