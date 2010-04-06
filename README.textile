@@ -81,6 +81,22 @@ To use the localized stylesheets and javacripts include:
 = stylesheet_link_tag 'compiled/jquery.ui/jqGrid.css', :media => 'screen, projection'
 = raw jqgrid_javascripts(I18n.locale)</pre>
 
+h3. Secret Sauce
+
+Use compass to install the Secret Sauce for jqGrid javascript library into your project.
+
+<pre>compass [-r jquery] -f jquery -p secret_sauce <project name></pre>
+
+You will find all the stylesheets in easy-to-read Sass format.
+
+<pre>stylesheets/jquery.ui</pre>
+
+To use the localized stylesheets and javacripts include:
+
+<pre>
+= stylesheet_link_tag 'compiled/jquery.ui/secret_sauce.css', :media => 'screen, projection'
+= javascript_include_tag :secret_sauce</pre>
+
 h3. jQTouch
 
 Use compass to install the jQTouch javascript library into your project.
