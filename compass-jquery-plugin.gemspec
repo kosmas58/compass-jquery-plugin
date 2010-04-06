@@ -32,6 +32,7 @@ Gem::Specification.new do |s|
      "gem_tasks/jrails14.rake",
      "gem_tasks/ribbon.rake",
      "gem_tasks/rubygems.rake",
+     "gem_tasks/secret_sauce.rake",
      "lib/compiler.jar",
      "lib/handle_attributes.rb",
      "lib/handle_js_files.rb",
@@ -53,6 +54,14 @@ Gem::Specification.new do |s|
      "lib/jquery/jquery_selector_assertions.rb",
      "lib/jquery/jrails.rb",
      "lib/jquery/ribbon.rb",
+     "lib/secret_sauce.rb",
+     "lib/secret_sauce/controller/ui_dialog_controls.rb",
+     "lib/secret_sauce/controller/ui_grid_controls.rb",
+     "lib/secret_sauce/helpers/ui_dialog_helper.rb",
+     "lib/secret_sauce/helpers/ui_form_helper.rb",
+     "lib/secret_sauce/helpers/ui_grid_helper.rb",
+     "lib/secret_sauce/helpers/ui_theme_helper.rb",
+     "lib/secret_sauce/model/find_for_grid.rb",
      "lib/yuicompressor-2.4.2.jar",
      "templates/dynatree/config/initializers/dynatree.rb",
      "templates/dynatree/jquery.dynatree.js",
@@ -1389,7 +1398,15 @@ Gem::Specification.new do |s|
      "templates/ribbon/jquery.ui/ribbon.windows7/ribbon-backstage-subMenu-itemSquare-hover.png",
      "templates/ribbon/jquery.ui/ribbon.windows7/ribbon-backstage-subMenu-itemSquare.png",
      "templates/ribbon/jquery.ui/ribbon.windows7/top_background.png",
-     "templates/ribbon/manifest.rb"
+     "templates/ribbon/manifest.rb",
+     "templates/secret_sauce/app/views/ui/_ui_form_error_messages.html.haml",
+     "templates/secret_sauce/app/views/ui/_ui_grid_for_without_block.js.haml",
+     "templates/secret_sauce/app/views/ui/_ui_static_dialog.html.haml",
+     "templates/secret_sauce/config/initializers/secret_sauce.rb",
+     "templates/secret_sauce/jquery.ui/secret_sauce.sass",
+     "templates/secret_sauce/manifest.rb",
+     "templates/secret_sauce/secret_sauce.js",
+     "templates/secret_sauce/secret_sauce.min.js"
   ]
   s.homepage = %q{http://github.com/kosmas58/compass-jquery-plugin}
   s.rdoc_options = ["--charset=UTF-8"]
