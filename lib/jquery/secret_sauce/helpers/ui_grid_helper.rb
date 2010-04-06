@@ -162,6 +162,7 @@ module SecretSauce
           :param_keys => "prmnames", # array
           :post_data => "postData", # array 
           :resize_class => "resizeclass", # string
+          :restful => "restful", # bool
           :row_num => "rowNum", # integer TODO: ADD DOCUMENATION
           :row_list => "rowList", # array TODO: ADD DOCUMENATION
           :scroll => "scroll", # bool
@@ -188,13 +189,18 @@ module SecretSauce
             {:name => m, :index => m, :label => m.titleize, :width => (1024 / name_or_array.to_s.singularize.classify.constantize.new.attributes.length)}
           end
           grid_options = {
-            :url => "/#{name_or_array}.json",
+            ##########################################
+            #:url => "/#{name_or_array}.json", 
+            :url => "/jqgrid/#{name_or_array}.json", 
+            ##########################################
             :alternate_rows => true,
             :caption => "#{name_or_array}".titleize,
             :column_model => column_model,
             :datatype => "json",
+            :restful => true,
             :json_reader => {:repeatitems => false},
-            :height => 22 * 30,
+            #:height => 22 * 30,
+            :height => :auto,
             :row_num => 20,
             :row_list => [10, 20, 30],
             :pager => "#{name_or_array}_pager",

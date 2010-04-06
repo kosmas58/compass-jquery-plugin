@@ -3,7 +3,7 @@ module ActiveRecord
       
       # takes params from request and returns records serialized to json. handles the majority of the functionality
       # for searching, sorting, and serializing records to be consumed by jqGrid.
-      def self.find_for_grid(params)
+      def self.find_for_grid_2(params)
         search_options = {:limit => params["rows"]}
         search_options[:offset] = (params["page"].to_i * params["rows"].to_i) - params["rows"].to_i
         search_options[:order] = "#{params['sidx']} #{params['sord']}" if params["sidx"] != ""

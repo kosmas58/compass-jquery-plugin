@@ -8,7 +8,7 @@ module SecretSauce
         if File.exists?("#{RAILS_ROOT}/public/stylesheets/compiled/jquery.ui.#{theme}")
           return stylesheet_link_tag("compiled/jquery.ui.#{theme}")
         else
-          return stylesheet_link_tag("http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/#{theme}/jquery-ui.css")
+          return stylesheet_link_tag("http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/#{theme}/jquery-ui.css")
         end
       end      
     end    
