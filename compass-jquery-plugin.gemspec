@@ -60,7 +60,6 @@ Gem::Specification.new do |s|
      "lib/jquery/secret_sauce/helpers/ui_dialog_helper.rb",
      "lib/jquery/secret_sauce/helpers/ui_form_helper.rb",
      "lib/jquery/secret_sauce/helpers/ui_grid_helper.rb",
-     "lib/jquery/secret_sauce/helpers/ui_theme_helper.rb",
      "lib/jquery/secret_sauce/model/find_for_grid.rb",
      "lib/yuicompressor-2.4.2.jar",
      "templates/dynatree/config/initializers/dynatree.rb",
