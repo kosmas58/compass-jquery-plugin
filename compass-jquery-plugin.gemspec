@@ -54,6 +54,7 @@ Gem::Specification.new do |s|
      "lib/jquery/jquery_selector_assertions.rb",
      "lib/jquery/jrails.rb",
      "lib/jquery/ribbon.rb",
+     "lib/jquery/secret_sauce.rb",
      "lib/jquery/secret_sauce/controller/ui_dialog_controls.rb",
      "lib/jquery/secret_sauce/controller/ui_grid_controls.rb",
      "lib/jquery/secret_sauce/helpers/ui_dialog_helper.rb",
