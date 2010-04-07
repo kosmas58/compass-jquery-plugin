@@ -937,14 +937,22 @@
 
             // Listeners for all possible events
             var cache = window.applicationCache;
-            cache.addEventListener('cached', logEvent, false);
-            cache.addEventListener('checking', logEvent, false);
-            cache.addEventListener('downloading', logEvent, false);
-            cache.addEventListener('error', logEvent, false);
-            cache.addEventListener('noupdate', logEvent, false);
-            cache.addEventListener('obsolete', logEvent, false);
-            cache.addEventListener('progress', logEvent, false);
-            cache.addEventListener('updateready', logEvent, false);
+            //cache.addEventListener('cached', logEvent, false);
+            //cache.addEventListener('checking', logEvent, false);
+            //cache.addEventListener('downloading', logEvent, false);
+            //cache.addEventListener('error', logEvent, false);
+            //cache.addEventListener('noupdate', logEvent, false);
+            //cache.addEventListener('obsolete', logEvent, false);
+            //cache.addEventListener('progress', logEvent, false);
+            //cache.addEventListener('updateready', logEvent, false); 
+			window.addEventListener('cached', logEvent, false);
+            window.addEventListener('checking', logEvent, false);
+            window.addEventListener('downloading', logEvent, false);
+            window.addEventListener('error', logEvent, false);
+            window.addEventListener('noupdate', logEvent, false);
+            window.addEventListener('obsolete', logEvent, false);
+            window.addEventListener('progress', logEvent, false);
+            window.addEventListener('updateready', logEvent, false);
 
             // Log every event to the console
             function logEvent(e) {
@@ -970,7 +978,8 @@
             }
 
             // Swap in newly download files when update is ready
-            cache.addEventListener('updateready', function(e){
+            //cache.addEventListener('updateready', function(e){
+            window.addEventListener('updateready', function(e){
                     // Don't perform "swap" if this is the first cache
                     if (cacheStatusValues[cache.status] != 'idle') {
                         cache.swapCache();
