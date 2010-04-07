@@ -18,30 +18,31 @@ a
   -webkit-tap-highlight-color: rgba(0,0,0,0)
 
 
-body
-  overflow-x: hidden
+div#jqt
   -webkit-user-select: none
   -webkit-text-size-adjust: none
-  font-family: Helvetica
+  font-family: "Helvetica Neue", Helvetica
   -webkit-perspective: 800
   -webkit-transform-style: preserve-3d
 
 
-.selectable, input, textarea
-  -webkit-user-select: auto
+#jqt
+  .selectable, input, textarea
+    -webkit-user-select: auto
 
 
-body
-  > *
-    -webkit-backface-visibility: hidden
-    -webkit-box-sizing: border-box
-    display: none
-    position: absolute
-    left: 0
-    width: 100%
-    -webkit-transform: translate3d(0,0,0) rotate(0) scale(1)
-    min-height: 420px !important
+div#jqt > *
+  -webkit-backface-visibility: hidden
+  -webkit-box-sizing: border-box
+  display: none
+  position: absolute
+  left: 0
+  width: 100%
+  -webkit-transform: translate3d(0,0,0) rotate(0) scale(1)
+  min-height: 420px !important
 
+
+#jqt
   &.fullscreen
     > *
       min-height: 460px !important
@@ -50,26 +51,27 @@ body
       min-height: 480px !important
 
   &.landscape > *
-    min-height: 320px
-
-  > .current
-    display: block !important
+    min-height: 320px !important
 
 
-.in, .out
-  -webkit-animation-timing-function: ease-in-out
-  -webkit-animation-duration: 350ms
+div#jqt > .current
+  display: block !important
 
 
-.slide
-  &.in
-    -webkit-animation-name: slideinfromright
+#jqt
+  .in, .out
+    -webkit-animation-timing-function: ease-in-out
+    -webkit-animation-duration: 350ms
 
-  &.out
-    -webkit-animation-name: slideouttoleft
+  .slide
+    &.in
+      -webkit-animation-name: slideinfromright
 
-  &.in.reverse
-    -webkit-animation-name: slideinfromleft
+    &.out
+      -webkit-animation-name: slideouttoleft
 
-  &.out.reverse
-    -webkit-animation-name: slideouttoright
+    &.in.reverse
+      -webkit-animation-name: slideinfromleft
+
+    &.out.reverse
+      -webkit-animation-name: slideouttoright
