@@ -185,13 +185,14 @@ module SecretSauce
           options[:grid] = {} unless options[:grid]
           options[:nav] = {} unless options[:nav]
           options[:actions] = {} unless options[:actions]
+          options[:url] = "/#{name_or_array}" unless options[:url]
           column_model = name_or_array.to_s.singularize.classify.constantize.new.attributes.keys.collect do |m|
             {:name => m, :index => m, :label => m.titleize, :width => (1024 / name_or_array.to_s.singularize.classify.constantize.new.attributes.length)}
           end
           grid_options = {
             ##########################################
             #:url => "/#{name_or_array}.json", 
-            :url => "/jqgrid/#{name_or_array}.json", 
+            :url => "#{options[:url]}.json", 
             ##########################################
             :alternate_rows => true,
             :caption => "#{name_or_array}".titleize,
@@ -217,8 +218,7 @@ module SecretSauce
             :add => false,
             :del => false
           }.merge(options[:nav]))    
-          #render(:partial => 'ui/ui_grid_for_without_block',  :locals => {:options => mapped_options, :name => name_or_array, :nav => options[:nav], :actions => options[:actions]})
-          render(:file => 'ui/_ui_grid_for_without_block.js.haml',  :locals => {:options => mapped_options, :name => name_or_array, :nav => options[:nav], :actions => options[:actions]})
+          render(:file => 'ui/_ui_grid_for_without_block.js.haml', :locals => {:options => mapped_options, :name => name_or_array, :url => options[:url], :nav => options[:nav], :actions => options[:actions]})
         end
       end
     end   

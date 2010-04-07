@@ -20,10 +20,7 @@
             } else {
               var sure = confirm("Are you sure?")
               if(sure) {
-                ////////////////////////////////////
-                //$.ajax({url: "#{name}/"+rowId,
-                $.ajax({url: "/jqgrid/#{name}/"+rowId,
-                ////////////////////////////////////
+                $.ajax({url: "#{url}/"+rowId,
                   type: "DELETE",
                   data: {authenticity_token: "#{form_authenticity_token}"},
                   success: function() {
@@ -48,10 +45,7 @@
             if(rowId == null) {
               alert("You must first select a row.");
             } else {
-              ////////////////////////////////////
-              //$.ajax({method: "PUT", url: "/#{name}#{actions[:update]}/"+rowId,
-              $.ajax({method: "GET", url: "/jqgrid/#{name}#{actions[:update]}/"+rowId,
-              ////////////////////////////////////
+              $.ajax({method: "GET", url: "#{url}#{actions[:update]}/"+rowId,
                 success: function(data, status) {
                   var dWidth = $(data).css("width")
                   var dHeight = $(data).css("height")
@@ -60,9 +54,6 @@
                   $("##{name}_update_dialog").find("form").submit(function() {
                     $(this).ajaxSubmit({
                       url: "/jqgrid/#{name}/"+rowId,
-                      //url: $(this).attr("action"),
-                      //data: {authenticity_token: "#{form_authenticity_token}"},
-                      //data: $(this).serialize(),
                       type: "PUT",
                       success: function(response, status) {
                         if(!$(response).is("form")) {
@@ -107,10 +98,7 @@
           position: "first",
           buttonicon: "ui-icon-plus",
           onClickButton: function() {
-            ////////////////////////////////////
-            //$.ajax({method: "POST", url: "/#{name}#{actions[:create]}",
-            $.ajax({method: "GET", url: "/jqgrid/#{name}#{actions[:create]}",
-            ////////////////////////////////////
+            $.ajax({method: "GET", url: "#{url}#{actions[:create]}",
               success: function(data, status) {
                 var dWidth = $(data).css("width");
                 var dHeight = $(data).css("height");
