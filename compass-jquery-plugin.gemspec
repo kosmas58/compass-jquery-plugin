@@ -255,8 +255,6 @@ Gem::Specification.new do |s|
      "templates/jqtouch/jqtouch/apple.sass",
      "templates/jqtouch/jqtouch/apple/actionButton.png",
      "templates/jqtouch/jqtouch/apple/backButton.png",
-     "templates/jqtouch/jqtouch/apple/bgMetal.png",
-     "templates/jqtouch/jqtouch/apple/blueButton.png",
      "templates/jqtouch/jqtouch/apple/cancel.png",
      "templates/jqtouch/jqtouch/apple/chevron.png",
      "templates/jqtouch/jqtouch/apple/grayButton.png",
