@@ -69,8 +69,15 @@ class JqueryUiTheme
     FileUtils.mkdir_p(File.join(stylesheets))
     Dir.foreach @base_theme_directory do |file|    
       next unless /^#{@prefix}\..*\.css$/ =~ file
-      next if ["{#{@prefix}.ui.all.css", "#{@prefix}.base.css"].include? file
+      next if ["{#{@prefix}.all.css", "#{@prefix}.base.css"].include? file
       css = File.read(File.join(@base_theme_directory, file))
+      if "{#{@prefix}.autocomplete.css".include? file
+        # Removing autocomplete image to add it later by script
+        if css[112..135] == ".ui-autocomplete-loading"
+          css[220,0] = "*/"
+          css[112,0] = "/*"
+        end
+      end
       open File.join(stylesheets, '_' + file.gsub(/\.css$/,'.sass').gsub(/^#{@prefix}\./,'')), 'w' do |f|
         if file == @theme_filename
           f.print(self.class.theme_css2sass(@base_theme))
