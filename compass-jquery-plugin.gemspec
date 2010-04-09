@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{compass-jquery-plugin}
-  s.version = "0.3.0.pre12"
+  s.version = "0.3.0.pre13"
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kosmas Schuetz"]
-  s.date = %q{2010-04-08}
+  s.date = %q{2010-04-09}
   s.description = %q{A compass plugin that integrates jRails, jQuery, jQuery UI and Themes, jqGrid and more into the Compass Sass framework.}
   s.email = %q{kosmas.schuetz@gmx.com}
   s.extra_rdoc_files = [
@@ -253,6 +253,7 @@ Gem::Specification.new do |s|
      "templates/jqgrid/public/stylesheets/ellipsis-xbl.xml",
      "templates/jqtouch/config/initializers/jqtouch.rb",
      "templates/jqtouch/jqtouch/apple/actionButton.png",
+     "templates/jqtouch/jqtouch/apple/activeButton.png",
      "templates/jqtouch/jqtouch/apple/backButton.png",
      "templates/jqtouch/jqtouch/apple/cancel.png",
      "templates/jqtouch/jqtouch/apple/chevron.png",
