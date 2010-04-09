@@ -174,10 +174,7 @@ module Gridify
       if inline_edit 
         vals[:scrollrows]      = true
         vals[:multiselect]     = true if multi_select
-        vals[:onSelectRow]     = "javascript: function(id, status) { if(id && id!==lastsel_#{dom_id}) { jQuery('##{dom_id}').jqGrid('restoreRow', lastsel_#{dom_id}); jQuery('##{dom_id}').jqGrid('editRow', id, true, #{inline_edit_handler}, #{error_handler}); lastsel_#{dom_id}=id}}"      
-        #vals[:onSelectRow]     = "javascript: function(id, status) { if(id && id!==lastsel_#{dom_id}) { jQuery('##{dom_id}').jqGrid('restoreRow', lastsel_#{dom_id}); jQuery('##{dom_id}').jqGrid('editRow', id, true, #{inline_edit_handler}, gridify_action_error_handler(r, data, 'edit')); lastsel_#{dom_id}=id}}"      
-     
-      
+        vals[:onSelectRow]     = "javascript: function(id, status) { if(id && id!==lastsel_#{dom_id}) { jQuery('##{dom_id}').jqGrid('restoreRow', lastsel_#{dom_id}); jQuery('##{dom_id}').jqGrid('editRow', id, true, #{inline_edit_handler}, #{error_handler}); lastsel_#{dom_id}=id}}"     
       elsif select_rows #.present?
         vals[:scrollrows]      = true
         vals[:onSelectRow]     = select_rows
