@@ -102,26 +102,28 @@ module Gridify
       merge_options_defaults( view_button)
     end
     
-    
     # generate the jqGrid initial values in json
     #   maps our attributes to jqGrid options; omit values when same as jqGrid defaults
     def jqgrid_properties
       vals                     = {}
-     
+      vals[:ajaxGridOptions]   = ajax_grid_options if ajax_grid_options
+      vals[:serializeGridData] = serialize_grid_data if serialize_grid_data
+      
       # data and request options
       vals[:url]               = url if url
       vals[:editurl]           = url if editable
       vals[:restful]           = true if restful
       vals[:inline_edit]       = inline_edit if inline_edit.present? 
-      vals[:postData]          = { :grid => name } #identify which grid making the request
+      vals[:postData]          = { :grid => name, :datatype => data_type } #identify which grid making the request
       vals[:colNames]          = colNames if colNames.present?
       vals[:colModel]          = column_model if colModel.present?
       vals[:datatype]          = data_type if data_type
       if data_format.present?
-        if data_type == :xml
-          vals[:xmlReader]     = data_format
-        elsif data_type == :json
-          vals[:jsonReader]    = data_format
+        case data_type
+          when :xml
+            vals[:xmlReader]     = data_format
+          when :json
+            vals[:jsonReader]    = data_format
         end
       end
         
@@ -132,9 +134,9 @@ module Gridify
       vals[:rowNum]            = rows_per_page if rows_per_page
       vals[:page]              = current_page if current_page
 
-       # grid options
-       vals[:height]           = height if height
-       vals[:gridview]         = true      # faster views, NOTE theres cases when this needs to be disabled
+      # grid options
+      vals[:height]           = height if height
+      vals[:gridview]         = true      # faster views, NOTE theres cases when this needs to be disabled
       
       case width_fit
         when :fitted
@@ -209,6 +211,8 @@ module Gridify
       
       # allow override of native jqGrid options
       vals.merge(jqgrid_options)
+      
+     
     end
     
     # -----------------
@@ -307,6 +311,13 @@ module Gridify
         jQuery("##{dom_id}").jqGrid('navButtonAdd',"##{pager}", { caption:"Toggle", title:"Toggle Search Toolbar", buttonicon: 'ui-icon-pin-s', onClickButton: function(){ grid_#{dom_id}[0].toggleToolbar() } });
         jQuery("##{dom_id}").jqGrid('navButtonAdd',"##{pager}", { caption:"Clear", title:"Clear Search", buttonicon: 'ui-icon-refresh', onClickButton: function(){ grid_#{dom_id}[0].clearToolbar() } });
         jQuery("##{dom_id}").jqGrid('filterToolbar');
+        ^
+      end
+      
+      if sortable_rows
+        # I wish we could put this in the header rather than the pager
+        s << %Q^
+        jQuery("##{dom_id}").jqGrid('sortableRows');
         ^
       end
       

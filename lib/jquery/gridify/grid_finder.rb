@@ -16,6 +16,7 @@ module Gridify
     def update_from_params( params )
       params.symbolize_keys!
       params_to_rules params
+      self.data_type     = params[:datatype] if params[:datatype]
       self.sort_by       = params[:sidx] if params[:sidx]
       self.sort_order    = params[:sord] if params[:sord]
       self.current_page  = params[:page].to_i if params[:page]
