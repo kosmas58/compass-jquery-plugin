@@ -107,7 +107,6 @@ module Gridify
     def jqgrid_properties
       vals                     = {}
       vals[:ajaxGridOptions]   = ajax_grid_options if ajax_grid_options
-      vals[:serializeGridData] = serialize_grid_data if serialize_grid_data
       
       # data and request options
       vals[:url]               = url if url
@@ -208,6 +207,11 @@ module Gridify
         vals[:subGridUrl]   = sub_grid_url
         vals[:subGridModel] = sub_grid_model
       end
+      
+      #events
+      #vals[:serializeGridData] = serialize_grid_data if serialize_grid_data
+      
+      vals[:loadonce]          = load_once if load_once
       
       # allow override of native jqGrid options
       vals.merge(jqgrid_options)

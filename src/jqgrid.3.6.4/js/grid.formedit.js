@@ -30,9 +30,34 @@ $.jgrid.extend({
 			// if you want to change or remove the order change it in sopt
 			// ['bw','eq','ne','lt','le','gt','ge','ew','cn']
 			sopt: null,
-			stringResult:true,
-			onClose : null
-			// these are common options
+			// Note: stringResult is intentionally declared "undefined by default".
+			//  you are velcome to define stringResult expressly in the options you pass to searchGrid()
+			//  stringResult is a "safeguard" measure to insure we post sensible data when communicated as form-encoded
+			//  see http://github.com/tonytomov/jqGrid/issues/#issue/36
+			//
+			//  If this value is not expressly defined in the incoming options,
+			// lower in the code we will infer the value based on value of multipleSearch
+			stringResult: undefined,
+			onClose : null,
+			// useDataProxy allows ADD, EDIT and DEL code to bypass calling $.ajax
+			// directly when grid's 'dataProxy' property (grid.p.dataProxy) is a function.
+			// Used for "editGridRow" and "delGridRow" below and automatically flipped to TRUE
+			// when ajax setting's 'url' (grid's 'editurl') property is undefined.
+			// When 'useDataProxy' is true, instead of calling $.ajax.call(gridDOMobj, o, i) we call
+			// gridDOMobj.p.dataProxy.call(gridDOMobj, o, i)
+			//
+			// Behavior is extremely similar to when 'datatype' is a function, but arguments are slightly different.
+			// Normally the following is fed to datatype.call(a, b, c):
+			//   a = Pointer to grid's table DOM element, b = grid.p.postdata, c = "load_"+grid's ID
+			// In cases of "edit" and "del" the following is fed:
+			//   a = Pointer to grid's table DOM element (same),
+			//   b = extended Ajax Options including postdata in "data" property. (different object type)
+			//   c = "set_"+grid's ID in case of "edit" and "del_"+grid's ID in case of "del" (same type, different content)
+			// The major difference is that complete ajax options object, with attached "complete" and "error"
+			// callback functions is fed instead of only post data.
+			// This allows you to emulate a $.ajax call (including calling "complete"/"error"),
+			// while retrieving the data locally in the browser.
+			useDataProxy: false
 		}, $.jgrid.search, p || {});
 		return this.each(function() {
 			var $t = this;
@@ -148,9 +173,15 @@ $.jgrid.extend({
 						}
 					});
 					if(fields.length>0){
-						if(p.multipleSearch === false) { p.stringResult = false; }
 						$("<div id='"+fid+"' role='dialog' tabindex='-1'></div>").insertBefore("#gview_"+$t.p.id);
-                        // we really need to preserve the return value somewhere. Otherwise we loose easy access to .add() and other good methods.
+						// Before we create searchFilter we need to decide if we want to get back a string or a JS object.
+						//  see http://github.com/tonytomov/jqGrid/issues/#issue/36 for background on the issue.
+						// If p.stringResult is defined, it was explisitly passed to us by user. Honor the choice, whatever it is.
+						if (p.stringResult===undefined) {
+							// to provide backward compatibility, inferring stringResult value from multipleSearch
+							p.stringResult = p.multipleSearch;
+						}
+						// we preserve the return value here to retain access to .add() and other good methods of search form.
 						$t.SearchFilter = $("#"+fid).searchFilter(fields, { groupOps: p.groupOps, operators: oprtr, onClose:hideFilter, resetText: p.Reset, searchText: p.Find, windowTitle: p.caption,  rulesText:p.rulesText, matchText:p.matchText, onSearch: searchFilters, onReset: resetFilters,stringResult:p.stringResult, ajaxSelectOptions: $.extend({},$.jgrid.ajaxOptions,$t.p.ajaxSelectOptions ||{}), clone: p.cloneSearchRowOnAdd });
 						$(".ui-widget-overlay","#"+fid).remove();
 						if($t.p.direction=="rtl") { $(".ui-closer","#"+fid).css("float","left"); }
@@ -861,13 +892,8 @@ $.jgrid.extend({
 					if( $.isFunction( rp_ge.onclickSubmit)) { onCS = rp_ge.onclickSubmit(rp_ge,postdata) || {}; }
 					if( $.isFunction(rp_ge.beforeSubmit))  { ret = rp_ge.beforeSubmit(postdata,$("#"+frmgr)); }
 				}
-				gurl = rp_ge.url ? rp_ge.url : $($t).jqGrid('getGridParam','editurl');
-				if(ret[0] === false) {
-					$("#FormError>td","#"+frmtb).html(ret[1]);
-					$("#FormError","#"+frmtb).show();
-					return;
-				}
-				if(!rp_ge.processing) {
+
+				if(ret[0] && !rp_ge.processing) {
 					rp_ge.processing = true;
 					$("#sData", "#"+frmtb+"_2").addClass('ui-state-active');
 					oper = opers.oper;
@@ -882,12 +908,14 @@ $.jgrid.extend({
 					}
 					delete postdata[$t.p.id+"_id"];
 					postdata = $.extend(postdata,rp_ge.editData,onCS);
+
 					if($t.p.restful) { 
 					  rp_ge.mtype = postdata.id == "_empty" ? "POST" : "PUT";
-					  gurl = postdata.id == "_empty" ? $t.p.url : $t.p.url+"/"+postdata.id;	
+					  rp_ge.url = postdata.id == "_empty" ? $t.p.url : $t.p.url+"/"+postdata.id;	
 					}
-					$.ajax( $.extend({
-						url:gurl,
+
+					var ajaxOptions = $.extend({
+						url: rp_ge.url ? rp_ge.url : $($t).jqGrid('getGridParam','editurl'),
 						type: rp_ge.mtype,
 						data: $.isFunction(rp_ge.serializeEditData) ? rp_ge.serializeEditData(postdata) :  postdata,
 						complete:function(data,Status){
@@ -982,9 +1010,25 @@ $.jgrid.extend({
 							$("#"+frmgr).data("disabled",false);
 							$("#sData", "#"+frmtb+"_2").removeClass('ui-state-active');
 						}
-					}, $.jgrid.ajaxOptions, rp_ge.ajaxEditOptions ));
+					}, $.jgrid.ajaxOptions, rp_ge.ajaxEditOptions )
+					
+					if (!ajaxOptions['url'] && !rp_ge['useDataProxy']) {
+						if ($.isFunction($t.p.dataProxy)) {
+							rp_ge['useDataProxy'] = true;
+						} else {
+							ret[0]=false; ret[1] += " "+$.jgrid.errors.nourl;
+						}
+					}
+					if (ret[0]) { 
+						if (rp_ge['useDataProxy']) { $t.p.dataProxy.call($t, ajaxOptions, "set_"+$t.p.id) }
+						else { $.ajax(ajaxOptions) }
+					}
 				}
-				
+				if(ret[0] === false) {
+					$("#FormError>td","#"+frmtb).html(ret[1]);
+					$("#FormError","#"+frmtb).show();
+					// return; 
+				}
 			}
 			function compareData(nObj, oObj ) {
 				var ret = false,key;
@@ -1300,7 +1344,8 @@ $.jgrid.extend({
 			onClose : null,
 			ajaxDelOptions : {},
 			processing : false,
-			serializeDelData : null
+			serializeDelData : null,
+			useDataProxy : false
 		}, $.jgrid.del, p ||{});
 		rp_ge = p;
 		return this.each(function(){
@@ -1357,82 +1402,92 @@ $.jgrid.extend({
 					var postdata = $("#DelData>td","#"+dtbl).text(); //the pair is name=val1,val2,...
 					if( typeof p.onclickSubmit === 'function' ) { onCS = p.onclickSubmit(rp_ge, postdata) || {}; }
 					if( typeof p.beforeSubmit === 'function' ) { ret = p.beforeSubmit(postdata); }
-					var gurl;
-					if(ret[0]){
-						gurl = rp_ge.url ? rp_ge.url : $($t).jqGrid('getGridParam','editurl');
-						if(!gurl) { ret[0]=false;ret[1] += " "+$.jgrid.errors.nourl;}
+					if(ret[0] && !rp_ge.processing) {
+						rp_ge.processing = true;
+						$(this).addClass('ui-state-active');
+						opers = $t.p.prmNames;
+						postd = $.extend({},rp_ge.delData, onCS);
+						oper = opers.oper;
+						postd[oper] = opers.deloper;
+						idname = opers.id;
+						postd[idname] = postdata;
+
+						if($t.p.restful) { 
+						  p.mtype = "DELETE";
+						  rp_ge.url = $t.p.url+"/"+postdata;
+						};
+
+						var ajaxOptions = $.extend({
+							url: rp_ge.url ? rp_ge.url : $($t).jqGrid('getGridParam','editurl'),
+							type: p.mtype,
+							data: $.isFunction(p.serializeDelData) ? p.serializeDelData(postd) : postd,
+							complete:function(data,Status){
+								if(Status != "success") {
+									ret[0] = false;
+									if ($.isFunction(rp_ge.errorTextFormat)) {
+										ret[1] = rp_ge.errorTextFormat(data);
+									} else {
+										ret[1] = Status + " Status: '" + data.statusText + "'. Error code: " + data.status;
+									}
+								} else {
+									// data is posted successful
+									// execute aftersubmit with the returned data from server
+									if( typeof rp_ge.afterSubmit === 'function' ) {
+										ret = rp_ge.afterSubmit(data,postd);
+									}
+								}
+								if(ret[0] === false) {
+									$("#DelError>td","#"+dtbl).html(ret[1]);
+									$("#DelError","#"+dtbl).show();
+								} else {
+									if(rp_ge.reloadAfterSubmit) {
+										$($t).trigger("reloadGrid");
+									} else {
+										var toarr = [];
+										toarr = postdata.split(",");
+										if($t.p.treeGrid===true){
+												try {$($t).jqGrid("delTreeNode",toarr[0]);} catch(e){}
+										} else {
+											for(var i=0;i<toarr.length;i++) {
+												$($t).jqGrid("delRowData",toarr[i]);
+											}
+										}
+										$t.p.selrow = null;
+										$t.p.selarrrow = [];
+									}
+									if($.isFunction(rp_ge.afterComplete)) {
+										setTimeout(function(){rp_ge.afterComplete(data,postdata);},500);
+									}
+								}
+								rp_ge.processing=false;
+								$("#dData", "#"+dtbl+"_2").removeClass('ui-state-active');
+								if(ret[0]) { hideModal("#"+IDs.themodal,{gb:"#gbox_"+gID,jqm:p.jqModal, onClose: rp_ge.onClose}); }
+							},
+							error:function(xhr,st,err){
+								$("#DelError>td","#"+dtbl).html(st+ " : "+err);
+								$("#DelError","#"+dtbl).show();
+								rp_ge.processing=false;
+									$("#dData", "#"+dtbl+"_2").removeClass('ui-state-active');
+							}
+						}, $.jgrid.ajaxOptions, p.ajaxDelOptions);
+
+
+						if (!ajaxOptions['url'] && !rp_ge['useDataProxy']) {
+							if ($.isFunction($t.p.dataProxy)) {
+								rp_ge['useDataProxy'] = true;
+							} else {
+								ret[0]=false; ret[1] += " "+$.jgrid.errors.nourl;
+							}
+						}
+						if (ret[0]) {
+							if (rp_ge['useDataProxy']) { $t.p.dataProxy.call($t, ajaxOptions, "del_"+$t.p.id) }
+							else { $.ajax(ajaxOptions) }
+						}
 					}
+
 					if(ret[0] === false) {
 						$("#DelError>td","#"+dtbl).html(ret[1]);
 						$("#DelError","#"+dtbl).show();
-					} else {
-						if(!rp_ge.processing) {
-							rp_ge.processing = true;
-							$(this).addClass('ui-state-active');
-							opers = $t.p.prmNames;
-							postd = $.extend({},rp_ge.delData, onCS);
-							oper = opers.oper;
-							postd[oper] = opers.deloper;
-							idname = opers.id;
-							postd[idname] = postdata;
-							if($t.p.restful) { 
-							  p.mtype = "DELETE";
-							  gurl = $t.p.url+"/"+postdata;
-							};
-							$.ajax( $.extend({
-								url:gurl,
-								type: p.mtype,
-								data: $.isFunction(p.serializeDelData) ? p.serializeDelData(postd) : postd,
-								complete:function(data,Status){
-									if(Status != "success") {
-										ret[0] = false;
-									    if ($.isFunction(rp_ge.errorTextFormat)) {
-									        ret[1] = rp_ge.errorTextFormat(data);
-									    } else {
-									        ret[1] = Status + " Status: '" + data.statusText + "'. Error code: " + data.status;
-										}
-									} else {
-										// data is posted successful
-										// execute aftersubmit with the returned data from server
-										if( typeof rp_ge.afterSubmit === 'function' ) {
-											ret = rp_ge.afterSubmit(data,postd);
-										}
-									}
-									if(ret[0] === false) {
-										$("#DelError>td","#"+dtbl).html(ret[1]);
-										$("#DelError","#"+dtbl).show();
-									} else {
-										if(rp_ge.reloadAfterSubmit) {
-											$($t).trigger("reloadGrid");
-										} else {
-											var toarr = [];
-											toarr = postdata.split(",");
-											if($t.p.treeGrid===true){
-												try {$($t).jqGrid("delTreeNode",toarr[0]);} catch(e){}
-											} else {
-												for(var i=0;i<toarr.length;i++) {
-													$($t).jqGrid("delRowData",toarr[i]);
-												}
-											}
-											$t.p.selrow = null;
-											$t.p.selarrrow = [];
-										}
-										if($.isFunction(rp_ge.afterComplete)) {
-											setTimeout(function(){rp_ge.afterComplete(data,postdata);},500);
-										}
-									}
-									rp_ge.processing=false;
-									$("#dData", "#"+dtbl+"_2").removeClass('ui-state-active');
-									if(ret[0]) { hideModal("#"+IDs.themodal,{gb:"#gbox_"+gID,jqm:p.jqModal, onClose: rp_ge.onClose}); }
-								},
-								error:function(xhr,st,err){
-									$("#DelError>td","#"+dtbl).html(st+ " : "+err);
-									$("#DelError","#"+dtbl).show();
-									rp_ge.processing=false;
-									$("#dData", "#"+dtbl+"_2").removeClass('ui-state-active');
-								}
-							}, $.jgrid.ajaxOptions, p.ajaxDelOptions));
-						}
 					}
 					return false;
 				});
@@ -1677,7 +1732,11 @@ $.jgrid.extend({
 			var findnav = $(".navtable",elem)[0], $t = this;
 			if (findnav) {
 				var tbd = $("<td></td>");
-				$(tbd).addClass('ui-pg-button ui-corner-all').append("<div class='ui-pg-div'><span class='ui-icon "+p.buttonicon+"'></span>"+p.caption+"</div>");
+				if(p.buttonicon.toString().toUpperCase() == "NONE") {
+                    $(tbd).addClass('ui-pg-button ui-corner-all').append("<div class='ui-pg-div'>"+p.caption+"</div>");
+				} else	{
+					$(tbd).addClass('ui-pg-button ui-corner-all').append("<div class='ui-pg-div'><span class='ui-icon "+p.buttonicon+"'></span>"+p.caption+"</div>");
+				}
 				if(p.id) {$(tbd).attr("id",p.id);}
 				if(p.position=='first'){
 					if(findnav.rows[0].cells.length ===0 ) {

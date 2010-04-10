@@ -8,12 +8,10 @@ module Gridify
     attr_accessor :name,                  # name of the table (required)
                   :resource,              # based on AR model class (assume tableized, plural, string)
                                           # used as basis for all RESTful requests and data format
-
     # model
                   :colModel,              # incoming: hash of presets (native jqGrid); internally: array of GridColumn objects
                                           # { :body => { "title" => {"width" => 98} }} 
                   :colNames,              # Column names
-
                   #:widths,               # hash of column width (key = data type)
                   :searchable,            # default: true (used in generating columns, changing has no effect on existing cols)
                   :sortable,              # default: true (used in generating columns, changing has no effect on existing cols)
@@ -25,44 +23,35 @@ module Gridify
                   
                   :jqgrid_options,        # hash of additional jqGrid options that override any other settings
                   :ajax_grid_options,
-                  :serialize_grid_data, 
-
     #subgrid
                   :sub_grid,
                   :sub_grid_url,
                   :sub_grid_model,
-
     # grid layout options
                   :width,                 # in pixels, or nil (nil means calculated based on overflow setting)
                   :width_fit,             # :fluid, :scroll, or :visible
                                           # :fluid will always fit container (presently ignores width option)
                                           # :scroll uses horizontal scrollbars
-                                          # :fitted scales columns to fit in width, not fluid
-                  
+                                          # :fitted scales columns to fit in width, not fluid              
                   :height,                # in pixels, '100%', or :auto (150) 
                                           # :auto means makes it as tall as needed per number of rows
-
                   :resizable,             # allow gride resize with mouse, (true) (or {}) for default options; 
                                           # nil or false for disabled; or hash of jqUI options
                                           # see http://jqueryui.com/demos/resizable/
                                           # defaults (differ from jqUI ones) "minWidth" => 150, "minHeight" => 80
                                           # when overflow is fluid, "handles" => 's', otherwise 'e, s, se'
-
                   :arranger,              # :sortable, :hide_show, :chooser, or nil for none (nil) , 
                                           # can combine with array of options
                                           # or can be a hash with options
-                                          # see http://www.trirand.com/jqgridwiki/doku.php?id=wiki:show_hide_columns
-    
+                                          # see http://www.trirand.com/jqgridwiki/doku.php?id=wiki:show_hide_columns  
     # rows    
                   :alt_rows,              # true for odd/even row classes, or odd row style name string (nil)
                   :row_numbers,           # true to display row numbers in left column; or numeric width in pixels (nil)
                   :select_rows,           # true for rows are selectable (eg for pager buttons); or js function when row is selected, false disables hover (true if pager buttons else false)
                   :multi_select,
                   :sortable_rows,
-
     # header layer
-                  :title,                 # title string (aka caption), or true for resource.titleize, nil for no title (nil)
-                  
+                  :title,                 # title string (aka caption), or true for resource.titleize, nil for no title (nil)                 
                   :collapsible,           # when true generates collapse icon (false) 
                   :collapsed,             # when true initial state is collapsed (false)
                   
@@ -70,48 +59,43 @@ module Gridify
                   :pager,                 # id of the pager, or true => dom_id+"_pager", false or nil for no pager (nil)
                   :paging_controls,       # false to disable all (true); or hash with native jqGrid options
                   :paging_choices,        # array of rows_per_page choices ([10,25,50,100])
-
     # nav buttons
                   :view_button,           # true, or hash of native jqGrid parameters and events for the action
                   :add_button,
                   :edit_button,
-                  :delete_button,
-                  
+                  :delete_button,               
                   :search_button,         # enable search button and dialog
                   :search_advanced,       # instead of search_button
-                  :search_toolbar,        # toggleable search bar, true or :visible, :hidden (other options?)  (nil)
-                  
+                  :search_toolbar,        # toggleable search bar, true or :visible, :hidden (other options?)  (nil)                 
                   :refresh_button,
-                  :jqgrid_nav_options,    # native jqGrid button options (added to 2nd arg in navGrid method)
-                  
-                  
+                  :jqgrid_nav_options,    # native jqGrid button options (added to 2nd arg in navGrid method)          
     # data
                   :restful,               # use restful url and mtype (true) for all actions
                   :finder,                # default: :find
                   :url,                   # request url (required unless table_to_grid or derived from resource)
                                           # if nil, uses "/#{resource}" eg "/notes"
                                           # note, to force "editurl" use jqgrid_options
-                  
+                
                   :data_type,             # :xml, :json, and other defined in jqGrid options doc (xml)
                   :data_format,           # (defaults to rails conventin based on resource) <chickens><chicken><title><body> format
                                           # set false for jqGrid default <rows><records><row><cell> format
-                  
                   :sort_by,               # name of sort column of next request
                   :sort_order,            # sort direction of next request, 'asc' or 'desc' ('asc')
-                  :case_sensitive,        # sort and search are case sensitive (false)
-                  
+                  :case_sensitive,        # sort and search are case sensitive (false)                  
                   :current_page,          # current page requested
                   :rows_per_page,         # number of items to be requested in the next request (paging_choices.first or -1 if pager false)
-                  
                   :table_to_grid,         # when true generates tableToGrid (false) from html table, then use as local data
                                           # note, we assume table rows are not selectable. 
                                           # (tableToGrid sets multiselect when first col has checkboxes or radio buttons, 
-                                          # we dont know to preserve this so you also need to set in options)
-                                          
+                                          # we dont know to preserve this so you also need to set in options)                                        
                   :load_once,             # true to use local data after first load (false)
                   :error_handler,         # javacript: method for crud error handling (default to "after_submit")
                   :error_container,       # selector for posting error/flash messages (.errorExplanation)
-                                                      
+     # events
+                  #:on_dbl_click_row,
+                  #:on_sort_col,
+                  #:serialize_grid_data, 
+                                                     
                   :z        
 
     # ----------------------  
@@ -152,10 +136,6 @@ module Gridify
     
     def ajax_grid_options
       @ajax_grid_options || {}
-    end
-    
-    def serialize_grid_data
-      @serialize_grid_data || {}
     end
     
     def width_fit
@@ -270,6 +250,12 @@ module Gridify
         }
       end
     end
+    
+    # events
+    
+#    def serialize_grid_data
+#      @serialize_grid_data || {}
+#    end
     
     def error_handler
       @error_handler || 'gridify_action_error_handler'
