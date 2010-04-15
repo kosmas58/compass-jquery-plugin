@@ -183,7 +183,7 @@ $.jgrid.extend({
 				$.ajax($.extend({
 					url:url,
 					data: $.isFunction($t.p.serializeRowData) ? $t.p.serializeRowData(tmp) : tmp,
-					type: "POST",
+					type: mtype,
 					complete: function(res,stat){
 						$("#lui_"+$t.p.id).hide();
 						if (stat === "success"){
