@@ -100,15 +100,15 @@ namespace :build do
         end
       end
     
-      FileUtils.mkdir_p File.join(JQGRID_DEST_STYLESHEETS)
+      FileUtils.mkdir_p(JQGRID_DEST_STYLESHEETS)
       open File.join(JQGRID_DEST_STYLESHEETS, 'jqGrid.sass'), 'w' do |f|
         sass = JQGRID_MESSAGE2 
-        IO.popen("css2sass", 'r+') { |ff| ff.print(all_stylesheets); ff.close_write; sass += ff.read }
+        IO.popen("sass-convert", 'r+') { |ff| ff.print(all_stylesheets); ff.close_write; sass += ff.read }
         f.print sass
       end
       manifest.print "stylesheet 'jquery.ui/jqGrid.sass'\n"
       
-      FileUtils.mkdir_p(File.join(JQGRID_DEST_XML))    
+      FileUtils.mkdir_p(JQGRID_DEST_XML)    
       open File.join(JQGRID_DEST_XML, 'ellipsis-xbl.xml'), 'w' do |f|
         f.print(File.read(File.join(JQGRID_SRC, 'css', 'ellipsis-xbl.xml')))
       end

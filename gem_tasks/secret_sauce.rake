@@ -48,12 +48,12 @@ namespace :build do
       end
       manifest.print "javascript 'secret_sauce.min.js'\n"
     
-      FileUtils.mkdir_p SECRET_SAUCE_DEST_STYLESHEETS
+      FileUtils.mkdir_p(SECRET_SAUCE_DEST_STYLESHEETS)
       Dir.foreach File.join(SECRET_SAUCE_SRC, 'css') do |file|
         next unless /\.css$/ =~ file
         css = File.read File.join(SECRET_SAUCE_SRC, 'css', file)
         sass = ''
-        IO.popen("css2sass", 'r+') { |f| f.print(css); f.close_write; sass = f.read }
+        IO.popen("sass-convert", 'r+') { |f| f.print(css); f.close_write; sass = f.read }
         open(File.join(SECRET_SAUCE_DEST_STYLESHEETS, file.gsub(/\.css$/,'.sass')), 'w') do |f|
           f.write SECRET_SAUCE_MESSAGE2 + sass
         end

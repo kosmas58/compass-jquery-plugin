@@ -43,7 +43,7 @@ namespace :build do
     
       # jQuery DynaTree Skins
 
-      FileUtils.mkdir_p(File.join(DYNATREE_DEST_SKINS))
+      FileUtils.mkdir_p(DYNATREE_DEST_SKINS)
       
       Dir.foreach DYNATREE_SRC_SKINS do |skin|
         next if /^\./ =~ skin
@@ -54,7 +54,7 @@ namespace :build do
           next unless /\.css$/ =~ file
           css = File.read File.join(DYNATREE_SRC_SKINS, "#{skin}", file)
           sass = ''
-          IO.popen("css2sass", 'r+') { |f| f.print(css); f.close_write; sass = f.read }
+          IO.popen("sass-convert", 'r+') { |f| f.print(css); f.close_write; sass = f.read }
           open File.join(DYNATREE_DEST_SKINS, "dynatree.#{skin}.sass"), 'w' do |f|
             f.write DYNATREE_MESSAGE2 + sass
           end

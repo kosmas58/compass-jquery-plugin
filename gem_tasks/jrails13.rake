@@ -68,7 +68,7 @@ namespace :build do
           if /\.css$/ =~ file
             css = File.read File.join(JQUERY_13_SRC, path, file)
             sass = ''
-            IO.popen("css2sass", 'r+') { |f| f.print(css); f.close_write; sass = f.read }
+            IO.popen("sass-convert", 'r+') { |f| f.print(css); f.close_write; sass = f.read }
             file.gsub!(/^jquery\./,'').gsub!(/\.css$/, '.sass')
             open File.join(JRAILS_13_DEST_THEMES, file), 'w' do |f|
               f.write sass
@@ -215,17 +215,6 @@ namespace :build do
         end
       end
     end   
-  end
-end
-
-namespace :jrails do
-  desc 'Remove the prototype / script.aculo.us javascript files'
-  task :scrub_default_js do
-    files = %W[controls.js dragdrop.js effects.js prototype.js]
-    project_dir = File.join(RAILS_ROOT, 'public', 'javascripts')
-    files.each do |fname|
-      FileUtils.rm File.join(project_dir, fname)
-    end
   end
 end
   

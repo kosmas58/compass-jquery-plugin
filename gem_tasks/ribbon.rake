@@ -44,7 +44,7 @@ namespace :build do
       
       # jQuery Ribbon Themes
 
-      FileUtils.mkdir_p(File.join(RIBBON_DEST_THEMES))
+      FileUtils.mkdir_p(RIBBON_DEST_THEMES)
       
       Dir.foreach RIBBON_SRC_THEMES do |theme|
         next if /^\./ =~ theme
@@ -55,7 +55,7 @@ namespace :build do
           next unless /\.css$/ =~ file
           css = File.read File.join(RIBBON_SRC_THEMES, "#{theme}", file)
           sass = ''
-          IO.popen("css2sass", 'r+') { |f| f.print(css); f.close_write; sass = f.read }
+          IO.popen("sass-convert", 'r+') { |f| f.print(css); f.close_write; sass = f.read }
           open File.join(RIBBON_DEST_THEMES, "ribbon.#{theme}.sass"), 'w' do |f|
             f.write RIBBON_MESSAGE2 + sass
           end
