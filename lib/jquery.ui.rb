@@ -121,7 +121,7 @@ class JqueryUiTheme
       vars.each do |variable_name, value|
         f.print "!#{variable_name} ||= #{value}\n"
       end
-      f.print "\n@import jquery.ui/_theme.sass\n"
+      f.print "\n@import jquery.ui/_theme\n"
     end
   end
   
