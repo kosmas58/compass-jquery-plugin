@@ -151,7 +151,7 @@ namespace :build do
       # jQuery UI locales
       
       ['i18n'].each do |path|
-        FileUtils.mkdir_p File.join(JRAILS_13_DEST_TRANSLATIONS)
+        FileUtils.mkdir_p(JRAILS_13_DEST_TRANSLATIONS)
         Dir.foreach JQUERY_UI_17_SRC_TRANSLATIONS do |file|
           next unless /^ui\.datepicker-(.+)\.js$/ =~ file
           lang = file
@@ -201,7 +201,7 @@ namespace :build do
   
         # Convert the stylesheet
         manifest.print "stylesheet 'jquery.ui/#{theme}.sass', :media => 'screen, projection'\n"
-        ui.convert_theme(theme, File.join(JQUERY_UI_17_SRC_THEMES, theme), File.join(JRAILS_13_DEST_THEMES))
+        ui.convert_theme(theme, File.join(JQUERY_UI_17_SRC_THEMES, theme), JRAILS_13_DEST_THEMES)
   
         # Copy the theme images directory
         src_dir = File.join(JQUERY_UI_17_SRC_THEMES, theme, 'images')
@@ -214,7 +214,9 @@ namespace :build do
           manifest.print "image 'jquery.ui/#{theme}/#{image}'\n"
         end
       end
+      
+      # Workaround until I can convert ui.theme.css
+      FileUtils.cp(File.join(JQUERY_UI_17_SRC, '_theme.sass'), JRAILS_13_DEST_THEMES)
     end   
   end
 end
-  

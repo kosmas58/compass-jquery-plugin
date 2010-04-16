@@ -79,9 +79,11 @@ namespace :build do
       
       # jQuery 1.4 Plugins
       
+      FileUtils.mkdir_p(File.join(JRAILS_14_DEST_THEMES))
+      
       ['plugins'].each do |path|
         Dir.foreach File.join(JQUERY_14_SRC, path) do |file|
-          
+                    
           if /\.css$/ =~ file
             css = File.read File.join(JQUERY_14_SRC, path, file)
             sass = ''
@@ -174,7 +176,7 @@ namespace :build do
       # jQuery UI locales
   
       ['i18n'].each do |path|
-        FileUtils.mkdir_p File.join(JRAILS_14_DEST_TRANSLATIONS)
+        FileUtils.mkdir_p(JRAILS_14_DEST_TRANSLATIONS)
         Dir.foreach JQUERY_UI_18_SRC_TRANSLATIONS do |file|
           next unless /^jquery.ui\.datepicker-(.+)\.js$/ =~ file
           lang = file
@@ -195,8 +197,6 @@ namespace :build do
       end
 
       # jQuery UI Themes
-
-      FileUtils.mkdir_p(File.join(JRAILS_14_DEST_THEMES))
       
       ui = JqueryUiTheme.new(14, File.join(JQUERY_UI_18_SRC_THEMES, 'base')) 
       ui.convert_css(File.join(JRAILS_14_DEST_THEMES, '_partials'))
@@ -248,6 +248,9 @@ namespace :build do
           manifest.print "image 'jquery.ui/#{theme}/#{image}'\n"
         end     
       end
+      
+      # Workaround until I can convert jquery.ui.theme.css
+      FileUtils.cp(File.join(JQUERY_UI_18_SRC, '_theme.sass'), JRAILS_14_DEST_THEMES)
     end   
   end
 end
