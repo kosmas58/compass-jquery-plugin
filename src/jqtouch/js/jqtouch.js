@@ -17,8 +17,8 @@
     (c) 2009 by jQTouch project members.
     See LICENSE.txt for license.
 
-    $Revision: 135 $
-    $Date: 2010-03-14 23:42:28 +0100 (So, 14. Mrz 2010) $
+    $Revision: 147 $
+    $Date: 2010-04-19 03:45:31 +0200 (Mo, 19. Apr 2010) $
     $LastChangedBy: davidcolbykaneda $
 
 */
@@ -196,6 +196,11 @@
         // PUBLIC FUNCTIONS
         function goBack(to) {
             // Init the param
+            if (hist.length <= 1)
+            {
+                window.history.go(-2);
+            }
+            
             var numberOfPages = Math.min(parseInt(to || 1, 10), hist.length-1),
                 curPage = hist[0];
 
@@ -227,9 +232,6 @@
         function goTo(toPage, animation, reverse) {
             var fromPage = hist[0].page;
 
-            if (typeof(toPage) === 'string') {
-                toPage = $(toPage);
-            }
             if (typeof(animation) === 'string') {
                 for (var i = animations.length - 1; i >= 0; i--) {
                     if (animations[i].name === animation) {
@@ -237,6 +239,21 @@
                         break;
                     }
                 }
+            }
+            if (typeof(toPage) === 'string') {
+                nextPage = $(toPage);
+                if (nextPage.length < 1)
+                {
+                    showPageByHref(toPage, {
+                        'animation': animation
+                    });
+                    return;
+                }
+                else
+                {
+                    toPage = nextPage;
+                }
+                
             }
             if (animatePages(fromPage, toPage, animation, reverse)) {
                 addPageToHistory(toPage, animation, reverse);
@@ -340,6 +357,9 @@
             // Collapse the keyboard
             $(':focus').blur();
 
+            fromPage.css('top', -window.pageYOffset);
+            toPage.css('top', 0);
+
             // Make sure we are scrolled up to hide location bar
             scrollTo(0, 0);
 
@@ -382,7 +402,7 @@
                     toPage.toggleClass('reverse');
                     fromPage.toggleClass('reverse');
                 }
-                toPage.addClass(animation.name + ' in current ');
+                toPage.addClass(animation.name + ' in current');
                 fromPage.addClass(animation.name + ' out');
 
             } else {
@@ -394,12 +414,13 @@
         }
         function hashCheck() {
             var curid = currentPage.attr('id');
-            if (location.hash == '') {
-                location.hash = '#' + curid;
-            } else if (location.hash != '#' + curid) {
+            if (location.hash != '#' + curid) {
                 clearInterval(hashCheckInterval);
                 goBack(location.hash);
             }
+            else if (location.hash == '') {
+                location.hash = '#' + curid;
+            } 
         }
         function startHashCheck() {
             hashCheckInterval = setInterval(hashCheck, 100);
@@ -483,7 +504,7 @@
         function submitParentForm(e) {
             var $form = $(this).closest('form');
             if ($form.length) {
-                evt = jQuery.Event("submit");
+                var evt = $.Event("submit");
                 evt.preventDefault();
                 $form.trigger(evt);
                 return false;
@@ -498,7 +519,7 @@
             }
         }
         function updateOrientation() {
-            orientation = window.innerWidth < window.innerHeight ? 'profile' : 'landscape';
+            orientation = Math.abs(window.orientation) == 90 ? 'landscape' : 'profile';
             $body.removeClass('profile landscape').addClass(orientation).trigger('turn', {orientation: orientation});
             // scrollTo(0, 0);
         }
@@ -543,7 +564,7 @@
 
                 // Check for swipe
                 if (absX > absY && (absX > 35) && deltaT < 1000) {
-                    $el.trigger('swipe', {direction: (deltaX < 0) ? 'left' : 'right', deltaX: deltaX, deltaY: deltaY }).unbind('touchmove touchend');
+                    $el.trigger('swipe', {direction: (deltaX < 0) ? 'left' : 'right', deltaX: deltaX, deltaY: deltaY }).unbind('touchmove',touchmove).unbind('touchend',touchend);
                 } else if (absY > 1) {
                     $el.removeClass('active');
                 }
@@ -560,7 +581,7 @@
                 } else {
                     $el.removeClass('active');
                 }
-                $el.unbind('touchmove touchend');
+                $el.unbind('touchmove',touchmove).unbind('touchend',touchend);
                 clearTimeout(hoverTimeout);
             }
 

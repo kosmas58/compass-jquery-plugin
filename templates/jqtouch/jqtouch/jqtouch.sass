@@ -7,29 +7,26 @@
 a
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0)
 
-div#jqt
-  /*overflow-x: hidden;
+#jqt
   -webkit-user-select: none
   -webkit-text-size-adjust: none
   font-family: "Helvetica Neue", Helvetica
   -webkit-perspective: 800
   -webkit-transform-style: preserve-3d
-
-#jqt
   .selectable, input, textarea
     -webkit-user-select: auto
-
-div#jqt > *
-  -webkit-backface-visibility: hidden
-  -webkit-box-sizing: border-box
-  display: none
-  position: absolute
-  left: 0
-  width: 100%
-  -webkit-transform: translate3d(0, 0, 0) rotate(0) scale(1)
-  min-height: 420px !important
-
-#jqt
+  &.notransform
+    -webkit-transform: none !important
+  > *
+    -webkit-backface-visibility: hidden
+    -webkit-box-sizing: border-box
+    display: none
+    position: absolute
+    left: 0
+    width: 100%
+    -webkit-transform: translate3d(0, 0, 0) rotate(0) scale(1)
+    min-height: 420px !important
+    overflow-x: hidden
   &.fullscreen
     > *
       min-height: 460px !important
@@ -37,14 +34,11 @@ div#jqt > *
       min-height: 480px !important
   &.landscape > *
     min-height: 320px !important
-
-div#jqt > .current
-  display: block !important
-
-#jqt
+  > .current
+    display: block !important
   .in, .out
-    -webkit-animation-timing-function: ease-in-out
     -webkit-animation-duration: 350ms
+    -webkit-transition-timing-function: cubic-bezier(0.5, 0.2, 0.3, 1)
   .slide
     &.in
       -webkit-animation-name: slideinfromright
