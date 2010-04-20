@@ -4,11 +4,11 @@ body, #jqt
   background: rgb(0, 0, 0)
 
 body > *
-  background: rgb(197, 204, 211) url("/images/jqtouch/apple/pinstripes.png")
+  background: rgb(197, 204, 211) image_url("jqtouch/apple/pinstripes.png")
 
 #jqt
   > *
-    background: rgb(197, 204, 211) url("/images/jqtouch/apple/pinstripes.png")
+    background: rgb(197, 204, 211) image_url("jqtouch/apple/pinstripes.png")
   h1, h2
     font: bold 18px "Helvetica Neue", Helvetica
     text-shadow: rgba(255, 255, 255, 0.2) 0 1px 1px
@@ -19,7 +19,7 @@ body > *
     border-bottom: 1px solid #2d3642
     padding: 10px
     height: 45px
-    background: url("/images/jqtouch/apple/toolbar.png") #6d84a2 repeat-x
+    background: image_url("jqtouch/apple/toolbar.png") #6d84a2 repeat-x
     position: relative
   .black-translucent .toolbar
     margin-top: 20px
@@ -68,11 +68,11 @@ div#jqt
     text-decoration: none
     white-space: nowrap
     background: none
-    -webkit-border-image: url("/images/jqtouch/apple/toolButton.png") 0 5 0 5
+    -webkit-border-image: image_url("jqtouch/apple/toolButton.png") 0 5 0 5
   .button.active, .cancel.active, .add.active
-    -webkit-border-image: url("/images/jqtouch/apple/toolButton.png") 0 5 0 5
+    -webkit-border-image: image_url("jqtouch/apple/toolButton.png") 0 5 0 5
   .blueButton
-    -webkit-border-image: url("/images/jqtouch/apple/actionButton.png") 0 5 0 5
+    -webkit-border-image: image_url("jqtouch/apple/actionButton.png") 0 5 0 5
     border-width: 0 5px
   .back
     left: 6px
@@ -80,9 +80,9 @@ div#jqt
     padding: 0
     max-width: 55px
     border-width: 0 8px 0 14px
-    -webkit-border-image: url("/images/jqtouch/apple/backButton.png") 0 8 0 14
+    -webkit-border-image: image_url("jqtouch/apple/backButton.png") 0 8 0 14
     &.active
-      -webkit-border-image: url("/images/jqtouch/apple/backButton.png") 0 8 0 14
+      -webkit-border-image: image_url("jqtouch/apple/backButton.png") 0 8 0 14
   .leftButton, .cancel
     left: 6px
     right: auto
@@ -100,18 +100,18 @@ div#jqt
     text-decoration: inherit
     color: inherit
   .whiteButton.active, .grayButton.active, .redButton.active, .blueButton.active, .greenButton.active, .whiteButton:active, .grayButton:active, .redButton:active, .blueButton:active, .greenButton:active
-    -webkit-border-image: url("/images/jqtouch/apple/activeButton.png") 0 12 0 12
+    -webkit-border-image: image_url("jqtouch/apple/activeButton.png") 0 12 0 12
   .whiteButton
-    -webkit-border-image: url("/images/jqtouch/apple/whiteButton.png") 0 12 0 12
+    -webkit-border-image: image_url("jqtouch/apple/whiteButton.png") 0 12 0 12
     text-shadow: rgba(255, 255, 255, 0.7) 0 1px 0
   .grayButton
-    -webkit-border-image: url("/images/jqtouch/apple/grayButton.png") 0 12 0 12
+    -webkit-border-image: image_url("jqtouch/apple/grayButton.png") 0 12 0 12
     color: white
   .redButton
-    -webkit-border-image: url("/images/jqtouch/apple/redButton.png") 0 12 0 12
+    -webkit-border-image: image_url("jqtouch/apple/redButton.png") 0 12 0 12
     color: white
   .greenButton
-    -webkit-border-image: url("/images/jqtouch/apple/greenButton.png") 0 12 0 12
+    -webkit-border-image: image_url("jqtouch/apple/greenButton.png") 0 12 0 12
     color: white
   h1 + ul, h2 + ul, h3 + ul, h4 + ul, h5 + ul, h6 + ul
     margin-top: 0
@@ -144,7 +144,7 @@ div#jqt
         -webkit-border-bottom-left-radius: 8px
         -webkit-border-bottom-right-radius: 8px
   ul li.arrow
-    background-image: url("/images/jqtouch/apple/chevron.png")
+    background-image: image_url("jqtouch/apple/chevron.png")
     background-position: right center
     background-repeat: no-repeat
     a
@@ -167,7 +167,7 @@ div#jqt
     li
       a
         &.active
-          background: #194fdb url("/images/jqtouch/apple/selection.png") 0 0 repeat-x
+          background: #194fdb image_url("jqtouch/apple/selection.png") 0 0 repeat-x
           color: white
         &.button
           background-color: #194fdb
@@ -258,7 +258,7 @@ div#jqt
         text-indent: -2px
       select
         text-indent: 0px
-        background: transparent url("/images/jqtouch/apple/chevron.png") no-repeat 103% 3px
+        background: transparent image_url("jqtouch/apple/chevron.png") no-repeat 103% 3px
         -webkit-appearance: textfield
         margin-left: -6px
         width: 104%
@@ -287,7 +287,7 @@ div#jqt
   .edgetoedge
     h4
       color: white
-      background: rgb(154, 159, 170) url("/images/jqtouch/apple/listGroup.png") top left repeat-x
+      background: rgb(154, 159, 170) image_url("jqtouch/apple/listGroup.png") top left repeat-x
       border-top: 1px solid rgb(165, 177, 186)
       text-shadow: #666666 0 1px 0
       margin: 0
@@ -360,7 +360,7 @@ div#jqt
     &.arrow small.counter
       margin-right: 15px
   #plastic ul li.arrow, #metal ul li.arrow
-    background-image: url("/images/jqtouch/apple/listArrow.png")
+    background-image: image_url("jqtouch/apple/listArrow.png")
     background-position: right center
     background-repeat: no-repeat
   .edgetoedge ul, .metal ul, .plastic ul
@@ -399,7 +399,7 @@ div#jqt
       a small
         padding-right: 0
         line-height: 17px
-      background: url("/images/jqtouch/apple/bgMetal.png") top left repeat-x, url("../images/chevron_dg.png") right center no-repeat
+      background: image_url("jqtouch/apple/bgMetal.png") top left repeat-x, url("../images/chevron_dg.png") right center no-repeat
   .plastic
     margin: 0
     padding: 0
@@ -525,7 +525,7 @@ div#jqt
       -webkit-tap-highlight-color: rgba(0, 0, 0, 0)
       margin: 0
       -webkit-border-radius: 5px
-      background: white url("/images/jqtouch/apple/on_off.png") 0 0 no-repeat
+      background: white image_url("jqtouch/apple/on_off.png") 0 0 no-repeat
       height: 27px
       overflow: hidden
       width: 149px

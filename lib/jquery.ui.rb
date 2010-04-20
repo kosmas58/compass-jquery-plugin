@@ -119,7 +119,7 @@ class JqueryUiTheme
       $1.each {|line| f.print line.gsub(/^(\s*\*\s*)/,'// ')}
       f.print "\n"
       vars.each do |variable_name, value|
-        f.print "!#{variable_name} ||= #{value}\n"
+        f.print "$#{variable_name} ||= #{value}\n"
       end
       f.print "\n@import jquery.ui/_theme\n"
     end
@@ -128,7 +128,7 @@ class JqueryUiTheme
   # Converter for ui.theme.css which has the variable names
   def self.theme_css2sass(theme_css)
     # Install variable names and convert to sass
-    sass = css2sass(theme_css.gsub(VARIABLE_MATCHER){"!#{VARIABLE_NAME_BASE}#{$2}"})
+    sass = css2sass(theme_css.gsub(VARIABLE_MATCHER){"$#{VARIABLE_NAME_BASE}#{$2}"})
     # Convert select lines from literal to programatic syntax
     sass.gsub!(/.*/){|x| /\!/=~x ? x.gsub(/:/,'=').gsub(/ solid /, ' "solid" ') : x}
     sass

@@ -18,7 +18,7 @@ body > *, div#jqt > *
     border-bottom: 1px solid black
     padding: 10px
     height: 45px
-    background: url("/images/jqtouch/jqt/toolbar.png") black repeat-x
+    background: image_url("jqtouch/jqt/toolbar.png") black repeat-x
     position: relative
   .black-translucent .toolbar
     margin-top: 20px
@@ -67,12 +67,12 @@ div#jqt
     text-decoration: none
     white-space: nowrap
     background: none
-    -webkit-border-image: url("/images/jqtouch/jqt/button.png") 0 5 0 5
+    -webkit-border-image: image_url("jqtouch/jqt/button.png") 0 5 0 5
   .button.active, .cancel.active, .add.active
-    -webkit-border-image: url("/images/jqtouch/jqt/button_clicked.png") 0 5 0 5
+    -webkit-border-image: image_url("jqtouch/jqt/button_clicked.png") 0 5 0 5
     color: #aaaaaa
   .blueButton
-    -webkit-border-image: url("/images/jqtouch/jqt/blueButton.png") 0 5 0 5
+    -webkit-border-image: image_url("jqtouch/jqt/blueButton.png") 0 5 0 5
     border-width: 0 5px
   .back
     left: 6px
@@ -80,9 +80,9 @@ div#jqt
     padding: 0
     max-width: 55px
     border-width: 0 8px 0 14px
-    -webkit-border-image: url("/images/jqtouch/jqt/back_button.png") 0 8 0 14
+    -webkit-border-image: image_url("jqtouch/jqt/back_button.png") 0 8 0 14
     &.active
-      -webkit-border-image: url("/images/jqtouch/jqt/back_button_clicked.png") 0 8 0 14
+      -webkit-border-image: image_url("jqtouch/jqt/back_button_clicked.png") 0 8 0 14
       color: #aaaaaa
   .leftButton, .cancel
     left: 6px
@@ -101,18 +101,18 @@ div#jqt
     text-decoration: inherit
     color: inherit
   .whiteButton.active, .grayButton.active, .redButton.active, .blueButton.active, .greenButton.active, .whiteButton:active, .grayButton:active, .redButton:active, .blueButton:active, .greenButton:active
-    -webkit-border-image: url("/images/jqtouch/jqt/activeButton.png") 0 12 0 12
+    -webkit-border-image: image_url("jqtouch/jqt/activeButton.png") 0 12 0 12
   .whiteButton
-    -webkit-border-image: url("/images/jqtouch/jqt/whiteButton.png") 0 12 0 12
+    -webkit-border-image: image_url("jqtouch/jqt/whiteButton.png") 0 12 0 12
     text-shadow: rgba(255, 255, 255, 0.7) 0 1px 0
   .grayButton
-    -webkit-border-image: url("/images/jqtouch/jqt/grayButton.png") 0 12 0 12
+    -webkit-border-image: image_url("jqtouch/jqt/grayButton.png") 0 12 0 12
     color: white
   .redButton
-    -webkit-border-image: url("/images/jqtouch/jqt/redButton.png") 0 12 0 12
+    -webkit-border-image: image_url("jqtouch/jqt/redButton.png") 0 12 0 12
     color: white
   .greenButton
-    -webkit-border-image: url("/images/jqtouch/jqt/greenButton.png") 0 12 0 12
+    -webkit-border-image: image_url("jqtouch/jqt/greenButton.png") 0 12 0 12
     color: white
   h1 + ul, h2 + ul, h3 + ul, h4 + ul, h5 + ul, h6 + ul
     margin-top: 0
@@ -149,13 +149,13 @@ div#jqt
       background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#4c4d4e), to(#404142))
       overflow: hidden
       &.arrow
-        background-image: url("/images/jqtouch/jqt/chevron.png"), -webkit-gradient(linear, 0% 0%, 0% 100%, from(#4c4d4e), to(#404142))
+        background-image: image_url("jqtouch/jqt/chevron.png"), -webkit-gradient(linear, 0% 0%, 0% 100%, from(#4c4d4e), to(#404142))
         background-position: right center
         background-repeat: no-repeat
         a
           padding: 12px 22px 12px 10px
       &.forward
-        background-image: url("/images/jqtouch/jqt/chevron_circle.png"), -webkit-gradient(linear, 0% 0%, 0% 100%, from(#4c4d4e), to(#404142))
+        background-image: image_url("jqtouch/jqt/chevron_circle.png"), -webkit-gradient(linear, 0% 0%, 0% 100%, from(#4c4d4e), to(#404142))
         background-position: right center
         background-repeat: no-repeat
       a
@@ -187,15 +187,15 @@ div#jqt
           background-color: #53b401
           color: white
         &.active.loading
-          background-image: url("/images/jqtouch/jqt/loading.gif")
+          background-image: image_url("jqtouch/jqt/loading.gif")
           background-position: 95% center
           background-repeat: no-repeat
       &.arrow a.active
-        background-image: url("/images/jqtouch/jqt/chevron.png")
+        background-image: image_url("jqtouch/jqt/chevron.png")
         background-position: right center
         background-repeat: no-repeat
       &.forward a.active
-        background-image: url("/images/jqtouch/jqt/chevron_circle.png")
+        background-image: image_url("jqtouch/jqt/chevron_circle.png")
         background-position: right center
         background-repeat: no-repeat
       &.img a +
@@ -282,7 +282,7 @@ div#jqt
         text-indent: -2px
       select
         text-indent: 0px
-        background: transparent url("/images/jqtouch/jqt/chevron.png") no-repeat right center
+        background: transparent image_url("jqtouch/jqt/chevron.png") no-repeat right center
         -webkit-appearance: textfield
         margin-left: -6px
         width: 104%
@@ -367,7 +367,7 @@ div#jqt
       -webkit-tap-highlight-color: rgba(0, 0, 0, 0)
       -webkit-transition: left 0.15s
       background-color: transparent
-      background: white url("/images/jqtouch/jqt/on_off.png") 0 0 no-repeat
+      background: white image_url("jqtouch/jqt/on_off.png") 0 0 no-repeat
       border: 0
       height: 27px
       left: -55px
@@ -428,7 +428,7 @@ div#jqt
         overflow: hidden
         padding: 10px 10px 10px 10px
         a.active.loading
-          background-image: url("/images/jqtouch/jqt/loading.gif")
+          background-image: image_url("jqtouch/jqt/loading.gif")
           background-position: 95% center
           background-repeat: no-repeat
         small
@@ -440,19 +440,19 @@ div#jqt
         &:nth-child(odd)
           background-color: #1c1c1f
         &.arrow
-          background-image: url("/images/jqtouch/jqt/chevron.png")
+          background-image: image_url("jqtouch/jqt/chevron.png")
           background-position: right center
           background-repeat: no-repeat
           a.active
-            background-image: url("/images/jqtouch/jqt/chevron.png")
+            background-image: image_url("jqtouch/jqt/chevron.png")
             background-position: right center
             background-repeat: no-repeat
         &.forward
-          background-image: url("/images/jqtouch/jqt/chevron_circle.png")
+          background-image: image_url("jqtouch/jqt/chevron_circle.png")
           background-position: right center
           background-repeat: no-repeat
           a.active
-            background-image: url("/images/jqtouch/jqt/chevron_circle.png")
+            background-image: image_url("jqtouch/jqt/chevron_circle.png")
             background-position: right center
             background-repeat: no-repeat
     &.metal
@@ -487,10 +487,10 @@ div#jqt
           margin-top: 10px
           font-weight: bold
         &.arrow
-          background-image: url("/images/jqtouch/jqt/chevron.png")
+          background-image: image_url("jqtouch/jqt/chevron.png")
           background-position: right center
           background-repeat: no-repeat
-          background-image: url("/images/jqtouch/jqt/chevron.png"), -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(238, 238, 238, 1)), to(rgba(156, 158, 160, 1)))
+          background-image: image_url("jqtouch/jqt/chevron.png"), -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(238, 238, 238, 1)), to(rgba(156, 158, 160, 1)))
           background-repeat: no-repeat
           background-position: right center
           a small
