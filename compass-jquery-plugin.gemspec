@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{compass-jquery-plugin}
-  s.version = "0.3.0.pre14"
+  s.version = "0.3.0.pre.15"
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kosmas Schuetz"]
-  s.date = %q{2010-04-16}
+  s.date = %q{2010-04-20}
   s.description = %q{A compass plugin that integrates jRails, jQuery, jQuery UI and Themes, jqGrid and more into the Compass Sass framework.}
   s.email = %q{kosmas.schuetz@gmx.com}
   s.extra_rdoc_files = [
@@ -391,6 +391,8 @@ Gem::Specification.new do |s|
      "templates/jrails-1.3/jquery-ui-1.7.2.min.js",
      "templates/jrails-1.3/jquery.contextMenu.js",
      "templates/jrails-1.3/jquery.contextMenu.min.js",
+     "templates/jrails-1.3/jquery.haml.js",
+     "templates/jrails-1.3/jquery.haml.min.js",
      "templates/jrails-1.3/jquery.pngFix.js",
      "templates/jrails-1.3/jquery.pngFix.min.js",
      "templates/jrails-1.3/jquery.themeswitchertool.js",
@@ -909,6 +911,8 @@ Gem::Specification.new do |s|
      "templates/jrails-1.4/jquery.compat-1.3.min.js",
      "templates/jrails-1.4/jquery.contextMenu.js",
      "templates/jrails-1.4/jquery.contextMenu.min.js",
+     "templates/jrails-1.4/jquery.haml.js",
+     "templates/jrails-1.4/jquery.haml.min.js",
      "templates/jrails-1.4/jquery.metadata.js",
      "templates/jrails-1.4/jquery.metadata.min.js",
      "templates/jrails-1.4/jquery.pngFix.js",

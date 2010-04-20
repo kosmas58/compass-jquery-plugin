@@ -4,6 +4,8 @@
 file 'config/initializers/jrails.rb'
 javascript 'jrails.js'
 javascript 'jrails.min.js'
+javascript 'jquery.haml.js'
+javascript 'jquery.haml.min.js'
 javascript 'jquery-1.3.2.js'
 javascript 'jquery-1.3.2.min.js'
 stylesheet 'jquery.ui/contextMenu.sass', :media => 'screen, projection'

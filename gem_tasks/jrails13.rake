@@ -6,6 +6,8 @@ require 'lib/jquery.ui'
 JRAILS_13_SRC = File.join(GEM_ROOT, 'src', '1.3', 'jrails.1.3.2')
 JRAILS_13_SRC_SCRIPTS = JRAILS_13_SRC + "/*.js"
 
+JHAML_13_SRC_SCRIPTS = File.join(GEM_ROOT, 'src', '1.3', 'jquery-haml') + "/*.js"
+
 JQUERY_13_SRC = File.join(GEM_ROOT, 'src', '1.3', 'jquery.1.3.2')
 JQUERY_13_SRC_SCRIPTS = JQUERY_13_SRC + "/*.js"
 
@@ -48,6 +50,18 @@ namespace :build do
         f.print compress_js(all_files(JRAILS_13_SRC_SCRIPTS), "google")
       end
       manifest.print "javascript 'jrails.min.js'\n" 
+      
+      # jQuery haml
+     
+      open File.join(JRAILS_13_DEST_TEMPLATES, 'jquery.haml.js'), 'w' do |f|
+        f.print concat_files(all_files(JHAML_13_SRC_SCRIPTS))
+      end
+      manifest.print "javascript 'jquery.haml.js'\n" 
+    
+      open File.join(JRAILS_13_DEST_TEMPLATES, 'jquery.haml.min.js'), 'w' do |f|
+        f.print compress_js(all_files(JHAML_13_SRC_SCRIPTS), "google")
+      end
+      manifest.print "javascript 'jquery.haml.min.js'\n"    
       
       # jQuery 1.3
     
