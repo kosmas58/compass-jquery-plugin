@@ -213,28 +213,31 @@ namespace :build do
       # jQuery UI Themes
       
       ui = JqueryUiTheme.new(14, File.join(JQUERY_UI_18_SRC_THEMES, 'base')) 
-      ui.convert_css(File.join(JRAILS_14_DEST_THEMES, '_partials'))
-       
-      all_jquery_ui_stylesheets = [
-        '_core.sass',
-        '_accordion.sass',
-        '_autocomplete.sass',
-        '_button.sass',
-        '_datepicker.sass',
-        '_dialog.sass',
-        '_progressbar.sass',
-        '_resizable.sass',
-        '_slider.sass',
-        '_tabs.sass',
-        '_theme.sass'
-        ].collect {|filename| File.read(File.join(JRAILS_14_DEST_THEMES, '_partials', filename))}.join "\n\n"  
-                
-      open File.join(JRAILS_14_DEST_THEMES, '_theme.sass'), 'w' do |f|
-        sass = JRAILS_MESSAGE2
-        f.print(all_jquery_ui_stylesheets)
-        f.print sass
-        FileUtils.rm_r(File.join(JRAILS_14_DEST_THEMES, '_partials'))
-      end 
+#      ui.convert_css(File.join(JRAILS_14_DEST_THEMES, '_partials'))
+#       
+#      all_jquery_ui_stylesheets = [
+#        '_core.sass',
+#        '_accordion.sass',
+#        '_autocomplete.sass',
+#        '_button.sass',
+#        '_datepicker.sass',
+#        '_dialog.sass',
+#        '_progressbar.sass',
+#        '_resizable.sass',
+#        '_slider.sass',
+#        '_tabs.sass',
+#        '_theme.sass'
+#        ].collect {|filename| File.read(File.join(JRAILS_14_DEST_THEMES, '_partials', filename))}.join "\n\n"  
+#                
+#      open File.join(JRAILS_14_DEST_THEMES, '_theme.sass'), 'w' do |f|
+#        sass = JRAILS_MESSAGE2
+#        f.print(all_jquery_ui_stylesheets)
+#        f.print sass
+#        FileUtils.rm_r(File.join(JRAILS_14_DEST_THEMES, '_partials'))
+#      end 
+      
+      # Workaround until I can convert jquery.ui.theme.css
+      FileUtils.cp(File.join(JQUERY_UI_18_SRC, '_theme.sass'), JRAILS_14_DEST_THEMES)
       manifest.print "stylesheet 'jquery.ui/_theme.sass', :media => 'screen, projection'\n" 
       
       Dir.foreach JQUERY_UI_18_SRC_THEMES do |theme|
@@ -262,9 +265,6 @@ namespace :build do
           manifest.print "image 'jquery.ui/#{theme}/#{image}'\n"
         end     
       end
-      
-      # Workaround until I can convert jquery.ui.theme.css
-      FileUtils.cp(File.join(JQUERY_UI_18_SRC, '_theme.sass'), JRAILS_14_DEST_THEMES)
     end   
   end
 end
