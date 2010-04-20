@@ -29,7 +29,7 @@ div.ui-dynatree-container li
     background-color: transparent;
     background-position: 0 0;
     background-repeat: repeat-y;
-    background-image: url("/images/jquery.ui/dynatree.xp/vline.png");
+    background-image: image_url("jquery.ui/dynatree.xp/vline.png");
 
     margin:0;
 /*    padding:3px 0 3px 16px;*/
@@ -87,7 +87,7 @@ span.ui-dynatree-radio
 
 span.ui-dynatree-connector
 {
-    background-image: url("/images/jquery.ui/dynatree.xp/ltL_ne.png");
+    background-image: image_url("jquery.ui/dynatree.xp/ltL_ne.png");
 }
 
 /*******************************************************************************/
@@ -103,30 +103,30 @@ span.ui-dynatree-connector
 
 span.ui-dynatree-expander
 {
-	background-image: url("/images/jquery.ui/dynatree.xp/ltP_nes.png");
+	background-image: image_url("jquery.ui/dynatree.xp/ltP_nes.png");
 	cursor: pointer;
 }
 .ui-dynatree-exp-cl span.ui-dynatree-expander /* Collapsed, not delayed, last sibling */
 {
-	background-image: url("/images/jquery.ui/dynatree.xp/ltP_ne.png");
+	background-image: image_url("jquery.ui/dynatree.xp/ltP_ne.png");
 }
 .ui-dynatree-exp-cd span.ui-dynatree-expander /* Collapsed, delayed, not last sibling */
 {
-	background-image: url("/images/jquery.ui/dynatree.xp/ltD_nes.png");
+	background-image: image_url("jquery.ui/dynatree.xp/ltD_nes.png");
 }
 .ui-dynatree-exp-cdl span.ui-dynatree-expander /* Collapsed, delayed, last sibling */
 {
-	background-image: url("/images/jquery.ui/dynatree.xp/ltD_ne.png");
+	background-image: image_url("jquery.ui/dynatree.xp/ltD_ne.png");
 }
 .ui-dynatree-exp-e span.ui-dynatree-expander,  /* Expanded, not delayed, not last sibling */
 .ui-dynatree-exp-ed span.ui-dynatree-expander  /* Expanded, delayed, not last sibling */
 {
-	background-image: url("/images/jquery.ui/dynatree.xp/ltM_nes.png");
+	background-image: image_url("jquery.ui/dynatree.xp/ltM_nes.png");
 }
 .ui-dynatree-exp-el span.ui-dynatree-expander,  /* Expanded, not delayed, last sibling */
 .ui-dynatree-exp-edl span.ui-dynatree-expander  /* Expanded, delayed, last sibling */
 {
-	background-image: url("/images/jquery.ui/dynatree.xp/ltM_ne.png");
+	background-image: image_url("jquery.ui/dynatree.xp/ltM_ne.png");
 }
 
 
@@ -136,29 +136,29 @@ span.ui-dynatree-expander
 span.ui-dynatree-checkbox
 {
 	margin-left: 3px;
-	background-image: url("/images/jquery.ui/dynatree.xp/cbUnchecked.png");
+	background-image: image_url("jquery.ui/dynatree.xp/cbUnchecked.png");
 }
 span.ui-dynatree-checkbox:hover
 {
-	background-image: url("/images/jquery.ui/dynatree.xp/cbUnchecked_hover.png");
+	background-image: image_url("jquery.ui/dynatree.xp/cbUnchecked_hover.png");
 }
 
 .ui-dynatree-partsel span.ui-dynatree-checkbox
 {
-	background-image: url("/images/jquery.ui/dynatree.xp/cbIntermediate.png");
+	background-image: image_url("jquery.ui/dynatree.xp/cbIntermediate.png");
 }
 .ui-dynatree-partsel span.ui-dynatree-checkbox:hover
 {
-	background-image: url("/images/jquery.ui/dynatree.xp/cbIntermediate_hover.png");
+	background-image: image_url("jquery.ui/dynatree.xp/cbIntermediate_hover.png");
 }
 
 .ui-dynatree-selected span.ui-dynatree-checkbox
 {
-	background-image: url("/images/jquery.ui/dynatree.xp/cbChecked.png");
+	background-image: image_url("jquery.ui/dynatree.xp/cbChecked.png");
 }
 .ui-dynatree-selected span.ui-dynatree-checkbox:hover
 {
-	background-image: url("/images/jquery.ui/dynatree.xp/cbChecked_hover.png");
+	background-image: image_url("jquery.ui/dynatree.xp/cbChecked_hover.png");
 }
 
 /*******************************************************************************/
@@ -169,29 +169,29 @@ span.ui-dynatree-checkbox:hover
 span.ui-dynatree-radio
 {
 	margin-left: 3px;
-	background-image: url("/images/jquery.ui/dynatree.xp/rbUnchecked.png");
+	background-image: image_url("jquery.ui/dynatree.xp/rbUnchecked.png");
 }
 span.ui-dynatree-radio:hover
 {
-	background-image: url("/images/jquery.ui/dynatree.xp/rbUnchecked_hover.png");
+	background-image: image_url("jquery.ui/dynatree.xp/rbUnchecked_hover.png");
 }
 
 .ui-dynatree-partsel span.ui-dynatree-radio
 {
-	background-image: url("/images/jquery.ui/dynatree.xp/rbIntermediate.png");
+	background-image: image_url("jquery.ui/dynatree.xp/rbIntermediate.png");
 }
 .ui-dynatree-partsel span.ui-dynatree-radio:hover
 {
-	background-image: url("/images/jquery.ui/dynatree.xp/rbIntermediate_hover.png");
+	background-image: image_url("jquery.ui/dynatree.xp/rbIntermediate_hover.png");
 }
 
 .ui-dynatree-selected span.ui-dynatree-radio
 {
-	background-image: url("/images/jquery.ui/dynatree.xp/rbChecked.png");
+	background-image: image_url("jquery.ui/dynatree.xp/rbChecked.png");
 }
 .ui-dynatree-selected span.ui-dynatree-radio:hover
 {
-	background-image: url("/images/jquery.ui/dynatree.xp/rbChecked_hover.png");
+	background-image: image_url("jquery.ui/dynatree.xp/rbChecked_hover.png");
 }
 
 /*******************************************************************************/
@@ -207,29 +207,29 @@ span.ui-dynatree-radio:hover
 span.ui-dynatree-icon /* Default icon */
 {
 	margin-left: 3px;
-	background-image: url("/images/jquery.ui/dynatree.xp/ltDoc.png");
+	background-image: image_url("jquery.ui/dynatree.xp/ltDoc.png");
 }
 
 .ui-dynatree-ico-cf span.ui-dynatree-icon  /* Collapsed Folder */
 {
-	background-image: url("/images/jquery.ui/dynatree.xp/ltFld.png");
+	background-image: image_url("jquery.ui/dynatree.xp/ltFld.png");
 }
 
 .ui-dynatree-ico-ef span.ui-dynatree-icon  /* Expanded Folder */
 {
-	background-image: url("/images/jquery.ui/dynatree.xp/ltFld_o.png");
+	background-image: image_url("jquery.ui/dynatree.xp/ltFld_o.png");
 }
 
 /* Status node icons */
 
 .ui-dynatree-statusnode-wait span.ui-dynatree-icon
 {
-	background-image: url("/images/jquery.ui/dynatree.xp/ltWait.gif");
+	background-image: image_url("jquery.ui/dynatree.xp/ltWait.gif");
 }
 
 .ui-dynatree-statusnode-error span.ui-dynatree-icon
 {
-	background-image: url("/images/jquery.ui/dynatree.xp/ltError.png");
+	background-image: image_url("jquery.ui/dynatree.xp/ltError.png");
 }
 
 /*******************************************************************************/

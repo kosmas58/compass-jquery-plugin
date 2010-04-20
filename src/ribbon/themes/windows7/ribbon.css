@@ -64,7 +64,7 @@ ul.ribbon .orb
     display: block;
     width: 56px;
     height: 23px;
-    background-image: url("/images/jquery.ui/ribbon.windows7/orb_office.png");
+    background-image: image_url("jquery.ui/ribbon.windows7/orb_office.png");
     background-position: right bottom;
     background-repeat: no-repeat;
     padding: 0px;
@@ -87,14 +87,14 @@ ul.ribbon .orb a.orbButton
 
 ul.ribbon .orb li ul
 {
-    background-image: url("/images/jquery.ui/ribbon.windows7/menu_middle.png");
+    background-image: image_url("jquery.ui/ribbon.windows7/menu_middle.png");
     background-repeat: repeat-y;
     background-position: right;
 }
 
 ul.ribbon .orb:hover
 {
-    background-image: url("/images/jquery.ui/ribbon.windows7/orb_office_hover.png");
+    background-image: image_url("jquery.ui/ribbon.windows7/orb_office_hover.png");
 }
 
 ul.ribbon .orb span
@@ -136,14 +136,14 @@ ul.ribbon .orb li ul li a
 
 ul.ribbon .orb li ul li a.arrow
 {
-    background-image: url("/images/jquery.ui/ribbon.windows7/arrow.png");
+    background-image: image_url("jquery.ui/ribbon.windows7/arrow.png");
     background-repeat: no-repeat;
     background-position: center right;
 }
 
 li.arrow
 {
-    background-image: url("/images/jquery.ui/ribbon.windows7/arrow_down.png");
+    background-image: image_url("jquery.ui/ribbon.windows7/arrow_down.png");
     background-repeat: no-repeat;
     background-position: center right;
 }
@@ -180,7 +180,7 @@ ul.ribbon .orb li ul li ul li a
 
 ul.ribbon .orb li ul li ul li:hover
 {
-    background-image: url("/images/jquery.ui/ribbon.windows7/orb_submenu_item_hover.png");
+    background-image: image_url("jquery.ui/ribbon.windows7/orb_submenu_item_hover.png");
     background-repeat: repeat-x;
     height: 51px;
     margin: 0px;
@@ -195,7 +195,7 @@ ul.ribbon .orb li ul li ul li:hover a
 
 ul.ribbon .orb li ul li:hover
 {
-    background-image: url("/images/jquery.ui/ribbon.windows7/menu_item_hover.png");
+    background-image: image_url("jquery.ui/ribbon.windows7/menu_item_hover.png");
     background-repeat: no-repeat;
     padding-left: 8px;
     border: 1px solid #FFB700;
@@ -287,7 +287,7 @@ ul.menu li a
 ul.menu li a.active
 {
     background-color: #d9e3f3;
-    background-image: url("/images/jquery.ui/ribbon.windows7/menuitem_background.png");
+    background-image: image_url("jquery.ui/ribbon.windows7/menuitem_background.png");
     background-repeat: no-repeat;
 }
 
@@ -301,7 +301,7 @@ ul.menu .submenu
     border: 1px solid #3b5a82;
     border-bottom: 1px solid #9FAEC2;
     border-top: 0px;
-    background-image: url("/images/jquery.ui/ribbon.windows7/menu_background.png");
+    background-image: image_url("jquery.ui/ribbon.windows7/menu_background.png");
     background-repeat: repeat-x;
     border-top: 0px;
     margin-left: -1px;
@@ -348,7 +348,7 @@ ul.menu li ul li div:hover
 {
     padding: 4px;
     padding-top: 0px;
-    background-image: url("/images/jquery.ui/ribbon.windows7/item_background.png");
+    background-image: image_url("jquery.ui/ribbon.windows7/item_background.png");
     background-repeat: repeat-x;
     height: 52px;
     border: 1px solid #FFB700;
@@ -393,7 +393,7 @@ ul.menu li ul div.ribbon-list div img
 ul.menu li ul div.ribbon-list div:hover
 {
     padding: 0px;
-    background-image: url("/images/jquery.ui/ribbon.windows7/item_small_background.png");
+    background-image: image_url("jquery.ui/ribbon.windows7/item_small_background.png");
     background-repeat: repeat-x;
     height: 18px;
     border: 1px solid #FFB700;
@@ -409,7 +409,7 @@ ul.menu li ul div.ribbon-list ul
 
 ul.menu li ul div.ribbon-list ul li
 {
-	background-image: url("/images/jquery.ui/ribbon.windows7/menu_dropdownitembg.png");
+	background-image: image_url("jquery.ui/ribbon.windows7/menu_dropdownitembg.png");
 	background-repeat: repeat-y;
 	margin: 0px;
 	border: 0px;
@@ -420,7 +420,7 @@ ul.menu li ul div.ribbon-list ul li
 
 ul.menu li ul div.ribbon-list ul li:hover
 {
-	background-image: url("/images/jquery.ui/ribbon.windows7/menu_dropdownitembghover.png");
+	background-image: image_url("jquery.ui/ribbon.windows7/menu_dropdownitembghover.png");
 	background-repeat: repeat-x;
 	border: 1px solid #FFB700;
 	padding: 0px;
@@ -462,7 +462,7 @@ ul.menu li li
 
 .ribbon-backstage li.ribbon-backstage-firstLevel:hover
 {
-    background-image: url("/images/jquery.ui/ribbon.windows7/ribbon-backstage-firstLevel-hover.png") !important;
+    background-image: image_url("jquery.ui/ribbon.windows7/ribbon-backstage-firstLevel-hover.png") !important;
     background-position: center left;
     background-repeat: repeat-x;
     border: 0px !important;
@@ -542,7 +542,7 @@ ul.menu li li
 
 .ribbon-backstage li.ribbon-backstage-firstLevel ul.ribbon-backstage-subMenu li
 {
-    background-image: url("/images/jquery.ui/ribbon.windows7/ribbon-backstage-subMenu-item.png");
+    background-image: image_url("jquery.ui/ribbon.windows7/ribbon-backstage-subMenu-item.png");
     background-repeat: no-repeat !important;
     line-height: 43px !important;
     height: 43px;
@@ -552,7 +552,7 @@ ul.menu li li
 
 .ribbon-backstage li.ribbon-backstage-firstLevel ul.ribbon-backstage-subMenu li:hover
 {
-    background-image: url("/images/jquery.ui/ribbon.windows7/ribbon-backstage-subMenu-item-hover.png");
+    background-image: image_url("jquery.ui/ribbon.windows7/ribbon-backstage-subMenu-item-hover.png");
     background-repeat: no-repeat !important;
     border: 0px !important;
     width: 255px;
@@ -604,7 +604,7 @@ ul.menu li li
 .ribbon-backstage li.ribbon-backstage-firstLevel div.ribbon-backstage-rightColumnWide
 {
     background-color: #EDF0F2 !important;
-    background-image: url("/images/jquery.ui/ribbon.windows7/ribbon-backstage-rightColumn-wide.png");
+    background-image: image_url("jquery.ui/ribbon.windows7/ribbon-backstage-rightColumn-wide.png");
     background-position: left;
     background-repeat: repeat-y;
     color: #000 !important;
@@ -623,7 +623,7 @@ ul.menu li li
 .ribbon-backstage li.ribbon-backstage-firstLevel div.ribbon-backstage-rightColumnSmall
 {
     background-color: #EDF0F2 !important;
-    background-image: url("/images/jquery.ui/ribbon.windows7/ribbon-backstage-rightColumn-wide.png");
+    background-image: image_url("jquery.ui/ribbon.windows7/ribbon-backstage-rightColumn-wide.png");
     background-position: left;
     background-repeat: repeat-y;
     color: #000 !important;
@@ -657,7 +657,7 @@ ul.menu li li
 
 .ribbon-backstage li.ribbon-backstage-firstLevel .ribbon-backstage-leftColumnWide li
 {
-    background-image: url("/images/jquery.ui/ribbon.windows7/ribbon-backstage-subMenu-itemSquare.png") !important;
+    background-image: image_url("jquery.ui/ribbon.windows7/ribbon-backstage-subMenu-itemSquare.png") !important;
     background-position: center !important;
     background-repeat: no-repeat !important;
     color: #0f0 !important;
@@ -669,7 +669,7 @@ ul.menu li li
 
 .ribbon-backstage li.ribbon-backstage-firstLevel .ribbon-backstage-leftColumnWide li:hover
 {
-    background-image: url("/images/jquery.ui/ribbon.windows7/ribbon-backstage-subMenu-itemSquare-hover.png") !important;
+    background-image: image_url("jquery.ui/ribbon.windows7/ribbon-backstage-subMenu-itemSquare-hover.png") !important;
     background-position: center !important;
     background-repeat: no-repeat !important;
     color: #0f0 !important;

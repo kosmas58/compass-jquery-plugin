@@ -67,7 +67,7 @@ $.fn.themeswitcher = function(settings){
 		fontFamily: 'Trebuchet MS, Verdana, sans-serif',
 		fontSize: '11px',
 		color: '#666',
-		background: '#eee url("/images/jquery.ui/themeSwitcher/buttonbg.png") 50% 50% repeat-x',
+		background: '#eee image_url("jquery.ui/themeSwitcher/buttonbg.png") 50% 50% repeat-x',
 		border: '1px solid #ccc',
 		'-moz-border-radius': '6px',
 		'-webkit-border-radius': '6px',
@@ -110,7 +110,7 @@ $.fn.themeswitcher = function(settings){
 		'float': 'right',
 		width: '16px',
 		height: '16px',
-		background: 'url("/images/jquery.ui/themeSwitcher/icon_color_arrow.gif") 50% 50% no-repeat'
+		background: 'image_url("jquery.ui/themeSwitcher/icon_color_arrow.gif") 50% 50% no-repeat'
 	});
 	//pane css
 	switcherpane.css({
@@ -141,7 +141,7 @@ $.fn.themeswitcher = function(settings){
 		function(){
 			$(this).css({
 				'borderColor':'#555',
-				'background': 'url("/images/jquery.ui/themeSwitcher/menuhoverbg.png") 50% 50% repeat-x',
+				'background': 'image_url("jquery.ui/themeSwitcher/menuhoverbg.png") 50% 50% repeat-x',
 				cursor: 'pointer'
 			});
 		},
