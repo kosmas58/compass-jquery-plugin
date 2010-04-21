@@ -78,7 +78,7 @@ class JqueryUiTheme
           css[112,0] = "/*"
         end
       end
-      open File.join(stylesheets, '_' + file.gsub(/\.css$/,'.sass').gsub(/^#{@prefix}\./,'')), 'w' do |f|
+      open File.join(stylesheets, '_' + file.gsub(/\.css$/,'.scss').gsub(/^#{@prefix}\./,'')), 'w' do |f|
         if file == @theme_filename
           f.print(self.class.theme_css2sass(@base_theme))
         else
@@ -112,7 +112,7 @@ class JqueryUiTheme
       vars[VARIABLE_NAME_BASE + regexp_variables[index]] ||= capture
     end
     # Write out the theme sass
-    open File.join(stylesheets, "#{name}.sass"), 'w' do |f|
+    open File.join(stylesheets, "#{name}.scss"), 'w' do |f|
       f.print JRAILS_MESSAGE2 
       # Preserve header comment (css2sass currently doesn't convert comments)
       theme =~ /\/\*\s*(.*)^\*\//m
@@ -128,7 +128,12 @@ class JqueryUiTheme
   # Converter for ui.theme.css which has the variable names
   def self.theme_css2sass(theme_css)
     # Install variable names and convert to sass
+    
+
+    #otto = theme_css.gsub(VARIABLE_MATCHER){"/* $#{VARIABLE_NAME_BASE}#{$2} */"}
     sass = css2sass(theme_css.gsub(VARIABLE_MATCHER){"$#{VARIABLE_NAME_BASE}#{$2}"})
+    #sass = css2sass(theme_css)
+    
     # Convert select lines from literal to programatic syntax
     sass.gsub!(/.*/){|x| /\!/=~x ? x.gsub(/:/,'=').gsub(/ solid /, ' "solid" ') : x}
     sass
@@ -137,7 +142,7 @@ class JqueryUiTheme
   # Sass is simply awesome
   def self.css2sass(css)
     sass = '' 
-    IO.popen("sass-convert", 'r+') { |f| f.print(css); f.close_write; sass = f.read }
+    IO.popen("sass-convert -F scss -T scss", 'r+') { |f| f.print(css); f.close_write; sass = f.read }
     return sass
   end  
 end
