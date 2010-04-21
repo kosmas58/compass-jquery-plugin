@@ -119,9 +119,9 @@ class JqueryUiTheme
       $1.each {|line| f.print line.gsub(/^(\s*\*\s*)/,'// ')}
       f.print "\n"
       vars.each do |variable_name, value|
-        f.print "$#{variable_name}: #{value}\n"
+        f.print "$#{variable_name}: #{value} !default;\n"
       end
-      f.print "\n@import jquery.ui/_theme\n"
+      f.print "\n@import \"jquery.ui/_theme\"\n"
     end
   end
   

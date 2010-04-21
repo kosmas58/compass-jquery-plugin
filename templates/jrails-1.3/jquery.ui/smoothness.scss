@@ -5,81 +5,81 @@
 // Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
 // To view and modify this theme, visit http://jqueryui.com/themeroller/?ffDefault=Verdana,Arial,sans-serif&fwDefault=normal&fsDefault=1.1em&cornerRadius=4px&bgColorHeader=cccccc&bgTextureHeader=03_highlight_soft.png&bgImgOpacityHeader=75&borderColorHeader=aaaaaa&fcHeader=222222&iconColorHeader=222222&bgColorContent=ffffff&bgTextureContent=01_flat.png&bgImgOpacityContent=75&borderColorContent=aaaaaa&fcContent=222222&iconColorContent=222222&bgColorDefault=e6e6e6&bgTextureDefault=02_glass.png&bgImgOpacityDefault=75&borderColorDefault=d3d3d3&fcDefault=555555&iconColorDefault=888888&bgColorHover=dadada&bgTextureHover=02_glass.png&bgImgOpacityHover=75&borderColorHover=999999&fcHover=212121&iconColorHover=454545&bgColorActive=ffffff&bgTextureActive=02_glass.png&bgImgOpacityActive=65&borderColorActive=aaaaaa&fcActive=212121&iconColorActive=454545&bgColorHighlight=fbf9ee&bgTextureHighlight=02_glass.png&bgImgOpacityHighlight=55&borderColorHighlight=fcefa1&fcHighlight=363636&iconColorHighlight=2e83ff&bgColorError=fef1ec&bgTextureError=02_glass.png&bgImgOpacityError=95&borderColorError=cd0a0a&fcError=cd0a0a&iconColorError=cd0a0a&bgColorOverlay=aaaaaa&bgTextureOverlay=01_flat.png&bgImgOpacityOverlay=0&opacityOverlay=30&bgColorShadow=aaaaaa&bgTextureShadow=01_flat.png&bgImgOpacityShadow=0&opacityShadow=30&thicknessShadow=8px&offsetTopShadow=-8px&offsetLeftShadow=-8px&cornerRadiusShadow=8px
 
-$ui_bgShadowYPos: 50%
-$ui_thicknessShadow: 8px
-$ui_offsetLeftShadow: -8px
-$ui_bgColorContent: #ffffff
-$ui_fcHover: #212121
-$ui_bgErrorXPos: 50%
-$ui_fcDefault: #555555
-$ui_bgActiveRepeat: "repeat-x"
-$ui_bgImgUrlDefault: image_url("jquery.ui/smoothness/ui-bg_glass_75_e6e6e6_1x400.png")
-$ui_ffDefault: "Verdana,Arial,sans-serif"
-$ui_fcContent: #222222
-$ui_bgContentXPos: 50%
-$ui_bgImgUrlShadow: image_url("jquery.ui/smoothness/ui-bg_flat_0_aaaaaa_40x100.png")
-$ui_bgHighlightRepeat: "repeat-x"
-$ui_bgColorActive: #ffffff
-$ui_fcActive: #212121
-$ui_fcHeader: #222222
-$ui_cornerRadiusShadow: 8px
-$ui_borderColorHeader: #aaaaaa
-$ui_bgColorHeader: #cccccc
-$ui_iconsError: image_url("jquery.ui/smoothness/ui-icons_cd0a0a_256x240.png")
-$ui_bgImgUrlHover: image_url("jquery.ui/smoothness/ui-bg_glass_75_dadada_1x400.png")
-$ui_iconsHeader: image_url("jquery.ui/smoothness/ui-icons_222222_256x240.png")
-$ui_iconsHighlight: image_url("jquery.ui/smoothness/ui-icons_2e83ff_256x240.png")
-$ui_bgImgUrlOverlay: image_url("jquery.ui/smoothness/ui-bg_flat_0_aaaaaa_40x100.png")
-$ui_bgActiveXPos: 50%
-$ui_bgShadowRepeat: "repeat-x"
-$ui_bgColorHighlight: #fbf9ee
-$ui_bgImgUrlError: image_url("jquery.ui/smoothness/ui-bg_glass_95_fef1ec_1x400.png")
-$ui_iconsActive: image_url("jquery.ui/smoothness/ui-icons_454545_256x240.png")
-$ui_bgHoverXPos: 50%
-$ui_bgErrorYPos: 50%
-$ui_opacityShadow: ".30;filter:Alpha(Opacity=30)"
-$ui_bgImgUrlHeader: image_url("jquery.ui/smoothness/ui-bg_highlight-soft_75_cccccc_1x100.png")
-$ui_bgDefaultXPos: 50%
-$ui_bgImgUrlActive: image_url("jquery.ui/smoothness/ui-bg_glass_65_ffffff_1x400.png")
-$ui_cornerRadius: 4px
-$ui_fwDefault: "normal"
-$ui_bgContentYPos: 50%
-$ui_iconsHover: image_url("jquery.ui/smoothness/ui-icons_454545_256x240.png")
-$ui_bgImgUrlContent: image_url("jquery.ui/smoothness/ui-bg_flat_75_ffffff_40x100.png")
-$ui_bgOverlayRepeat: "repeat-x"
-$ui_borderColorDefault: #d3d3d3
-$ui_borderColorError: #cd0a0a
-$ui_iconsDefault: image_url("jquery.ui/smoothness/ui-icons_888888_256x240.png")
-$ui_bgActiveYPos: 50%
-$ui_bgOverlayXPos: 50%
-$ui_borderColorHighlight: #fcefa1
-$ui_bgColorShadow: #aaaaaa
-$ui_bgHeaderXPos: 50%
-$ui_bgHeaderYPos: 50%
-$ui_bgHoverYPos: 50%
-$ui_bgShadowXPos: 50%
-$ui_bgColorHover: #dadada
-$ui_bgDefaultYPos: 50%
-$ui_borderColorHover: #999999
-$ui_opacityOverlay: ".30;filter:Alpha(Opacity=30)"
-$ui_bgColorOverlay: #aaaaaa
-$ui_bgColorError: #fef1ec
-$ui_bgHeaderRepeat: "repeat-x"
-$ui_fcError: #cd0a0a
-$ui_offsetTopShadow: -8px
-$ui_bgHighlightYPos: 50%
-$ui_bgDefaultRepeat: "repeat-x"
-$ui_bgErrorRepeat: "repeat-x"
-$ui_borderColorActive: #aaaaaa
-$ui_bgOverlayYPos: 50%
-$ui_bgHighlightXPos: 50%
-$ui_fsDefault: "1.1em"
-$ui_bgColorDefault: #e6e6e6
-$ui_bgHoverRepeat: "repeat-x"
-$ui_borderColorContent: #aaaaaa
-$ui_bgImgUrlHighlight: image_url("jquery.ui/smoothness/ui-bg_glass_55_fbf9ee_1x400.png")
-$ui_fcHighlight: #363636
-$ui_bgContentRepeat: "repeat-x"
-$ui_iconsContent: image_url("jquery.ui/smoothness/ui-icons_222222_256x240.png")
+$ui_bgShadowYPos: 50% !default;
+$ui_thicknessShadow: 8px !default;
+$ui_offsetLeftShadow: -8px !default;
+$ui_bgColorContent: #ffffff !default;
+$ui_fcHover: #212121 !default;
+$ui_bgErrorXPos: 50% !default;
+$ui_fcDefault: #555555 !default;
+$ui_bgActiveRepeat: "repeat-x" !default;
+$ui_bgImgUrlDefault: image_url("jquery.ui/smoothness/ui-bg_glass_75_e6e6e6_1x400.png") !default;
+$ui_ffDefault: "Verdana,Arial,sans-serif" !default;
+$ui_fcContent: #222222 !default;
+$ui_bgContentXPos: 50% !default;
+$ui_bgImgUrlShadow: image_url("jquery.ui/smoothness/ui-bg_flat_0_aaaaaa_40x100.png") !default;
+$ui_bgHighlightRepeat: "repeat-x" !default;
+$ui_bgColorActive: #ffffff !default;
+$ui_fcActive: #212121 !default;
+$ui_fcHeader: #222222 !default;
+$ui_cornerRadiusShadow: 8px !default;
+$ui_borderColorHeader: #aaaaaa !default;
+$ui_bgColorHeader: #cccccc !default;
+$ui_iconsError: image_url("jquery.ui/smoothness/ui-icons_cd0a0a_256x240.png") !default;
+$ui_bgImgUrlHover: image_url("jquery.ui/smoothness/ui-bg_glass_75_dadada_1x400.png") !default;
+$ui_iconsHeader: image_url("jquery.ui/smoothness/ui-icons_222222_256x240.png") !default;
+$ui_iconsHighlight: image_url("jquery.ui/smoothness/ui-icons_2e83ff_256x240.png") !default;
+$ui_bgImgUrlOverlay: image_url("jquery.ui/smoothness/ui-bg_flat_0_aaaaaa_40x100.png") !default;
+$ui_bgActiveXPos: 50% !default;
+$ui_bgShadowRepeat: "repeat-x" !default;
+$ui_bgColorHighlight: #fbf9ee !default;
+$ui_bgImgUrlError: image_url("jquery.ui/smoothness/ui-bg_glass_95_fef1ec_1x400.png") !default;
+$ui_iconsActive: image_url("jquery.ui/smoothness/ui-icons_454545_256x240.png") !default;
+$ui_bgHoverXPos: 50% !default;
+$ui_bgErrorYPos: 50% !default;
+$ui_opacityShadow: ".30;filter:Alpha(Opacity=30)" !default;
+$ui_bgImgUrlHeader: image_url("jquery.ui/smoothness/ui-bg_highlight-soft_75_cccccc_1x100.png") !default;
+$ui_bgDefaultXPos: 50% !default;
+$ui_bgImgUrlActive: image_url("jquery.ui/smoothness/ui-bg_glass_65_ffffff_1x400.png") !default;
+$ui_cornerRadius: 4px !default;
+$ui_fwDefault: "normal" !default;
+$ui_bgContentYPos: 50% !default;
+$ui_iconsHover: image_url("jquery.ui/smoothness/ui-icons_454545_256x240.png") !default;
+$ui_bgImgUrlContent: image_url("jquery.ui/smoothness/ui-bg_flat_75_ffffff_40x100.png") !default;
+$ui_bgOverlayRepeat: "repeat-x" !default;
+$ui_borderColorDefault: #d3d3d3 !default;
+$ui_borderColorError: #cd0a0a !default;
+$ui_iconsDefault: image_url("jquery.ui/smoothness/ui-icons_888888_256x240.png") !default;
+$ui_bgActiveYPos: 50% !default;
+$ui_bgOverlayXPos: 50% !default;
+$ui_borderColorHighlight: #fcefa1 !default;
+$ui_bgColorShadow: #aaaaaa !default;
+$ui_bgHeaderXPos: 50% !default;
+$ui_bgHeaderYPos: 50% !default;
+$ui_bgHoverYPos: 50% !default;
+$ui_bgShadowXPos: 50% !default;
+$ui_bgColorHover: #dadada !default;
+$ui_bgDefaultYPos: 50% !default;
+$ui_borderColorHover: #999999 !default;
+$ui_opacityOverlay: ".30;filter:Alpha(Opacity=30)" !default;
+$ui_bgColorOverlay: #aaaaaa !default;
+$ui_bgColorError: #fef1ec !default;
+$ui_bgHeaderRepeat: "repeat-x" !default;
+$ui_fcError: #cd0a0a !default;
+$ui_offsetTopShadow: -8px !default;
+$ui_bgHighlightYPos: 50% !default;
+$ui_bgDefaultRepeat: "repeat-x" !default;
+$ui_bgErrorRepeat: "repeat-x" !default;
+$ui_borderColorActive: #aaaaaa !default;
+$ui_bgOverlayYPos: 50% !default;
+$ui_bgHighlightXPos: 50% !default;
+$ui_fsDefault: "1.1em" !default;
+$ui_bgColorDefault: #e6e6e6 !default;
+$ui_bgHoverRepeat: "repeat-x" !default;
+$ui_borderColorContent: #aaaaaa !default;
+$ui_bgImgUrlHighlight: image_url("jquery.ui/smoothness/ui-bg_glass_55_fbf9ee_1x400.png") !default;
+$ui_fcHighlight: #363636 !default;
+$ui_bgContentRepeat: "repeat-x" !default;
+$ui_iconsContent: image_url("jquery.ui/smoothness/ui-icons_222222_256x240.png") !default;
 
-@import jquery.ui/_theme
+@import "jquery.ui/_theme"

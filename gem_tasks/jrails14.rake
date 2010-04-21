@@ -101,7 +101,7 @@ namespace :build do
           if /\.css$/ =~ file
             css = File.read File.join(JQUERY_14_SRC, path, file)
             sass = ''
-            IO.popen("sass-convert", 'r+') { |f| f.print(css); f.close_write; sass = f.read }
+            IO.popen("sass-convert -F css -T scss", 'r+') { |f| f.print(css); f.close_write; sass = f.read }
             file.gsub!(/^jquery\./,'').gsub!(/\.css$/, '.scss')
             open File.join(JRAILS_14_DEST_THEMES, file), 'w' do |f|
               f.write sass
