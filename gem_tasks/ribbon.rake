@@ -55,11 +55,11 @@ namespace :build do
           next unless /\.css$/ =~ file
           css = File.read File.join(RIBBON_SRC_THEMES, "#{theme}", file)
           sass = ''
-          IO.popen("sass-convert", 'r+') { |f| f.print(css); f.close_write; sass = f.read }
-          open File.join(RIBBON_DEST_THEMES, "ribbon.#{theme}.sass"), 'w' do |f|
+          IO.popen("sass-convert -F css -T scss", 'r+') { |f| f.print(css); f.close_write; sass = f.read }
+          open File.join(RIBBON_DEST_THEMES, "ribbon.#{theme}.scss"), 'w' do |f|
             f.write RIBBON_MESSAGE2 + sass
           end
-          manifest.print "stylesheet 'jquery.ui/ribbon.#{theme}.sass', :media => 'screen, projection'\n"
+          manifest.print "stylesheet 'jquery.ui/ribbon.#{theme}.scss', :media => 'screen, projection'\n"
         end
   
         # Copy the theme images directory

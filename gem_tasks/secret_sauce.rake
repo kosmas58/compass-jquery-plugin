@@ -53,11 +53,11 @@ namespace :build do
         next unless /\.css$/ =~ file
         css = File.read File.join(SECRET_SAUCE_SRC, 'css', file)
         sass = ''
-        IO.popen("sass-convert", 'r+') { |f| f.print(css); f.close_write; sass = f.read }
-        open(File.join(SECRET_SAUCE_DEST_STYLESHEETS, file.gsub(/\.css$/,'.sass')), 'w') do |f|
+        IO.popen("sass-convert -F css -T scss", 'r+') { |f| f.print(css); f.close_write; sass = f.read }
+        open(File.join(SECRET_SAUCE_DEST_STYLESHEETS, file.gsub(/\.css$/,'.scss')), 'w') do |f|
           f.write SECRET_SAUCE_MESSAGE2 + sass
         end
-        manifest.print "stylesheet 'jquery.ui/#{file.gsub(/\.css$/,'.sass')}'\n"
+        manifest.print "stylesheet 'jquery.ui/#{file.gsub(/\.css$/,'.scss')}'\n"
       end      
     end
   end

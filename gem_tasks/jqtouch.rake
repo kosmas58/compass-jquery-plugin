@@ -57,11 +57,11 @@ namespace :build do
         next unless /\.css$/ =~ file
         css = File.read File.join(JQTOUCH_SRC, 'css', file)
         sass = ''
-        IO.popen("sass-convert", 'r+') { |f| f.print(css); f.close_write; sass = f.read }
-        open(File.join(JQTOUCH_DEST_STYLESHEETS, file.gsub(/\.css$/,'.sass')), 'w') do |f|
+        IO.popen("sass-convert -F css -T scss", 'r+') { |f| f.print(css); f.close_write; sass = f.read }
+        open(File.join(JQTOUCH_DEST_STYLESHEETS, file.gsub(/\.css$/,'.scss')), 'w') do |f|
           f.write JQTOUCH_MESSAGE2 + sass
         end
-        manifest.print "stylesheet 'jqtouch/#{file.gsub(/\.css$/,'.sass')}'\n"
+        manifest.print "stylesheet 'jqtouch/#{file.gsub(/\.css$/,'.scss')}'\n"
       end
 
       # iPhone Images     
@@ -108,11 +108,11 @@ namespace :build do
           next unless /\.css$/ =~ file
           css = File.read File.join(JQTOUCH_SRC_THEMES, "#{theme}", file)
           sass = ''
-          IO.popen("sass-convert", 'r+') { |f| f.print(css); f.close_write; sass = f.read }
-          open File.join(JQTOUCH_DEST_THEMES, "jqt.#{theme}.sass"), 'w' do |f|
+          IO.popen("sass-convert -F css -T scss", 'r+') { |f| f.print(css); f.close_write; sass = f.read }
+          open File.join(JQTOUCH_DEST_THEMES, "jqt.#{theme}.scss"), 'w' do |f|
             f.write JQTOUCH_MESSAGE2 + sass
           end
-          manifest.print "stylesheet 'jqtouch/jqt.#{theme}.sass', :media => 'screen, projection'\n"
+          manifest.print "stylesheet 'jqtouch/jqt.#{theme}.scss', :media => 'screen, projection'\n"
         end
 
         # Copy the theme images directory

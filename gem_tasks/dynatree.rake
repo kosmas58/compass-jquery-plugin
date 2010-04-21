@@ -54,11 +54,11 @@ namespace :build do
           next unless /\.css$/ =~ file
           css = File.read File.join(DYNATREE_SRC_SKINS, "#{skin}", file)
           sass = ''
-          IO.popen("sass-convert", 'r+') { |f| f.print(css); f.close_write; sass = f.read }
-          open File.join(DYNATREE_DEST_SKINS, "dynatree.#{skin}.sass"), 'w' do |f|
+          IO.popen("sass-convert -F css -T scss", 'r+') { |f| f.print(css); f.close_write; sass = f.read }
+          open File.join(DYNATREE_DEST_SKINS, "dynatree.#{skin}.scss"), 'w' do |f|
             f.write DYNATREE_MESSAGE2 + sass
           end
-          manifest.print "stylesheet 'jquery.ui/dynatree.#{skin}.sass', :media => 'screen, projection'\n"
+          manifest.print "stylesheet 'jquery.ui/dynatree.#{skin}.scss', :media => 'screen, projection'\n"
         end
   
         # Copy the skin images directory
