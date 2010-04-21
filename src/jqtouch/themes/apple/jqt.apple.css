@@ -463,7 +463,7 @@ div#jqt.landscape .toolbar > h1 {
 /* @group Plastic */
 
 #jqt #plastic ul li.arrow, #jqt #metal ul li.arrow {
-    background-image: image_url("jqtouch/apple/listArrow.png");
+    background-image: image_url("jqtouch/apple/listArrowSel.png");
     background-position: right center;
     background-repeat: no-repeat;
 }
