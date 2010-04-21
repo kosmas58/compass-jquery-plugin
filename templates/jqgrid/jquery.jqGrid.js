@@ -454,7 +454,7 @@ $.fn.jqGrid = function( pin ) {
 			}
 		},
 		getAccessor = function(obj, expr) {
-			var ret,p,prm;
+			var ret,p,prm, i;
 			if( typeof expr === 'function') { return expr(obj); }
 			ret = obj[expr];
 			if(ret===undefined) {
@@ -462,9 +462,10 @@ $.fn.jqGrid = function( pin ) {
 					prm = expr.split('.');
 				}
 				try {
-					if(prm.length) {
+					i = prm.length; 
+					if( i ) {
 						ret = obj;
-					    while (ret && prm.length) {
+					    while (ret && i--) {
 							p = prm.shift();
 							ret = ret[p];
 						}
@@ -2440,7 +2441,7 @@ $.jgrid.extend({
 					$t.p.beforeEditCell($t.rows[iRow].id,nm,tmp,iRow,iCol);
 				}
 				$(cc).html("").append(elc).attr("tabindex","0");
-				window.setTimeout(function () { $(elc).focus().select();},0);
+				window.setTimeout(function () { $(elc).focus();},0);
 				$("input, select, textarea",cc).bind("keydown",function(e) { 
 					if (e.keyCode === 27) {
 						if($("input.hasDatepicker",cc).length >0) {
@@ -4353,7 +4354,8 @@ $.jgrid.extend({
 			// callback functions is fed instead of only post data.
 			// This allows you to emulate a $.ajax call (including calling "complete"/"error"),
 			// while retrieving the data locally in the browser.
-			useDataProxy: false
+			useDataProxy: false,
+			overlay : true
 		}, $.jgrid.search, p || {});
 		return this.each(function() {
 			var $t = this;
@@ -4546,7 +4548,9 @@ $.jgrid.extend({
 					if(typeof fclm == 'boolean' && !fclm) { return; }
 				}
 				selector.hide();
-				$(".jqgrid-overlay:first","#gbox_"+$t.p.id).hide();
+				if(p.overlay === true) {
+					$(".jqgrid-overlay:first","#gbox_"+$t.p.id).hide();
+				}
 			}
 			function showFilter(){
 				var fl = $(".ui-searchFilter").length;
@@ -4555,7 +4559,9 @@ $.jgrid.extend({
 					$("#"+fid).css({zIndex:parseInt(zI,10)+fl});
 				}
 				$("#"+fid).show();
-				$(".jqgrid-overlay:first","#gbox_"+$t.p.id).show();
+				if(p.overlay === true) {
+					$(".jqgrid-overlay:first","#gbox_"+$t.p.id).show();
+				}
 				try{$(':input:visible',"#"+fid)[0].focus();}catch(_){}
 			}
 		});
@@ -8626,11 +8632,11 @@ hs=function(w,t,c){return w.each(function(){var s=this._jqm;$(t).each(function()
 					break;
 				case 'actions':
 					return "";
-                default:
-                    ret= $(cellval).text();
+				default:
+					ret= $(cellval).text();
 			}
 		}
-		return ret ? ret : cnt===true ? $(cellval).text() : $.jgrid.htmlDecode($(cellval).html());
+		return ret ? ret : cnt===true ? $(cellval).text() : $(cellval).html();
 	};
 	$.unformat.select = function (cellval,options,pos,cnt) {
 		// Spacial case when we have local data and perform a sort
