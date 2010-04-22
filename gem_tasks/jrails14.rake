@@ -27,6 +27,7 @@ namespace :build do
     
     FileUtils.remove_dir JRAILS_14_DEST_TEMPLATES if File.exists? JRAILS_14_DEST_TEMPLATES   
     FileUtils.mkdir_p(File.join(JRAILS_14_DEST_TEMPLATES, 'config', 'initializers'))
+    FileUtils.mkdir_p(File.join(JRAILS_14_DEST_THEMES))
     
     open File.join(JRAILS_14_DEST_TEMPLATES, 'manifest.rb'), 'w' do |manifest|
    
@@ -92,8 +93,6 @@ namespace :build do
       end   
       
       # jQuery 1.4 Plugins
-      
-      FileUtils.mkdir_p(File.join(JRAILS_14_DEST_THEMES))
       
       ['plugins'].each do |path|
         Dir.foreach File.join(JQUERY_14_SRC, path) do |file|

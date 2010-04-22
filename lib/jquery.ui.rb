@@ -107,8 +107,8 @@ class JqueryUiTheme
       capture.gsub! /\/\*\{\w*\}\*\/$/, ''
       # Update url
       capture.gsub! /^url\(images(.*)\)/, "image_url(\"jquery.ui/#{name}\\1\")"
-      # Quote most things
-      capture = "\"#{capture}\"" if capture =~ /[^#%0-9a-fptxm\-]/ and !(capture =~ /^image_url/)
+      # Quote most things 
+      capture = "\"#{capture}\"" if capture =~ /[^#%0-9a-fptxm\-]/ and !(capture =~ /^image_url/) and !(capture =~ /^[A-Za-z]+/)
       vars[VARIABLE_NAME_BASE + regexp_variables[index]] ||= capture
     end
     # Write out the theme sass

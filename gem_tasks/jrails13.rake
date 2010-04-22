@@ -21,7 +21,6 @@ JRAILS_13_DEST_TRANSLATIONS = File.join(JRAILS_13_DEST_TEMPLATES, 'i18n', 'jquer
 JRAILS_13_DEST_THEMES = File.join(JRAILS_13_DEST_TEMPLATES, 'jquery.ui')
 JRAILS_13_DEST_IMAGES = File.join(JRAILS_13_DEST_TEMPLATES, 'jquery.ui')
 
-
 namespace :build do
   desc 'Build the stylesheets and templates for jRails.'
   task :jrails13 do    
