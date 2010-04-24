@@ -1,4 +1,5 @@
-/* Multiselect */
+/* Multiselect
+----------------------------------*/
 
 .ui-multiselect { border: solid 1px; font-size: 0.8em; }
 .ui-multiselect ul { -moz-user-select: none; }

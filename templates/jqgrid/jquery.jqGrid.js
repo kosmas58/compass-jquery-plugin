@@ -4,7 +4,7 @@
  * Copyright (c) 2008, Tony Tomov, tony@trirand.com
  * Dual licensed under the MIT and GPL licenses
  * http://www.opensource.org/licenses/mit-license.php
- * http://www.gnu.org/licenses/gpl.html
+ * http://www.gnu.org/licenses/gpl-2.0.html
  * Date: 2010-02-14
  */
 $.jgrid = $.jgrid || {};
@@ -2370,7 +2370,7 @@ $.jgrid.extend({
  * http://trirand.com/blog/ 
  * Dual licensed under the MIT and GPL licenses:
  * http://www.opensource.org/licenses/mit-license.php
- * http://www.gnu.org/licenses/gpl.html
+ * http://www.gnu.org/licenses/gpl-2.0.html
 **/ 
 /**
  * all events and options here are aded anonynous and not in the base grid
@@ -2853,7 +2853,7 @@ $.jgrid.extend({
  * http://trirand.com/blog/ 
  * Dual licensed under the MIT and GPL licenses:
  * http://www.opensource.org/licenses/mit-license.php
- * http://www.gnu.org/licenses/gpl.html
+ * http://www.gnu.org/licenses/gpl-2.0.html
 */ 
 // Modal functions
 var showModal = function(h) {
@@ -3485,7 +3485,7 @@ function checkValues(val, valref,g) {
  * http://trirand.com/blog/ 
  * Dual licensed under the MIT and GPL licenses:
  * http://www.opensource.org/licenses/mit-license.php
- * http://www.gnu.org/licenses/gpl.html
+ * http://www.gnu.org/licenses/gpl-2.0.html
 **/ 
 $.jgrid.extend({
 	getColProp : function(colname){
@@ -4302,7 +4302,7 @@ $.jgrid.extend({
  * http://trirand.com/blog/ 
  * Dual licensed under the MIT and GPL licenses:
  * http://www.opensource.org/licenses/mit-license.php
- * http://www.gnu.org/licenses/gpl.html
+ * http://www.gnu.org/licenses/gpl-2.0.html
 **/
 var rp_ge = null;
 $.jgrid.extend({
@@ -4379,16 +4379,19 @@ $.jgrid.extend({
                         gridDOMobj.SearchFilter.setGroupOp(defaultFilters.groupOp);
                     }
                     if (defaultFilters.rules) {
-                        var f;
-                        for (var i = 0, li = defaultFilters.rules.length; i < li; i++) {
+                        var f
+							, i = 0
+							, li = defaultFilters.rules.length
+							, success = false;
+                        for (; i < li; i++) {
                             f = defaultFilters.rules[i];
                             // we are not trying to counter all issues with filter declaration here. Just the basics to avoid lookup exceptions.
                             if (f.field !== undefined && f.op !== undefined && f.data !== undefined) {
-                                gridDOMobj.SearchFilter.setFilter({
+                                success = gridDOMobj.SearchFilter.setFilter({
                                     'sfref':gridDOMobj.SearchFilter.$.find(".sf:last"),
                                     'filter':$.extend({},f)
                                 });
-                                gridDOMobj.SearchFilter.add();
+								if (success) { gridDOMobj.SearchFilter.add(); }
                             }
                         }
                     }
@@ -6127,7 +6130,7 @@ $.jgrid.extend({
  * http://trirand.com/blog/ 
  * Dual licensed under the MIT and GPL licenses:
  * http://www.opensource.org/licenses/mit-license.php
- * http://www.gnu.org/licenses/gpl.html
+ * http://www.gnu.org/licenses/gpl-2.0.html
 **/ 
     $.jgrid.extend({
         jqGridImport : function(o) {
@@ -6327,7 +6330,7 @@ $.jgrid.extend({
  * http://trirand.com/blog/ 
  * Dual licensed under the MIT and GPL licenses:
  * http://www.opensource.org/licenses/mit-license.php
- * http://www.gnu.org/licenses/gpl.html
+ * http://www.gnu.org/licenses/gpl-2.0.html
 **/ 
 $.jgrid.extend({
 //Editing
@@ -6585,8 +6588,8 @@ $.jgrid.extend({
  * Author: Mark Williams
  * Dual licensed under the MIT and GPL licenses:
  * http://www.opensource.org/licenses/mit-license.php
- * http://www.gnu.org/licenses/gpl.html
- * depends on jQuery UI sortable
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ * depends on jQuery UI 
 **/
 if ($.browser.msie && $.browser.version==8) {
 	$.expr[":"].hidden = function(elem) {
@@ -7081,7 +7084,7 @@ $.jgrid.extend({
  * 
  * Dual licensed under the MIT and GPL licenses:
  * http://www.opensource.org/licenses/mit-license.php
- * http://www.gnu.org/licenses/gpl.html
+ * http://www.gnu.org/licenses/gpl-2.0.html
 **/ 
 $.jgrid.extend({
 	getPostData : function(){
@@ -7146,7 +7149,7 @@ $.jgrid.extend({
  * http://www.roznicki.prv.pl
  * Dual licensed under the MIT and GPL licenses:
  * http://www.opensource.org/licenses/mit-license.php
- * http://www.gnu.org/licenses/gpl.html
+ * http://www.gnu.org/licenses/gpl-2.0.html
 **/
 $.jgrid.extend({
 	setColumns : function(p) {
@@ -7273,7 +7276,7 @@ $.jgrid.extend({
  * http://trirand.com/blog/ 
  * Dual licensed under the MIT and GPL licenses:
  * http://www.opensource.org/licenses/mit-license.php
- * http://www.gnu.org/licenses/gpl.html
+ * http://www.gnu.org/licenses/gpl-2.0.html
 **/
 $.jgrid.extend({
 setSubGrid : function () {
@@ -7644,7 +7647,7 @@ jQuery(selector).each(function() {
  * http://trirand.com/blog/ 
  * Dual licensed under the MIT and GPL licenses:
  * http://www.opensource.org/licenses/mit-license.php
- * http://www.gnu.org/licenses/gpl.html
+ * http://www.gnu.org/licenses/gpl-2.0.html
 **/ 
 $.jgrid.extend({
 	setTreeNode : function(rd, row){
@@ -8232,7 +8235,7 @@ hs=function(w,t,c){return w.each(function(){var s=this._jqm;$(t).each(function()
  * Changes from Tony Tomov tony@trirand.com
  * Dual licensed under the MIT and GPL licenses:
  * http://www.opensource.org/licenses/mit-license.php
- * http://www.gnu.org/licenses/gpl.html
+ * http://www.gnu.org/licenses/gpl-2.0.html
  * 
 **/
 
@@ -8745,7 +8748,7 @@ hs=function(w,t,c){return w.each(function(){var s=this._jqm;$(t).each(function()
 
 /* Plugin:      searchFilter v1.2.9
  * Author:      Kasey Speakman (kasey@cornerspeed.com)
- * License:     Dual Licensed, MIT and GPL v2 (http://www.gnu.org/copyleft/gpl.html)
+ * License:     Dual Licensed, MIT and GPL v2 (http://www.gnu.org/licenses/gpl-2.0.html)
  *
  * REQUIREMENTS:
  *    jQuery 1.3+           (http://jquery.com/)
@@ -9286,19 +9289,20 @@ jQuery.fn.searchFilter = function(fields, options) {
                 // preparsing the index values for SELECT elements.
                 var fieldvalue, fieldindex, opindex, datavalue, dataindex;
                 fieldvalue = filter['field'];
-                fieldindex = valueindexmap[fieldvalue]['index'];
-                if (fieldindex != undefined) {
+				if (valueindexmap[fieldvalue]) {
+					fieldindex = valueindexmap[fieldvalue]['index'];
+				}
+                if (fieldindex != null) {
                     opindex = valueindexmap[fieldvalue]['ops'][filter['op']];
                     datavalue = filter['data'];
-                    if (valueindexmap[fieldvalue]['data'] == undefined) {
+                    if (valueindexmap[fieldvalue]['data'] == null) {
                         dataindex = -1; // 'data' is not SELECT, Making the var 'defined'
                     } else {
                         dataindex = valueindexmap[fieldvalue]['data'][datavalue]; // 'undefined' may come from here.
                     }
                 }
-
                 // only if values for 'field' and 'op' and 'data' are 'found' in mapping...
-                if (fieldindex != undefined && opindex != undefined && dataindex != undefined) {
+                if (fieldindex != null && opindex != null && dataindex != null) {
                     o.find("select[name='field']")[0].selectedIndex = fieldindex;
                     o.find("select[name='field']").change();
                     o.find("select[name='op']")[0].selectedIndex = opindex;
@@ -9307,7 +9311,10 @@ jQuery.fn.searchFilter = function(fields, options) {
                     if (o) {
                         o.selectedIndex = dataindex;
                     }
-                }
+					return true
+                } else {
+					return false
+				}
             } // end of this.setFilter fn
         } // end of if fields != null
     }
