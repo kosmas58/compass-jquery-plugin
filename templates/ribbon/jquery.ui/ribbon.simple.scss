@@ -56,7 +56,7 @@ ul.ribbon {
       margin-top: 10px;
       margin-left: 10px; }
     ul {
-      background-color: #fff;
+      background-color: white;
       width: 499px;
       padding: 10px;
       margin-top: 0px;
@@ -120,7 +120,7 @@ ul {
           background-image: image_url("jquery.ui/ribbon.simple/menu_item_hover.png");
           background-repeat: no-repeat;
           padding-left: 8px;
-          border: 1px solid #FFB700;
+          border: 1px solid #ffb700;
           height: 40px;
           line-height: 38px; } }
       ul a {
@@ -183,7 +183,7 @@ ul {
       width: 100%;
       height: 90px;
       border: 1px solid #3b5a82;
-      border-bottom: 1px solid #9FAEC2;
+      border-bottom: 1px solid #9faec2;
       border-top: 0px;
       background-image: image_url("jquery.ui/ribbon.simple/menu_background.png");
       background-repeat: repeat-x;
@@ -224,7 +224,7 @@ ul.menu li {
         background-image: image_url("jquery.ui/ribbon.simple/item_background.png");
         background-repeat: repeat-x;
         height: 52px;
-        border: 1px solid #FFB700; } }
+        border: 1px solid #ffb700; } }
     div.ribbon-list {
       padding: 0px 5px 0px 5px;
       &:hover {
@@ -251,12 +251,12 @@ ul.menu li {
           background-image: image_url("jquery.ui/ribbon.simple/item_small_background.png");
           background-repeat: repeat-x;
           height: 18px;
-          border: 1px solid #FFB700; } }
+          border: 1px solid #ffb700; } }
       ul {
-        background-color: #fff;
+        background-color: white;
         position: absolute;
         margin-left: -1px;
-        border: 1px solid #8492A6;
+        border: 1px solid #8492a6;
         li {
           background-image: image_url("jquery.ui/ribbon.simple/menu_dropdownitembg.png");
           background-repeat: repeat-y;
@@ -268,7 +268,7 @@ ul.menu li {
           &:hover {
             background-image: image_url("jquery.ui/ribbon.simple/menu_dropdownitembghover.png");
             background-repeat: repeat-x;
-            border: 1px solid #FFB700;
+            border: 1px solid #ffb700;
             padding: 0px;
             padding-left: 29px; } } } }
     li div img {
@@ -276,4 +276,4 @@ ul.menu li {
       display: block;
       margin: 0px auto; } }
   li {
-    border-right: 1px solid #abc; } }
+    border-right: 1px solid #aabbcc; } }
