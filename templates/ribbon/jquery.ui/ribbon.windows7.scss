@@ -17,7 +17,7 @@ ul.ribbon {
   margin: 0px;
   padding: 0px;
   font-size: 0.8em;
-  border-bottom: 1px solid #8db2e3;
+  border-bottom: 1px solid #8DB2E3;
   * {
     margin: 0px;
     padding: 0px;
@@ -64,7 +64,7 @@ ul.ribbon {
       margin-top: 4px;
       margin-left: 10px; }
     ul {
-      background-color: white;
+      background-color: #fff;
       width: 499px;
       padding: 10px;
       margin-top: 0px;
@@ -128,7 +128,7 @@ ul {
           background-image: image_url("jquery.ui/ribbon.windows7/menu_item_hover.png");
           background-repeat: no-repeat;
           padding-left: 8px;
-          border: 1px solid #ffb700;
+          border: 1px solid #FFB700;
           height: 40px;
           line-height: 38px; } }
       ul a {
@@ -191,7 +191,7 @@ ul {
       width: 100%;
       height: 90px;
       border: 1px solid #3b5a82;
-      border-bottom: 1px solid #9faec2;
+      border-bottom: 1px solid #9FAEC2;
       border-top: 0px;
       background-image: image_url("jquery.ui/ribbon.windows7/menu_background.png");
       background-repeat: repeat-x;
@@ -234,7 +234,7 @@ ul.menu li {
         background-image: image_url("jquery.ui/ribbon.windows7/item_background.png");
         background-repeat: repeat-x;
         height: 52px;
-        border: 1px solid #ffb700; } }
+        border: 1px solid #FFB700; } }
     div.ribbon-list {
       padding: 0px 5px 0px 5px;
       height: 1.5em !important;
@@ -262,12 +262,12 @@ ul.menu li {
           background-image: image_url("jquery.ui/ribbon.windows7/item_small_background.png");
           background-repeat: repeat-x;
           height: 18px;
-          border: 1px solid #ffb700; } }
+          border: 1px solid #FFB700; } }
       ul {
-        background-color: white;
+        background-color: #fff;
         position: absolute;
         margin-left: -1px;
-        border: 1px solid #8492a6;
+        border: 1px solid #8492A6;
         li {
           background-image: image_url("jquery.ui/ribbon.windows7/menu_dropdownitembg.png");
           background-repeat: repeat-y;
@@ -279,7 +279,7 @@ ul.menu li {
           &:hover {
             background-image: image_url("jquery.ui/ribbon.windows7/menu_dropdownitembghover.png");
             background-repeat: repeat-x;
-            border: 1px solid #ffb700;
+            border: 1px solid #FFB700;
             padding: 0px;
             padding-left: 29px; } } } }
     li div img {
@@ -287,10 +287,10 @@ ul.menu li {
       display: block;
       margin: 0px auto; } }
   li {
-    border-right: 1px solid #aabbcc; } }
+    border-right: 1px solid #abc; } }
 
 .ribbon-backstage {
-  background-color: white !important;
+  background-color: #fff !important;
   background-position: left top !important;
   background-repeat: no-repeat !important;
   top: 23px !important;
@@ -310,7 +310,7 @@ ul.menu li {
       padding: 0px !important; }
     * {
       background-color: Transparent !important;
-      color: black !important; }
+      color: #000 !important; }
     a {
       line-height: 34px !important;
       height: 34px !important;
@@ -323,16 +323,12 @@ ul.menu li {
       &:hover span {
         left: 22px;
         line-height: 34px !important; }
-      img {
-        width: 15px !important;
-        bottom: 9px !important;
-        left: 3px !important; }
-      &:hover img {
+      img, &:hover img {
         width: 15px !important;
         bottom: 9px !important;
         left: 3px !important; } }
     ul.ribbon-backstage-subMenu {
-      background-color: white !important;
+      background-color: #fff !important;
       left: 115px !important;
       padding-left: 10px !important;
       padding-right: 10px !important;
@@ -368,30 +364,25 @@ ul.menu li {
         &:hover a {
           line-height: 43px !important;
           height: 43px !important; }
-        img {
-          height: auto !important;
-          width: auto !important;
-          margin-right: 15px;
-          bottom: 8px !important; }
-        &:hover img {
+        img, &:hover img {
           height: auto !important;
           width: auto !important;
           margin-right: 15px;
           bottom: 8px !important; }
         span {
           left: 40px;
-          color: black !important;
+          color: #000 !important;
           top: 5px;
           padding-left: 20px;
           &:hover {
-            color: black !important; } } } }
+            color: #000 !important; } } } }
     div {
       &.ribbon-backstage-rightColumnWide {
-        background-color: #edf0f2 !important;
+        background-color: #EDF0F2 !important;
         background-image: image_url("jquery.ui/ribbon.windows7/ribbon-backstage-rightColumn-wide.png");
         background-position: left;
         background-repeat: repeat-y;
-        color: black !important;
+        color: #000 !important;
         display: none;
         left: 382px;
         margin-top: -11px;
@@ -403,11 +394,11 @@ ul.menu li {
         z-index: 30;
         line-height: 17px; }
       &.ribbon-backstage-rightColumnSmall {
-        background-color: #edf0f2 !important;
+        background-color: #EDF0F2 !important;
         background-image: image_url("jquery.ui/ribbon.windows7/ribbon-backstage-rightColumn-wide.png");
         background-position: left;
         background-repeat: repeat-y;
-        color: black !important;
+        color: #000 !important;
         display: none;
         left: 382px;
         margin-top: -11px;
@@ -420,7 +411,7 @@ ul.menu li {
         line-height: 17px;
         text-align: center;
         * {
-          color: black !important; }
+          color: #000 !important; }
         img {
           max-width: 100px;
           max-width: 100px; } } }
@@ -428,7 +419,7 @@ ul.menu li {
       background-image: image_url("jquery.ui/ribbon.windows7/ribbon-backstage-subMenu-itemSquare.png") !important;
       background-position: center !important;
       background-repeat: no-repeat !important;
-      color: lime !important;
+      color: #0f0 !important;
       float: left;
       height: 100px !important;
       width: 90px !important;
@@ -437,7 +428,7 @@ ul.menu li {
         background-image: image_url("jquery.ui/ribbon.windows7/ribbon-backstage-subMenu-itemSquare-hover.png") !important;
         background-position: center !important;
         background-repeat: no-repeat !important;
-        color: lime !important;
+        color: #0f0 !important;
         float: left;
         height: 100px !important;
         width: 90px !important; }

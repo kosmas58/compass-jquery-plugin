@@ -1,8 +1,20 @@
-﻿.clear
+﻿body
+{
+	padding-top: 120px;	
+}
+
+.clear
 {
     clear: both;
     font-size: 1px;
     line-height: 1px;
+}
+
+.mainContainer
+{	
+    position: fixed;
+    top: 0px;
+    left: 0px;
 }
 
 ul.ribbon
