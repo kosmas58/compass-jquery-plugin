@@ -64,7 +64,7 @@ ul.ribbon .orb
     display: block;
     width: 56px;
     height: 23px;
-    background-image: image_url("jquery.ui/ribbon.windows7/orb_office.png");
+    background-image: image_url("jquery.ui/ribbon.windows7/orb.png");
     background-position: right bottom;
     background-repeat: no-repeat;
     padding: 0px;
@@ -94,7 +94,7 @@ ul.ribbon .orb li ul
 
 ul.ribbon .orb:hover
 {
-    background-image: image_url("jquery.ui/ribbon.windows7/orb_office_hover.png");
+    background-image: image_url("jquery.ui/ribbon.windows7/orb_hover.png");
 }
 
 ul.ribbon .orb span
