@@ -94,11 +94,11 @@
 .ui-accordion .ui-accordion-header a {
   display: block;
   font-size: 1em;
-  padding: 0.5em 0.5em 0.5em 2.2em; }
+  padding: .5em .5em .5em 2.2em; }
 
 .ui-accordion .ui-accordion-header .ui-icon {
   position: absolute;
-  left: 0.5em;
+  left: .5em;
   top: 50%;
   margin-top: -8px; }
 
@@ -120,11 +120,11 @@
 ----------------------------------*/
 .ui-datepicker {
   width: 17em;
-  padding: 0.2em 0.2em 0; }
+  padding: .2em .2em 0; }
 
 .ui-datepicker .ui-datepicker-header {
   position: relative;
-  padding: 0.2em 0; }
+  padding: .2em 0; }
 
 .ui-datepicker .ui-datepicker-prev, .ui-datepicker .ui-datepicker-next {
   position: absolute;
@@ -177,12 +177,12 @@
 
 .ui-datepicker table {
   width: 100%;
-  font-size: 0.9em;
+  font-size: .9em;
   border-collapse: collapse;
-  margin: 0 0 0.4em; }
+  margin: 0 0 .4em; }
 
 .ui-datepicker th {
-  padding: 0.7em 0.3em;
+  padding: .7em .3em;
   text-align: center;
   font-weight: bold;
   border: 0; }
@@ -193,23 +193,23 @@
 
 .ui-datepicker td span, .ui-datepicker td a {
   display: block;
-  padding: 0.2em;
+  padding: .2em;
   text-align: right;
   text-decoration: none; }
 
 .ui-datepicker .ui-datepicker-buttonpane {
   background-image: none;
-  margin: 0.7em 0 0 0;
-  padding: 0 0.2em;
+  margin: .7em 0 0 0;
+  padding: 0 .2em;
   border-left: 0;
   border-right: 0;
   border-bottom: 0; }
 
 .ui-datepicker .ui-datepicker-buttonpane button {
   float: right;
-  margin: 0.5em 0.2em 0.4em;
+  margin: .5em .2em .4em;
   cursor: pointer;
-  padding: 0.2em 0.6em 0.3em 0.6em;
+  padding: .2em .6em .3em .6em;
   width: auto;
   overflow: visible; }
 
@@ -225,7 +225,7 @@
 
 .ui-datepicker-multi .ui-datepicker-group table {
   width: 95%;
-  margin: 0 auto 0.4em; }
+  margin: 0 auto .4em; }
 
 .ui-datepicker-multi-2 .ui-datepicker-group {
   width: 50%; }
@@ -315,20 +315,20 @@
 ----------------------------------*/
 .ui-dialog {
   position: relative;
-  padding: 0.2em;
+  padding: .2em;
   width: 300px; }
 
 .ui-dialog .ui-dialog-titlebar {
-  padding: 0.5em 0.3em 0.3em 1em;
+  padding: .5em .3em .3em 1em;
   position: relative; }
 
 .ui-dialog .ui-dialog-title {
   float: left;
-  margin: 0.1em 0 0.2em; }
+  margin: .1em 0 .2em; }
 
 .ui-dialog .ui-dialog-titlebar-close {
   position: absolute;
-  right: 0.3em;
+  right: .3em;
   top: 50%;
   width: 19px;
   margin: -10px 0 0 0;
@@ -344,7 +344,7 @@
 
 .ui-dialog .ui-dialog-content {
   border: 0;
-  padding: 0.5em 1em;
+  padding: .5em 1em;
   background: none;
   overflow: auto;
   zoom: 1; }
@@ -353,14 +353,14 @@
   text-align: left;
   border-width: 1px 0 0 0;
   background-image: none;
-  margin: 0.5em 0 0 0;
-  padding: 0.3em 1em 0.5em 0.4em; }
+  margin: .5em 0 0 0;
+  padding: .3em 1em .5em .4em; }
 
 .ui-dialog .ui-dialog-buttonpane button {
   float: right;
-  margin: 0.5em 0.4em 0.5em 0;
+  margin: .5em .4em .5em 0;
   cursor: pointer;
-  padding: 0.2em 0.6em 0.3em 0.6em;
+  padding: .2em .6em .3em .6em;
   line-height: 1.4em;
   width: auto;
   overflow: visible; }
@@ -473,16 +473,16 @@
 .ui-slider .ui-slider-range {
   position: absolute;
   z-index: 1;
-  font-size: 0.7em;
+  font-size: .7em;
   display: block;
   border: 0; }
 
 .ui-slider-horizontal {
-  height: 0.8em; }
+  height: .8em; }
 
 .ui-slider-horizontal .ui-slider-handle {
-  top: -0.3em;
-  margin-left: -0.6em; }
+  top: -.3em;
+  margin-left: -.6em; }
 
 .ui-slider-horizontal .ui-slider-range {
   top: 0;
@@ -495,13 +495,13 @@
   right: 0; }
 
 .ui-slider-vertical {
-  width: 0.8em;
+  width: .8em;
   height: 100px; }
 
 .ui-slider-vertical .ui-slider-handle {
-  left: -0.3em;
+  left: -.3em;
   margin-left: 0;
-  margin-bottom: -0.6em; }
+  margin-bottom: -.6em; }
 
 .ui-slider-vertical .ui-slider-range {
   left: 0;
@@ -517,25 +517,25 @@
 /* Tabs
 ----------------------------------*/
 .ui-tabs {
-  padding: 0.2em;
+  padding: .2em;
   zoom: 1; }
 
 .ui-tabs .ui-tabs-nav {
   list-style: none;
   position: relative;
-  padding: 0.2em 0.2em 0; }
+  padding: .2em .2em 0; }
 
 .ui-tabs .ui-tabs-nav li {
   position: relative;
   float: left;
   border-bottom-width: 0 !important;
-  margin: 0 0.2em -1px 0;
+  margin: 0 .2em -1px 0;
   padding: 0; }
 
 .ui-tabs .ui-tabs-nav li a {
   float: left;
   text-decoration: none;
-  padding: 0.5em 1em; }
+  padding: .5em 1em; }
 
 .ui-tabs .ui-tabs-nav li.ui-tabs-selected {
   padding-bottom: 1px;
@@ -655,7 +655,7 @@
   color: $ui_fcError; }
 
 .ui-state-disabled, .ui-widget-content .ui-state-disabled {
-  opacity: 0.35;
+  opacity: .35;
   filter: Alpha(Opacity = 35);
   background-image: none; }
 
@@ -663,7 +663,7 @@
   font-weight: bold; }
 
 .ui-priority-secondary, .ui-widget-content .ui-priority-secondary {
-  opacity: 0.7;
+  opacity: .7;
   filter: Alpha(Opacity = 70);
   font-weight: normal; }
 

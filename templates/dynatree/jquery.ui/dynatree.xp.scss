@@ -214,12 +214,12 @@ span {
     font-weight: bold; } }
 
 div.ui-dynatree-container a:focus {
-  background-color: #efebde;
+  background-color: #EFEBDE;
   /* gray */ }
 
 span {
   &.ui-dynatree-focused a:link {
-    background-color: #efebde;
+    background-color: #EFEBDE;
     /* gray */ }
   &.ui-dynatree-has-children a, &.ui-dynatree-expanded a {
  }
@@ -227,7 +227,7 @@ span {
     color: green;
     font-style: italic; }
   &.ui-dynatree-active a {
-    background-color: #3169c6 !important;
+    background-color: #3169C6 !important;
     color: white !important;
     /* @ IE6 */ }
   &.custom1 a {

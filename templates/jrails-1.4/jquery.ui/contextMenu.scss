@@ -4,8 +4,8 @@
   position: absolute;
   width: 120px;
   z-index: 99999;
-  border: solid 1px #cccccc;
-  background: #eeeeee;
+  border: solid 1px #CCC;
+  background: #EEE;
   padding: 0px;
   margin: 0px;
   display: none;
@@ -14,7 +14,7 @@
     padding: 0px;
     margin: 0px; }
   A {
-    color: #333333;
+    color: #333;
     text-decoration: none;
     display: block;
     line-height: 20px;
@@ -26,15 +26,15 @@
     padding-left: 28px; }
   LI {
     &.hover A {
-      color: white;
-      background-color: #3399ff; }
+      color: #FFF;
+      background-color: #3399FF; }
     &.disabled A {
-      color: #aaaaaa;
+      color: #AAA;
       cursor: default; }
     &.hover.disabled A {
       background-color: transparent; }
     &.separator {
-      border-top: solid 1px #cccccc; }
+      border-top: solid 1px #CCC; }
     &.edit A {
       background-image: image_url("jquery.ui/contextMenu/page_white_edit.png"); }
     &.cut A {

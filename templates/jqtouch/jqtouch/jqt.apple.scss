@@ -42,7 +42,7 @@ div#jqt {
     text-align: center;
     text-overflow: ellipsis;
     white-space: nowrap;
-    color: white; }
+    color: #fff; }
   &.landscape .toolbar > h1 {
     margin-left: -125px;
     width: 250px; } }
@@ -62,7 +62,7 @@ div#jqt {
     font-family: inherit;
     font-size: 12px;
     font-weight: bold;
-    color: white;
+    color: #fff;
     text-shadow: rgba(0, 0, 0, 0.5) 0px -1px 0;
     text-overflow: ellipsis;
     text-decoration: none;
@@ -106,26 +106,26 @@ div#jqt {
     text-shadow: rgba(255, 255, 255, 0.7) 0 1px 0; }
   .grayButton {
     -webkit-border-image: image_url("jqtouch/apple/grayButton.png") 0 12 0 12;
-    color: white; }
+    color: #FFFFFF; }
   .redButton {
     -webkit-border-image: image_url("jqtouch/apple/redButton.png") 0 12 0 12;
-    color: white; }
+    color: #FFFFFF; }
   .greenButton {
     -webkit-border-image: image_url("jqtouch/apple/greenButton.png") 0 12 0 12;
-    color: white; }
+    color: #FFFFFF; }
   h1 + ul, h2 + ul, h3 + ul, h4 + ul, h5 + ul, h6 + ul {
     margin-top: 0; }
   ul {
     color: black;
-    background: white;
-    border: 1px solid #b4b4b4;
+    background: #fff;
+    border: 1px solid #B4B4B4;
     font: bold 17px "Helvetica Neue", Helvetica;
     padding: 0;
     margin: 15px 10px 17px 10px;
     -webkit-border-radius: 8px;
     li {
-      color: #666666;
-      border-top: 1px solid #b4b4b4;
+      color: #666;
+      border-top: 1px solid #B4B4B4;
       list-style-type: none;
       padding: 10px 10px 10px 10px; } }
   li {
@@ -154,7 +154,7 @@ div#jqt {
     background-position: right center;
     background-repeat: no-repeat; }
   ul li a, li.img a + a {
-    color: black;
+    color: #000;
     text-decoration: none;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -168,10 +168,10 @@ div#jqt {
       a {
         &.active {
           background: #194fdb image_url("jqtouch/apple/selection.png") 0 0 repeat-x;
-          color: white; }
+          color: #fff; }
         &.button {
           background-color: #194fdb;
-          color: white; } }
+          color: #fff; } }
       &.img a + {
         a {
           margin: -10px 10px -20px -5px;
@@ -195,7 +195,7 @@ div#jqt {
               margin-left: 0px !important;
               margin-bottom: 0; } } } }
       a + a {
-        color: black;
+        color: #000;
         font: 14px "Helvetica Neue", Helvetica;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -204,7 +204,7 @@ div#jqt {
         margin: 0;
         padding: 0;
         + a {
-          color: #666666;
+          color: #666;
           font: 13px "Helvetica Neue", Helvetica;
           margin: 0;
           text-overflow: ellipsis;
@@ -214,7 +214,7 @@ div#jqt {
           padding: 0; } }
       &.img a + {
         a + a + a, small + a + a + a {
-          color: #666666;
+          color: #666;
           font: 13px "Helvetica Neue", Helvetica;
           margin: 0;
           text-overflow: ellipsis;
@@ -229,11 +229,11 @@ div#jqt {
         + li.error {
           border-top: 0; } }
       &:hover {
-        background: white; } }
+        background: #fff; } }
     li {
       input {
         &[type="text"], &[type="password"], &[type="tel"], &[type="number"], &[type="search"], &[type="email"], &[type="url"] {
-          color: #777777;
+          color: #777;
           background: white url('data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==');
           border: 0;
           font: normal 17px "Helvetica Neue", Helvetica;
@@ -243,7 +243,7 @@ div#jqt {
           width: 100%;
           -webkit-appearance: textarea; } }
       textarea, select {
-        color: #777777;
+        color: #777;
         background: white url('data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==');
         border: 0;
         font: normal 17px "Helvetica Neue", Helvetica;
@@ -279,17 +279,17 @@ div#jqt {
         background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(139, 159, 171, 1)), to(rgba(181, 193, 201, 1)));
         border-bottom: 1px solid #b5c1c9;
         border-top: 1px solid #b5c1c9;
-        color: white;
+        color: #fff;
         font-size: 16px;
         margin: 1px 0 0 0;
         padding: 2px 10px;
         text-shadow: #636a6f 0 1px 0; } } }
   .edgetoedge {
     h4 {
-      color: white;
+      color: #fff;
       background: rgb(154, 159, 170) image_url("jqtouch/apple/listGroup.png") top left repeat-x;
       border-top: 1px solid rgb(165, 177, 186);
-      text-shadow: #666666 0 1px 0;
+      text-shadow: #666 0 1px 0;
       margin: 0;
       padding: 2px 10px; }
     margin: 0;
@@ -334,7 +334,7 @@ div#jqt {
       border-bottom: 1px solid rgb(113, 125, 133); } }
   ul li {
     small {
-      color: #336699;
+      color: #369;
       font: 17px "Helvetica Neue", Helvetica;
       text-align: right;
       text-overflow: ellipsis;
@@ -351,7 +351,7 @@ div#jqt {
       line-height: 13px !important;
       font-weight: bold;
       background: rgb(154, 159, 170);
-      color: white;
+      color: #fff;
       -webkit-border-radius: 11px;
       padding: 4px 10px 5px 10px;
       display: inline !important;
@@ -374,7 +374,7 @@ div#jqt {
     border-bottom: 1px solid rgb(156, 158, 165);
     background: url("../images/bgMetal.png") top left repeat-x;
     font-size: 26px;
-    text-shadow: white 0 1px 0;
+    text-shadow: #fff 0 1px 0;
     a {
       line-height: 26px;
       margin: 0;
@@ -387,7 +387,7 @@ div#jqt {
       display: block;
       font-size: 14px;
       font-style: normal;
-      color: #444444;
+      color: #444;
       width: 50%;
       line-height: 14px; }
     small {
@@ -427,14 +427,14 @@ div#jqt {
         strong {
           font-size: 14px;
           line-height: 18px;
-          text-shadow: white 0 1px 0; } }
+          text-shadow: #fff 0 1px 0; } }
       li {
         a {
           text-shadow: rgb(211, 211, 211) 0 1px 0; }
         &:nth-child(odd) a {
           text-shadow: rgb(191, 191, 191) 0 1px 0; }
         small {
-          color: #3c3c3c;
+          color: #3C3C3C;
           text-shadow: rgb(211, 211, 211) 0 1px 0;
           font-size: 13px;
           font-weight: bold;
@@ -510,8 +510,8 @@ div#jqt {
         padding: 11px 10px 14px 10px;
         -webkit-border-radius: 8px;
         &:hover {
-          color: white;
-          background: #3366cc; } } } }
+          color: #fff;
+          background: #36c; } } } }
   .toggle {
     width: 94px;
     position: relative;
@@ -532,7 +532,7 @@ div#jqt {
       border: 0;
       -webkit-appearance: textarea;
       background-color: transparent;
-      -webkit-transition: left 0.15s;
+      -webkit-transition: left .15s;
       position: absolute;
       top: 0;
       left: -55px; } }

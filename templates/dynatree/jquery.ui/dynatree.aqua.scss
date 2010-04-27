@@ -25,7 +25,7 @@ div.ui-dynatree-container {
     &:hover {
       text-decoration: underline; }
     &:focus {
-      background-color: #efebde; } } }
+      background-color: #EFEBDE; } } }
 
 .ui-dynatree-disabled div.ui-dynatree-container {
   opacity: 0.5;
@@ -85,13 +85,13 @@ span {
     padding-left: 3px;
     padding-right: 3px; }
   &.ui-dynatree-focused a:link {
-    background-color: #efebde; }
+    background-color: #EFEBDE; }
   &.ui-dynatree-selected a {
     color: green;
     font-style: italic; }
   &.ui-dynatree-active a {
-    border: 1px solid #99defd;
-    background-color: #d8f0fa; }
+    border: 1px solid #99DEFD;
+    background-color: #D8F0FA; }
   &.custom1 {
     a {
       background-color: #ffffbb;

@@ -9,16 +9,16 @@
     position: relative;
     left: 0px;
     top: 0px;
-    padding: 0em; }
+    padding: .0em; }
   .ui-jqgrid-titlebar {
-    padding: 0.3em 0.2em 0.2em 0.3em;
+    padding: .3em .2em .2em .3em;
     position: relative;
     border-left: 0px none;
     border-right: 0px none;
     border-top: 0px none; }
   .ui-jqgrid-title {
     float: left;
-    margin: 0.1em 0 0.2em; }
+    margin: .1em 0 .2em; }
   .ui-jqgrid-titlebar-close {
     position: absolute;
     top: 50%;
@@ -110,9 +110,7 @@
     border-top-style: ridge !important; } }
 
 tr.ui-search-toolbar {
-  input {
-    margin: 1px 0px 0px 0px; }
-  select {
+  input, select {
     margin: 1px 0px 0px 0px; } }
 
 /* body */
@@ -154,7 +152,7 @@ tr.ui-search-toolbar {
   .ui-jqgrid-resize-mark {
     width: 2px;
     left: 0;
-    background-color: #777777;
+    background-color: #777;
     cursor: e-resize;
     cursor: col-resize;
     position: absolute;
@@ -227,18 +225,18 @@ tr.ui-search-toolbar {
     padding: 1px; }
   .ui-pg-input {
     height: 13px;
-    font-size: 0.8em;
+    font-size: .8em;
     margin: 0em; }
   .ui-pg-selbox {
-    font-size: 0.8em;
+    font-size: .8em;
     line-height: 18px;
     display: block;
     height: 18px;
     margin: 0em; }
   .ui-separator {
     height: 18px;
-    border-left: 1px solid #cccccc;
-    border-right: 1px solid #cccccc;
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
     margin: 1px;
     float: right; }
   .ui-paging-info {
@@ -347,14 +345,14 @@ tr.ui-search-toolbar {
   display: none;
   width: 300px;
   position: absolute;
-  padding: 0.2em;
+  padding: .2em;
   font-size: 11px;
   overflow: visible;
   .ui-jqdialog-titlebar {
-    padding: 0.3em 0.2em;
+    padding: .3em .2em;
     position: relative; }
   .ui-jqdialog-title {
-    margin: 0.1em 0 0.2em; }
+    margin: .1em 0 .2em; }
   .ui-jqdialog-titlebar-close {
     position: absolute;
     top: 50%;
@@ -370,18 +368,18 @@ tr.ui-search-toolbar {
 
 .ui-jqdialog-content {
   border: 0;
-  padding: 0.3em 0.2em;
+  padding: .3em .2em;
   background: none;
   height: auto; }
 
 .ui-jqdialog {
   .ui-jqdialog-content {
     border: 0;
-    padding: 0.3em 0.2em;
+    padding: .3em .2em;
     background: none;
     height: auto; }
   .ui-jqconfirm {
-    padding: 0.4em 1em;
+    padding: .4em 1em;
     border-width: 3px;
     position: absolute;
     bottom: 10px;
@@ -446,7 +444,7 @@ tr.ui-search-toolbar {
 .fm-button {
   display: inline-block;
   margin: 0 4px 0 0;
-  padding: 0.4em 0.5em;
+  padding: .4em .5em;
   text-decoration: none !important;
   cursor: pointer;
   position: relative;
@@ -461,7 +459,7 @@ tr.ui-search-toolbar {
 
 .fm-button-icon-left .ui-icon {
   right: auto;
-  left: 0.2em;
+  left: .2em;
   margin-left: 0;
   position: absolute;
   top: 50%;
@@ -469,7 +467,7 @@ tr.ui-search-toolbar {
 
 .fm-button-icon-right .ui-icon {
   left: auto;
-  right: 0.2em;
+  right: .2em;
   margin-left: 0;
   position: absolute;
   top: 50%;
@@ -508,7 +506,7 @@ tr.ui-search-toolbar {
 /* moda dialog */
 
 .jqmOverlay {
-  background-color: black; }
+  background-color: #000; }
 
 * iframe.jqm {
   position: absolute;
@@ -529,7 +527,7 @@ tr.ui-search-toolbar {
 .ui-jqgrid {
   .ui-jqgrid-title-rtl {
     float: right;
-    margin: 0.1em 0 0.2em; }
+    margin: .1em 0 .2em; }
   .ui-jqgrid-hbox-rtl {
     float: right;
     padding-left: 20px; }
@@ -588,7 +586,7 @@ tr.ui-search-toolbar {
     font-size: 11px;
     list-style: none;
     a {
-      color: #999999;
+      color: #999;
       text-decoration: none;
       padding: 0;
       display: block;
@@ -607,7 +605,7 @@ tr.ui-search-toolbar {
     padding: 0;
     overflow: auto;
     overflow-x: hidden;
-    background: white;
+    background: #fff;
     margin: 0;
     list-style: none;
     border: 0;
@@ -627,7 +625,7 @@ tr.ui-search-toolbar {
     padding: 0;
     overflow: auto;
     overflow-x: hidden;
-    background: white;
+    background: #fff;
     margin: 0;
     list-style: none;
     border: 0;
