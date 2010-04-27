@@ -1,0 +1,59 @@
+/**
+ *
+ *
+ *
+ *
+ *
+ */
+ 
+.horizontal-scroll, 
+.horizontal-scroll .scroll-container, 
+.horizontal-slide, 
+.horizontal-slide .slide-container
+{
+    width: 320px;
+    height: 100%;
+    overflow: hidden;
+    padding: 0;
+}
+.landscape .horizontal-scroll, 
+.landscape .horizontal-scroll .scroll-container, 
+.landscape .horizontal-slide, 
+.landscape .horizontal-slide .slide-container
+{
+    width: 480px;
+}
+.profile .horizontal-scroll, 
+.profile .horizontal-scroll .scroll-container, 
+.profile .horizontal-slide, 
+.profile .horizontal-slide .slide-container
+{
+    width: 320px;
+}
+.vertical-scroll, .vertical-slide
+{
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    height: 370px;        
+}
+
+.landscape .vertical-scroll, 
+.landscape .vertical-slide
+{
+	height: 230px;
+}
+.vertical-scroll > div, 
+.vertical-slide > div
+{
+    margin: 0 auto;
+}
+.vertical-scroll.use-bottom-toolbar, .vertical-slide.use-bottom-toolbar
+{
+	height: 325px !important;
+}
+.landscape .vertical-scroll.use-bottom-toolbar, .landscape .vertical-slide.use-bottom-toolbar
+{
+	height: 185px !important;
+}
+

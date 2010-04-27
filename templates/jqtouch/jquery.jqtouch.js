@@ -705,6 +705,1194 @@
     }
 })(jQuery);
 
+/**
+ * 
+ * Find more about the Spinning Wheel function at
+ * http://cubiq.org/spinning-wheel-on-webkit-for-iphone-ipod-touch/11
+ *
+ * Copyright (c) 2009 Matteo Spinelli, http://cubiq.org/
+ * Released under MIT license
+ * http://cubiq.org/dropbox/mit-license.txt
+ * 
+ * Version 1.4 - Last updated: 2009.07.09
+ * 
+ */
+
+var SpinningWheel = {
+	cellHeight: 44,
+	friction: 0.003,
+	slotData: [],
+
+
+	/**
+	 *
+	 * Event handler
+	 *
+	 */
+
+	handleEvent: function (e) {
+		if (e.type == 'touchstart') {
+			this.lockScreen(e);
+			if (e.currentTarget.id == 'sw-cancel' || e.currentTarget.id == 'sw-done') {
+				this.tapDown(e);
+			} else if (e.currentTarget.id == 'sw-frame') {
+				this.scrollStart(e);
+			}
+		} else if (e.type == 'touchmove') {
+			this.lockScreen(e);
+			
+			if (e.currentTarget.id == 'sw-cancel' || e.currentTarget.id == 'sw-done') {
+				this.tapCancel(e);
+			} else if (e.currentTarget.id == 'sw-frame') {
+				this.scrollMove(e);
+			}
+		} else if (e.type == 'touchend') {
+			if (e.currentTarget.id == 'sw-cancel' || e.currentTarget.id == 'sw-done') {
+				this.tapUp(e);
+			} else if (e.currentTarget.id == 'sw-frame') {
+				this.scrollEnd(e);
+			}
+		} else if (e.type == 'webkitTransitionEnd') {
+			if (e.target.id == 'sw-wrapper') {
+			//	this.destroy();
+			} else {
+				this.backWithinBoundaries(e);
+			}
+		} else if (e.type == 'orientationchange') {
+			this.onOrientationChange(e);
+		} else if (e.type == 'scroll') {
+			this.onScroll(e);
+		}
+	},
+
+
+	/**
+	 *
+	 * Global events
+	 *
+	 */
+
+	onOrientationChange: function (e) {
+		window.scrollTo(0, 0);
+		this.swWrapper.style.top = window.innerHeight + window.pageYOffset + 'px';
+		this.calculateSlotsWidth();
+	},
+	
+	onScroll: function (e) {
+		this.swWrapper.style.top = window.innerHeight + window.pageYOffset + 'px';
+	},
+
+	lockScreen: function (e) {
+		e.preventDefault();
+		e.stopPropagation();
+	},
+
+
+	/**
+	 *
+	 * Initialization
+	 *
+	 */
+
+	reset: function () {
+		this.slotEl = [];
+
+		this.activeSlot = null;
+		
+		this.swWrapper = undefined;
+		this.swSlotWrapper = undefined;
+		this.swSlots = undefined;
+		this.swFrame = undefined;
+	},
+
+	calculateSlotsWidth: function () {
+		var div = this.swSlots.getElementsByTagName('div');
+		for (var i = 0; i < div.length; i += 1) {
+			this.slotEl[i].slotWidth = div[i].offsetWidth;
+		}
+	},
+
+	create: function () {
+		var i, l, out, ul, div;
+
+		this.reset();	// Initialize object variables
+
+		// Create the Spinning Wheel main wrapper
+		div = document.createElement('div');
+		div.id = 'sw-wrapper';
+		div.style.top = window.innerHeight + window.pageYOffset + 'px';		// Place the SW down the actual viewing screen
+		div.style.webkitTransitionProperty = '-webkit-transform';
+//		div.innerHTML = '<div id="sw-header"><div id="sw-cancel">Cancel</' + 'div><div id="sw-done">Done</' + 'div></' + 'div><div id="sw-slots-wrapper"><div id="sw-slots"></' + 'div></' + 'div><div id="sw-frame"></' + 'div>';
+		div.innerHTML = '<div id="sw-slots-wrapper"><div id="sw-slots"></' + 'div></' + 'div><div id="sw-frame"></' + 'div>';
+
+		document.body.appendChild(div);
+
+		this.swWrapper = div;													// The SW wrapper
+		this.swSlotWrapper = document.getElementById('sw-slots-wrapper');		// Slots visible area
+		this.swSlots = document.getElementById('sw-slots');						// Pseudo table element (inner wrapper)
+		this.swFrame = document.getElementById('sw-frame');						// The scrolling controller
+
+		// Create HTML slot elements
+		for (l = 0; l < this.slotData.length; l += 1) {
+			// Create the slot
+			ul = document.createElement('ul');
+			out = '';
+			for (i in this.slotData[l].values) {
+				out += '<li>' + this.slotData[l].values[i] + '<' + '/li>';
+			}
+			ul.innerHTML = out;
+
+			div = document.createElement('div');		// Create slot container
+			div.className = this.slotData[l].style;		// Add styles to the container
+			div.appendChild(ul);
+	
+			// Append the slot to the wrapper
+			this.swSlots.appendChild(div);
+			
+			ul.slotPosition = l;			// Save the slot position inside the wrapper
+			ul.slotYPosition = 0;
+			ul.slotWidth = 0;
+			ul.slotMaxScroll = this.swSlotWrapper.clientHeight - ul.clientHeight - 86;
+			ul.style.webkitTransitionTimingFunction = 'cubic-bezier(0, 0, 0.2, 1)';		// Add default transition
+			
+			this.slotEl.push(ul);			// Save the slot for later use
+			
+			// Place the slot to its default position (if other than 0)
+			if (this.slotData[l].defaultValue) {
+				this.scrollToValue(l, this.slotData[l].defaultValue);	
+			}
+		}
+		
+		this.calculateSlotsWidth();
+		
+		// Global events
+//		document.addEventListener('touchstart', this, false);			// Prevent page scrolling
+		document.addEventListener('touchmove', this, false);			// Prevent page scrolling
+		window.addEventListener('orientationchange', this, true);		// Optimize SW on orientation change
+		window.addEventListener('scroll', this, true);				// Reposition SW on page scroll
+
+		// Cancel/Done buttons events
+//		document.getElementById('sw-cancel').addEventListener('touchstart', this, false);
+		document.getElementById('sw-done').addEventListener('touchstart', this, false);
+
+		// Add scrolling to the slots
+		this.swFrame.addEventListener('touchstart', this, false);
+	},
+
+	open: function () {
+		this.create();
+
+		this.swWrapper.style.webkitTransitionTimingFunction = 'ease-out';
+		this.swWrapper.style.webkitTransitionDuration = '400ms';
+		this.swWrapper.style.webkitTransform = 'translate3d(0, -210px, 0)';
+	},
+	
+	
+	/**
+	 *
+	 * Unload
+	 *
+	 */
+
+	destroy: function () {
+		this.swWrapper.removeEventListener('webkitTransitionEnd', this, false);
+
+		this.swFrame.removeEventListener('touchstart', this, false);
+
+//		document.getElementById('sw-cancel').removeEventListener('touchstart', this, false);
+		document.getElementById('sw-done').removeEventListener('touchstart', this, false);
+
+//		document.removeEventListener('touchstart', this, false);
+		document.removeEventListener('touchmove', this, false);
+		window.removeEventListener('orientationchange', this, true);
+		window.removeEventListener('scroll', this, true);
+		
+		this.slotData = [];
+		this.cancelAction = function () {
+			return false;
+		};
+		
+		this.cancelDone = function () {
+			return true;
+		};
+		
+		this.reset();
+		
+		document.body.removeChild(document.getElementById('sw-wrapper'));
+	},
+	
+	close: function () {
+		this.swWrapper.style.webkitTransitionTimingFunction = 'ease-in';
+		this.swWrapper.style.webkitTransitionDuration = '400ms';
+		this.swWrapper.style.webkitTransform = 'translate3d(0, 0, 0)';
+		
+		this.swWrapper.addEventListener('webkitTransitionEnd', this, false);
+	},
+
+
+	/**
+	 *
+	 * Generic methods
+	 *
+	 */
+
+	addSlot: function (values, style, defaultValue) {
+		if (!style) {
+			style = '';
+		}
+		
+		style = style.split(' ');
+
+		for (var i = 0; i < style.length; i += 1) {
+			style[i] = 'sw-' + style[i];
+		}
+		
+		style = style.join(' ');
+
+		var obj = { 'values': values, 'style': style, 'defaultValue': defaultValue };
+		this.slotData.push(obj);
+	},
+
+	getSelectedValues: function () {
+		var index, count,
+		    i, l,
+			keys = [], values = [];
+
+		for (i in this.slotEl) {
+			// Remove any residual animation
+			this.slotEl[i].removeEventListener('webkitTransitionEnd', this, false);
+			this.slotEl[i].style.webkitTransitionDuration = '0';
+
+			if (this.slotEl[i].slotYPosition > 0) {
+				this.setPosition(i, 0);
+			} else if (this.slotEl[i].slotYPosition < this.slotEl[i].slotMaxScroll) {
+				this.setPosition(i, this.slotEl[i].slotMaxScroll);
+			}
+
+			index = -Math.round(this.slotEl[i].slotYPosition / this.cellHeight);
+
+			count = 0;
+			for (l in this.slotData[i].values) {
+				if (count == index) {
+					keys.push(l);
+					values.push(this.slotData[i].values[l]);
+					break;
+				}
+				
+				count += 1;
+			}
+		}
+
+		return { 'keys': keys, 'values': values };
+	},
+
+
+	/**
+	 *
+	 * Rolling slots
+	 *
+	 */
+
+	setPosition: function (slot, pos) {
+		this.slotEl[slot].slotYPosition = pos;
+		this.slotEl[slot].style.webkitTransform = 'translate3d(0, ' + pos + 'px, 0)';
+	},
+	
+	scrollStart: function (e) {
+		// Find the clicked slot
+		var xPos = e.targetTouches[0].clientX - this.swSlots.offsetLeft;	// Clicked position minus left offset (should be 11px)
+
+		// Find tapped slot
+		var slot = 0;
+		for (var i = 0; i < this.slotEl.length; i += 1) {
+			slot += this.slotEl[i].slotWidth;
+			
+			if (xPos < slot) {
+				this.activeSlot = i;
+				break;
+			}
+		}
+
+		// If slot is readonly do nothing
+		if (this.slotData[this.activeSlot].style.match('readonly')) {
+			this.swFrame.removeEventListener('touchmove', this, false);
+			this.swFrame.removeEventListener('touchend', this, false);
+			return false;
+		}
+
+		this.slotEl[this.activeSlot].removeEventListener('webkitTransitionEnd', this, false);	// Remove transition event (if any)
+		this.slotEl[this.activeSlot].style.webkitTransitionDuration = '0';		// Remove any residual transition
+		
+		// Stop and hold slot position
+		var theTransform = window.getComputedStyle(this.slotEl[this.activeSlot]).webkitTransform;
+		theTransform = new WebKitCSSMatrix(theTransform).m42;
+		if (theTransform != this.slotEl[this.activeSlot].slotYPosition) {
+			this.setPosition(this.activeSlot, theTransform);
+		}
+		
+		this.startY = e.targetTouches[0].clientY;
+		this.scrollStartY = this.slotEl[this.activeSlot].slotYPosition;
+		this.scrollStartTime = e.timeStamp;
+
+		this.swFrame.addEventListener('touchmove', this, false);
+		this.swFrame.addEventListener('touchend', this, false);
+		
+		return true;
+	},
+
+	scrollMove: function (e) {
+		var topDelta = e.targetTouches[0].clientY - this.startY;
+
+		if (this.slotEl[this.activeSlot].slotYPosition > 0 || this.slotEl[this.activeSlot].slotYPosition < this.slotEl[this.activeSlot].slotMaxScroll) {
+			topDelta /= 2;
+		}
+		
+		this.setPosition(this.activeSlot, this.slotEl[this.activeSlot].slotYPosition + topDelta);
+		this.startY = e.targetTouches[0].clientY;
+
+		// Prevent slingshot effect
+		if (e.timeStamp - this.scrollStartTime > 80) {
+			this.scrollStartY = this.slotEl[this.activeSlot].slotYPosition;
+			this.scrollStartTime = e.timeStamp;
+		}
+	},
+	
+	scrollEnd: function (e) {
+		this.swFrame.removeEventListener('touchmove', this, false);
+		this.swFrame.removeEventListener('touchend', this, false);
+
+		// If we are outside of the boundaries, let's go back to the sheepfold
+		if (this.slotEl[this.activeSlot].slotYPosition > 0 || this.slotEl[this.activeSlot].slotYPosition < this.slotEl[this.activeSlot].slotMaxScroll) {
+			this.scrollTo(this.activeSlot, this.slotEl[this.activeSlot].slotYPosition > 0 ? 0 : this.slotEl[this.activeSlot].slotMaxScroll);
+			return false;
+		}
+
+		// Lame formula to calculate a fake deceleration
+		var scrollDistance = this.slotEl[this.activeSlot].slotYPosition - this.scrollStartY;
+
+		// The drag session was too short
+		if (scrollDistance < this.cellHeight / 1.5 && scrollDistance > -this.cellHeight / 1.5) {
+			if (this.slotEl[this.activeSlot].slotYPosition % this.cellHeight) {
+				this.scrollTo(this.activeSlot, Math.round(this.slotEl[this.activeSlot].slotYPosition / this.cellHeight) * this.cellHeight, '100ms');
+			}
+
+			return false;
+		}
+
+		var scrollDuration = e.timeStamp - this.scrollStartTime;
+
+		var newDuration = (2 * scrollDistance / scrollDuration) / this.friction;
+		var newScrollDistance = (this.friction / 2) * (newDuration * newDuration);
+		
+		if (newDuration < 0) {
+			newDuration = -newDuration;
+			newScrollDistance = -newScrollDistance;
+		}
+
+		var newPosition = this.slotEl[this.activeSlot].slotYPosition + newScrollDistance;
+
+		if (newPosition > 0) {
+			// Prevent the slot to be dragged outside the visible area (top margin)
+			newPosition /= 2;
+			newDuration /= 3;
+
+			if (newPosition > this.swSlotWrapper.clientHeight / 4) {
+				newPosition = this.swSlotWrapper.clientHeight / 4;
+			}
+		} else if (newPosition < this.slotEl[this.activeSlot].slotMaxScroll) {
+			// Prevent the slot to be dragged outside the visible area (bottom margin)
+			newPosition = (newPosition - this.slotEl[this.activeSlot].slotMaxScroll) / 2 + this.slotEl[this.activeSlot].slotMaxScroll;
+			newDuration /= 3;
+			
+			if (newPosition < this.slotEl[this.activeSlot].slotMaxScroll - this.swSlotWrapper.clientHeight / 4) {
+				newPosition = this.slotEl[this.activeSlot].slotMaxScroll - this.swSlotWrapper.clientHeight / 4;
+			}
+		} else {
+			newPosition = Math.round(newPosition / this.cellHeight) * this.cellHeight;
+		}
+
+		this.scrollTo(this.activeSlot, Math.round(newPosition), Math.round(newDuration) + 'ms');
+ 
+		return true;
+	},
+
+	scrollTo: function (slotNum, dest, runtime) {
+		this.slotEl[slotNum].style.webkitTransitionDuration = runtime ? runtime : '100ms';
+		this.setPosition(slotNum, dest ? dest : 0);
+
+		// If we are outside of the boundaries go back to the sheepfold
+		if (this.slotEl[slotNum].slotYPosition > 0 || this.slotEl[slotNum].slotYPosition < this.slotEl[slotNum].slotMaxScroll) {
+			this.slotEl[slotNum].addEventListener('webkitTransitionEnd', this, false);
+		}
+	},
+	
+	scrollToValue: function (slot, value) {
+		var yPos, count, i;
+
+		this.slotEl[slot].removeEventListener('webkitTransitionEnd', this, false);
+		this.slotEl[slot].style.webkitTransitionDuration = '0';
+		
+		count = 0;
+		for (i in this.slotData[slot].values) {
+			if (i == value) {
+				yPos = count * this.cellHeight;
+				this.setPosition(slot, yPos);
+				break;
+			}
+			
+			count -= 1;
+		}
+	},
+	
+	backWithinBoundaries: function (e) {
+		e.target.removeEventListener('webkitTransitionEnd', this, false);
+
+		this.scrollTo(e.target.slotPosition, e.target.slotYPosition > 0 ? 0 : e.target.slotMaxScroll, '150ms');
+		return false;
+	},
+
+
+	/**
+	 *
+	 * Buttons
+	 *
+	 */
+
+	tapDown: function (e) {
+		e.currentTarget.addEventListener('touchmove', this, false);
+		e.currentTarget.addEventListener('touchend', this, false);
+		e.currentTarget.className = 'sw-pressed';
+	},
+
+	tapCancel: function (e) {
+		e.currentTarget.removeEventListener('touchmove', this, false);
+		e.currentTarget.removeEventListener('touchend', this, false);
+		e.currentTarget.className = '';
+	},
+	
+	tapUp: function (e) {
+		this.tapCancel(e);
+
+		if (e.currentTarget.id == 'sw-cancel') {
+			this.cancelAction();
+		} else {
+			this.doneAction();
+		}
+		
+//		this.close(); //not needed because we control this via the feedback from the query
+	},
+
+	setCancelAction: function (action) {
+		this.cancelAction = action;
+	},
+
+	setDoneAction: function (action) {
+		this.doneAction = action;
+	},
+	
+	cancelAction: function () {
+		return false;
+	},
+
+	cancelDone: function () {
+		return true;
+	}
+};
+
+/*
+    Copyright (C) 2008 Charles Ying. All Rights Reserved.
+   
+    This distribution is released under the BSD license.
+
+    http://css-vfx.googlecode.com/
+   
+    See the README for documentation and license.
+*/
+
+(function () {  // Module pattern
+
+var global = this;
+
+// CREATE ARRAYS FOR LINKS AND CAPTIONS
+var imagesArray = Array();
+
+var captionsArray = Array();
+//	["This is a caption lorem ipsum"],
+//	["Here's one that we'll<br>make into two lines"], 
+//	["&quot;Quotes&quot; and &copy;s and &trade;s, oh my!"], 
+//	["Blah Blah Blooey"]);
+
+/*
+    Utilities (avoid jQuery dependencies)
+*/
+
+function utils_extend(obj, dict)
+{
+    for (var key in dict)
+    {
+        obj[key] = dict[key];
+    }
+}
+
+function utils_setsize(elem, w, h)
+{
+    elem.style.width = w.toString() + "px";
+    elem.style.height = h.toString() + "px";
+}
+
+function utils_setxy(elem, x, y)
+{
+    elem.style.left = Math.round(x).toString() + "px";
+    elem.style.top = Math.round(y).toString() + "px";
+}
+
+/*
+    TrayController is a horizontal touch event controller that tracks cumulative offsets and passes events to a delegate.
+*/
+
+TrayController = function ()
+{
+    return this;
+}
+
+TrayController.prototype.init = function (elem)
+{
+    this.currentX = 0;
+    this.elem = elem;
+}
+
+TrayController.prototype.touchstart = function (event)
+{
+    this.startX = event.touches[0].pageX - this.currentX;
+    this.touchMoved = false;
+
+    window.addEventListener("touchmove", this, true);
+    window.addEventListener("touchend", this, true);
+
+    this.elem.style.webkitTransitionDuration = "0s";
+}
+
+TrayController.prototype.touchmove = function (e)
+{
+    this.touchMoved = true;
+    this.lastX = this.currentX;
+    this.lastMoveTime = new Date();
+    this.currentX = event.touches[0].pageX - this.startX;
+    this.delegate.update(this.currentX);
+}
+
+TrayController.prototype.touchend = function (e)
+{
+    window.removeEventListener("touchmove", this, true);
+    window.removeEventListener("touchend", this, true);
+
+    this.elem.style.webkitTransitionDuration = "0.4s";
+
+    if (this.touchMoved)
+    {
+        /* Approximate some inertia -- the transition function takes care of the decay over 0.4s for us, but we need to amplify the last movement */
+        var delta = this.currentX - this.lastX;
+        var dt = (new Date()) - this.lastMoveTime + 1;
+        /* dx * 400 / dt */
+
+        this.currentX = this.currentX + delta * 200 / dt;
+        this.delegate.updateTouchEnd(this);
+    }
+    else
+    {
+        this.delegate.clicked(this.currentX);
+    }
+}
+
+TrayController.prototype.handleEvent = function (event)
+{
+    this[event.type](event);
+    event.preventDefault();
+}
+
+/*
+    These variables define how the zflow presentation is made.
+*/
+
+const CSIZE = 150;
+const CGAP = CSIZE / 2;
+
+const FLOW_ANGLE = 70;
+const FLOW_THRESHOLD = CGAP / 2;
+const FLOW_ZFOCUS = CSIZE;
+const FLOW_XGAP = CSIZE / 3;
+
+const T_NEG_ANGLE = "rotateY(" + (- FLOW_ANGLE) + "deg)";
+const T_ANGLE = "rotateY(" + FLOW_ANGLE + "deg)";
+const T_ZFOCUS = "translateZ(" + FLOW_ZFOCUS + "px)";
+
+FlowDelegate = function ()
+{
+    this.cells = new Array();
+    this.transforms = new Array();
+}
+
+FlowDelegate.prototype.init = function (elem)
+{
+    this.elem = elem;
+}
+
+FlowDelegate.prototype.updateTouchEnd = function (controller)
+{
+    this.lastFocus = undefined;
+
+    // Snap to nearest position
+    var i = this.getFocusedCell(controller.currentX);
+
+    controller.currentX = - i * CGAP;
+    this.update(controller.currentX);
+}
+
+FlowDelegate.prototype.clicked = function (currentX)
+{
+    var i = - Math.round(currentX / CGAP);
+    var cell = this.cells[i];
+	galleryCell = i; //save the key for use in show_image div
+    // ADDED window.open() - "_self" CAN BE CHANGED TO "_blank" 0R AN EXPLICITLY NAMED WINDOW
+	//window.open(imagesArray[i],"_blank");
+
+}
+
+FlowDelegate.prototype.getFocusedCell = function (currentX)
+{
+    // Snap to nearest position
+    var i = - Math.round(currentX / CGAP);
+
+    // Clamp to cells array boundary
+    return Math.min(Math.max(i, 0), this.cells.length - 1);
+}
+
+FlowDelegate.prototype.transformForCell = function (cell, i, offset)
+{
+    /*
+        This function needs to be fast, so we avoid function calls, divides, Math.round,
+        and precalculate any invariants we can.
+    */
+    var x = (i * CGAP);
+    var ix = x + offset;
+
+    if ((ix < FLOW_THRESHOLD) && (ix >= -FLOW_THRESHOLD))
+    {
+        // yangle = 0, zpos = FLOW_ZFOCUS
+        return T_ZFOCUS + " translateX(" + x + "px)";
+    }
+    else if (ix > 0)
+    {
+        // yangle = -FLOW_ANGLE, x + FLOW_XGAP
+        return "translateX(" + (x + FLOW_XGAP) + "px) " + T_NEG_ANGLE;
+    }
+    else
+    {
+        // yangle = FLOW_ANGLE, x - FLOW_XGAP
+        return "translateX(" + (x - FLOW_XGAP) + "px) " + T_ANGLE;
+    }
+}
+
+FlowDelegate.prototype.setTransformForCell = function (cell, i, transform)
+{
+    if (this.transforms[i] != transform)
+    {
+        cell.style.webkitTransform = transform;
+        this.transforms[i] = transform;
+    }
+}
+
+
+FlowDelegate.prototype.update = function (currentX)
+{
+    this.elem.style.webkitTransform = "translateX(" + (currentX) + "px)";
+
+    /*
+        It would be nice if we only updated dirty cells... for now, we use a cache
+    */
+    for (var i in this.cells)
+    {
+        var cell = this.cells[i];
+        this.setTransformForCell(cell, i, this.transformForCell(cell, i, currentX));
+        i += 1;
+    }
+}
+var controller = new TrayController();
+var delegate = new FlowDelegate();
+
+global.zflow = function (images, selector)
+{
+    var tray = document.querySelector(selector);
+    controller.init(tray);
+    delegate.init(tray);
+    controller.delegate = delegate;
+
+    // WE NO LONGER NEED THIS VARIABLE
+    // var imagesLeft = images.length;
+   
+    var cellCSS = {
+        top: Math.round(-CSIZE * 0.65) + "px",
+        left: Math.round(-CSIZE / 2) + "px",
+        width: CSIZE + "px",
+        height: Math.round(CSIZE * 1.5) + "px",
+        opacity: 0,
+    }
+
+    var i = 0;
+	
+	function makeCell()
+	{
+
+		var cell = document.createElement("div");
+        var image = document.createElement("img");
+		var canvas = document.createElement("canvas");
+		var link = document.createElement("a");
+        // CREATE caption element
+        var caption = document.createElement("caption");
+
+        cell.className = "cell";
+		cell.appendChild(link);
+        link.appendChild(image);
+        cell.appendChild(canvas);
+        
+        // ADD caption to cell
+        cell.appendChild(caption);
+
+        // ASSIGN SRC DIRECTLY FROM THE IMAGES ARRAY SINCE IT'S NO LONGER PASSED AS A PARAMETER OF THE FUNCTION
+        image.src = images[i];
+		imagesArray[i] = images[i]; 
+		link.href = "show_image.php?fName="+images[i];
+		link.className = "slide-right";
+        global.afnc = function () {
+            var iwidth = image.width;
+            var iheight = image.height;
+           
+            var ratio = Math.min(CSIZE / iheight, CSIZE / iwidth);
+
+            iwidth *= ratio;
+            iheight *= ratio;
+
+            utils_setsize(image, iwidth, iheight);
+
+            utils_extend(cell.style, cellCSS);
+
+            utils_setxy(image, (CSIZE - iwidth) / 2, CSIZE - iheight);
+            utils_setxy(canvas, (CSIZE - iwidth) / 2, CSIZE);
+            
+            // POSITION caption - this can be tweaked to place it where you like
+            utils_setxy(caption, (CSIZE - iwidth) / 2, CSIZE + 10);
+
+            reflect(image, iwidth, iheight, canvas);
+            
+            // CALL FUNCTION writeCaption()
+			var $tCaption = images[i].match(/(.*)[\/\\]([^\/\\]+)\.\w+$/)[2];  //strip the path
+			$tCaption = $tCaption.replace(/_/g, ' '); //replace the _ with blank
+			$tCaption = $tCaption.replace( /(^|\s)([a-z])/g , function(m,p1,p2){ return p1+p2.toUpperCase(); } ); //cap first word
+			captionsArray[i] = $tCaption; //store the capation in the array
+            writeCaption(caption, iwidth, i);
+
+            delegate.setTransformForCell(cell, delegate.cells.length, delegate.transformForCell(cell, delegate.cells.length, controller.currentX));
+            delegate.cells.push(cell);
+
+            // Start at 0 opacity
+            tray.appendChild(cell);
+            // Set to 1 to fade element in.
+            cell.style.opacity = 1.0;
+
+            // THIS MAKES THE NEXT CELL IF NECESSARY
+            if (i < (images.length - 1))
+            {
+            	i++;
+            	makeCell();
+            }
+            else
+            {
+                window.setTimeout( function() { window.scrollTo(0, 0); }, 100 );
+				galleryInit = 1;
+            }
+        } // end afnc
+
+        image.addEventListener("load", afnc, true );
+
+	};
+
+
+	// INITIATE CELL CREATION
+	makeCell();
+    tray.addEventListener('touchstart', controller, false);		
+}
+
+global.zflowCleanup = function (selector)
+{
+    var tray = document.querySelector(selector);
+	if (tray) {
+		if (tray.childNodes.length > 0) {
+			delegate.transforms.length = 0;
+			delegate.cells.length = 0;
+			while (tray.hasChildNodes())  {    
+				var image = tray.childNodes[0].childNodes[0].childNodes[0];
+				image.removeEventListener("load", afnc, true); //remove the listener first
+				tray.removeChild(tray.childNodes[0]);
+			}
+			var div = document.getElementById('gallery');
+			if (div) {
+				div.parentNode.removeChild(div);  //take the gallery out so it will reload
+				galleryInit = 0; //reset the init flag
+				galleryCell = 0; //reset the image flag
+			}
+		}
+	}
+}
+
+global.zflowGetImageSource = function (selector, index)
+{
+    var tray = document.querySelector(selector);
+	var imageSrc= "";
+	if (tray) {
+		if (tray.childNodes.length > 0) {
+			while (tray.hasChildNodes())  {    
+				imageSrc = tray.childNodes[0].childNodes[0].childNodes[index].src;
+			}
+		}
+	}
+	return imageSrc;
+}
+
+// FUNCTION TO SET WIDTH AND WRITE CAPTION
+function writeCaption(caption, iwidth, i) {
+	caption.width = iwidth;
+	caption.innerHTML = captionsArray[i];
+}
+
+function reflect(image, iwidth, iheight, canvas)
+{
+    canvas.width = iwidth;
+    canvas.height = iheight / 2;
+
+    var ctx = canvas.getContext("2d");
+
+    ctx.save();
+
+    ctx.translate(0, iheight - 1);
+    ctx.scale(1, -1);
+    ctx.drawImage(image, 0, 0, iwidth, iheight);
+
+    ctx.restore();
+
+    ctx.globalCompositeOperation = "destination-out";
+
+    var gradient = ctx.createLinearGradient(0, 0, 0, iheight / 2);
+    gradient.addColorStop(1, "rgba(255, 255, 255, 1.0)");
+    gradient.addColorStop(0, "rgba(255, 255, 255, 0.5)");
+   
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, iwidth, iheight / 2);
+}
+
+})();
+
+
+
+/*
+	#####################################################################
+	
+	jQTouch iCal, 1.0 alpha
+	@created by 
+		Bruno Alexandre, 26.03.2010
+		twitter.com/balexandre
+		balexandre.com
+		bruno.in.dk [at] gmail.com
+	
+	#####################################################################
+	
+	This is a iCal a-like interface to serve as a calendar/diary, use
+		it at your own will.
+	
+	- To load calendar change the "month.php" to f.ex. "month.php" and
+		create your own calendar, you have the expected markup on the
+		htm file.
+	- To load events change the "events.htm" to f.ex. "events.php"and
+		create your own calendar, you have the expected markup on the
+		htm file.
+	- It handles automatically:
+		Today's date
+		Next and previous month's
+		Loading of events if selected/jumped date contains events
+	
+	- Remember to remove the alert calls...
+	
+	######################################################################
+*/
+
+// Global variables
+var now = new Date();
+
+// Loads the calendar for the passed Month and Year
+function getCalendar(date) {
+	var d = date.getDate();
+	var m = date.getMonth() + 1; // zero index based
+	var y = date.getFullYear();
+				
+	$.get('month.php', { month: m, year: y }, function(data) {
+		// clear existing calendar
+		$('#ical').empty();
+		// append retrieved calendar markup
+		$(data).appendTo('#ical');
+		// set all clicks (don't use live or tap to avoid bugs)
+		setBindings();
+		// today if exists
+		setToday();
+		// verify if selected date has events, if it has, load them
+		setSelectedAndLoadEvents(date);
+		
+		//alert('Calendar loaded with: ' + d + '.' + m + '.' + y);
+	});
+}
+function getEvents(date) {
+	var d = date.getDate();
+	var m = date.getMonth() + 1; // zero index based
+	var y = date.getFullYear();
+	
+	$.get('events.htm', { day: d, month: m, year: y }, function(data) {
+		// clear existing events
+		$('#ical .events').empty();
+		// append retrieved events markup
+		$(data).appendTo('#ical .events');
+	});
+}
+// no events
+function getNoEvents() {
+	var noEvents = "<li class='no-event'>No Events</li>";
+	$('#ical .events').empty();
+	$(noEvents).appendTo('#ical .events');
+}
+
+// Set's all clicks
+function setBindings() {
+	// calendar days
+	$('#ical td').bind("click", function() {
+		var btnClass = $(this).attr('class');
+		var clickedDate = getClickedDate($(this));
+		
+		// where's the today? let's remove it first
+		RemoveSelectedCell();
+		
+		setToday();
+		
+		if( btnClass.indexOf('date_has_event') != -1 || btnClass.indexOf('today_date_has_event') != -1 )
+		{
+			// Event Date
+			$(this).attr('class', 'selected_date_has_event');
+			getEvents(clickedDate);
+		}
+		if( btnClass == '' || btnClass.indexOf('today') != -1)
+		{
+			// Non Event Date
+			$(this).attr('class', 'selected');
+			getNoEvents();
+		}
+		
+		if( btnClass.indexOf('prevmonth') != -1 || btnClass.indexOf('nextmonth') != -1 ) {
+			getCalendar(clickedDate);
+		}
+	});
+	// bottom bar - today
+	$("#ical .bottom-bar .bottom-bar-today").bind("click", function(){
+		getCalendar(now);
+	});
+	// load previous Month
+	$("#ical .goto-prevmonth").bind("click", function() {
+		loadPrevNextMonth(-1);
+	});
+	// load next Month
+	$("#ical .goto-nextmonth").bind("click", function() {
+		loadPrevNextMonth(1);
+	});
+}
+// Resets today's/chosen day
+function RemoveSelectedCell() {
+	$('#ical .selected_date_has_event').removeClass('selected_date_has_event');
+	$('#ical .selected').removeClass('selected');
+}
+// get clicked Date
+function getClickedDate(cell) {
+	var date = $(cell).find('input').val(); 
+
+	var clickedDate = getDateFromHiddenField(date);
+	return clickedDate;
+}
+// Load the previous
+function loadPrevNextMonth(num) {
+	var day = $('#ical .selected').text();
+	if(day == "") day = $('#ical .selected_date_has_event').text();
+	
+	var mmm = parseInt($('#ical > #month').val());
+	var yyy = $('#ical > #year').val();
+	
+	var currentDay = new Date(yyy, mmm - 1, day);
+	if(num == 1)
+		currentDay.nextMonth();
+	else
+		currentDay.prevMonth();
+	
+	getCalendar(currentDay);
+}
+// Set Today's date
+function setToday() {
+	$("#ical :hidden").each(function(index){
+	    var dt = getDateFromHiddenField($(this).val());
+	
+		if(!isNaN(dt)) {
+		    if( now.getDate() == dt.getDate()
+				&& now.getMonth() == dt.getMonth()
+				&& now.getFullYear() == dt.getFullYear()) {
+		        
+		        var td = $(this).closest('td');
+		        
+		        if($(td).attr('class') == 'date_has_event')
+		        	$(td).attr('class', 'today_date_has_event');
+		        else
+		        	$(td).attr('class', 'today');
+			}
+		}
+	});
+}
+
+function getDateFromHiddenField(date) {
+	var a = date.split('-');
+	return new Date(a[2],a[1]-1,a[0]);
+}
+// Set Selected date and Load events if exists
+function setSelectedAndLoadEvents(date) {
+	RemoveSelectedCell();
+	
+	$('#ical td').each( function(index) {
+		var css = $(this).attr('class');
+		var clickedDate = getClickedDate($(this));		
+		
+		// set todays date
+		if((css != "prevmonth" && css != "nextmonth") 
+		    && date.getDate() == clickedDate.getDate()
+		    && date.getMonth() == clickedDate.getMonth()
+		    && date.getFullYear() == clickedDate.getFullYear()) {
+			
+			if( css == "date_has_event") {
+				$(this).attr('class', 'selected_date_has_event');
+				getEvents(date);
+			}
+			else {
+				$(this).attr('class', 'selected');
+				getNoEvents();
+			}
+		}
+	});
+	
+	setToday();
+}
+
+/******************* Utilities *******************/
+
+// http://www.webtoolkit.info/javascript-trim.html
+function trim(str, chars) {
+	return ltrim(rtrim(str, chars), chars);
+}
+ 
+function ltrim(str, chars) {
+	chars = chars || "\\s";
+	return str.replace(new RegExp("^[" + chars + "]+", "g"), "");
+}
+ 
+function rtrim(str, chars) {
+	chars = chars || "\\s";
+	return str.replace(new RegExp("[" + chars + "]+$", "g"), "");
+}
+
+// http://www.ozzu.com/programming-forum/javascript-dateadd-function-t47986.html
+function dateAddExtention(p_Interval, p_Number){
+    var thing = new String();
+        
+    //in the spirt of VB we'll make this function non-case sensitive
+    //and convert the charcters for the coder.
+    p_Interval = p_Interval.toLowerCase();
+    
+    if(isNaN(p_Number)){
+        //Only accpets numbers 
+        //throws an error so that the coder can see why he effed up    
+        throw "The second parameter must be a number. \n You passed: " + p_Number;
+        return false;
+    }
+    
+    p_Number = new Number(p_Number);
+    switch(p_Interval.toLowerCase()){
+        case "yyyy": {// year
+            this.setFullYear(this.getFullYear() + p_Number);
+            break;
+        }
+        case "q": {        // quarter
+            this.setMonth(this.getMonth() + (p_Number*3));
+            break;
+        }
+        case "m": {        // month
+            this.setMonth(this.getMonth() + p_Number);
+            break;
+        }
+        case "y":        // day of year
+        case "d":        // day
+        case "w": {      // weekday
+            this.setDate(this.getDate() + p_Number);
+            break;
+        }
+        case "ww": {    // week of year
+            this.setDate(this.getDate() + (p_Number*7));
+            break;
+        }
+        case "h": {        // hour
+            this.setHours(this.getHours() + p_Number);
+            break;
+        }
+        case "n": {        // minute
+            this.setMinutes(this.getMinutes() + p_Number);
+            break;
+        }
+        case "s": {        // second
+            this.setSeconds(this.getSeconds() + p_Number);
+            break;
+        }
+        case "ms": {        // second
+            this.setMilliseconds(this.getMilliseconds() + p_Number);
+            break;
+        }
+        default: {
+        
+            //throws an error so that the coder can see why he effed up and
+            //a list of elegible letters.
+            throw    "The first parameter must be a string from this list: \n" +
+                    "yyyy, q, m, y, d, w, ww, h, n, s, or ms. You passed: " + p_Interval;
+            return false;
+        }
+    }
+    return this;
+}
+Date.prototype.dateAdd = dateAddExtention;
+
+// http://dansnetwork.com/2008/09/18/javascript-date-object-adding-and-subtracting-months/
+function prevMonth() {
+	var thisMonth = this.getMonth();
+	this.setMonth(thisMonth-1);
+	if(this.getMonth() != thisMonth-1 && (this.getMonth() != 11 || (thisMonth == 11 && this.getDate() == 1)))
+	this.setDate(0);
+}
+function nextMonth() {
+	var thisMonth = this.getMonth();
+	this.setMonth(thisMonth+1);
+	if(this.getMonth() != thisMonth+1 && this.getMonth() != 0)
+	this.setDate(0);
+}
+
+Date.prototype.nextMonth = nextMonth;
+Date.prototype.prevMonth = prevMonth;
+
+
 /*
 
             _/    _/_/    _/_/_/_/_/                              _/       
@@ -1023,5 +2211,1124 @@
                 autoCheckForUpdates: autoCheckForUpdates
             }
         });
+    }
+})(jQuery);
+
+/**
+ * 
+ * Add support for scaling using jQTouch
+ *
+ * Copyright (c) 2009 Sam Shull <http://www.google.com/profiles/brickysam26>
+ * Released under MIT license
+ *
+ * <code>
+ *
+ *		<div>
+ *			<img src="http://rlv.zcache.com/css_is_awesome_mug-p1687164350719819282objs_210.jpg" alt="CSS Is Awesome" class="scalable"/>
+ *		</div>
+ *
+ * </code>
+ *
+ * Known issues:
+ *		- using a link that is a slideSelector (ie: body > * > ul li a) on the same psuedo-page causes problems during scaling
+ *
+ * 
+ * $Revision$
+ * $Date$
+ * $LastChangedBy$
+ * 
+ */
+
+(function($)
+{
+            
+	$.fn.scalable = function (options)
+	{
+		return this.each(function ()
+		{
+			new iScale( this, options );
+		});
+	};
+
+	if ($.jQTouch)
+    {
+        $.jQTouch.addExtension(function (jQT){
+			
+			function binder (e, info)
+			{
+				info.page.find('.scalable').scalable();
+			}
+			
+			$(document.body)
+				.bind('pageInserted', binder);
+				
+			$(function()
+			{
+				$('body > *')
+					.each(function()
+					{
+						binder({}, {page: $(this)});
+					});
+			});
+			
+			return {};
+        });
+		
+		
+		function iScale (el, options)
+		{
+			var that = this;
+			
+			this.numberOfTouches = 2;
+			
+			this.element = el;
+			this.scale(1);
+			this.refresh();
+			
+			this.scaleLessThanOne = false;
+			
+			el.style.webkitTransitionTimingFunction = 'cubic-bezier(0, 0, 0.2, 1)';
+		
+			el.addEventListener('touchstart', this, false);
+			//moved up here because I didnt see any reason to add and remove them 
+			el.addEventListener('touchmove', this, false);
+			el.addEventListener('touchend', this, false);
+			
+			window.addEventListener('unload', function ()
+			{
+				el.removeEventListener('touchstart', that, false);
+				el.removeEventListener('touchmove', that, false);
+				el.removeEventListener('touchend', that, false);
+				
+				this.removeEventListener('unload', arguments.callee, false);
+			}, false);
+			
+			if (options)
+			{
+				$.extend(this, options);	
+			}
+		}
+		
+		iScale.prototype = {
+			handleEvent: function(e) {
+				switch(e.type) {
+					case 'touchstart': return this.onTouchStart(e); break;
+					case 'touchmove': return this.onTouchMove(e); break;
+					case 'touchend': return this.onTouchEnd(e); break;
+				}
+			},
+			
+			scale: function (scale) {
+				if (scale !== undefined)
+				{
+					this._scale = scale;
+					this.element.style.webkitTransform = 'scale('+scale+')';
+					return;
+				}
+				
+				return this._scale;
+			},
+			
+			refresh: function() {
+				this.element.style.webkitTransitionDuration = '0';
+			},
+			
+			onTouchStart: function(e) {
+				if ( e.targetTouches.length != this.numberOfTouches )
+				{
+					return;	
+				}
+				
+				this.refresh();
+				
+				this.moved = false;
+				
+				this.startDistance = Math.sqrt(
+											   	Math.pow((e.targetTouches[1].clientX - e.targetTouches[0].clientX), 2)
+												+ Math.pow((e.targetTouches[1].clientX - e.targetTouches[0].clientX), 2)
+											);
+				
+				return false;
+			},
+			
+			onTouchMove: function(e) {
+				if( e.targetTouches.length != this.numberOfTouches )
+					return;
+				
+				e.preventDefault();
+				
+				this.moved = true;
+				
+				this.refresh();
+				
+				var newDistance = Math.sqrt(
+											   	Math.pow((e.targetTouches[1].clientX - e.targetTouches[0].clientX), 2)
+												+ Math.pow((e.targetTouches[1].clientY - e.targetTouches[0].clientY), 2)
+											),
+					difference = newDistance - this.startDistance,
+					percentChange = (difference / this.startDistance) / 2;
+				
+				this.scale(this.scale() + (this.scale() * percentChange));
+				
+				this.startDistance = newDistance;
+				
+				return false;
+			},
+			
+			onTouchEnd: function(e) {
+				var theTarget,theEvent;
+				
+				if( !this.moved ) {
+					theTarget  = e.target;
+					if(theTarget.nodeType == 3) theTarget = theTarget.parentNode;
+					theEvent = document.createEvent("MouseEvents");
+					theEvent.initEvent('click', true, true);
+					theTarget.dispatchEvent(theEvent);
+					return;
+				}
+				
+				e.preventDefault();
+				e.stopPropagation();
+				
+				if (!this.scaleLessThanOne && this.scale() < 1)
+				{
+					this.element.style.webkitTransitionDuration = '200ms';
+					this.scale(1);
+				}
+				
+				return false;
+			},
+			
+			scaleTo: function(dest, runtime) {
+				this.element.style.webkitTransitionDuration = runtime ? runtime : '300ms';
+				this.scale(dest ? dest : 0);
+			}
+		};
+    }
+})(jQuery);
+
+/**
+ * 
+ * Add support for scrolling horizontally and vertically using jQTouch in Safari Mobile
+ *
+ * Copyright (c) 2009 Sam Shull <http://www.google.com/profiles/brickysam26>
+ * Released under MIT license
+ *
+ * <code>
+ *		<div id="vertical-scrolling-example">
+ *			<div class="toolbar">
+ *				<h1>Vertical Scroll Example</h1>
+ *			</div>
+ *			<div class="vertical-scroll">
+ *				<div>
+ *					This is where you insert scollable text
+ *				</div>
+ *			</div>
+ *		</div>
+ *
+ *		<div id="horizontal-scrolling-example">
+ *			<div class="toolbar">
+ *				<h1>Horizontal Scroll Example</h1>
+ *			</div>
+ *			<a href="#home" class="grayButton swap">Gotta have something here or you get a flicker</a>
+ *			<div class="horizontal-scroll">
+ *				<table>
+ *					<tr>
+ *						<td><div class="scroll-container"><img src="http://rlv.zcache.com/css_is_awesome_mug-p1687164350719819282objs_210.jpg" alt="CSS Is Awesome"/></div></td>
+ *						<td><div class="scroll-container"><img src="http://rlv.zcache.com/css_is_awesome_mug-p1687164350719819282objs_210.jpg" alt="CSS Is Awesome"/></div></td>
+ *						<td><div class="scroll-container"><img src="http://rlv.zcache.com/css_is_awesome_mug-p1687164350719819282objs_210.jpg" alt="CSS Is Awesome"/></div></td>
+ *						<td><div class="scroll-container"><img src="http://rlv.zcache.com/css_is_awesome_mug-p1687164350719819282objs_210.jpg" alt="CSS Is Awesome"/></div></td>
+ *						<td><div class="scroll-container"><img src="http://rlv.zcache.com/css_is_awesome_mug-p1687164350719819282objs_210.jpg" alt="CSS Is Awesome"/></div></td>
+ *						<td><div class="scroll-container"><img src="http://rlv.zcache.com/css_is_awesome_mug-p1687164350719819282objs_210.jpg" alt="CSS Is Awesome"/></div></td>
+ *						<td><div class="scroll-container"><img src="http://rlv.zcache.com/css_is_awesome_mug-p1687164350719819282objs_210.jpg" alt="CSS Is Awesome"/></div></td>
+ *					</tr>
+ *				</table>
+ *			</div>
+ *		</div>
+ * </code>
+ *
+ *
+ * Known issues:
+ *		- slideSelector must be explicitly set to a class like .slideRight in order for the slide selector to work
+ *		- horizontal scroll flickers without a button above it
+ *		- must define a class selector for slideSelector to operate properly within the scroll box
+ * 
+ * $Revision$
+ * $Date$
+ * $LastChangedBy$
+ * 
+ */
+
+(function($)
+{
+		  
+    $.fn.scrollVertically = function (options)
+	{
+		return this.each(function ()
+		{
+			new iScroll( this, options );
+		});
+	};
+	
+	$.fn.scrollHorizontally = function (options)
+	{
+		return this.each(function ()
+		{
+			new iScrollHorizontal( this, options );
+		});
+	};
+
+			
+    if ($.jQTouch)
+    {
+        $.jQTouch.addExtension(function (jQT){
+            
+			function binder (e, info)
+			{
+				var horizontal = info.page.find('.horizontal-scroll > table'),
+					vertical = info.page.find('.vertical-scroll > div');
+				
+				horizontal.scrollHorizontally({acceleration: Number(horizontal.attr("scrollspeed")|| 0.009)});
+				vertical.scrollVertically({acceleration: Number(vertical.attr("scrollspeed") || 0.009)});
+			}
+			
+			$(document.body)
+				.bind('pageInserted', binder);
+			
+			$(function()
+			{
+				$('body > *')
+					.each(function()
+					{
+						binder({}, {page: $(this)});
+					});
+			});
+			
+			return {};
+        });
+		
+		/**
+		 * 
+		 * Find more about the scrolling function at
+		 * http://cubiq.org/scrolling-div-on-iphone-ipod-touch/5
+		 *
+		 * Copyright (c) 2009 Matteo Spinelli, http://cubiq.org/
+		 * Released under MIT license
+		 * http://cubiq.org/dropbox/mit-license.txt
+		 * 
+		 * Version 2.3 - Last updated: 2009.07.09
+		 * Changes - 10/22/09 - cleaned up a little by Sam Shull
+		 * 
+		 */
+		
+		function iScroll(el, options)
+		{
+			var that = this;
+			
+			this.numberOfTouches = 1;
+			
+			this.element = el;
+			this.position(0);
+			this.refresh();
+			el.style.webkitTransitionTimingFunction = 'cubic-bezier(0, 0, 0.2, 1)';
+			this.acceleration = 0.009;
+		
+			el.addEventListener('touchstart', this, false);
+			//moved up here because I didnt see any reason to add and remove them 
+			
+			window.addEventListener('unload', function ()
+			{
+				el.removeEventListener('touchstart', that, false);
+				window.removeEventListener('unload', arguments.callee, false);
+			}, false);
+			
+			if (options)
+			{
+				$.extend(this, options);	
+			}
+		}
+		
+		iScroll.prototype = {
+			handleEvent: function(e) {
+				switch(e.type) {
+					case 'touchstart': this.onTouchStart(e); break;
+					case 'touchmove': this.onTouchMove(e); break;
+					case 'touchend': this.onTouchEnd(e); break;
+					case 'webkitTransitionEnd': this.onTransitionEnd(e); break;
+				}
+			},
+			
+			//i combined the getter and setter in order to make this 
+			//more forward compatible since that is a deprecated api
+			position: function (pos) {
+				if (pos !== undefined)
+				{
+					this._position = pos;
+					this.element.style.webkitTransform = 'translate3d(0, ' + pos + 'px, 0)';
+					return;
+				}
+				
+				return this._position;
+			},
+			
+			refresh: function() {
+				this.element.style.webkitTransitionDuration = '0';
+		
+				if( this.element.offsetHeight<this.element.parentNode.clientHeight )
+					this.maxScroll = 0;
+				else		
+					this.maxScroll = this.element.parentNode.clientHeight - this.element.offsetHeight;
+			},
+			
+			onTouchStart: function(e) {
+				if( e.targetTouches.length != this.numberOfTouches )
+					return;
+				
+				e.preventDefault();
+				
+				this.refresh();
+				
+				var theTransform = window.getComputedStyle(this.element).webkitTransform;
+				theTransform = new WebKitCSSMatrix(theTransform).m42;
+				if( theTransform!=this.position() )
+					this.position(theTransform);
+				
+				this.startY = e.targetTouches[0].clientY;
+				this.scrollStartY = this.position();
+				this.scrollStartTime = e.timeStamp;
+				this.moved = false;
+				
+				//moved
+				this.element.addEventListener('touchmove', this, false);
+				this.element.addEventListener('touchend', this, false);
+				//return false;
+			},
+			
+			onTouchMove: function(e) {
+				if( e.targetTouches.length != this.numberOfTouches )
+					return;
+				
+				e.preventDefault();
+				var topDelta = e.targetTouches[0].clientY - this.startY;
+				if( this.position() > 0 || this.position() < this.maxScroll ) topDelta/=2;
+				this.position(this.position() + topDelta);
+				this.startY = e.targetTouches[0].clientY;
+				this.moved = true;
+		
+				// Prevent slingshot effect
+				if( e.timeStamp-this.scrollStartTime>100 ) {
+					this.scrollStartY = this.position();
+					this.scrollStartTime = e.timeStamp;
+				}
+		
+				//return false;
+			},
+			
+			onTouchEnd: function(e) {
+				//moved
+				this.element.removeEventListener('touchmove', this, false);
+				this.element.removeEventListener('touchend', this, false);
+				e.preventDefault();
+				var newPosition,theTarget,theEvent,scrollDistance,scrollDuration,newDuration,newScrollDistance;
+		
+				// If we are outside of the boundaries, let's go back to the sheepfold
+				if( this.position() > 0 || this.position() < this.maxScroll ) {
+					this.scrollTo(this.position() > 0 ? 0 : this.maxScroll);
+					return;
+				}
+		
+				if( !this.moved ) {
+					theTarget  = e.target;
+					if(theTarget.nodeType == 3) theTarget = theTarget.parentNode;
+					theEvent = document.createEvent("MouseEvents");
+					theEvent.initEvent('click', true, true);
+					theTarget.dispatchEvent(theEvent);
+					return false
+				}
+		
+				// Lame formula to calculate a fake deceleration
+				scrollDistance = this.position() - this.scrollStartY;
+				scrollDuration = e.timeStamp - this.scrollStartTime;
+				
+				newDuration = (2 * scrollDistance / scrollDuration) / this.acceleration;
+				newScrollDistance = (this.acceleration / 2) * (newDuration * newDuration);
+				
+				if( newDuration<0 ) {
+					newDuration = -newDuration;
+					newScrollDistance = -newScrollDistance;
+				}
+		
+				newPosition = this.position() + newScrollDistance;
+				
+				if( newPosition>this.element.parentNode.clientHeight/2 )
+					newPosition = this.element.parentNode.clientHeight/2;
+				else if( newPosition>0 )
+					newPosition/= 1.5;
+				else if( newPosition<this.maxScroll-this.element.parentNode.clientHeight/2 )
+					newPosition = this.maxScroll-this.element.parentNode.clientHeight/2;
+				else if( newPosition<this.maxScroll )
+					newPosition = (newPosition - this.maxScroll) / 1.5 + this.maxScroll;
+				else
+					newDuration*= 6;
+		
+				this.scrollTo(newPosition, Math.round(newDuration) + 'ms');
+		
+				//return false;
+			},
+			
+			onTransitionEnd: function() {
+				this.element.removeEventListener('webkitTransitionEnd', this, false);
+				this.scrollTo( this.position() > 0 ? 0 : this.maxScroll );
+			},
+			
+			scrollTo: function(dest, runtime) {
+				this.element.style.webkitTransitionDuration = runtime ? runtime : '300ms';
+				this.position(dest ? dest : 0);
+		
+				// If we are outside of the boundaries at the end of the transition go back to the sheepfold
+				if( this.position() > 0 || this.position() < this.maxScroll )
+					this.element.addEventListener('webkitTransitionEnd', this, false);
+			}
+		};
+		
+		/**
+		 * 
+		 * A horizontal revision of iScroll by Matteo Spinelli, http://cubiq.org/
+		 *
+		 * Copyright (c) 2009 Sam Shull <http://www.google.com/profiles/brickysam26>
+		 * Released under MIT license
+		 * 
+		 * Version 0.1
+		 * 
+		 */
+		function iScrollHorizontal(el, options)
+		{
+			var that = this;
+			
+			this.numberOfTouches = 1;
+			
+			this.element = el;
+			this.position(0);
+			this.refresh();
+			el.style.webkitTransitionTimingFunction = 'cubic-bezier(0, 0, 0.2, 1)';
+			this.acceleration = 0.009;
+		
+			el.addEventListener('touchstart', this, false);
+			//moved up here because I didnt see any reason to add and remove them 
+			
+			window.addEventListener('unload', function ()
+			{
+				el.removeEventListener('touchstart', that, false);
+				window.removeEventListener('unload', arguments.callee, false);
+			}, false);
+			
+			if (options)
+			{
+				$.extend(this, options);	
+			}
+		}
+		
+		iScrollHorizontal.prototype = {
+			handleEvent: function(e) {
+				switch(e.type) {
+					case 'touchstart': this.onTouchStart(e); break;
+					case 'touchmove': this.onTouchMove(e); break;
+					case 'touchend': this.onTouchEnd(e); break;
+					case 'webkitTransitionEnd': this.onTransitionEnd(e); break;
+				}
+			},
+			
+			position: function (pos) {
+				if (pos !== undefined)
+				{
+					this._position = pos;
+					this.element.style.webkitTransform = 'translateX(' + pos + 'px)';
+					return;
+				}
+				
+				return this._position;
+			},
+			
+			refresh: function() {
+				this.element.style.webkitTransitionDuration = '0';
+		
+				if( this.element.offsetWidth<this.element.parentNode.clientWidth )
+					this.maxScroll = 0;
+				else		
+					this.maxScroll = this.element.parentNode.clientWidth - this.element.offsetWidth;
+			},
+			
+			onTouchStart: function(e) {
+				if( e.targetTouches.length != this.numberOfTouches )
+					return;
+					
+				e.preventDefault();
+				
+				this.refresh();
+				
+				this.startX = e.targetTouches[0].clientX;
+				this.scrollStartX = this.position();
+				this.scrollStartTime = e.timeStamp;
+				this.moved = false;
+				
+				this.element.addEventListener('touchmove', this, false);
+				this.element.addEventListener('touchend', this, false);
+			},
+			
+			onTouchMove: function(e) {
+				if( e.targetTouches.length != this.numberOfTouches )
+					return;
+				
+				e.preventDefault();
+				var topDelta = e.targetTouches[0].clientX - this.startX;
+				if( this.position()>0 || this.position()<this.maxScroll ) topDelta/=2;
+				this.position(this.position() + topDelta);
+				this.startX = e.targetTouches[0].clientX;
+				this.moved = true;
+		
+				// Prevent slingshot effect
+				if( e.timeStamp-this.scrollStartTime>100 ) {
+					this.scrollStartX = this.position();
+					this.scrollStartTime = e.timeStamp;
+				}
+			},
+			
+			onTouchEnd: function(e) {
+				this.element.removeEventListener('touchmove', this, false);
+				this.element.removeEventListener('touchend', this, false);
+				e.preventDefault();
+				var newPosition,theTarget,theEvent,scrollDistance,scrollDuration,newDuration,newScrollDistance;
+		
+				if( !this.moved ) {
+					theTarget  = e.target;
+					if(theTarget.nodeType == 3) theTarget = theTarget.parentNode;
+					theEvent = document.createEvent("MouseEvents");
+					theEvent.initEvent('click', true, true);
+					theTarget.dispatchEvent(theEvent);
+					return false
+				}
+		
+				// Lame formula to calculate a fake deceleration
+				scrollDistance = this.position() - this.scrollStartX;
+				scrollDuration = e.timeStamp - this.scrollStartTime;
+				
+				newDuration = (2 * scrollDistance / scrollDuration) / this.acceleration;
+				newScrollDistance = (this.acceleration / 2) * (newDuration * newDuration);
+				
+				if( newDuration<0 ) {
+					newDuration = -newDuration;
+					newScrollDistance = -newScrollDistance;
+				}
+		
+				newPosition = this.position() + newScrollDistance;
+				
+				if( newPosition>this.element.parentNode.clientWidth/2 )
+				{
+					newPosition = this.element.parentNode.clientWidth/2;
+				}
+				else if( newPosition<this.maxScroll-this.element.parentNode.clientWidth/2 )
+				{
+					newPosition = this.maxScroll-this.element.parentNode.clientWidth/2;
+				}
+				else if( newPosition<this.maxScroll )
+				{
+					newPosition = (newPosition - this.maxScroll) / 1.5 + this.maxScroll;
+				}
+				else
+				{
+					newDuration*= 6;
+				}
+				
+				this.scrollTo(newPosition, Math.round(newDuration) + 'ms');
+		
+				//return false;
+			},
+			
+			onTransitionEnd: function() {
+				this.element.removeEventListener('webkitTransitionEnd', this, false);
+				this.scrollTo( this.position()>0 ? 0 : this.maxScroll );
+			},
+			
+			scrollTo: function(dest, runtime) {
+				this.element.style.webkitTransitionDuration = runtime ? runtime : '300ms';
+				this.position(dest ? dest : 0);
+		
+				// If we are outside of the boundaries at the end of the transition go back to the sheepfold
+				if( this.position()>0 || this.position()<this.maxScroll )
+					this.element.addEventListener('webkitTransitionEnd', this, false);
+			}
+		};
+    }
+})(jQuery);
+
+/**
+ * 
+ * Add support for sliding horizontally and vertically using jQTouch in Safari Mobile
+ *
+ * Copyright (c) 2009 Sam Shull <http://www.google.com/profiles/brickysam26>
+ * Released under MIT license
+ *
+ * <code>
+ *
+ *		<div id="vertical-sliding-example">
+ *			<div class="toolbar">
+ *				<h1>Vertical Slide Example</h1>
+ *			</div>
+ *			<div class="vertical-slide">
+ *				<div>
+ *					This is where you insert scollable text
+ *				</div>
+ *			</div>
+ *		</div>
+ *
+ *		<div id="horizontal-sliding-example">
+ *			<div class="toolbar">
+ *				<h1>Horizontal Slide Example</h1>
+ *			</div>
+ *			<a href="#home" class="grayButton swap">Gotta have something here or you get a flicker</a>
+ *			<div class="horizontal-slide">
+ *				<table>
+ *					<tr>
+ *						<td><div class="slide-container"><img src="http://rlv.zcache.com/css_is_awesome_mug-p1687164350719819282objs_210.jpg" alt="CSS Is Awesome"/></div></td>
+ *						<td><div class="slide-container"><img src="http://rlv.zcache.com/css_is_awesome_mug-p1687164350719819282objs_210.jpg" alt="CSS Is Awesome"/></div></td>
+ *						<td><div class="slide-container"><img src="http://rlv.zcache.com/css_is_awesome_mug-p1687164350719819282objs_210.jpg" alt="CSS Is Awesome"/></div></td>
+ *						<td><div class="slide-container"><img src="http://rlv.zcache.com/css_is_awesome_mug-p1687164350719819282objs_210.jpg" alt="CSS Is Awesome"/></div></td>
+ *						<td><div class="slide-container"><img src="http://rlv.zcache.com/css_is_awesome_mug-p1687164350719819282objs_210.jpg" alt="CSS Is Awesome"/></div></td>
+ *						<td><div class="slide-container"><img src="http://rlv.zcache.com/css_is_awesome_mug-p1687164350719819282objs_210.jpg" alt="CSS Is Awesome"/></div></td>
+ *						<td><div class="slide-container"><img src="http://rlv.zcache.com/css_is_awesome_mug-p1687164350719819282objs_210.jpg" alt="CSS Is Awesome"/></div></td>
+ *					</tr>
+ *				</table>
+ *			</div>
+ *		</div>
+ * </code>
+ *
+ * Known issues:
+ *		- horizontal scroll flickers without a button above it
+ *		- must define a class selector for slideSelector to operate properly within the slide box
+ * 
+ * $Revision$
+ * $Date$
+ * $LastChangedBy$
+ * 
+ */
+
+(function($)
+{
+            
+	$.fn.slideVertically = function (options)
+	{
+		return this.each(function ()
+		{
+			new iSlide( this, options );
+		});
+	};
+
+	$.fn.slideHorizontally = function (options)
+	{
+		return this.each(function ()
+		{
+			new iSlideHorizontal( this, options );
+		});
+	};
+	
+    if ($.jQTouch)
+    {
+        $.jQTouch.addExtension(function (jQT){
+			
+			function binder (e, info)
+			{
+				var horizontal = info.page.find('.horizontal-slide > table'),
+					vertical = info.page.find('.vertical-slide > div');
+				
+				horizontal.slideHorizontally({acceleration: Number(horizontal.attr("slidespeed")|| 500) || null});
+				vertical.slideVertically({acceleration: Number(vertical.attr("slidespeed") || 500)});
+			}
+				
+			$(document.body)
+				.bind('pageInserted', binder);
+			
+			$(function()
+			{
+				$('body > *')
+					.each(function()
+					{
+						binder({}, {page: $(this)});
+					});
+			});
+			
+			return {};
+        });
+		
+		/**
+		 * 
+		 * Modified version of
+		 * http://cubiq.org/slideing-div-on-iphone-ipod-touch/5
+		 *
+		 * Copyright (c) 2009 Matteo Spinelli, http://cubiq.org/
+		 * Released under MIT license
+		 * http://cubiq.org/dropbox/mit-license.txt
+		 * 
+		 *
+		 *	Modifications by Sam Shull <http://www.google.com/profiles/brickysam26>
+ 		 * Released under MIT license
+		 */
+		
+		function iSlide(el, options)
+		{
+			var that = this;
+			
+			this.numberOfTouches = 1;
+			
+			this.acceleration = 500;
+			
+			this.element = el;
+			this.position(0);
+			this.refresh();
+			el.style.webkitTransitionTimingFunction = 'cubic-bezier(0, 0, 0.2, 1)';
+		
+			el.addEventListener('touchstart', this, false);
+			//moved up here because I didnt see any reason to add and remove them 
+			
+			window.addEventListener('unload', function ()
+			{
+				el.removeEventListener('touchstart', that, false);
+				window.removeEventListener('unload', arguments.callee, false);
+				
+			}, false);
+			
+			if (options)
+			{
+				$.extend(this, options);	
+			}
+		}
+		
+		iSlide.prototype = {
+			handleEvent: function(e) {
+				switch(e.type) {
+					case 'touchstart': this.onTouchStart(e); break;
+					case 'touchmove': this.onTouchMove(e); break;
+					case 'touchend': this.onTouchEnd(e); break;
+					case 'webkitTransitionEnd': this.onTransitionEnd(e); break;
+				}
+			},
+			
+			//i combined the getter and setter in order to make this 
+			//more forward compatible since that is a deprecated api
+			position: function (pos) {
+				if (pos !== undefined)
+				{
+					this._position = pos;
+					this.element.style.webkitTransform = 'translate3d(0, ' + pos + 'px, 0)';
+					return;
+				}
+				
+				return this._position;
+			},
+			
+			refresh: function() {
+				this.element.style.webkitTransitionDuration = '0';
+		
+				if( this.element.offsetHeight<this.element.parentNode.clientHeight )
+					this.maxSlide = 0;
+				else		
+					this.maxSlide = this.element.parentNode.clientHeight - this.element.offsetHeight;
+			},
+			
+			onTouchStart: function(e) {
+				if( e.targetTouches.length != this.numberOfTouches )
+					return;
+				
+				e.preventDefault();
+				this.refresh();
+				
+				var theTransform = window.getComputedStyle(this.element).webkitTransform;
+				theTransform = new WebKitCSSMatrix(theTransform).m42;
+				if( theTransform!=this.position() )
+					this.position(theTransform);
+				
+				this.startY = e.targetTouches[0].clientY;
+				this.slideStartY = this.position();
+				this.slideStartTime = e.timeStamp;
+				this.moved = false;
+				
+				this.element.addEventListener('touchmove', this, false);
+				this.element.addEventListener('touchend', this, false);
+		
+				return false;
+			},
+			
+			onTouchMove: function(e) {
+				if( e.targetTouches.length != this.numberOfTouches )
+					return;
+				
+				e.preventDefault();
+				var topDelta = e.targetTouches[0].clientY - this.startY;
+				if( this.position()>0 || this.position()<this.maxSlide ) topDelta/=2;
+				this.position(this.position() + topDelta);
+				this.startY = e.targetTouches[0].clientY;
+				this.moved = true;
+		
+				return false;
+			},
+			
+			onTouchEnd: function(e) {
+				e.preventDefault();
+				this.element.removeEventListener('touchmove', this, false);
+				this.element.removeEventListener('touchend', this, false);
+				
+				var newPosition = this.position(),theTarget,theEvent,slideDistance;
+				
+				// If we are outside of the boundaries, let's go back to the sheepfold
+				if( newPosition > 0 || newPosition < this.maxSlide ) {
+					this.slideTo(newPosition > 0 ? 0 : this.maxSlide);
+					return;
+				}
+		
+				if( !this.moved ) {
+					theTarget  = e.target;
+					if(theTarget.nodeType == 3) theTarget = theTarget.parentNode;
+					theEvent = document.createEvent("MouseEvents");
+					theEvent.initEvent('click', true, true);
+					theTarget.dispatchEvent(theEvent);
+					return false
+				}
+					
+				if (newPosition > 0)
+				{
+					slideDistance = 0;
+				}
+				else if ( newPosition < this.maxSlide )
+				{
+					slideDistance = this.maxSlide;
+				}
+				else
+				{
+					slideDistance = this.snapTo( this.position(), this.slideStartY < this.position());
+				}
+				
+				this.slideTo( slideDistance, this.acceleration + 'ms');
+				
+					return;
+			},
+			
+			onTransitionEnd: function() {
+				this.element.removeEventListener('webkitTransitionEnd', this, false);
+				this.slideTo( this.position() > 0 ? 0 : this.maxSlide );
+			},
+			
+			slideTo: function(dest, runtime) {
+				this.element.style.webkitTransitionDuration = runtime ? runtime : this.acceleration + 'ms';
+				this.position(dest ? dest : 0);
+		
+				// If we are outside of the boundaries at the end of the transition go back to the sheepfold
+				if( this.position() > 0 || this.position() < this.maxSlide )
+					this.element.addEventListener('webkitTransitionEnd', this, false);
+			},
+			
+			snapTo: function (dest, dir)
+			{
+				if (dest != 0)
+				{
+					var opposite = -dest,
+						elements = this.element.querySelectorAll('.vertical-slide-snapto'),
+						i = 0, 
+						l = elements.length;
+					
+					for (l = elements.length; i < l; ++i)
+					{
+						//console.log('element['+i+']: '+ elements[i].offsetTop);
+						if (elements[i].offsetTop >= opposite)
+						{
+							return !dir
+									? -elements[i].offsetTop
+									: -(elements[i-1]||elements[0]||{offsetTop:dest}).offsetTop;
+						}
+					}
+				}
+				
+				return dest;
+			}
+		};
+		
+		/**
+		 * 
+		 * Modified version of
+		 * http://cubiq.org/slideing-div-on-iphone-ipod-touch/5
+		 *
+		 * Copyright (c) 2009 Matteo Spinelli, http://cubiq.org/
+		 * Released under MIT license
+		 * http://cubiq.org/dropbox/mit-license.txt
+		 * 
+		 *
+		 *	Modifications by Sam Shull <http://www.google.com/profiles/brickysam26>
+ 		 * Released under MIT license
+		 */
+		function iSlideHorizontal(el, options)
+		{
+			var that = this;
+			
+			this.numberOfTouches = 1;
+			
+			this.acceleration = 500;
+			
+			this.element = el;
+			this.position(0);
+			this.refresh();
+			el.style.webkitTransitionTimingFunction = 'cubic-bezier(0, 0, 0.2, 1)';
+			this.acceleration = null;
+		
+			el.addEventListener('touchstart', this, false);
+			
+			window.addEventListener('unload', function ()
+			{
+				el.removeEventListener('touchstart', that, false);
+				window.removeEventListener('unload', arguments.callee, false);
+				
+			}, false);
+			
+			if (options)
+			{
+				$.extend(this, options);	
+			}
+		}
+		
+		iSlideHorizontal.prototype = {
+			handleEvent: function(e) {
+				switch(e.type) {
+					case 'touchstart': this.onTouchStart(e); break;
+					case 'touchmove': this.onTouchMove(e); break;
+					case 'touchend': this.onTouchEnd(e); break;
+					case 'webkitTransitionEnd': this.onTransitionEnd(e); break;
+				}
+			},
+		
+			position: function (pos) {
+				if (pos !== undefined)
+				{
+					this._position = pos;
+					this.element.style.webkitTransform = 'translateX(' + pos + 'px)';
+					return;
+				}
+				
+				return this._position;
+			},
+			
+			refresh: function() {
+				this.element.style.webkitTransitionDuration = '0';
+				
+				if( this.element.offsetWidth<this.element.parentNode.clientWidth )
+					this.maxSlide = 0;
+				else		
+					this.maxSlide = this.element.parentNode.clientWidth - this.element.offsetWidth;
+			},
+			
+			onTouchStart: function(e) {
+				if( e.targetTouches.length != this.numberOfTouches )
+					return false;
+					
+				e.preventDefault();
+				this.refresh();
+				
+				this.slideStartX = this.startX = e.targetTouches[0].clientX;
+				this.slideStartTime = e.timeStamp;
+				this.moved = false;
+				
+				this.element.addEventListener('touchmove', this, false);
+				this.element.addEventListener('touchend', this, false);
+		
+				return false;
+			},
+			
+			onTouchMove: function(e) {
+				if( e.targetTouches.length != this.numberOfTouches )
+					return false;
+					
+				e.preventDefault();
+				var topDelta = e.targetTouches[0].clientX - this.startX;
+				this.position(this.position() + topDelta);
+				this.startX = e.targetTouches[0].clientX;
+				this.moved = true;
+		
+				return false;
+			},
+			
+			onTouchEnd: function(e) {
+				e.preventDefault();
+				var newPosition,theTarget,theEvent,slideDistance,slideDuration,newDuration,newSlideDistance;
+				
+				this.element.removeEventListener('touchmove', this, false);
+				this.element.removeEventListener('touchend', this, false);
+				
+				// If we are outside of the boundaries, let's go back to the sheepfold
+				if( this.position() > 0 || this.position() < this.maxSlide ) {
+					this.slideTo(this.position() > 0 ? 0 : this.maxSlide);
+					return;
+				}
+		
+				if( !this.moved ) {
+					theTarget = e.target;
+					if(theTarget.nodeType == 3) theTarget = theTarget.parentNode;
+					theEvent = document.createEvent("MouseEvents");
+					theEvent.initEvent('click', true, true);
+					theTarget.dispatchEvent(theEvent);
+					return false
+				}
+				
+				newPosition = this.position() + ((this.startX - this.slideStartX) / 2);
+				
+				if (newPosition > 0)
+				{
+					newPosition = 0;
+				}
+				else if ( newPosition < this.maxSlide )
+				{
+					newPosition = this.maxSlide;
+				}
+				else
+				{
+					newPosition = this.snapTo( this.position(), newPosition > this.position());
+				}
+				
+				this.slideTo( newPosition, this.acceleration + 'ms');
+		
+				return false;
+			},
+			
+			onTransitionEnd: function() {
+				this.element.removeEventListener('webkitTransitionEnd', this, false);
+				this.slideTo( this.position()>0 ? 0 : this.maxScroll );
+			},
+			
+			slideTo: function(dest, runtime) {
+				this.element.style.webkitTransitionDuration = runtime ? runtime : this.acceleration + 'ms';
+				this.position(dest ? dest : 0);
+				
+				if( this.position()>0 || this.position() < this.maxSlide )
+					this.element.addEventListener('webkitTransitionEnd', this, false);
+			},
+			
+			snapTo: function (dest, dir)
+			{
+				if (dest != 0)
+				{
+					//the children of the first row of the table - in case of nested tables
+					var opposite = -dest, i = 0, 
+						elements = this.element.querySelectorAll('.horizontal-slide-snapto'), 
+						l = elements.length;
+					
+					for (; i < l; ++i)
+					{
+						if (elements[i].offsetLeft >= opposite)
+						{
+							return !dir
+									? -elements[i].offsetLeft
+									: -(elements[i-1]||elements[0]||{offsetLeft:dest}).offsetLeft;
+						}
+					}
+				}
+				
+				return dest;
+			}
+		};
     }
 })(jQuery);
