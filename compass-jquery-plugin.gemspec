@@ -280,6 +280,8 @@ Gem::Specification.new do |s|
      "templates/jqtouch/jqtouch/ical/header.png",
      "templates/jqtouch/jqtouch/ical/header_left.png",
      "templates/jqtouch/jqtouch/ical/header_right.png",
+     "templates/jqtouch/jqtouch/ical/jqt_startup.png",
+     "templates/jqtouch/jqtouch/ical/jqtouch-ical.png",
      "templates/jqtouch/jqtouch/icons/iphone_16x16.png",
      "templates/jqtouch/jqtouch/iphone-emulator.scss",
      "templates/jqtouch/jqtouch/iphone_fullsize.png",
