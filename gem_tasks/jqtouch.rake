@@ -20,7 +20,7 @@ all_scripts = [
   'js/jqtouch.transitions.js',
   'js/mod_spinningwheel.js',
   'js/zflow.js',
-  'js/jqtouch-ical.js',  
+  #'js/jqtouch-ical.js',  
   'js/extensions/jqt.autotitles.js',
   'js/extensions/jqt.floaty.js',
   'js/extensions/jqt.location.js',

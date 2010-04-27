@@ -221,8 +221,7 @@ span {
   &.ui-dynatree-focused a:link {
     background-color: #EFEBDE;
     /* gray */ }
-  &.ui-dynatree-has-children a, &.ui-dynatree-expanded a {
- }
+  &.ui-dynatree-has-children a, &.ui-dynatree-expanded a {}
   &.ui-dynatree-selected a {
     color: green;
     font-style: italic; }
