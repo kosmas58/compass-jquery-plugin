@@ -1478,7 +1478,7 @@ global.zflow = function (images, selector)
         // ASSIGN SRC DIRECTLY FROM THE IMAGES ARRAY SINCE IT'S NO LONGER PASSED AS A PARAMETER OF THE FUNCTION
         image.src = images[i];
 		imagesArray[i] = images[i]; 
-		link.href = "show_image.php?fName="+images[i];
+		link.href = "show_image?fName="+images[i];
 		link.className = "slide-right";
         global.afnc = function () {
             var iwidth = image.width;

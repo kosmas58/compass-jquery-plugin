@@ -38,7 +38,7 @@ function getCalendar(date) {
 	var m = date.getMonth() + 1; // zero index based
 	var y = date.getFullYear();
 				
-	$.get('month.php', { month: m, year: y }, function(data) {
+	$.get('month', { month: m, year: y }, function(data) {
 		// clear existing calendar
 		$('#ical').empty();
 		// append retrieved calendar markup
