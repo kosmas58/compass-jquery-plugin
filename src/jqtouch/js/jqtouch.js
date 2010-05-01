@@ -17,8 +17,8 @@
     (c) 2009 by jQTouch project members.
     See LICENSE.txt for license.
 
-    $Revision: 147 $
-    $Date: 2010-04-19 03:45:31 +0200 (Mo, 19. Apr 2010) $
+    $Revision: 148 $
+    $Date: 2010-04-24 23:00:00 +0200 (Sa, 24. Apr 2010) $
     $LastChangedBy: davidcolbykaneda $
 
 */
@@ -45,6 +45,7 @@
             lastAnimationTime=0,
             touchSelectors=[],
             publicObj={},
+            tapBuffer=351,
             extensions=$.jQTouch.prototype.extensions,
             defaultAnimations=['slide','flip','slideup','swap','cube','pop','dissolve','fade','back'],
             animations=[],
@@ -154,23 +155,27 @@
 
                 if (jQTSettings.useFastTouch && $.support.touch) {
                     $body.click(function(e) {
-                        var $el = $(e.target);
+                        var timeDiff = (new Date()).getTime() - lastAnimationTime;
+                        if (timeDiff > tapBuffer) {
+                            var $el = $(e.target);
 
-                        if ($el.attr('nodeName')!=='A' && $el.attr('nodeName')!=='AREA' && $el.attr('nodeName')!=='INPUT') {
-                            $el = $el.closest('a, area');
-                        }
+                            if ($el.attr('nodeName')!=='A' && $el.attr('nodeName')!=='AREA' && $el.attr('nodeName')!=='INPUT') {
+                                $el = $el.closest('a, area');
+                            }
 
-                        if ($el.isExternalLink()) {
-                            return true;
-                        } else {
-                            return false;
+                            if ($el.isExternalLink()) {
+                                return true;
+                            }
                         }
+                        
+                        return false;
+                        
                     });
 
                     // This additionally gets rid of form focusses
                     $body.mousedown(function(e) {
                         var timeDiff = (new Date()).getTime() - lastAnimationTime;
-                        if (timeDiff < 200) {
+                        if (timeDiff < tapBuffer) {
                             return false;
                         }
                     });
@@ -357,27 +362,29 @@
             // Collapse the keyboard
             $(':focus').blur();
 
-            fromPage.css('top', -window.pageYOffset);
-            toPage.css('top', 0);
-
             // Make sure we are scrolled up to hide location bar
-            scrollTo(0, 0);
+            toPage.css('top', window.pageYOffset);
 
             // Define callback to run after animation completes
             var callback = function animationEnd(event) {
+
+                fromPage[0].removeEventListener('webkitTransitionEnd', callback);
+                fromPage[0].removeEventListener('webkitAnimationEnd', callback);
+
                 if (animation) {
-                    toPage.removeClass('in ' + animation.name);
-                    fromPage.removeClass('current out ' + animation.name);
+                        toPage.removeClass('start in ' + animation.name);
+                        fromPage.removeClass('start out current ' + animation.name);
                     if (backwards) {
                         toPage.toggleClass('reverse');
                         fromPage.toggleClass('reverse');
                     }
+                    toPage.css('top', 0);
                 } else {
                     fromPage.removeClass('current');
                 }
 
-                toPage.trigger('pageAnimationEnd', { direction: 'in' });
-                fromPage.trigger('pageAnimationEnd', { direction: 'out' });
+                toPage.trigger('pageAnimationEnd', { direction: 'in', reverse: backwards });
+                fromPage.trigger('pageAnimationEnd', { direction: 'out', reverse: backwards });
 
                 clearInterval(hashCheckInterval);
                 currentPage = toPage;
@@ -390,20 +397,31 @@
                 }
                 lastAnimationTime = (new Date()).getTime();
                 tapReady = true;
+
             }
 
             fromPage.trigger('pageAnimationStart', { direction: 'out' });
             toPage.trigger('pageAnimationStart', { direction: 'in' });
 
             if ($.support.WebKitAnimationEvent && animation && jQTSettings.useAnimations) {
-                toPage.one('webkitAnimationEnd', callback);
                 tapReady = false;
                 if (backwards) {
                     toPage.toggleClass('reverse');
                     fromPage.toggleClass('reverse');
                 }
+
+                // Support both transitions and animations
+                fromPage[0].addEventListener('webkitTransitionEnd', callback);
+                fromPage[0].addEventListener('webkitAnimationEnd', callback);
+
                 toPage.addClass(animation.name + ' in current');
                 fromPage.addClass(animation.name + ' out');
+                
+                setTimeout(function(){
+                    toPage.addClass('start');
+                    fromPage.addClass('start');
+                }, 0);
+                
 
             } else {
                 toPage.addClass('current');
@@ -519,9 +537,8 @@
             }
         }
         function updateOrientation() {
-            orientation = Math.abs(window.orientation) == 90 ? 'landscape' : 'profile';
-            $body.removeClass('profile landscape').addClass(orientation).trigger('turn', {orientation: orientation});
-            // scrollTo(0, 0);
+            orientation = Math.abs(window.orientation) == 90 ? 'landscape' : 'portrait';
+            $body.removeClass('portrait landscape').addClass(orientation).trigger('turn', {orientation: orientation});
         }
         function handleTouch(e) {
             var $el = $(e.target);
@@ -607,7 +624,7 @@
         }
         $.fn.swipe = function(fn) {
             if ($.isFunction(fn)) {
-                return $(this).bind('swipe', fn);
+                return $(this).live('swipe', fn);
             } else {
                 return $(this).trigger('swipe');
             }
@@ -622,7 +639,7 @@
         }
         $.fn.isExternalLink = function() {
             var $el = $(this);
-            return ($el.attr('target') == '_blank' || $el.attr('rel') == 'external' || $el.is('input[type="checkbox"], input[type="radio"], a[href^="http://maps.google.com:"], a[href^="mailto:"], a[href^="tel:"], a[href^="javascript:"], a[href*="youtube.com/v"], a[href*="youtube.com/watch"]'));
+            return ($el.attr('target') == '_blank' || $el.attr('rel') == 'external' || $el.is('input[type="checkbox"], input[type="radio"], a[href^="http://maps.google.com"], a[href^="mailto:"], a[href^="tel:"], a[href^="javascript:"], a[href*="youtube.com/v"], a[href*="youtube.com/watch"]'));
         }
 
         publicObj = {

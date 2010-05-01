@@ -128,6 +128,30 @@ namespace :build do
         manifest.print "image 'jqtouch/sw/#{image}'\n"
       end      
       
+      # glyphish Images
+      FileUtils.mkdir_p(File.join(JQTOUCH_DEST_IMAGES, 'glyphish', 'icons'))   
+       
+      src_dir = File.join(JQTOUCH_SRC_IMAGES, 'glyphish', 'icons')
+      dest_dir = File.join(JQTOUCH_DEST_IMAGES, 'glyphish', 'icons')      
+      Dir.foreach(src_dir) do |image|
+        next if /^\./ =~ image
+        FileUtils.cp(File.join(src_dir, image), dest_dir)    
+        manifest.print "image 'jqtouch/glyphish/icons/#{image}'\n"
+      end
+      FileUtils.mkdir_p(File.join(JQTOUCH_DEST_IMAGES, 'glyphish', 'mini-icons'))    
+      src_dir = File.join(JQTOUCH_SRC_IMAGES, 'glyphish', 'icons')
+      dest_dir = File.join(JQTOUCH_DEST_IMAGES, 'glyphish', 'mini-icons')      
+      Dir.foreach(src_dir) do |image|
+        next if /^\./ =~ image
+        FileUtils.cp(File.join(src_dir, image), dest_dir)    
+        manifest.print "image 'jqtouch/glyphish/mini-icons/#{image}'\n"
+      end 
+      
+      open File.join(JQTOUCH_DEST_IMAGES, 'glyphish', 'Read me first - license.txt'), 'w' do |f|
+        f.print(File.read(File.join(JQTOUCH_SRC_IMAGES, 'glyphish', 'Read me first - license.txt')))
+      end
+      manifest.print "image 'jqtouch/glyphish/Read me first - license.txt'\n"
+      
       # jQuery jQTouch Themes
 
       FileUtils.mkdir_p(JQTOUCH_DEST_THEMES)
