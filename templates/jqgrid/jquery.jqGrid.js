@@ -5,7 +5,7 @@
  * Dual licensed under the MIT and GPL licenses
  * http://www.opensource.org/licenses/mit-license.php
  * http://www.gnu.org/licenses/gpl-2.0.html
- * Date: 2010-02-14
+ * Date: 2010-02-14 
  */
 $.jgrid = $.jgrid || {};
 $.extend($.jgrid,{
@@ -34,7 +34,7 @@ $.extend($.jgrid,{
 		var regexp = /<("[^"]*"|'[^']*'|[^'">])*>/gi;
 		if (v) {
 			v = v.replace(regexp,"");
-			return (v && v !== '&nbsp;' && v !== '&#160;') ? v : "";
+			return (v && v !== '&nbsp;' && v !== '&#160;') ? v.replace(/\"/g,"'") : "";
 		} else {
 			return v;
 		}
@@ -1328,8 +1328,7 @@ $.fn.jqGrid = function( pin ) {
 		$(this).append(thead);
 		$("thead tr:first th",this).hover(function(){$(this).addClass('ui-state-hover');},function(){$(this).removeClass('ui-state-hover');});
 		if(this.p.multiselect) {
-			var onSA = true, emp=[], chk;
-			if(typeof ts.p.onSelectAll !== 'function') {onSA=false;}
+			var emp=[], chk;
 			$('#cb_'+$.jgrid.jqID(ts.p.id),this).bind('click',function(){
 				if (this.checked) {
 					$("[id^=jqg_]",ts.rows).attr("checked",true);
@@ -1353,7 +1352,7 @@ $.fn.jqGrid = function( pin ) {
 					ts.p.selarrrow = []; ts.p.selrow = null;
 					chk=false;
 				}
-				if(onSA) {ts.p.onSelectAll.call(ts, chk ? ts.p.selarrrow : emp,chk);}
+				if($.isFunction(ts.p.onSelectAll)) {ts.p.onSelectAll.call(ts, chk ? ts.p.selarrrow : emp,chk);}
 			});
 		}
 		
@@ -8639,7 +8638,7 @@ hs=function(w,t,c){return w.each(function(){var s=this._jqm;$(t).each(function()
 					ret= $(cellval).text();
 			}
 		}
-		return ret ? ret : cnt===true ? $(cellval).text() : $(cellval).html();
+		return ret ? ret : cnt===true ? $(cellval).text() : $.jgrid.htmlDecode($(cellval).html());
 	};
 	$.unformat.select = function (cellval,options,pos,cnt) {
 		// Spacial case when we have local data and perform a sort
