@@ -1140,7 +1140,7 @@ $.fn.jqGrid = function( pin ) {
 					if( ts.p.sortorder == 'asc') {
 						ts.p.sortorder = 'desc';
 					} else if(ts.p.sortorder == 'desc') { ts.p.sortorder = 'asc';}
-				} else { ts.p.sortorder = 'asc';}
+				} else { ts.p.sortorder = ts.p.colModel[idxcol].firstsortorder || 'asc'; }
 				ts.p.page = 1;
 			}
 			if(sor) {
@@ -4325,7 +4325,7 @@ $.jgrid.extend({
 			sValue:'searchString',
 			sOper: 'searchOper',
 			sFilter: 'filters',
-            loadDefaults: false, // this options activates loading of default filters from grid's postData for Multipe Search only.
+            loadDefaults: true, // this options activates loading of default filters from grid's postData for Multipe Search only.
 			beforeShowSearch: null,
 			afterShowSearch : null,
 			onInitializeSearch: null,
@@ -6609,6 +6609,7 @@ if ($.browser.msie && $.browser.version==8) {
 	};
 }
 // requiere load multiselect before grid
+$.jgrid._multiselect = false;
 if($.ui) {
 	if ($.ui.multiselect ) {
 		if($.ui.multiselect.prototype._setSelected) {
@@ -6637,6 +6638,7 @@ if($.ui) {
 	            }
 			};
 		}
+		$.jgrid._multiselect = true;
 	}
 }
         
@@ -6705,6 +6707,11 @@ $.jgrid.extend({
 		});
 	},
     columnChooser : function(opts) {
+		if(!$.jgrid._multiselect) {
+			// should be in language file
+			alert("Multiselect plugin not loaded or loaded after jqGrid. Please load the plugin before the jqGrid!");
+			return;
+		}
         var self = this;
 		if($("#colchooser_"+self[0].p.id).length ) { return; }
         var selector = $('<div id="colchooser_'+self[0].p.id+'" style="position:relative;overflow:hidden"><div><select multiple="multiple"></select></div></div>');
@@ -9246,7 +9253,7 @@ jQuery.fn.searchFilter = function(fields, options) {
                 }
                 selDOMobj.selectedIndex = indexmap[setting];
                 $(selDOMobj).change();
-            }
+            };
 
             this.setFilter = function(settings) {
                 /* a "setter" for an arbitrary SearchFilter's filter line.
@@ -9271,27 +9278,27 @@ jQuery.fn.searchFilter = function(fields, options) {
                 var o = settings['sfref'], filter = settings['filter'];
                 
                 // setting up valueindexmap that we will need to manipulate SELECT elements.
-                var fields = [],
+                var fields = [], i, j , l, lj, li,
                     valueindexmap = {};
                     // example of valueindexmap:
                     // {'field1':{'index':0,'ops':{'eq':0,'ne':1}},'fieldX':{'index':1,'ops':{'eq':0,'ne':1},'data':{'true':0,'false':1}}},
                     // if data is undefined it's a INPUT field. If defined, it's SELECT
                 selDOMobj = o.find("select[name='field']")[0];
-                for (var i=0, l=selDOMobj.options.length; i<l; i++) {
+                for (i=0, l=selDOMobj.options.length; i<l; i++) {
                     valueindexmap[selDOMobj.options[i].value] = {'index':i,'ops':{}};
                     fields.push(selDOMobj.options[i].value);
                 }
-                for (var i=0, li=fields.length; i < li; i++) {
+                for (i=0, li=fields.length; i < li; i++) {
                     selDOMobj = o.find(".ops > select[class='field"+i+"']")[0];
                     if (selDOMobj) {
-                        for (var j=0, lj=selDOMobj.options.length; j<lj; j++) {
+                        for (j=0, lj=selDOMobj.options.length; j<lj; j++) {
                             valueindexmap[fields[i]]['ops'][selDOMobj.options[j].value] = j;
                         }
                     }
                     selDOMobj = o.find(".data > select[class='field"+i+"']")[0];
                     if (selDOMobj) {
                         valueindexmap[fields[i]]['data'] = {}; // this setting is the flag that 'data' is contained in a SELECT
-                        for (var j=0, lj=selDOMobj.options.length; j<lj; j++) {
+                        for (j=0, lj=selDOMobj.options.length; j<lj; j++) {
                             valueindexmap[fields[i]]['data'][selDOMobj.options[j].value] = j;
                         }
                     }
@@ -9326,7 +9333,7 @@ jQuery.fn.searchFilter = function(fields, options) {
                 } else {
 					return false
 				}
-            } // end of this.setFilter fn
+            }; // end of this.setFilter fn
         } // end of if fields != null
     }
     return new SearchFilter(this, fields, options);
