@@ -811,28 +811,14 @@ $.fn.jqGrid = function( pin ) {
 						type:ts.p.mtype,
 						dataType: dt ,
 						data: $.isFunction(ts.p.serializeGridData)? ts.p.serializeGridData.call(ts,ts.p.postData) : ts.p.postData,
-						success :function(req,st) {
-							if(dt == "jsonp") {
-								addJSONData(req,ts.grid.bDiv,rcnt,npage>1,adjust);
-								if(lc) { lc.call(ts,req); }
-								if (pvis) { ts.grid.populateVisible(); }
-								if( ts.p.loadonce || ts.p.treeGrid) {ts.p.datatype = "local";}
-								req=null;
-								endReq();
-							}
-						},
-						complete:function(req,st) {
-							if(dt != "jsonp") {
-							if(st=="success" || (req.statusText == "OK" && req.status == "200")) {
-								if(dt === "xml") { addXmlData(req.responseXML,ts.grid.bDiv,rcnt,npage>1,adjust); }
-								else { addJSONData($.jgrid.parse(req.responseText),ts.grid.bDiv,rcnt,npage>1,adjust); }
-								if(lc) { lc.call(ts,req); }
-								if (pvis) { ts.grid.populateVisible(); }
-							}
+						success:function(req,st) {
+							if(dt === "xml") { addXmlData(req,ts.grid.bDiv,rcnt,npage>1,adjust); }
+							else { addJSONData(req,ts.grid.bDiv,rcnt,npage>1,adjust); }
+							if(lc) { lc.call(ts,req); }
+							if (pvis) { ts.grid.populateVisible(); }
 							if( ts.p.loadonce || ts.p.treeGrid) {ts.p.datatype = "local";}
 							req=null;
 							endReq();
-							}
 						},
 						error:function(xhr,st,err){
 							if($.isFunction(ts.p.loadError)) { ts.p.loadError.call(ts,xhr,st,err); }
@@ -930,6 +916,8 @@ $.fn.jqGrid = function( pin ) {
 					var fd = ts.p.colModel[col].datefmt || "Y-m-d";
 					return parseDate(fd,$cell).getTime();
 				};
+			} else if($.isFunction(st)) {
+				findSortKey = st;
 			} else {
 				findSortKey = function($cell) {
 					return $.trim($cell.toUpperCase());
@@ -939,7 +927,7 @@ $.fn.jqGrid = function( pin ) {
 			$.each(ts.rows, function(index, row) {
 				try { sv = $.unformat($(row).children('td').eq(col),{rowId:row.id, colModel:cm},col,true);}
 				catch (_) { sv = $(row).children('td').eq(col).text(); }
-				row.sortKey = cm.custom_sort === undefined ?  findSortKey(sv) : cm.custom_sort.call(ts,sv);
+				row.sortKey = findSortKey(sv);
 				rows[index] = this;
 			});
 			if(ts.p.treeGrid) {

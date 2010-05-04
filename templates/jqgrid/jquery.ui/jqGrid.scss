@@ -244,15 +244,17 @@ tr.ui-search-toolbar {
     height: 19px;
     margin-top: 3px;
     margin-right: 4px; }
-  .ui-jqgrid-pager .ui-pg-div {
-    padding: 1px 0;
-    cursor: pointer;
-    float: left;
-    list-style-image: none;
-    list-style-position: outside;
-    list-style-type: none;
-    position: relative;
-    span.ui-icon {
+  .ui-jqgrid-pager {
+    .ui-pg-div {
+      padding: 1px 0;
+      float: left;
+      list-style-image: none;
+      list-style-position: outside;
+      list-style-type: none;
+      position: relative; }
+    .ui-pg-button {
+      cursor: pointer; }
+    .ui-pg-div span.ui-icon {
       float: left;
       margin: 0 2px; } }
   td {
