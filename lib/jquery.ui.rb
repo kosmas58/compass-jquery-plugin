@@ -26,7 +26,7 @@ class JqueryUiTheme
       @base_theme[3775..3794] == "#cd0a0a/*{fcError}*/"
     end
     if @base_theme[416,16] == ".ui-widget input"
-      print "Fixing up bug in 1.7.2 template\n"
+      print "Fixing up bug in 1.7.3 template\n"
       @base_theme[416,0] = ".ui-widget .ui-widget { font-size: 1em; }\n"
     end
     # Fix AutoComplete
