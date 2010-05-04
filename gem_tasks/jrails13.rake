@@ -11,7 +11,7 @@ JHAML_13_SRC_SCRIPTS = File.join(GEM_ROOT, 'src', '1.3', 'jquery-haml') + "/*.js
 JQUERY_13_SRC = File.join(GEM_ROOT, 'src', '1.3', 'jquery.1.3.2')
 JQUERY_13_SRC_SCRIPTS = JQUERY_13_SRC + "/*.js"
 
-JQUERY_UI_17_SRC = File.join(GEM_ROOT, 'src', '1.3', 'jquery.ui.1.7.2')
+JQUERY_UI_17_SRC = File.join(GEM_ROOT, 'src', '1.3', 'jquery.ui.1.7.3')
 JQUERY_UI_17_SRC_SCRIPTS = File.join(JQUERY_UI_17_SRC, 'js') + "/*.js"
 JQUERY_UI_17_SRC_THEMES = File.join(JQUERY_UI_17_SRC, 'themes')
 JQUERY_UI_17_SRC_TRANSLATIONS = File.join(JQUERY_UI_17_SRC, 'js', 'i18n') #+ "/*.js"
@@ -118,7 +118,7 @@ namespace :build do
         end
       end
     
-      # jQuery.UI 1.7.2
+      # jQuery.UI 1.7.3
     
       # Scripts
       
@@ -151,15 +151,15 @@ namespace :build do
         'ui.tabs.js' 
       ].collect {|filename| File.read(File.join(JQUERY_UI_17_SRC, 'js', filename))}.join "\n\n"  
       
-      open File.join(JRAILS_13_DEST_TEMPLATES, 'jquery-ui-1.7.2.js'), 'w' do |f|
+      open File.join(JRAILS_13_DEST_TEMPLATES, 'jquery-ui-1.7.3.js'), 'w' do |f|
         f.print concat_files(all_jquery_ui_scripts)
       end
-      manifest.print "javascript 'jquery-ui-1.7.2.js'\n"
+      manifest.print "javascript 'jquery-ui-1.7.3.js'\n"
     
-      open File.join(JRAILS_13_DEST_TEMPLATES, 'jquery-ui-1.7.2.min.js'), 'w' do |f|
+      open File.join(JRAILS_13_DEST_TEMPLATES, 'jquery-ui-1.7.3.min.js'), 'w' do |f|
         f.print compress_js(all_jquery_ui_scripts, "google")
       end
-      manifest.print "javascript 'jquery-ui-1.7.2.min.js'\n"
+      manifest.print "javascript 'jquery-ui-1.7.3.min.js'\n"
       
       # jQuery UI locales
       
