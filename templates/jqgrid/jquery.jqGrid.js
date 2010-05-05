@@ -1,11 +1,11 @@
 ;(function ($) {
 /*
- * jqGrid  3.6.4 - jQuery Grid
+ * jqGrid  3.6.5 - jQuery Grid
  * Copyright (c) 2008, Tony Tomov, tony@trirand.com
  * Dual licensed under the MIT and GPL licenses
  * http://www.opensource.org/licenses/mit-license.php
  * http://www.gnu.org/licenses/gpl-2.0.html
- * Date: 2010-02-14 
+ * Date: 2010-05-05 
  */
 $.jgrid = $.jgrid || {};
 $.extend($.jgrid,{
@@ -54,14 +54,13 @@ $.extend($.jgrid,{
 		return (xmlDoc && xmlDoc.documentElement && xmlDoc.documentElement.tagName != 'parsererror') ? xmlDoc : null;
 	},
 	parse : function(jsonString) {
-		var js = jsonString, msg;
+		var js = jsonString;
 		if (js.substr(0,9) == "while(1);") { js = js.substr(9); }
 		if (js.substr(0,2) == "/*") { js = js.substr(2,js.length-4); }
 		if(!js) { js = "{}"; }
-		msg = ($.jgrid.useJSON===true && typeof (JSON) === 'object' && typeof (JSON.parse) === 'function') ?
+		return ($.jgrid.useJSON===true && typeof (JSON) === 'object' && typeof (JSON.parse) === 'function') ?
 		    JSON.parse(js) :
 		    eval('(' + js + ')');
-		return  msg.hasOwnProperty('d') ? msg.d : msg;
 	},
 	jqID : function(sid){
 		sid = sid + "";
@@ -4372,7 +4371,10 @@ $.jgrid.extend({
                 // Pulling default filter settings out of postData property of grid's properties.:
                 var defaultFilters = gridDOMobj.p.postData[filterSettings.sFilter];
                 // example of what we might get: {"groupOp":"and","rules":[{"field":"amount","op":"eq","data":"100"}]}
-
+				// suppose we have imported this with grid import, the this is a string.
+				if(typeof(defaultFilters) == "string") {
+					defaultFilters = $.jgrid.parse(defaultFilters);
+				}
                 if (defaultFilters) {
                     if (defaultFilters.groupOp) {
                         gridDOMobj.SearchFilter.setGroupOp(defaultFilters.groupOp);
@@ -6831,14 +6833,16 @@ $.jgrid.extend({
             },
 			"msel_opts" : {}
         }, $.jgrid.col, opts || {});
-		if(opts.msel == "multiselect" && !$.jgrid._multiselect) {
-			// should be in language file
-			alert("Multiselect plugin not loaded or loaded after jqGrid. Please load the plugin before the jqGrid!");
-			return;
-		}
 		if($.ui) {
 			if ($.ui.multiselect ) {
-				opts.msel_opts = $.extend($.ui.multiselect.defaults,opts.msel_opts);
+				if(opts.msel == "multiselect") {
+					if(!$.jgrid._multiselect) {
+						// should be in language file
+						alert("Multiselect plugin loaded after jqGrid. Please load the plugin before the jqGrid!");
+						return;
+					}
+					opts.msel_opts = $.extend($.ui.multiselect.defaults,opts.msel_opts);
+				}
 			}
 		}
         if (opts.caption) {

@@ -1,11 +1,11 @@
 ;(function ($) {
 /*
- * jqGrid  3.6.4 - jQuery Grid
+ * jqGrid  3.6.5 - jQuery Grid
  * Copyright (c) 2008, Tony Tomov, tony@trirand.com
  * Dual licensed under the MIT and GPL licenses
  * http://www.opensource.org/licenses/mit-license.php
  * http://www.gnu.org/licenses/gpl-2.0.html
- * Date: 2010-02-14 
+ * Date: 2010-05-05 
  */
 $.jgrid = $.jgrid || {};
 $.extend($.jgrid,{
@@ -54,14 +54,13 @@ $.extend($.jgrid,{
 		return (xmlDoc && xmlDoc.documentElement && xmlDoc.documentElement.tagName != 'parsererror') ? xmlDoc : null;
 	},
 	parse : function(jsonString) {
-		var js = jsonString, msg;
+		var js = jsonString;
 		if (js.substr(0,9) == "while(1);") { js = js.substr(9); }
 		if (js.substr(0,2) == "/*") { js = js.substr(2,js.length-4); }
 		if(!js) { js = "{}"; }
-		msg = ($.jgrid.useJSON===true && typeof (JSON) === 'object' && typeof (JSON.parse) === 'function') ?
+		return ($.jgrid.useJSON===true && typeof (JSON) === 'object' && typeof (JSON.parse) === 'function') ?
 		    JSON.parse(js) :
 		    eval('(' + js + ')');
-		return  msg.hasOwnProperty('d') ? msg.d : msg;
 	},
 	jqID : function(sid){
 		sid = sid + "";
