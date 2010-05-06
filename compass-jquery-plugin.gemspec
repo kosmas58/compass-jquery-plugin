@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{compass-jquery-plugin}
-  s.version = "0.3.0.beta.4"
+  s.version = "0.3.0.beta.5"
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kosmas Schuetz"]
-  s.date = %q{2010-05-05}
+  s.date = %q{2010-05-06}
   s.description = %q{A compass plugin that integrates jRails, jQuery, jQuery UI and Themes, jqGrid and more into the Compass Sass framework.}
   s.email = %q{kosmas.schuetz@gmx.com}
   s.extra_rdoc_files = [
@@ -25,6 +25,7 @@ Gem::Specification.new do |s|
      "Rakefile",
      "VERSION.yml",
      "compass-jquery-plugin.gemspec",
+     "gem_tasks/calendar.rake",
      "gem_tasks/dynatree.rake",
      "gem_tasks/jqgrid.rake",
      "gem_tasks/jqtouch.rake",
@@ -39,6 +40,7 @@ Gem::Specification.new do |s|
      "lib/handle_js_files.rb",
      "lib/jquery.rb",
      "lib/jquery.ui.rb",
+     "lib/jquery/calendar.rb",
      "lib/jquery/compass_plugin.rb",
      "lib/jquery/dynatree.rb",
      "lib/jquery/gridify.rb",
@@ -63,6 +65,11 @@ Gem::Specification.new do |s|
      "lib/jquery/secret_sauce/helpers/ui_grid_helper.rb",
      "lib/jquery/secret_sauce/model/find_for_grid.rb",
      "lib/yuicompressor-2.4.2.jar",
+     "templates/calendar/config/initializers/calendar.rb",
+     "templates/calendar/jquery.calendar.js",
+     "templates/calendar/jquery.calendar.min.js",
+     "templates/calendar/jquery.ui/calendar.scss",
+     "templates/calendar/manifest.rb",
      "templates/dynatree/config/initializers/dynatree.rb",
      "templates/dynatree/jquery.dynatree.js",
      "templates/dynatree/jquery.dynatree.min.js",

@@ -1,0 +1,142 @@
+﻿body
+{
+}
+
+a 
+{
+	font-size:11px;
+	text-decoration:underline;
+	cursor:pointer;
+}
+
+#jMonthCalendar 
+{
+	position:relative;
+	height:650px;
+	width:980px;
+}
+
+.MonthlyCalendar .MonthNavigation
+{
+	border-bottom:solid 1px #ddd;
+	clear:both;
+	height:20px;
+	padding:5px 10px 0 10px;
+}
+
+.MonthlyCalendar .MonthNavPrev,
+.MonthlyCalendar .MonthNavNext,
+.MonthlyCalendar .TodayLink
+{
+	width:7%;
+	float:left;
+}
+
+.MonthlyCalendar .YearNavNext,
+.MonthlyCalendar .YearNavPrev
+{
+	width:10%;
+	float:left;
+}
+
+.MonthlyCalendar .MonthName
+ {
+	width:59%;
+	text-align:center;
+	font-weight:bold;
+	float:left;
+}
+
+.MonthlyCalendar
+{
+	height:100%;
+	width:100%;
+	border:solid 1px #ddd;
+	border-collapse:collapse;
+}
+
+.MonthlyCalendar #CalendarHead 
+{
+	width:100%;
+	background:#F7F7F7 none repeat scroll 0 0;
+}
+
+.MonthlyCalendar #CalendarHead .DateHeader
+{
+	width:14.285%;
+	text-align:center;
+}
+
+.MonthlyCalendar #CalendarBody
+{
+}
+
+.DateBox
+{
+	vertical-align:top;
+	border:solid 1px #ddd;
+	width:135px;
+}
+
+.DateLabel
+ {
+	height:16px;
+	width:100%;
+	background:#F7F7F7 none repeat scroll 0 0;
+	text-align:right;
+}
+
+.DateLabel a
+{
+	cursor:pointer;
+	padding:0 5px 2px;
+	text-decoration:none;
+	line-height:16px;
+}
+
+#CalendarBody .Inactive,
+#CalendarBody .Weekend
+{
+	background:#fafafa none repeat scroll 0 0;
+}
+.Today, #CalendarBody .DateBoxOver
+{
+	background:#A9DFFF none repeat scroll 0 0;
+}
+
+#jMonthCalendar .MoreEvents
+{
+	font-size:12px;
+	padding:1px 1px 1px 4px;
+	cursor:pointer;
+	display:block;
+	position:absolute;
+	text-align:center;
+	height:14px;
+}
+
+#jMonthCalendar .Event
+{
+	font-size:12px;
+	padding:1px 1px 1px 4px;
+	background-color:#C0D0FF;
+	border:solid 1px #000;
+	cursor:pointer;
+	display:block;
+	position:absolute;
+	text-align:left;
+	overflow:hidden;
+	height:14px;
+}
+
+.Event a
+{
+	text-decoration:none;
+	color:#000;
+	float:left;
+	white-space:nowrap;
+	padding-top:1px;
+}
+.Event a:hover { text-decoration:underline; }
+.Event span.ui-icon-triangle-1-w { float:left; }
+.Event span.ui-icon-triangle-1-e { float:right; }
