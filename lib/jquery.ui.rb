@@ -29,6 +29,9 @@ class JqueryUiTheme
       print "Fixing up bug in 1.7.3 template\n"
       @base_theme[416,0] = ".ui-widget .ui-widget { font-size: 1em; }\n"
     end
+    # Fix opacity issue
+    #@base_theme.sub!(/\/\*\{bgOverlayRepeat\}\*\/; opacity: \.[0-9]+/, //)
+    
     # Fix AutoComplete
     if @version == 14
       @base_theme += AUTOCOMPLETE_FIX
