@@ -29,16 +29,18 @@ class JqueryUiTheme
       print "Fixing up bug in 1.7.3 template\n"
       @base_theme[416,0] = ".ui-widget .ui-widget { font-size: 1em; }\n"
     end
+    
     # Fix opacity issue
-    print "Fixing overlay\n"
-    @base_theme.sub!(/\/\*\{bgOverlayRepeat\}\*\/; opacity: (\.\d+)\;filter:Alpha\(Opacity=(\d+)\)\/\*\{opacityOverlay\}\*\/\;/, "/*{bgOverlayRepeat}*/; opacity: #{$1}/*{bgOverlayOpacity}*/;filter:Alpha(Opacity=#{$2})/*{bgOverlayAlpha}*/;")
-    @base_theme.sub!(/\/\*\{bgShawdowRepeat\}\*\/; opacity: (\.\d+)\;filter:Alpha\(Opacity=(\d+)\)\/\*\{opacityShadow\}\*\/\;/, "/*{bgShadowRepeat}*/; opacity: #{$1}/*{bgShadowOpacity}*/;filter:Alpha(Opacity=#{$2})/*{bgShadowAlpha}*/;")
+    print "Fixing overlays\n"  
+    @base_theme.sub!(/\/\*\{bgOverlayRepeat\}\*\/\; opacity: (\.\d+)\;filter:/, "/*{bgOverlayRepeat}*/; opacity: \\1/*{bgOverlayOpacity}*/; filter: ")
+    @base_theme.sub!(/\{opacityOverlay\}/, '{bgOverlayFilter}')
+    @base_theme.sub!(/\/\*\{bgShadowRepeat\}\*\/\; opacity: (\.\d+)\;filter:/, "/*{bgShadowRepeat}*/; opacity: \\1/*{bgShadowOpacity}*/; filter: ")
+    @base_theme.sub!(/\{opacityShadow\}/, '{bgShadowFilter}')
 
     # Fix AutoComplete
     if @version == 14
       @base_theme += AUTOCOMPLETE_FIX
     end
-    print @base_theme
   end
 
   # This sets up the Regexp that will extract the variables from a theme
@@ -77,6 +79,7 @@ class JqueryUiTheme
       next unless /^#{@prefix}\..*\.css$/ =~ file
       next if ["{#{@prefix}.all.css", "#{@prefix}.base.css"].include? file
       css = File.read(File.join(@base_theme_directory, file))
+      
       if "{#{@prefix}.autocomplete.css".include? file
         # Removing autocomplete image to add it later by script
         if css[112..135] == ".ui-autocomplete-loading"
@@ -84,6 +87,7 @@ class JqueryUiTheme
           css[112,0] = "/*"
         end
       end
+      
       open File.join(stylesheets, '_' + file.gsub(/\.css$/,'.scss').gsub(/^#{@prefix}\./,'')), 'w' do |f|
         if file == @theme_filename
           f.print(self.class.theme_css2sass(@base_theme))
@@ -101,6 +105,10 @@ class JqueryUiTheme
       theme = @base_theme
     else
       theme = File.read(File.join(dir, @theme_filename))
+      
+      # Fix Overlay stuff
+      theme.gsub!(/\;filter:Alpha/, "; filter: Alpha")      
+      
       if @version == 14
         theme += AUTOCOMPLETE_FIX
       end
