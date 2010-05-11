@@ -65,6 +65,22 @@ To use the localized stylesheets and javacripts include:
 = stylesheet_link_tag 'compiled/jquery.ui/dynatree.[skin].css', :media => 'screen, projection'
 = javascript_include_tag :dynatree</pre>
 
+h3. jQuery Ribbon Plugin
+
+Use compass to install the jQuery Ribbon javascript library into your project.
+
+<pre>compass install [-r jquery] jquery/ribbon <project name></pre>
+
+You will find all the stylesheets in easy-to-read Sass format at:
+
+<pre>stylesheets/jquery.ui</pre>
+
+To use the localized stylesheets and javacripts include:
+
+<pre>
+= stylesheet_link_tag 'compiled/jquery.ui/ribbon.[theme].css', :media => 'screen, projection'
+= javascript_include_tag :ribbon</pre>
+
 h3. jqGrid
 
 Use compass to install the jqGrid javascript library into your project.
@@ -96,6 +112,22 @@ To use the localized stylesheets and javacripts include:
 <pre>
 = stylesheet_link_tag 'compiled/jquery.ui/secret_sauce.css', :media => 'screen, projection'
 = javascript_include_tag :secret_sauce</pre>
+
+h3. Calendar
+
+Use compass to install the calendar javascript library into your project.
+
+<pre>compass install [-r jquery] jquery/calendar <project name></pre>
+
+You will find all the stylesheets in easy-to-read Sass format.
+
+<pre>stylesheets/jquery.ui</pre>
+
+To use the (localized) stylesheets and javacripts include:
+
+<pre>
+  = stylesheet_link_tag 'compiled/jquery.ui/calendar.css', :media => 'screen, projection'
+  = javascript_include_tag :calendar</pre>
 
 h3. jQTouch
 
