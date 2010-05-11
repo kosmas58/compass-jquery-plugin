@@ -1743,17 +1743,17 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<haml>, [">= 3.0.0.rc.4"])
-      s.add_runtime_dependency(%q<compass>, [">= 0.10.0.rc5"])
+      s.add_runtime_dependency(%q<haml>, [">= 3.0.0"])
+      s.add_runtime_dependency(%q<compass>, [">= 0.10.0"])
       s.add_runtime_dependency(%q<ri_cal>, [">= 0.8.7"])
     else
-      s.add_dependency(%q<haml>, [">= 3.0.0.rc.4"])
-      s.add_dependency(%q<compass>, [">= 0.10.0.rc5"])
+      s.add_dependency(%q<haml>, [">= 3.0.0"])
+      s.add_dependency(%q<compass>, [">= 0.10.0"])
       s.add_dependency(%q<ri_cal>, [">= 0.8.7"])
     end
   else
-    s.add_dependency(%q<haml>, [">= 3.0.0.rc.4"])
-    s.add_dependency(%q<compass>, [">= 0.10.0.rc5"])
+    s.add_dependency(%q<haml>, [">= 3.0.0"])
+    s.add_dependency(%q<compass>, [">= 0.10.0"])
     s.add_dependency(%q<ri_cal>, [">= 0.8.7"])
   end
 end
