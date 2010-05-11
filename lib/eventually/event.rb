@@ -1,5 +1,4 @@
 module Eventually
-  
   module Event
     
     def ical_event
