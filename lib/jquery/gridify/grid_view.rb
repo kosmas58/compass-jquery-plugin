@@ -362,7 +362,7 @@ module Gridify
         }
       };
             
-      jQuery(window).bind('resize', gridify_fluid_recalc_width);
+      jQuery(window).live('resize', gridify_fluid_recalc_width);
       function gridify_action_error_handler(r, data, action){
         if (r.responseText != '') {
           return [false, r.responseText];
