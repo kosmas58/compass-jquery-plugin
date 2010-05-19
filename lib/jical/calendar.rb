@@ -1,4 +1,4 @@
-module Ical
+module Jical
   module Calendar
     
     def ical_calendar

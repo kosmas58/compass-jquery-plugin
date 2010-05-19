@@ -1,4 +1,4 @@
 require 'ri_cal'
 
-module Ical
+module Jical
 end
