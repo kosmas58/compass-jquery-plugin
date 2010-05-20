@@ -1,4 +1,4 @@
-module JqIcal
+module Jqical
   module Event
     
     def ical_event
