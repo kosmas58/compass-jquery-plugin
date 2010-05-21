@@ -68,6 +68,7 @@ table.fc-header {
 .fc-header-title {
 	margin-top: 0;
 	white-space: nowrap;
+	text-align: center;
 	}
 	
 .fc-header-space {
