@@ -39,7 +39,6 @@ Gem::Specification.new do |s|
      "lib/compiler.jar",
      "lib/handle_attributes.rb",
      "lib/handle_js_files.rb",
-     "lib/jqical.rb",
      "lib/jquery.rb",
      "lib/jquery.ui.rb",
      "lib/jquery/compass_plugin.rb",
