@@ -178,6 +178,9 @@ h3. jQuery Plugins included
 
 * Working on integration of:
 ** Rick DeNatale for <b>"ri_cal":http://github.com/rubyredrick/ri_cal/</b>
+** Adam Shaw for <b>">>FullCalendar":http://arshaw.com/fullcalendar/</b>
+** Andrew M Andrews III for <b>"Any+Time":http://www.ama3.com/anytime/</b>
+
 ** Rob Monie for <b>"jQuery.weekCalendar":http://www.redredred.com.au/</b>
 ** Kyle LeNeau for <b>"jMonthCalendar":http://www.bytecyclist.com/projects/jmonthcalendar</b>
 
