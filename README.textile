@@ -113,11 +113,11 @@ To use the localized stylesheets and javacripts include:
 = stylesheet_link_tag 'compiled/jquery.ui/secret_sauce.css', :media => 'screen, projection'
 = javascript_include_tag :secret_sauce</pre>
 
-h3. Calendar
+h3. jqIcal
 
-Use compass to install the calendar javascript library into your project.
+Use compass to install the jqIcal javascript library into your project.
 
-<pre>compass install [-r jquery] jquery/calendar <project name></pre>
+<pre>compass install [-r jquery] jquery/jqical <project name></pre>
 
 You will find all the stylesheets in easy-to-read Sass format.
 
@@ -126,8 +126,8 @@ You will find all the stylesheets in easy-to-read Sass format.
 To use the (localized) stylesheets and javacripts include:
 
 <pre>
-  = stylesheet_link_tag 'compiled/jquery.ui/calendar.css', :media => 'screen, projection'
-  = javascript_include_tag :calendar</pre>
+  = stylesheet_link_tag 'compiled/jquery.ui/jqical.css', :media => 'screen, projection'
+  = javascript_include_tag :jqical</pre>
 
 h3. jQTouch
 

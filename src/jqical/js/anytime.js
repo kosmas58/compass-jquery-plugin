@@ -3651,4 +3651,3 @@ AnyTime.picker = function( id, options )
 //
 //  END OF FILE
 //
-if(window.location.hostname.length&&(window.location.hostname!='www.ama3.com'))alert('REMOVE THE LAST LINE FROM anytime.js!');

@@ -27,8 +27,8 @@ all_stylesheets = [
 ].collect {|filename| File.read(File.join(JQICAL_SRC, 'css', filename))}.join "\n\n"
 
 namespace :build do
-  desc 'Build the stylesheets and templates for calendar.'
-  task :calendar do
+  desc 'Build the stylesheets and templates for jqical.'
+  task :jqical do
     
     FileUtils.remove_dir JQICAL_DEST_TEMPLATES if File.exists? JQICAL_DEST_TEMPLATES   
     FileUtils.mkdir_p(File.join(JQICAL_DEST_TEMPLATES, 'config', 'initializers'))
@@ -36,20 +36,20 @@ namespace :build do
     open File.join(JQICAL_DEST_TEMPLATES, 'manifest.rb'), 'w' do |manifest|
       manifest.print JQICAL_MESSAGE1
     
-      open File.join(JQICAL_DEST_TEMPLATES, 'config', 'initializers', 'calendar.rb'), 'w' do |f|
-        f.print(File.read(File.join(JQICAL_SRC, 'config', 'initializers', 'calendar.rb')))
+      open File.join(JQICAL_DEST_TEMPLATES, 'config', 'initializers', 'jqical.rb'), 'w' do |f|
+        f.print(File.read(File.join(JQICAL_SRC, 'config', 'initializers', 'jqical.rb')))
       end
-      manifest.print "file 'config/initializers/calendar.rb'\n"  
+      manifest.print "file 'config/initializers/jqical.rb'\n"  
     
-      open File.join(JQICAL_DEST_TEMPLATES, 'jquery.calendar.js'), 'w' do |f|
+      open File.join(JQICAL_DEST_TEMPLATES, 'jquery.jqical.js'), 'w' do |f|
         f.print concat_files(all_scripts)
       end
-      manifest.print "javascript 'jquery.calendar.js'\n"
+      manifest.print "javascript 'jquery.jqical.js'\n"
     
-      open File.join(JQICAL_DEST_TEMPLATES, 'jquery.calendar.min.js'), 'w' do |f|
+      open File.join(JQICAL_DEST_TEMPLATES, 'jquery.jqical.min.js'), 'w' do |f|
         f.print compress_js(all_scripts, "google")
       end
-      manifest.print "javascript 'jquery.calendar.min.js'\n"
+      manifest.print "javascript 'jquery.jqical.min.js'\n"
 
 #      ['i18n'].each do |path|
 #        FileUtils.mkdir_p File.join(JQICAL_DEST_TRANSLATIONS)
@@ -57,12 +57,12 @@ namespace :build do
 #          next unless /\.js$/ =~ file
 #          js = File.read File.join(JQICAL_SRC, 'js', path, file)
 #          file.gsub!(/^grid\./,'')          
-#          manifest.print "javascript '#{File.join(path, 'calendar', file)}'\n"
+#          manifest.print "javascript '#{File.join(path, 'jqical', file)}'\n"
 #          open File.join(JQICAL_DEST_TRANSLATIONS, file), 'w' do |f|
 #            f.write js
 #          end               
 #          file.gsub!(/\.js$/, '.min.js')
-#          manifest.print "javascript '#{File.join(path, 'calendar', file)}'\n"
+#          manifest.print "javascript '#{File.join(path, 'jqical', file)}'\n"
 #          open File.join(JQICAL_DEST_TRANSLATIONS, file), 'w' do |f|
 #            f.write compress_js(js, "google")
 #          end
@@ -70,12 +70,12 @@ namespace :build do
 #      end
     
       FileUtils.mkdir_p File.join(JQICAL_DEST_STYLESHEETS)
-      open File.join(JQICAL_DEST_STYLESHEETS, 'calendar.scss'), 'w' do |f|
+      open File.join(JQICAL_DEST_STYLESHEETS, 'jqical.scss'), 'w' do |f|
         sass = JQICAL_MESSAGE2        
         IO.popen("sass-convert -F css -T scss", 'r+') { |ff| ff.print(all_stylesheets); ff.close_write; sass += ff.read }
         f.print sass
       end
-      manifest.print "stylesheet 'jquery.ui/calendar.scss'\n"
+      manifest.print "stylesheet 'jquery.ui/jqical.scss'\n"
     end
   end
 end
