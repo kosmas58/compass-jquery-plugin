@@ -14,28 +14,6 @@ module Jqical
       @starts_at = date_time
     end
     
-    def start_date
-      @start_date ||= starts_at.strftime('%m/%d/%Y')
-    end
-    
-    def start_date=(string_date)
-      if parsed = DateTime.parse("#{string_date} #{start_time}") rescue nil
-        @starts_at = parsed
-      end
-      @start_date = string_date
-    end
-    
-    def start_time
-      @start_time ||= starts_at.strftime('%l:%M%p').strip
-    end
-    
-    def start_time=(string_time)
-      if parsed = DateTime.parse("#{start_date} #{string_time}") rescue nil
-        @starts_at = parsed
-      end
-      @start_time = string_time
-    end
-    
     def ends_at
       @ends_at ||= ical_event.dtend ? ical_event.dtend.to_datetime : starts_at + 60 * 60
     end
@@ -43,28 +21,6 @@ module Jqical
     def ends_at=(date_time)
       @end_time = @end_date = nil
       @ends_at = date_time
-    end
-    
-    def end_date
-      @end_date ||= ends_at.strftime('%m/%d/%Y')
-    end
-    
-    def end_date=(string_date)
-      if parsed = DateTime.parse("#{string_date} #{end_time}") rescue nil
-        @ends_at = parsed
-      end
-      @end_date = string_date
-    end
-    
-    def end_time
-      @end_time ||= ends_at.strftime('%l:%M%p').strip
-    end
-    
-    def end_time=(string_time)
-      if parsed = DateTime.parse("#{end_date} #{string_time}") rescue nil
-        @ends_at = parsed
-      end
-      @end_time = string_time
     end
     
     def summary

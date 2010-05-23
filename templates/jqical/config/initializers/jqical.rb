@@ -1,5 +1,5 @@
 require 'jquery/jqical'
-require 'jqical/helpers/ui_event_helper'
+require 'jquery/jqical/helpers/ui_event_helper'
 
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :jqical => ['jquery.jqical.min']
 
