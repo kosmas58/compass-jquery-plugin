@@ -96,6 +96,10 @@
   font-size: 1em;
   padding: .5em .5em .5em .7em; }
 
+/* IE7-/Win - Fix extra vertical space in lists */
+.ui-accordion a {
+  zoom: 1; }
+
 .ui-accordion-icons .ui-accordion-header a {
   padding-left: 2.2em; }
 
@@ -148,6 +152,9 @@
 .ui-menu .ui-menu-item {
   margin: 0;
   padding: 0;
+  zoom: 1;
+  float: left;
+  clear: left;
   width: 100%; }
 
 .ui-menu .ui-menu-item a {
@@ -159,6 +166,7 @@
 
 .ui-menu .ui-menu-item a.ui-state-hover,
 .ui-menu .ui-menu-item a.ui-state-active {
+  font-weight: normal;
   margin: -1px; }
 
 
@@ -682,7 +690,7 @@ button.ui-button::-moz-focus-inner {
 /* first selector in group seems obsolete, but required to overcome bug in Opera applying cursor: text overall if defined elsewhere... */
 .ui-tabs .ui-tabs-panel {
   display: block;
-  border: 0;
+  border-width: 0;
   padding: 1em 1.4em;
   background: none; }
 
@@ -729,7 +737,7 @@ button.ui-button::-moz-focus-inner {
 
 /* Interaction states
 ----------------------------------*/
-.ui-state-default, .ui-widget-content .ui-state-default {
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
   border: 1px solid $ui_borderColorDefault;
   background: $ui_bgColorDefault $ui_bgImgUrlDefault $ui_bgDefaultXPos $ui_bgDefaultYPos $ui_bgDefaultRepeat;
   font-weight: $ui_fwDefault;
@@ -739,7 +747,7 @@ button.ui-button::-moz-focus-inner {
   color: $ui_fcDefault;
   text-decoration: none; }
 
-.ui-state-hover, .ui-widget-content .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus {
+.ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus {
   border: 1px solid $ui_borderColorHover;
   background: $ui_bgColorHover $ui_bgImgUrlHover $ui_bgHoverXPos $ui_bgHoverYPos $ui_bgHoverRepeat;
   font-weight: $ui_fwDefault;
@@ -749,7 +757,7 @@ button.ui-button::-moz-focus-inner {
   color: $ui_fcHover;
   text-decoration: none; }
 
-.ui-state-active, .ui-widget-content .ui-state-active {
+.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active {
   border: 1px solid $ui_borderColorActive;
   background: $ui_bgColorActive $ui_bgImgUrlActive $ui_bgActiveXPos $ui_bgActiveYPos $ui_bgActiveRepeat;
   font-weight: $ui_fwDefault;
@@ -764,34 +772,34 @@ button.ui-button::-moz-focus-inner {
 
 /* Interaction Cues
 ----------------------------------*/
-.ui-state-highlight, .ui-widget-content .ui-state-highlight {
+.ui-state-highlight, .ui-widget-content .ui-state-highlight, .ui-widget-header .ui-state-highlight {
   border: 1px solid $ui_borderColorHighlight;
   background: $ui_bgColorHighlight $ui_bgImgUrlHighlight $ui_bgHighlightXPos $ui_bgHighlightYPos $ui_bgHighlightRepeat;
   color: $ui_fcHighlight; }
 
-.ui-state-highlight a, .ui-widget-content .ui-state-highlight a {
+.ui-state-highlight a, .ui-widget-content .ui-state-highlight a,.ui-widget-header .ui-state-highlight a {
   color: $ui_fcHighlight; }
 
-.ui-state-error, .ui-widget-content .ui-state-error {
+.ui-state-error, .ui-widget-content .ui-state-error, .ui-widget-header .ui-state-error {
   border: 1px solid $ui_borderColorError;
   background: $ui_bgColorError $ui_bgImgUrlError $ui_bgErrorXPos $ui_bgErrorYPos $ui_bgErrorRepeat;
   color: $ui_fcError; }
 
-.ui-state-error a, .ui-widget-content .ui-state-error a {
+.ui-state-error a, .ui-widget-content .ui-state-error a, .ui-widget-header .ui-state-error a {
   color: $ui_fcError; }
 
-.ui-state-error-text, .ui-widget-content .ui-state-error-text {
+.ui-state-error-text, .ui-widget-content .ui-state-error-text, .ui-widget-header .ui-state-error-text {
   color: $ui_fcError; }
 
-.ui-priority-primary, .ui-widget-content .ui-priority-primary {
+.ui-priority-primary, .ui-widget-content .ui-priority-primary, .ui-widget-header .ui-priority-primary {
   font-weight: bold; }
 
-.ui-priority-secondary, .ui-widget-content .ui-priority-secondary {
+.ui-priority-secondary, .ui-widget-content .ui-priority-secondary,  .ui-widget-header .ui-priority-secondary {
   opacity: .7;
   filter: Alpha(Opacity = 70);
   font-weight: normal; }
 
-.ui-state-disabled, .ui-widget-content .ui-state-disabled {
+.ui-state-disabled, .ui-widget-content .ui-state-disabled, .ui-widget-header .ui-state-disabled {
   opacity: .35;
   filter: Alpha(Opacity = 35);
   background-image: none; }
