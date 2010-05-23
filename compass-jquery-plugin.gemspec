@@ -264,6 +264,8 @@ Gem::Specification.new do |s|
      "templates/jqical/jquery.jqical.js",
      "templates/jqical/jquery.jqical.min.js",
      "templates/jqical/jquery.ui/jqical.scss",
+     "templates/jqical/jquery.ui/jqical/calendar.png",
+     "templates/jqical/jquery.ui/jqical/clock.png",
      "templates/jqical/manifest.rb",
      "templates/jqtouch/config/initializers/jqtouch.rb",
      "templates/jqtouch/jqtouch/apple/actionButton.png",
