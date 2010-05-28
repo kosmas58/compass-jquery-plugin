@@ -6,7 +6,7 @@ module Jqical
     end
     
     def starts_at
-      @starts_at ||= dtstart ? dtstart : DateTime.zone.now
+      @starts_at ||= dtstart ? dtstart : DateTime.now
     end
     
     def starts_at=(date_time)
