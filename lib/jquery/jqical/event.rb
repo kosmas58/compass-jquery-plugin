@@ -6,7 +6,7 @@ module Jqical
     end
     
     def starts_at
-      @starts_at ||= dtstart ? dtstart : DateTime.now
+      @starts_at ||= ical_event.dtstart ? ical_event.dtstart.to_datetime : DateTime.now
     end
     
     def starts_at=(date_time)
@@ -37,7 +37,7 @@ module Jqical
     end
     
     def ends_at
-      @ends_at ||= dtend ? dtend : starts_at + 60.minutes
+      @ends_at ||= ical_event.dtend ? ical_event.dtend.to_datetime : starts_at + 60.minutes
     end
     
     def ends_at=(date_time)
@@ -66,35 +66,53 @@ module Jqical
       end
       @end_time = string_time
     end
-
+    
+    def summary
+      @summary ||= ical_event.summary
+    end
+    attr_writer :summary
+    
+    def location
+      @location ||= ical_event.location
+    end
+    attr_writer :location    
+    
+    def description
+      @description ||= ical_event.description
+    end
+    attr_writer :description
+    
+    def all_day
+      @all_day ||= ical_event.x_properties["X-MICROSOFT-CDO-ALLDAYEVENT"][0] ? 1 : 0
+    end
+    attr_writer :all_day
+    
     private
       def serialize_ical_event
+        ical_event.summary     = summary
+        ical_event.location    = location
+        ical_event.description = description
         ical_event.x_properties["X-MICROSOFT-CDO-ALLDAYEVENT"] = []
-        if all_day
-          self.all_day = true          
+        
+        if all_day == "1"  
           ical_event.add_x_property("X-MICROSOFT-CDO-ALLDAYEVENT", "1")
-          self.dtstart = DateTime.parse("#{start_date}T00:00")
           if starts_at <= ends_at-1.day
-            self.dtend = DateTime.parse("#{end_date}T00:00")
-          else            
-            self.dtend = self.dtstart+1.day
+            ical_event.dtstart = DateTime.parse("#{start_date}T00:00")
+            ical_event.dtend = DateTime.parse("#{end_date}T00:00")
+          else       
+            ical_event.dtstart = DateTime.parse("#{start_date}T00:00")     
+            ical_event.dtend = ical_event.dtstart+1.day
           end
         else
-          self.all_day = false
-          self.dtstart = DateTime.parse("#{start_date}T#{start_time}")
           if starts_at <= ends_at
-            self.dtend = DateTime.parse("#{end_date}T#{end_time}")
+            ical_event.dtstart = DateTime.parse("#{start_date}T#{start_time}")
+            ical_event.dtend = DateTime.parse("#{end_date}T#{end_time}")
           else
-            self.dtend = self.dtstart+1.hour
+            ical_event.dtstart = DateTime.parse("#{start_date}T#{start_time}")
+            ical_event.dtend = ical_event.dtstart+1.hour
           end
         end
-        
-        ical_event.dtend       = ends_at
-        ical_event.dtstart     = starts_at
-        ical_event.summary     = summary
-        ical_event.description = description
-        ical_event.location    = location
         self.ical_string = ical_event.to_s
-      end
-  end
+      end    
+  end  
 end
