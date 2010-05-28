@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kosmas Schuetz"]
-  s.date = %q{2010-05-26}
+  s.date = %q{2010-05-28}
   s.description = %q{A compass plugin that integrates jRails, jQuery, jQuery UI and Themes, jqGrid and more into the Compass Sass framework.}
   s.email = %q{kosmas.schuetz@gmx.com}
   s.extra_rdoc_files = [
@@ -55,6 +55,7 @@ Gem::Specification.new do |s|
      "lib/jquery/jqical.rb",
      "lib/jquery/jqical/calendar.rb",
      "lib/jquery/jqical/event.rb",
+     "lib/jquery/jqical/helpers/ui_event_helper.rb",
      "lib/jquery/jqtouch.rb",
      "lib/jquery/jquery_auto_complete.rb",
      "lib/jquery/jquery_selector_assertions.rb",
@@ -260,6 +261,7 @@ Gem::Specification.new do |s|
      "templates/jqgrid/jquery.ui/jqGrid.scss",
      "templates/jqgrid/manifest.rb",
      "templates/jqgrid/public/stylesheets/ellipsis-xbl.xml",
+     "templates/jqical/app/views/ui/_ui_event_for.js.haml",
      "templates/jqical/config/initializers/jqical.rb",
      "templates/jqical/jquery.jqical.js",
      "templates/jqical/jquery.jqical.min.js",

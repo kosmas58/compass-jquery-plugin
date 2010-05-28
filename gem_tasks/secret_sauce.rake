@@ -17,9 +17,9 @@ namespace :build do
   desc 'Build the stylesheets and templates for jqGrid.'
   task :secret_sauce do
     
-    FileUtils.remove_dir SECRET_SAUCE_DEST_TEMPLATES if File.exists? SECRET_SAUCE_DEST_TEMPLATES 
-    FileUtils.mkdir_p SECRET_SAUCE_DEST_CONFIG
-    FileUtils.mkdir_p SECRET_SAUCE_DEST_VIEWS
+    FileUtils.remove_dir(SECRET_SAUCE_DEST_TEMPLATES) if File.exists? SECRET_SAUCE_DEST_TEMPLATES 
+    FileUtils.mkdir_p(SECRET_SAUCE_DEST_CONFIG)
+    FileUtils.mkdir_p(SECRET_SAUCE_DEST_VIEWS)
     
     open File.join(SECRET_SAUCE_DEST_TEMPLATES, 'manifest.rb'), 'w' do |manifest|
       manifest.print SECRET_SAUCE_MESSAGE1

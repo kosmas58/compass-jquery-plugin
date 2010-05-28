@@ -1,0 +1,174 @@
+- if actions
+  - if actions[:delete]
+    :javascript
+      function live_delete(rowId) {
+        $.ajax({
+          method: "GET", 
+          url: "#{url}/"+rowId+"#{actions[:delete]}",
+          success: function(data, status) {
+            //var dWidth = $(data).css("width")
+            //var dHeight = $(data).css("height")
+            $("##{domid}_delete_dialog").append(data)
+            $("##{domid}_submit").hide(); // HACK: easy way to make submit on enter work
+            $("##{domid}_delete_dialog").find("form").submit(function() {
+              $(this).ajaxSubmit({
+                type: "DELETE",
+                url: "#{url}/"+rowId,
+                data: {authenticity_token: "#{form_authenticity_token}"},
+                success: function(response, status) {
+                  if(!$(response).is("form")) {
+                    $("##{domid}_delete_dialog").dialog('close');
+                  } else {
+                    $("##{domid}_delete_dialog").find("form").replaceWith(response);
+                  }
+                }
+              });
+              return false;
+            });
+            $("##{domid}_delete_dialog").dialog({ 
+              buttons: {
+                "#{I18n.t('txt.ui.form.delete')}": function() {$(this).find("form").submit();},
+                "#{I18n.t('txt.ui.form.cancel')}": function() {$(this).dialog('close');}
+              },
+              title: "#{I18n.t('txt.ui.form.delete')}",
+              width: 480, //dWidth,
+              height: 400, //dHeight,
+              bgiframe: true,
+              modal: true,
+              draggable: true,
+              resizable: true,
+              close: function() {
+                $(this).dialog('destroy');
+                $("##{domid}_delete_dialog").children().remove();
+                // refresh
+                $.ajax({ method: "GET", url: "#{url}#{actions[:reload]}" });
+              }
+            });
+            $("##{domid}_create_delete").dialog('open');    
+          }
+        });             
+      }; 
+      
+  - if actions[:update]
+    :javascript
+      function live_update(rowId) {
+        $.ajax({
+          method: "GET", 
+          url: "#{url}/"+rowId+"#{actions[:update]}",
+          success: function(data, status) {
+            //var dWidth = $(data).css("width")
+            //var dHeight = $(data).css("height")
+            $("##{domid}_update_dialog").append(data)
+            $("##{domid}_submit").hide(); // HACK: easy way to make submit on enter work
+            $("##{domid}_update_dialog").find("form").submit(function() {
+              $(this).ajaxSubmit({
+                type: "PUT",  
+                url: "#{url}/"+rowId,
+                data: {authenticity_token: "#{form_authenticity_token}"},
+                success: function(response, status) {
+                  if(!$(response).is("form")) {
+                    $("##{domid}_update_dialog").dialog('close');
+                  } else {
+                    $("##{domid}_update_dialog").find("form").replaceWith(response);
+                  }
+                }
+              });
+              return false;
+            });
+            $("##{domid}_update_dialog").dialog({ 
+              buttons: {
+                "#{I18n.t('txt.ui.form.save')}": function() {$(this).find("form").submit();},
+                "#{I18n.t('txt.ui.form.cancel')}": function() {$(this).dialog('close');}
+              },
+              title: "#{I18n.t('txt.ui.form.edit')}",
+              width: 640, //dWidth,
+              height: 600, //dHeight,
+              bgiframe: true,
+              modal: true,
+              draggable: true,
+              resizable: true,
+              close: function() {
+                $(this).dialog('destroy');
+                $("##{domid}_update_dialog").children().remove();
+                // refresh
+                $.ajax({ method: "GET", url: "#{url}#{actions[:reload]}" });
+              }
+            });
+            $("##{domid}_create_update").dialog('open');
+          }
+        });             
+      }; 
+
+  - if actions[:create]
+    :javascript
+      function live_create() {        
+        $.ajax({
+          method: "GET", 
+          url: "#{url}#{actions[:create]}",
+          success: function(data, status) {
+            //var dWidth =  $(data).css("width");
+            //var dHeight = $(data).css("height");
+            $("##{domid}_create_dialog").append(data);
+            $("##{domid}_submit").hide(); // HACK: easy way to make submit on enter work
+            $("##{domid}_create_dialog").find("form").submit(function() {
+              $(this).ajaxSubmit({
+                type: "POST",    
+                url: "#{url}",
+                data: $(this).serialize(),
+                success: function(response, status) {
+                  if(!$(response).is("form")) {
+                    $("##{domid}_create_dialog").dialog('close');
+                  } else {
+                    $("##{domid}_create_dialog").find("form").replaceWith(response);
+                  }
+                }
+              });
+              return false;
+            });
+            $("##{domid}_create_dialog").dialog({
+              buttons: {
+                "#{I18n.t('txt.ui.form.save')}": function() {$(this).find("form").submit();},
+                "#{I18n.t('txt.ui.form.cancel')}": function() {$(this).dialog('close');}
+              },
+              title: "#{I18n.t('txt.ui.form.new')}",
+              width: 640, //dWidth,
+              height: 600, //dHeight,
+              bgiframe: true,
+              modal: true,
+              draggable: true,
+              resizable: true,
+              close: function() {
+                $(this).dialog('destroy');
+                $("##{domid}_create_dialog").children().remove();
+                $.ajax({ method: "GET", url: "#{url}#{actions[:reload]}" });
+              }
+            });
+            $("##{domid}_create_dialog").dialog('open');    
+          }
+        });             
+      }; 
+
+  - if actions[:delete]
+    :javascript
+      $(document).ready(function() {
+        $(".#{domid}_delete").live('click', function() {
+          live_delete($(this).attr('value'));
+        });
+      });
+      
+  - if actions[:update]
+    :javascript
+      $(document).ready(function() {
+        $(".#{domid}_update").live('click', function() {
+          live_update($(this).attr('value'));
+        });
+      });
+      
+  - if actions[:create]
+    :javascript
+      $(document).ready(function() {
+        $(".#{domid}_create").live('click', function() {
+          live_create();
+        });
+      });
+     
