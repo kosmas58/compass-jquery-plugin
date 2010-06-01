@@ -98,10 +98,10 @@ module Jqical
           ical_event.add_x_property("X-MICROSOFT-CDO-ALLDAYEVENT", "1")
           if starts_at <= ends_at-1.day
             ical_event.dtstart = DateTime.parse("#{start_date}T00:00")
-            ical_event.dtend = DateTime.parse("#{start_date}T23:59")
+            ical_event.dtend = DateTime.parse("#{end_date}T00:00")+1.day
           else       
             ical_event.dtstart = DateTime.parse("#{start_date}T00:00")     
-            ical_event.dtend = ical_event.dtstart+1.day-1.minute
+            ical_event.dtend = ical_event.dtstart+1.day
           end
         else
           if starts_at <= ends_at
