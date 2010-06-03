@@ -175,14 +175,9 @@ h3. jQuery Plugins included
 * Denis Howlett for <b>"jQuery Table Drag and Drop Plugin":http://www.isocra.com/2008/02/table-drag-and-drop-jquery-plugin/</b>
 * Michael Aufreiter for <b>"jQuery UI Multiselect Plugin":http://quasipartikel.at</b>
 * Tim Caswell for <b>"jQuery haml Plugin":http://github.com/creationix/haml-js</b>
-
-* Working on integration of:
-** Rick DeNatale for <b>"ri_cal":http://github.com/rubyredrick/ri_cal/</b>
-** Andrew M Andrews III for <b>"Any+Time":http://www.ama3.com/anytime/</b>
-** Adam Shaw for <b>">>FullCalendar":http://arshaw.com/fullcalendar/</b>
-
-** Rob Monie for <b>"jQuery.weekCalendar":http://www.redredred.com.au/</b>
-** Kyle LeNeau for <b>"jMonthCalendar":http://www.bytecyclist.com/projects/jmonthcalendar</b>
+* Rick DeNatale for <b>"ri_cal":http://github.com/rubyredrick/ri_cal/</b>
+* Andrew M Andrews III for <b>"Any+Time":http://www.ama3.com/anytime/</b>
+* Adam Shaw for <b>">>FullCalendar":http://arshaw.com/fullcalendar/</b>
 
 h2. Note on Patches/Pull Requests
 
