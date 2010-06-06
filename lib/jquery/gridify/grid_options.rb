@@ -20,7 +20,7 @@ module Gridify
                   :inline_edit_handler,
     # grid
                   :dom_id,                # defaults to #{resource}_#{name} eg "notes_grid"
-                  
+                  :grid_view,
                   :jqgrid_options,        # hash of additional jqGrid options that override any other settings
                   :ajax_grid_options,
     #subgrid
@@ -128,6 +128,10 @@ module Gridify
             
     def dom_id
       @dom_id || "#{resource}_#{name}"
+    end   
+            
+    def grid_view
+      @grid_view==false ? false : true 
     end
     
     def jqgrid_options

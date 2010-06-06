@@ -10,8 +10,8 @@ module Gridify
                   # column formatting
                   :width,                   # initial width (150)
                   :fixed_width,             # true = not resized when recalc fit to width
-                  #:formatter,              # see jqGrid doc (based on value_type)
-                  #:format_options,         # hash, see jqGrid doc (based on value_type)
+                  :formatter,               # see jqGrid doc (based on value_type)
+                  :format_options,          # hash, see jqGrid doc (based on value_type)
                   :align,                   # 'left', 'right', 'center' (left for strings, right for numerics)                  
                   #:classes,                # optional classes to add to column 
                   
@@ -109,6 +109,8 @@ module Gridify
       end
       vals[:hidden]      = true         if hidden
       vals[:width]       = width        if width
+      vals[:formatter]   = formatter    if formatter
+      vals[:formatoptions] = format_options  if format_options
       vals[:edittype]    = edit_type    if editable && edit_type
       vals[:formoptions] = form_options if editable && form_options
       vals[:editoptions] = edit_options if editable && edit_options

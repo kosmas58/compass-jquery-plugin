@@ -135,7 +135,7 @@ module Gridify
 
       # grid options
       vals[:height]           = height if height
-      vals[:gridview]         = true      # faster views, NOTE theres cases when this needs to be disabled
+      vals[:gridview]         = grid_view # faster views, NOTE theres cases when this needs to be disabled
       
       case width_fit
         when :fitted
@@ -206,6 +206,7 @@ module Gridify
         vals[:subGrid]      = sub_grid
         vals[:subGridUrl]   = sub_grid_url
         vals[:subGridModel] = sub_grid_model
+        vals[:gridview]     = false
       end
       
       #events
