@@ -177,7 +177,8 @@ h3. jQuery Plugins included
 * Tim Caswell for <b>"jQuery haml Plugin":http://github.com/creationix/haml-js</b>
 * Rick DeNatale for <b>"ri_cal":http://github.com/rubyredrick/ri_cal/</b>
 * Andrew M Andrews III for <b>"Any+Time":http://www.ama3.com/anytime/</b>
-* Adam Shaw for <b>">>FullCalendar":http://arshaw.com/fullcalendar/</b>
+* Adam Shaw for <b>"FullCalendar":http://arshaw.com/fullcalendar/</b>
+* Steven Wittens for <b>"Farbtastic Colorpicker plugin":http://acko.net/dev/farbtastic</b>
 
 h2. Note on Patches/Pull Requests
 
