@@ -23,6 +23,7 @@ all_scripts = [
   'js/jqtouch-ical.js',  
   'js/extensions/jqt.autotitles.js',
   'js/extensions/jqt.floaty.js',
+  'js/extensions/jqt.gestures.js',
   'js/extensions/jqt.location.js',
   'js/extensions/jqt.offline.js',
   'js/extensions/jqt.scaling.js',
