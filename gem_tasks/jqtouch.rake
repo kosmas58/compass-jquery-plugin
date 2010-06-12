@@ -22,6 +22,7 @@ all_scripts = [
   'js/zflow.js',
   'js/jqtouch-ical.js',  
   'js/extensions/jqt.autotitles.js',
+  'js/extensions/jqt.dynamicheight.js',
   'js/extensions/jqt.floaty.js',
   'js/extensions/jqt.gestures.js',
   'js/extensions/jqt.location.js',
