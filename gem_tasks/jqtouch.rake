@@ -27,7 +27,6 @@ all_scripts = [
   'js/extensions/jqt.autotitles.js',
   'js/extensions/jqt.dynamicheight.js',
   'js/extensions/jqt.floaty.js',
-  'js/extensions/jqt.gallery.js',
   'js/extensions/jqt.gestures.js',
   'js/extensions/jqt.location.js',
   'js/extensions/jqt.offline.js',
@@ -38,7 +37,6 @@ all_scripts = [
 
 all_stylesheets = [
   'css/jqtouch.css',
-  'css/jqt.gallery.css',
   'css/scrolling.css',
   'css/spinningwheel.css',
   'css/zflow.css',
@@ -133,17 +131,7 @@ namespace :build do
         next if /^\./ =~ image
         FileUtils.cp(File.join(src_dir, image), dest_dir)    
         manifest.print "image 'jqtouch/sw/#{image}'\n"
-      end     
-      
-      # Gallery images    
-      FileUtils.mkdir_p(File.join(JQTOUCH_DEST_IMAGES, 'gallery'))  
-      src_dir = File.join(JQTOUCH_SRC_IMAGES, 'gallery')
-      dest_dir = File.join(JQTOUCH_DEST_IMAGES, 'gallery')      
-      Dir.foreach(src_dir) do |image|
-        next if /^\./ =~ image
-        FileUtils.cp(File.join(src_dir, image), dest_dir)    
-        manifest.print "image 'jqtouch/gallery/#{image}'\n"
-      end      
+      end
       
       # glyphish Images
       FileUtils.mkdir_p(File.join(JQTOUCH_DEST_IMAGES, 'glyphish', 'icons'))   
