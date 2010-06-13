@@ -1924,6 +1924,410 @@ Date.prototype.nextMonth = nextMonth;
 Date.prototype.prevMonth = prevMonth;
 
 
+;(function($){ // secure $ jQuery alias
+/*******************************************************************************************/	
+// jquery.event.drag.js - rev 10
+// Copyright (c) 2008, Three Dub Media (http://threedubmedia.com)
+// Liscensed under the MIT License (MIT-LICENSE.txt)
+// http://www.opensource.org/licenses/mit-license.php
+// Created: 2008-06-04 | Updated: 2008-08-05
+/*******************************************************************************************/
+// Events: drag, dragstart, dragend
+/*******************************************************************************************/
+
+// jquery method
+$.fn.drag = function( fn1, fn2, fn3 ){
+	if ( fn2 ) this.bind('dragstart', fn1 ); // 2+ args
+	if ( fn3 ) this.bind('dragend', fn3 ); // 3 args
+	return !fn1 ? this.trigger('mousedown',{ which:1 }) // 0 args
+		: this.bind('drag', fn2 ? fn2 : fn1 ); // 1+ args
+	};
+
+// special event configuration
+var drag = $.event.special.drag = {
+	distance: 0, // default distance dragged before dragstart
+	setup: function( data ){
+		data = $.extend({ distance: drag.distance }, data || {});
+		$.event.add( this, "mousedown", drag.handler, data );
+		},
+	teardown: function(){
+		$.event.remove( this, "mousedown", drag.handler );
+		if ( this == drag.dragging ) drag.dragging = drag.proxy = null; // deactivate element
+		selectable( this, true ); // enable text selection
+		},
+	handler: function( event ){ 
+		var returnValue;
+		// mousedown has initialized
+		if ( event.data.elem ){ 
+			// update event properties...
+			event.dragTarget = event.data.elem; // source element
+			event.dragProxy = drag.proxy || event.dragTarget; // proxy element or source
+			event.cursorOffsetX = event.data.x - event.data.left; // mousedown offset
+			event.cursorOffsetY = event.data.y - event.data.top; // mousedown offset
+			event.offsetX = event.pageX - event.cursorOffsetX; // element offset
+			event.offsetY = event.pageY - event.cursorOffsetY; // element offset
+			}
+		// handle various events
+		switch ( event.type ){
+			// mousedown, left click
+			case !drag.dragging && event.which==1 && 'mousedown': // initialize drag
+				$.extend( event.data, $( this ).offset(), { 
+					x: event.pageX, y: event.pageY, elem: this, 
+					dist2: Math.pow( event.data.distance, 2 ) //  x² + y² = distance²
+					}); // store some initial attributes
+				$.event.add( document.body, "mousemove mouseup", drag.handler, event.data );
+				selectable( this, false ); // disable text selection
+				return false; // prevents text selection in safari 
+			// mousemove, check distance, start dragging
+			case !drag.dragging && 'mousemove': // DRAGSTART >>	
+				if ( Math.pow( event.pageX-event.data.x, 2 ) 
+					+ Math.pow( event.pageY-event.data.y, 2 ) //  x² + y² = distance²
+					< event.data.dist2 ) break; // distance tolerance not reached
+				drag.dragging = event.dragTarget; // activate element
+				event.type = "dragstart"; // hijack event
+				returnValue = $.event.handle.call( drag.dragging, event ); // trigger "dragstart", return proxy element
+				drag.proxy = $( returnValue )[0] || drag.dragging; // set proxy
+				if ( returnValue !== false ) break; // "dragstart" accepted, stop
+				selectable( drag.dragging, true ); // enable text selection
+				drag.dragging = drag.proxy = null; // deactivate element
+			// mousemove, dragging
+			case 'mousemove': // DRAG >> 
+				if ( drag.dragging ){
+					event.type = "drag"; // hijack event
+					returnValue = $.event.handle.call( drag.dragging, event ); // trigger "drag"
+					if ( $.event.special.drop ){ // manage drop events
+						$.event.special.drop.allowed = ( returnValue !== false ); // prevent drop
+						$.event.special.drop.handler( event ); // "dropstart", "dropend"
+						}
+					if ( returnValue !== false ) break; // "drag" not rejected, stop		
+					event.type = "mouseup"; // hijack event
+					}
+			// mouseup, stop dragging
+			case 'mouseup': // DRAGEND >> 
+				$.event.remove( document.body, "mousemove mouseup", drag.handler ); // remove page events
+				if ( drag.dragging ){
+					if ( $.event.special.drop ) // manage drop events
+						$.event.special.drop.handler( event ); // "drop"
+					event.type = "dragend"; // hijack event
+					$.event.handle.call( drag.dragging, event ); // trigger "dragend"	
+					selectable( drag.dragging, true ); // enable text selection
+					drag.dragging = drag.proxy = null; // deactivate element
+					event.data = {};
+					}
+				break;
+			} 
+		} 
+	};
+	
+// toggles text selection attributes	
+function selectable( elem, bool ){ 
+	if ( !elem ) return; // maybe element was removed ? 
+	elem.unselectable = bool ? "off" : "on"; // IE
+	elem.onselectstart = function(){ return bool; }; // IE
+	if ( elem.style ) elem.style.MozUserSelect = bool ? "" : "none"; // FF
+	};	
+	
+/*******************************************************************************************/
+})( jQuery ); // confine scope
+
+;(function($){ // secure $ jQuery alias
+/*******************************************************************************************/	
+// jquery.event.drop.js - rev 10
+// Copyright (c) 2008, Three Dub Media (http://threedubmedia.com)
+// Liscensed under the MIT License (MIT-LICENSE.txt)
+// http://www.opensource.org/licenses/mit-license.php
+// Created: 2008-06-04 | Updated: 2008-08-05
+/*******************************************************************************************/
+// Events: drop, dropstart, dropend
+/*******************************************************************************************/
+
+// JQUERY METHOD
+$.fn.drop = function( fn1, fn2, fn3 ){
+	if ( fn2 ) this.bind('dropstart', fn1 ); // 2+ args
+	if ( fn3 ) this.bind('dropend', fn3 ); // 3 args
+	return !fn1 ? this.trigger('drop') // 0 args
+		: this.bind('drop', fn2 ? fn2 : fn1 ); // 1+ args
+	};
+
+// DROP MANAGEMENT UTILITY
+$.dropManage = function( opts ){ // return filtered drop target elements, cache their positions
+	$.extend( drop, { // set new options
+		filter: '*', data: [], tolerance: null 
+		}, opts||{} ); 
+	return drop.$elements
+		.filter( drop.filter )
+		.each(function(i){ 
+			drop.data[i] = drop.locate( this ); 
+			});
+	};
+
+// SPECIAL EVENT CONFIGURATION
+var drop = $.event.special.drop = {
+	delay: 100, // default frequency to track drop targets
+	mode: 'intersect', // default mode to determine valid drop targets 
+	$elements: $([]), data: [], // storage of drop targets and locations
+	setup: function(){
+		drop.$elements = drop.$elements.add( this );
+		drop.data[ drop.data.length ] = drop.locate( this );
+		},
+	teardown: function(){ var elem = this;
+		drop.$elements = drop.$elements.not( this ); 
+		drop.data = $.grep( drop.data, function( obj ){ 
+			return ( obj.elem!==elem ); 
+			});
+		},
+	// shared handler
+	handler: function( event ){ 
+		var dropstart = null, dropped;
+		event.dropTarget = drop.dropping || undefined; // dropped element
+		if ( drop.data.length && event.dragTarget ){ 
+			// handle various events
+			switch ( event.type ){
+				// drag/mousemove, from $.event.special.drag
+				case 'drag': // TOLERATE >>
+					drop.event = event; // store the mousemove event
+					if ( !drop.timer ) // monitor drop targets
+						drop.timer = setTimeout( drop.tolerate, 20 ); 
+					break;			
+				// dragstop/mouseup, from $.event.special.drag
+				case 'mouseup': // DROP >> DROPEND >>
+					drop.timer = clearTimeout( drop.timer ); // delete timer	
+					if ( !drop.dropping ) break; // stop, no drop
+					if ( drop.allowed ){
+						event.type = "drop"; // hijack event
+						dropped = $.event.handle.call( drop.dropping, event ); // trigger "drop"
+						}
+					dropstart = false;
+				// activate new target, from tolerate (async)
+				case drop.dropping && 'dropstart': // DROPSTART >> ( new target )
+					event.type = "dropend"; // hijack event
+					dropstart = dropstart===null && drop.allowed ? true : false;
+				// deactivate active target, from tolerate (async)
+				case drop.dropping && 'dropend': // DROPEND >> 
+					$.event.handle.call( drop.dropping, event ); // trigger "dropend"
+					drop.dropping = null; // empty dropper
+					if ( dropped === false ) event.dropTarget = undefined;
+					if ( !dropstart ) break; // stop
+					event.type = "dropstart"; // hijack event
+				// activate target, from tolerate (async)
+				case drop.allowed && 'dropstart': // DROPSTART >> 
+					event.dropTarget = this;
+					drop.dropping = $.event.handle.call( this, event )!==false ? this : null; 
+					break;
+				}
+			}
+		},
+	// async, recursive tolerance execution
+	tolerate: function(){ 
+		var i = 0, drp, winner, // local variables 
+		xy = [ drop.event.pageX, drop.event.pageY ], // mouse location
+		drg = drop.locate( drop.event.dragProxy ); // drag proxy location
+		drop.tolerance = drop.tolerance || drop.modes[ drop.mode ]; // custom or stored tolerance fn
+		do if ( drp = drop.data[i] ){ // each drop target location
+			if ( drop.tolerance ) // tolerance function is defined
+				winner = drop.tolerance.call( drop, drop.event, drg, drp ); // execute
+			else if ( drop.contains( drp, xy ) ) winner = drp; // mouse is always fallback
+			} while ( ++i<drop.data.length && !winner ); // loop
+		drop.event.type = ( winner = winner || drop.best ) ? 'dropstart' : 'dropend'; // start ? stop 
+		if ( drop.event.type=='dropend' || winner.elem!=drop.dropping ) // don't dropstart on active drop target
+			drop.handler.call( winner ? winner.elem : drop.dropping, drop.event ); // handle events
+		if ( drop.last && xy[0] == drop.last.pageX && xy[1] == drop.last.pageY ) // no movement
+			delete drop.timer; // idle, don't recurse
+		else drop.timer = setTimeout( drop.tolerate, drop.delay ); // recurse
+		drop.last = drop.event; // to compare idleness
+		drop.best = null; // reset comparitors
+		},	
+	// returns the location positions of an element
+	locate: function( elem ){ // return { L:left, R:right, T:top, B:bottom, H:height, W:width }
+		var $el = $(elem), pos = $el.offset(), h = $el.outerHeight(), w = $el.outerWidth();
+		return { elem: elem, L: pos.left, R: pos.left+w, T: pos.top, B: pos.top+h, W: w, H: h };
+		},
+	// test the location positions of an element against another OR an X,Y coord
+	contains: function( target, test ){ // target { L,R,T,B,H,W } contains test [x,y] or { L,R,T,B,H,W }
+		return ( ( test[0] || test.L ) >= target.L && ( test[0] || test.R ) <= target.R 
+			&& ( test[1] || test.T ) >= target.T && ( test[1] || test.B ) <= target.B ); 
+		},
+	// stored tolerance modes
+	modes: { // fn scope: "$.event.special.drop" object 
+		// target with mouse wins, else target with most overlap wins
+		'intersect': function( event, proxy, target ){
+			return this.contains( target, [ event.pageX, event.pageY ] ) ? // check cursor
+				target : this.modes['overlap'].apply( this, arguments ); // check overlap
+			},
+		// target with most overlap wins	
+		'overlap': function( event, proxy, target ){
+			// calculate the area of overlap...
+			target.overlap = Math.max( 0, Math.min( target.B, proxy.B ) - Math.max( target.T, proxy.T ) )
+				* Math.max( 0, Math.min( target.R, proxy.R ) - Math.max( target.L, proxy.L ) );
+			if ( target.overlap > ( ( this.best || {} ).overlap || 0 ) ) // compare overlap
+				this.best = target; // set as the best match so far
+			return null; // no winner
+			},
+		// proxy is completely contained within target bounds	
+		'fit': function( event, proxy, target ){
+			return this.contains( target, proxy ) ? target : null;
+			},
+		// center of the proxy is contained within target bounds	
+		'middle': function( event, proxy, target ){
+			return this.contains( target, [ proxy.L+proxy.W/2, proxy.T+proxy.H/2 ] ) ? target : null;
+			}
+		} 	 
+	};
+	
+/*******************************************************************************************/
+})(jQuery); // confine scope
+
+/**
+ * touch for jQuery
+ * 
+ * Copyright (c) 2008 Peter Schmalfeldt (ManifestInteractive.com) <manifestinteractive@gmail.com>
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details. 
+ *
+ * @license http://www.gnu.org/licenses/gpl.html 
+ * @project jquery.touch
+ */
+
+// DEFINE DEFAULT VARIABLES
+var _target=null, _dragx=null, _dragy=null, _rotate=null, _resort=null;
+var _dragging=false, _sizing=false, _animate=false;
+var _rotating=0, _width=0, _height=0, _left=0, _top=0, _xspeed=0, _yspeed=0;
+var _zindex=1000;
+
+jQuery.fn.touch = function(settings) {
+
+	// DEFINE DEFAULT TOUCH SETTINGS
+	settings = jQuery.extend({
+		animate: true,
+		sticky: false,
+		dragx: true,
+		dragy: true,
+		rotate: false,
+		resort: true,
+		scale: false
+	}, settings);
+	
+	// BUILD SETTINGS OBJECT
+	var opts = [];
+	opts = $.extend({}, $.fn.touch.defaults, settings);
+	
+	// ADD METHODS TO OBJECT
+	this.each(function(){
+		this.opts = opts;
+		this.ontouchstart = touchstart;
+		this.ontouchend = touchend;
+		this.ontouchmove = touchmove;
+		this.ongesturestart = gesturestart;
+		this.ongesturechange = gesturechange;
+		this.ongestureend = gestureend;
+	});
+};
+function touchstart(e){
+	_target = this.id;
+	_dragx = this.opts.dragx;
+	_dragy = this.opts.dragy;
+	_resort = this.opts.resort;
+	_animate = this.opts.animate;
+	_xspeed = 0;
+	_yspeed = 0;
+
+	$(e.changedTouches).each(function(){
+									  
+		var curLeft = ($('#'+_target).css("left") == 'auto') ? this.pageX : parseInt($('#'+_target).css("left"));
+		var curTop = ($('#'+_target).css("top") == 'auto') ? this.pageY : parseInt($('#'+_target).css("top"));
+		
+		if(!_dragging && !_sizing){
+			_left = (e.pageX - curLeft);
+			_top = (e.pageY - curTop);
+			_dragging = [_left,_top];
+			if(_resort){
+				_zindex = ($('#'+_target).css("z-index") == _zindex) ? _zindex : _zindex+1;
+				$('#'+_target).css({ zIndex: _zindex });
+			}
+		}
+	});
+};
+function touchmove(e){
+	
+	if(_dragging && !_sizing && _animate) {
+		
+		var _lastleft = (isNaN(parseInt($('#'+_target).css("left")))) ? 0:parseInt($('#'+_target).css("left"));
+		var _lasttop = (isNaN(parseInt($('#'+_target).css("top")))) ? 0:parseInt($('#'+_target).css("top"));
+	}
+	
+	$(e.changedTouches).each(function(){
+		
+		e.preventDefault();
+		
+		_left = (this.pageX-(parseInt($('#'+_target).css("width"))/2));
+		_top = (this.pageY-(parseInt($('#'+_target).css("height"))/2));
+		
+		if(_dragging && !_sizing) {
+			
+			if(_animate){
+				_xspeed = Math.round((_xspeed + Math.round( _left - _lastleft))/1.5);
+				_yspeed = Math.round((_yspeed + Math.round( _top - _lasttop))/1.5);
+			}
+			
+			if(_dragx || _dragy) $('#'+_target).css({ position: "absolute" });
+			if(_dragx) $('#'+_target).css({ left: _left+"px" });
+			if(_dragy) $('#'+_target).css({ top: _top+"px" });
+			
+			$('#'+_target).css({ backgroundColor: "#4B880B" });
+			$('#'+_target+' b').text('WEEEEEEEE!!!!');
+		}
+	});
+};
+function touchend(e){
+	$(e.changedTouches).each(function(){
+		if(!e.targetTouches.length){
+			_dragging = false;
+			if(_animate){
+				_left = ($('#'+_target).css("left") == 'auto') ? this.pageX : parseInt($('#'+_target).css("left"));
+				_top = ($('#'+_target).css("top") == 'auto') ? this.pageY : parseInt($('#'+_target).css("top"));
+				
+				var animx = (_dragx) ? (_left+_xspeed)+"px" : _left+"px";
+				var animy = (_dragy) ? (_top+_yspeed)+"px" : _top+"px";
+				
+				if(_dragx || _dragy) $('#'+_target).animate({ left: animx, top: animy }, "fast");
+			}
+		}
+	});
+	
+	$('#'+_target+' b').text('I am sad :(');
+	$('#'+_target).css({ backgroundColor: "#0B4188" });
+	setTimeout(changeBack,5000,_target);
+};
+function gesturestart(e){
+	_sizing = [$('#'+this.id).css("width"), $('#'+this.id).css("height")];
+};
+function gesturechange(e){
+	if(_sizing){
+		_width = (this.opts.scale) ? Math.min(parseInt(_sizing[0])*e.scale, 300) : _sizing[0];
+		_height = (this.opts.scale) ? Math.min(parseInt(_sizing[1])*e.scale, 300) : _sizing[1];
+		_rotate = (this.opts.rotate) ? "rotate(" + ((_rotating + e.rotation) % 360) + "deg)" : "0deg";		
+		$('#'+this.id).css({ width: _width+"px", height: _height+"px", webkitTransform: _rotate });
+		$('#'+this.id+' b').text('TRANSFORM!');
+		$('#'+this.id).css({ backgroundColor: "#4B880B" });
+	}
+};
+function gestureend(e){
+	_sizing = false;
+	_rotating = (_rotating + e.rotation) % 360;
+};
+
+function changeBack(target){
+	$('#'+target+' b').text('Touch Me :)');
+	$('#'+target).css({ backgroundColor: "#999" });
+}
+
 /*
 
             _/    _/_/    _/_/_/_/_/                              _/       
