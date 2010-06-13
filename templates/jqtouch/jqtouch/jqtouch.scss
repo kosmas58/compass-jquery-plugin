@@ -324,6 +324,109 @@ body {
 
 /* Pop */
 
+/*
+
+jQTouch Gallery v0.1
+
+Created by Ryan McKillen <http://ryonlife.com>
+Project hosted on GitHub <http://github.com/RyOnLife/jQTouch-Gallery>
+  
+  Wiki/Documentation <http://wiki.github.com/RyOnLife/jQTouch-Gallery>
+  Isuues <http://github.com/RyOnLife/jQTouch-Gallery/issues>
+    
+Not possible without the awesome efforts behind the jQTouch project <http://jqtouch.com>
+    
+Copyright (c) 2009 by Ryan McKillen
+See LICENSE for MIT license details
+
+*/
+
+.gallery {
+  background: rgba(0, 0, 0, 0) image_url("jqtouch/gallery/loader.gif") no-repeat fixed center center;
+  /* Theme */
+  overflow: hidden;
+  min-height: 0 !important;
+  .toolbar {
+    position: fixed;
+    width: 100%;
+    .transparent {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 44px;
+      z-index: -1;
+      opacity: 0.75;
+      background-repeat: repeat-x; }
+    &.gallery_toolbar {
+      bottom: 0;
+      h1 {
+        height: 20px; }
+      a.gallery_arrow {
+        position: absolute;
+        display: none;
+        width: 21px;
+        /* Theme */
+        height: 18px;
+        /* Theme */
+        &.arrow_left {
+          background: image_url("jqtouch/gallery/arrow_left.png");
+          /* Theme */ }
+        &.arrow_right {
+          background: image_url("jqtouch/gallery/arrow_right.png");
+          /* Theme */ } } }
+    .caption {
+      position: absolute;
+      top: 45px;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      font-size: 14px;
+      line-height: 14px;
+      padding-top: 3px;
+      .caption_transparent {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: -1;
+        background-color: #000;
+        /* Theme */
+        height: 22px;
+        opacity: 0.5; } } }
+  .media {
+    position: absolute;
+    z-index: -2; }
+  .play {
+    background: image_url("jqtouch/gallery/play.png");
+    /* Theme */
+    width: 36px;
+    /* Theme */
+    height: 46px;
+    /* Theme */
+    position: absolute;
+    display: none;
+    -webkit-opacity: 0.9; } }
+
+.measure {
+  /* Hack class applied to find width and height display:none elements */
+  display: block;
+  width: auto;
+  margin-left: -9999px; }
+
+/* jQTouch's .flip animation is leftward */
+
+.flipRight {
+  -webkit-animation-duration: .65s;
+  &.in {
+    -webkit-animation-name: flipinfromright; }
+  &.out {
+    -webkit-animation-name: flipouttoright; }
+  &.in.reverse {
+    -webkit-animation-name: flipinfromleft; }
+  &.out.reverse {
+    -webkit-animation-name: flipouttoleft; } }
+
 /**
  *
  *
