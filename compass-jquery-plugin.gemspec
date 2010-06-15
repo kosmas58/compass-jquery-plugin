@@ -710,8 +710,6 @@ Gem::Specification.new do |s|
      "templates/jrails/jquery.contextMenu.min.js",
      "templates/jrails/jquery.farbtastic.js",
      "templates/jrails/jquery.farbtastic.min.js",
-     "templates/jrails/jquery.flash_messages.js",
-     "templates/jrails/jquery.flash_messages.min.js",
      "templates/jrails/jquery.haml.js",
      "templates/jrails/jquery.haml.min.js",
      "templates/jrails/jquery.metadata.js",

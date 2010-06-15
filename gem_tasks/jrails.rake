@@ -9,7 +9,6 @@ JRAILS_SRC_SCRIPTS = JRAILS_SRC + "/*.js"
 JHAML_SRC_SCRIPTS = File.join(GEM_ROOT, 'src', 'jrails', 'jquery-haml') + "/*.js"
 
 FLASH_SRC = File.join(GEM_ROOT, 'src', 'jrails', 'flash_messages')
-FLASH_SRC_SCRIPTS = FLASH_SRC + "/*.js"
 FLASH_SRC_IMAGES = File.join(FLASH_SRC, 'images')
 
 JQUERY_SRC = File.join(GEM_ROOT, 'src', 'jrails', 'jquery.1.4.2')
@@ -55,18 +54,7 @@ namespace :build do
       end
       manifest.print "javascript 'jrails.min.js'\n" 
       
-      #Flash Messages
-      
-      open File.join(JRAILS_DEST_TEMPLATES, 'jquery.flash_messages.js'), 'w' do |f|
-        f.print concat_files(all_files(FLASH_SRC_SCRIPTS))
-      end
-      manifest.print "javascript 'jquery.flash_messages.js'\n" 
-    
-      open File.join(JRAILS_DEST_TEMPLATES, 'jquery.flash_messages.min.js'), 'w' do |f|
-        f.print compress_js(all_files(FLASH_SRC_SCRIPTS), "google")
-      end
-      manifest.print "javascript 'jquery.flash_messages.min.js'\n"     
-      
+      #Flash Messages      
       css = File.read File.join(FLASH_SRC, 'flash_messages.css')
       sass = ''
       IO.popen("sass-convert -F css -T scss", 'r+') { |f| f.print(css); f.close_write; sass = f.read }

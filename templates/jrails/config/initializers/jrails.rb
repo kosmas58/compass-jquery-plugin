@@ -24,10 +24,8 @@ ActionView::Helpers::AssetTagHelper.register_stylesheet_expansion :contextMenu =
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :contextMenu => ['jquery.contextMenu.min']
 ActionView::Helpers::AssetTagHelper.register_stylesheet_expansion :farbtastic => ['compiled/jquery.ui/farbtastic.css']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :farbtastic => ['jquery.farbtastic.min']
-ActionView::Helpers::AssetTagHelper.register_javascript_expansion :flash_messages => ['jquery.flash_messages.min']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :pngFix => ['jquery.pngFix.min']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :themeSwitcher => ['jquery.themeswitchertool.min']
-
 
 require 'jquery/jrails'
 require 'jquery/jquery_selector_assertions' if RAILS_ENV == 'test'
