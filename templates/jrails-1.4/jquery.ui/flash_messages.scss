@@ -1,0 +1,27 @@
+div {
+  &.success, &.notice, &.warning, &.error {
+    font-size: 18px;
+    padding: 15px 10px;
+    margin-bottom: 10px; }
+  &.success span, &.notice span, &.warning span, &.error span {
+    float: left;
+    width: 42px;
+    height: 32px;
+    margin-top: -5px; }
+  &.notice, &.sucess {
+    background: image_url("jquery.ui/flash_messsages/flash-notice-bg.png") repeat-x left top;
+    color: #41612f; }
+  &.notice span, &.sucess span {
+    background: image_url("jquery.ui/flash_messsages/flash-check.png") no-repeat left top; }
+  &.warning {
+    background: image_url("jquery.ui/flash_messsages/flash-warning-bg.png") repeat-x left -10px;
+    color: #a26a1a;
+    span {
+      margin-top: -6px;
+      background: image_url("jquery.ui/flash_messsages/flash-warning.png") no-repeat left top; } }
+  &.error {
+    background: image_url("jquery.ui/flash_messsages/flash-error-bg.png") repeat-x left -10px;
+    color: #af0100;
+    span {
+      margin-top: -6px;
+      background: image_url("jquery.ui/flash_messsages/flash-error.png") no-repeat left top; } } }

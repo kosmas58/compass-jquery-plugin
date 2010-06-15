@@ -8,6 +8,10 @@ JRAILS_14_SRC_SCRIPTS = JRAILS_14_SRC + "/*.js"
 
 JHAML_14_SRC_SCRIPTS = File.join(GEM_ROOT, 'src', '1.4', 'jquery-haml') + "/*.js"
 
+FLASH_14_SRC = File.join(GEM_ROOT, 'src', '1.4', 'flash_messages')
+FLASH_14_SRC_SCRIPTS = FLASH_14_SRC + "/*.js"
+FLASH_14_SRC_IMAGES = File.join(FLASH_14_SRC, 'images')
+
 JQUERY_14_SRC = File.join(GEM_ROOT, 'src', '1.4', 'jquery.1.4.2')
 JQUERY_14_SRC_SCRIPTS = JQUERY_14_SRC + "/*.js"
 
@@ -20,6 +24,7 @@ JRAILS_14_DEST_TEMPLATES = File.join(GEM_ROOT, 'templates', 'jrails-1.4')
 JRAILS_14_DEST_TRANSLATIONS = File.join(JRAILS_14_DEST_TEMPLATES, 'i18n', 'jquery.ui')
 JRAILS_14_DEST_THEMES = File.join(JRAILS_14_DEST_TEMPLATES, 'jquery.ui')
 JRAILS_14_DEST_IMAGES = File.join(JRAILS_14_DEST_TEMPLATES, 'jquery.ui')
+FLASH_14_DEST_IMAGES = File.join(JRAILS_14_DEST_IMAGES, 'flash_messages')
 
 namespace :build do
   desc 'Build the stylesheets and templates for jRails.'
@@ -49,6 +54,38 @@ namespace :build do
         f.print compress_js(all_files(JRAILS_14_SRC_SCRIPTS), "google")
       end
       manifest.print "javascript 'jrails.min.js'\n" 
+      
+      #Flash Messages
+      
+      open File.join(JRAILS_14_DEST_TEMPLATES, 'jquery.flash_messages.js'), 'w' do |f|
+        f.print concat_files(all_files(FLASH_14_SRC_SCRIPTS))
+      end
+      manifest.print "javascript 'jquery.flash_messages.js'\n" 
+    
+      open File.join(JRAILS_14_DEST_TEMPLATES, 'jquery.flash_messages.min.js'), 'w' do |f|
+        f.print compress_js(all_files(FLASH_14_SRC_SCRIPTS), "google")
+      end
+      manifest.print "javascript 'jquery.flash_messages.min.js'\n"     
+      
+      css = File.read File.join(FLASH_14_SRC, 'flash_messages.css')
+      sass = ''
+      IO.popen("sass-convert -F css -T scss", 'r+') { |f| f.print(css); f.close_write; sass = f.read }
+      open File.join(JRAILS_14_DEST_THEMES, 'flash_messages.scss'), 'w' do |f|
+        f.write sass
+      end
+      manifest.print "stylesheet 'jquery.ui/flash_messages.scss', :media => 'screen, projection'\n"    
+      
+      # Copy the images directory
+      FileUtils.mkdir_p File.join(FLASH_14_DEST_IMAGES)
+      src_dir = FLASH_14_SRC_IMAGES
+      dest_dir = FLASH_14_DEST_IMAGES   
+      
+      Dir.foreach(src_dir) do |image|
+        next unless /\.png$/ =~ image
+        FileUtils.cp(File.join(src_dir, image), dest_dir)    
+        manifest.print "image 'jquery.ui/flash_messages/#{image}'\n"
+      end
+      
       
       # jQuery haml
      
