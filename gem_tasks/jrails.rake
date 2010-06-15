@@ -3,19 +3,19 @@ require 'lib/handle_js_files'
 require 'lib/jquery.ui'
 
 # Compass generator for jrails 0.1+
-JRAILS_SRC = File.join(GEM_ROOT, 'src', '1.4', 'jrails.1.4.2')
+JRAILS_SRC = File.join(GEM_ROOT, 'src', 'jrails', 'jrails.1.4.2')
 JRAILS_SRC_SCRIPTS = JRAILS_SRC + "/*.js"
 
-JHAML_SRC_SCRIPTS = File.join(GEM_ROOT, 'src', '1.4', 'jquery-haml') + "/*.js"
+JHAML_SRC_SCRIPTS = File.join(GEM_ROOT, 'src', 'jrails', 'jquery-haml') + "/*.js"
 
-FLASH_SRC = File.join(GEM_ROOT, 'src', '1.4', 'flash_messages')
+FLASH_SRC = File.join(GEM_ROOT, 'src', 'jrails', 'flash_messages')
 FLASH_SRC_SCRIPTS = FLASH_SRC + "/*.js"
 FLASH_SRC_IMAGES = File.join(FLASH_SRC, 'images')
 
-JQUERY_SRC = File.join(GEM_ROOT, 'src', '1.4', 'jquery.1.4.2')
+JQUERY_SRC = File.join(GEM_ROOT, 'src', 'jrails', 'jquery.1.4.2')
 JQUERY_SRC_SCRIPTS = JQUERY_SRC + "/*.js"
 
-JQUERY_UI_18_SRC = File.join(GEM_ROOT, 'src', '1.4', 'jquery.ui.1.8.1')
+JQUERY_UI_18_SRC = File.join(GEM_ROOT, 'src', 'jrails', 'jquery.ui.1.8.1')
 JQUERY_UI_18_SRC_SCRIPTS = File.join(JQUERY_UI_18_SRC, 'js') + "/*.js"
 JQUERY_UI_18_SRC_THEMES = File.join(JQUERY_UI_18_SRC, 'themes')
 JQUERY_UI_18_SRC_TRANSLATIONS = File.join(JQUERY_UI_18_SRC, 'js', 'i18n') #+ "/*.js"
