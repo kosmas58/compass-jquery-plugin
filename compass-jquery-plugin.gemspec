@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{compass-jquery-plugin}
-  s.version = "0.3.0.beta.8"
+  s.version = "0.3.0.beta.9"
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kosmas Schuetz"]
-  s.date = %q{2010-06-13}
+  s.date = %q{2010-06-15}
   s.description = %q{A compass plugin that integrates jRails, jQuery, jQuery UI and Themes, jqGrid and more into the Compass Sass framework.}
   s.email = %q{kosmas.schuetz@gmx.com}
   s.extra_rdoc_files = [
@@ -43,6 +43,7 @@ Gem::Specification.new do |s|
      "lib/jquery.ui.rb",
      "lib/jquery/compass_plugin.rb",
      "lib/jquery/dynatree.rb",
+     "lib/jquery/flash_messages.rb",
      "lib/jquery/gridify.rb",
      "lib/jquery/gridify/assertions.rb",
      "lib/jquery/gridify/grid.rb",
@@ -1205,6 +1206,8 @@ Gem::Specification.new do |s|
      "templates/jrails-1.4/jquery.contextMenu.min.js",
      "templates/jrails-1.4/jquery.farbtastic.js",
      "templates/jrails-1.4/jquery.farbtastic.min.js",
+     "templates/jrails-1.4/jquery.flash_messages.js",
+     "templates/jrails-1.4/jquery.flash_messages.min.js",
      "templates/jrails-1.4/jquery.haml.js",
      "templates/jrails-1.4/jquery.haml.min.js",
      "templates/jrails-1.4/jquery.metadata.js",
@@ -1349,6 +1352,13 @@ Gem::Specification.new do |s|
      "templates/jrails-1.4/jquery.ui/farbtastic/marker.png",
      "templates/jrails-1.4/jquery.ui/farbtastic/mask.png",
      "templates/jrails-1.4/jquery.ui/farbtastic/wheel.png",
+     "templates/jrails-1.4/jquery.ui/flash_messages.scss",
+     "templates/jrails-1.4/jquery.ui/flash_messages/flash-check.png",
+     "templates/jrails-1.4/jquery.ui/flash_messages/flash-error-bg.png",
+     "templates/jrails-1.4/jquery.ui/flash_messages/flash-error.png",
+     "templates/jrails-1.4/jquery.ui/flash_messages/flash-notice-bg.png",
+     "templates/jrails-1.4/jquery.ui/flash_messages/flash-warning-bg.png",
+     "templates/jrails-1.4/jquery.ui/flash_messages/flash-warning.png",
      "templates/jrails-1.4/jquery.ui/flick.scss",
      "templates/jrails-1.4/jquery.ui/flick/ui-anim_basic_16x16.gif",
      "templates/jrails-1.4/jquery.ui/flick/ui-bg_flat_0_aaaaaa_40x100.png",
