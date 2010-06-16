@@ -11,7 +11,7 @@ A Sass-based Meta-Framework for Compass that allows you to mix and match any of 
 * jRails with jQuery 1.4.2 and jQuery.UI 1.8.1 including themes
 * jquery.dynatree.js V0.5.3
 * jquery.ribbon.js
-* jquery.jqGrid.js V3.6.5 (with minor changes to make in RESTful)
+* jquery.jqGrid.js V3.7.1 (with minor changes to make in RESTful)
 * jquery.jqtouch.js V1.0b2
 
 This library requires <b>"Compass":http://wiki.github.com/chriseppstein/compass</b>.
