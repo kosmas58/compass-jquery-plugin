@@ -4,7 +4,7 @@
 file 'config/initializers/jrails.rb'
 javascript 'jrails.js'
 javascript 'jrails.min.js'
-stylesheet 'jquery.ui/_flash_messages.scss', :media => 'screen, projection'
+stylesheet 'partials/_flash_messages.scss', :media => 'screen, projection'
 image 'jquery.ui/flash_messages/flash-check.png'
 image 'jquery.ui/flash_messages/flash-error-bg.png'
 image 'jquery.ui/flash_messages/flash-error.png'

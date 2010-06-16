@@ -23,6 +23,7 @@ JRAILS_DEST_TEMPLATES = File.join(GEM_ROOT, 'templates', 'jrails')
 JRAILS_DEST_TRANSLATIONS = File.join(JRAILS_DEST_TEMPLATES, 'i18n', 'jquery.ui')
 JRAILS_DEST_THEMES = File.join(JRAILS_DEST_TEMPLATES, 'jquery.ui')
 JRAILS_DEST_IMAGES = File.join(JRAILS_DEST_TEMPLATES, 'jquery.ui')
+FLASH_DEST_STYLESHEETS = File.join(JRAILS_DEST_TEMPLATES, 'partials')
 FLASH_DEST_IMAGES = File.join(JRAILS_DEST_IMAGES, 'flash_messages')
 
 namespace :build do
@@ -54,14 +55,15 @@ namespace :build do
       end
       manifest.print "javascript 'jrails.min.js'\n" 
       
-      #Flash Messages      
+      #Flash Messages   
+      FileUtils.mkdir_p(File.join(FLASH_DEST_STYLESHEETS))   
       css = File.read File.join(FLASH_SRC, 'flash_messages.css')
       sass = ''
       IO.popen("sass-convert -F css -T scss", 'r+') { |f| f.print(css); f.close_write; sass = f.read }
-      open File.join(JRAILS_DEST_THEMES, '_flash_messages.scss'), 'w' do |f|
+      open File.join(FLASH_DEST_STYLESHEETS, '_flash_messages.scss'), 'w' do |f|
         f.write sass
       end
-      manifest.print "stylesheet 'jquery.ui/_flash_messages.scss', :media => 'screen, projection'\n"    
+      manifest.print "stylesheet 'partials/_flash_messages.scss', :media => 'screen, projection'\n"    
       
       # Copy the images directory
       FileUtils.mkdir_p File.join(FLASH_DEST_IMAGES)
@@ -72,8 +74,7 @@ namespace :build do
         next unless /\.png$/ =~ image
         FileUtils.cp(File.join(src_dir, image), dest_dir)    
         manifest.print "image 'jquery.ui/flash_messages/#{image}'\n"
-      end
-      
+      end      
       
       # jQuery haml
      
