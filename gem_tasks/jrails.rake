@@ -14,7 +14,7 @@ FLASH_SRC_IMAGES = File.join(FLASH_SRC, 'images')
 JQUERY_SRC = File.join(GEM_ROOT, 'src', 'jrails', 'jquery.1.4.2')
 JQUERY_SRC_SCRIPTS = JQUERY_SRC + "/*.js"
 
-JQUERY_UI_18_SRC = File.join(GEM_ROOT, 'src', 'jrails', 'jquery.ui.1.8.1')
+JQUERY_UI_18_SRC = File.join(GEM_ROOT, 'src', 'jrails', 'jquery.ui.1.8.2')
 JQUERY_UI_18_SRC_SCRIPTS = File.join(JQUERY_UI_18_SRC, 'js') + "/*.js"
 JQUERY_UI_18_SRC_THEMES = File.join(JQUERY_UI_18_SRC, 'themes')
 JQUERY_UI_18_SRC_TRANSLATIONS = File.join(JQUERY_UI_18_SRC, 'js', 'i18n') #+ "/*.js"
@@ -163,7 +163,7 @@ namespace :build do
         end
       end      
     
-      # jQuery.UI 1.8.1
+      # jQuery.UI 1.8.2
     
       # Scripts
       
@@ -203,15 +203,15 @@ namespace :build do
         'jquery.ui.widget.js'
       ].collect {|filename| File.read(File.join(JQUERY_UI_18_SRC, 'js', filename))}.join "\n\n"  
       
-      open File.join(JRAILS_DEST_TEMPLATES, 'jquery-ui-1.8.1.js'), 'w' do |f|
+      open File.join(JRAILS_DEST_TEMPLATES, 'jquery-ui-1.8.2.js'), 'w' do |f|
         f.print concat_files(all_jquery_ui_scripts)
       end
-      manifest.print "javascript 'jquery-ui-1.8.1.js'\n"
+      manifest.print "javascript 'jquery-ui-1.8.2.js'\n"
     
-      open File.join(JRAILS_DEST_TEMPLATES, 'jquery-ui-1.8.1.min.js'), 'w' do |f|
+      open File.join(JRAILS_DEST_TEMPLATES, 'jquery-ui-1.8.2.min.js'), 'w' do |f|
         f.print compress_js(all_jquery_ui_scripts, "google")
       end
-      manifest.print "javascript 'jquery-ui-1.8.1.min.js'\n"
+      manifest.print "javascript 'jquery-ui-1.8.2.min.js'\n"
       
       # jQuery UI locales
   

@@ -8,7 +8,7 @@ h2. Description
 
 A Sass-based Meta-Framework for Compass that allows you to mix and match any of the following:
 
-* jRails with jQuery 1.4.2 and jQuery.UI 1.8.1 including themes
+* jRails with jQuery 1.4.2 and jQuery.UI 1.8.2 including themes
 * jquery.dynatree.js V0.5.3
 * jquery.ribbon.js
 * jquery.jqGrid.js V3.7.1 (with minor changes to make in RESTful)
@@ -154,6 +154,7 @@ h3. Rails
 * ahe for <b>"2dc_jqgrid":http://github.com/ahe/2dc_jqgrid/tree/master</b>
 * scrubber for <b>"jquery_grid_for_rails":http://github.com/scrubber/jquery_grid_for_rails/tree/master</b>
 * ariesroyaal for <b>"secret_sauce":http://github.com/ariesroyaal/secret_sauce/tree/master</b> now <b>"at":http://github.com/fugufish/secret_sauce</b>.
+* Ryan Heath for <b>"pretty_flash":http://github.com/rpheath/pretty_flash</b>
 
 h3. jQuery Plugins included
 
