@@ -7710,13 +7710,15 @@ $.jgrid.extend({
                 exportOptions : {}
             }, o || {});
             return this.each(function(){
-                $t = this;
                 if(!this.grid) { return;}
+                var url;
                 if(o.exptype == "remote") {
                     var pdata = $.extend({},this.p.postData);
                     pdata[o.oper] = o.tag;
                     var params = jQuery.param(pdata);
-                    window.location = o.url+"?"+params;
+                    if(o.url.indexOf("?") != -1) { url = o.url+"&"+params; }
+                    else { url = o.url+"?"+params; }
+                    window.location = url;
                 }
             });
         }
@@ -10704,7 +10706,7 @@ jQuery.fn.searchFilter = function(fields, options) {
                     indexmap[selDOMobj.options[i].value] = i;
                 }
                 selDOMobj.selectedIndex = indexmap[setting];
-                $(selDOMobj).change();
+                jQuery(selDOMobj).change();
             };
 
             this.setFilter = function(settings) {
