@@ -1088,8 +1088,8 @@ $.extend($.jgrid,{
 			if(match === null){
 				return self;
 			}
-			$.each(_data,function(i,rec){
-				if(eval(match)){results.push(rec);}
+			$.each(_data,function(i){
+				if(eval(match)){results.push(this);}
 			});
 			_data=results;
 			return self;
@@ -1151,16 +1151,16 @@ $.extend($.jgrid,{
 			return self.is(f);
 		};
 		this.is=function(f){
-			self._append('rec.'+f);
+			self._append('this.'+f);
 			self._resetNegate();
 			return self;
 		};
 		this._compareValues=function(func,f,v,how,t){
 			var fld;
 			if(_useProperties){
-				fld='rec.'+f;
+				fld='this.'+f;
 			}else{
-				fld='rec';
+				fld='this';
 			}
 			if(v===undefined) { v = null; }
 			var val=v===null?f:v,
@@ -1213,10 +1213,10 @@ $.extend($.jgrid,{
 			var val = (v===undefined || v===null) ? f: v,
 			length=_trim ? $.trim(val.toString()).length : val.toString().length;
 			if(_useProperties){
-				self._append(self._getStr('rec.'+f)+'.substr(0,'+length+') == '+self._getStr('"'+self._toStr(v)+'"'));
+				self._append(self._getStr('this.'+f)+'.substr(0,'+length+') == '+self._getStr('"'+self._toStr(v)+'"'));
 			}else{
 				length=_trim?$.trim(v.toString()).length:v.toString().length;
-				self._append(self._getStr('rec')+'.substr(0,'+length+') == '+self._getStr('"'+self._toStr(f)+'"'));
+				self._append(self._getStr('this')+'.substr(0,'+length+') == '+self._getStr('"'+self._toStr(f)+'"'));
 			}
 			self._setCommand(self.startsWith,f);
 			self._resetNegate();
@@ -1226,18 +1226,18 @@ $.extend($.jgrid,{
 			var val = (v===undefined || v===null) ? f: v,
 			length=_trim ? $.trim(val.toString()).length:val.toString().length;
 			if(_useProperties){
-				self._append(self._getStr('rec.'+f)+'.substr('+self._getStr('rec.'+f)+'.length-'+length+','+length+') == "'+self._toStr(v)+'"');
+				self._append(self._getStr('this.'+f)+'.substr('+self._getStr('this.'+f)+'.length-'+length+','+length+') == "'+self._toStr(v)+'"');
 			} else {
-				self._append(self._getStr('rec')+'.substr('+self._getStr('rec')+'.length-"'+self._toStr(f)+'".length,"'+self._toStr(f)+'".length) == "'+self._toStr(f)+'"');
+				self._append(self._getStr('this')+'.substr('+self._getStr('this')+'.length-"'+self._toStr(f)+'".length,"'+self._toStr(f)+'".length) == "'+self._toStr(f)+'"');
 			}
 			self._setCommand(self.endsWith,f);self._resetNegate();
 			return self;
 		};
 		this.contains=function(f,v){
 			if(_useProperties){
-				self._append(self._getStr('rec.'+f)+'.indexOf("'+self._toStr(v)+'",0) > -1');
+				self._append(self._getStr('this.'+f)+'.indexOf("'+self._toStr(v)+'",0) > -1');
 			}else{
-				self._append(self._getStr('rec')+'.indexOf("'+self._toStr(f)+'",0) > -1');
+				self._append(self._getStr('this')+'.indexOf("'+self._toStr(f)+'",0) > -1');
 			}
 			self._setCommand(self.contains,f);
 			self._resetNegate();
@@ -1507,7 +1507,7 @@ $.fn.jqGrid = function( pin ) {
 					empty = true;
 				}
 				if (npage) {
-					if (p.lastpage && page > p.lastpage) {
+					if (p.lastpage && page > p.lastpage || p.lastpage==1) {
 						return;
 					}
 					if (grid.hDiv.loading) {
@@ -1677,7 +1677,7 @@ $.fn.jqGrid = function( pin ) {
 		},
 		addXmlData = function (xml,t, rcnt, more, adjust) {
 			var startReq = new Date(),
-			locdata = ts.p.datatype != "local" && ts.p.loadonce,
+			locdata = (ts.p.datatype != "local" && ts.p.loadonce) || ts.p.datatype == "xmlstring",
 			xmlid;
 			if(locdata) {
 				ts.p.data = [];
@@ -1837,7 +1837,7 @@ $.fn.jqGrid = function( pin ) {
 			} else { return; }
 			
 			var dReader = ts.p.datatype == "local" ? ts.p.localReader : ts.p.jsonReader, locid,
-			locdata = ts.p.datatype != "local" && ts.p.loadonce;
+			locdata = (ts.p.datatype != "local" && ts.p.loadonce) || ts.p.datatype == "jsonstring";
 			if(locdata) { ts.p.data = []; ts.p._index = {}; locid = ts.p.localReader.id = "_id_";}
 			ts.p.reccount = 0;
 			
@@ -10569,7 +10569,7 @@ jQuery.fn.searchFilter = function(fields, options) {
                 var jElem = td.find(".field" + index);
                 if (jElem[0] == null) jElem = td.find(".default"); // if there's not an element for that field, use the default one
                 jElem.attr("name", "op").show();
-
+                return false;
             });
             else jOps.find(".default").attr("name", "op").show();
             if (has_custom_data) jFSelect.change(function(e) {
@@ -10579,6 +10579,7 @@ jQuery.fn.searchFilter = function(fields, options) {
                 var jElem = td.find(".field" + index);
                 if (jElem[0] == null) jElem = td.find(".default"); // if there's not an element for that field, use the default one
                 jElem.show().addClass("vdata");
+                return false;
             });
             else jData.find(".default").show().addClass("vdata");
             // go ahead and call the change event and setup the ops and data values
@@ -10601,7 +10602,7 @@ jQuery.fn.searchFilter = function(fields, options) {
                     row.find("select[name='op']")[0].selectedIndex = 0;
                     row.find(".data input").val(""); // blank all input values
                     row.find(".data select").each(function() { this.selectedIndex = 0; }); // select first option on all selects
-                    row.find("select[name='field']").change(); // trigger any change events
+                    row.find("select[name='field']").change(function(event){event.stopPropagation();}); // trigger any change events
                 }
                 return false;
             });
@@ -10627,7 +10628,7 @@ jQuery.fn.searchFilter = function(fields, options) {
                         newRow.find("#" + this.id).unbind().removeAttr("id").removeClass("hasDatepicker").datepicker(settings);
                     });
                 }
-                newRow.find("select[name='field']").change();
+                newRow.find("select[name='field']").change(function(event){event.stopPropagation();} );
                 return false;
             });
             jQ.find(".ui-search").click(function(e) {
@@ -10684,7 +10685,7 @@ jQuery.fn.searchFilter = function(fields, options) {
                         newRow.find("#" + this.id).unbind().removeAttr("id").removeClass("hasDatepicker").datepicker(settings);
                     });
                 }
-                newRow.find("select[name='field']").change();
+                newRow.find("select[name='field']").change(function(event){event.stopPropagation();});
                 return false;
             });
 
@@ -10700,13 +10701,13 @@ jQuery.fn.searchFilter = function(fields, options) {
                  *
                  *  author: Daniel Dotsenko (dotsa@hotmail.com)
                  */
-                selDOMobj = this.$.find("select[name='groupOp']")[0];
+                selDOMobj = jQ.find("select[name='groupOp']")[0];
                 var indexmap = {}, l = selDOMobj.options.length, i;
                 for (i=0; i<l; i++) {
                     indexmap[selDOMobj.options[i].value] = i;
                 }
                 selDOMobj.selectedIndex = indexmap[setting];
-                jQuery(selDOMobj).change();
+                jQuery(selDOMobj).change(function(event){event.stopPropagation();});
             };
 
             this.setFilter = function(settings) {
