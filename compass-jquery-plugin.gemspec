@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kosmas Schuetz"]
-  s.date = %q{2010-06-20}
+  s.date = %q{2010-06-21}
   s.description = %q{A compass plugin that integrates jRails, jQuery, jQuery UI and Themes, jqGrid and more into the Compass Sass framework.}
   s.email = %q{kosmas.schuetz@gmx.com}
   s.extra_rdoc_files = [
@@ -217,6 +217,8 @@ Gem::Specification.new do |s|
      "templates/jqgrid/i18n/jqgrid/locale-el.min.js",
      "templates/jqgrid/i18n/jqgrid/locale-en.js",
      "templates/jqgrid/i18n/jqgrid/locale-en.min.js",
+     "templates/jqgrid/i18n/jqgrid/locale-es.js",
+     "templates/jqgrid/i18n/jqgrid/locale-es.min.js",
      "templates/jqgrid/i18n/jqgrid/locale-fa.js",
      "templates/jqgrid/i18n/jqgrid/locale-fa.min.js",
      "templates/jqgrid/i18n/jqgrid/locale-fi.js",
@@ -249,8 +251,6 @@ Gem::Specification.new do |s|
      "templates/jqgrid/i18n/jqgrid/locale-ru.min.js",
      "templates/jqgrid/i18n/jqgrid/locale-sk.js",
      "templates/jqgrid/i18n/jqgrid/locale-sk.min.js",
-     "templates/jqgrid/i18n/jqgrid/locale-sp.js",
-     "templates/jqgrid/i18n/jqgrid/locale-sp.min.js",
      "templates/jqgrid/i18n/jqgrid/locale-sv.js",
      "templates/jqgrid/i18n/jqgrid/locale-sv.min.js",
      "templates/jqgrid/i18n/jqgrid/locale-tr.js",
