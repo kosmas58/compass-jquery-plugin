@@ -251,6 +251,7 @@ namespace :build do
         '_dialog.scss',
         '_progressbar.scss',
         '_resizable.scss',
+        '_selectable.scss',
         '_slider.scss',
         '_tabs.scss',
         '_theme.scss'
@@ -277,13 +278,13 @@ namespace :build do
         dest_dir = File.join(JRAILS_DEST_IMAGES, theme)
         FileUtils.mkdir_p dest_dir
         
-        # Fix for Autocomplete
-        if theme != :base 
-          image = 'ui-anim_basic_16x16.gif'
-          FileUtils.cp(File.join(JQUERY_UI_18_SRC_THEMES, 'base/images', image), dest_dir) 
-          manifest.print "image 'jquery.ui/#{theme}/#{image}'\n"
-        end
-        
+#        # Fix for Autocomplete
+#        if theme != :base 
+#          image = 'ui-anim_basic_16x16.gif'
+#          FileUtils.cp(File.join(JQUERY_UI_18_SRC_THEMES, 'base/images', image), dest_dir) 
+#          manifest.print "image 'jquery.ui/#{theme}/#{image}'\n"
+#        end
+#        
         Dir.foreach(src_dir) do |image|
           next if /^\./ =~ image
           FileUtils.cp(File.join(src_dir, image), dest_dir)    
