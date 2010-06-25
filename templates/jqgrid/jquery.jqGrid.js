@@ -2048,11 +2048,11 @@ $.fn.jqGrid = function( pin ) {
 				}
 			}
 
-			if (ts.p.sortname && ts.p.sortorder) {
+			if (st && ts.p.sortorder) {
 				if(ts.p.sortorder.toUpperCase() == "DESC") {
-					query.orderBy(ts.p.sortname,"d",cmtypes[st].stype, cmtypes[st].srcformat);
+					query.orderBy(st,"d",cmtypes[st].stype, cmtypes[st].srcformat);
 				} else {
-					query.orderBy(ts.p.sortname,"a",cmtypes[st].stype, cmtypes[st].srcformat);
+					query.orderBy(st,"a",cmtypes[st].stype, cmtypes[st].srcformat);
 				}
 			}
 			var queryResults = query.select(),
@@ -2805,7 +2805,12 @@ $.fn.jqGrid = function( pin ) {
 				return this;
 			}
 		}).bind('reloadGrid', function(e,opts) {
-			if(ts.p.treeGrid ===true) {	ts.p.datatype = ts.p.treedatatype;}
+			if(ts.p.treeGrid ===true) {
+				ts.p.datatype = ts.p.treedatatype;
+				if( ts.p.postData.hasOwnProperty('nodeid') && ts.p.postData.nodeid == '') {
+					ts.p.data = []; _index={};
+				}
+			}
 			if (opts && opts.current) {
 				ts.grid.selectionPreserver(ts);
 			}
@@ -3591,7 +3596,7 @@ $.jgrid.extend({
 							var cm = $t.p.colModel[pos], index;
 							nData = cm.formatter && typeof(cm.formatter) === 'string' && cm.formatter == 'date' ? $.unformat.date(nData,cm) : nData;
 							index = $t.p._index[rowid];
-							if(index) {
+							if(parseInt(index,10) >= 0 ) {
 								$t.p.data[index][cm.name] = nData;
 							}
 						}
@@ -4505,7 +4510,8 @@ function createEl(eltype,options,vl,autowidth, ajaxso) {
 				jQuery.ajax(jQuery.extend({
 					url: options.dataUrl,
 					type : "GET",
-					complete: function(data,status){
+					dataType: "html",
+					success: function(data,status){
 						try {delete options.dataUrl; delete options.value;} catch (e){}
 						var a;
 						if(typeof(options.buildSelect) != "undefined") {
@@ -4513,7 +4519,7 @@ function createEl(eltype,options,vl,autowidth, ajaxso) {
 							a = jQuery(b).html();
 							delete options.buildSelect;
 						} else {
-							a = jQuery(data.responseText).html();
+							a = jQuery(data).html();
 						}
 						if(a) {
 							jQuery(elem).append(a);
@@ -4707,7 +4713,7 @@ function checkDate (format, date) {
 
 function isEmpty(val)
 {
-	if (val.match(/^s+$/) || val == "")	{
+	if (val.match(/^\s+$/) || val == "")	{
 		return true;
 	} else {
 		return false;
@@ -4751,7 +4757,7 @@ function checkValues(val, valref,g) {
 	if(edtrul) {
 		if(!nm) { nm = g.p.colNames[valref]; }
 		if(edtrul.required === true) {
-			if( val.match(/^s+$/) || val == "" )  { return [false,nm+": "+jQuery.jgrid.edit.msg.required,""]; }
+			if( isEmpty(val) )  { return [false,nm+": "+jQuery.jgrid.edit.msg.required,""]; }
 		}
 		// force required
 		var rqfield = edtrul.required === false ? false : true;
