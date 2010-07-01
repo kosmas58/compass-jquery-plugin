@@ -1,15 +1,14 @@
 /*******************************************************************************/
 /* Tree container                                                              */
 /*******************************************************************************/
-
 ul.ui-dynatree-container
 {
 	font-family: tahoma, arial, helvetica;
 	font-size: 10pt; /* font size should not be too big */
-	white-space: nowrap; 
+	white-space: nowrap;
 	padding: 3px;
-	
-	background-color: white; 
+
+	background-color: white;
 	border: 1px dotted gray;
 }
 
@@ -31,7 +30,7 @@ ul.ui-dynatree-container li
     background-position: 0 0;
     background-repeat: repeat-y;
     background-image: image_url("jquery.ui/dynatree.xp/vline.png");
-    
+
     margin:0;
 /*    padding:3px 0 3px 16px;*/
 /*    padding:3px 0 3px 0;*/
@@ -54,27 +53,17 @@ ul.ui-dynatree-container li.ui-dynatree-lastsib
 {
 	opacity: 0.5;
 /*	filter: alpha(opacity=50); /* Yields a css warning */
-	background-color: silver; 
+	background-color: silver;
 }
 
 
-/******************************************************************************* 
- * Default for custom icons
- */
-/*
-ul.ui-dynatree-container img
-{
-	width: 16px;
-	height: 16px;
-	margin-left: 3px;
-	vertical-align: top;
-	border-style: none;
-}
-*/
+/*******************************************************************************/
+/* Default for custom icons                                                    */
+/*******************************************************************************/
 
-/******************************************************************************* 
- * Common icon definitions
- */
+/*******************************************************************************/
+/* Common icon definitions                                                     */
+/*******************************************************************************/
 span.ui-dynatree-empty,
 span.ui-dynatree-vline,
 span.ui-dynatree-connector,
@@ -92,44 +81,26 @@ span.ui-dynatree-radio
 	background-position: left;
 }
 
-/******************************************************************************* 
- * Lines and connectors
- */
-
-/*
-span.ui-dynatree-empty
-{
-}
-span.ui-dynatree-vline
-{
-	background-image: image_url("jquery.ui/dynatree.xp/ltL_ns.png");
-}
-span.ui-dynatree-connector
-{
-	background-image: image_url("jquery.ui/dynatree.xp/ltL_nes.png");
-}
-.ui-dynatree-lastsib span.ui-dynatree-connector
-{
-	background-image: image_url("jquery.ui/dynatree.xp/ltL_ne.png");
-}
-*/
+/*******************************************************************************/
+/* Lines and connectors                                                        */
+/*******************************************************************************/
 
 span.ui-dynatree-connector
 {
     background-image: image_url("jquery.ui/dynatree.xp/ltL_ne.png");
 }
 
-/******************************************************************************* 
- * Expander icon
- * Note: IE6 doesn't correctly evaluate multiples class names,
- *		 so we create combined class names that can be used in the CSS.
- *
- * Prefix: ui-dynatree-exp-
- * 1st character: 'e': expanded, 'c': collapsed
- * 2nd character (optional): 'd': lazy (Delayed)
- * 3rd character (optional): 'l': Last sibling       
- */
- 
+/*******************************************************************************/
+/* Expander icon                                                               */ 
+/* Note: IE6 doesn't correctly evaluate multiples class names,                 */
+/*		 so we create combined class names that can be used in the CSS.        */
+/*                                                                             */ 
+/* Prefix: ui-dynatree-exp-                                                    */ 
+/* 1st character: 'e': expanded, 'c': collapsed                                */      
+/* 2nd character (optional): 'd': lazy (Delayed)                               */
+/* 3rd character (optional): 'l': Last sibling                                 */
+/*******************************************************************************/
+
 span.ui-dynatree-expander
 {
 	background-image: image_url("jquery.ui/dynatree.xp/ltP_nes.png");
@@ -159,9 +130,9 @@ span.ui-dynatree-expander
 }
 
 
-/******************************************************************************* 
- * Checkbox icon
- */
+/*******************************************************************************/
+/* Checkbox icon                                                               */ 
+/*******************************************************************************/
 span.ui-dynatree-checkbox
 {
 	margin-left: 3px;
@@ -190,11 +161,11 @@ span.ui-dynatree-checkbox:hover
 	background-image: image_url("jquery.ui/dynatree.xp/cbChecked_hover.png");
 }
 
-/******************************************************************************* 
- * Radiobutton icon
- * This is a customization, that may be activated by overriding the 'checkbox'
- * class name as 'ui-dynatree-radio' in the tree options.
- */
+/*******************************************************************************/
+/* Radiobutton icon                                                            */
+/* This is a customization, that may be activated by overriding the 'checkbox' */  
+/* class name as 'ui-dynatree-radio' in the tree options.                      */   
+/*******************************************************************************/
 span.ui-dynatree-radio
 {
 	margin-left: 3px;
@@ -223,16 +194,16 @@ span.ui-dynatree-radio:hover
 	background-image: image_url("jquery.ui/dynatree.xp/rbChecked_hover.png");
 }
 
-/******************************************************************************* 
- * Node type icon
- * Note: IE6 doesn't correctly evaluate multiples class names,
- *		 so we create combined class names that can be used in the CSS.
- *
- * Prefix: ui-dynatree-ico-
- * 1st character: 'e': expanded, 'c': collapsed
- * 2nd character (optional): 'f': folder
- */
- 
+/*******************************************************************************/
+/* Node type icon                                                              */ 
+/* Note: IE6 doesn't correctly evaluate multiples class names,                 */
+/*		 so we create combined class names that can be used in the CSS.        */
+/*                                                                             */ 
+/* Prefix: ui-dynatree-ico-                                                    */
+/* 1st character: 'e': expanded, 'c': collapsed                                */ 
+/* 2nd character (optional): 'f': folder                                       */
+/*******************************************************************************/
+
 span.ui-dynatree-icon /* Default icon */
 {
 	margin-left: 3px;
@@ -261,9 +232,9 @@ span.ui-dynatree-icon /* Default icon */
 	background-image: image_url("jquery.ui/dynatree.xp/ltError.png");
 }
 
-/******************************************************************************* 
- * Node titles
- */
+/*******************************************************************************/
+/* Node titles                                                                 */
+/*******************************************************************************/
 
  /* @Chrome: otherwise hit area of node titles is broken (issue 133) */
 span.ui-dynatree-document,
@@ -294,7 +265,7 @@ ul.ui-dynatree-container a:hover
 span.ui-dynatree-document a,
 span.ui-dynatree-folder a
 {
-	display: inline-block; /* Better alignment, when title contains <br> */  
+	display: inline-block; /* Better alignment, when title contains <br> */
 /*	vertical-align: top;*/
 	padding-left: 3px;
 	padding-right: 3px; /* Otherwise italic font will be outside bounds */
@@ -320,9 +291,9 @@ span.ui-dynatree-expanded a
 {
 }
 
-span.ui-dynatree-selected a 
+span.ui-dynatree-selected a
 {
-	color: green; 
+	color: green;
 	font-style: italic;
 }
 
@@ -332,9 +303,9 @@ span.ui-dynatree-active a
 	color: white !important; /* @ IE6 */
 }
 
-/******************************************************************************* 
- * Custom node classes (sample)
- */
+/*******************************************************************************/
+/* Custom node classes (sample)                                                */
+/*******************************************************************************/
 
 span.custom1 a
 {
