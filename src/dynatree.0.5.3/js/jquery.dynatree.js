@@ -252,7 +252,7 @@ DynaTreeNode.prototype = {
 			if( ! this.li ) {
 				this.li = document.createElement("li");
 				this.li.dtnode = this;
-				if( this.data.key )
+				if( this.data.key && opts.generateIds )
 					this.li.id = opts.idPrefix + this.data.key;
 	
 				this.span = document.createElement("span");
@@ -307,7 +307,7 @@ DynaTreeNode.prototype = {
 			this.span.className = cnList.join(" ");
 
 			if( isLastSib )
-				this.li.className = "ui-dynatree-lastsib";
+				this.li.className = "dynatree-lastsib";
 			
 			// Hide children, if node is collapsed
 //			this.ul.style.display = ( this.bExpanded || !this.parent ) ? "" : "none";
@@ -442,6 +442,9 @@ DynaTreeNode.prototype = {
 	},
 
 	getLevel: function() {
+		/**
+		 * Return node depth. 0: System root node, 1: visible top-level node.
+		 */
 		var level = 0;
 		var dtn = this.parent;
 		while( dtn ) {
@@ -609,7 +612,8 @@ DynaTreeNode.prototype = {
 				break;
 			}
 		}
-		if( this.parent == null && this.tree.options.minExpandLevel>0 ) {
+//		if( this.parent == null && this.tree.options.minExpandLevel>0 ) {
+		if( this.parent == null ) {
 			expand = false;
 		}
 		if( expand ) {
@@ -777,7 +781,7 @@ DynaTreeNode.prototype = {
 			return;
 		}
 		var opts = this.tree.options;
-		if( !bExpand && this.getLevel()<opts.minExpandLevel ) {
+		if( !bExpand && this.getLevel() < opts.minExpandLevel ) {
 			this.tree.logDebug("dtnode._expand(%o) prevented collapse - %o", bExpand, this);
 			return;
 		}
@@ -833,7 +837,8 @@ DynaTreeNode.prototype = {
 	expand: function(flag) {
 		if( !this.childList && !this.data.isLazy && flag )
 			return; // Prevent expanding empty nodes
-		if( this.parent == null && this.tree.options.minExpandLevel>0 && !flag )
+//		if( this.parent == null && this.tree.options.minExpandLevel>0 && !flag )
+		if( this.parent == null && !flag )
 			return; // Prevent collapsing the root
 		this._expand(flag);
 	},
@@ -1481,8 +1486,10 @@ DynaTree.prototype = {
 			_log("warn", "Option 'rootVisible' is no longer supported.");
 		if( opts.title  !== undefined ) 
 			_log("warn", "Option 'title' is no longer supported.");
-		if( opts.minExpandLevel < 1 ) 
+		if( opts.minExpandLevel < 1 ) { 
 			_log("warn", "Option 'minExpandLevel' must be >= 1.");
+			opts.minExpandLevel = 1;
+		}
 		
 		// If a 'options.classNames' dictionary was passed, still use defaults 
     	// for undefined classes:
@@ -1835,48 +1842,58 @@ TODO: better?
 
 	_setDndStatus: function(sourceNode, targetNode, helper, hitMode, accept) {
 		// hitMode: 'after', 'before', 'over', 'out', 'start', 'stop'
-		var sourceTag = sourceNode ? $(sourceNode.span) : null;
-		var targetTag = $(targetNode.span);
+		var $source = sourceNode ? $(sourceNode.span) : null;
+		var $target = $(targetNode.span);
+		if( !this.$dndMarker ) {
+			this.$dndMarker = $("<div id='dynatree_drop_marker'></div>")
+				.hide()
+				.prependTo("body");
+			logMsg("Creating marker: %o", this.$dndMarker);
+		}
 		if(hitMode === "start"){
 		}
 		if(hitMode === "stop"){
 //			sourceNode.removeClass("dynatree-drop-target");
 		}
 		if(hitMode === "after" || hitMode === "before" || hitMode === "over"){
-//			sourceTag && sourceTag.addClass("dynatree-drag-source");
-			targetTag.addClass("dynatree-drop-target");
+//			$source && $source.addClass("dynatree-drag-source");
+			$target.addClass("dynatree-drop-target");
+			var pos = $target.position();
+			this.$dndMarker.css({"left": (pos.left) + "px", "top": (pos.top) + "px" })
+				.show();
 //			helper.addClass("dynatree-drop-hover");
 		} else {
-//			sourceTag && sourceTag.removeClass("dynatree-drag-source");
-			targetTag.removeClass("dynatree-drop-target");
+//			$source && $source.removeClass("dynatree-drag-source");
+			$target.removeClass("dynatree-drop-target");
+			this.$dndMarker.hide();
 //			helper.removeClass("dynatree-drop-hover");
 		}
 		if(hitMode === "after"){
-			targetTag.addClass("dynatree-drop-after");
+			$target.addClass("dynatree-drop-after");
 		} else {
-			targetTag.removeClass("dynatree-drop-after");
+			$target.removeClass("dynatree-drop-after");
 		}
 		if(hitMode === "before"){
-			targetTag.addClass("dynatree-drop-before");
+			$target.addClass("dynatree-drop-before");
 		} else {
-			targetTag.removeClass("dynatree-drop-before");
+			$target.removeClass("dynatree-drop-before");
 		}
 		if(accept === true){
-			sourceTag && sourceTag.addClass("dynatree-drop-accept");
-			targetTag.addClass("dynatree-drop-accept");
+			$source && $source.addClass("dynatree-drop-accept");
+			$target.addClass("dynatree-drop-accept");
 			helper.addClass("dynatree-drop-accept");
 		}else{
-			sourceTag && sourceTag.removeClass("dynatree-drop-accept");
-			targetTag.removeClass("dynatree-drop-accept");
+			$source && $source.removeClass("dynatree-drop-accept");
+			$target.removeClass("dynatree-drop-accept");
 			helper.removeClass("dynatree-drop-accept");
 		}
 		if(accept === false){
-			sourceTag && sourceTag.addClass("dynatree-drop-reject");
-			targetTag.addClass("dynatree-drop-reject");
+			$source && $source.addClass("dynatree-drop-reject");
+			$target.addClass("dynatree-drop-reject");
 			helper.addClass("dynatree-drop-reject");
 		}else{
-			sourceTag && sourceTag.removeClass("dynatree-drop-reject");
-			targetTag.removeClass("dynatree-drop-reject");
+			$source && $source.removeClass("dynatree-drop-reject");
+			$target.removeClass("dynatree-drop-reject");
 			helper.removeClass("dynatree-drop-reject");
 		}
 	},
@@ -1906,8 +1923,9 @@ TODO: better?
 			if(res === false) {
 				this.logDebug("tree.onDragStart() cancelled");
 				draggable._clear();
+			} else {
+				nodeTag.addClass("dynatree-drag-source");
 			}
-			nodeTag.addClass("dynatree-drag-source");
 			break;
 		case "enter":
 			res = dnd.onDragEnter ? dnd.onDragEnter(node, otherNode) : null;
@@ -1944,11 +1962,11 @@ TODO: better?
     			} else {
     				hitMode = "after";
     			}
-    			logMsg("    clientPos: %s/%s", event.clientX, event.clientY);
-    			logMsg("    nodeOfs: %s/%s", nodeOfs.left, nodeOfs.top);
-    			logMsg("    relPos: %s/%s", relPos.x, relPos.y);
-    			logMsg("    relPos2: %s/%s: %s", relPos2.x, relPos2.y, hitMode);
-    			logMsg("    e:%o", event);
+//    			logMsg("    clientPos: %s/%s", event.clientX, event.clientY);
+//    			logMsg("    nodeOfs: %s/%s", nodeOfs.left, nodeOfs.top);
+//    			logMsg("    relPos: %s/%s", relPos.x, relPos.y);
+//    			logMsg("    relPos2: %s/%s: %s", relPos2.x, relPos2.y, hitMode);
+//    			logMsg("    e:%o", event);
             }
 /*			var checkPos = function(node, pos) {
 				var dyClick = this.offset.click.top, dxClick = this.offset.click.left;
@@ -2147,8 +2165,7 @@ $.widget("ui.dynatree", {
  */
 //$.ui.dynatree.defaults = {  @@ 1.8
 $.ui.dynatree.prototype.options = {
-//	title: "Dynatree root", // Name of the root node.
-//	rootVisible: false, // Set to true, to make the root node visible.
+	title: "Dynatree", // Tree's name (only used for debug outpu)
  	minExpandLevel: 1, // 1: root node is not collapsible
 	imagePath: null, // Path to a folder containing icons. Defaults to 'skin/' subdirectory.
 	children: null, // Init tree structure from this object array.
@@ -2207,8 +2224,9 @@ $.ui.dynatree.prototype.options = {
 		loading: "Loading&#8230;",
 		loadError: "Load error!"
 	},
-	idPrefix: "ui-dynatree-id-", // Used to generate node id's like <span id="ui-dynatree-id-<key>">.
-//    cookieId: "ui-dynatree-cookie", // Choose a more unique name, to allow multiple trees.
+	generateIds: false,
+	idPrefix: "dynatree-id-", // Used to generate node id's like <span id="dynatree-id-<key>">.
+//    cookieId: "dynatree-cookie", // Choose a more unique name, to allow multiple trees.
     cookieId: "dynatree", // Choose a more unique name, to allow multiple trees.
 	cookie: {
 		expires: null //7, // Days or Date; null: session cookie
@@ -2220,34 +2238,34 @@ $.ui.dynatree.prototype.options = {
 	// Note: if only single entries are passed for options.classNames, all other 
 	// values are still set to default. 
 	classNames: {
-		container: "ui-dynatree-container",
-		node: "ui-dynatree-node",
-		folder: "ui-dynatree-folder",
-//		document: "ui-dynatree-document",
+		container: "dynatree-container",
+		node: "dynatree-node",
+		folder: "dynatree-folder",
+//		document: "dynatree-document",
 		
-		empty: "ui-dynatree-empty",
-		vline: "ui-dynatree-vline",
-		expander: "ui-dynatree-expander",
-		connector: "ui-dynatree-connector",
-		checkbox: "ui-dynatree-checkbox",
-		nodeIcon: "ui-dynatree-icon",
-		title: "ui-dynatree-title",
-		noConnector: "ui-dynatree-no-connector",
+		empty: "dynatree-empty",
+		vline: "dynatree-vline",
+		expander: "dynatree-expander",
+		connector: "dynatree-connector",
+		checkbox: "dynatree-checkbox",
+		nodeIcon: "dynatree-icon",
+		title: "dynatree-title",
+		noConnector: "dynatree-no-connector",
 		
-		nodeError: "ui-dynatree-statusnode-error",
-		nodeWait: "ui-dynatree-statusnode-wait",
-		hidden: "ui-dynatree-hidden",
-		combinedExpanderPrefix: "ui-dynatree-exp-",
-		combinedIconPrefix: "ui-dynatree-ico-",
-//		disabled: "ui-dynatree-disabled",
-		hasChildren: "ui-dynatree-has-children",
-		active: "ui-dynatree-active",
-		selected: "ui-dynatree-selected",
-		expanded: "ui-dynatree-expanded",
-		lazy: "ui-dynatree-lazy",
-		focused: "ui-dynatree-focused",
-		partsel: "ui-dynatree-partsel",
-		lastsib: "ui-dynatree-lastsib"
+		nodeError: "dynatree-statusnode-error",
+		nodeWait: "dynatree-statusnode-wait",
+		hidden: "dynatree-hidden",
+		combinedExpanderPrefix: "dynatree-exp-",
+		combinedIconPrefix: "dynatree-ico-",
+//		disabled: "dynatree-disabled",
+		hasChildren: "dynatree-has-children",
+		active: "dynatree-active",
+		selected: "dynatree-selected",
+		expanded: "dynatree-expanded",
+		lazy: "dynatree-lazy",
+		focused: "dynatree-focused",
+		partsel: "dynatree-partsel",
+		lastsib: "dynatree-lastsib"
 	},
 	debugLevel: 2, // 0:quiet, 1:normal, 2:debug $REPLACE:	debugLevel: 1,
 
@@ -2331,19 +2349,26 @@ var _registerDnd = function() {
 	        var sourceNode = ui.helper.data("dtSourceNode") || null;
 	        logMsg("draggable-connectToDynatree.start, %o", sourceNode);
 	        logMsg("    this: %o", this);
+	        logMsg("    event: %o", event);
 	        logMsg("    draggable: %o", draggable);
 	        logMsg("    ui: %o", ui);
 	        if(sourceNode) {
 	            // Adjust helper offset for tree nodes
-	
+/*
 	            var sourcePosition = $(sourceNode.span).position();
 	            var cssPosition = $(ui.helper).position();
 	            logMsg("    draggable.offset.click: %s/%s", draggable.offset.click.left, draggable.offset.click.top);
-	            logMsg("    sourcePosition: %s/%s", sourcePosition.left, sourcePosition.top);
-	            logMsg("    cssPosition: %s/%s", cssPosition.left, cssPosition.top);
-	            logMsg("    event.target.offset: %s/%s", event.target.offsetLeft, event.target.offsetTop);
-	            draggable.offset.click.top -= event.target.offsetTop;
-	            draggable.offset.click.left -= event.target.offsetLeft;
+	            logMsg("    sourceNode.position: %s/%s", sourcePosition.left, sourcePosition.top);
+	            logMsg("    helper.position: %s/%s", cssPosition.left, cssPosition.top);
+	            logMsg("    event.target.offset: %s/%s,  %sx%s", event.target.offsetLeft, event.target.offsetTop, event.target.offsetWidth, event.target.offsetHeight);
+	            logMsg("    draggable.positionAbs: %s/%s", draggable.positionAbs.left, draggable.positionAbs.top);
+*/
+	            // Adjust helper offset, so cursor is slightly outside top/left corner
+//	        	draggable.offset.click.top -= event.target.offsetTop;
+//	            draggable.offset.click.left -= event.target.offsetLeft;
+	        	draggable.offset.click.top = -2; 
+	            draggable.offset.click.left = + 16;
+	            logMsg("    draggable.offset.click FIXED: %s/%s", draggable.offset.click.left, draggable.offset.click.top);
 	            // Trigger onDragStart event
 	            // TODO: when called as connectTo..., the return value is ignored(?)
 	            return sourceNode.tree._onDragEvent("start", sourceNode, null, event, ui, draggable);
