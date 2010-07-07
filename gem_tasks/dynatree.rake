@@ -2,7 +2,7 @@ require 'fileutils'
 require 'lib/handle_js_files'
 
 # Compass generator for DYNATREE_14
-DYNATREE_SRC = File.join(GEM_ROOT, 'src', 'dynatree.0.5.3')
+DYNATREE_SRC = File.join(GEM_ROOT, 'src', 'dynatree.0.5.x')
 DYNATREE_SRC_SKINS = File.join(DYNATREE_SRC, 'skins')
 
 DYNATREE_DEST_TEMPLATES = File.join(GEM_ROOT, 'templates', 'dynatree')
