@@ -2331,7 +2331,7 @@ function _initDragAndDrop(tree) {
 	if(dnd && dnd.onDrop) {
 	    tree.$tree.droppable({
 	        addClasses: false,
-	        tolerance: "intersect",    
+	        tolerance: "touch",    
 	        greedy: false,
 	        _last: null
 	    });
