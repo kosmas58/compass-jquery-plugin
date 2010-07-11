@@ -4,45 +4,45 @@
 /* Tree container                                                              */
 /*******************************************************************************/
 
-ul.dynatree-container {
-  font-family: tahoma, arial, helvetica;
-  font-size: 10pt;
-  /* font size should not be too big */
-  white-space: nowrap;
-  padding: 3px;
-  background-color: white;
-  border: 1px dotted gray;
-  ul {
-    padding: 0 0 0 16px; }
-  li {
-    list-style-image: none;
-    list-style-position: outside;
-    list-style-type: none;
-    -moz-background-clip: border;
-    -moz-background-inline-policy: continuous;
-    -moz-background-origin: padding;
-    background-attachment: scroll;
-    background-color: transparent;
-    background-position: 0 0;
-    background-repeat: repeat-y;
-    background-image: image_url("jquery.ui/dynatree.xp/vline.png");
-    margin: 0;
-    /*    padding:3px 0 3px 16px;*/
-    /*    padding:3px 0 3px 0;*/
-    padding: 1px 0 0 0; }
-  >li {
-    /*    background-image: none;*/ }
-  li.dynatree-lastsib {
-    background-image: none; } }
+ul {
+  &.dynatree-container {
+    font-family: tahoma, arial, helvetica;
+    font-size: 10pt;
+    /* font size should not be too big */
+    white-space: nowrap;
+    padding: 3px;
+    background-color: white;
+    border: 1px dotted gray;
+    ul {
+      padding: 0 0 0 16px; }
+    li {
+      list-style-image: none;
+      list-style-position: outside;
+      list-style-type: none;
+      -moz-background-clip: border;
+      -moz-background-inline-policy: continuous;
+      -moz-background-origin: padding;
+      background-attachment: scroll;
+      background-color: transparent;
+      background-position: 0 0;
+      background-repeat: repeat-y;
+      background-image: image_url("jquery.ui/dynatree.xp/vline.png");
+      margin: 0;
+      /*    padding:3px 0 3px 16px;*/
+      /*    padding:3px 0 3px 0;*/
+      padding: 1px 0 0 0; }
+    >li {
+      /*    background-image: none;*/ }
+    li.dynatree-lastsib {
+      background-image: none; } }
+  &.dynatree-disabled ul.dynatree-container {
+    opacity: 0.5;
+    /*	filter: alpha(opacity=50); /* Yields a css warning */
+    background-color: silver; } }
 
 /* Always suppress vertical line for top level*/
 
 /* Style, when control is disabled */
-
-.dynatree-disabled ul.dynatree-container {
-  opacity: 0.5;
-  /*	filter: alpha(opacity=50); /* Yields a css warning */
-  background-color: silver; }
 
 /******************************************************************************* 
  * Default for custom icons

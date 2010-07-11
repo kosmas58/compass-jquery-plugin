@@ -49,7 +49,7 @@ ul.dynatree-container li.dynatree-lastsib
 }
 
 /* Style, when control is disabled */
-.dynatree-disabled ul.dynatree-container
+ul.dynatree-disabled ul.dynatree-container
 {
 	opacity: 0.5;
 /*	filter: alpha(opacity=50); /* Yields a css warning */
