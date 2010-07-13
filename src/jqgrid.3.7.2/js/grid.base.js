@@ -1,11 +1,11 @@
 ;(function ($) {
 /*
- * jqGrid  3.7.1 - jQuery Grid
+ * jqGrid  3.7.2 - jQuery Grid
  * Copyright (c) 2008, Tony Tomov, tony@trirand.com
  * Dual licensed under the MIT and GPL licenses
  * http://www.opensource.org/licenses/mit-license.php
  * http://www.gnu.org/licenses/gpl-2.0.html
- * Date: 2010-06-15 
+ * Date: 2010-07-12 
  */
 $.jgrid = $.jgrid || {};
 $.extend($.jgrid,{
@@ -2488,9 +2488,9 @@ $.jgrid.extend({
 						}
 					});
 					if(t.p.datatype == 'local') {
-						var pos  = null;
+						var pos;
 						pos = t.p._index[rowid];
-						if(pos !== null) {
+						if(typeof(pos) != 'undefined') {
 							t.p.data[pos] = $.extend(true, t.p.data[pos], lcdata);
 						}
 						lcdata = null;

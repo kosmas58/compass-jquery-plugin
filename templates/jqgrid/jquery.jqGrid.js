@@ -700,12 +700,12 @@ $.extend($.ui.multiselect, {
 
 ;(function ($) {
 /*
- * jqGrid  3.7.1 - jQuery Grid
+ * jqGrid  3.7.2 - jQuery Grid
  * Copyright (c) 2008, Tony Tomov, tony@trirand.com
  * Dual licensed under the MIT and GPL licenses
  * http://www.opensource.org/licenses/mit-license.php
  * http://www.gnu.org/licenses/gpl-2.0.html
- * Date: 2010-06-15 
+ * Date: 2010-07-12 
  */
 $.jgrid = $.jgrid || {};
 $.extend($.jgrid,{
@@ -3188,9 +3188,9 @@ $.jgrid.extend({
 						}
 					});
 					if(t.p.datatype == 'local') {
-						var pos  = null;
+						var pos;
 						pos = t.p._index[rowid];
-						if(pos !== null) {
+						if(typeof(pos) != 'undefined') {
 							t.p.data[pos] = $.extend(true, t.p.data[pos], lcdata);
 						}
 						lcdata = null;
@@ -4632,7 +4632,7 @@ function createEl(eltype,options,vl,autowidth, ajaxso) {
 			} catch (e) {
 				if (e=="e1") { info_dialog(jQuery.jgrid.errors.errcap,"function 'custom_element' "+jQuery.jgrid.edit.msg.nodefined, jQuery.jgrid.edit.bClose);}
 				if (e=="e2") { info_dialog(jQuery.jgrid.errors.errcap,"function 'custom_element' "+jQuery.jgrid.edit.msg.novalue,jQuery.jgrid.edit.bClose);}
-				else { info_dialog(jQuery.jgrid.errors.errcap,e.message,jQuery.jgrid.edit.bClose); }
+				else { info_dialog(jQuery.jgrid.errors.errcap,typeof(e)==="string"?e:e.message,jQuery.jgrid.edit.bClose); }				
 			}
 			break;
 	}
@@ -6446,7 +6446,7 @@ $.jgrid.extend({
 									fld[0].checked = false;
 									fld[0].defaultChecked = false;
 									vl = $(fld).attr("offval");
-								} else if (fld[0].type.substr(0,6)=='select') {
+								} else if (fld[0].type && fld[0].type.substr(0,6)=='select') {
 									fld[0].selectedIndex = 0; 
 								} else {
 									fld.val(vl);
@@ -6579,7 +6579,7 @@ $.jgrid.extend({
 					  rp_ge.mtype = postdata.id == "_empty" ? "POST" : "PUT";
 					  rp_ge.url = postdata.id == "_empty" ? $t.p.url : $t.p.url+"/"+postdata.id;	
 					}
-
+					
 					var ajaxOptions = $.extend({
 						url: rp_ge.url ? rp_ge.url : $($t).jqGrid('getGridParam','editurl'),
 						type: rp_ge.mtype,

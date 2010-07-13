@@ -796,7 +796,7 @@ $.jgrid.extend({
 									fld[0].checked = false;
 									fld[0].defaultChecked = false;
 									vl = $(fld).attr("offval");
-								} else if (fld[0].type.substr(0,6)=='select') {
+								} else if (fld[0].type && fld[0].type.substr(0,6)=='select') {
 									fld[0].selectedIndex = 0; 
 								} else {
 									fld.val(vl);
@@ -929,7 +929,7 @@ $.jgrid.extend({
 					  rp_ge.mtype = postdata.id == "_empty" ? "POST" : "PUT";
 					  rp_ge.url = postdata.id == "_empty" ? $t.p.url : $t.p.url+"/"+postdata.id;	
 					}
-
+					
 					var ajaxOptions = $.extend({
 						url: rp_ge.url ? rp_ge.url : $($t).jqGrid('getGridParam','editurl'),
 						type: rp_ge.mtype,
