@@ -2006,7 +2006,7 @@ $.fn.jqGrid = function( pin ) {
 				}
 			});
 			if(ts.p.treeGrid) {
-				$(ts).jqGrid("SortTree",ts.p.sortname,ts.p.sortorder, cmtypes[st].stype, cmtypes[st].srcfmt);
+				$(ts).jqGrid("SortTree", st, ts.p.sortorder, cmtypes[st].stype, cmtypes[st].srcfmt);
 				return;
 			}
 			var compareFnMap = {
@@ -9308,9 +9308,10 @@ $.jgrid.extend({
 					});
 					break;
 				case 'adjacency' :
-					var parent_id = $t.p.treeReader.parent_id_field;
+					var parent_id = $t.p.treeReader.parent_id_field,
+					dtid = $t.p.localReader.id;
 					$(this.p.data).each(function(i,val){
-						if(this.id == rc[parent_id] ) {
+						if(this[dtid] == rc[parent_id] ) {
 							result = this;
 							return false;
 						}
@@ -9338,9 +9339,10 @@ $.jgrid.extend({
 					});
 					break;
 				case 'adjacency' :
-					var parent_id = $t.p.treeReader.parent_id_field;
+					var parent_id = $t.p.treeReader.parent_id_field,
+					dtid = $t.p.localReader.id;
 					$(this.p.data).each(function(i,val){
-						if(this[parent_id] == rc.id) {
+						if(this[parent_id] == rc[dtid]) {
 							result.push(this);
 						}
 					});
@@ -9368,11 +9370,12 @@ $.jgrid.extend({
 					break;
 				case 'adjacency' :
 					result.push(rc);
-					var parent_id = $t.p.treeReader.parent_id_field;
+					var parent_id = $t.p.treeReader.parent_id_field,
+					dtid = $t.p.localReader.id;
 					$(this.p.data).each(function(i){
 						len = result.length;
 						for (i = 0; i < len; i++) {
-							if (result[i].id == this[parent_id]) {
+							if (result[i][dtid] == this[parent_id]) {
 								result.push(this);
 								break;
 							}
@@ -9789,7 +9792,9 @@ hs=function(w,t,c){return w.each(function(){var s=this._jqm;$(t).each(function()
 				monthNames: opts.monthNames
 			};
 			if( format in opts.masks ) { format = opts.masks[format]; }
-			if(date.constructor === Date) {
+			if(date.constructor === Number) {
+			    timestamp = new Date(date);
+			} else if(date.constructor === Date) {
 				timestamp = date;
 			} else {
 				date = date.split(/[\\\/:_;.\t\T\s-]/);
@@ -9926,7 +9931,7 @@ hs=function(w,t,c){return w.each(function(){var s=this._jqm;$(t).each(function()
 		}
 		if(op.target) {target = 'target=' + op.target;}
 		idUrl = op.baseLinkUrl+op.showAction + '?'+ op.idName+'='+opts.rowId+op.addParam;
-        if(isString(cellval)) {	//add this one even if its blank string
+        if(isString(cellval) || isNumber(cellval)) {	//add this one even if its blank string
 			return "<a "+target+" href=\"" + idUrl + "\">" + cellval + "</a>";
         }else {
 			return $.fn.fmatter.defaultFormat(cellval,opts);
@@ -10136,7 +10141,7 @@ hs=function(w,t,c){return w.each(function(){var s=this._jqm;$(t).each(function()
 						break;
 					}
 				}
-			} else if(isObject(oSelect)) {
+			} else if(isObject(oSelect) || $.isArray(oSelect) ){
 				if(!msl) { scell[0] =  cell; }
 				ret = jQuery.map(scell, function(n){
 					var rv;
@@ -10146,7 +10151,7 @@ hs=function(w,t,c){return w.each(function(){var s=this._jqm;$(t).each(function()
 							return false;
 						}
 					});
-					if( rv) { return rv; }
+					if( typeof(rv) != 'undefined' ) { return rv; }
 				});
 			}
 			return ret.join(", ");
