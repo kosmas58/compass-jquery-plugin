@@ -1,4 +1,4 @@
-/*************************************************************************
+/*
 	jquery.dynatree.js
 	Dynamic tree view control, with support for lazy loading of branches.
 
@@ -15,17 +15,17 @@
  	@depends: jquery.js
  	@depends: jquery.ui.core.js
     @depends: jquery.cookie.js
-*************************************************************************/
+*/
 
 
-/*************************************************************************
+/*
  *	Debug functions
  */
 
 var _canLog = true;
 
 function _log(mode, msg) {
-	/**
+	/*
 	 * Usage: logMsg("%o was toggled", this);
 	 */
 	if( !_canLog ) 
@@ -63,10 +63,8 @@ function logMsg(msg) {
 // Forward declaration
 var getDynaTreePersistData = undefined;
 
-
-
-/*************************************************************************
- *	Constants
+/*
+ * 	Constants
  */
 var DTNodeStatus_Error   = -1;
 var DTNodeStatus_Loading = 1;
@@ -76,7 +74,7 @@ var DTNodeStatus_Ok      = 0;
 // Start of local namespace
 ;(function($) {
 
-/*************************************************************************
+/*
  *	Common tool functions.
  */
 
@@ -98,15 +96,14 @@ function getDtNodeFromElement(el) {
 	return null;
 }
 
-
-/*************************************************************************
+/*
  *	Class DynaTreeNode
  */
 var DynaTreeNode = Class.create();
 
 DynaTreeNode.prototype = {
 	initialize: function(parent, tree, data) {
-		/**
+		/*
 		 * @constructor 
 		 */
 		this.parent = parent; 
@@ -200,7 +197,7 @@ DynaTreeNode.prototype = {
 
 
 	_fixOrder: function() {
-		/**
+		/*
 		 * Make sure, that <li> order matches childList order.
 		 */
 		var cl = this.childList; 
@@ -217,11 +214,10 @@ DynaTreeNode.prototype = {
 				childLI = childLI.nextSibling;
 			}
 		}
-	},
-	
+	},	
 
 	render: function(useEffects) {
-		/**
+		/*
 		 * create <li><span>..</span> .. </li> tags for this node.
 		 * 
 		 * <li id='key'> // This div contains the node's span and list of child div's.
@@ -484,7 +480,7 @@ DynaTreeNode.prototype = {
 	},
 
 	getLevel: function() {
-		/**
+		/*
 		 * Return node depth. 0: System root node, 1: visible top-level node.
 		 */
 		var level = 0;
@@ -497,7 +493,7 @@ DynaTreeNode.prototype = {
 	},
 
 	_getTypeForOuterNodeEvent: function(event) {
-		/** Return the inner node span (title, checkbox or expander) if 
+		/* Return the inner node span (title, checkbox or expander) if 
 		 *  event.target points to the outer span.
 		 *  This function should fix issue #93: 
 		 *  FF2 ignores empty spans, when generating events (returning the parent instead).
@@ -886,7 +882,7 @@ DynaTreeNode.prototype = {
 	},
 
 	scheduleAction: function(mode, ms) {
-		/** Schedule activity for delayed execution (cancel any pending request).
+		/* Schedule activity for delayed execution (cancel any pending request).
 		 *  scheduleAction('cancel') will cancel the request.
 		 */
 		if( this.tree.timer ) {
@@ -1181,9 +1177,8 @@ DynaTreeNode.prototype = {
 	},
 
 	_addChildNode: function(dtnode, beforeNode) {
-		/** 
+		/*
 		 * Internal function to add one single DynatreeNode as a child.
-		 * 
 		 */
 		var tree = this.tree;
 		var opts = tree.options;
@@ -1287,7 +1282,7 @@ DynaTreeNode.prototype = {
 	},
 
 	addChild: function(obj, beforeNode) {
-		/**
+		/*
 		 * Add a node object as child.
 		 * 
 		 * This should be the only place, where a DynaTreeNode is constructed!
@@ -1376,7 +1371,7 @@ DynaTreeNode.prototype = {
 	},
 
 	move: function(targetNode, mode) {
-		/**Move this node to targetNode.
+		/*  Move this node to targetNode.
 		 *  mode 'child': append this node as last child of targetNode.
 		 *                This is the default. To be compatble with the D'n'd
 		 *                hitMode, we also accept 'over'.
@@ -1491,7 +1486,7 @@ DynaTreeNode.prototype = {
 	lastentry: undefined
 }
 
-/*************************************************************************
+/*
  * class DynaTreeStatus
  */
 
@@ -1604,8 +1599,7 @@ DynaTreeStatus.prototype = {
 	lastentry: undefined
 };
 
-
-/*************************************************************************
+/*
  * class DynaTree
  */
 
@@ -2077,7 +2071,7 @@ TODO: better?
 	},
 	
 	_onDragEvent: function(eventName, node, otherNode, event, ui, draggable) {
-		/***
+		/*
 		 * Handles drag'n'drop functionality.
 		 */
 		var _calcHitMode = function() {
@@ -2199,7 +2193,7 @@ TODO: better?
 	lastentry: undefined
 };
 
-/*************************************************************************
+/*
  * Widget $(..).dynatree
  */
 
@@ -2350,7 +2344,7 @@ $.widget("ui.dynatree", {
 //$.ui.dynatree.getter = "getTree getRoot getActiveNode getSelectedNodes";
 
 
-/*******************************************************************************
+/*
  * Plugin default options:
  */
 //$.ui.dynatree.defaults = {  @@ 1.8
@@ -2457,13 +2451,13 @@ $.ui.dynatree.prototype.options = {
 		partsel: "dynatree-partsel",
 		lastsib: "dynatree-lastsib"
 	},
-	debugLevel: 2, // 0:quiet, 1:normal, 2:debug $REPLACE:	debugLevel: 1,
+	debugLevel: 0, // 0:quiet, 1:normal, 2:debug $REPLACE:	debugLevel: 1,
 
 	// ------------------------------------------------------------------------
 	lastentry: undefined
 };
 
-/*******************************************************************************
+/*
  * Reserved data attributes for a tree node.
  */
 $.ui.dynatree.nodedatadefaults = {
@@ -2489,7 +2483,7 @@ $.ui.dynatree.nodedatadefaults = {
 	lastentry: undefined
 };
 
-/*******************************************************************************
+/*
  * Drag and drop support
  */
 function _initDragAndDrop(tree) {

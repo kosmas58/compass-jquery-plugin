@@ -103,7 +103,7 @@ var DynaTreeNode = Class.create();
 
 DynaTreeNode.prototype = {
 	initialize: function(parent, tree, data) {
-		/**
+		/*
 		 * @constructor 
 		 */
 		this.parent = parent; 
@@ -214,8 +214,7 @@ DynaTreeNode.prototype = {
 				childLI = childLI.nextSibling;
 			}
 		}
-	},
-	
+	},	
 
 	render: function(useEffects) {
 		/*
@@ -1178,9 +1177,8 @@ DynaTreeNode.prototype = {
 	},
 
 	_addChildNode: function(dtnode, beforeNode) {
-		/** 
+		/*
 		 * Internal function to add one single DynatreeNode as a child.
-		 * 
 		 */
 		var tree = this.tree;
 		var opts = tree.options;
@@ -1488,7 +1486,7 @@ DynaTreeNode.prototype = {
 	lastentry: undefined
 }
 
-/*************************************************************************
+/*
  * class DynaTreeStatus
  */
 
@@ -1601,8 +1599,7 @@ DynaTreeStatus.prototype = {
 	lastentry: undefined
 };
 
-
-/*************************************************************************
+/*
  * class DynaTree
  */
 
@@ -2074,7 +2071,7 @@ TODO: better?
 	},
 	
 	_onDragEvent: function(eventName, node, otherNode, event, ui, draggable) {
-		/***
+		/*
 		 * Handles drag'n'drop functionality.
 		 */
 		var _calcHitMode = function() {
@@ -2196,7 +2193,7 @@ TODO: better?
 	lastentry: undefined
 };
 
-/*************************************************************************
+/*
  * Widget $(..).dynatree
  */
 
@@ -2347,7 +2344,7 @@ $.widget("ui.dynatree", {
 //$.ui.dynatree.getter = "getTree getRoot getActiveNode getSelectedNodes";
 
 
-/*******************************************************************************
+/*
  * Plugin default options:
  */
 //$.ui.dynatree.defaults = {  @@ 1.8
@@ -2454,13 +2451,13 @@ $.ui.dynatree.prototype.options = {
 		partsel: "dynatree-partsel",
 		lastsib: "dynatree-lastsib"
 	},
-	debugLevel: 2, // 0:quiet, 1:normal, 2:debug $REPLACE:	debugLevel: 1,
+	debugLevel: 0, // 0:quiet, 1:normal, 2:debug $REPLACE:	debugLevel: 1,
 
 	// ------------------------------------------------------------------------
 	lastentry: undefined
 };
 
-/*******************************************************************************
+/*
  * Reserved data attributes for a tree node.
  */
 $.ui.dynatree.nodedatadefaults = {
