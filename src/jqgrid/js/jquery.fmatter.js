@@ -125,6 +125,9 @@
 						ts[format[k].toLowerCase()] = parseInt(date[k],10);
 					}
 				}
+				if( ts.m == 0 && ts.y==0 && ts.d == 0) {
+					return "&#160;" ;
+				}
 				ts.m = parseInt(ts.m,10)-1;
 				var ty = ts.y;
 				if (ty >= 70 && ty <= 99) { ts.y = 1900+ts.y; }
@@ -296,7 +299,9 @@
 		// jqGrid specific
 		cellval = cellval + "";
 		var oSelect = false, ret=[];
-		if(!isUndefined(opts.colModel.editoptions)){
+		if(!isUndefined(opts.colModel.formatoptions)){
+			oSelect= opts.colModel.formatoptions.value;
+		} else if(!isUndefined(opts.colModel.editoptions)){
 			oSelect= opts.colModel.editoptions.value;
 		}
 		if (oSelect) {

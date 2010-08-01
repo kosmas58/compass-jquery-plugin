@@ -94,7 +94,8 @@
     height: 12px; }
   .ui-icon-desc {
     margin-top: 3px;
-    height: 12px; }
+    height: 12px;
+    margin-left: -1px; }
   .ui-i-asc {
     margin-top: 0px;
     height: 16px; }
@@ -128,6 +129,28 @@ tr.ui-search-toolbar {
   tr {
     &.jqgrow td {
       font-weight: normal;
+      overflow: hidden;
+      white-space: pre;
+      height: 22px;
+      padding: 0 2px 0 2px;
+      border-bottom-width: 1px;
+      border-bottom-color: inherit;
+      border-bottom-style: solid; }
+    &.jqgfirstrow td {
+      padding: 0 2px 0 2px;
+      border-right-width: 1px;
+      border-right-style: solid; }
+    &.jqgroup td {
+      font-weight: normal;
+      overflow: hidden;
+      white-space: pre;
+      height: 22px;
+      padding: 0 2px 0 2px;
+      border-bottom-width: 1px;
+      border-bottom-color: inherit;
+      border-bottom-style: solid; }
+    &.jqfoot td {
+      font-weight: bold;
       overflow: hidden;
       white-space: pre;
       height: 22px;

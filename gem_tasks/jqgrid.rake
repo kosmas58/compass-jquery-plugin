@@ -24,6 +24,7 @@ all_scripts = [
   'js/grid.common.js',
   'js/grid.custom.js',
   'js/grid.formedit.js',
+  'js/grid.grouping.js',
   'js/grid.import.js',  
   'js/grid.inlinedit.js',
   'js/grid.jqueryui.js',
