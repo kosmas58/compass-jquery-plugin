@@ -998,22 +998,22 @@ $.extend($.jgrid,{
 
 			if(type === undefined ) { type = "text"; }
 			if (type == 'float' || type== 'number' || type== 'currency' || type== 'numeric') {
-				findSortKey = function($cell) {
+				findSortKey = function($cell, a) {
 					var key = parseFloat( String($cell).replace(_stripNum, ''));
 					return isNaN(key) ? 0.00 : key;
 				};
 			} else if (type=='int' || type=='integer') {
-				findSortKey = function($cell) {
+				findSortKey = function($cell, a) {
 					return $cell ? parseFloat(String($cell).replace(_stripNum, '')) : 0;
 				};
 			} else if(type == 'date' || type == 'datetime') {
-				findSortKey = function($cell) {
+				findSortKey = function($cell, a) {
 					return $.jgrid.parseDate(dfmt,$cell).getTime();
 				};
 			} else if($.isFunction(type)) {
 				findSortKey = type;
 			} else {
-				findSortKey = function($cell) {
+				findSortKey = function($cell, a) {
 					if(!$cell) {$cell ="";}
 					return $.trim(String($cell).toUpperCase());
 				};
@@ -1021,7 +1021,7 @@ $.extend($.jgrid,{
 			$.each(data,function(i,v){
 				ab = $.jgrid.getAccessor(v,by);
 				if(ab === undefined) { ab = ""; }
-				ab = findSortKey(ab);
+				ab = findSortKey(ab, v);
 				_sortData.push({ 'vSort': ab,'index':i});
 			});
 
@@ -1788,7 +1788,7 @@ $.fn.jqGrid = function( pin ) {
 			}
 			}
 			if(ts.p.gridview === true) {
-				if(ts.p.grouping) {
+				if(ts.p.grouping && F) {
 					$(ts).jqGrid('groupingRender',grpdata,F.length+gi+si+ni);
 					grpdata = null;
 				} else {				
@@ -1951,7 +1951,7 @@ $.fn.jqGrid = function( pin ) {
 				if(ir==rn) { break; }
 			}
 			if(ts.p.gridview === true ) {
-				if(ts.p.grouping) {
+				if(ts.p.grouping && F) {
 					$(ts).jqGrid('groupingRender',grpdata,F.length+gi+si+ni);
 					grpdata = null;
 				} else {
@@ -2036,7 +2036,7 @@ $.fn.jqGrid = function( pin ) {
 					grtypes[0] = cmtypes[this.name];
 				}
 				if(!fndsort && (this.index == ts.p.sortname || this.name == ts.p.sortname)){
-					st = this.name; // ???
+					st = ts.p.sortname; // ???
 					fndsort = true;
 				}
 			});
@@ -5411,7 +5411,8 @@ $.jgrid.extend({
 			afterClear: null,
 			searchurl : '',
 			stringResult: false,
-			groupOp: 'AND'
+			groupOp: 'AND',
+			defaultSearch : "bw"
 		},p  || {});
 		return this.each(function(){
 			var $t = this;
@@ -5419,7 +5420,7 @@ $.jgrid.extend({
 				var sdata={}, j=0, v, nm, sopt={};
 				$.each($t.p.colModel,function(i,n){
 					nm = this.index || this.name;
-					var so = (this.searchoptions && this.searchoptions.sopt) ? this.searchoptions.sopt[0] : "bw";
+					var so = (this.searchoptions && this.searchoptions.sopt) ? this.searchoptions.sopt[0] : p.defaultSearch;
 					switch (this.stype) {
 						case 'select' :
 							v = $("select[name="+nm+"]",$t.grid.hDiv).val();
