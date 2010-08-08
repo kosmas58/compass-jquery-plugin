@@ -19,7 +19,7 @@
 .ui-jqgrid .ui-jqgrid-resize {height:20px !important;position: relative; cursor :e-resize;display: inline;overflow: hidden;}
 .ui-jqgrid .ui-grid-ico-sort {overflow:hidden;position:absolute;display:inline; cursor: pointer !important;}
 .ui-jqgrid .ui-icon-asc {margin-top:-3px; height:12px;}
-.ui-jqgrid .ui-icon-desc {margin-top:3px;height:12px;margin-left:-1px}
+.ui-jqgrid .ui-icon-desc {margin-top:3px;height:12px;}
 .ui-jqgrid .ui-i-asc {margin-top:0px;height:16px;}
 .ui-jqgrid .ui-i-desc {margin-top:0px;margin-left:13px;height:16px;}
 .ui-jqgrid .ui-jqgrid-sortable {cursor:pointer;}
@@ -58,8 +58,7 @@ tr.ui-search-toolbar select {margin: 1px 0px 0px 0px}
 .ui-jqgrid .ui-pg-selbox {font-size:.8em; line-height:18px; display:block; height:18px; margin: 0em;}
 .ui-jqgrid .ui-separator {height: 18px; border-left: 1px solid #ccc ; border-right: 1px solid #ccc ; margin: 1px; float: right;}
 .ui-jqgrid .ui-paging-info {font-weight: normal;height:19px; margin-top:3px;margin-right:4px;}
-.ui-jqgrid .ui-jqgrid-pager .ui-pg-div {padding:1px 0;float:left;list-style-image:none;list-style-position:outside;list-style-type:none;position:relative;}
-.ui-jqgrid .ui-jqgrid-pager .ui-pg-button { cursor:pointer; }
+.ui-jqgrid .ui-jqgrid-pager .ui-pg-div {padding:1px 0;cursor:pointer; float:left;list-style-image:none;list-style-position:outside;list-style-type:none;position:relative;}
 .ui-jqgrid .ui-jqgrid-pager .ui-pg-div  span.ui-icon {float:left;margin:0 2px;}
 .ui-jqgrid td input, .ui-jqgrid td select .ui-jqgrid td textarea { margin: 0em;}
 .ui-jqgrid td textarea {width:auto;height:auto;}
@@ -131,4 +130,10 @@ tr.ui-search-toolbar select {margin: 1px 0px 0px 0px}
 .ui-jqgrid .tree-wrap-ltr {float: left;}
 .ui-jqgrid .tree-wrap-rtl {float: right;}
 .ui-jqgrid .ui-ellipsis {text-overflow:ellipsis; -moz-binding:url('ellipsis-xbl.xml#ellipsis');}
-
+.ui-searchFilter { display: none; position: absolute; z-index: 770; overflow: visible;}
+.ui-searchFilter table {position:relative; margin:0em; width:auto}
+.ui-searchFilter table td {margin: 0em; padding: 1px;}
+.ui-searchFilter table td input, .ui-searchFilter table td select {margin: 0.1em;}
+.ui-searchFilter .ui-state-default { cursor: pointer; }
+.ui-searchFilter .divider { height: 1px; }
+.ui-searchFilter .divider div { background-color: black; height: 1px; }

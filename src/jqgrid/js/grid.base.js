@@ -298,22 +298,22 @@ $.extend($.jgrid,{
 
 			if(type === undefined ) { type = "text"; }
 			if (type == 'float' || type== 'number' || type== 'currency' || type== 'numeric') {
-				findSortKey = function($cell, a) {
+				findSortKey = function($cell) {
 					var key = parseFloat( String($cell).replace(_stripNum, ''));
 					return isNaN(key) ? 0.00 : key;
 				};
 			} else if (type=='int' || type=='integer') {
-				findSortKey = function($cell, a) {
+				findSortKey = function($cell) {
 					return $cell ? parseFloat(String($cell).replace(_stripNum, '')) : 0;
 				};
 			} else if(type == 'date' || type == 'datetime') {
-				findSortKey = function($cell, a) {
+				findSortKey = function($cell) {
 					return $.jgrid.parseDate(dfmt,$cell).getTime();
 				};
 			} else if($.isFunction(type)) {
 				findSortKey = type;
 			} else {
-				findSortKey = function($cell, a) {
+				findSortKey = function($cell) {
 					if(!$cell) {$cell ="";}
 					return $.trim(String($cell).toUpperCase());
 				};
@@ -321,7 +321,7 @@ $.extend($.jgrid,{
 			$.each(data,function(i,v){
 				ab = $.jgrid.getAccessor(v,by);
 				if(ab === undefined) { ab = ""; }
-				ab = findSortKey(ab, v);
+				ab = findSortKey(ab);
 				_sortData.push({ 'vSort': ab,'index':i});
 			});
 
@@ -1088,7 +1088,7 @@ $.fn.jqGrid = function( pin ) {
 			}
 			}
 			if(ts.p.gridview === true) {
-				if(ts.p.grouping && F) {
+				if(ts.p.grouping) {
 					$(ts).jqGrid('groupingRender',grpdata,F.length+gi+si+ni);
 					grpdata = null;
 				} else {				
@@ -1251,7 +1251,7 @@ $.fn.jqGrid = function( pin ) {
 				if(ir==rn) { break; }
 			}
 			if(ts.p.gridview === true ) {
-				if(ts.p.grouping && F) {
+				if(ts.p.grouping) {
 					$(ts).jqGrid('groupingRender',grpdata,F.length+gi+si+ni);
 					grpdata = null;
 				} else {
@@ -1336,7 +1336,7 @@ $.fn.jqGrid = function( pin ) {
 					grtypes[0] = cmtypes[this.name];
 				}
 				if(!fndsort && (this.index == ts.p.sortname || this.name == ts.p.sortname)){
-					st = ts.p.sortname; // ???
+					st = this.name; // ???
 					fndsort = true;
 				}
 			});
@@ -1654,7 +1654,7 @@ $.fn.jqGrid = function( pin ) {
 				str = "<td dir='"+dir+"'>";
 				str +="<select class='ui-pg-selbox' role='listbox'>";
 				for(i=0;i<ts.p.rowList.length;i++){
-					str +="<option role=\"option\" value=\""+ts.p.rowList[i]+"\""+((ts.p.rowNum == ts.p.rowList[i])?" selected=\"selected\"":"")+">"+ts.p.rowList[i]+"</option>";
+					str +="<option role='option' value='"+ts.p.rowList[i]+"'"+((ts.p.rowNum == ts.p.rowList[i])?' selected':'')+">"+ts.p.rowList[i]+"</option>";
 				}
 				str +="</select></td>";
 			}
