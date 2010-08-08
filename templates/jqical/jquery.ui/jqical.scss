@@ -756,13 +756,13 @@ table.fc-header {
   .ui-resizable-e {
     top: 0           !important;
     /* importants override pre jquery ui 1.7 styles */
-    right: -3px      !important;
+    right: -3px !important;
     width: 7px       !important;
     height: 100%     !important;
     cursor: e-resize; }
   .ui-resizable-w {
     top: 0           !important;
-    left: -3px       !important;
+    left: -3px !important;
     width: 7px       !important;
     height: 100%     !important;
     cursor: w-resize; }
