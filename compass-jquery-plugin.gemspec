@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kosmas Schuetz"]
-  s.date = %q{2010-08-08}
+  s.date = %q{2010-08-09}
   s.description = %q{A compass plugin that integrates jRails, jQuery, jQuery UI and Themes, jqGrid and more into the Compass Sass framework.}
   s.email = %q{kosmas.schuetz@gmx.com}
   s.extra_rdoc_files = [
@@ -229,6 +229,8 @@ Gem::Specification.new do |s|
      "templates/jqgrid/i18n/jqgrid/locale-cn.min.js",
      "templates/jqgrid/i18n/jqgrid/locale-cs.js",
      "templates/jqgrid/i18n/jqgrid/locale-cs.min.js",
+     "templates/jqgrid/i18n/jqgrid/locale-da.js",
+     "templates/jqgrid/i18n/jqgrid/locale-da.min.js",
      "templates/jqgrid/i18n/jqgrid/locale-de.js",
      "templates/jqgrid/i18n/jqgrid/locale-de.min.js",
      "templates/jqgrid/i18n/jqgrid/locale-dk.js",

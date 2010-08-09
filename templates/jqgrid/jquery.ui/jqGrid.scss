@@ -94,7 +94,8 @@
     height: 12px; }
   .ui-icon-desc {
     margin-top: 3px;
-    height: 12px; }
+    height: 12px;
+    margin-left: -1px; }
   .ui-i-asc {
     margin-top: 0px;
     height: 16px; }
@@ -266,15 +267,17 @@ tr.ui-search-toolbar {
     height: 19px;
     margin-top: 3px;
     margin-right: 4px; }
-  .ui-jqgrid-pager .ui-pg-div {
-    padding: 1px 0;
-    cursor: pointer;
-    float: left;
-    list-style-image: none;
-    list-style-position: outside;
-    list-style-type: none;
-    position: relative;
-    span.ui-icon {
+  .ui-jqgrid-pager {
+    .ui-pg-div {
+      padding: 1px 0;
+      float: left;
+      list-style-image: none;
+      list-style-position: outside;
+      list-style-type: none;
+      position: relative; }
+    .ui-pg-button {
+      cursor: pointer; }
+    .ui-pg-div span.ui-icon {
       float: left;
       margin: 0 2px; } }
   td {
@@ -570,26 +573,6 @@ tr.ui-search-toolbar {
     -moz-binding: url('ellipsis-xbl.xml#ellipsis'); } }
 
 .ui-searchFilter {
-  display: none;
-  position: absolute;
-  z-index: 770;
-  overflow: visible;
-  table {
-    position: relative;
-    margin: 0em;
-    width: auto;
-    td {
-      margin: 0em;
-      padding: 1px;
-      input, select {
-        margin: 0.1em; } } }
-  .ui-state-default {
-    cursor: pointer; }
-  .divider {
-    height: 1px;
-    div {
-      background-color: black;
-      height: 1px; } }
   display: none;
   position: absolute;
   z-index: 770;
