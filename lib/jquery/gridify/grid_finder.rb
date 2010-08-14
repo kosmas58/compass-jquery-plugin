@@ -21,12 +21,14 @@ module Gridify
       self.sort_order    = params[:sord] if params[:sord]
       self.current_page  = params[:page].to_i if params[:page]
       self.rows_per_page = params[:rows].to_i if params[:rows]
+      self.total_rows    = params[:total_rows].to_i if params[:total_rows]
     end
 
     # return find args (scope) for current settings
     def current_scope
       #debugger
       find_args = {}
+      find_args[:include] = colInclude if colInclude
       if sort_by.present? && col = columns_hash[sort_by]
         if case_sensitive || !([:string, :text].include?(col.value_type))
           find_args[:order] = "#{sort_by} #{sort_order}" 
@@ -34,7 +36,11 @@ module Gridify
           find_args[:order] = "upper(#{sort_by}) #{sort_order}" 
         end
       end
-      if rows_per_page.present? && rows_per_page > 0
+      if total_rows.present? && total_rows > 0
+        find_args[:limit] = total_rows
+        offset = (current_page.to_i-1) * rows_per_page if current_page.present?
+        find_args[:offset] = offset if offset && offset > 0      
+      elsif rows_per_page.present? && rows_per_page > 0
         find_args[:limit] = rows_per_page
         offset = (current_page.to_i-1) * rows_per_page if current_page.present?
         find_args[:offset] = offset if offset && offset > 0
@@ -60,28 +66,41 @@ module Gridify
       #TODO: :only => [attributes], :methods => [virtual attributes]
       case data_type
       when :xml
-        xml = records.to_xml( :skip_types => true, :dasherize => false ) do |xml|
-          if rows_per_page > 0
-            xml.page          current_page
-            xml.total_pages   total_pages
-            xml.total_records total_count
+#        if colInclude
+#          xml = records.to_xml( :include => [ colInclude ], :skip_types => true, :dasherize => false ) do |xml|
+#            if rows_per_page > 0
+#              xml.page          current_page
+#              xml.total_pages   total_pages
+#              xml.total_records total_count
+#            end
+#          end
+#        else
+          xml = records.to_xml( :skip_types => true, :dasherize => false ) do |xml|
+            if rows_per_page > 0
+              xml.page    current_page
+              xml.total   total_pages
+              xml.records total_count
+            end
           end
-        end
-        
+#        end    
+      
       when :json
         #debugger
-        data = { resource => records }
+        data = { resource => records }        
         if rows_per_page > 0       
           data.merge!( 
-            :page => current_page, 
-            :total_pages => total_pages, 
-            :total_records => total_count 
+            :page    => current_page, 
+            :total   => total_pages, 
+            :records => total_count 
           )
-        end
-        
+        end        
         save = ActiveRecord::Base.include_root_in_json
-        ActiveRecord::Base.include_root_in_json = false
-        json = data.to_json
+        ActiveRecord::Base.include_root_in_json = false     
+        if colInclude
+          json = data.to_json(:include => colInclude)
+        else
+          json = data.to_json
+        end
         ActiveRecord::Base.include_root_in_json = save
         json
 
@@ -148,7 +167,7 @@ module Gridify
           # toolbar search
           self.search_rules = []
           self.search_rules_op = :and
-          columns.each do |col|  
+          colModel.each do |col|  
             name = col.name
             data = params[name.to_sym]        
             self.search_rules << { "field" => name, "op" => "cn", "data" => data } if data

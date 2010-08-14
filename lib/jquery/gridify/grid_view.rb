@@ -42,7 +42,6 @@ module Gridify
       s     
     end
     
-    
     def to_json
       jqgrid_properties.to_json_with_js
     end
@@ -116,6 +115,7 @@ module Gridify
       vals[:postData]          = { :grid => name, :datatype => data_type } #identify which grid making the request
       vals[:colNames]          = colNames if colNames.present?
       vals[:colModel]          = column_model if colModel.present?
+      #vals[:colModel]          = colModel if colModel.present?
       vals[:datatype]          = data_type if data_type
       if data_format.present?
         case data_type
@@ -131,6 +131,7 @@ module Gridify
       vals[:sortname]          = sort_by if sort_by
       vals[:sortorder]         = sort_order if sort_order && sort_by
       vals[:rowNum]            = rows_per_page if rows_per_page
+      vals[:rowTotal]          = total_rows if total_rows
       vals[:page]              = current_page if current_page
 
       # grid options

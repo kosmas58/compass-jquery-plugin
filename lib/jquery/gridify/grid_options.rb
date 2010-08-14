@@ -12,6 +12,7 @@ module Gridify
                   :colModel,              # incoming: hash of presets (native jqGrid); internally: array of GridColumn objects
                                           # { :body => { "title" => {"width" => 98} }} 
                   :colNames,              # Column names
+                  :colInclude,            # included submodels
                   #:widths,               # hash of column width (key = data type)
                   :searchable,            # default: true (used in generating columns, changing has no effect on existing cols)
                   :sortable,              # default: true (used in generating columns, changing has no effect on existing cols)
@@ -84,6 +85,7 @@ module Gridify
                   :case_sensitive,        # sort and search are case sensitive (false)                  
                   :current_page,          # current page requested
                   :rows_per_page,         # number of items to be requested in the next request (paging_choices.first or -1 if pager false)
+                  :total_rows,            # number of rows to read
                   :table_to_grid,         # when true generates tableToGrid (false) from html table, then use as local data
                                           # note, we assume table rows are not selectable. 
                                           # (tableToGrid sets multiselect when first col has checkboxes or radio buttons, 
@@ -204,15 +206,15 @@ module Gridify
       @paging_choices || [10,25,50,100]
     end
     
+    def restful
+      @restful==false ? false : true
+    end
+    
     # data
     def url
       @url || "/#{resource}"
     end
     
-    def restful
-      @restful==false ? false : true
-    end
-
     def rows_per_page
       #debugger
       # all rows when pager controls or rows per page are off
@@ -236,8 +238,8 @@ module Gridify
         {
           :root        => resource,
           :page        => resource+'>page',
-          :total       => resource+'>total_pages',
-          :records     => resource+'>total_records',
+          :total       => resource+'>total',
+          :records     => resource+'>records',
           :row         => resource.singularize,
           :repeatitems => false,
           :id          => :id
@@ -246,8 +248,8 @@ module Gridify
         {
           :root        => resource,
           :page        => 'page',
-          :total       => 'total_pages',
-          :records     => 'total_records',
+          :total       => 'total',
+          :records     => 'records',
           :row         => resource.singularize,
           :repeatitems => false,
           :id          => :id

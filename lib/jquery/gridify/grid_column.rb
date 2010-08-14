@@ -31,6 +31,9 @@ module Gridify
                   
                   # visiblity
                   #:always_hidden,          # (false)
+                  :sorttype,
+                  :summary_type,
+                  :summary_tpl,
                   :hidden                   # initial hide state (false)
      
     def initialize(options)
@@ -107,15 +110,19 @@ module Gridify
         vals[:formatter] = 'date'
         vals[:formatoptions] = { :srcformat => 'UniversalSortableDateTime', :newformat => 'FullDateTime' }
       end
-      vals[:hidden]      = true         if hidden
-      vals[:width]       = width        if width
-      vals[:formatter]   = formatter    if formatter
-      vals[:formatoptions] = format_options  if format_options
-      vals[:edittype]    = edit_type    if editable && edit_type
-      vals[:formoptions] = form_options if editable && form_options
-      vals[:editoptions] = edit_options if editable && edit_options
-      vals[:editrules]   = validations  if editable && validations
-        # and more...
+      vals[:hidden]         = true         if hidden
+      vals[:width]          = width        if width
+      vals[:formatter]      = formatter    if formatter
+      vals[:formatoptions]  = format_options  if format_options
+      vals[:edittype]       = edit_type    if editable && edit_type
+      vals[:formoptions]    = form_options if editable && form_options
+      vals[:editoptions]    = edit_options if editable && edit_options
+      vals[:editrules]      = validations  if editable && validations
+      
+      vals[:sorttype]       = sorttype if sorttype
+      vals[:summaryType]    = summary_type if summary_type
+      vals[:summaryTpl]     = summary_tpl if summary_tpl
+      # and more...
         
       vals
     end

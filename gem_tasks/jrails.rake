@@ -186,7 +186,6 @@ namespace :build do
         'jquery.ui.accordion.js',
         'jquery.ui.autocomplete.js',
         'jquery.ui.button.js',
-        #'jquery.ui.checkbox.js',
         'jquery.ui.core.js',
         'jquery.ui.datepicker.js',
         'jquery.ui.dialog.js',
@@ -246,7 +245,6 @@ namespace :build do
         '_accordion.scss',
         '_autocomplete.scss',
         '_button.scss',
-        #'_checkbox.scss',
         '_datepicker.scss',
         '_dialog.scss',
         '_progressbar.scss',
@@ -277,14 +275,7 @@ namespace :build do
         src_dir = File.join(JQUERY_UI_18_SRC_THEMES, theme, 'images')
         dest_dir = File.join(JRAILS_DEST_IMAGES, theme)
         FileUtils.mkdir_p dest_dir
-        
-#        # Fix for Autocomplete
-#        if theme != :base 
-#          image = 'ui-anim_basic_16x16.gif'
-#          FileUtils.cp(File.join(JQUERY_UI_18_SRC_THEMES, 'base/images', image), dest_dir) 
-#          manifest.print "image 'jquery.ui/#{theme}/#{image}'\n"
-#        end
-#        
+                
         Dir.foreach(src_dir) do |image|
           next if /^\./ =~ image
           FileUtils.cp(File.join(src_dir, image), dest_dir)    
