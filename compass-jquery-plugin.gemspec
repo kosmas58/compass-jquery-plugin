@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{compass-jquery-plugin}
-  s.version = "0.3.0.beta.13"
+  s.version = "0.3.0.beta.14"
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kosmas Schuetz"]
-  s.date = %q{2010-08-14}
+  s.date = %q{2010-08-15}
   s.description = %q{A compass plugin that integrates jRails, jQuery, jQuery UI and Themes, jqGrid and more into the Compass Sass framework.}
   s.email = %q{kosmas.schuetz@gmx.com}
   s.extra_rdoc_files = [
@@ -726,8 +726,8 @@ Gem::Specification.new do |s|
      "templates/jrails/i18n/jquery.ui/datepicker-zh-TW.min.js",
      "templates/jrails/jquery-1.4.2.js",
      "templates/jrails/jquery-1.4.2.min.js",
-     "templates/jrails/jquery-ui-1.8.2.js",
-     "templates/jrails/jquery-ui-1.8.2.min.js",
+     "templates/jrails/jquery-ui-1.8.4.js",
+     "templates/jrails/jquery-ui-1.8.4.min.js",
      "templates/jrails/jquery.bgiframe.js",
      "templates/jrails/jquery.bgiframe.min.js",
      "templates/jrails/jquery.compat-1.3.js",

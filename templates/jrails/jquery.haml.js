@@ -108,7 +108,7 @@
         newnode = $(document.createElement(tag));
 
         // Parse the attributes if there are any
-        if (input.length > 0 && isTypeOf(input[0], 'Object')) {
+        if (input.length > 0 && isTypeOf(input[0], 'Object') && !input[0].nodeType && !input[0].jquery) {
           attributes = input.shift();
           css = extractor(attributes, 'css');
           actions = extractor(attributes, '$');
@@ -192,14 +192,14 @@
     exec_haml(newnode, haml);
 
     // Then attach it's children to the page.
-    this.append(newnode.children());
+    this.append(newnode.contents());
 
     // Flush action queue once we're on the page
     if (this.closest('body').length > 0) {
       flush_queue();
     }
 
-    return newnode.children();
+    return newnode.contents();
   }
 
   // Like the original haml, but returns the new nodes instead of the
@@ -234,16 +234,17 @@
         // Build the dom on a non-attached node
         var node = $(document.createElement("div"));
         node.haml(callback.apply(this, arguments));
-        children = node.children();
+        children = node.contents();
         return children;
       }
 
       // Replace the first child node with the new children and remove other
       // old children if there are any.
       function update() {
+        var args = arguments;
         $.each(children, function (i, child) {
           if (i === 0) {
-            $(child).replaceWith(inject.apply(this, arguments));
+            $(child).replaceWith(inject.apply(this, args));
           } else {
             $(child).remove();
           }
