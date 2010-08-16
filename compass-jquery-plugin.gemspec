@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{compass-jquery-plugin}
-  s.version = "0.3.0.beta.14"
+  s.version = "0.3.0.beta.15"
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kosmas Schuetz"]
-  s.date = %q{2010-08-15}
+  s.date = %q{2010-08-16}
   s.description = %q{A compass plugin that integrates jRails, jQuery, jQuery UI and Themes, jqGrid and more into the Compass Sass framework.}
   s.email = %q{kosmas.schuetz@gmx.com}
   s.extra_rdoc_files = [
@@ -31,6 +31,7 @@ Gem::Specification.new do |s|
      "gem_tasks/jqical.rake",
      "gem_tasks/jqtouch.rake",
      "gem_tasks/jrails.rake",
+     "gem_tasks/jstree.rake",
      "gem_tasks/ribbon.rake",
      "gem_tasks/rubygems.rake",
      "gem_tasks/secret_sauce.rake",
@@ -59,6 +60,7 @@ Gem::Specification.new do |s|
      "lib/jquery/jquery_auto_complete.rb",
      "lib/jquery/jquery_selector_assertions.rb",
      "lib/jquery/jrails.rb",
+     "lib/jquery/jstree.rb",
      "lib/jquery/ribbon.rb",
      "lib/jquery/secret_sauce.rb",
      "lib/jquery/secret_sauce/controller/ui_dialog_controls.rb",
@@ -738,6 +740,8 @@ Gem::Specification.new do |s|
      "templates/jrails/jquery.farbtastic.min.js",
      "templates/jrails/jquery.haml.js",
      "templates/jrails/jquery.haml.min.js",
+     "templates/jrails/jquery.hotkeys.js",
+     "templates/jrails/jquery.hotkeys.min.js",
      "templates/jrails/jquery.metadata.js",
      "templates/jrails/jquery.metadata.min.js",
      "templates/jrails/jquery.pngFix.js",
@@ -1197,6 +1201,28 @@ Gem::Specification.new do |s|
      "templates/jrails/jrails.min.js",
      "templates/jrails/manifest.rb",
      "templates/jrails/partials/_flash_messages.scss",
+     "templates/jstree/config/initializers/jstree.rb",
+     "templates/jstree/jquery.jstree.js",
+     "templates/jstree/jquery.jstree.min.js",
+     "templates/jstree/jquery.ui/jstree.apple.scss",
+     "templates/jstree/jquery.ui/jstree.apple/bg.jpg",
+     "templates/jstree/jquery.ui/jstree.apple/d.png",
+     "templates/jstree/jquery.ui/jstree.apple/dot_for_ie.gif",
+     "templates/jstree/jquery.ui/jstree.apple/throbber.gif",
+     "templates/jstree/jquery.ui/jstree.classic.scss",
+     "templates/jstree/jquery.ui/jstree.classic/d.png",
+     "templates/jstree/jquery.ui/jstree.classic/dot_for_ie.gif",
+     "templates/jstree/jquery.ui/jstree.classic/throbber.gif",
+     "templates/jstree/jquery.ui/jstree.default-rtl.scss",
+     "templates/jstree/jquery.ui/jstree.default-rtl/d.gif",
+     "templates/jstree/jquery.ui/jstree.default-rtl/d.png",
+     "templates/jstree/jquery.ui/jstree.default-rtl/dots.gif",
+     "templates/jstree/jquery.ui/jstree.default-rtl/throbber.gif",
+     "templates/jstree/jquery.ui/jstree.default.scss",
+     "templates/jstree/jquery.ui/jstree.default/d.gif",
+     "templates/jstree/jquery.ui/jstree.default/d.png",
+     "templates/jstree/jquery.ui/jstree.default/throbber.gif",
+     "templates/jstree/manifest.rb",
      "templates/ribbon/config/initializers/ribbon.rb",
      "templates/ribbon/jquery.ribbon.js",
      "templates/ribbon/jquery.ribbon.min.js",

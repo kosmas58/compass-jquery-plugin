@@ -100,7 +100,7 @@ namespace :build do
       end
       manifest.print "javascript 'jquery-1.4.2.min.js'\n" 
       
-      # jQuery 1.4 Comapt 1.3
+      # jQuery 1.4 Compat 1.3
       
       ['compat-1.3'].each do |path|
         Dir.foreach File.join(JQUERY_SRC, path) do |file|

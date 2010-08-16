@@ -10,6 +10,7 @@ A Sass-based Meta-Framework for Compass that allows you to mix and match any of 
 
 * jRails with jQuery 1.4.2 and jQuery.UI 1.8.4 including themes
 * jquery.dynatree.js V0.5.3
+* jquery.jstree.js V1.0rc2
 * jquery.ribbon.js
 * jquery.jqGrid.js V3.8 Beta (with minor changes to make in RESTful)
 * jquery.jqtouch.js V1.0b2
@@ -37,7 +38,7 @@ To use the localized stylesheets and javacripts for jQuery include (using the ra
 alternatively you can include: 
 <pre>
 = stylesheet_link_tag "compiled/jquery.ui/[theme].css", :media => 'screen, projection'
-= javascript_include_tag :jquery_142 (or :jquery_132)
+= javascript_include_tag :jquery_142
 = javascript_include_tag :jrails
 = raw jrails_javascripts(I18n.locale)</pre>
 
@@ -58,6 +59,22 @@ To use the localized stylesheets and javacripts include:
 <pre>
 = stylesheet_link_tag 'compiled/jquery.ui/dynatree.[skin].css', :media => 'screen, projection'
 = javascript_include_tag :dynatree</pre>
+
+h3. jQuery jsTree Plugin
+
+Use compass to install the jQuery jsTree javascript library into your project.
+
+<pre>compass install [-r jquery] jquery/jstree <project name></pre>
+
+You will find all the stylesheets in easy-to-read Sass format at:
+
+<pre>stylesheets/jquery.ui</pre>
+
+To use the localized stylesheets and javacripts include:
+
+<pre>
+= stylesheet_link_tag 'compiled/jquery.ui/jstree.[theme].css', :media => 'screen, projection'
+= javascript_include_tag :jstree</pre>
 
 h3. jQuery Ribbon Plugin
 
@@ -163,6 +180,7 @@ h3. jQuery Plugins included
 * Fabrizio Balliano and Fabrizio Balliano for <b>"jQuery Layout Plugin":http://www.fabrizioballiano.net/</b>
 * John Reisig et. al. for <b>"jQuery Form Plugin":http://malsup.com/jquery/form/</b>
 * Martin Wendt for <b>"jQuery Dynatree Plugin":http://www.wwwendt.de</b>
+* Ivan Bozhanov for <b>"jQuery jsTree Plugin":http://jstree.com/</b>
 * Mikael Soederstroem for <b>"jQuery Ribbon Plugin":http://jqueryribbon.codeplex.com/</b>
 * Tony Tomov for <b>"jQuery Grid Plugin":http://www.trirand.com/blog/</b>
 * David Kaneda for <b>"jQTouch":http://www.jqtouch.com/</b>
