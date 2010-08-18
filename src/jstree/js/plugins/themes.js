@@ -33,8 +33,8 @@
 		_fn : {
 			set_theme : function (theme_name, theme_url) {
 				if(!theme_name) { return false; }
-				if(!theme_url) { theme_url = $.jstree._themes + 'jstree.' + theme_name + '.css'; }
-				if($.inArray(theme_url, themes_loaded) == -1) {
+				//if(!theme_url) { theme_url = $.jstree._themes + theme_name + '/style.css'; }
+				if(!theme_url) { theme_url = $.jstree._themes + 'jstree.' + theme_name + '.css'; }				if($.inArray(theme_url, themes_loaded) == -1) {
 					$.vakata.css.add_sheet({ "url" : theme_url, "rel" : "jstree" });
 					themes_loaded.push(theme_url);
 				}
@@ -62,15 +62,16 @@
 	});
 	// autodetect themes path
 	$(function () {
-		if($.jstree._themes === false) {
-			$("script").each(function () {
-				if(this.src.toString().match(/jquery\.jstree[^\/]*?\.js(\?.*)?$/)) {
-					$.jstree._themes = this.src.toString().replace(/jquery\.jstree[^\/]*?\.js(\?.*)?$/, "") + 'themes/';
-					return false;
-				}
-			});
-		}
-		if($.jstree._themes === false) { $.jstree._themes = "themes/"; }
+		//if($.jstree._themes === false) {
+		//	$("script").each(function () {
+		//		if(this.src.toString().match(/jquery\.jstree[^\/]*?\.js(\?.*)?$/)) {
+		//			$.jstree._themes = this.src.toString().replace(/jquery\.jstree[^\/]*?\.js(\?.*)?$/, "") + 'themes/';
+		//			return false;
+		//		}
+		//	});
+		//}
+		//if($.jstree._themes === false) { $.jstree._themes = "themes/"; }
+		if($.jstree._themes === false) { $.jstree._themes = "/stylesheets/compiled/jquery.ui/"; }
 	});
 	// include the themes plugin by default
 	$.jstree.defaults.plugins.push("themes");
