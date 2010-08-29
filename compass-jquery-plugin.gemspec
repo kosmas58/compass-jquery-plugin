@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kosmas Schuetz"]
-  s.date = %q{2010-08-28}
+  s.date = %q{2010-08-29}
   s.description = %q{A compass plugin that integrates jRails, jQuery, jQuery UI and Themes, jqGrid and more into the Compass Sass framework.}
   s.email = %q{kosmas.schuetz@gmx.com}
   s.extra_rdoc_files = [
@@ -1234,10 +1234,6 @@ Gem::Specification.new do |s|
      "templates/jstree/jquery.ui/jstree.default/d.gif",
      "templates/jstree/jquery.ui/jstree.default/d.png",
      "templates/jstree/jquery.ui/jstree.default/throbber.gif",
-     "templates/jstree/jquery.ui/jstree.xp.scss",
-     "templates/jstree/jquery.ui/jstree.xp/d.gif",
-     "templates/jstree/jquery.ui/jstree.xp/d.png",
-     "templates/jstree/jquery.ui/jstree.xp/throbber.gif",
      "templates/jstree/manifest.rb",
      "templates/ribbon/config/initializers/ribbon.rb",
      "templates/ribbon/jquery.ribbon.js",

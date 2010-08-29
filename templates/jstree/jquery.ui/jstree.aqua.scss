@@ -34,13 +34,14 @@
     background: #beebff;
     border: 1px solid #99defd;
     padding: 0 2px 0 1px; }
-  a {
-    .jstree-icon {
-      background-position: -56px -37px; }
-    &.jstree-loading .jstree-icon {
-      background: image_url("jquery.ui/jstree.aqua/throbber.gif") center center no-repeat !important; } }
+  a .jstree-icon {
+    background-position: -56px -36px; }
+  .jstree-open > a .jstree-icon {
+    background-position: -56px -54px; }
+  a.jstree-loading .jstree-icon {
+    background: image_url("jquery.ui/jstree.aqua/throbber.gif") center center no-repeat !important; }
   &.jstree-focused {
-    background: #ffffee; }
+    background: white; }
   .jstree-no-dots {
     li, .jstree-leaf > ins {
       background: transparent; }
@@ -74,7 +75,7 @@
     background-position: -20px -55px; }
   .jstree-no-icons .jstree-radio {
     display: inline-block; }
-  .jstree-no-radioes .jstree-radio {
+  .jstree-no-radios .jstree-radio {
     display: none !important; }
   .jstree-checked > a > .jstree-radio {
     background-position: -38px -73px; }
@@ -175,8 +176,11 @@
     _background-position: -54px -18px; }
   .jstree-closed ins {
     _background-position: -36px -18px; }
-  a ins.jstree-icon {
-    _background-position: -56px -37px; } }
+  a ins {
+    &.jstree-icon {
+      _background-position: -56px -36px; }
+    &.jstree-open {
+      _background-position: -56px -54px; } } }
 
 #vakata-contextmenu.jstree-aqua-context {
   ins {

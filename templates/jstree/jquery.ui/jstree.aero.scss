@@ -36,7 +36,7 @@
     padding: 0 2px 0 1px; }
   a {
     .jstree-icon {
-      background-position: -56px -37px; }
+      background-position: -56px -36px; }
     &.jstree-loading .jstree-icon {
       background: image_url("jquery.ui/jstree.aero/throbber.gif") center center no-repeat !important; } }
   &.jstree-focused {
@@ -74,7 +74,7 @@
     background-position: -20px -55px; }
   .jstree-no-icons .jstree-radio {
     display: inline-block; }
-  .jstree-no-radioes .jstree-radio {
+  .jstree-no-radios .jstree-radio {
     display: none !important; }
   .jstree-checked > a > .jstree-radio {
     background-position: -38px -73px; }
@@ -176,7 +176,7 @@
   .jstree-closed ins {
     _background-position: -36px -18px; }
   a ins.jstree-icon {
-    _background-position: -56px -37px; } }
+    _background-position: -56px -36px; } }
 
 #vakata-contextmenu.jstree-aero-context {
   ins {

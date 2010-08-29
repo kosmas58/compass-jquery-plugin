@@ -16,10 +16,11 @@
 
 .jstree-aqua .jstree-hovered { background:#e7f4f9; border:1px solid #d8f0fa; padding:0 2px 0 1px; }
 .jstree-aqua .jstree-clicked { background:#beebff; border:1px solid #99defd; padding:0 2px 0 1px; }
-.jstree-aqua a .jstree-icon { background-position:-56px -37px; }
+.jstree-aqua a .jstree-icon { background-position:-56px -36px; }
+.jstree-aqua .jstree-open > a .jstree-icon { background-position:-56px -54px; }
 .jstree-aqua a.jstree-loading .jstree-icon { background: image_url("jquery.ui/jstree.aqua/throbber.gif") center center no-repeat !important; }
 
-.jstree-aqua.jstree-focused { background:#ffffee; }
+.jstree-aqua.jstree-focused { background:white; }
 
 .jstree-aqua .jstree-no-dots li, 
 .jstree-aqua .jstree-no-dots .jstree-leaf > ins { background:transparent; }
@@ -42,7 +43,7 @@
 .jstree-aqua .jstree-undetermined > a > .jstree-checkbox:hover { background-position:-20px -55px; }
 
 .jstree-aqua .jstree-no-icons .jstree-radio { display:inline-block; }
-.jstree-aqua .jstree-no-radioes .jstree-radio { display:none !important; }
+.jstree-aqua .jstree-no-radios .jstree-radio { display:none !important; }
 .jstree-aqua .jstree-checked > a > .jstree-radio { background-position:-38px -73px; }
 .jstree-aqua .jstree-unchecked > a > .jstree-radio { background-position:-2px -73px; }
 .jstree-aqua .jstree-undetermined > a > .jstree-radio { background-position:-20px -73px; }
@@ -79,7 +80,8 @@
 .jstree-aqua .jstree-closed ins:hover { _background-position:-36px 0; }
 .jstree-aqua .jstree-open ins:hover { _background-position:-54px -18px; }
 .jstree-aqua .jstree-closed ins { _background-position:-36px -18px; }
-.jstree-aqua a ins.jstree-icon { _background-position:-56px -37px; }
+.jstree-aqua a ins.jstree-icon { _background-position:-56px -36px; }
+.jstree-aqua a ins.jstree-open { _background-position:-56px -54px; }
 #vakata-contextmenu.jstree-aqua-context ins { _display:none; }
 #vakata-contextmenu.jstree-aqua-context li { _zoom:1; }
 .jstree-aqua .jstree-undetermined a .jstree-checkbox { _background-position:-20px -37px; }
