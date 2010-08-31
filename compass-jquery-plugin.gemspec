@@ -102,7 +102,6 @@ Gem::Specification.new do |s|
      "templates/dynatree/jquery.ui/dynatree.aero/folder_page.png",
      "templates/dynatree/jquery.ui/dynatree.aero/ltDoc.png",
      "templates/dynatree/jquery.ui/dynatree.aero/ltError.png",
-     "templates/dynatree/jquery.ui/dynatree.aero/ltWait.ani",
      "templates/dynatree/jquery.ui/dynatree.aero/ltWait.gif",
      "templates/dynatree/jquery.ui/dynatree.aero/move_here.png",
      "templates/dynatree/jquery.ui/dynatree.aero/rbChecked.png",
