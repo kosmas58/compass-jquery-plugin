@@ -107,7 +107,7 @@
 
 			show_checkboxes : function () { this.get_container().children("ul").removeClass("jstree-no-checkboxes"); },
 			hide_checkboxes : function () { this.get_container().children("ul").addClass("jstree-no-checkboxes"); },
-
+	
 			_repair_state : function (obj) {
 				obj = this._get_node(obj);
 				if(!obj.length) { return; }
