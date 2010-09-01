@@ -1,7 +1,7 @@
 /*
  * jsTree classic theme 1.0
  * Supported features: dots/no-dots, icons/no-icons, focused, loading
- * Supported plugins: ui (hovered, clicked), checkbox, contextmenu, search
+ * Supported plugins: ui (hovered, clicked), checkbox, radio, contextmenu, search
  */
 
 .jstree-classic li, 
@@ -40,12 +40,12 @@
 
 .jstree-classic .jstree-no-icons .jstree-radio { display:inline-block; }
 .jstree-classic .jstree-no-radios .jstree-radio { display:none !important; }
-.jstree-classic .jstree-checked > a > .jstree-radio { background-position:-38px -19px; }
-.jstree-classic .jstree-unchecked > a > .jstree-radio { background-position:-2px -19px; }
-.jstree-classic .jstree-undetermined > a > .jstree-radio { background-position:-20px -19px; }
-.jstree-classic .jstree-checked > a > .jstree-radio:hover { background-position:-38px -37px; }
-.jstree-classic .jstree-unchecked > a > .jstree-radio:hover { background-position:-2px -37px; }
-.jstree-classic .jstree-undetermined > a > .jstree-radio:hover { background-position:-20px -37px; }
+.jstree-classic .jstree-checked > a > .jstree-radio { background-position:-38px -55px; }
+.jstree-classic .jstree-unchecked > a > .jstree-radio { background-position:-2px -55px; }
+.jstree-classic .jstree-undetermined > a > .jstree-radio { background-position:-20px -55px; }
+.jstree-classic .jstree-checked > a > .jstree-radio:hover { background-position:-38px -73px; }
+.jstree-classic .jstree-unchecked > a > .jstree-radio:hover { background-position:-2px -73px; }
+.jstree-classic .jstree-undetermined > a > .jstree-radio:hover { background-position:-20px -73px; }
 
 #vakata-dragged.jstree-classic ins { background:transparent !important; }
 #vakata-dragged.jstree-classic .jstree-ok { background: image_url("jquery.ui/jstree.classic/d.png") -56px -53px no-repeat !important; }

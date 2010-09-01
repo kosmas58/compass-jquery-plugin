@@ -3,7 +3,7 @@
 /*
  * jsTree default-rtl theme 1.0
  * Supported features: dots/no-dots, icons/no-icons, focused, loading
- * Supported plugins: ui (hovered, clicked), checkbox, contextmenu, search
+ * Supported plugins: ui (hovered, clicked), checkbox, radio, contextmenu, search
  */
 
 .jstree-default-rtl {
@@ -12,7 +12,7 @@
     background-repeat: no-repeat;
     background-color: transparent; }
   li {
-    background-position: -90px 0;
+    background-position: -108px 0;
     background-repeat: repeat-y;
     &.jstree-last {
       background: transparent; } }
@@ -65,19 +65,37 @@
   .jstree-undetermined > a > .jstree-checkbox:hover {
     background-position: -20px -37px; } }
 
+.jstree-defefault-rtl {
+  .jstree-no-icons .jstree-radio {
+    display: inline-block; }
+  .jstree-no-radios .jstree-radio {
+    display: none !important; }
+  .jstree-checked > a > .jstree-radio {
+    background-position: -38px -55px; }
+  .jstree-unchecked > a > .jstree-radio {
+    background-position: -2px -55px; }
+  .jstree-undetermined > a > .jstree-radio {
+    background-position: -20px -55px; }
+  .jstree-checked > a > .jstree-radio:hover {
+    background-position: -38px -73px; }
+  .jstree-unchecked > a > .jstree-radio:hover {
+    background-position: -2px -73px; }
+  .jstree-undetermined > a > .jstree-radio:hover {
+    background-position: -20px -73px; } }
+
 #vakata-dragged.jstree-default-rtl {
   ins {
     background: transparent !important; }
   .jstree-ok {
-    background: image_url("jquery.ui/jstree.default-rtl/d.png") -2px -53px no-repeat !important; }
+    background: image_url("jquery.ui/jstree.default-rtl/d.png") -56px -53px no-repeat !important; }
   .jstree-invalid {
-    background: image_url("jquery.ui/jstree.default-rtl/d.png") -18px -53px no-repeat !important; } }
+    background: image_url("jquery.ui/jstree.default-rtl/d.png") -72px -53px no-repeat !important; } }
 
 #jstree-marker.jstree-default-rtl {
-  background: image_url("jquery.ui/jstree.default-rtl/d.png") -41px -57px no-repeat !important; }
+  background: image_url("jquery.ui/jstree.default-rtl/d.png") -95px -57px no-repeat !important; }
 
 .jstree-default-rtl a.jstree-search {
-  color: aqua; }
+  color: defefault-rtl; }
 
 #vakata-contextmenu.jstree-default-rtl-context {
   background: #f0f0f0;
@@ -163,6 +181,12 @@
     _background-position: -36px -19px; }
   .jstree-unchecked a .jstree-checkbox {
     _background-position: 0px -19px; }
+  .jstree-undetermined a .jstree-radio {
+    _background-position: -18px -57px; }
+  .jstree-checked a .jstree-radio {
+    _background-position: -36px -57px; }
+  .jstree-unchecked a .jstree-radio {
+    _background-position: 0px -57px; }
   .jstree-hovered, .jstree-clicked {
     padding: 0 1px 0 2px; }
   li {
@@ -182,7 +206,22 @@
   .jstree-unchecked > a > .jstree-checkbox:hover {
     background-position: 0px -37px; }
   .jstree-undetermined > a > .jstree-checkbox:hover {
-    background-position: -18px -37px; } }
+    background-position: -18px -37px; }
+  .jstree-checked > a > .jstree-radio {
+    background-position: -36px -57px;
+    margin-left: 2px; }
+  .jstree-unchecked > a > .jstree-radio {
+    background-position: 0px -57px;
+    margin-left: 2px; }
+  .jstree-undetermined > a > .jstree-radio {
+    background-position: -18px -57px;
+    margin-left: 2px; }
+  .jstree-checked > a > .jstree-radio:hover {
+    background-position: -36px -75px; }
+  .jstree-unchecked > a > .jstree-radio:hover {
+    background-position: 0px -75px; }
+  .jstree-undetermined > a > .jstree-radio:hover {
+    background-position: -18px -75px; } }
 
 /* IE6 END */
 

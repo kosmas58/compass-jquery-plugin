@@ -3,7 +3,7 @@
 /*
  * jsTree classic theme 1.0
  * Supported features: dots/no-dots, icons/no-icons, focused, loading
- * Supported plugins: ui (hovered, clicked), checkbox, contextmenu, search
+ * Supported plugins: ui (hovered, clicked), checkbox, radio, contextmenu, search
  */
 
 .jstree-classic {
@@ -71,17 +71,17 @@
   .jstree-no-radios .jstree-radio {
     display: none !important; }
   .jstree-checked > a > .jstree-radio {
-    background-position: -38px -19px; }
+    background-position: -38px -55px; }
   .jstree-unchecked > a > .jstree-radio {
-    background-position: -2px -19px; }
+    background-position: -2px -55px; }
   .jstree-undetermined > a > .jstree-radio {
-    background-position: -20px -19px; }
+    background-position: -20px -55px; }
   .jstree-checked > a > .jstree-radio:hover {
-    background-position: -38px -37px; }
+    background-position: -38px -73px; }
   .jstree-unchecked > a > .jstree-radio:hover {
-    background-position: -2px -37px; }
+    background-position: -2px -73px; }
   .jstree-undetermined > a > .jstree-radio:hover {
-    background-position: -20px -37px; } }
+    background-position: -20px -73px; } }
 
 #vakata-dragged.jstree-classic {
   ins {

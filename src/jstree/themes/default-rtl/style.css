@@ -1,12 +1,12 @@
 /*
  * jsTree default-rtl theme 1.0
  * Supported features: dots/no-dots, icons/no-icons, focused, loading
- * Supported plugins: ui (hovered, clicked), checkbox, contextmenu, search
+ * Supported plugins: ui (hovered, clicked), checkbox, radio, contextmenu, search
  */
 
 .jstree-default-rtl li, 
 .jstree-default-rtl ins { background-image: image_url("jquery.ui/jstree.default-rtl/d.png"); background-repeat:no-repeat; background-color:transparent; }
-.jstree-default-rtl li { background-position:-90px 0; background-repeat:repeat-y; }
+.jstree-default-rtl li { background-position:-108px 0; background-repeat:repeat-y; }
 .jstree-default-rtl li.jstree-last { background:transparent; }
 .jstree-default-rtl .jstree-open > ins { background-position:-72px 0; }
 .jstree-default-rtl .jstree-closed > ins { background-position:-54px 0; }
@@ -37,12 +37,22 @@
 .jstree-default-rtl .jstree-unchecked > a > .jstree-checkbox:hover { background-position:-2px -37px; }
 .jstree-default-rtl .jstree-undetermined > a > .jstree-checkbox:hover { background-position:-20px -37px; }
 
-#vakata-dragged.jstree-default-rtl ins { background:transparent !important; }
-#vakata-dragged.jstree-default-rtl .jstree-ok { background: image_url("jquery.ui/jstree.default-rtl/d.png") -2px -53px no-repeat !important; }
-#vakata-dragged.jstree-default-rtl .jstree-invalid { background: image_url("jquery.ui/jstree.default-rtl/d.png") -18px -53px no-repeat !important; }
-#jstree-marker.jstree-default-rtl { background: image_url("jquery.ui/jstree.default-rtl/d.png") -41px -57px no-repeat !important; }
+.jstree-defefault-rtl .jstree-no-icons .jstree-radio { display:inline-block; }
+.jstree-defefault-rtl .jstree-no-radios .jstree-radio { display:none !important; }
+.jstree-defefault-rtl .jstree-checked > a > .jstree-radio { background-position:-38px -55px; }
+.jstree-defefault-rtl .jstree-unchecked > a > .jstree-radio { background-position:-2px -55px; }
+.jstree-defefault-rtl .jstree-undetermined > a > .jstree-radio { background-position:-20px -55px; }
+.jstree-defefault-rtl .jstree-checked > a > .jstree-radio:hover { background-position:-38px -73px; }
+.jstree-defefault-rtl .jstree-unchecked > a > .jstree-radio:hover { background-position:-2px -73px; }
+.jstree-defefault-rtl .jstree-undetermined > a > .jstree-radio:hover { background-position:-20px -73px; }
 
-.jstree-default-rtl a.jstree-search { color:aqua; }
+
+#vakata-dragged.jstree-default-rtl ins { background:transparent !important; }
+#vakata-dragged.jstree-default-rtl .jstree-ok { background: image_url("jquery.ui/jstree.default-rtl/d.png") -56px -53px no-repeat !important; }
+#vakata-dragged.jstree-default-rtl .jstree-invalid { background: image_url("jquery.ui/jstree.default-rtl/d.png") -72px -53px no-repeat !important; }
+#jstree-marker.jstree-default-rtl { background: image_url("jquery.ui/jstree.default-rtl/d.png") -95px -57px no-repeat !important; }
+
+.jstree-default-rtl a.jstree-search { color:defefault-rtl; }
 
 #vakata-contextmenu.jstree-default-rtl-context, 
 #vakata-contextmenu.jstree-default-rtl-context li ul { background:#f0f0f0; border:1px solid #979797; -moz-box-shadow: 1px 1px 2px #999; -webkit-box-shadow: 1px 1px 2px #999; box-shadow: 1px 1px 2px #999; }
@@ -70,6 +80,9 @@
 .jstree-default-rtl .jstree-undetermined a .jstree-checkbox { _background-position:-18px -19px; }
 .jstree-default-rtl .jstree-checked a .jstree-checkbox { _background-position:-36px -19px; }
 .jstree-default-rtl .jstree-unchecked a .jstree-checkbox { _background-position:0px -19px; }
+.jstree-default-rtl .jstree-undetermined a .jstree-radio { _background-position:-18px -57px; }
+.jstree-default-rtl .jstree-checked a .jstree-radio { _background-position:-36px -57px; }
+.jstree-default-rtl .jstree-unchecked a .jstree-radio { _background-position:0px -57px; }
 /* IE6 END */
 
 /* RTL part */
@@ -81,3 +94,11 @@
 .jstree-default-rtl .jstree-checked > a > .jstree-checkbox:hover { background-position:-36px -37px; }
 .jstree-default-rtl .jstree-unchecked > a > .jstree-checkbox:hover { background-position:0px -37px; }
 .jstree-default-rtl .jstree-undetermined > a > .jstree-checkbox:hover { background-position:-18px -37px; }
+.jstree-default-rtl .jstree-checked > a > .jstree-radio { background-position:-36px -57px; margin-left:2px; }
+.jstree-default-rtl .jstree-unchecked > a > .jstree-radio { background-position:0px -57px; margin-left:2px; }
+.jstree-default-rtl .jstree-undetermined > a > .jstree-radio { background-position:-18px -57px; margin-left:2px; }
+.jstree-default-rtl .jstree-checked > a > .jstree-radio:hover { background-position:-36px -75px; }
+.jstree-default-rtl .jstree-unchecked > a > .jstree-radio:hover { background-position:0px -75px; }
+.jstree-default-rtl .jstree-undetermined > a > .jstree-radio:hover { background-position:-18px -75px; }
+
+

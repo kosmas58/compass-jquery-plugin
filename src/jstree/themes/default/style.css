@@ -1,12 +1,12 @@
 /*
  * jsTree default theme 1.0
  * Supported features: dots/no-dots, icons/no-icons, focused, loading
- * Supported plugins: ui (hovered, clicked), checkbox, contextmenu, search
+ * Supported plugins: ui (hovered, clicked), checkbox, radio, contextmenu, search
  */
 
 .jstree-default li, 
 .jstree-default ins { background-image: image_url("jquery.ui/jstree.default/d.png"); background-repeat:no-repeat; background-color:transparent; }
-.jstree-default li { background-position:-90px 0; background-repeat:repeat-y; }
+.jstree-default li { background-position:-108px 0; background-repeat:repeat-y; }
 .jstree-default li.jstree-last { background:transparent; }
 .jstree-default .jstree-open > ins { background-position:-72px 0; }
 .jstree-default .jstree-closed > ins { background-position:-54px 0; }
@@ -37,12 +37,21 @@
 .jstree-default .jstree-unchecked > a > .jstree-checkbox:hover { background-position:-2px -37px; }
 .jstree-default .jstree-undetermined > a > .jstree-checkbox:hover { background-position:-20px -37px; }
 
-#vakata-dragged.jstree-default ins { background:transparent !important; }
-#vakata-dragged.jstree-default .jstree-ok { background: image_url("jquery.ui/jstree.default/d.png") -2px -53px no-repeat !important; }
-#vakata-dragged.jstree-default .jstree-invalid { background: image_url("jquery.ui/jstree.default/d.png") -18px -53px no-repeat !important; }
-#jstree-marker.jstree-default { background: image_url("jquery.ui/jstree.default/d.png") -41px -57px no-repeat !important; }
+.jstree-default .jstree-no-icons .jstree-radio { display:inline-block; }
+.jstree-default .jstree-no-radios .jstree-radio { display:none !important; }
+.jstree-default .jstree-checked > a > .jstree-radio { background-position:-38px -55px; }
+.jstree-default .jstree-unchecked > a > .jstree-radio { background-position:-2px -55px; }
+.jstree-default .jstree-undetermined > a > .jstree-radio { background-position:-20px -55px; }
+.jstree-default .jstree-checked > a > .jstree-radio:hover { background-position:-38px -73px; }
+.jstree-default .jstree-unchecked > a > .jstree-radio:hover { background-position:-2px -73px; }
+.jstree-default .jstree-undetermined > a > .jstree-radio:hover { background-position:-20px -73px; }
 
-.jstree-default a.jstree-search { color:aqua; }
+#vakata-dragged.jstree-default ins { background:transparent !important; }
+#vakata-dragged.jstree-default .jstree-ok { background: image_url("jquery.ui/jstree.default/d.png") -56px -53px no-repeat !important; }
+#vakata-dragged.jstree-default .jstree-invalid { background: image_url("jquery.ui/jstree.default/d.png") -72px -53px no-repeat !important; }
+#jstree-marker.jstree-default { background: image_url("jquery.ui/jstree.default/d.png") -95px -57px no-repeat !important; }
+
+.jstree-default a.jstree-search { color:default; }
 
 #vakata-contextmenu.jstree-default-context, 
 #vakata-contextmenu.jstree-default-context li ul { background:#f0f0f0; border:1px solid #979797; -moz-box-shadow: 1px 1px 2px #999; -webkit-box-shadow: 1px 1px 2px #999; box-shadow: 1px 1px 2px #999; }
@@ -70,4 +79,7 @@
 .jstree-default .jstree-undetermined a .jstree-checkbox { _background-position:-20px -19px; }
 .jstree-default .jstree-checked a .jstree-checkbox { _background-position:-38px -19px; }
 .jstree-default .jstree-unchecked a .jstree-checkbox { _background-position:-2px -19px; }
+.jstree-default .jstree-undetermined a .jstree-radio { _background-position:-20px -57px; }
+.jstree-default .jstree-checked a .jstree-radio { _background-position:-38px -57px; }
+.jstree-default .jstree-unchecked a .jstree-radio { _background-position:-2px -57px; }
 /* IE6 END */
