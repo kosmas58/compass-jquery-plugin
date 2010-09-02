@@ -27,12 +27,20 @@
   .jstree-closed > ins:hover {
     background-position: -36px -18px; }
   .jstree-hovered {
-    background: #e7f4f9;
-    border: 1px solid #d8f0fa;
+    background-image: image_url("jquery.ui/jstree.aero/hovered.png");
+    background-repeat: repeat-x;
+    border: 1px solid #b8d6fb;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
     padding: 0 2px 0 1px; }
   .jstree-clicked {
-    background: #beebff;
-    border: 1px solid #99defd;
+    background-image: image_url("jquery.ui/jstree.aero/clicked.png");
+    background-repeat: repeat-x;
+    border: 1px solid #84acdd;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
     padding: 0 2px 0 1px; }
   a {
     .jstree-icon {

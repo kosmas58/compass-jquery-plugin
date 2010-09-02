@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kosmas Schuetz"]
-  s.date = %q{2010-09-01}
+  s.date = %q{2010-09-02}
   s.description = %q{A compass plugin that integrates jRails, jQuery, jQuery UI and Themes, jqGrid and more into the Compass Sass framework.}
   s.email = %q{kosmas.schuetz@gmx.com}
   s.extra_rdoc_files = [
@@ -1204,12 +1204,16 @@ Gem::Specification.new do |s|
      "templates/jstree/jquery.jstree.js",
      "templates/jstree/jquery.jstree.min.js",
      "templates/jstree/jquery.ui/jstree.aero.scss",
+     "templates/jstree/jquery.ui/jstree.aero/clicked.png",
      "templates/jstree/jquery.ui/jstree.aero/d.gif",
      "templates/jstree/jquery.ui/jstree.aero/d.png",
+     "templates/jstree/jquery.ui/jstree.aero/hovered.png",
      "templates/jstree/jquery.ui/jstree.aero/throbber.gif",
      "templates/jstree/jquery.ui/jstree.aqua.scss",
+     "templates/jstree/jquery.ui/jstree.aqua/clicked.png",
      "templates/jstree/jquery.ui/jstree.aqua/d.gif",
      "templates/jstree/jquery.ui/jstree.aqua/d.png",
+     "templates/jstree/jquery.ui/jstree.aqua/hovered.png",
      "templates/jstree/jquery.ui/jstree.aqua/throbber.gif",
      "templates/jstree/jquery.ui/jstree.chrystal.scss",
      "templates/jstree/jquery.ui/jstree.chrystal/d.gif",

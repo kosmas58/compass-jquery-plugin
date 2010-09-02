@@ -14,13 +14,13 @@
 .jstree-aqua .jstree-open > ins:hover { background-position:-54px -18px; }
 .jstree-aqua .jstree-closed > ins:hover { background-position:-36px -18px; }
 
-.jstree-aqua .jstree-hovered { background:#e7f4f9; border:1px solid #d8f0fa; padding:0 2px 0 1px; }
-.jstree-aqua .jstree-clicked { background:#beebff; border:1px solid #99defd; padding:0 2px 0 1px; }
+.jstree-aqua .jstree-hovered { background-image: image_url("jquery.ui/jstree.aqua/hovered.png"); background-repeat:repeat-x; border:1px solid #a0dfff; -moz-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px; padding:0 2px 0 1px; }
+.jstree-aqua .jstree-clicked { color: white; background-image: image_url("jquery.ui/jstree.aqua/clicked.png"); background-repeat:repeat-x; border:1px solid #5594d2; -moz-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px; padding:0 2px 0 1px; }
 .jstree-aqua a .jstree-icon { background-position:-56px -36px; }
 .jstree-aqua .jstree-open > a .jstree-icon { background-position:-56px -54px; }
 .jstree-aqua a.jstree-loading .jstree-icon { background: image_url("jquery.ui/jstree.aqua/throbber.gif") center center no-repeat !important; }
 
-.jstree-aqua.jstree-focused { background:white; }
+.jstree-aqua.jstree-focused { background: #d9dee7; }
 
 .jstree-aqua .jstree-no-dots li, 
 .jstree-aqua .jstree-no-dots .jstree-leaf > ins { background:transparent; }
