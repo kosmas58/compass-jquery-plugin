@@ -179,11 +179,11 @@ $.jgrid.extend({
 				}
 				else {
 				  mtype = "POST";
-				}
+				}				
 				$.ajax($.extend({
 					url:url,
 					data: $.isFunction($t.p.serializeRowData) ? $t.p.serializeRowData.call($t, tmp) : tmp,
-					type: mtype,
+					type: "POST",
 					complete: function(res,stat){
 						$("#lui_"+$t.p.id).hide();
 						if (stat === "success"){
@@ -204,7 +204,12 @@ $.jgrid.extend({
 								}
 								if(fr >= 0) { $t.p.savedRow.splice(fr,1); }
 								if( $.isFunction(aftersavefunc) ) { aftersavefunc.call($t, rowid,res); }
-							} else { $($t).jqGrid("restoreRow",rowid, afterrestorefunc); }
+							} else {
+								if($.isFunction(errorfunc) ) {
+									errorfunc.call($t, rowid, res, stat);
+								}
+								$($t).jqGrid("restoreRow",rowid, afterrestorefunc);
+							}
 						}
 					},
 					error:function(res,stat){
