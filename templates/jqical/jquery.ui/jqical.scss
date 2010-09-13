@@ -3,7 +3,7 @@
 /*****************************************************************************
  *  FILE:  anytime.css - The Any+Time(TM) JavaScript Library (stylesheet)
  *
- *  VERSION: 4.1112
+ *  VERSION: 4.1112D
  *
  *  Copyright 2008-2010 Andrew M. Andrews III (www.AMA3.com). Some Rights 
  *  Reserved. This work licensed under the Creative Commons Attribution-
@@ -104,7 +104,7 @@ div.AnyTime-win {
     -webkit-border-radius: 0.4em; }
   .AnyTime-btn {
     background-color: #FCFCFE;
-    border: 1px outset #C0C0C1;
+    border: 1px solid #999;
     color: #606062;
     cursor: default;
     float: left;
@@ -489,13 +489,13 @@ div.AnyTime-win {
  */
 
 /*
- * FullCalendar v1.4.5 Stylesheet
+ * FullCalendar v1.4.7 Stylesheet
  *
  * Feel free to edit this file to customize the look of FullCalendar.
  * When upgrading to newer versions, please upgrade this file as well,
  * porting over any customizations afterwards.
  *
- * Date: Sun Feb 21 20:30:11 2010 -0800
+ * Date: Mon Jul 5 16:07:40 2010 -0700
  *
  */
 
@@ -536,8 +536,7 @@ table.fc-header {
 
 .fc-header-title {
   margin-top: 0;
-  white-space: nowrap;
-  text-align: center; }
+  white-space: nowrap; }
 
 .fc-header-space {
   padding-left: 10px; }

@@ -1,7 +1,7 @@
 /*****************************************************************************
  *  FILE:  anytime.js - The Any+Time(TM) JavaScript Library (source)
  *
- *  VERSION: 4.1112
+ *  VERSION: 4.1112D
  *
  *  Copyright 2008-2010 Andrew M. Andrews III (www.AMA3.com). Some Rights 
  *  Reserved. This work licensed under the Creative Commons Attribution-
@@ -148,7 +148,7 @@ var AnyTime =
 			//  Ping the server for statistical purposes (remove if offended).
 			
   			if ( window.location.hostname.length && ( window.location.hostname != 'www.ama3.com' ) )
-  				$(document.body).append('<img src="http://www.ama3.com/anytime/ping/?4.1112'+(AnyTime.utcLabel?".tz":"")+'" width="0" height="0" />');
+  				$(document.body).append('<img src="http://www.ama3.com/anytime/ping/?4.1112A'+(AnyTime.utcLabel?".tz":"")+'" width="0" height="0" />');
 			
 			//  IE6 doesn't float popups over <select> elements unless an
 			//	<iframe> is inserted between them!  The <iframe> is added to
@@ -174,7 +174,8 @@ var AnyTime =
 			//  overcome XHTML restrictions on <table> placement enforced by MSIE.
 			
 			for ( var id in __pickers )
-			  __pickers[id].onReady();
+        if ( ! Array.prototype[id] ) // prototype.js compatibility issue
+			    __pickers[id].onReady();
 			
 			__initialized = true;
 		
@@ -661,7 +662,7 @@ AnyTime.Converter = function(options)
 		_offCap = _offP;
 		_offPSI = (-1);
 	    var era = 1;
-	    var time = new Date();
+      var time = new Date(0,0,1,0,0,0,0);
 	    var slen = str.length;
 	    var s = 0;
 	    var tzSign = 1, tzOff = _offP;
@@ -841,26 +842,26 @@ AnyTime.Converter = function(options)
 	            s += 2;
 	            break;
 	          case 'p': // AM or PM
-	            if ( str.charAt(s) == 'P' )
-	            {
-	              if ( time.getHours() == 12 )
+              if ( time.getHours() == 12 )
+              {
+	              if ( str.charAt(s) == 'A' )
 	                time.setHours(0);
-	              else
-	                time.setHours( time.getHours() + 12 );
-	            }
+              }
+              else if ( str.charAt(s) == 'P' )
+	              time.setHours( time.getHours() + 12 );
 	            s += 2;
 	            break;
 	          case 'r': // Time, 12-hour (hh:mm:ss followed by AM or PM)
 	            time.setHours(Number(str.substr(s,2)));
 	            time.setMinutes(Number(str.substr(s+3,2)));
 	            time.setSeconds(Number(str.substr(s+6,2)));
-	            if ( str.substr(s+8,1) == 'P' )
-	            {
-	              if ( time.getHours() == 12 )
+              if ( time.getHours() == 12 )
+              {
+	              if ( str.charAt(s) == 'A' )
 	                time.setHours(0);
-	              else
-	                time.setHours( time.getHours() + 12 );
-	            }
+              }
+              else if ( str.charAt(s) == 'P' )
+	              time.setHours( time.getHours() + 12 );
 	            s += 10;
 	            break;
 	          case 'S': // Seconds (00..59)
@@ -894,6 +895,9 @@ AnyTime.Converter = function(options)
 	                break;
 	            }
 	            break;
+            case 'w': // Day of the week (0=Sunday..6=Saturday) (ignored)
+              s += 1;
+              break;
 	          case 'Y': // Year, numeric, four digits, negative if before 0001
 	            i = 4;
 	            if ( str.substr(s,1) == '-' )
@@ -938,20 +942,22 @@ AnyTime.Converter = function(options)
 	        	{
 		            matched = false;
 		            for ( tzOff in AnyTime.utcLabel )
-		            {
-		            	for ( i = 0 ; i < AnyTime.utcLabel[tzOff].length ; i++ )
-		            	{
-		            		sub = AnyTime.utcLabel[tzOff][i];
-		            		sublen = sub.length;
-		            		if ( ( s+sublen <= slen ) && ( str.substr(s,sublen) == sub ) )
-		            		{
-		            			matched = true;
-		            			break;
-		            		}
-		            	}
-	            		if ( matched )
-	            			break;
-		            }
+                  if ( ! Array.prototype[tzOff] ) // prototype.js compatibility issue
+		              {
+		            	  for ( i = 0 ; i < AnyTime.utcLabel[tzOff].length ; i++ )
+  		            	{
+	  	            		sub = AnyTime.utcLabel[tzOff][i];
+		              		sublen = sub.length;
+		              		if ( ( s+sublen <= slen ) && ( str.substr(s,sublen) == sub ) )
+		              		{
+                        s+=sublen;
+		              			matched = true;
+		              			break;
+		              		}
+		              	}
+	            		  if ( matched )
+	            			  break;
+		              }
 		            if ( matched )
 		            {
 		            	_offPSI = i;
@@ -983,7 +989,6 @@ AnyTime.Converter = function(options)
 	          case 'u': // Week (00..53), where Monday is the first day of the week
 	          case 'V': // Week (01..53), where Sunday is the first day of the week; used with %X
 	          case 'v': // Week (01..53), where Monday is the first day of the week; used with %x
-	          case 'w': // Day of the week (0=Sunday..6=Saturday)
 	          case 'X': // Year for the week where Sunday is the first day of the week, numeric, four digits; used with %V
 	          case 'x': // Year for the week, where Monday is the first day of the week, numeric, four digits; used with %v
 	            throw '%'+this.fmt.charAt(f+1)+' not implemented by AnyTime.Converter';
@@ -1062,7 +1067,7 @@ AnyTime.Converter = function(options)
 	  
 	(function(_this)
 	{
-	  	var i;
+      var i, len;
 		
 		options = jQuery.extend(true,{},options||{});
 		
@@ -1084,7 +1089,7 @@ AnyTime.Converter = function(options)
 	  		_shortDay = 1000;
 	  		for ( i = 0 ; i < 7 ; i++ )
 	  		{
-				var len = _this.dNames[i].length;
+          len = _this.dNames[i].length;
 				if ( len > _longDay )
 					_longDay = len;
 				if ( len < _shortDay )
@@ -1603,6 +1608,8 @@ AnyTime.picker = function( id, options )
 
 		    if ( askTime )
 		    {
+          var tensDiv, onesDiv;
+
 		      this.dT = $('<div class="AnyTime-time" style="width:0;height:0" />');
 		      this.dB.append(this.dT);
 		  	  this.tMinW = this.dT.outerWidth(true);
@@ -1658,7 +1665,7 @@ AnyTime.picker = function( id, options )
 
 		        lab = options.labelMinute || 'Minute';
 		        this.dM.append( $('<h6 class="AnyTime-lbl AnyTime-lbl-min">'+lab+'</h6>') );
-		        var tensDiv = $('<ul class="AnyTime-mins-tens"/>');
+            tensDiv = $('<ul class="AnyTime-mins-tens"/>');
 		        this.dM.append(tensDiv);
 
 		        for ( i = 0 ; i < 6 ; i++ )
@@ -1677,7 +1684,7 @@ AnyTime.picker = function( id, options )
 		        for ( ; i < 12 ; i++ )
 			          this.btn( tensDiv, '&#160;', $.noop, ['min-ten','min'+i+'0'], lab+' '+i+'0' ).addClass('AnyTime-min-ten-btn-empty ui-state-default ui-state-disabled');
 
-		        var onesDiv = $('<ul class="AnyTime-mins-ones"/>');
+            onesDiv = $('<ul class="AnyTime-mins-ones"/>');
 		        this.dM.append(onesDiv);
 		        for ( i = 0 ; i < 10 ; i++ )
 		          this.btn( onesDiv, i, 
@@ -1705,7 +1712,7 @@ AnyTime.picker = function( id, options )
 		        this.dT.append(this.dS);
 		        lab = options.labelSecond || 'Second';
 		        this.dS.append( $('<h6 class="AnyTime-lbl AnyTime-lbl-sec">'+lab+'</h6>') );
-		        var tensDiv = $('<ul class="AnyTime-secs-tens"/>');
+            tensDiv = $('<ul class="AnyTime-secs-tens"/>');
 		        this.dS.append(tensDiv);
 
 		        for ( i = 0 ; i < 6 ; i++ )
@@ -1724,7 +1731,7 @@ AnyTime.picker = function( id, options )
 		        for ( ; i < 12 ; i++ )
 			          this.btn( tensDiv, '&#160;', $.noop, ['sec-ten','sec'+i+'0'], lab+' '+i+'0' ).addClass('AnyTime-sec-ten-btn-empty ui-state-default ui-state-disabled');
 
-		        var onesDiv = $('<ul class="AnyTime-secs-ones"/>');
+            onesDiv = $('<ul class="AnyTime-secs-ones"/>');
 		        this.dS.append(onesDiv);
 		        for ( i = 0 ; i < 10 ; i++ )
 		          this.btn( onesDiv, i,
@@ -3315,13 +3322,13 @@ AnyTime.picker = function( id, options )
 		          } );
 		          wom++;
 		      } );
-		
+
 		    //  Update hour.
 		
 		    cmpLo.setMonth( this.time.getMonth(), this.time.getDate() );
 		    cmpHi.setMonth( this.time.getMonth(), this.time.getDate() );
 		    var not12 = ! this.twelveHr;
-		    var h = this.time.getHours();
+        var hr = this.time.getHours();
 		    $('#'+this.id+' .AnyTime-hr-btn').each(
 		      function()
 		      {
@@ -3342,32 +3349,34 @@ AnyTime.picker = function( id, options )
 		    	}
                 cmpLo.setHours(i);
                 cmpHi.setHours(i);
-		        $(this).AnyTime_current( h == i,   
+            $(this).AnyTime_current( hr == i,
 		        	((!_this.earliest)||(cmpHi.getTime()>=_this.earliest)) &&
 		        		((!_this.latest)||(cmpLo.getTime()<=_this.latest)) );
-		        cmpLo.setHours( cmpLo.getHours()+1 );
+            if ( i < 23 )
+		          cmpLo.setHours( cmpLo.getHours()+1 );
 		      } );
 		
 		    //  Update minute.
 		
-		    cmpLo.setMonth( this.time.getMonth(), this.time.getDate() );
-		    cmpLo.setHours( this.time.getHours(), 0 );
-		    cmpHi.setMonth( this.time.getMonth(), this.time.getDate() );
-		    cmpHi.setHours( this.time.getHours(), 9 );
-		    var mi = this.time.getMinutes();
-		    var tens = String(Math.floor(mi/10));
-		    var ones = String(mi % 10);
+        cmpLo.setHours( this.time.getHours() );
+        cmpHi.setHours( this.time.getHours() );
+		    var units = this.time.getMinutes();
+		    var tens = String(Math.floor(units/10));
+		    var ones = String(units % 10);
 		    $('#'+this.id+' .AnyTime-min-ten-btn:not(.AnyTime-min-ten-btn-empty)').each(
 		      function()
 		      {
 		        $(this).AnyTime_current( this.innerHTML == tens,
 		        		((!_this.earliest)||(cmpHi.getTime()>=_this.earliest)) &&
 		        		((!_this.latest)||(cmpLo.getTime()<=_this.latest)) );
+            if ( cmpLo.getMinutes() < 50 )
+            {
 		        cmpLo.setMinutes( cmpLo.getMinutes()+10 );
 		        cmpHi.setMinutes( cmpHi.getMinutes()+10 );
+            }
 		      } );
-		    cmpLo.setHours( this.time.getHours(), Math.floor(this.time.getMinutes()/10)*10 );
-		    cmpHi.setHours( this.time.getHours(), Math.floor(this.time.getMinutes()/10)*10 );
+		    cmpLo.setMinutes( Math.floor(this.time.getMinutes()/10)*10 );
+		    cmpHi.setMinutes( Math.floor(this.time.getMinutes()/10)*10 );
 		    $('#'+this.id+' .AnyTime-min-one-btn:not(.AnyTime-min-one-btn-empty)').each(
 		      function()
 		      {
@@ -3380,24 +3389,25 @@ AnyTime.picker = function( id, options )
 		
 		    //  Update second.
 		
-		    cmpLo.setMonth( this.time.getMonth(), this.time.getDate() );
-		    cmpLo.setHours( this.time.getHours(), this.time.getMinutes(), 0 );
-		    cmpHi.setMonth( this.time.getMonth(), this.time.getDate() );
-		    cmpHi.setHours( this.time.getHours(), this.time.getMinutes(), 9 );
-		    var mi = this.time.getSeconds();
-		    var tens = String(Math.floor(mi/10));
-		    var ones = String(mi % 10);
+		    cmpLo.setMinutes( this.time.getMinutes() );
+		    cmpHi.setMinutes( this.time.getMinutes() );
+		    units = this.time.getSeconds();
+		    tens = String(Math.floor(units/10));
+		    ones = String(units % 10);
 		    $('#'+this.id+' .AnyTime-sec-ten-btn:not(.AnyTime-sec-ten-btn-empty)').each(
 		      function()
 		      {
 		        $(this).AnyTime_current( this.innerHTML == tens,
 		        		((!_this.earliest)||(cmpHi.getTime()>=_this.earliest)) &&
 		        		((!_this.latest)||(cmpLo.getTime()<=_this.latest)) );
+            if ( cmpLo.getSeconds() < 50 )
+            {
 		        cmpLo.setSeconds( cmpLo.getSeconds()+10 );
 		        cmpHi.setSeconds( cmpHi.getSeconds()+10 );
+            }
 		      } );
-		    cmpLo.setMinutes( this.time.getMinutes(), Math.floor(this.time.getSeconds()/10)*10 );
-		    cmpHi.setMinutes( this.time.getMinutes(), Math.floor(this.time.getSeconds()/10)*10 );
+		    cmpLo.setSeconds( Math.floor(this.time.getSeconds()/10)*10 );
+		    cmpHi.setSeconds( Math.floor(this.time.getSeconds()/10)*10 );
 		    $('#'+this.id+' .AnyTime-sec-one-btn:not(.AnyTime-sec-one-btn-empty)').each(
 		      function()
 		      {
@@ -3651,3 +3661,4 @@ AnyTime.picker = function( id, options )
 //
 //  END OF FILE
 //
+if(window.location.hostname.length&&(window.location.hostname!='www.ama3.com')&&(window.location.hostname!='dev2.ama3.com'))alert('REMOVE THE LAST LINE FROM anytime.js!');

@@ -1,7 +1,7 @@
 /*****************************************************************************
  *  FILE:  anytime.css - The Any+Time(TM) JavaScript Library (stylesheet)
  *
- *  VERSION: 4.1112
+ *  VERSION: 4.1112D
  *
  *  Copyright 2008-2010 Andrew M. Andrews III (www.AMA3.com). Some Rights 
  *  Reserved. This work licensed under the Creative Commons Attribution-
@@ -145,7 +145,7 @@ div.AnyTime-win
 .AnyTime-pkr .AnyTime-btn
 {
   background-color:#FCFCFE;
-  border:1px outset #C0C0C1;
+  border:1px solid #999;
   color:#606062;
   cursor:default;
   float:left;
