@@ -632,11 +632,11 @@ $.jgrid.extend({
 					}
 					delete postdata[$t.p.id+"_id"];
 					postdata = $.extend(postdata,rp_ge.editData,onCS);
-					
+						
 					if($t.p.restful) { 
 					  rp_ge.mtype = postdata.id == "_empty" ? "POST" : "PUT";
 					  rp_ge.url = postdata.id == "_empty" ? $t.p.url : $t.p.url+"/"+postdata.id;	
-					}	
+					}
 
 					var ajaxOptions = $.extend({
 						url: rp_ge.url ? rp_ge.url : $($t).jqGrid('getGridParam','editurl'),
@@ -1428,13 +1428,13 @@ $.jgrid.extend({
 						oper = opers.oper;
 						postd[oper] = opers.deloper;
 						idname = opers.id;
-						postd[idname] = postdata;
+						postd[idname] = postdata;						
 						
 						if($t.p.restful) { 
 						  p.mtype = "DELETE";
 						  rp_ge.url = $t.p.url+"/"+postdata;
 						};
-						
+
 						var ajaxOptions = $.extend({
 							url: rp_ge.url ? rp_ge.url : $($t).jqGrid('getGridParam','editurl'),
 							type: p.mtype,

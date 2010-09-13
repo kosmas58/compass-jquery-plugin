@@ -2305,8 +2305,8 @@ $.fn.jqGrid = function( pin ) {
 				case "xmlstring":
 					beginReq();
 					dstr = $.jgrid.stringToDoc(ts.p.datastr);
-					if(lcf) {ts.p.loadComplete.call(ts,dstr);}
 					addXmlData(dstr,ts.grid.bDiv);
+					if(lcf) {ts.p.loadComplete.call(ts,dstr);}
 					ts.p.datatype = "local";
 					ts.p.datastr = null;
 					endReq();
@@ -2315,8 +2315,8 @@ $.fn.jqGrid = function( pin ) {
 					beginReq();
 					if(typeof ts.p.datastr == 'string') { dstr = $.jgrid.parse(ts.p.datastr); }
 					else { dstr = ts.p.datastr; }
-					if(lcf) {ts.p.loadComplete.call(ts,dstr);}
 					addJSONData(dstr,ts.grid.bDiv);
+					if(lcf) {ts.p.loadComplete.call(ts,dstr);}
 					ts.p.datatype = "local";
 					ts.p.datastr = null;
 					endReq();
@@ -5036,11 +5036,11 @@ $.jgrid.extend({
 					}
 					delete postdata[$t.p.id+"_id"];
 					postdata = $.extend(postdata,rp_ge.editData,onCS);
-					
+						
 					if($t.p.restful) { 
 					  rp_ge.mtype = postdata.id == "_empty" ? "POST" : "PUT";
 					  rp_ge.url = postdata.id == "_empty" ? $t.p.url : $t.p.url+"/"+postdata.id;	
-					}	
+					}
 
 					var ajaxOptions = $.extend({
 						url: rp_ge.url ? rp_ge.url : $($t).jqGrid('getGridParam','editurl'),
@@ -5832,13 +5832,13 @@ $.jgrid.extend({
 						oper = opers.oper;
 						postd[oper] = opers.deloper;
 						idname = opers.id;
-						postd[idname] = postdata;
+						postd[idname] = postdata;						
 						
 						if($t.p.restful) { 
 						  p.mtype = "DELETE";
 						  rp_ge.url = $t.p.url+"/"+postdata;
 						};
-						
+
 						var ajaxOptions = $.extend({
 							url: rp_ge.url ? rp_ge.url : $($t).jqGrid('getGridParam','editurl'),
 							type: p.mtype,
@@ -6472,7 +6472,7 @@ $.jgrid.extend({
 				$.ajax($.extend({
 					url:url,
 					data: $.isFunction($t.p.serializeRowData) ? $t.p.serializeRowData.call($t, tmp) : tmp,
-					type: "POST",
+					type: mtype,
 					complete: function(res,stat){
 						$("#lui_"+$t.p.id).hide();
 						if (stat === "success"){
@@ -9806,9 +9806,6 @@ $.jgrid.extend({
 			$("#"+$t.p.id+" tbody:first").append(str);
 			// free up memory
 			str = null;
-			grp.sortitems[0] = [];
-			grp.sortnames[0] = [];
-			grp.summaryval[0] = [];
 		});
 	},
 	groupingGroupBy : function (name, options, current) {
