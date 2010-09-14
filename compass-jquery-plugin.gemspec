@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{compass-jquery-plugin}
-  s.version = "0.3.0.beta.16"
+  s.version = "0.3.0.beta.17"
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kosmas Schuetz"]
@@ -61,7 +61,6 @@ Gem::Specification.new do |s|
      "lib/jquery/jquery_selector_assertions.rb",
      "lib/jquery/jrails.rb",
      "lib/jquery/jstree.rb",
-     "lib/jquery/jstree/jstree.rb",
      "lib/jquery/ribbon.rb",
      "lib/jquery/secret_sauce.rb",
      "lib/jquery/secret_sauce/controller/ui_dialog_controls.rb",
