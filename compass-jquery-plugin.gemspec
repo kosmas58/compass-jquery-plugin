@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kosmas Schuetz"]
-  s.date = %q{2010-09-13}
+  s.date = %q{2010-09-14}
   s.description = %q{A compass plugin that integrates jRails, jQuery, jQuery UI and Themes, jqGrid and more into the Compass Sass framework.}
   s.email = %q{kosmas.schuetz@gmx.com}
   s.extra_rdoc_files = [
@@ -61,6 +61,7 @@ Gem::Specification.new do |s|
      "lib/jquery/jquery_selector_assertions.rb",
      "lib/jquery/jrails.rb",
      "lib/jquery/jstree.rb",
+     "lib/jquery/jstree/jstree.rb",
      "lib/jquery/ribbon.rb",
      "lib/jquery/secret_sauce.rb",
      "lib/jquery/secret_sauce/controller/ui_dialog_controls.rb",

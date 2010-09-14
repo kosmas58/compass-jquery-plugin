@@ -3,3 +3,5 @@ module ActionView
    
  end
 end
+
+require 'jquery/jstree/jstree'
