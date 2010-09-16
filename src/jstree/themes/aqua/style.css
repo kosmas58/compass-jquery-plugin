@@ -4,6 +4,8 @@
  * Supported plugins: ui (hovered, clicked), checkbox, radio, contextmenu, search
  */
 
+.jstree-aqua { font-family: "Lucida Grande", Verdana, Geneva, Arial, Helvetica, sans-serif; font-size: 0.8em; }
+
 .jstree-aqua li, 
 .jstree-aqua ins { background-image: image_url("jquery.ui/jstree.aqua/d.png"); background-repeat:no-repeat; background-color:transparent; }
 .jstree-aqua li { background-position:-108px 0; background-repeat:repeat-y; }

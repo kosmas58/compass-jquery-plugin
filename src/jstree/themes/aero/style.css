@@ -4,6 +4,8 @@
  * Supported plugins: ui (hovered, clicked), checkbox, radio, contextmenu, search
  */
 
+.jstree-aero { font-family: segoe ui, Verdana, Geneva, Arial, Helvetica, sans-serif; font-size: 0.8em; }
+
 .jstree-aero li, 
 .jstree-aero ins { background-image: image_url("jquery.ui/jstree.aero/d.png"); background-repeat:no-repeat; background-color:transparent; }
 .jstree-aero li { background-position:-108px 0; background-repeat:repeat-y; }

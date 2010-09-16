@@ -7,6 +7,7 @@ JRAILS_SRC = File.join(GEM_ROOT, 'src', 'jrails', 'jrails.1.4.2')
 JRAILS_SRC_SCRIPTS = JRAILS_SRC + "/*.js"
 
 JHAML_SRC_SCRIPTS = File.join(GEM_ROOT, 'src', 'jrails', 'jquery-haml') + "/*.js"
+HAML_JS_SRC_SCRIPTS = File.join(GEM_ROOT, 'src', 'jrails', 'haml-js') + "/*.js"
 
 FLASH_SRC = File.join(GEM_ROOT, 'src', 'jrails', 'flash_messages')
 FLASH_SRC_IMAGES = File.join(FLASH_SRC, 'images')
@@ -86,7 +87,19 @@ namespace :build do
       open File.join(JRAILS_DEST_TEMPLATES, 'jquery.haml.min.js'), 'w' do |f|
         f.print compress_js(all_files(JHAML_SRC_SCRIPTS), "google")
       end
-      manifest.print "javascript 'jquery.haml.min.js'\n"       
+      manifest.print "javascript 'jquery.haml.min.js'\n" 
+      
+      # HAML Js
+     
+      open File.join(JRAILS_DEST_TEMPLATES, 'haml.js'), 'w' do |f|
+        f.print concat_files(all_files(HAML_JS_SRC_SCRIPTS))
+      end
+      manifest.print "javascript 'haml.js'\n" 
+    
+      open File.join(JRAILS_DEST_TEMPLATES, 'haml.min.js'), 'w' do |f|
+        f.print compress_js(all_files(JHAML_SRC_SCRIPTS), "google")
+      end
+      manifest.print "javascript 'haml.min.js'\n"   
       
       # jQuery 1.4
     

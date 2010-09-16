@@ -1,3 +1,4 @@
+require 'yaml'
 require File.join(File.dirname(__FILE__), 'jquery', 'compass_plugin')
 
 module CompassJqueryPlugin
