@@ -187,7 +187,8 @@ h3. jQuery Plugins included
 * Chris Domigan for <b>"jQuery ContextMenu Plugin":http://www.trendskitchens.co.nz/jquery/contextmenu/</b>
 * Denis Howlett for <b>"jQuery Table Drag and Drop Plugin":http://www.isocra.com/2008/02/table-drag-and-drop-jquery-plugin/</b>
 * Michael Aufreiter for <b>"jQuery UI Multiselect Plugin":http://quasipartikel.at</b>
-* Tim Caswell for <b>"jQuery haml Plugin":http://github.com/creationix/haml-js</b>
+* Tim Caswell for <b>"jQuery haml Plugin":http://github.com/creationix/jquery-haml</b>
+* Tim Caswell for <b>"halm-js":http://github.com/creationix/haml-js</b> Server side templating language for JavaScript
 * Rick DeNatale for <b>"ri_cal":http://github.com/rubyredrick/ri_cal/</b>
 * Andrew M Andrews III for <b>"Any+Time":http://www.ama3.com/anytime/</b>
 * Adam Shaw for <b>"FullCalendar":http://arshaw.com/fullcalendar/</b>

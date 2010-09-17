@@ -20,6 +20,7 @@ ActionView::Helpers::AssetTagHelper::reset_javascript_include_default
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :jquery_142 => ['jquery-1.4.2.min', 'jquery-ui-1.8.4.min']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :jrails => ['jrails.min']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :jhaml => ['jquery.haml.min']
+ActionView::Helpers::AssetTagHelper.register_javascript_expansion :haml_js => ['haml-js.min']
 ActionView::Helpers::AssetTagHelper.register_stylesheet_expansion :contextMenu => ['compiled/jquery.ui/contextMenu.css']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :contextMenu => ['jquery.contextMenu.min']
 ActionView::Helpers::AssetTagHelper.register_stylesheet_expansion :farbtastic => ['compiled/jquery.ui/farbtastic.css']

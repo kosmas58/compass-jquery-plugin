@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{compass-jquery-plugin}
-  s.version = "0.3.0.beta.18"
+  s.version = "0.3.0.beta.19"
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kosmas Schuetz"]
-  s.date = %q{2010-09-15}
+  s.date = %q{2010-09-17}
   s.description = %q{A compass plugin that integrates jRails, jQuery, jQuery UI and Themes, jqGrid and more into the Compass Sass framework.}
   s.email = %q{kosmas.schuetz@gmx.com}
   s.extra_rdoc_files = [
@@ -619,6 +619,8 @@ Gem::Specification.new do |s|
      "templates/jqtouch/jquery.jqtouch.min.js",
      "templates/jqtouch/manifest.rb",
      "templates/jrails/config/initializers/jrails.rb",
+     "templates/jrails/haml.js",
+     "templates/jrails/haml.min.js",
      "templates/jrails/i18n/jquery.ui/datepicker-af.js",
      "templates/jrails/i18n/jquery.ui/datepicker-af.min.js",
      "templates/jrails/i18n/jquery.ui/datepicker-ar.js",
@@ -1213,14 +1215,14 @@ Gem::Specification.new do |s|
      "templates/jstree/jquery.ui/jstree.aqua/d.png",
      "templates/jstree/jquery.ui/jstree.aqua/hovered.png",
      "templates/jstree/jquery.ui/jstree.aqua/throbber.gif",
-     "templates/jstree/jquery.ui/jstree.chrystal.scss",
-     "templates/jstree/jquery.ui/jstree.chrystal/d.gif",
-     "templates/jstree/jquery.ui/jstree.chrystal/d.png",
-     "templates/jstree/jquery.ui/jstree.chrystal/throbber.gif",
      "templates/jstree/jquery.ui/jstree.classic.scss",
      "templates/jstree/jquery.ui/jstree.classic/d.png",
      "templates/jstree/jquery.ui/jstree.classic/dot_for_ie.gif",
      "templates/jstree/jquery.ui/jstree.classic/throbber.gif",
+     "templates/jstree/jquery.ui/jstree.crystal.scss",
+     "templates/jstree/jquery.ui/jstree.crystal/d.gif",
+     "templates/jstree/jquery.ui/jstree.crystal/d.png",
+     "templates/jstree/jquery.ui/jstree.crystal/throbber.gif",
      "templates/jstree/jquery.ui/jstree.default-rtl.scss",
      "templates/jstree/jquery.ui/jstree.default-rtl/d.gif",
      "templates/jstree/jquery.ui/jstree.default-rtl/d.png",
