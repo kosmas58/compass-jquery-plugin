@@ -5,7 +5,7 @@ $.fn.themeswitcher = function(settings){
 		loadTheme: null,
 		initialText: 'Switch Theme',
 		width: 150,
-		height: 200,
+		height: 400,
 		buttonPreText: 'Theme: ',
 		closeOnSelect: true,
 		buttonHeight: 14,
