@@ -1527,6 +1527,11 @@ button.ui-button::-moz-focus-inner {
   -webkit-border-radius: $ui_cornerRadiusShadow;
   border-radius: $ui_cornerRadiusShadow; }
 
+/* Add .ui-widget-border*/
+
+.ui-widget-border {
+  border: 1px solid $ui_borderColorContent; }
+
 /* Fix Autocomplete */
 
 .ui-autocomplete-loading {
