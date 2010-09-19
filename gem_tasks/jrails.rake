@@ -209,6 +209,7 @@ namespace :build do
         'jquery.ui.progressbar.js',
         'jquery.ui.resizable.js',
         'jquery.ui.selectable.js',
+        'jquery.ui.selectmenu.js',
         'jquery.ui.slider.js',
         'jquery.ui.sortable.js',
         'jquery.ui.tabs.js',
