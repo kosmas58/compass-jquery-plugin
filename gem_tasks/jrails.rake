@@ -262,6 +262,7 @@ namespace :build do
         '_progressbar.scss',
         '_resizable.scss',
         '_selectable.scss',
+        '_selectmenu.scss',
         '_slider.scss',
         '_tabs.scss',
         '_theme.scss'
