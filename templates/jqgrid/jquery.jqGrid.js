@@ -700,12 +700,12 @@ $.extend($.ui.multiselect, {
 
 ;(function ($) {
 /*
- * jqGrid  3.8 Beta 2  - jQuery Grid
+ * jqGrid  3.8  - jQuery Grid
  * Copyright (c) 2008, Tony Tomov, tony@trirand.com
  * Dual licensed under the MIT and GPL licenses
  * http://www.opensource.org/licenses/mit-license.php
  * http://www.gnu.org/licenses/gpl-2.0.html
- * Date: 2010-09-11 
+ * Date: 2010-09-21 
  */
 $.jgrid = $.jgrid || {};
 $.extend($.jgrid,{
@@ -1806,7 +1806,7 @@ $.fn.jqGrid = function( pin ) {
 			}
 			}
 			if(ts.p.gridview === true) {
-				if(ts.p.grouping) {
+				if(ts.p.grouping && F) {
 					$(ts).jqGrid('groupingRender',grpdata,ts.p.colModel.length);
 					grpdata = null;
 				} else {				
@@ -1969,7 +1969,7 @@ $.fn.jqGrid = function( pin ) {
 				if(ir==rn) { break; }
 			}
 			if(ts.p.gridview === true ) {
-				if(ts.p.grouping) {
+				if(ts.p.grouping && F) {
 					$(ts).jqGrid('groupingRender',grpdata,ts.p.colModel.length);
 					grpdata = null;
 				} else {
