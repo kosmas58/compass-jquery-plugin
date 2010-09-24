@@ -22,7 +22,6 @@
  *			<div class="toolbar">
  *				<h1>Horizontal Slide Example</h1>
  *			</div>
- *			<a href="#home" class="grayButton swap">Gotta have something here or you get a flicker</a>
  *			<div class="horizontal-slide">
  *				<table>
  *					<tr>
@@ -40,8 +39,12 @@
  * </code>
  *
  * Known issues:
- *		- horizontal scroll flickers without a button above it
- *		- must define a class selector for slideSelector to operate properly within the slide box
+ *		- <strike>horizontal scroll flickers without a button above it</strike>
+ *		- must define a class selector for slideSelector to operate properly within the slide box - depending on version
+ *
+ *	Changes:
+ *		- Updated horizontal scroll to use translate3d instead of translateX
+ *		- Added "preventdefault" attribute detection as a means for allowing the event to bubble.
  * 
  * $Revision$
  * $Date$
@@ -77,8 +80,16 @@
 				var horizontal = info.page.find('.horizontal-slide > table'),
 					vertical = info.page.find('.vertical-slide > div');
 				
-				horizontal.slideHorizontally({acceleration: Number(horizontal.attr("slidespeed")|| 500) || null});
-				vertical.slideVertically({acceleration: Number(vertical.attr("slidespeed") || 500)});
+				horizontal.slideHorizontally({
+					acceleration: Number(horizontal.attr("slidespeed")|| 500) || null,
+					preventdefault: horizontal.attr("preventdefault") !== "false",
+					startposition: Number(horizontal.attr("position")|| 0) || 0
+				});
+				vertical.slideVertically({
+					acceleration: Number(vertical.attr("slidespeed") || 500),
+					preventdefault: vertical.attr("preventdefault") !== "false",
+					startposition: Number(horizontal.attr("position")|| 0) || 0
+				});
 			}
 				
 			$(document.body)
@@ -115,11 +126,14 @@
 			var that = this;
 			
 			this.numberOfTouches = 1;
+
 			
 			this.acceleration = 500;
 			
+			this.preventdefault = true;
+			
 			this.element = el;
-			this.position(0);
+			this.position(options.startposition || 0);
 			this.refresh();
 			el.style.webkitTransitionTimingFunction = 'cubic-bezier(0, 0, 0.2, 1)';
 		
@@ -175,7 +189,11 @@
 				if( e.targetTouches.length != this.numberOfTouches )
 					return;
 				
-				e.preventDefault();
+				if (this.preventdefault)
+				{
+					e.preventDefault();
+				}
+				
 				this.refresh();
 				
 				var theTransform = window.getComputedStyle(this.element).webkitTransform;
@@ -191,25 +209,37 @@
 				this.element.addEventListener('touchmove', this, false);
 				this.element.addEventListener('touchend', this, false);
 		
-				return false;
+				if (this.preventdefault)
+				{
+					return false;
+				}
 			},
 			
 			onTouchMove: function(e) {
 				if( e.targetTouches.length != this.numberOfTouches )
 					return;
 				
-				e.preventDefault();
+				if (this.preventdefault)
+				{
+					e.preventDefault();
+				}
 				var topDelta = e.targetTouches[0].clientY - this.startY;
 				if( this.position()>0 || this.position()<this.maxSlide ) topDelta/=2;
 				this.position(this.position() + topDelta);
 				this.startY = e.targetTouches[0].clientY;
 				this.moved = true;
 		
-				return false;
+				if (this.preventdefault)
+				{
+					return false;
+				}
 			},
 			
 			onTouchEnd: function(e) {
-				e.preventDefault();
+				if (this.preventdefault)
+				{
+					e.preventDefault();
+				}
 				this.element.removeEventListener('touchmove', this, false);
 				this.element.removeEventListener('touchend', this, false);
 				
@@ -227,7 +257,10 @@
 					theEvent = document.createEvent("MouseEvents");
 					theEvent.initEvent('click', true, true);
 					theTarget.dispatchEvent(theEvent);
-					return false
+					if (this.preventdefault)
+					{
+						return false;
+					}
 				}
 					
 				if (newPosition > 0)
@@ -245,7 +278,10 @@
 				
 				this.slideTo( slideDistance, this.acceleration + 'ms');
 				
-					return;
+				if (this.preventdefault)
+				{
+					return false;
+				}
 			},
 			
 			onTransitionEnd: function() {
@@ -308,8 +344,10 @@
 			
 			this.acceleration = 500;
 			
+			this.preventdefault = true;
+			
 			this.element = el;
-			this.position(0);
+			this.position(options.startposition || 0);
 			this.refresh();
 			el.style.webkitTransitionTimingFunction = 'cubic-bezier(0, 0, 0.2, 1)';
 			this.acceleration = null;
@@ -343,7 +381,7 @@
 				if (pos !== undefined)
 				{
 					this._position = pos;
-					this.element.style.webkitTransform = 'translateX(' + pos + 'px)';
+					this.element.style.webkitTransform = 'translate3d(' + pos + 'px, 0, 0)';
 					return;
 				}
 				
@@ -361,9 +399,12 @@
 			
 			onTouchStart: function(e) {
 				if( e.targetTouches.length != this.numberOfTouches )
-					return false;
+					return;
 					
-				e.preventDefault();
+				if (this.preventdefault)
+				{
+					e.preventDefault();
+				}
 				this.refresh();
 				
 				this.slideStartX = this.startX = e.targetTouches[0].clientX;
@@ -373,24 +414,36 @@
 				this.element.addEventListener('touchmove', this, false);
 				this.element.addEventListener('touchend', this, false);
 		
-				return false;
+				if (this.preventdefault)
+				{
+					return false;
+				}
 			},
 			
 			onTouchMove: function(e) {
 				if( e.targetTouches.length != this.numberOfTouches )
-					return false;
+					return;
 					
-				e.preventDefault();
+				if (this.preventdefault)
+				{
+					e.preventDefault();
+				}
 				var topDelta = e.targetTouches[0].clientX - this.startX;
 				this.position(this.position() + topDelta);
 				this.startX = e.targetTouches[0].clientX;
 				this.moved = true;
 		
-				return false;
+				if (this.preventdefault)
+				{
+					return false;
+				}
 			},
 			
 			onTouchEnd: function(e) {
-				e.preventDefault();
+				if (this.preventdefault)
+				{
+					e.preventDefault();
+				}
 				var newPosition,theTarget,theEvent,slideDistance,slideDuration,newDuration,newSlideDistance;
 				
 				this.element.removeEventListener('touchmove', this, false);
@@ -408,7 +461,10 @@
 					theEvent = document.createEvent("MouseEvents");
 					theEvent.initEvent('click', true, true);
 					theTarget.dispatchEvent(theEvent);
-					return false
+					if (this.preventdefault)
+					{
+						return false;
+					}
 				}
 				
 				newPosition = this.position() + ((this.startX - this.slideStartX) / 2);
@@ -428,7 +484,10 @@
 				
 				this.slideTo( newPosition, this.acceleration + 'ms');
 		
-				return false;
+				if (this.preventdefault)
+				{
+					return false;
+				}
 			},
 			
 			onTransitionEnd: function() {

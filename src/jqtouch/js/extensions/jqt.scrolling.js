@@ -21,7 +21,6 @@
  *			<div class="toolbar">
  *				<h1>Horizontal Scroll Example</h1>
  *			</div>
- *			<a href="#home" class="grayButton swap">Gotta have something here or you get a flicker</a>
  *			<div class="horizontal-scroll">
  *				<table>
  *					<tr>
@@ -38,11 +37,13 @@
  *		</div>
  * </code>
  *
- *
  * Known issues:
- *		- slideSelector must be explicitly set to a class like .slideRight in order for the slide selector to work
- *		- horizontal scroll flickers without a button above it
- *		- must define a class selector for slideSelector to operate properly within the scroll box
+ *		- <strike>horizontal scroll flickers without a button above it</strike>
+ *		- must define a class selector for slideSelector to operate properly within the slide box - depending on version
+ *
+ *	Changes:
+ *		- Updated horizontal scroll to use translate3d instead of translateX
+ *		- Added "preventdefault" attribute detection as a means for allowing the event to bubble.
  * 
  * $Revision$
  * $Date$
@@ -79,8 +80,16 @@
 				var horizontal = info.page.find('.horizontal-scroll > table'),
 					vertical = info.page.find('.vertical-scroll > div');
 				
-				horizontal.scrollHorizontally({acceleration: Number(horizontal.attr("scrollspeed")|| 0.009)});
-				vertical.scrollVertically({acceleration: Number(vertical.attr("scrollspeed") || 0.009)});
+				horizontal.scrollHorizontally({
+					acceleration: Number(horizontal.attr("slidespeed")|| 500) || null,
+					preventdefault: horizontal.attr("preventdefault") !== "false",
+					startposition: Number(horizontal.attr("position")|| 0) || 0
+				});
+				vertical.scrollVertically({
+					acceleration: Number(vertical.attr("slidespeed") || 500),
+					preventdefault: vertical.attr("preventdefault") !== "false",
+					startposition: Number(horizontal.attr("position")|| 0) || 0
+				});
 			}
 			
 			$(document.body)
@@ -117,9 +126,9 @@
 			var that = this;
 			
 			this.numberOfTouches = 1;
-			
+			this.preventdefault = true;
 			this.element = el;
-			this.position(0);
+			this.position(options.startposition || 0);
 			this.refresh();
 			el.style.webkitTransitionTimingFunction = 'cubic-bezier(0, 0, 0.2, 1)';
 			this.acceleration = 0.009;
@@ -175,7 +184,10 @@
 				if( e.targetTouches.length != this.numberOfTouches )
 					return;
 				
-				e.preventDefault();
+				if (this.preventdefault)
+				{
+					e.preventDefault();
+				}
 				
 				this.refresh();
 				
@@ -192,14 +204,21 @@
 				//moved
 				this.element.addEventListener('touchmove', this, false);
 				this.element.addEventListener('touchend', this, false);
-				//return false;
+				if (this.preventdefault)
+				{
+					return false;
+				}
 			},
 			
 			onTouchMove: function(e) {
 				if( e.targetTouches.length != this.numberOfTouches )
 					return;
 				
-				e.preventDefault();
+				
+				if (this.preventdefault)
+				{
+					e.preventDefault();
+				}
 				var topDelta = e.targetTouches[0].clientY - this.startY;
 				if( this.position() > 0 || this.position() < this.maxScroll ) topDelta/=2;
 				this.position(this.position() + topDelta);
@@ -212,14 +231,20 @@
 					this.scrollStartTime = e.timeStamp;
 				}
 		
-				//return false;
+				if (this.preventdefault)
+				{
+					return false;
+				}
 			},
 			
 			onTouchEnd: function(e) {
 				//moved
 				this.element.removeEventListener('touchmove', this, false);
 				this.element.removeEventListener('touchend', this, false);
-				e.preventDefault();
+				if (this.preventdefault)
+				{
+					e.preventDefault();
+				}
 				var newPosition,theTarget,theEvent,scrollDistance,scrollDuration,newDuration,newScrollDistance;
 		
 				// If we are outside of the boundaries, let's go back to the sheepfold
@@ -234,9 +259,13 @@
 					theEvent = document.createEvent("MouseEvents");
 					theEvent.initEvent('click', true, true);
 					theTarget.dispatchEvent(theEvent);
-					return false
+					if (this.preventdefault)
+					{
+						return false;
+					}
 				}
 		
+
 				// Lame formula to calculate a fake deceleration
 				scrollDistance = this.position() - this.scrollStartY;
 				scrollDuration = e.timeStamp - this.scrollStartTime;
@@ -263,19 +292,23 @@
 					newDuration*= 6;
 		
 				this.scrollTo(newPosition, Math.round(newDuration) + 'ms');
-		
-				//return false;
+				
+				if (this.preventdefault)
+				{
+					return false;
+				}
 			},
 			
 			onTransitionEnd: function() {
 				this.element.removeEventListener('webkitTransitionEnd', this, false);
+				
 				this.scrollTo( this.position() > 0 ? 0 : this.maxScroll );
 			},
 			
 			scrollTo: function(dest, runtime) {
 				this.element.style.webkitTransitionDuration = runtime ? runtime : '300ms';
 				this.position(dest ? dest : 0);
-		
+				
 				// If we are outside of the boundaries at the end of the transition go back to the sheepfold
 				if( this.position() > 0 || this.position() < this.maxScroll )
 					this.element.addEventListener('webkitTransitionEnd', this, false);
@@ -297,9 +330,9 @@
 			var that = this;
 			
 			this.numberOfTouches = 1;
-			
+			this.preventdefault = true;
 			this.element = el;
-			this.position(0);
+			this.position(options.startposition || 0);
 			this.refresh();
 			el.style.webkitTransitionTimingFunction = 'cubic-bezier(0, 0, 0.2, 1)';
 			this.acceleration = 0.009;
@@ -333,7 +366,7 @@
 				if (pos !== undefined)
 				{
 					this._position = pos;
-					this.element.style.webkitTransform = 'translateX(' + pos + 'px)';
+					this.element.style.webkitTransform = 'translate3d(' + pos + 'px, 0, 0)';
 					return;
 				}
 				
@@ -353,7 +386,10 @@
 				if( e.targetTouches.length != this.numberOfTouches )
 					return;
 					
-				e.preventDefault();
+				if (this.preventdefault)
+				{
+					e.preventDefault();
+				}
 				
 				this.refresh();
 				
@@ -364,13 +400,21 @@
 				
 				this.element.addEventListener('touchmove', this, false);
 				this.element.addEventListener('touchend', this, false);
+				
+				if (this.preventdefault)
+				{
+					return false;
+				}
 			},
 			
 			onTouchMove: function(e) {
 				if( e.targetTouches.length != this.numberOfTouches )
 					return;
 				
-				e.preventDefault();
+				if (this.preventdefault)
+				{
+					e.preventDefault();
+				}
 				var topDelta = e.targetTouches[0].clientX - this.startX;
 				if( this.position()>0 || this.position()<this.maxScroll ) topDelta/=2;
 				this.position(this.position() + topDelta);
@@ -382,12 +426,19 @@
 					this.scrollStartX = this.position();
 					this.scrollStartTime = e.timeStamp;
 				}
+				if (this.preventdefault)
+				{
+					return false;
+				}
 			},
 			
 			onTouchEnd: function(e) {
 				this.element.removeEventListener('touchmove', this, false);
 				this.element.removeEventListener('touchend', this, false);
-				e.preventDefault();
+				if (this.preventdefault)
+				{
+					e.preventDefault();
+				}
 				var newPosition,theTarget,theEvent,scrollDistance,scrollDuration,newDuration,newScrollDistance;
 		
 				if( !this.moved ) {
@@ -396,7 +447,10 @@
 					theEvent = document.createEvent("MouseEvents");
 					theEvent.initEvent('click', true, true);
 					theTarget.dispatchEvent(theEvent);
-					return false
+					if (this.preventdefault)
+					{
+						return false;
+					}
 				}
 		
 				// Lame formula to calculate a fake deceleration
@@ -432,7 +486,10 @@
 				
 				this.scrollTo(newPosition, Math.round(newDuration) + 'ms');
 		
-				//return false;
+				if (this.preventdefault)
+				{
+					return false;
+				}
 			},
 			
 			onTransitionEnd: function() {
