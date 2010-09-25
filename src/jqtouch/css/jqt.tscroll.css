@@ -1,0 +1,204 @@
+
+/* Copyright (c) 2010 Wojciech Bednarski */
+
+body {
+	height: 100%
+}
+#jqt {
+	height: 100%
+}
+div.content {
+	height: 100%;
+	-webkit-box-orient: vertical;
+	-webkit-box-pack: justify
+}
+#jqt > div.current {
+	display: -webkit-box!important
+}
+.scroll {
+	-webkit-box-flex: 1;
+	overflow: hidden;
+	margin-bottom: 49px;
+}
+
+#tabbar {
+	display: -webkit-box;
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	height: 48px;
+	border-top: 1px solid #000;
+	background-image:
+	-webkit-gradient(
+		linear,
+		0 0,
+		0 100%,
+		color-stop(0.0, #2e2e2e),
+		color-stop(0.5, #151515),
+		color-stop(0.5, #000)
+	);
+}
+
+#tabbar ul,
+#tabbar li {
+	margin: 0;
+	padding: 0;
+	display: -webkit-box;
+	-webkit-box-flex: 1;
+}
+
+#tabbar a {
+	display: block;
+	-webkit-box-flex: 1;
+	margin: 2px;
+	padding: 2px!important;
+	font-size: 10px;
+	text-align: center;
+	color: #999;
+	text-decoration: none;
+	font-weight: normal;
+	letter-spacing: 1px;
+}
+
+#tabbar a.current {
+	color: #fff;
+	-webkit-border-radius: 3px;
+	background-image:
+	-webkit-gradient(
+		linear,
+		0 0,
+		0 100%,
+		color-stop(0.0, #494949),
+		color-stop(0.5, #353535),
+		color-stop(0.5, #252525)
+	);
+}
+
+#tabbar a:before {
+	display: block;
+	margin-bottom: 4px;
+	height: 26px;
+	width: 100%;
+	font-weight: bold;
+	font-size: 150%;
+	content: '';
+	text-shadow: 1px 1px 2px #333;
+}
+
+#tabbar a[href='#item1']:before {
+	content: 'JQT';
+}
+
+#tabbar a[href='#item2']:before {
+	content: 'TS';
+}
+
+#tabbar a[href='#item3']:before {
+	content: 'JQTS';
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+ Copyright (C) 2010 uxebu Consulting Ltd. & Co. KG
+ Copyright (C) 2010 David Aurelio
+ Copyright (C) 2008 Apple Inc.
+ All Rights Reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
+ are met:
+ 1. Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+ 2. Redistributions in binary form must reproduce the above copyright
+ notice, this list of conditions and the following disclaimer in the
+ documentation and/or other materials provided with the distribution.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE
+ LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ POSSIBILITY OF SUCH DAMAGE.
+*/
+
+.touchScrollBars {
+	display: -webkit-box;
+	padding: 3px;
+	position: absolute;
+	width: 100%;
+	z-index: 2147483647;
+	-webkit-box-align: end;
+	-webkit-box-pack: end;
+	-webkit-box-sizing: border-box;
+}
+
+.touchScrollTrack {
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+
+.touchScrollTrackX {
+	height: 6px;
+}
+
+.touchScrollTrackY {
+	float: right;
+	width: 6px;
+}
+
+.touchScrollBarsBoth {
+	padding-bottom: 12px;
+	padding-right: 12px;
+}
+
+.touchScrollBarsBoth .touchScrollTrackX {
+	-webkit-transform: translateY(9px);
+}
+
+.touchScrollBarsBoth .touchScrollTrackY {
+	-webkit-transform: translateX(3px);
+}
+
+.touchScrollHandle {
+	border: 1px solid;
+	min-height: 4px;
+	min-width: 4px;
+	-webkit-transition-property: -webkit-transform, height, width;
+	-webkit-border-radius: 3px;
+
+	/* COLOR VARIANTS */
+/* Default */
+	border-color: rgba(255, 255, 255, 0.15);
+	background: rgba(0, 0, 0, 0.5);
+/**/
+
+/* White
+	border-color: rgba(255, 255, 255, 0.5);
+	background: rgba(255, 255, 255, 0.5);
+/**/
+
+/* Black
+	border-color: rgba(0, 0, 0, 0.5);
+	background: rgba(0, 0, 0, 0.5);
+/**/
+}

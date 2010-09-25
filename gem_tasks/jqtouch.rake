@@ -39,12 +39,14 @@ all_scripts = [
   'js/extensions/jqt.scroll.js',
   'js/extensions/jqt.scrolling.js',
   'js/extensions/jqt.sliding.js',
+  'js/extensions/jqt.tscroll.js',
   'js/extensions/jqt.vertical-scroll.js'
 ].collect {|filename| File.read(File.join(JQTOUCH_SRC, filename))}.join "\n\n"
 
 all_stylesheets = [
   'css/jqtouch.css',
   'css/scrolling.css',
+  'css/jqt.tscroll.css',
   'css/spinningwheel.css',
   'css/zflow.css',
   'css/jqtouch-ical.css',
