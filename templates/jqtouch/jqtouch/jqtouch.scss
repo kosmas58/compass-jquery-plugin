@@ -419,66 +419,10 @@ body {
 
 /* Copyright (c) 2010 Wojciech Bednarski */
 
-body, #jqt {
-  height: 100%; }
-
-div.content {
-  height: 100%;
-  -webkit-box-orient: vertical;
-  -webkit-box-pack: justify; }
-
-#jqt > div.current {
-  display: -webkit-box!important; }
-
 .scroll {
   -webkit-box-flex: 1;
   overflow: hidden;
   margin-bottom: 49px; }
-
-#tabbar {
-  display: -webkit-box;
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  height: 48px;
-  border-top: 1px solid #000;
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, color-stop(0, #2e2e2e), color-stop(0.5, #151515), color-stop(0.5, black));
-  ul, li {
-    margin: 0;
-    padding: 0;
-    display: -webkit-box;
-    -webkit-box-flex: 1; }
-  a {
-    display: block;
-    -webkit-box-flex: 1;
-    margin: 2px;
-    padding: 2px!important;
-    font-size: 10px;
-    text-align: center;
-    color: #999;
-    text-decoration: none;
-    font-weight: normal;
-    letter-spacing: 1px;
-    &.current {
-      color: #fff;
-      -webkit-border-radius: 3px;
-      background-image: -webkit-gradient(linear, 0 0, 0 100%, color-stop(0, #494949), color-stop(0.5, #353535), color-stop(0.5, #252525)); }
-    &:before {
-      display: block;
-      margin-bottom: 4px;
-      height: 26px;
-      width: 100%;
-      font-weight: bold;
-      font-size: 150%;
-      content: '';
-      text-shadow: 1px 1px 2px #333; }
-    &[href=' {
-      &#item1']:before {
-        content: 'JQT'; }
-      &#item2']:before {
-        content: 'TS'; }
-      &#item3']:before {
-        content: 'JQTS'; } } } }
 
 /*
  Copyright (C) 2010 uxebu Consulting Ltd. & Co. KG

@@ -40,16 +40,8 @@
 			}
 			
 			return doMagic();
-		});
-		
+		});		
 	}
-	
-	$(document).ready(function() {
-		$('#tabbar li a').bind('click touchend', function() {
-			$('#tabbar li a').removeClass('current');
-			$(this).addClass('current');
-		});
-	});
 })(jQuery);
 
 
