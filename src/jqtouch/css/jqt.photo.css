@@ -1,0 +1,98 @@
+/**
+ *
+ *
+ *    @author Sam Shull <http://www.google.com/profiles/brickysam26>
+ *    @copyright 2010 Sam Shull <http://www.google.com/profiles/brickysam26>
+ *
+ *    Special Thanks to Steve Simitzis <http://saturn5.com>
+ *
+ *    @license <http://www.opensource.org/licenses/mit-license.html>
+ *
+ *    Permission is hereby granted, free of charge, to any person obtaining a copy
+ *    of this software and associated documentation files (the "Software"), to deal
+ *    in the Software without restriction, including without limitation the rights
+ *    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *    copies of the Software, and to permit persons to whom the Software is
+ *    furnished to do so, subject to the following conditions:
+ *    
+ *    The above copyright notice and this permission notice shall be included in
+ *    all copies or substantial portions of the Software.
+ *    
+ *    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ *    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ *    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ *    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ *    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ *    THE SOFTWARE.
+ *
+ *
+ */
+#jqt .jqt-photo.jqt-photo-toolbar-hidden .toolbar{opacity:0;display:none;}
+
+#jqt .jqt-photo .jqt-photo-image-slide .jqt-photo-not-loaded{background:#000 image_url("jqtouch/photo/loading.gif") no-repeat center center;}
+
+#jqt .jqt-photo .jqt-photo-image-slide .jqt-photo-img{max-width:100%;max-height:100%;vertical-align:middle;border:none;outline:none;background:#000;}
+#jqt .jqt-photo .jqt-photo-image-slide img.jqt-photo-presized{max-width:auto;max-height:auto;}
+
+#jqt .jqt-photo .jqt-photo-image-slide > div{position:relative;}
+
+#jqt .jqt-photo .jqt-photo-image-slide > div .jqt-photo-caption{position:absolute;line-height:20px;vertical-align:top;width:100%;z-index:10;
+	text-align:center;color:#FFF;}
+
+#jqt .jqt-photo .jqt-photo-table{height:100%;background:#000;}
+
+#jqt .jqt-photo{height:100%;width:100%;overflow:hidden;background:#000;color:#FFF;}
+
+#jqt .jqt-photo.animating{display:block;}
+
+#jqt .jqt-photo .jqt-photo-image-slide > div{display:box;box-orient:horizontal;box-orient:vertical;box-align:stretch;box-pack:center;
+	display:-webkit-box;-webkit-box-orient:horizontal;-webkit-box-orient:vertical;-webkit-box-align:stretch;-webkit-box-pack:center;
+	border-spacing:0 10px 0 0;overflow:hidden;text-align:center;}
+
+/* animations are part off jqtouch */
+#jqt .jqt-photo.jqt-photo-toolbar-animation-in .toolbar{opacity:1;}
+#jqt .jqt-photo.jqt-photo-toolbar-animation-out .toolbar{opacity:0;}
+
+/* toolbar */
+#jqt .jqt-photo .toolbar{width:100%;position:absolute;top:0;z-index:20;background:transparent  image_url("jqtouch/photo/toolbar.png") repeat-x;
+    -webkit-transition-duration:.65s;-webkit-transition-property:opacity;}
+#jqt .jqt-photo .toolbar .back{-webkit-border-image: image_url("jqtouch/photo/btnBack.png") 0 5 0 15;}
+
+#jqt .jqt-photo .toolbar-bottom{padding:0;font-size:30px;text-align:center;vertical-align:top;}
+#jqt .jqt-photo .toolbar-bottom div{display:inline-block;padding:0;width:50px;height:100%;}
+
+/* slideshow no images - doesn't look right * /
+#jqt .jqt-photo .toolbar-bottom{line-height:100%;vertical-align:middle;font-size:1.5em;}
+#jqt .jqt-photo .jqt-photo-play:before{content:"\25B6";}
+#jqt .jqt-photo .jqt-photo-prev:before,
+#jqt .jqt-photo .jqt-photo-next:before{content:"\27A1";}
+#jqt .jqt-photo .jqt-photo-prev{-webkit-transform:matrix(-1,0,0,1,0,0);}/* webkit doesnt support leftward arrow, so we flip the rightward arrow * /
+#jqt .jqt-photo .jqt-photo-pause:before{content:"\2759\2759";}
+#jqt .jqt-photo .toolbar-bottom .jqt-photo-pause{display:none;}
+
+
+/* slideshow images */
+#jqt .jqt-photo .jqt-photo-prev{background: image_url("jqtouch/photo/navPrev.png") no-repeat center center;}
+#jqt .jqt-photo .jqt-photo-play{background: image_url("jqtouch/photo/navPlay.png") no-repeat center center;}
+#jqt .jqt-photo .jqt-photo-next{background: image_url("jqtouch/photo/navNext.png") no-repeat center center;}
+#jqt .jqt-photo .toolbar-bottom .jqt-photo-pause{display:none;background: image_url("jqtouch/photo/navPause.png") no-repeat center center;}
+
+/* hovers */
+#jqt .jqt-photo .jqt-photo-prev.hover{
+	background:-webkit-gradient(radial, 50% 50%, 2, 50% 50%, 25, from(rgba(255,255,255,1)), to(rgba(255,255,255,0))) no-repeat center center,
+	image_url("jqtouch/photo/navPrev.png") no-repeat center center;}
+#jqt .jqt-photo .jqt-photo-play.hover{
+	background:-webkit-gradient(radial, 50% 50%, 2, 50% 50%, 25, from(rgba(255,255,255,1)), to(rgba(255,255,255,0))) no-repeat center center,
+	image_url("jqtouch/photo/navPlay.png") no-repeat center center;}
+#jqt .jqt-photo .jqt-photo-next.hover{
+	background:-webkit-gradient(radial, 50% 50%, 2, 50% 50%, 25, from(rgba(255,255,255,1)), to(rgba(255,255,255,0))) no-repeat center center,
+	image_url("jqtouch/photo/navNext.png") no-repeat center center;}
+#jqt .jqt-photo .toolbar-bottom .jqt-photo-pause.hover{
+	background:-webkit-gradient(radial, 50% 50%, 2, 50% 50%, 25, from(rgba(255,255,255,1)), to(rgba(255,255,255,0))) no-repeat center center,
+    image_url("jqtouch/photo/navPause.png") no-repeat center center;}
+
+/* */
+#jqt .jqt-photo.jqt-photo-playing .jqt-photo-pause{display:inline-block;}
+#jqt .jqt-photo.jqt-photo-playing .jqt-photo-play{display:none;}
+

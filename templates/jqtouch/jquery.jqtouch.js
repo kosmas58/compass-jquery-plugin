@@ -9,7 +9,7 @@
     _/
 
     Created by David Kaneda <http://www.davidkaneda.com>
-    Documentation and issue tracking on GitHub <http://wiki.github.com/senchalabs/jQTouch/>
+    Documentation and issue tracking on Google Code <http://code.google.com/p/jqtouch/>
 
     Special thanks to Jonathan Stark <http://jonathanstark.com/>
     and pinch/zoom <http://www.pinchzoom.com/>
@@ -27,9 +27,9 @@
     $.jQTouch = function(options) {
 
         // Set support values
-        $.support.WebKitCSSMatrix = (typeof WebKitCSSMatrix != "undefined");
-        $.support.touch = (typeof TouchEvent != "undefined");
-        $.support.WebKitAnimationEvent = (typeof WebKitTransitionEvent != "undefined");
+        $.support.WebKitCSSMatrix = (typeof WebKitCSSMatrix == "object");
+        $.support.touch = (typeof Touch == "object");
+        $.support.WebKitAnimationEvent = (typeof WebKitTransitionEvent == "object");
 
         // Initialize internal variables
         var $body,
@@ -49,7 +49,7 @@
             extensions=$.jQTouch.prototype.extensions,
             defaultAnimations=['slide','flip','slideup','swap','cube','pop','dissolve','fade','back'],
             animations=[],
-            hairExtensions='';
+            hairextensions='';
         // Get the party started
         init(options);
 
@@ -78,7 +78,7 @@
                 submitSelector: '.submit',
                 swapSelector: '.swap',
                 useAnimations: true,
-                useFastTouch: false // Experimental.
+                useFastTouch: true // Experimental.
             };
             jQTSettings = $.extend({}, defaults, options);
 
@@ -91,25 +91,25 @@
             // Set icon
             if (jQTSettings.icon) {
                 var precomposed = (jQTSettings.addGlossToIcon) ? '' : '-precomposed';
-                hairExtensions += '<link rel="apple-touch-icon' + precomposed + '" href="' + jQTSettings.icon + '" />';
+                hairextensions += '<link rel="apple-touch-icon' + precomposed + '" href="' + jQTSettings.icon + '" />';
             }
             // Set startup screen
             if (jQTSettings.startupScreen) {
-                hairExtensions += '<link rel="apple-touch-startup-image" href="' + jQTSettings.startupScreen + '" />';
+                hairextensions += '<link rel="apple-touch-startup-image" href="' + jQTSettings.startupScreen + '" />';
             }
             // Set viewport
             if (jQTSettings.fixedViewport) {
-                hairExtensions += '<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"/>';
+                hairextensions += '<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"/>';
             }
             // Set full-screen
             if (jQTSettings.fullScreen) {
-                hairExtensions += '<meta name="apple-mobile-web-app-capable" content="yes" />';
+                hairextensions += '<meta name="apple-mobile-web-app-capable" content="yes" />';
                 if (jQTSettings.statusBar) {
-                    hairExtensions += '<meta name="apple-mobile-web-app-status-bar-style" content="' + jQTSettings.statusBar + '" />';
+                    hairextensions += '<meta name="apple-mobile-web-app-status-bar-style" content="' + jQTSettings.statusBar + '" />';
                 }
             }
-            if (hairExtensions) {
-                $head.prepend(hairExtensions);
+            if (hairextensions) {
+                $head.prepend(hairextensions);
             }
 
             // Initialize on document ready:
@@ -368,8 +368,8 @@
             // Define callback to run after animation completes
             var callback = function animationEnd(event) {
 
-                fromPage[0].removeEventListener('webkitTransitionEnd', callback, false);
-                fromPage[0].removeEventListener('webkitAnimationEnd', callback, false);
+                fromPage[0].removeEventListener('webkitTransitionEnd', callback);
+                fromPage[0].removeEventListener('webkitAnimationEnd', callback);
 
                 if (animation) {
                         toPage.removeClass('start in ' + animation.name);
@@ -2327,6 +2327,143 @@ function changeBack(target){
 	$('#'+target+' b').text('Touch Me :)');
 	$('#'+target).css({ backgroundColor: "#999" });
 }
+
+/**
+ *	Use javascript to write in the CSS rules need for the scrolling extension
+ *	making the CSS compatible with the dimensions of most (hopefully all) screens
+ *
+ *
+ *	@author Sam Shull
+ *	Copyright (c) 2009 Sam Shull <http://www.google.com/profiles/brickysam26>
+ *	Released under MIT license
+ *
+ *
+ */
+(function($) {
+
+var window = this, jqc = window.jQExtensionsCSS || {};
+
+$(window).load(function()
+{
+	window.scrollTo(0,0);
+	var o = window.innerWidth < window.innerHeight ? "profile" : "landscape",
+		toolbarHeight = jqc.toolbarHeight || $("#jqt .toolbar").outerHeight() || 45,
+		parts = {profile:null, landscape:null},
+		css = $.extend({
+			defaults: ".horizontal-scroll, \
+					.horizontal-scroll .scroll-container, \
+					.horizontal-slide, \
+					.horizontal-slide .slide-container\
+					{\
+						width: {width}px;\
+						height: 100%;\
+						overflow: hidden;\
+						padding: 0;\
+					}\
+					.vertical-scroll > div, \
+					.vertical-slide > div\
+					{\
+						margin: 0 auto;\
+						padding-bottom:{paddingBottom}px;\
+					}\
+					#jqt.fullscreen .vertical-scroll.use-bottom-toolbar > div, \
+					#jqt.fullscreen .vertical-slide.use-bottom-toolbar > div\
+					{\
+						padding-bottom:0px;\
+					}\
+					.vertical-scroll, .vertical-slide\
+					{\
+						position: relative;\
+						z-index: 1;\
+						overflow: hidden;\
+						height: {height}px;        \
+					}\
+					.vertical-scroll.use-bottom-toolbar, \
+					.vertical-slide.use-bottom-toolbar\
+					{\
+						height: {bottomToolbarHeight}px !important;\
+					}\n",
+			profile: ".profile .horizontal-scroll, \
+					.profile .horizontal-scroll .scroll-container, \
+					.profile .horizontal-slide, \
+					.profile .horizontal-slide .slide-container\
+					{\
+						width: {width}px;\
+					}\
+					.profile .vertical-scroll, .profile .vertical-slide\
+					{\
+						position: relative;\
+						z-index: 1;\
+						overflow: hidden;\
+						height: {height}px;        \
+					}\
+					.profile .vertical-scroll.use-bottom-toolbar, \
+					.profile .vertical-slide.use-bottom-toolbar\
+					{\
+						height: {bottomToolbarHeight}px !important;\
+					}",
+			landscape: ".landscape .horizontal-scroll, \
+					.landscape .horizontal-scroll .scroll-container, \
+					.landscape .horizontal-slide, \
+					.landscape .horizontal-slide .slide-container\
+					{\
+						width: {width}px;\
+						height: 100%;\
+						overflow: hidden;\
+						padding: 0;\
+					}\
+					.landscape .vertical-scroll, \
+					.landscape .vertical-slide\
+					{\
+						position: relative;\
+						z-index: 1;\
+						overflow: hidden;\
+						height: {height}px;\
+					}\
+					.landscape .vertical-scroll.use-bottom-toolbar, \
+					.landscape .vertical-slide.use-bottom-toolbar\
+					{\
+						height: {bottomToolbarHeight}px !important;\
+					}"
+		}, jqc.css || {});
+		
+	parts[o] = $.extend({
+					paddingBottom:5,
+					width: window.innerWidth,
+					height: window.innerHeight - toolbarHeight,
+					bottomToolbarHeight: window.innerHeight - (toolbarHeight * 2)
+				}, 
+				jqc[o] || {});
+	
+	parts.defaults = $.extend({}, parts[o], jqc.defaults || {});
+	
+	$(document.createElement("style"))
+		.attr("type","text/css")
+		.html(
+			  css.defaults.replace(/\{(\w+)\}/g, function (a, b) {return b in parts.defaults ? parts.defaults[b] : a;}) + 
+			  css[o].replace(/\{(\w+)\}/g, function (a, b) {return b in parts[o] ? parts[o][b] : a;}))
+		.appendTo("head");
+	
+	$(window).one("orientationchange", function()
+	{
+		var o = window.innerWidth < window.innerHeight ? "profile" : "landscape";
+		parts[o] = $.extend({
+					paddingBottom:5,
+					width: window.innerWidth,
+					height: window.innerHeight - toolbarHeight,
+					bottomToolbarHeight: window.innerHeight - (toolbarHeight * 2)
+				}, 
+				jqc[o] || {});
+		
+		$(document.createElement("style"))
+			.attr("type","text/css")
+			.html(css[o].replace(/\{(\w+)\}/g, function (a, b) {return b in parts[o] ? parts[o][b] : a;}))
+			.appendTo("head");
+	});
+});
+
+})(jQuery);
+
 
 /**
  * Chain.js
@@ -5037,6 +5174,575 @@ $(function(){
 })(jQuery);
 
 
+/**
+ * 
+ * Add support for scrolling horizontally using jQTouch in Webkit Mobile
+ *
+ * Copyright (c) 2010 Sam Shull <http://samshull.blogspot.com/>
+ * Released under MIT license
+ * 
+ * Based on the work of 
+ *
+ * Copyright (c) 2009 Matteo Spinelli, http://cubiq.org/
+ * Released under MIT license
+ * http://cubiq.org/dropbox/mit-license.txt
+ *
+ * Find more about the scrolling function at
+ * http://cubiq.org/scrolling-div-for-mobile-webkit-turns-3/16
+ * 
+ * Version 3.2 - Last updated: 2010.05.31
+ * 
+ */
+
+(function($) {
+	
+	var undefined,
+		window = this,
+		document = window.document,
+		CSSMatrix = this.WebKitCSSMatrix,
+		defaults = {
+			selector: ".horizontal-scroll > table",
+			attributesToOptions: attributesToOptions,
+			attributes: {
+				defaultDuration: "slidespeed",
+				preventDefault: "preventdefault",
+				defaultTransform: "defaulttransform",
+				bounce: function(e){return e.attr("bounce") === "false" ? false : defaults.bounce},
+				scrollBar: function(e){return e.hasClass("with-scrollbar")}
+			},
+			ignoreTags: "SELECT,TEXTAREA,BUTTON,INPUT",
+			eventProperty: "pageX",
+			numberOfTouches: 1,
+			defaultDuration: 500,
+			defaultTransform: "translate3d({0}px,0,0)",
+			defaultOffset: 0,
+			bounceSpeed: 500,
+			preventDefault: true,
+			maxScrollTime: 1000,
+			friction: 3,
+			bounceTimingFunction: "cubic-bezier(0,0,.25,1)",
+			bounce: true,
+			scrollBar: true,
+			scrollBarElement: null,
+			scrollBarOptions: {},
+			events: {
+				touchstart: touchStart,
+				touchmove: touchMove,
+				touchend: touchEnd,
+				touchcancel: touchEnd,
+				webkitTransitionEnd: transitionEnd,
+				//unload: unload
+			},
+			setPosition: setPosition,
+			reset: reset,
+			momentum: momentum
+		},
+		width = function (){return window.innerWidth + "px";},
+		height = function (vars){return (window.innerHeight - vars.toolbar) + "px";},
+		cssRules = {
+			variables: {
+				toolbar: 45
+			},
+			defaults: {
+				".horizontal-scroll": {
+					width: width,
+					height: "100%",
+					overflow: "hidden",
+					padding: "0px",
+					position: "relative",
+					height: height
+				},
+				".horizontal-scroll > table": {
+					height: "100%"
+				},
+				".horizontal-scroll .scrollbar.horizontal": {
+					"-webkit-transition-timing-function": "cubic-bezier(0,0,0.25,1)",
+					"-webkit-transform": "translate3d(0,0,0)",
+					"-webkit-transition-property": "-webkit-transform,opacity",
+					"-webkit-transition-duration": "0,300ms",
+					"-webkit-border-radius": "4px",
+					"pointer-events": "none",
+					opacity: 0,
+					"-webkit-border-image": "-webkit-gradient(radial, 50% 50%, 2, 50% 50%, 8, from(rgba(0,0,0,.5)), to(rgba(0,0,0,.5))) 3 2",
+					//background: "rgba(0,0,0,.5)",
+					//"-webkit-box-shadow": "0 0 2px rgba(255,255,255,.5)",
+					position: "absolute",
+					"z-index": 10,
+					width: "1px",
+					height: "5px",
+					bottom: "1px",
+					left: "1px"
+				}
+			},
+			portrait: {
+				".portrait .horizontal-scroll": {
+					width: width
+				}
+			},
+			landscape: {
+				".landscape .horizontal-scroll": {
+					width: width
+				}
+			}
+		};
+	
+    if ($.jQTouch) {
+		
+        $.jQTouch.addExtension(function (jQT){
+            
+			function binder (e, info)
+			{
+				var horizontal = info.page.find(defaults.selector);
+				
+				horizontal.scrollHorizontally(defaults.attributesToOptions(horizontal, defaults.attributes));
+			}
+			
+			$(document.body)
+				.bind("pageInserted", binder);
+			
+			$(function()
+			{
+				$(defaults.selector)
+					.each(function()
+					{
+						$(this).scrollHorizontally(defaults.attributesToOptions($(this), defaults.attributes));
+					});
+			});
+			
+			return {};
+        });
+	}
+	
+	//$(window).bind("unload", window_unload);
+
+	/**
+	 *
+	 *
+	 *
+	 */
+	function attributesToOptions (element, attributes) {
+		var options = {};
+		
+		$.each(attributes, function(name, value) {
+			if ($.isFunction(value)) {
+				options[name] = value(element);
+			} else if (element.attr(value) != undefined) {
+				options[name] = element.attr(value);
+			}
+		});
+		
+		return options;
+	}
+	
+	/**
+	 *
+	 *
+	 *
+	 */
+	$.fn.scrollHorizontally = function (options) {
+		options = $.extend(true, {}, defaults, options || {});
+		
+		return this.each(function () {
+			HorizontalScroll(this, options);
+		});
+	};
+	
+	/**
+	 *
+	 *
+	 *
+	 */
+	$.fn.scrollHorizontally.defaults = function (options) {
+		if (options !== undefined) {
+			defaults = $.extend(true, defaults, options);
+		}
+		
+		return $.extend({}, defaults);
+	};
+	
+	/**
+	 *
+	 *
+	 *
+	 */
+	$.fn.scrollHorizontally.defaultCSS = function (options) {
+		if (options !== undefined) {
+			cssRules = $.extend(true, cssRules, options);
+		}
+		
+		return $.extend({}, cssRules);
+	};
+
+	/**
+	 *
+	 *
+	 *
+	 */
+	function HorizontalScroll (element, options) {
+		var $element = $(element).data("jqt-horizontal-scroll-options", options)
+							.css("webkitTransform", format(options.defaultTransform, options.defaultOffset)),
+			matrix = new CSSMatrix($element.css("webkitTransform"));
+		
+		$.each(options.events, function (name, func) {
+			element.addEventListener(name, func, false);
+		});
+		
+		//store for later use
+		options.currentPosition = matrix.m41;
+		options.parentWidth = $element.parent().width();
+		
+		if (options.scrollBar && options.scrollBar === true && !options.scrollBarElement) {
+			options.scrollBarElement = $.isFunction(options.scrollBar) ? 
+				options.scrollBar($element.parent(), "horizontal", options.scrollBarOptions || {}) :
+				Scrollbar($element.parent(), "horizontal", options.scrollBarOptions || {});
+		}
+	}
+
+	/**
+	 *
+	 *
+	 *
+	 */
+	function touchStart (event) {
+		var $this = $(this),
+			options = $this.data("jqt-horizontal-scroll-options"),
+			matrix, 
+			width = $this.outerWidth(),
+			parentWidth = $this.parent().width(),
+			endPoint = -(width - parentWidth),
+			quarter = parentWidth / 6;
+		
+		options.parentWidth = parentWidth;
+		
+		if (!!options.ignoreTags && $(event.target).is(options.ignoreTags) || event.targetTouches.length !== options.numberOfTouches) { 
+			return null;
+		}
+		
+		matrix = new CSSMatrix($this.css("webkitTransform"));
+		
+		$this.data("jqt-horizontal-scroll-current-event", {
+			startLocation: event.touches[0][options.eventProperty],
+			startPosition: matrix.m41,
+			currentPosition: matrix.m41,
+			startTime: event.timeStamp,
+			moved: false,
+			lastMoveTime: event.timeStamp,
+			parentWidth: parentWidth,
+			endPoint: endPoint,
+			minScroll: !options.bounce ? 0 : quarter,
+			maxScroll: !options.bounce ? endPoint : endPoint - quarter,
+			timingFunction: options.bounceTimingFunction
+		});
+		
+		if (options.scrollBarElement) {
+			options.scrollBarElement.init(parentWidth, width);
+		}
+		
+		options.setPosition($this, options, matrix.m41, "0");
+		
+		if (options.preventDefault) {
+			event.preventDefault();
+			//event.stopPropagation();
+			return false;
+			
+		} else {
+			return true;
+		}
+	}
+
+	/**
+	 *
+	 *
+	 *
+	 */
+	function touchMove (event) {
+		var $this = $(this),
+			options = $this.data("jqt-horizontal-scroll-options"),
+			data = $this.data("jqt-horizontal-scroll-current-event"),
+			lastMoveTime = data.lastMoveTime,
+			distance = data.startLocation - event.touches[0][options.eventProperty],
+			point = data.startPosition - distance;
+		
+		data.currentPosition = point;
+		data.moved = true;
+		data.lastMoveTime = event.timeStamp;
+		
+		if ((data.lastMoveTime - lastMoveTime) > options.maxScrollTime) {
+			data.startTime = data.lastMoveTime;
+		}
+		
+		if (options.scrollBarElement && !options.scrollBarElement.visible) {
+			options.scrollBarElement.show();
+		}
+		
+		options.setPosition($this, options, data.currentPosition, 0);
+		
+		if (options.preventDefault) {
+			event.preventDefault();
+			//event.stopPropagation();
+			return false;
+			
+		} else {
+			return true;
+		}
+	}
+
+	/**
+	 *
+	 *
+	 *
+	 */
+	function touchEnd (event) {
+		var $this = $(this),
+			options = $this.data("jqt-horizontal-scroll-options"),
+			data = $this.data("jqt-horizontal-scroll-current-event"),
+			theTarget, theEvent;
+		
+		if (!data.moved) {
+			if (options.scrollBarElement) {
+                options.scrollBarElement.hide();
+            }
+			theTarget  = event.target;
+			if(theTarget.nodeType == 3) {
+				theTarget = theTarget.parentNode;
+			}
+			theEvent = document.createEvent("MouseEvents");
+			theEvent.initEvent("click", true, true);
+			theTarget.dispatchEvent(theEvent);
+			
+			if (options.preventDefault) {
+				event.preventDefault();
+				event.stopPropagation();
+				return false;
+			}
+		}
+		
+		options.momentum($this, options, data, event);
+		
+		options.setPosition($this, options, data.currentPosition, data.duration);
+		
+		if (options.preventDefault) {
+			event.preventDefault();
+			event.stopPropagation();
+			return false;
+			
+		} else {
+			return true;
+		}
+	}
+	/**
+	 *
+	 *
+	 *
+	 */
+	function transitionEnd (e) {
+		
+		var $this = $(this),
+			options = $this.data("jqt-horizontal-scroll-options"),
+			data = $this.data("jqt-horizontal-scroll-current-event");
+		
+		if (data) {
+			if (data.currentPosition > 0) {
+				data.currentPosition = 0;
+				options.setPosition($this, options, 0, options.bounceSpeed);
+			} else if (data.currentPosition < data.endPoint) {
+				data.currentPosition = data.endPoint;
+				options.setPosition($this, options, data.endPoint, options.bounceSpeed);
+			} else if (options.scrollBarElement) {
+				options.scrollBarElement.hide();
+			}
+		} else if (options.scrollBarElement) {
+			options.scrollBarElement.hide();
+		}
+	}
+
+	/**
+	 *
+	 *
+	 *
+	 */
+	function momentum (object, options, data, event) {
+		var duration = Math.min(options.maxScrollTime, data.lastMoveTime - data.startTime),
+			distance = data.startPosition - data.currentPosition,
+			velocity = Math.abs(distance) / duration,
+			acceleration = duration * velocity * options.friction,
+			momentum = Math.round(distance * velocity),
+			position = Math.round(data.currentPosition - momentum);
+		
+		if (data.currentPosition > 0) {
+			position = 0;
+		} else if (data.currentPosition < data.endPoint) {
+			position = data.endPoint;
+		} else if (position > data.minScroll) {
+			acceleration = acceleration * Math.abs(data.minScroll / position);
+			position = data.minScroll;
+		} else if (position < data.maxScroll) {
+			acceleration = acceleration * Math.abs(data.maxScroll / position);
+			position = data.maxScroll;
+		}
+		
+		data.momentum = position / data.currentPosition;
+		data.currentPosition = position;
+		data.duration = acceleration;
+	}
+
+	/**
+	 *
+	 *
+	 *
+	 */
+	function reset (object, options) {
+		return options.setPosition(object, options, 0, options.defaultDuration);
+	}
+
+	/**
+	 *
+	 *
+	 *
+	 */
+	function setPosition (object, options, position, duration, timing) {
+		
+		if (options.scrollBarElement) {
+			var width = (object.parent().width() - object.outerWidth());
+			
+			if (position > 0) {
+				width += Number(position);
+			}
+			
+			options.scrollBarElement.scrollTo(options.scrollBarElement.maxScroll / width * position, 
+											  format("{0}ms", duration !== undefined ? duration : options.defaultDuration));
+		}
+		
+		if (duration !== undefined) {
+			object.css("webkitTransitionDuration", format("{0}ms", duration));
+		}
+		
+		if (timing !== undefined) {
+			object.css("webkitTransitionTimingFunction", timing);
+		}
+		
+		options.currentPosition = position || 0;
+		
+		return object.css("webkitTransform", format("translate3d({0}px, 0, 0)", options.currentPosition));
+	}
+    
+    /**
+     *    Format a String followed by a set of arguments using the format
+     *    {0} is replaced with arguments[1]
+     *
+     *    @param String s
+     *    @param Object arg1 ... argN
+     *    @return String
+     */
+    function format (s)
+    {
+        var args = arguments;
+        return s.replace(/\{(\d+)\}/g, function(a,b){return args[Number(b)+1] + ""});
+    }
+
+	/**
+	 *
+	 *
+	 *
+	 */
+	function Scrollbar (object, direction, options) {
+		if (!(this instanceof Scrollbar)) {
+			return new Scrollbar(object, direction, options);
+		}
+		
+		this.direction = direction;
+		this.bar = $(document.createElement("div"))
+			.addClass("scrollbar " + direction)
+			.appendTo(object)[0];
+	}
+	
+	Scrollbar.prototype = {
+			direction: "horizontal",
+			size: 0,
+			maxSize: 0,
+			maxScroll: 0,
+			visible: false,
+			
+			init: function (scroll, size) {
+				var offset = this.direction == "horizontal" ? 
+								this.bar.offsetWidth - this.bar.clientWidth : 
+								this.bar.offsetHeight - this.bar.clientHeight;
+								
+				this.maxSize = scroll - 8;		// 8 = distance from top + distance from bottom
+				this.size = Math.round(this.maxSize * this.maxSize / size) + offset;
+				this.maxScroll = this.maxSize - this.size;
+				this.bar.style[this.direction == "horizontal" ? "width" : "height"] = (this.size - offset) + "px";
+			},
+			
+			setPosition: function (pos) {
+				pos = this.direction == "horizontal" ? "translate3d(" + Math.round(pos) + "px,0,0)" : "translate3d(0," + Math.round(pos) + "px,0)";
+				this.bar.style.webkitTransform = pos;
+			},
+			
+			scrollTo: function (pos, runtime) {
+				this.bar.style.webkitTransitionDuration = (runtime || "400ms") + ",300ms";
+				this.setPosition(pos);
+			},
+			
+			show: function () {
+				this.visible = true;
+				this.bar.style.opacity = "1";
+			},
+		
+			hide: function () {
+				this.visible = false;
+				this.bar.style.opacity = "0";
+			},
+			
+			remove: function () {
+				this.bar.parentNode.removeChild(this.bar);
+				return null;
+			}
+	};
+    
+    $(function() {
+        window.scrollTo(0,0);
+		var stringRules = "", 
+            rules = cssRules, 
+            o = window.innerHeight > window.innerWidth ? "portrait" : "landscape",
+            buildProperties = function (name, value) {
+                stringRules += name + ":" + ($.isFunction(value) ? value(rules.variables) : value) + ";";
+            },
+            buildRules = function (name, properties) {
+                stringRules += name + "{";
+                
+                $.each(properties, buildProperties);
+                
+                stringRules += "}";
+            };
+        
+        $.each(rules.defaults, buildRules);
+        $.each(rules[o], buildRules);
+        
+        
+        $(document.createElement("style"))
+            .attr({type:"text/css",media:"screen"})
+            .html(stringRules)
+            .appendTo("head");
+        
+        $(window).one("orientationchange", function () {
+            //ensure repaint
+            setTimeout(function () {
+                window.scrollTo(0,0);
+				stringRules = "";
+                
+                $.each(rules[window.innerHeight > window.innerWidth ? "portrait" : "landscape"], buildRules);
+                
+                $(document.createElement("style"))
+                    .attr({type:"text/css",media:"screen"})
+                    .html(stringRules)
+                    .appendTo("head");
+            },30)
+        });
+    });
+    
+})(jQuery);
+
 /*
 
             _/    _/_/    _/_/_/_/_/                              _/       
@@ -5212,6 +5918,2197 @@ $(function(){
         });
     }
 })(jQuery);
+
+/*!*
+ *    Provides event handling for iPhone like photo gallery (without thumbnail portion)
+ *
+ *    @author Sam Shull <http://www.google.com/profiles/brickysam26>
+ *    @copyright 2010 Sam Shull <http://samshull.blogspot.com/>
+ *
+ *    Special Thanks to Steve Simitzis <http://saturn5.com>
+ *
+ *    @license <http://www.opensource.org/licenses/mit-license.html>
+ *
+ *    Permission is hereby granted, free of charge, to any person obtaining a copy
+ *    of this software and associated documentation files (the "Software"), to deal
+ *    in the Software without restriction, including without limitation the rights
+ *    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *    copies of the Software, and to permit persons to whom the Software is
+ *    furnished to do so, subject to the following conditions:
+ *    
+ *    The above copyright notice and this permission notice shall be included in
+ *    all copies or substantial portions of the Software.
+ *    
+ *    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ *    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ *    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ *    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ *    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ *    THE SOFTWARE.
+ *
+ *    Custom Events handled by each gallery:
+ *
+ *        jqt-photo-slideto            - slide to a given index (e, [index = int [, options = Object [, slides = jQuery ] ] ] )
+ *        jqt-photo-goto            - jump to a given index (e, [index = int [, options = Object [, slides = jQuery ] ] ] )
+ *        jqt-photo-play                - start the slideshow from the given point
+ *        jqt-photo-pause                - stop the slideshow
+ *        jqt-photo-prev                - go to the previous slide
+ *        jqt-photo-next                - go to the next slide
+ *        jqt-photo-hide-toolbars        - hide the visibility of the toolbars
+ *        jqt-photo-show-toolbars        - show the visibility of the toolbars
+ *        jqt-photo-toggle-toolbars    - toggle the visibility of the toolbars
+ */
+(function($){
+    //we need this in the algorithm
+    if (!"WebKitCSSMatrix" in this) {
+        return null;
+    }
+    
+    /**
+     *
+     *
+     *
+     */
+    var undefined, 
+        
+        /**
+         *    keep track of the registered galleries for updates on resize
+         *
+         *    @var Array<Element>
+         */
+        galleries = [],
+        
+        /**
+         *    Does the browser support Touch
+         *
+         *    @var Boolean
+         */
+        supportsTouch = "Touch" in this,
+        
+        /**
+         *    event types
+         *
+         *    @var Object
+         */
+        events = supportsTouch ? {
+            start: "touchstart",
+            move: "touchmove",
+            end: "touchend"
+        } : {
+            start: "mousedown",
+            move: "mousemove",
+            end: "mouseup"
+        },
+        
+        controlPoints,
+        
+        /**
+         *    keep track of whether or not the parsed class rule has been inserted
+         *
+         *    @var Boolean
+         */
+        parseRuleSet = false,
+        
+        //bring into context
+        
+        /**
+         *    
+         *
+         *    @var Window
+         */
+        window = this,
+        
+        /**
+         *    
+         *
+         *    @var Document
+         */
+        document = window.document,
+        
+        /**
+         *    
+         *
+         *    @var Object
+         */
+        Math = window.Math,
+        
+        //simplify access to these functions
+        
+        /**
+         *    
+         *
+         *    @var Function
+         */
+        min = Math.min,
+        
+        /**
+         *    
+         *
+         *    @var Function
+         */
+        floor = Math.floor,
+        
+        /**
+         *    
+         *
+         *    @var Function
+         */
+        sqrt = Math.sqrt,
+        
+        /**
+         *    
+         *
+         *    @var Function
+         */
+        pow = Math.pow,
+        
+        /**
+         *    
+         *
+         *    @var Function
+         */
+        abs = Math.abs,
+        
+        /**
+         *    current orientation
+         *
+         *    @var String
+         */
+        orientation = abs(window.orientation) == 90 ? "landscape" : "portrait",
+        
+        /**
+         *    The default options
+         *
+         *    @var Object
+         */
+        defaults = {
+            /**
+             *    A list of the images to be displayed in the gallery
+             *
+             *    @var Array<Object>
+             */
+            data: [],
+            
+            /**
+             *    displays in title bar 
+             *    - supports format 
+             *        {0} = current index
+             *        {1} = total number of slides
+             *
+             *    @var String
+             */
+            galleryName: "{0} of {1}",
+            
+            /**
+             *    where to start the slides in the gallery - reset on pageAnimation out
+             *
+             *    @var Number
+             */
+            defaultIndex: 0,
+            
+            /**
+             *    properties to animate
+             *
+             *    @var Number
+             */
+            transitionProperty: "-webkit-transform",
+            
+            /**
+             *    timing function
+             *
+             *    @var String
+             */
+            timingFunction: "cubic-bezier(0,0,.25,1)",
+            
+            /**
+             *    the reset transform of the table
+             *
+             *    @var String
+             */
+            transform: "translate3d({0}px,0,0)",
+            
+            /**
+             *    The template to be used for transforming the IMG tag
+             *
+             *    @var String
+             */
+            imageTransform: "scale({0}) translate3d({1}px, {2}px, 0)",
+            
+            /**
+             *    Maximum number of slides to keep in DOM at on time - before current slide
+             *
+             *    @var Number
+             */
+            maxSlidesBefore: 2,
+            
+            /**
+             *    Maximum number of slides to keep in DOM at on time - after current slide
+             *
+             *    @var Number
+             */
+            maxSlidesAfter: 2,
+            
+            /**
+             *    default delay between transitions for slideshow
+             *
+             *    @var Number
+             */
+            slideDelay: 5000,
+            
+            /**
+             *    default speed for slide change
+             *
+             *    @var Number
+             */
+            scrollSpeed: 500,
+            
+            /**
+             *    default speed for scale resizing - used on scaleEnd
+             *
+             *    @var Number
+             */
+            scaleSpeed: 500,
+            
+            /**
+             *    should we try to dynamically render the CSS rules
+             *
+             *    @var Boolean
+             */
+            useDynamicStyleSheet: true,
+            
+            /**
+             *    should a slideshow repeat by default
+             *
+             *    @var Boolean
+             */
+            repeatSlideShow: false,
+            
+            /**
+             *    selector for the parent of the gallery
+             *
+             *    @var String
+             */
+            appendTo: "#jqt",
+            
+            /**
+             *    the attribute name for storing the index of the slide in the data
+             *
+             *    @var String
+             */
+            dataAttribute: "data-index",
+            
+            /**
+             *    tags to ignore
+             *
+             *    @var Array
+             */
+            tagNames: "A,INPUT,SELECT,TEXTAREA",
+            
+            //only used by template generator
+            
+            /**
+             *    link to return
+             *
+             *    @var String
+             */
+            backLink: '<a class="back">Back</a>',
+            
+            /**
+             *    a blank image tag's template
+             *
+             *    @var String
+             */
+            blankImage: '<img class="jqt-photo-img"/>',
+            
+            /**
+             *    an individual slides template
+             *
+             *    @var String
+             */
+            slideTemplate: '<td class="jqt-photo-image-slide">\
+                                <div class="jqt-photo-not-loaded">\
+                                    <img class="jqt-photo-img"/>\
+                                    <div class="jqt-photo-caption"></div>\
+                                </div>\
+                            </td>',
+            
+            /**
+             *    CSS Rule for removing the max-width/max-height properties from the images
+             *
+             *    @var String
+             */
+            parsedClassTemplate: "#jqt .jqt-photo .jqt-photo-image-slide > .{0}{max-width:auto;max-height:auto;}",
+            
+            /**
+             *    the overall psuedo page template of a gallery
+             *
+             *    @var String
+             */
+            galleryTemplate: '<div class="jqt-photo">\
+                                    <div class="toolbar toolbar-top"><\/div>\
+                                    <table class="jqt-photo-table">\
+                                        <tr class="jqt-photo-slide-list"><\/tr>\
+                                    <\/table>\
+                                    <div class="toolbar toolbar-bottom">\
+                                        <div class="jqt-photo-prev"></div>\
+                                        <div class="jqt-photo-pause"></div>\
+                                        <div class="jqt-photo-play"></div>\
+                                        <div class="jqt-photo-next"></div>\
+                                    <\/div>\
+                                <\/div>',
+            
+            //psuedo events
+            
+            /**
+             *    Handle the pageAnimationEnd event fired by jQTouch
+             *    Resets the positions and scales
+             *
+             *    @var Function
+             */
+            pageAnimationEnd: pageAnimationEnd,
+            
+            /**
+             *    Handle the pageAnimationStart event fired by jQTouch
+             *    Resets the positions and scales
+             *
+             *    @var Function
+             */
+            pageAnimationStart: pageAnimationStart,
+            
+            /**
+             *    Handle the transition of slides in a gallery
+             *
+             *    @var Function
+             */
+            slideTo: slideTo,
+            
+            /**
+             *    Begin a slideshow on a gallery
+             *
+             *    @var Function
+             */
+            play: play,
+            
+            /**
+             *    End a slideshow on a gallery
+             *
+             *    @var Function
+             */
+            pause: pause,
+            
+            /**
+             *    Go to the next slide in the list
+             *
+             *    @var Function
+             */
+            next: next,
+            
+            /**
+             *    Go to the previous slide in the list
+             *
+             *    @var Function
+             */
+            prev: prev,
+            
+            /**
+             *    Go to a specific or implied slide
+             *
+             *    @var Function
+             */
+            goTo: goTo,
+            
+            /**
+             *    Reveal the toolbars
+             *
+             *    @var Function
+             */
+            showToolbars: showToolbars,
+            
+            /**
+             *    Hide the toolbars
+             *
+             *    @var Function
+             */
+            hideToolbars: hideToolbars,
+            
+            /**
+             *    Show/Hide the toolbars where appropriate
+             *
+             *    @var Function
+             */
+            toggleToolbars: toggleToolbars,
+            
+            //mouse events
+            
+            /**
+             *    Handle a touchstart event on the gallery
+             *
+             *    @var Function
+             */
+            touchStart: touchStart,
+            
+            /**
+             *    Handle a drag start event (triggered by touchstart) - one-finger
+             *
+             *    @var Function
+             */
+            dragStart: dragStart,
+            
+            /**
+             *    Event handler - move - one-finger
+             *
+             *    @var Function
+             */
+            drag: drag,
+            
+            /**
+             *    Event handler - end - one-finger
+             *
+             *    @var Function
+             */
+            dragEnd: dragEnd,
+            
+            /**
+             *    Event handler - start - two-fingers
+             *
+             *    @var Function
+             */
+            scaleStart: scaleStart,
+            
+            /**
+             *    Event handler - move - two-fingers
+             *
+             *    @var Function
+             */
+            scale: scale,
+            
+            /**
+             *    Event handler - end - two-fingers
+             *
+             *    @var Function
+             */
+            scaleEnd: scaleEnd,
+            
+            /**
+             *    An event handler for the IMG load event
+             *
+             *    @var Function
+             */
+            loader: loader,
+            
+            /**
+             *    Function provided for generating the slides
+             *
+             *    @var Function
+             */
+            createSlide: createSlide,
+            
+            /**
+             *    Function provided for maintaining the sliding window of slides
+             *
+             *    @var Function
+             */
+            rearrange: rearrange,
+            
+            //classes
+            
+            /**
+             *    Keep track of preloaded images
+             *
+             *    @var String
+             */
+            presizedClass: "jqt-photo-presized",
+            
+            /**
+             *    keep track of images that have data
+             *
+             *    @var String
+             */
+            parsedClass: "jqt-photo-parsed",
+            
+            /**
+             *    Class name for identifying the current slide
+             *
+             *    @var String
+             */
+            currentClass: "jqt-photo-current",
+            
+            /**
+             *    Class name for designating that a slideshow is in progress 
+             *    (and cause pause icon to show, not play icon)
+             *
+             *    @var String
+             */
+            playingClass: "jqt-photo-playing",
+            
+            /**
+             *    Class name for designating that an image is not currently loaded
+             *
+             *    @var String
+             */
+            notLoadedClass: "jqt-photo-not-loaded",
+            
+            /**
+             *    Class name for initiating an animation to show the toolbars
+             *
+             *    @var String
+             */
+            toolbarAnimationInClass: "jqt-photo-toolbar-animation-in",
+            
+            /**
+             *    Class name for initiating an animation to hide the toolbars
+             *
+             *    @var String
+             */
+            toolbarAnimationOutClass: "jqt-photo-toolbar-animation-out",
+            
+            /**
+             *    Class name for hiding toolbars - applied outside of animation
+             *
+             *    @var String
+             */
+            toolbarHideClass: "jqt-photo-toolbar-hidden",
+            
+            //selectors
+            
+            /**
+             *    The selector for the container of the slides
+             *
+             *    @var String
+             */
+            tableSelector: ".jqt-photo-table",
+            
+            /**
+             *    The selector for the caption of a slide
+             *
+             *    @var String
+             */
+            captionSelector: ".jqt-photo-caption",
+            
+            /**
+             *    The selector of a slide container
+             *
+             *    @var String
+             */
+            slideSelector: ".jqt-photo-image-slide",
+            
+            /**
+             *    The selector of the scalable element, relative to a slide
+             *
+             *    @var String
+             */
+            imageSelector: "img.jqt-photo-img",
+            
+            /**
+             *    The selector of the title element
+             *
+             *    @var String
+             */
+            titleSelector: ".toolbar-top h1",
+            
+            /**
+             *    The selector of row that contains the images
+             *
+             *    @var String
+             */
+            listSelector: ".jqt-photo-slide-list",
+            
+            /**
+             *    The selector of the Play Icon
+             *
+             *    @var String
+             */
+            playSelector: ".jqt-photo-play",
+            
+            /**
+             *    The selector of the Pause Icon
+             *
+             *    @var String
+             */
+            pauseSelector: ".jqt-photo-pause",
+            
+            /**
+             *    The selector of the Next Icon
+             *
+             *    @var String
+             */
+            nextSelector: ".jqt-photo-next",
+            
+            /**
+             *    The selector of the Previous Icon
+             *
+             *    @var String
+             */
+            prevSelector: ".jqt-photo-prev",
+            
+            /**
+             *    The selector of a gallery element
+             *
+             *    @var String
+             */
+            gallerySelector: ".jqt-photo"
+        },
+        
+        /**
+         *    Calculate the desired position of the caption elements within the galleries
+         *
+         *    @var Function
+         */
+        caption = function(vars){return (window.innerHeight - vars.caption) + "px";},
+        
+        /**
+         *    Calculate the desired height of the galleries and the slides
+         *
+         *    @var Function
+         */
+        height = function(){return window.innerHeight + "px";},
+        
+        /**
+         *    Calculate the desired width of the galleries and the slides
+         *
+         *    @var Function
+         */
+        width = function(){return window.innerWidth + "px"},
+        
+        /**
+         *    Calculate the desired position of the bottom toolbar elements within the galleries
+         *
+         *    @var Function
+         */
+        toolbar = function(vars){return (window.innerHeight - vars.toolbar) + "px";},
+        
+        /**
+         *    The default CSS rules for dynamic insertion
+         *
+         *    @var Object
+         */
+        cssRules = {
+        
+            /**
+             *    Variables used by the CSS "macros" for dynamically calculating positions and dimensions
+             *
+             *    @var Object
+             */
+            variables : {
+                caption: 90,
+                toolbar: 45
+            },
+        
+            /**
+             *    Default CSS rules
+             *
+             *    @var Object
+             */
+            defaults: {
+                "#jqt .jqt-photo .toolbar-bottom" : {
+                    top: toolbar
+                },
+                "#jqt .jqt-photo .jqt-photo-image-slide > div" : {
+                    width: width,
+                    height: height,
+                    "line-height": height
+                },
+                "#jqt .jqt-photo .jqt-photo-image-slide .jqt-photo-caption" : {
+                    top: caption,
+                }
+            },
+        
+            /**
+             *    Portrait view CSS rules
+             *
+             *    @var Object
+             */
+            portrait: {
+                "#jqt.portrait .jqt-photo" : {
+                    height: height,
+                    width: width,
+                },
+                "#jqt.portrait .jqt-photo .toolbar-bottom" : {
+                    top: toolbar
+                },
+                "#jqt.portrait .jqt-photo .jqt-photo-image-slide > div" : {
+                    width: width,
+                    height: height,
+                    "line-height": height,
+                },
+                "#jqt .jqt-photo .jqt-photo-image-slide .jqt-photo-caption" : {
+                    top: caption,
+                }
+            },
+        
+            /**
+             *    Landscape view CSS rules
+             *
+             *    @var Object
+             */
+            landscape: {
+                "#jqt.landscape .jqt-photo" : {
+                    height: height,
+                    width: width,
+                },
+                "#jqt.landscape .jqt-photo .toolbar-bottom" : {
+                    top: toolbar,
+                },
+                "#jqt.landscape .jqt-photo .jqt-photo-table" : {
+                    height: height,
+                },
+                "#jqt.landscape .jqt-photo .jqt-photo-image-slide > div" : {
+                    height: height,
+                    width: width,
+                    "line-height": height,
+                },
+                "#jqt.landscape .jqt-photo .jqt-photo-image-slide .jqt-photo-caption" : {
+                    top: caption,
+                }
+            }
+        };
+    
+    /*
+     *    jQTouch extension
+     */
+    if ($.jQTouch) {
+        //bind the extension
+        $.jQTouch.addExtension(function(jqt) {   
+            /*/event handler
+            function binder (event, info) {
+                if (info.page.is(defaults.gallerySelector)) {
+                    info.page.jqtPhoto();
+                }
+            }
+              
+            //attach
+            $(document.body).bind("pageInserted", binder);
+            
+            //attach to appropriate containers on DOMREADY
+            $(function() {
+                $(defaults.gallerySelector)
+                    .each(function() {
+                        binder(null, {page: $(this)});
+                    });
+            });
+            */
+            return {
+                generateGallery: generateGallery, 
+                /**
+                 *    Jump to the index of a slide in a gallery
+                 *
+                 *    @param jQuery | String (selector) | Element gallery
+                 *    @param Number index
+                 *    @param String | Object animation
+                 *    @param Boolean reverse
+                 *    @return jQuery
+                 */
+                goToSlide: function (gallery, index, animation, reverse) {
+                    //trigger this first
+                    var g = $(gallery), options = g.data("jqt-photo-options"),slides = g.find(options.slideSelector);
+                     
+                    if (slides.index("."+options.currentClass) != index) {
+                        slides.removeClass(options.currentClass).eq(index).addClass(options.currentClass);
+                    }
+                    
+                    if (!g.hasClass("current")) {
+                        jqt.goTo(g, animation || "slide", reverse);
+                    }
+                    
+                    g.triggerHandler("jqt-photo-show-toolbars");
+                    
+                    return g;
+                }
+            };
+        });
+    }
+    
+    /**
+     *    Generate a gallery and attach it to the #jqt element,
+     *    additionally updates scaling data, so you don't have to
+     *
+     *    <code>
+     *        images = [{src:"/somewhere1.jpg",caption:"Not Yet Implemented",width:200,height:200},
+     *                  {src:"/somewhere2.jpg",caption:"Not Yet Implemented"}];
+     *    </code>
+     *
+     *    @param String id
+     *    @param Array<Object> images
+     *    @param Object options - @see defaults
+     *    @return jQuery
+     */
+    function generateGallery (id, images, options) {
+        options = $.extend({}, defaults, options);
+        
+        options.data = images;
+        
+        if (!parseRuleSet) {
+            parseRuleSet = true;
+            var sheet = document.styleSheets[document.styleSheets.length-1];
+			sheet.insertRule(
+                format(options.parsedClassTemplate, options.parsedClass), 
+                sheet.cssRules.length
+            );
+        }
+        
+        options.gallery = $(options.galleryTemplate).appendTo(options.appendTo);
+        
+        var list = options.list = options.gallery.find(options.listSelector),
+            lower = options.defaultIndex - options.maxSlidesBefore,
+            upper = options.defaultIndex + options.maxSlidesAfter,
+            toolbar = options.gallery.attr("id", id)
+                        .find(".toolbar-top")
+                        .append(
+                            $("<h1></h1>").html(
+                                format(options.galleryName, options.defaultIndex + 1, images.length)
+                            )
+                        );
+        
+        if (options.backLink) {
+            toolbar.append(options.backLink);
+        }
+        
+        $.each(images, function(i, data) {
+            list.append(options.createSlide(data, i, options, i >= lower && i <= upper));
+        });
+        
+        return jqtPhoto(options.gallery[0], options);
+    }
+    
+    /*
+     *
+     *    jQuery Extensions
+     *
+     */
+    
+    /**
+     *    A jQuery prototype extension for enabling the photo gallery
+     *    on a given set of elements
+     *
+     *    @param Object options
+     *    @return jQuery
+     */
+    $.fn.jqtPhoto = function(options) {
+        options = $.extend({}, defaults, options || {});
+        return this.each(function(){jqtPhoto(this, options)});
+    };
+    
+    /**
+     *    A static jQuery extension for setting and retrieving the jQT-Photo defaults
+     *
+     *    
+     */
+    $.jqtPhoto = {
+        generateGallery: generateGallery,
+    
+        /**
+         *    Change and/or retrieve the default options
+         *
+         *    @param Object options - optional
+         *    @return Object
+         */
+        defaults: function(options) {
+            if (options) {
+                defaults = $.extend(defaults, options);
+            }
+            
+            return $.extend({}, defaults);
+        },
+    
+        /**
+         *    Change and/or retrieve the default CSS
+         *
+         *    @param Object options - optional
+         *    @return Object
+         */
+        defaultCSS: function(options) {
+            if (options !== undefined) {
+                cssRules = $.extend(true, cssRules, options);
+            }
+            
+            return $.extend({}, cssRules);
+        }
+    };
+    
+    /*
+     *
+     *    Functions
+     *
+     */
+    
+    /**
+     *    Intialize the photo gallery
+     *
+     *    @param Element | String | jQuery element
+     *    @param Object options
+     *    @return jQuery
+     */
+    function jqtPhoto (element, options) {
+        var $elem = $(element),
+            slides = attachEvents($elem, options).find(options.slideSelector),
+            images = slides.find(options.imageSelector);
+        
+        options.list = $elem.find(options.listSelector);
+        
+        options.table = tableData($elem.data("jqt-photo-options", options), options);
+        
+        options.blankImage = parseImageData($elem, $(options.blankImage).load(options.loader), options);
+        
+        if (!slides.filter("."+options.currentClass).length) {
+            if (!slides.filter(format("[{0}={1}]", options.dataAttribute, options.defaultIndex)).addClass(options.currentClass).length) {
+                slides.eq(0).addClass(options.currentClass);
+            }
+        }
+        
+        $elem.find(options.tableSelector).css({
+            webkitTransitionProperty: options.transitionProperty,
+            webkitTransitionTimingFunction: options.timingFunction,
+            webkitTransitionDuration: options.defaultDuration + "s",
+            webkitTransform: format(options.transform, -slides.filter("."+options.currentClass).attr("offsetLeft") || 0)
+        });
+        
+        parseImageData($elem, images, options);
+        
+        galleries = galleries.concat($.makeArray($elem));
+        
+        return $elem;
+    }
+    
+    /**
+     *    Record the initial start position of the image list element
+     *
+     *    @param jQuery target
+     *    @param Object options
+     *    @return null
+     */
+    function tableData (target, options) {
+        var table = target.find(options.tableSelector),
+            transform = window.getComputedStyle(table[0]).webkitTransform,
+            matrix = new WebKitCSSMatrix(transform);
+        
+        return table.data("jqt-photo-position", {x: Number(matrix.m41 || 0), gallery: target});
+    }
+    
+    /**
+     *    Attach event listeners to the gallery
+     *
+     *    To Do: refractor event listeners into delegate
+     *
+     *    @param jQuery target
+     *    @param Object options
+     *    @return jQuery
+     */
+    function attachEvents (target, options) {
+        
+        return target
+                .each(function(){this.addEventListener(events.start, options.touchStart, false)})
+                .bind("jqt-photo-slideto", options.slideTo)
+                .bind("jqt-photo-goto", options.goTo)
+                .bind("jqt-photo-play", options.play)
+                .bind("jqt-photo-pause", options.pause)
+                .bind("jqt-photo-prev", options.prev)
+                .bind("jqt-photo-next", options.next)
+                .bind("jqt-photo-hide-toolbars", options.hideToolbars)
+                .bind("jqt-photo-show-toolbars", options.showToolbars)
+                .bind("jqt-photo-toggle-toolbars", options.toggleToolbars)
+                .bind("pageAnimationEnd", options.pageAnimationEnd)
+                .bind("pageAnimationStart", options.pageAnimationStart);
+    }
+    
+    /**
+     *    Record initial slide data
+     *
+     *    @param jQuery images
+     *    @param Object options
+     *    @return jQuery
+     */
+    function parseImageData (target, images, options) {
+        return images.each(function() {
+            var t = $(this).addClass(options.parsedClass),
+                matrix = new WebKitCSSMatrix(window.getComputedStyle(this).webkitTransform),
+                scale = Number(matrix.m11),
+                data = t.data("jqt-photo-info") || {}, 
+                c = {
+                    scale: scale,
+                    top: Number(matrix.m42),
+                    left: Number(matrix.m41),
+                    width: t.width() * scale,
+                    height: t.height() * scale,
+                    parent: t.parent()
+                };
+            
+            data.galleryOptions = options;
+            data.gallery = data.gallery || target;
+            
+            data[orientation] = {current: c, original: $.extend({}, c)};
+            
+            t.data("jqt-photo-info", data);
+        });
+    }
+    
+    /**
+     *    Distributive handling for touchstart events
+     *
+     *    To Do: refractor to use all event based triggers
+     *
+     *    @context The gallery element
+     *
+     *    @param Event event
+     *    @return Boolean
+     */
+    function touchStart (event) {
+        var target = $(event.target.nodeType == 3 ? event.target.parentNode : event.target), 
+            $this = $(this),
+            options = $this.data("jqt-photo-options"),
+            tt = supportsTouch ? event.targetTouches : {length: !event.ctrlKey ? 1 : 2};
+        
+        if (target.is(options.tagNames)) {
+            return null;
+        }
+        
+        if (target.is(options.playSelector)) {
+            if (!$this.hasClass(options.playingClass) && options.play) {
+                return options.play.call(this, event);
+            }
+            
+            return true;
+            
+        } else if (target.is(options.pauseSelector)) {
+            if ($this.hasClass(options.playingClass) && options.pause) {
+                return options.pause.call(this, event);
+            }
+            
+            return true;
+            
+        } else if (target.is(options.nextSelector) && options.next) {
+            return options.next.call(this, event);
+            
+        } else if (target.is(options.prevSelector) && options.prev) {
+            return options.prev.call(this, event);
+            
+        } else if (tt.length == 2 && target.closest(options.imageSelector).length && options.scaleStart) {
+            if ($this.hasClass(options.playingClass) && options.pause) {
+                options.pause.call(this);
+            }
+            
+            return options.scaleStart.call(this, event);
+            
+        } else if (tt.length == 1 && options.dragStart) {
+            if ($this.hasClass(options.playingClass) && options.pause) {
+                options.pause.call(this, event);
+            }
+            
+            return options.dragStart.call(this, event);
+        }
+        
+        return true;
+    }
+        
+    /**
+     *    Initialize a drag event
+     *
+     *
+     *    @context The gallery element
+     *
+     *    @param Event event
+     *    @return Boolean
+     */
+    function dragStart (event) {
+        event.preventDefault();
+        window.scrollTo(0,0);
+        
+        var $this = $(this),
+            options = $this.data("jqt-photo-options"),
+            table = $this.find(options.tableSelector).css("webkitTransitionDuration", "0s"),
+            position = table.data("jqt-photo-position"),
+            target = $(event.target).closest(options.imageSelector),
+            data = target.data("jqt-photo-info") || false,
+            offset = !!data && data[orientation] || false,
+            current = !!offset && offset.current || {},
+            tt = supportsTouch ? event.targetTouches[0] : event;
+        
+        this.addEventListener(events.move, options.drag, false);
+        this.addEventListener(events.end, options.dragEnd, false);
+        
+        $this
+            .data("jqt-photo-event", {
+                table: table,
+                position: {current: position.x, original: position.x},
+                target: target.css("webkitTransitionDuration", "0s"),
+                options: options,
+                slides: table.find(options.slideSelector),
+                moved: false,
+                x: tt.pageX,
+                y: tt.pageY,
+                left: current.left || 0,
+                top: current.top || 0,
+                timeStamp: +new Date
+            });
+            
+        return true;
+    }
+    
+    /**
+     *    Perform a drag event
+     *
+     *
+     *    @context The gallery element
+     *
+     *    @param Event event
+     *    @return Boolean
+     */
+    function drag (event) {
+        event.preventDefault();
+        
+        var $this = $(this),
+            original = $this.data("jqt-photo-event"),
+            table = original.table,
+            position = original.position,
+            target = original.target,
+            info = target.data("jqt-photo-info"),
+            data = !!info && info[orientation] || false,
+            current = data.current || false,
+            tt = supportsTouch ? event.targetTouches[0] : event,
+            distanceX = original.x - tt.pageX,
+            distanceY = original.y - tt.pageY,
+            w, h, x, y, l, t, d, 
+            s = current.scale;
+        
+        original.moved = true;
+        
+        //image
+        if (data) {
+            $this.triggerHandler("jqt-photo-hide-toolbars", [original.options]);
+            
+            if (distanceX) {
+                x = target.width() * s;
+                w = current.parent.width();
+                l = original.left;
+                
+                if (x > w) {
+                    l -= distanceX / s;
+                    distanceX = 0;
+                    d = ((x - w) / s) / 2;
+                    
+                    if (l > d) {
+                        distanceX = d - l;
+                        l = d;
+                    } else if (l < -d) {
+                        distanceX = -(l + d);
+                        l = -d;
+                    }
+                }
+                
+                current.left = floor(l);
+            }
+            
+            if (distanceY) {
+                y = target.height() * s;
+                h = current.parent.height(),
+                t = original.top;
+                
+                if (y > h) {
+                    t -= distanceY / s;
+                }
+                
+                current.top = floor(t);
+            }
+            
+            target.css({
+                webkitTransitionDuration: "0s",
+                webkitTransform: format(original.options.imageTransform, s, current.left, current.top)
+            });
+        }
+        
+        //table
+        position.current = position.original - distanceX;
+        table.css({
+                webkitTransitionDuration: "0s",
+                webkitTransform: format(original.options.transform, position.current)
+        });
+        
+        return true;
+    }
+    
+    /**
+     *    End and clean up a drag event
+     *
+     *
+     *
+     *    @context The gallery element
+     *
+     *    @param Event event
+     *    @return Boolean
+     */
+    function dragEnd (event) {
+        var $this = $(this),
+            original = $this.data("jqt-photo-event"),
+            table = original.table,
+            tablePosition = table.data("jqt-photo-position"),
+            position = original.position,
+            target = original.target,
+            info = target.data("jqt-photo-info"),
+            data = !!info && info[orientation] || false,
+            current = data.current || false,
+            slides = original.slides,
+            h, x, y, t, d, n, w,
+            s = current.scale;
+        
+        this.removeEventListener(events.move, original.options.drag, false);
+        this.removeEventListener(events.end, original.options.dragEnd, false);
+        
+        if (!original.moved) {
+            $this.trigger("jqt-photo-toggle-toolbars");
+            return dispatchClick(event.target);
+        }
+        
+        event.preventDefault();
+        
+        //image
+        if (data) {
+            y = target.height() * s;
+            h = current.parent.height(),
+            t = current.top;
+            
+            if (y > h) {
+                d = ((y - h) / s) / 2;
+                
+                if (t > d) {
+                    t = d;
+                } else if (t < -d) {
+                    t = -d;
+                }
+            }
+            
+            current.top = floor(t);
+            
+            target.css({
+                webkitTransitionDuration: original.options.scaleSpeed + "ms",
+                webkitTransform: format(original.options.imageTransform, s, current.left, current.top)
+            });
+        }
+        
+        d = (+new Date() - original.timeStamp);
+        
+        //table
+        if (position.current > 0) {
+            tablePosition.x = 0;
+            
+        } else if (position.current < (slides.eq(slides.length-1).width() - table.outerWidth())) {
+            tablePosition.x = (slides.eq(slides.length-1).width() - table.outerWidth());
+            
+        } else {
+            n = tablePosition.x < position.current ? -1 : 1;
+            x = slides.filter("."+original.options.currentClass);
+            t = abs(x.attr("offsetLeft") + position.current);
+            w = x.width() / 3;
+            
+            if (t > w) {
+                $this.triggerHandler("jqt-photo-slideto", [slides.index(x[0]) + n, (d > 1000 ? 1000 : d), original.options, slides]);
+                return true;
+            }
+        }
+        
+        table.css({
+            webkitTransitionDuration: (d > 1000 ? 1000 : d) + "ms",
+            webkitTransform: format(original.options.transform, tablePosition.x)
+        });
+        
+        return true;
+    }
+    
+    /**
+     *    Initialize a scaling event
+     *
+     *
+     *    @context The gallery element
+     *
+     *    @param Event event
+     *    @return Boolean
+     */
+    function scaleStart (event) {
+        event.preventDefault();
+        window.scrollTo(0,0);
+        
+        var $this = $(this),
+            options = $this.data("jqt-photo-options"),
+            tt = supportsTouch ? 
+                    event.targetTouches : 
+                    [
+                        {pageX: controlPoints.x - event.pageX, pageY: controlPoints.y - event.pageY},
+                        event
+                    ];
+        
+        this.addEventListener(events.move, options.scale, false);
+        this.addEventListener(events.end, options.scaleEnd, false);
+        
+        try{
+            this.removeEventListener(events.move, options.drag, false);
+            this.removeEventListener(events.end, options.dragEnd, false);
+        }catch(e){}
+        
+        $this.data("jqt-photo-event", {
+                target: $(event.target).closest(options.imageSelector).css("webkitTransitionDuration", "0s"),
+                options: options,
+                distance: sqrt(
+                    pow((tt[1].pageX - tt[0].pageX), 2)
+                    + pow((tt[1].pageY - tt[0].pageY), 2)
+                )
+            })
+            .find(".image-list")
+            .css("webkitTransitionDuration", "0s");//end any transform on this table
+            
+        return true;
+    }
+    
+    /**
+     *    Perform a scaling event
+     *
+     *
+     *    @context The gallery element
+     *
+     *    @param Event event
+     *    @return Boolean
+     */
+    function scale (event) {
+        if (event.targetTouches.length != 2) {
+            return true;
+        }
+        
+        event.preventDefault();
+        
+        var $this = $(this),
+            original = $this.data("jqt-photo-event"),
+            target = original.target,
+            info = target.data("jqt-photo-info"),
+            data = !!info && info[orientation] || false,
+            tt = event.targetTouches,
+            distance = sqrt(
+                pow((tt[1].pageX - tt[0].pageX), 2) +
+                pow((tt[1].pageY - tt[0].pageY), 2)
+            ),
+            difference = distance - original.distance,
+            percentChange = (difference / original.distance) / 2,
+            current = data.current,
+            transform;
+        
+        if (!current) {
+            parseImageData($this, target, original.options);
+            info = target.data("jqt-photo-info");
+            data = !!info && info[orientation] || false;
+            current = data.current;
+        }
+        
+        $this.triggerHandler("jqt-photo-hide-toolbars", [original.options]);
+        
+        transform = format(original.options.imageTransform, 
+                        (current.scale = (current.scale + (current.scale * percentChange))), 
+                        current.left, 
+                        current.top                        
+                   );
+        
+        original.distance = distance;
+            
+        target.css({webkitTransitionDuration: "0s", webkitTransform: transform});
+        
+        return true;
+    }
+    
+    /**
+     *    End a scaling event
+     *
+     *
+     *    @context The gallery element
+     *
+     *    @param Event event
+     *    @return Boolean
+     */
+    function scaleEnd (event) {
+        event.preventDefault();
+        
+        var $this = $(this),
+            original = $this.data("jqt-photo-event"),
+            info = original.target.data("jqt-photo-info"),
+            data = !!info && info[orientation] || false,
+            current = data.current;
+        
+        this.removeEventListener(events.move, original.options.scale, false);
+        this.removeEventListener(events.end, original.options.scaleEnd, false);
+        
+        if (!current) {
+            parseImageData($this, original.target, original.options);
+            info = original.target.data("jqt-photo-info");
+            data = !!info && info[orientation] || false;
+            current = data.current;
+        }
+        
+        if (current.scale < data.original.scale) {
+            current.scale = data.original.scale;
+            current.left = data.original.left;
+            current.top = data.original.top;
+        }
+        
+        original.target.css({
+            webkitTransitionDuration: original.options.scaleSpeed + "ms",
+            webkitTransform: format(original.options.imageTransform, current.scale, current.left, current.top)
+        });
+        
+        return true;
+    }
+    
+    /**
+     *    Dispatch a click event on a given target, in the event 
+     *    a single-target touch event did not result in movement
+     *
+     *    @param Element target
+     *    @return Boolean
+     */
+    function dispatchClick (target) {
+        var theEvent = target.ownerDocument.createEvent("MouseEvents");
+        theEvent.initEvent("click", true, true);
+        target.dispatchEvent(theEvent);
+        return true;
+    }
+    
+    /**
+     *    Begin a slideshow
+     *
+     *
+     *    @context The gallery element
+     *
+     *    @param Event event
+     *    @param Number index
+     *    @return Boolean
+     */
+    function play (event, index) {
+        event.preventDefault && event.preventDefault();
+        
+        var $this = $(this),
+            options = $this.data("jqt-photo-options"),
+            slides = $this.find(options.slideSelector),
+            n = index === undefined || index < 0 
+                ? Number(slides.filter("."+options.currentClass).attr(options.dataAttribute))
+                : abs(index);
+                
+        addHover($this.addClass(options.playingClass), $this.find(options.pauseSelector)[0]);
+        
+        if (n != index) {
+            $this.triggerHandler("jqt-photo-goto", [n, 0, options, slides]);
+        }
+        
+        $this.data("jqt-photo-slide-timer", setInterval(function(){slideInterval($this, slides, options)}, options.slideDelay));
+            //.triggerHandler("jqt-photo-hide-toolbars", [options]);
+        
+        return true;
+    }
+    
+    /**
+     *    Handler for slideshow intervals
+     *
+     *
+     *
+     *    @param jQuery target
+     *    @param jQuery slides
+     *    @param Object options
+     *    @return null
+     */
+    function slideInterval (target, slides, options) {
+        //current index + 1
+        var index = Number(target.find(options.slideSelector).filter("."+options.currentClass).attr(options.dataAttribute)) + 1,
+            func = "jqt-photo-slideto";//"slideTo";
+        
+        if (index === options.data.length) {
+            if (!options.repeatSlideShow) {
+                target.triggerHandler("jqt-photo-pause");
+                return null;
+            }
+            index = 0;
+            func = "jqt-photo-goto";//"goTo";
+        }
+        
+        //options[func].call(target[0], {}, index, options.scrollSpeed, options);
+        target.triggerHandler(func, [index, options.scrollSpeed, options, slides]);
+        
+        target.triggerHandler("jqt-photo-hide-toolbars", [options]);
+        
+        return null;
+    }
+    
+    /**
+     *    End a slideshow
+     *
+     *
+     *    @context The gallery element
+     *
+     *    @param Event event
+     *    @return Boolean
+     */
+    function pause (event) {
+        event.preventDefault && event.preventDefault();
+        
+        var $this = $(this), 
+            timer = $this.data("jqt-photo-slide-timer"), 
+            options = $this.data("jqt-photo-options");
+            
+        addHover($this, $this.find(options.playSelector)[0]);
+        
+        clearInterval(timer);
+        $this.removeClass(options.playingClass)
+            .data("jqt-photo-slide-timer", null)
+            .triggerHandler("jqt-photoshow-toolbars");
+        
+        return true;
+    }
+    
+    /**
+     *    Perform a slide to a given, or inferred next slide, using the data provided
+     *
+     *
+     *
+     *    @context The gallery element
+     *
+     *    @param Event event
+     *    @param Number index
+     *    @param Number duration
+     *    @param Object options
+     *    @param jQuery slides - optional;
+     *    @return Boolean
+     */
+    function slideTo (event, index, duration, options, slides) {
+        event.preventDefault && event.preventDefault();
+        
+        var $this = $(this), table, current, title, last, img;
+            
+        options = options || $this.data("jqt-photo-options");
+        
+        slides = slides || $this.find(options.slideSelector);
+        
+        table = options.table;
+        
+        index = Number(index || 0);
+        //how long should this particular transition take?
+        duration = duration === undefined || duration < 0 ? options.scrollSpeed : (Number(duration) || 0);
+        
+        if (index >= options.data.length) {
+            $this.triggerHandler("jqt-photo-goto", [0, duration, options, slides]);
+            return true;
+        }
+        
+        if (index < 0) {
+            index = options.data.length + index;
+        }
+        
+        last = slides.filter("."+options.currentClass);
+        
+        //new current
+        current = slides.removeClass(options.currentClass).filter(format("[{0}={1}]", options.dataAttribute, index));
+        
+        img = current.find(options.imageSelector);
+        
+        if (img.attr("src") != options.data[index].src) {
+            img.parent().addClass(options.notLoadedClass);
+            img.attr("src", options.data[index].src);
+        }
+        
+        //new position
+        position = -current.addClass(options.currentClass).attr("offsetLeft");
+    
+        if (position > 0) {
+            position = 0;
+        } else if (position < -(table.width()-current.width())) {
+            position = -(table.width()-current.width());
+        }
+        
+        //trigger slide change event
+        $this.trigger("jqt-photo-slide-change", [index, duration, position]);
+        //save the position
+        table.data("jqt-photo-position").x = position;
+        //atach animation end listener, and set necessary css properties
+         table.one("webkitTransitionEnd", function() {
+            options.rearrange(current, last, options);
+        })
+        .css({
+            webkitTransitionDuration: duration+"ms",
+            webkitTransform: format(options.transform, position)
+        });
+        
+        //update the title of the gallery
+        title = $this.find(options.titleSelector);
+        title.html(format(options.galleryName || title.html(), Number(index) + 1, options.data.length));
+        
+        return true;
+    }
+    
+    /**
+     *    Jump to a given, or inferred next slide, using the data provided
+     *
+     *
+     *
+     *    @context The gallery element
+     *
+     *    @param Event event
+     *    @param Number index    - optional; index of the slide to go to
+     *    @param Number duration - optional; duration of the transition
+     *    @param Object options - optional; the options associated with the gallery
+     *    @param jQuery slides - optional;
+     *    @return Boolean
+     */
+    function goTo (event, index, duration, options, slides) {
+        event.preventDefault && event.preventDefault();
+        
+        var $this = $(this), table, current, title, last, img;
+        
+        options = options || $this.data("jqt-photo-options");
+        
+        slides = slides || $this.find(options.slideSelector);
+        
+        table = options.table;
+        
+        index = Number(index || 0);
+        //how long should this particular transition take?
+        duration = duration === undefined || duration < 0 ? options.scrollSpeed : (Number(duration) || 0);
+        
+        if (index >= options.data.length) {
+            index = 0;
+        }
+        
+        if (index < 0) {
+            index = options.data.length + index;
+        }
+        
+        last = slides.filter("."+options.currentClass);
+        
+        //new current
+        current = slides.removeClass(options.currentClass).filter(format("[{0}={1}]", options.dataAttribute, index));
+        
+        img = current.find(options.imageSelector);
+        
+        if (img.attr("src") != options.data[index].src) {
+            img.parent().addClass(options.notLoadedClass);
+            img.attr("src", options.data[index].src);
+        }
+        
+        //position of the new current
+        position = -current.addClass(options.currentClass).attr("offsetLeft");
+        
+        if (position > 0) {
+            position = 0;
+        } else if (position < -(table.width()-current.width())) {
+            position = -(table.width()-current.width());
+        }
+        
+        //save the position
+        table.data("jqt-photo-position").x = position;
+        //reset scales after slide and set css to cause the slide
+        table.css({
+            webkitTransitionDuration: "0s",
+            webkitTransform: format(options.transform, position)
+        });
+        
+        //update the title
+        //title element
+        title = $this.find(options.titleSelector);
+        title.html(format(options.galleryName || title.html(), Number(index) + 1, options.data.length));
+        
+        options.rearrange(current, last, options);
+        
+        return true;
+    }
+    
+    /**
+     *    Reassign the img tags with src attributes in order to maintain the 
+     *    memory consumption
+     *
+     *    @param jQuery current - the current slide
+     *    @param jQuery last - the previous slide
+     *    @param Object options - the gallery options
+     *    @return Boolean
+     */
+    function rearrange (current, last, options) {
+        var next = current.next()
+            prev = current.prev();
+            
+        next.length && next.find(options.imageSelector).attr("src", options.data[next.attr(options.dataAttribute)].src);
+            
+        prev.length && prev.find(options.imageSelector).attr("src", options.data[prev.attr(options.dataAttribute)].src);
+        
+        current.prevAll().slice(options.maxSlidesBefore)
+            .find(options.imageSelector)
+            .filter("[src]")
+            .each(function() {
+                var clone = options.blankImage.clone(true),
+                    $this = $(this);
+                
+                $this.parent().addClass(options.notLoadedClass);
+                $this.replaceWith(clone);
+                
+                parseImageData($this, clone, options);
+            });
+            
+        current.nextAll().slice(options.maxSlidesAfter)
+            .find(options.imageSelector)
+            .filter("[src]")
+            .each(function() {
+                var clone = options.blankImage.clone(true),
+                    $this = $(this);
+                
+                $this.parent().addClass(options.notLoadedClass);
+                $this.replaceWith(clone);
+                
+                parseImageData($this, clone, options);
+            });
+        
+        if (last[0] !== current[0]) {
+            resetDimensions(last.find(options.imageSelector));
+        }
+        
+        return true;
+    }
+    
+    /**
+     *    Transition to previous slide (or last slide) in gallery
+     *
+     *
+     *    @context The gallery element
+     *
+     *    @param Event event
+     *    @return Boolean
+     */
+    function prev (event) {
+        event.preventDefault && event.preventDefault();
+        
+        var $this = $(this),
+            options = $this.data("jqt-photo-options"),
+            slides = $this.find(options.slideSelector),
+            index = Number(slides.filter("."+options.currentClass).attr(options.dataAttribute));
+           
+        addHover($this, event.target);
+           
+        $this.triggerHandler("jqt-photo-goto", [index - 1, 0, options, slides]);
+        
+        return true;
+    }
+    
+    /**
+     *    Transition to next slide (or first slide) in gallery
+     *
+     *
+     *    @context The gallery element
+     *
+     *    @param Event event
+     *    @return Boolean
+     */
+    function next (event) {
+        event.preventDefault && event.preventDefault();
+        
+        var $this = $(this),
+            options = $this.data("jqt-photo-options"),
+            slides = $this.find(options.slideSelector),
+            index = Number(slides.filter("."+options.currentClass).attr(options.dataAttribute));
+           
+        addHover($this, event.target);
+           
+        $this.triggerHandler("jqt-photo-goto", [index + 1, 0, options, slides]);
+        
+        return true;
+    }
+    
+    /**
+     *    Trigger an animation to slide up/slide down the toobars on a given gallery
+     *    using a predetermined class
+     *
+     *
+     *    @context The gallery element
+     *
+     *    @param Event event
+     *    @param Object options
+     *    @return null
+     */
+    function toggleToolbars (event, options) {
+        if (event && event.target && event.target.tagName === "A") {
+            return null;
+        }
+        
+        var gallery = $(this);
+        
+        options = options || gallery.data("jqt-photo-options");
+        
+        if (gallery.hasClass(options.toolbarHideClass)) {
+            gallery.triggerHandler("jqt-photo-show-toolbars", [options]);
+            
+        } else {
+            gallery.triggerHandler("jqt-photo-hide-toolbars", [options]);
+        }
+        return null;
+    }
+    
+    /**
+     *    Trigger an animation to slide up the toobars on a given gallery
+     *    using a predetermined class
+     *
+     *
+     *    @context The gallery element
+     *
+     *    @param Event event
+     *    @param Object options
+     *    @return null
+     */
+    function hideToolbars (event, options) {
+        var gallery = $(this);
+        
+        options = options || gallery.data("jqt-photo-options");
+        
+        if (!gallery.hasClass(options.toolbarHideClass)) {
+            gallery.one("webkitTransitionEnd",function() {
+                gallery.addClass(options.toolbarHideClass)
+                    .removeClass(options.toolbarAnimationOutClass);
+            })
+            .addClass(options.toolbarAnimationOutClass);
+        }
+        return null;
+    }
+    
+    /**
+     *    Trigger an animation to slide down the toobars on a given gallery
+     *    using a predetermined class
+     *
+     *
+     *    @context The gallery element
+     *
+     *    @param Event event
+     *    @param Object options
+     *    @return null
+     */
+    function showToolbars (event, options) {
+        var gallery = $(this);
+        
+        options = options || gallery.data("jqt-photo-options");
+        
+        if (gallery.hasClass(options.toolbarHideClass)) {
+            gallery.one("webkitTransitionEnd",function() {
+                gallery.removeClass(options.toolbarAnimationInClass);
+            })
+            .addClass(options.toolbarAnimationInClass)
+            .removeClass(options.toolbarHideClass);
+        }
+        return null;
+    }
+    
+    /**
+     *    The jQTouch animation start event
+     *
+     *    @context The gallery element
+     *
+     *    @param jQuery.Event event
+     *    @param Object info
+     *    @return null
+     */
+    function pageAnimationStart (event, info) {
+        if (info && info.direction == "in") {
+            var $this = $(this),
+                options = $this.data("jqt-photo-options"),
+                slides = $this.find(options.slideSelector),
+                index = Number(slides.filter("."+options.currentClass).attr(options.dataAttribute)),
+                n = index > -1 ? index : (options.defaultIndex > -1 ? options.defaultIndex : 0);
+                //n = (options.defaultIndex > -1 ? options.defaultIndex : 0);
+                     
+            if (slides.index("."+options.currentClass) != n) {
+                $this.triggerHandler("jqt-photo-goto", [n, 0, options, slides]);
+                $this.triggerHandler("jqt-photo-show-toolbars");
+            }
+        }
+        return null;
+    }
+    
+    /**
+     *    The jQTouch animation end event
+     *
+     *    @context The gallery element
+     *
+     *    @param jQuery.Event event
+     *    @param Object info
+     *    @return null
+     */
+    function pageAnimationEnd (event, info) {
+        var $this = $(this),
+            options = $this.data("jqt-photo-options"),
+            slides = $this.find(options.slideSelector),
+            index,n;
+            //n = (options.defaultIndex > -1 ? options.defaultIndex : 0);
+                
+        if (info && info.direction == "out") {
+            $this.triggerHandler("jqt-photo-goto", [options.defaultIndex, 0, options, slides]);
+            $this.triggerHandler("jqt-photo-show-toolbars");
+        } else {
+            index = Number(slides.filter("."+options.currentClass).attr(options.dataAttribute));
+            n = index > -1 ? index : (options.defaultIndex > -1 ? options.defaultIndex : 0)
+            $this.triggerHandler("jqt-photo-goto", [n, 0, options, slides]);
+        }
+        return null;
+    }
+    
+    /**
+     *    Create a slide for insertion using the provided information
+     *
+     *    @param Object data - the information about the slide
+     *    @param Number index - index of the data in the list
+     *    @param Object options - the information about the gallery
+     *    @param Boolean inWindow - in the slide window
+     */
+    function createSlide (data, index, options, inWindow) {
+        var slide = $(data.template || options.slideTemplate).attr(options.dataAttribute, index),
+            img = slide.find(options.imageSelector);
+        
+        parseImageData(options.gallery, img.load(options.loader), options);
+        
+        if (inWindow) {
+            img.attr("src", data.src);
+        }
+        
+        if (data.caption) {
+            slide.find(options.captionSelector).html(data.caption);
+        }
+                        
+        return slide;               
+    }
+    
+    /**
+     *    Reset the scale and position of the given images
+     *
+     *    @param jQuery images
+     *    @return jQuery
+     */
+    function resetDimensions (images) {
+        return images.each(function(i) {
+            var t = $(this),
+                data = t.data("jqt-photo-info"),
+                d = data[orientation];//,p;
+            
+            /*if (!d) {
+                p = t.parent(defaults.gallerySelector);
+                parseImageData(p, t, p.data("jqt-photo-options"));
+                d = data[orientation];
+            }*/
+            
+            //image should be resized?
+            if (d && d.current.scale != 1 && d.current.scale != d.original.scale) {
+                t.css({
+                    webkitTransitionDuration: "0s", 
+                    webkitTransform: format(data.galleryOptions.imageTransform, 
+                                            d.current.scale = d.original.scale,
+                                            d.current.left = d.original.left,
+                                            d.current.top = d.original.top
+                                     )
+                });
+                
+                d.current.width = d.original.width;
+                d.current.height = d.original.height;
+            }
+            return null;
+        });
+    }
+    
+    /**
+     *    Add the hover class to the given element on touchstart
+     *
+     *    @param jQuery gallery
+     *    @param DOMElement | jQuery element
+     *    @return null
+     */
+    function addHover (gallery, element) {
+        $(element).addClass("hover")
+        gallery.one("touchend", function(){$(element).removeClass("hover")});
+        return null;
+    }
+    
+    /**
+     *    Format a String followed by a set of arguments using the format
+     *    {0} is replaced with arguments[1]
+     *
+     *    @param String s
+     *    @param Object arg1 ... argN
+     *    @return String
+     */
+    function format (s) {
+        var args = arguments;
+        return s.replace(/\{(\d+)\}/g, function(a,b){return args[Number(b)+1] + ""});
+    }
+    
+    /**
+     *    window.onorientationchange event handler updates all slide data for the new orientation
+     *    (if it doesn't already exist) and resets the scale of the images
+     *
+     *    @return null
+     */
+    function onorientationchange () {
+        orientation = abs(window.orientation) == 90 ? "landscape" : "portrait";
+        
+        //effectively this shouldn't be necessary, but it appears to be
+        $("#jqt").removeClass("portrait landscape").addClass(orientation);
+        
+        //make sure the slides line up appropriately, use delay to ensure repaint has passed
+        setTimeout(function(){
+            var playing = [],
+                loop = function() {
+                    var $this = $(this), 
+                        options = $this.data("jqt-photo-options"),
+                        slides = $this.find(options.slideSelector),
+                        images =  slides.find(options.imageSelector);
+                    
+                    //if ($this.is(":visible")) {
+                        alignSlides($this, slides, options);
+                    //}
+                    
+                    if ($this.hasClass(options.playingClass)) {
+                        playing.push(this);
+                        $this.triggerHandler("jqt-photo-pause");
+                    }
+                    
+                    //if (!images.data("jqt-photo-info")[orientation]) {
+                    //    parseImageData($this, images, defaults);
+                    //}
+                    
+                    resetDimensions(images.filter("[src]"));
+                };
+            
+            $(galleries).filter(":visible").each(loop).end().filter(":not(:visible)").each(loop);
+            
+            $(playing).triggerHandler("jqt-photo-play");
+            
+        }, 10);
+            
+        controlPoints = {x: window.innerWidth/2, y: window.innerHeight/2};
+        
+        return null;
+    }
+    
+    /**
+     *    Reset the transform after an orientation change
+     *    to ensure that the slides are correctly aligned
+     *
+     *
+     *
+     *    @param jQuery galleries
+     *    @return jQuery
+     */
+    function alignSlides ($this, slides, options) {
+        table = $this.find(options.tableSelector),
+        position = -slides.filter("."+options.currentClass).attr("offsetLeft");
+                
+        table.data("jqt-photo-position").x = position;
+        
+        table.css({
+            webkitTransitionDuration: "0s",
+            webkitTransform: format(options.transform, position)
+        });
+        
+        return null;
+    }
+    
+    /**
+     *    image onload event handler
+     *
+     *    @context An IMG tag
+     *
+     *    @return null
+     */
+    function loader () {
+        var innerWidth = window.innerWidth,
+            innerHeight = window.innerHeight,
+            $this = $(this),
+            w = $this.width(),
+            h = $this.height(),
+            top, left,
+            scale = min(min(w, innerWidth)/w, min(h, innerHeight)/h),
+            width = w * scale,
+            height = h * scale,
+            data = $this.data("jqt-photo-info"),
+            options = data.galleryOptions;
+        
+        $this.parent().removeClass(options.notLoadedClass);
+        
+        if (!$this.is(":visible")) {
+            data.gallery.one("pageAnimationEnd", function(){parseImageData(data.gallery, $this, data.galleryOptions)});
+            
+        } else if (width > innerWidth || height > innerHeight) {
+            
+            left = -floor(((width - innerWidth) / scale) / 2);
+            
+            top = -floor(((height - innerHeight) / scale) / 2);
+            
+            $this.css({
+                 webkitTransitionDuration: "0s",
+                 webkitTransform: format(options.imageTransform, scale, left, top)
+            })
+            .addClass(options.presizedClass);
+            
+            data = data[orientation];
+            data.current.scale = data.original.scale = scale;
+            data.current.left = data.original.left = left;
+            data.current.top = data.original.top = top;
+            data.current.width = data.original.width = width * scale;
+            data.current.height = data.original.height = height * scale;
+        } 
+        
+        return null;
+    }
+    
+    //load the css on dom ready
+    $(function() {
+        window.scrollTo(0,0);
+        controlPoints = {x: window.innerWidth/2, y: window.innerHeight/2};
+        
+        if (defaults.useDynamicStyleSheet) {
+            var stringRules = "", 
+                rules = cssRules, 
+                o = window.innerHeight > window.innerWidth ? "portrait" : "landscape",
+                buildProperties = function(name, value) {
+                    stringRules += name + ":" + ($.isFunction(value) ? value(rules.variables) : value) + ";";
+                },
+                buildRules = function(name, properties) {
+                    stringRules += name + "{";
+                    
+                    $.each(properties, buildProperties);
+                    
+                    stringRules += "}";
+                };
+            
+            $.each(rules.defaults, buildRules);
+            $.each(rules[o], buildRules);
+            
+            
+            $(document.createElement("style"))
+                .attr({type:"text/css",media:"screen"})
+                .html(stringRules)
+                .appendTo("head");
+            
+            //make sure the css is correct on orientationchange
+            $(window).one("orientationchange", function() {
+                //ensure repaint
+                //setTimeout(function() {
+                    window.scrollTo(0,0);
+                    
+                    orientation = abs(window.orientation) == 90 ? "landscape" : "portrait";
+        
+                    //effectively this shouldn't be necessary, but it appears to be
+                    $("#jqt").removeClass("portrait landscape").addClass(orientation);
+                    
+                    stringRules = "";
+                    
+                    $.each(rules[orientation], buildRules);
+                    
+                    $(document.createElement("style"))
+                        .attr({type:"text/css",media:"screen"})
+                        .html(stringRules)
+                        .appendTo("head");
+                //}, 10);
+            });
+        }
+        //Orientation event listener bind
+        $(window).bind("orientationchange", onorientationchange);
+        //http://cubiq.org/iscroll-3-3-beta-2
+        //use resize instead of orientationchange
+        //$(window).bind("resize", onorientationchange);
+    });
+    
+})(jQuery);
+
 
 /**
  * 
@@ -5405,6 +8302,1279 @@ $(function(){
 		};
     }
 })(jQuery);
+
+/*!*
+ * 
+ * Add support for scrolling vertically and horizontally using jQTouch in Webkit Mobile
+ * Plus support for slides
+ *
+ * Copyright (c) 2010 Sam Shull <http://samshull.blogspot.com/>
+ * Released under MIT license
+ * 
+ * Based on the work of Matteo Spinelli, http://cubiq.org/
+ * Released under MIT license
+ * http://cubiq.org/dropbox/mit-license.txt
+ *
+ * Find more about the scrolling function at
+ * http://cubiq.org/scrolling-div-for-mobile-webkit-turns-3/16
+ *
+ * 
+ */
+    
+(function($) {
+    //we need this in the algorithm
+    if (!"WebKitCSSMatrix" in this) {
+        return null;
+    }
+    
+    var undefined,
+        
+        /**
+         *    The global object
+         *
+         *    @var Object
+         */
+        window = this,
+        
+        /**
+         *    Just to speed up access
+         *
+         *    @var DOMDocument
+         */
+        document = window.document,
+        
+        /**
+         *    Just to speed up access
+         *
+         *    @var Function
+         */
+        Number = window.Number,
+        
+        /**
+         *    Just to speed up access
+         *
+         *    @var Object
+         */
+        Math = window.Math,
+        
+        /**
+         *    Determine 3d translate support
+         *
+         *    @var Boolean
+         */
+        supports3d = ('m11' in new WebKitCSSMatrix()),
+        
+        /**
+         *    Single Object for base options 
+         *    that is used to extend the defaults
+         *
+         *    @var Object
+         */
+        base = {
+            
+            /**
+             *    A function for converting attributes into options @see attributes
+             *
+             *    @var Function
+             */
+            attributesToOptions: attributesToOptions,
+            
+            /**
+             *    A dictionary of property/accessor pairs
+             *    where the name of the property coincides with the name
+             *    of an option, and the value is either a string representing the 
+             *    name of the attribute where the value will be stored, or
+             *    a function that accepts two arguments, the first of the type DOMElement 
+             *    and the second is a string indicating the desired direction which then
+             *    returns the desired value of the property on that object
+             *
+             *    @var Object
+             */
+            attributes: {
+                //use an attribute to set the defaultDuration option
+                defaultDuration: "slidespeed",
+                //use an attribute to determine whether or not you want the default touch event cancelled
+                preventDefault: function(e,d){return $(e).attr("preventdefault") === "false" ? false : !!defaults[d].preventDefault;},
+                //use bounce?
+                bounce: function(e,d){return e.attr("bounce") === "false" ? false : defaults[d].bounce},
+                //use a scrollbar?
+                scrollBar: function(e,d){return e.hasClass("with-scrollbar")},
+                //use slides?
+                useSlides: function(e,d){return $(e).find(defaults[d].slides.selector).length > 0;}
+            },
+            
+            /**
+             *    Selectors to ignore on touch start
+             *
+             *    @var String
+             */
+            ignore: "SELECT,TEXTAREA,BUTTON,INPUT",
+            
+            /**
+             *    Should the container slide to the next container?
+             *
+             *    @var Boolean
+             */
+            useSlides: false,
+            
+            /**
+             *    Properties for handling slides
+             *
+             *    @var Object
+             */
+            slides: {
+            
+                /**
+                 *    jQuery selector for the slide containers
+                 *
+                 *    @var String
+                 */
+                selector: ".slide-container",
+            
+                /**
+                 *    Identify the current slide container
+                 *
+                 *    @var String
+                 */
+                currentClass: "jqt-slide-current",
+            
+                /**
+                 *    Portion of the slide that must be moved 
+                 *    before triggerring move to next slide
+                 *
+                 *    @var Number
+                 */
+                portion: 3,
+            
+                /**
+                 *    Amount of easing to use on slide
+                 *
+                 *    @var Number
+                 */
+                easing: 2,
+            
+                /**
+                 *    The function to determine position of next slide
+                 *
+                 *    @var Function
+                 */
+                callback: slideTo
+            },
+            
+            /**
+             *    The number of fingers required to activate the slide motion
+             *
+             *    @var Number
+             */
+            numberOfTouches: 1,
+            
+            /**
+             *    Amount of the parent container to use for a bounce
+             *
+             *    @var Number
+             */
+            divider: 6,
+            
+            /**
+             *    List of touch enevts to listen to. (Hopefully add support for non-touch one day)
+             *
+             *    @var Array<String>
+             */
+            touchEventList: ["touchend","touchmove","touchcancel"],
+            
+            /**
+             *    The return speed of a bounce
+             *
+             *    @var Number
+             */
+            bounceSpeed: 300,
+            
+            /**
+             *    The duration of a slide
+             *
+             *    @var Number
+             */
+            defaultDuration: 500,
+            
+            /**
+             *    Initial container offset in px
+             *
+             *    @var Number
+             */
+            defaultOffset: 0,
+            
+            /**
+             *    should the default be prevented on the events?
+             *
+             *    @var Boolean
+             */
+            preventDefault: true,
+            
+            /**
+             *    Limit the acceleration velocity
+             *
+             *    @var Number
+             */
+            maxScrollTime: 1000,
+            
+            /**
+             *    Friction to apply to the acceleration
+             *
+             *    @var Number
+             */
+            friction: 3,
+            
+            /**
+             *    Should the window.scrollTo(0,0) be called each time a touch event starts?
+             *
+             *    @var Boolean
+             */
+            scrollTopOnTouchstart: true,
+            
+            /**
+             *    Use bounce?
+             *
+             *    @var Boolean
+             */
+            bounce: true,
+            
+            /**
+             *    Show a scrollbar?
+             *
+             *    @var Boolean
+             */
+            scrollBar: true,
+            
+            /**
+             *    Object reference to Scrollbar object
+             *
+             *    @var ScrollBar
+             */
+            scrollBarObject: null,
+            
+            /**
+             *    Event handlers
+             *
+             *    @var Object
+             */
+            events: {
+                //
+                scrollTo: scrollTo,
+                //
+                reset: reset,
+                //
+                touchstart: touchStart,
+                //
+                touchmove: touchMove,
+                //
+                touchend: touchEnd,
+                //
+                touchcancel: touchEnd,
+                //
+                webkitTransitionEnd: transitionEnd
+            },
+            
+            /**
+             *    Function for actually performing a change to the position of
+             *    the slide container
+             *
+             *    @var Function
+             */
+            setPosition: setPosition,
+            
+            /**
+             *    Calculate the momentum of a touch event
+             *
+             *    @var Function
+             */
+            momentum: momentum
+        },
+        
+        /**
+         *
+         *
+         *    @var Object
+         */
+        defaults = {
+            /**
+             *    Vertical default settings
+             *
+             *    @var Object
+             */
+            vertical: $.extend({}, base, {
+            
+                /**
+                 *    direction of the scroll, for internal use,
+                 *    don't change this
+                 *
+                 *    @var String
+                 */
+                direction: "vertical",
+            
+                /**
+                 *    The jQuery.fn function name to find
+                 *    the inner dimension of an element
+                 *
+                 *    @var String
+                 */
+                dimension: "height",
+            
+                /**
+                 *    The jQuery.fn function name to find
+                 *    the outer dimension of an element
+                 *
+                 *    @var String
+                 */
+                outerDimension: "outerHeight",
+            
+                /**
+                 *    The property of a WebKitCSSMatrix Object initialized
+                 *    with the transform property of the given element
+                 *    that should be used to determine position
+                 *
+                 *    @var String
+                 */
+                matrixProperty: "m42",
+            
+                /**
+                 *    CSS/jQuery Selector for jQTouch
+                 *
+                 *    @var String
+                 */
+                selector: ".vertical-scroll > div",
+            
+                /**
+                 *    The property on the touch property of the event 
+                 *    object for calculating movement
+                 *
+                 *    @var String
+                 */
+                eventProperty: "pageY",
+                
+                /**
+                 *    The base transform declaration
+                 *
+                 *    @var String
+                 */
+                tranform: supports3d ? "translate3d(0,{0}px,0)" : "translate(0,{0}px)",
+                
+                /**
+                 *    
+                 *
+                 *    @var String
+                 */
+                slideProperty: "offsetTop"
+            }),
+            
+            /**
+             *    Horizontal default settings
+             *
+             *    @var Object
+             */
+            horizontal: $.extend({}, base, {
+            
+                /**
+                 *    direction of the scroll, for internal use,
+                 *    don't change this
+                 *
+                 *    @var String
+                 */
+                direction: "horizontal",
+            
+                /**
+                 *    The jQuery.fn function name to find
+                 *    the inner dimension of an element
+                 *
+                 *    @var String
+                 */
+                dimension: "width",
+            
+                /**
+                 *    The jQuery.fn function name to find
+                 *    the outer dimension of an element
+                 *
+                 *    @var String
+                 */
+                outerDimension: "outerWidth",
+            
+                /**
+                 *    The property of a WebKitCSSMatrix Object initialized
+                 *    with the transform property of the given element
+                 *    that should be used to determine position
+                 *
+                 *    @var String
+                 */
+                matrixProperty: "m41",
+            
+                /**
+                 *    CSS/jQuery Selector for jQTouch
+                 *
+                 *    @var String
+                 */
+                selector: ".horizontal-scroll > table",
+            
+                /**
+                 *    The property on the touch property of the event 
+                 *    object for calculating movement
+                 *
+                 *    @var String
+                 */
+                eventProperty: "pageX",
+                
+                /**
+                 *    The base transform declaration
+                 *
+                 *    @var String
+                 */
+                tranform: supports3d ? "translate3d({0}px,0,0)" : "translate({0}px,0)",
+                
+                /**
+                 *    slideHandler
+                 *
+                 *    @var String
+                 */
+                slideProperty: "offsetLeft"
+            })
+        },
+            
+        /**
+         *    Dynamically determine the window height minus twice the toolbar height 
+         *    for the CSS rule(s) that require specified heights
+         *
+         *    @var Function
+         */
+        bottomToolbar = function(vars){return (window.innerHeight - (vars.toolbarHeight * 2)) + "px !important"},
+            
+        /**
+         *    Dynamically determine the window height minus the toolbar height 
+         *    for the CSS rule(s) that require specified heights
+         *
+         *    @var Function
+         */
+        height = function(vars){return (window.innerHeight - vars.toolbarHeight) + "px"},
+            
+        /**
+         *    Dynamically determine the window width for the CSS rule(s) that require specified widths
+         *
+         *    @var Function
+         */
+        width = function (){return window.innerWidth + "px";},
+            
+        /**
+         *
+         *
+         *    @var Object
+         */
+        cssRules = {
+            /**
+             *
+             *
+             *    @var Object
+             */
+            variables : {
+                toolbarHeight: 46
+            },
+            
+            /**
+             *    Base CSS rules, calculated on page load regardless of orientation
+             *
+             *    @var Object
+             */
+            defaults: {
+                //the parent container
+                ".vertical-scroll": {
+                    position: "relative",
+                    "z-index": 1,
+                    overflow: "hidden",
+                    "margin-bottom": "44px",
+                    height: height
+                },
+                //the parent container with a toolbar
+                ".vertical-scroll.use-bottom-toolbar": {
+                    height: bottomToolbar
+                },
+                //the actual container being scrolled
+                ".vertical-scroll > div": {
+                    margin: "0 auto",
+                    "padding-bottom":"15px",
+                    "-webkit-transition-property": "-webkit-transform",
+                    "-webkit-transition-timing-function": "cubic-bezier(0,0,.25,1)",
+                    //overridden on element
+                    "-webkit-transform": "translate3d(0,0,0)",
+                    "-webkit-transition-duration": "0s",
+                },
+                //fullscreen rule
+                ".vertical-scroll.use-bottom-toolbar": {
+                    "margin-bottom": "0px"
+                },
+                //fullscreen rule
+                ".vertical-scroll.use-bottom-toolbar > div": {
+                    "padding-bottom":"0px"
+                },
+                //scrollbar rule
+                ".scrollbar": {
+                    "-webkit-transition-timing-function": "cubic-bezier(0,0,.25,1)",
+                    "-webkit-transform": "translate3d(0,0,0)",
+                    "-webkit-transition-property": "-webkit-transform,opacity",
+                    "-webkit-transition-duration": "0,0,0,1s",
+                    "-webkit-border-radius": "2px",
+                    "pointer-events": "none",
+                    opacity: 0,
+                    background:"rgba(0,0,0,.5)",
+                    //"-webkit-border-image": "-webkit-gradient(radial, 50% 50%, 2, 50% 50%, 4, from(rgba(0,0,0,.5)), to(rgba(0,0,0,.5))) 2",
+                    //"-webkit-box-shadow": "0 0 3px rgba(255,255,255,.5)",
+                    "-webkit-box-shadow": "0 0 2px rgba(255,255,255,.5)",
+                    position: "absolute",
+                    "z-index": 10,
+                    width: "5px",
+                    height: "5px"
+                },
+                //scrollbar rule
+                ".scrollbar.vertical": {
+                    top: "1px",
+                    right: "1px"
+                },
+                //scrollbar horizontal
+                ".scrollbar.horizontal": {
+                    bottom: "1px",
+                    left: "1px"
+                },
+                //parent container
+                ".horizontal-scroll": {
+                    width: width,
+                    height: "100%",
+                    overflow: "hidden",
+                    padding: "0px",
+                    position: "relative",
+                    //not actually required
+                    height: height,
+                    "line-height":height
+                },
+                //actual element being scrolled
+                ".horizontal-scroll > table": {
+                    height: "100%",
+                    "-webkit-transition-property": "-webkit-transform",
+                    "-webkit-transition-timing-function": "cubic-bezier(0,0,.25,1)",
+                    //overridden on element
+                    "-webkit-transform": "translate3d(0,0,0)",
+                    "-webkit-transition-duration": "0s",
+                }
+            },
+            
+            /**
+             *    Only calculated if in portrait mode
+             *
+             *    @var Object
+             */
+            portrait: {
+                ".portrait .vertical-scroll": {
+                    position: "relative",
+                    "z-index": 1,
+                    overflow: "hidden",
+                    height: height,        
+                },
+                ".portrait .vertical-scroll.use-bottom-toolbar,.portrait .horizontal-scroll.use-bottom-toolbar": {
+                    height: bottomToolbar
+                },
+                ".portrait .horizontal-scroll": {
+                    width: width
+                },
+                ".portrait .slide-container": {
+                    height: height,
+                    width: width
+                }
+            },
+            
+            /**
+             *    Only calculated if in landscape mode
+             *
+             *    @var Object
+             */
+            landscape: {
+                ".landscape .vertical-scroll": {
+                    position: "relative",
+                    "z-index": 1,
+                    overflow: "hidden",
+                    height: height,
+                },
+                ".landscape .vertical-scroll.use-bottom-toolbar,.landscape .horizontal-scroll.use-bottom-toolbar": {
+                    height: bottomToolbar
+                },
+                ".landscape .horizontal-scroll": {
+                    width: width
+                },
+                ".landscape .slide-container": {
+                    height: height,
+                    width: width
+                }
+            }
+        };
+    
+    /*
+     *    jQTouch extension
+     *    
+     */
+    if ($.jQTouch) {
+        
+        $.jQTouch.addExtension(function (jQT) {
+            var d = defaults;
+            
+            function binder (e, info) {
+                var v = d.vertical, h = d.horizontal,
+                    vertical = info.page.find(v.selector),
+                    horizontal = info.page.find(h.selector);
+                
+                vertical.verticallyScroll(v.attributesToOptions(vertical, "vertical", v.attributes));
+                horizontal.horizontallyScroll(h.attributesToOptions(horizontal, "horizontal", h.attributes));
+            }
+            
+            $(document.body).bind("pageInserted", binder);
+            
+            $(function() {
+                var v = d.vertical, 
+                    h = d.horizontal;
+                    
+                $(v.selector)
+                    .each(function() {
+                        $(this).verticallyScroll(v.attributesToOptions($(this), "vertical", v.attributes));
+                    });
+                    
+                $(h.selector)
+                    .each(function() {
+                        $(this).horizontallyScroll(h.attributesToOptions($(this), "horizontal", h.attributes));
+                    });
+            });
+            
+            return {};
+        });
+    }
+    
+    //$(window).bind("unload", window_unload);
+    
+    /**
+     *    Handler for creating options out of attributes on the scroll container
+     *
+     *    @param DOMElement element
+     *    @param String direction - "vertical" or "horizontal"
+     *    @param Object attributes - @see base.attributes
+     *    @return Object
+     */
+    function attributesToOptions (element, direction, attributes) {
+        var options = {};
+        
+        $.each(attributes, function(name, value) {
+            if ($.isFunction(value)) {
+                options[name] = value(element, direction);
+                
+            } else if (element.attr(value) != undefined) {
+                options[name] = element.attr(value);
+            }
+        });
+        
+        return options;
+    }
+    
+    /*
+     *    jQuery extensions
+     *
+     */
+    
+    /**
+     *    Attach vertical inertia scrolling to one or more objects
+     *
+     *    @param Object options - optional
+     *    @return jQuery
+     */
+    $.fn.verticallyScroll = function (options) {
+        return this.inertiaScroll("vertical", options);
+    };
+    
+    /**
+     *    Attach horizontal inertia scrolling to one or more objects
+     *
+     *    @param Object options - optional
+     *    @return jQuery
+     */
+    $.fn.horizontallyScroll = function (options) {
+        return this.inertiaScroll("horizontal", options);
+    };
+    
+    /**
+     *    Attach inertia scrolling to one or more objects
+     *
+     *    @param Object options - optional
+     *    @return jQuery
+     */
+    $.fn.inertiaScroll = function (direction, options) {
+        options = $.extend(true, {}, defaults[direction], options || {});
+        
+        return this.each(function () {
+            inertiaScroll(this, options);
+        });
+    };
+    
+    /**
+     *    Static jQUery property
+     *
+     *
+     *    @var Object
+     */
+    $.inertiaScroll = {
+    
+        /**
+         *    Set and/or retrieve the inertia scroll defaults
+         *
+         *    @param Object options - @see defaults - optional
+         *    @return Object
+         */
+        defaults: function (options) {
+            if (options !== undefined) {
+                defaults = $.extend(true, defaults, options);
+            }
+            
+            return $.extend({}, defaults);
+        },
+        
+        /**
+         *    Set and/or retrieve the inertia scroll default CSS
+         *
+         *    @param Object options - @see cssRules - optional
+         *    @return Object
+         */
+        defaultCSS: function (options) {
+            if (options !== undefined) {
+                cssRules = $.extend(true, cssRules, options);
+            }
+            
+            return $.extend({}, cssRules);
+        }
+    };
+
+    /**
+     *    Initialize the component, bind event listeners, updates CSS, etc...
+     *
+     *    @param DOMElement element
+     *    @param Object options - @see defaults
+     *    @return null
+     */
+    function inertiaScroll (element, options) {
+        var $element = $(element).data("jqt-scroll-options", options)
+                            .css("webkitTransform", format(options.tranform, options.defaultOffset)),
+            transform = $element.css("webkitTransform"),
+            matrix = transform ? new WebKitCSSMatrix(transform) : {m41:0};
+        
+        $.each(options.events, function (name, func) {
+            //these events get attatch
+            //if (!name.match(/^touchend|touchcancel|touchmove/)) {
+                element.addEventListener(name, func, false);
+            //}
+        });
+        
+        //additional bindings for jquery
+        $element.bind("reset", options.events.reset)
+                .bind("scrollTo", options.events.scrollTo);
+        
+        //store for later use
+        options.currentPosition = matrix[options.matrixProperty];
+        options.parentWidth = $element.parent()[options.dimension]();
+        
+        if (options.scrollBar && options.scrollBar === true && !options.scrollBarObject) {
+            options.scrollBarObject = $.isFunction(options.scrollBar) ? 
+                options.scrollBar($element.parent(), options.direction) :
+                Scrollbar($element.parent(), options.direction);
+        }
+        
+        return null;
+    }
+
+    /**
+     *    The default touchstart event handler function,
+     *    initializes the data for later use by the touchmove/end event handlers
+     *
+     *    @context scroll container
+     *    @param Event event
+     *    @return Boolean
+     */
+    function touchStart (event) {
+        var $this = $(this),
+            options = $this.data("jqt-scroll-options"),
+            location = event.touches[0][options.eventProperty],
+            matrix, mp,
+            dimension = $this[options.outerDimension](),
+            parent = $this.parent()[options.dimension](),
+            //maxScroll
+            endPoint = -(dimension - parent),
+            //a distance to stop inertia from hitting
+            quarter = parent / options.divider;
+            
+        //ignore some stuff
+        if (!!options.ignore && $(event.target).is(options.ignore) || event.targetTouches.length !== options.numberOfTouches) { 
+            return null;
+        }
+        
+        options.parentDimension = parent;
+        
+        //sometimes this would be a bad idea
+        if (options.scrollTopOnTouchstart) {
+            window.scrollTo(0,0);
+        }
+        
+        //figure out the base position
+        matrix = new WebKitCSSMatrix($this.css("webkitTransform"));
+        mp = matrix[options.matrixProperty];
+        
+        //store data for later
+        $this.data("jqt-scroll-current-event", {
+            startLocation: location,
+            currentLocation: location,
+            startPosition: mp,
+            lastPosition: mp,
+            currentPosition: mp,
+            startTime: event.timeStamp,
+            moved: false,
+            lastMoveTime: event.timeStamp,
+            parentDimension: parent,
+            endPoint: endPoint,
+            minScroll: !options.bounce ? 0 : quarter,
+            maxScroll: !options.bounce ? endPoint : endPoint - quarter,
+            end: false
+        });
+        
+        if (options.scrollBarObject) {
+            options.scrollBarObject.init(parent, dimension);
+        }
+        
+        options.setPosition($this, options, mp, 0);
+        
+        if (options.preventDefault) {
+            event.preventDefault();
+            return false;
+            
+        } else {
+            return true;
+        }
+    }
+
+    /**
+     *    The default touchmove event handler, performs 
+     *    immediate changes to the position of the element
+     *
+     *    @context scroll container
+     *    @param Event event
+     *    @return Boolean
+     */
+    function touchMove (event) {
+        var $this = $(this),
+            options = $this.data("jqt-scroll-options"),
+            data = $this.data("jqt-scroll-current-event"),
+            lastMoveTime = data.lastMoveTime,
+            position = event.touches[0][options.eventProperty],
+            distance = data.startLocation - position,
+            point = data.startPosition - distance,
+            duration = 0;
+        
+        //apply friction if past scroll points
+        if (point > 5) {
+            point = (point - 5) / options.friction;
+            
+        } else if (point < data.endPoint) {
+            point = data.endPoint - ((data.endPoint - point) / options.friction);
+        }
+        
+        data.currentPosition = data.lastPosition = Math.floor(point);
+        data.moved = true;
+        data.lastMoveTime = event.timeStamp;
+        data.currentLocation = position;
+        
+        if ((data.lastMoveTime - lastMoveTime) > options.maxScrollTime) {
+            data.startTime = data.lastMoveTime;
+        }
+        
+        if (options.scrollBarObject && !options.scrollBarObject.visible) {
+            options.scrollBarObject.show();
+        }
+        
+        options.setPosition($this, options, data.currentPosition, duration);
+        
+        if (options.preventDefault) {
+            event.preventDefault();
+            return false;
+            
+        } else {
+            return true;
+        }
+    }
+
+    /**
+     *    The default touchend event handler, calculates
+     *    necessary changes as a result of an event
+     *
+     *    @context scroll container
+     *    @param Event event
+     *    @return Boolean
+     */
+    function touchEnd (event) {
+        var $this = $(this),
+            options = $this.data("jqt-scroll-options"),
+            data = $this.data("jqt-scroll-current-event"),
+            theTarget, theEvent;
+        
+        if (!data.moved) {
+            if (options.scrollBarObject) {
+                options.scrollBarObject.hide();
+            }
+            
+            theTarget  = event.target;
+            
+            if(theTarget.nodeType == 3) {
+                theTarget = theTarget.parentNode;
+            }
+            
+            theEvent = document.createEvent("MouseEvents");
+            theEvent.initEvent("click", true, true);
+            theTarget.dispatchEvent(theEvent);
+            
+            if (options.preventDefault) {
+                event.preventDefault();
+                return false;
+            }
+        }
+        
+        if (options.useSlides && $.isFunction(options.slides.callback)) {
+            options.slides.callback($this, options, data, event);
+            
+        } else {
+            options.momentum($this, options, data, event);
+        }
+        
+        options.setPosition($this, options, data.currentPosition, data.duration);
+        
+        if (options.preventDefault) {
+            event.preventDefault();
+            return false;
+            
+        } else {
+            return true;
+        }
+    }
+    
+    /**
+     *    The default transitionEnd event handler, ensures that
+     *    container has not scrolled past its possible dimensions
+     *    and returns to those dimensions where appropriate
+     *
+     *    @context scroll container
+     *    @param Event event
+     *    @return null
+     */
+    function transitionEnd (event) {
+        
+        var $this = $(this),
+            options = $this.data("jqt-scroll-options"),
+            data = $this.data("jqt-scroll-current-event");
+        
+        if (data && !data.end) {
+            if (data.currentPosition > 0) {
+                data.currentPosition = 0;
+                options.setPosition($this, options, 0, options.bounceSpeed);
+                
+            } else if (data.currentPosition < data.endPoint) {
+                data.currentPosition = data.endPoint;
+                options.setPosition($this, options, data.endPoint, options.bounceSpeed);
+                
+            } else if (options.scrollBarObject) {
+                options.scrollBarObject.hide();
+            }
+            data.end = true;
+        } else if (options.scrollBarObject) {
+            options.scrollBarObject.hide();
+        }
+        
+        return null;
+    }
+
+    /**
+     *    Calculate the momentum of a touch event
+     *
+     *    @param jQuery object
+     *    @param Object options
+     *    @param Object data
+     *    @param Event event
+     *    @return null
+     */
+    function momentum (object, options, data, event) {
+        var m = Math
+            duration = m.min(options.maxScrollTime, data.lastMoveTime - data.startTime),
+            distance = data.startPosition - data.currentPosition,
+            velocity = m.abs(distance) / duration,
+            acceleration = duration * velocity * options.friction,
+            momentum = m.round(distance * velocity),
+            position = m.round(data.currentPosition - momentum);
+        
+        if (data.currentPosition > 0) {
+            position = 0;
+        } else if (data.currentPosition < data.endPoint) {
+            position = data.endPoint;
+        } else if (position > data.minScroll) {
+            acceleration = acceleration * m.abs(data.minScroll / position);
+            position = data.minScroll;
+        } else if (position < data.maxScroll) {
+            acceleration = acceleration * m.abs(data.maxScroll / position);
+            position = data.maxScroll;
+        }
+        
+        data.momentum = m.abs(momentum);
+        data.currentPosition = position;
+        data.duration = acceleration;
+        
+        return null;
+    }
+
+    /**
+     *    Calculate the position of the slide which should be showing after a touch event ends
+     *
+     *    @param jQuery container
+     *    @param Object options
+     *    @param Object data
+     *    @param Event event
+     *    @return null
+     */
+    function slideTo (container, options, data, event) {
+        var slides = container.find(options.slides.selector),
+            current = slides.filter("."+options.slides.currentClass).eq(0),
+            index,
+            distance = data.startPosition - data.currentPosition,
+            difference = current[options.dimension]() / options.slides.portion,
+            duration;
+        
+        if (!current.length) {
+            current = slides.eq(0);
+        }
+        
+        index = slides.index(current[0]);
+        slides.removeClass(options.slides.currentClass);
+        
+        if (data.currentPosition > 0) {
+            position = 0;
+            slides.eq(0).addClass(options.slides.currentClass);
+        } else if (data.currentPosition < data.endPoint) {
+            position = data.endPoint;
+            slides.eq(slides.length-1).addClass(options.slides.currentClass);
+        } else if (distance < -difference) {
+            position = -slides.eq(index > 0 ? index - 1 : 0)
+                            .addClass(options.slides.currentClass).parent().attr(options.slideProperty);
+        } else if (distance > difference) {
+            position = -slides.eq(index < slides.length-1 ? index + 1 : slides.length-1)
+                            .addClass(options.slides.currentClass).parent().attr(options.slideProperty);
+        } else {
+            position = -current.addClass(options.slides.currentClass).parent().attr(options.slideProperty);
+        }
+        
+        duration = Math.abs(data.currentPosition - position) * options.slides.easing;
+        
+        data.momentum = duration;
+        data.currentPosition = position;
+        data.duration = duration;
+        
+        return null;
+    }
+
+    /**
+     *    Return the scroll container to its default position
+     *
+     *    @context scroll container
+     *    @return mixed
+     */
+    function reset () {
+        var $this = $(this),
+            options = $this.data("jqt-scroll-options");
+        return options.setPosition($this, options, options.defaultOffset, options.defaultDuration);
+    }
+
+    /**
+     *    Return the scroll container to its default position
+     *
+     *    @context scroll container
+     *
+     *    @param Event event
+     *    @param Number offset - position to move to
+     *    @param Number duration - duration of the scroll
+     *    @return mixed
+     */
+    function scrollTo (event, offset, duration) {
+        var $this = $(this),
+            options = $this.data("jqt-scroll-options");
+            
+        return options.setPosition($this, 
+                                   options, 
+                                   offset !== undefined ? offset : (event.detail || options.currentPosition), 
+                                   duration !== undefined ? duration : options.defaultDuration);
+    }
+
+    /**
+     *    Calculate the momentum of a touch event
+     *
+     *    @param jQuery object
+     *    @param Object options
+     *    @param Number position
+     *    @param Number duration
+     *    @param String timing - timing function
+     *    @return jQuery
+     */
+    function setPosition (object, options, position, duration, timing) {
+        
+        if (options.scrollBarObject) {
+            var dimension = (object.parent()[options.dimension]() - object[options.dimension]());
+            
+            if (position > 0) {
+                dimension += Number(position);
+            }
+            
+            options.scrollBarObject.scrollTo(options.scrollBarObject.maxScroll / dimension * position, 
+                                              format("{0}ms", duration !== undefined ? duration : options.defaultDuration));
+        }
+        
+        if (duration !== undefined) {
+            object.css("webkitTransitionDuration", format("{0}ms", duration));
+        }
+        
+        if (timing !== undefined) {
+            object.css("webkitTransitionTimingFunction", timing);
+        }
+        
+        options.currentPosition = position || 0;
+        
+        return object.css("webkitTransform", format(options.tranform, options.currentPosition));
+    }
+    
+    /**
+     *    Format a String followed by a set of arguments using the format
+     *    {0} is replaced with arguments[1]
+     *
+     *    @param String s
+     *    @param Object arg1 ... argN
+     *    @return String
+     */
+    function format (s) {
+        var args = arguments;
+        return s.replace(/\{(\d+)\}/g, function(a,b){return args[Number(b)+1] + ""});
+    }
+
+    /**
+     *    Entirely the work of Matteo Spinelli
+     *    I just took out the overflow restriction and
+     *    simplified the DOM creation with jQuery
+     *
+     *
+     */
+    function Scrollbar (object, direction) {
+        if (!(this instanceof Scrollbar)) {
+            return new Scrollbar(object, direction);
+        }
+        
+        this.direction = direction;
+        this.bar = $(document.createElement("div"))
+            .addClass("scrollbar " + direction)
+            .appendTo(object)[0];
+    }
+    
+    Scrollbar.prototype = {
+            direction: "vertical",
+            transform: supports3d ? "translate3d({0}px,{1}px,0)" : "translate({0}px,{1}px)",
+            size: 0,
+            maxSize: 0,
+            maxScroll: 0,
+            visible: false,
+            offset: 0,
+            
+            init: function (scroll, size) {
+                this.offset = this.direction == "horizontal" ? 
+                                this.bar.offsetWidth - this.bar.clientWidth : 
+                                this.bar.offsetHeight - this.bar.clientHeight;
+                                
+                this.maxSize = scroll - 8;        // 8 = distance from top + distance from bottom
+                this.size = Math.round(this.maxSize * this.maxSize / size) + this.offset;
+                this.maxScroll = this.maxSize - this.size;
+                this.bar.style[this.direction == "horizontal" ? "width" : "height"] = (this.size - this.offset) + "px";
+            },
+            
+            setPosition: function (pos) {
+                this.bar.style.webkitTransform = format(this.transform, 
+                                                        this.direction == "horizontal" ? 
+                                                        Math.round(pos) : 
+                                                        0, 
+                                                        this.direction == "horizontal" ? 
+                                                        0 : 
+                                                        Math.round(pos)
+                                                        );
+            },
+            
+            scrollTo: function (pos, runtime) {
+                this.bar.style.webkitTransitionDuration = (runtime || "400ms") + ",300ms";
+                this.setPosition(pos);
+            },
+            
+            show: function () {
+                this.visible = true;
+                this.bar.style.opacity = "1";
+            },
+        
+            hide: function () {
+                this.visible = false;
+                this.bar.style.opacity = "0";
+            },
+            
+            remove: function () {
+                this.bar.parentNode.removeChild(this.bar);
+                return null;
+            }
+    };
+    
+    //load stylesheet(s)
+    $(function() {
+        window.scrollTo(0,0);
+        var stringRules = "", 
+            rules = cssRules, 
+            o = window.innerHeight > window.innerWidth ? "portrait" : "landscape",
+            buildProperties = function (name, value) {
+                stringRules += name + ":" + ($.isFunction(value) ? value(rules.variables) : value) + ";";
+            },
+            buildRules = function (name, properties) {
+                stringRules += name + "{";
+                
+                $.each(properties, buildProperties);
+                
+                stringRules += "}";
+            };
+        
+        $.each(rules.defaults, buildRules);
+        $.each(rules[o], buildRules);
+        
+        
+        $(document.createElement("style"))
+            .attr({type:"text/css",media:"screen"})
+            .html(stringRules)
+            .appendTo("head");
+        
+        $(window).one("orientationchange", function () {
+            //ensure repaint
+            setTimeout(function () {
+                window.scrollTo(0,0);
+                stringRules = "";
+                o = window.innerHeight > window.innerWidth ? "portrait" : "landscape";
+                
+                $.each(rules[o], buildRules);
+                
+                $(document.createElement("style"))
+                    .attr({type:"text/css",media:"screen"})
+                    .html(stringRules)
+                    .appendTo("head");
+            },30)
+        });
+    });
+    
+})(jQuery);
+
 
 /**
  * 
@@ -6446,4 +10616,851 @@ $(function(){
 			}
 		};
     }
+})(jQuery);
+
+/**
+ * 
+ * Add support for scrolling vertically using jQTouch in Webkit Mobile
+ *
+ * Copyright (c) 2010 Sam Shull <http://samshull.blogspot.com/>
+ * Released under MIT license
+ * 
+ * Based on the work of 
+ *
+ * Copyright (c) 2009 Matteo Spinelli, http://cubiq.org/
+ * Released under MIT license
+ * http://cubiq.org/dropbox/mit-license.txt
+ *
+ * Find more about the scrolling function at
+ * http://cubiq.org/scrolling-div-for-mobile-webkit-turns-3/16
+ * 
+ * Version 3.2 - Last updated: 2010.05.31
+ * 
+ */
+
+(function($) {
+    
+    var undefined,
+		
+		/**
+		 *
+		 *
+		 *
+		 */
+        window = this,
+		
+		/**
+		 *
+		 *
+		 *
+		 */
+        document = window.document,
+		
+		/**
+		 *
+		 *
+		 *
+		 */
+        defaults = {
+            /**
+             *
+             *
+             *
+             */
+            selector: ".vertical-scroll > div",
+            
+            /**
+             *
+             *
+             *
+             */
+            attributesToOptions: attributesToOptions,
+            
+            /**
+             *
+             *
+             *
+             */
+            attributes: {
+                defaultDuration: "slidespeed",
+                preventDefault: "preventdefault",
+                bounce: function(e){return e.attr("bounce") === "false" ? false : defaults.bounce},
+                scrollBar: function(e){return e.hasClass("with-scrollbar")}
+            },
+            
+            /**
+             *
+             *
+             *
+             */
+            ignoreTags: "SELECT,TEXTAREA,BUTTON,INPUT",
+            
+            /**
+             *
+             *
+             *
+             */
+            eventProperty: "pageY",
+            
+            /**
+             *
+             *
+             *
+             */
+            numberOfTouches: 1,
+            
+            /**
+             *
+             *
+             *
+             */
+			touchEventList: ["touchend","touchmove","touchcancel"],
+            
+            /**
+             *
+             *
+             *
+             */
+			bounceSpeed: 300,
+            
+            /**
+             *
+             *
+             *
+             */
+            defaultDuration: 500,
+            
+            /**
+             *
+             *
+             *
+             */
+            defaultTransform: "translate3d({0}px,0,0)",
+            
+            /**
+             *
+             *
+             *
+             */
+            defaultOffset: 0,
+            
+            /**
+             *
+             *
+             *
+             */
+            preventDefault: true,
+            
+            /**
+             *
+             *
+             *
+             */
+            maxScrollTime: 1000,
+            
+            /**
+             *
+             *
+             *
+             */
+            friction: 3,
+            
+            /**
+             *
+             *
+             *
+             */
+            scrollTopOnTouchstart: true,
+            
+            /**
+             *
+             *
+             *
+             */
+            bounce: true,
+            
+            /**
+             *
+             *
+             *
+             */
+            scrollBar: true,
+            
+            /**
+             *
+             *
+             *
+             */
+            scrollBarElement: null,
+            
+            /**
+             *
+             *
+             *
+             */
+            scrollBarOptions: {},
+            
+            /**
+             *
+             *
+             *
+             */
+            events: {
+                touchstart: touchStart,
+                touchmove: touchMove,
+                touchend: touchEnd,
+                touchcancel: touchEnd,
+                webkitTransitionEnd: transitionEnd,
+                //unload: unload
+            },
+            
+            /**
+             *
+             *
+             *
+             */
+            setPosition: setPosition,
+            
+            /**
+             *
+             *
+             *
+             */
+            reset: reset,
+            
+            /**
+             *
+             *
+             *
+             */
+            momentum: momentum
+        },
+            
+        /**
+         *
+         *
+         *
+         */
+        bottomToolbar = function(vars){return (window.innerHeight - (vars.toolbarHeight * 2)) + "px !important"},
+            
+        /**
+         *
+         *
+         *
+         */
+        height = function(vars){return (window.innerHeight - vars.toolbarHeight) + "px"},
+            
+        /**
+         *
+         *
+         *
+         */
+        cssRules = {
+            variables : {
+                toolbarHeight: 45
+            },
+            defaults: {
+                ".vertical-scroll": {
+                    position: "relative",
+                    "z-index": 1,
+                    overflow: "hidden",
+                    height: height
+                },
+                ".vertical-scroll.use-bottom-toolbar": {
+                    height: bottomToolbar
+                },
+                ".vertical-scroll > div": {
+                    margin: "0 auto",
+                    "padding-bottom":"5px",
+                    "-webkit-transition-property": "-webkit-transform",
+                    "-webkit-transition-timing-function": "cubic-bezier(0,0,.25,1)",
+                    "-webkit-transform": "translate3d(0,0,0)",
+                    "-webkit-transition-duration": 0,
+                },
+                "#jqt.fullscreen .vertical-scroll.use-bottom-toolbar > div": {
+                    "padding-bottom":"0px"
+                },
+                ".vertical-scroll .scrollbar.vertical": {
+                    "-webkit-transition-timing-function": "cubic-bezier(0,0,.25,1)",
+                    "-webkit-transform": "translate3d(0,0,0)",
+                    "-webkit-transition-property": "-webkit-transform,opacity",
+                    "-webkit-transition-duration": "0,1s",
+                    "-webkit-border-radius": "4px",
+                    "pointer-events": "none",
+                    opacity: 0,
+					"-webkit-border-image": "-webkit-gradient(radial, 50% 50%, 2, 50% 50%, 4, from(rgba(0,0,0,.5)), to(rgba(0,0,0,.5))) 3",
+                    position: "absolute",
+                    "z-index": 10,
+                    width: "1px",
+                    height: "5px",
+                    top: "1px",
+                    right: "1px"
+                }
+            },
+            portrait: {
+                ".portrait .vertical-scroll": {
+                    position: "relative",
+                    "z-index": 1,
+                    overflow: "hidden",
+                    height: height,        
+                },
+                ".portrait .vertical-scroll.use-bottom-toolbar": {
+                    height: bottomToolbar
+                }
+            },
+            landscape: {
+                ".landscape .vertical-scroll": {
+                    position: "relative",
+                    "z-index": 1,
+                    overflow: "hidden",
+                    height: height,
+                },
+                ".landscape .vertical-scroll.use-bottom-toolbar": {
+                    height: bottomToolbar
+                }
+            }
+        };
+    
+    /*
+     *
+     *
+     *	
+     */
+    if ($.jQTouch) {
+        
+        $.jQTouch.addExtension(function (jQT){
+            
+            function binder (e, info) {
+                var vertical = info.page.find(defaults.selector);
+                
+                vertical.scrollVertically(defaults.attributesToOptions(vertical, defaults.attributes));
+            }
+            
+            $(document.body).bind("pageInserted", binder);
+            
+            $(function() {
+                $(defaults.selector)
+                    .each(function() {
+                        $(this).scrollVertically(defaults.attributesToOptions($(this), defaults.attributes));
+                    });
+            });
+            
+            return {};
+        });
+    }
+    
+    //$(window).bind("unload", window_unload);
+    
+    /**
+     *
+     *
+	 *	@param DOMElement element
+     *	@param Object attributes
+	 *	@return Object
+     */
+    function attributesToOptions (element, attributes) {
+        var options = {};
+        
+        $.each(attributes, function(name, value) {
+            if ($.isFunction(value)) {
+                options[name] = value(element);
+            } else if (element.attr(value) != undefined) {
+                options[name] = element.attr(value);
+            }
+        });
+        
+        return options;
+    }
+    
+    /**
+     *
+     *
+     *	@param Object options - optional
+	 *	@return jQuery
+     */
+    $.fn.scrollVertically = function (options) {
+        options = $.extend(true, {}, defaults, options || {});
+        
+        return this.each(function () {
+            VerticalScroll(this, options);
+        });
+    };
+    
+    /**
+     *
+     *
+     *	@param Object options - @see defaults - optional
+	 *	@return Object
+     */
+    $.fn.scrollVertically.defaults = function (options) {
+        if (options !== undefined) {
+            defaults = $.extend(true, defaults, options);
+        }
+        
+        return $.extend({}, defaults);
+    };
+    
+    /**
+     *
+     *
+     *	@param Object options - @see cssRules - optional
+	 *	@return Object
+     */
+    $.fn.scrollVertically.defaultCSS = function (options) {
+        if (options !== undefined) {
+            cssRules = $.extend(true, cssRules, options);
+        }
+        
+        return $.extend({}, cssRules);
+    };
+
+    /**
+     *
+     *
+     *	@param DOMElement element
+	 *	@param Object options - @see defaults
+     */
+    function VerticalScroll (element, options) {
+        var $element = $(element).data("jqt-vertical-scroll-options", options)
+                            .css("webkitTransform", format(options.defaultTransform, options.defaultOffset)),
+            transform = $element.css("webkitTransform"),
+            matrix = transform ? new WebKitCSSMatrix(transform) : {m41:0};
+        
+        $.each(options.events, function (name, func) {
+            //these events get attatch
+			if (!name.match(/^touchend|touchcancel|touchmove/)) {
+				element.addEventListener(name, func, false);
+			}
+        });
+		
+		//setup an event delegate for touchend/cancel/move events
+		//safari doesn't fire a touchend event if the finger moves off the screen onto the toolbar
+		//thought this would help - sadly no
+		//detecting the location of the last touchmove event was useless
+		//got any ideas?
+		options.delegate = function (event) {
+			if (options.events[event.type]) {
+				return options.events[event.type].call(element, event);
+			}
+			return null;
+		};
+        
+        //store for later use
+        options.currentPosition = matrix.m41;
+        options.parentWidth = $element.parent().width();
+        
+        if (options.scrollBar && options.scrollBar === true && !options.scrollBarElement) {
+            options.scrollBarElement = $.isFunction(options.scrollBar) ? 
+                options.scrollBar($element.parent(), "vertical", options.scrollBarOptions || {}) :
+                Scrollbar($element.parent(), "vertical", options.scrollBarOptions || {});
+        }
+		
+		return null;
+    }
+
+    /**
+     *
+     *
+     *
+     */
+    function touchStart (event) {
+        var $this = $(this),
+            options = $this.data("jqt-vertical-scroll-options"),
+			location = event.touches[0][options.eventProperty],
+            matrix, 
+            height = $this.outerHeight(),
+            parentHeight = $this.parent().height(),
+            endPoint = -(height - parentHeight),
+            quarter = parentHeight / 6;
+        
+        options.parentHeight = parentHeight;
+        
+        if (options.scrollTopOnTouchstart) {
+            window.scrollTo(0,0);
+        }
+        
+        if (!!options.ignoreTags && $(event.target).is(options.ignoreTags) || event.targetTouches.length !== options.numberOfTouches) { 
+            return null;
+        }
+        
+        matrix = new WebKitCSSMatrix($this.css("webkitTransform"));
+        
+        $this.data("jqt-vertical-scroll-current-event", {
+            startLocation: location,
+			currentLocation: location,
+            startPosition: matrix.m42,
+            lastPosition: matrix.m42,
+            currentPosition: matrix.m42,
+            startTime: event.timeStamp,
+            moved: false,
+            lastMoveTime: event.timeStamp,
+            parentHeight: parentHeight,
+            endPoint: endPoint,
+            minScroll: !options.bounce ? 0 : quarter,
+            maxScroll: !options.bounce ? endPoint : endPoint - quarter,
+            end: false
+        });
+        
+        if (options.scrollBarElement) {
+            options.scrollBarElement.init(parentHeight, height);
+        }
+        
+        options.setPosition($this, options, matrix.m42, "0");
+		
+		$.each(options.touchEventList, function (index, name) {
+			window.addEventListener(name, options.delegate, false);
+		});
+        
+        if (options.preventDefault) {
+            event.preventDefault();
+            //event.stopPropagation();
+            return false;
+            
+        } else {
+            return true;
+        }
+    }
+
+    /**
+     *
+     *
+     *
+     */
+    function touchMove (event) {
+        var $this = $(this),
+            options = $this.data("jqt-vertical-scroll-options"),
+            data = $this.data("jqt-vertical-scroll-current-event"),
+            lastMoveTime = data.lastMoveTime,
+            position = event.touches[0][options.eventProperty],
+            distance = data.startLocation - position,
+            point = data.startPosition - distance,
+            duration = 0;
+        
+        //apply friction if past scroll points
+        if (point > 5) {
+            point = (point - 5) / options.friction;
+        } else if (point < data.endPoint) {
+            point = data.endPoint - ((data.endPoint - point) / options.friction);
+        }
+        
+        data.currentPosition = data.lastPosition = Math.floor(point);
+        data.moved = true;
+        data.lastMoveTime = event.timeStamp;
+		data.currentLocation = position;
+        
+        if ((data.lastMoveTime - lastMoveTime) > options.maxScrollTime) {
+            data.startTime = data.lastMoveTime;
+        }
+        
+        if (options.scrollBarElement && !options.scrollBarElement.visible) {
+            options.scrollBarElement.show();
+        }
+        
+        options.setPosition($this, options, data.currentPosition, duration);
+        
+        if (options.preventDefault) {
+            event.preventDefault();
+            //event.stopPropagation();
+            return false;
+            
+        } else {
+            return true;
+        }
+    }
+
+    /**
+     *
+     *
+     *
+     */
+    function touchEnd (event) {
+        var $this = $(this),
+            options = $this.data("jqt-vertical-scroll-options"),
+            data = $this.data("jqt-vertical-scroll-current-event"),
+            theTarget, theEvent;
+        
+        if (!data.moved) {
+			if (options.scrollBarElement) {
+                options.scrollBarElement.hide();
+            }
+            theTarget  = event.target;
+            if(theTarget.nodeType == 3) {
+                theTarget = theTarget.parentNode;
+            }
+            theEvent = document.createEvent("MouseEvents");
+            theEvent.initEvent("click", true, true);
+            theTarget.dispatchEvent(theEvent);
+            
+            if (options.preventDefault) {
+                event.preventDefault();
+                //event.stopPropagation();
+                return false;
+            }
+        }
+        
+        options.momentum($this, options, data, event);
+        
+        options.setPosition($this, options, data.currentPosition, data.duration);
+		
+		$.each(options.touchEventList, function (index, name) {
+			window.removeEventListener(name, options.delegate, false);
+		});
+        
+        if (options.preventDefault) {
+            event.preventDefault();
+            //event.stopPropagation();
+            return false;
+            
+        } else {
+            return true;
+        }
+    }
+    /**
+     *
+     *
+     *
+     */
+    function transitionEnd (e) {
+        
+        var $this = $(this),
+            options = $this.data("jqt-vertical-scroll-options"),
+            data = $this.data("jqt-vertical-scroll-current-event");
+        
+        if (data && !data.end) {
+            if (data.currentPosition > 0) {
+                data.currentPosition = 0;
+                options.setPosition($this, options, 0, options.bounceSpeed);
+            } else if (data.currentPosition < data.endPoint) {
+                data.currentPosition = data.endPoint;
+                options.setPosition($this, options, data.endPoint, options.bounceSpeed);
+            } else if (options.scrollBarElement) {
+                options.scrollBarElement.hide();
+            }
+            data.end = true;
+        } else if (options.scrollBarElement) {
+            options.scrollBarElement.hide();
+        }
+        
+        return null;
+    }
+
+    /**
+     *
+     *
+     *
+     */
+    function momentum (object, options, data, event) {
+        var duration = Math.min(options.maxScrollTime, data.lastMoveTime - data.startTime),
+            distance = data.startPosition - data.currentPosition,
+            velocity = Math.abs(distance) / duration,
+            acceleration = duration * velocity * options.friction,
+            momentum = Math.round(distance * velocity),
+            position = Math.round(data.currentPosition - momentum);
+        
+        if (data.currentPosition > 0) {
+            position = 0;
+        } else if (data.currentPosition < data.endPoint) {
+            position = data.endPoint;
+        } else if (position > data.minScroll) {
+            acceleration = acceleration * Math.abs(data.minScroll / position);
+            position = data.minScroll;
+        } else if (position < data.maxScroll) {
+            acceleration = acceleration * Math.abs(data.maxScroll / position);
+            position = data.maxScroll;
+        }
+        
+        data.momentum = Math.abs(momentum);
+        data.currentPosition = position;
+        data.duration = acceleration;
+        
+        return null;
+    }
+
+    /**
+     *
+     *
+     *
+     *
+    function momentum (object, options, data, event) {
+        var duration = Math.min(options.maxScrollTime, data.lastMoveTime - data.startTime),
+            distance = data.startPosition - data.currentPosition,
+            velocity = Math.abs(distance) / duration,
+            acceleration = duration * velocity * options.friction,
+            momentum = Math.round(distance * velocity),
+            position = Math.round(data.currentPosition - momentum);
+        
+        if (data.currentPosition > 0) {
+            position = 0;
+        } else if (data.currentPosition < data.endPoint) {
+            position = data.endPoint;
+        } else if (position > data.minScroll) {
+            acceleration = acceleration * Math.abs(data.minScroll / position);
+            position = data.minScroll;
+        } else if (position < data.maxScroll) {
+            acceleration = acceleration * Math.abs(data.maxScroll / position);
+            position = data.maxScroll;
+        }
+        
+        data.momentum = position / data.currentPosition;
+        data.currentPosition = position;
+        data.duration = acceleration;
+        
+        return null;
+    }
+
+    /**
+     *
+     *
+     *
+     */
+    function reset (object, options) {
+        return options.setPosition(object, options, 0, options.defaultDuration);
+    }
+
+    /**
+     *
+     *
+     *
+     */
+    function setPosition (object, options, position, duration, timing) {
+        
+        if (options.scrollBarElement) {
+            var height = (object.parent().height() - object.height());
+            
+            if (position > 0) {
+                height += Number(position);
+            }
+            
+            options.scrollBarElement.scrollTo(options.scrollBarElement.maxScroll / height * position, 
+                                              format("{0}ms", duration !== undefined ? duration : options.defaultDuration));
+        }
+        
+        if (duration !== undefined) {
+            object.css("webkitTransitionDuration", format("{0}ms", duration));
+        }
+        
+        if (timing !== undefined) {
+            object.css("webkitTransitionTimingFunction", timing);
+        }
+        
+        options.currentPosition = position || 0;
+        
+        return object.css("webkitTransform", format("translate3d(0, {0}px, 0)", options.currentPosition));
+    }
+    
+    /**
+     *    Format a String followed by a set of arguments using the format
+     *    {0} is replaced with arguments[1]
+     *
+     *    @param String s
+     *    @param Object arg1 ... argN
+     *    @return String
+     */
+    function format (s) {
+        var args = arguments;
+        return s.replace(/\{(\d+)\}/g, function(a,b){return args[Number(b)+1] + ""});
+    }
+
+    /**
+     *
+     *
+     *
+     */
+    function Scrollbar (object, direction, options) {
+        if (!(this instanceof Scrollbar)) {
+            return new Scrollbar(object, direction, options);
+        }
+        
+        this.direction = direction;
+        this.bar = $(document.createElement("div"))
+            .addClass("scrollbar " + direction)
+            .appendTo(object)[0];
+    }
+    
+    Scrollbar.prototype = {
+            direction: "vertical",
+            size: 0,
+            maxSize: 0,
+            maxScroll: 0,
+            visible: false,
+            
+            init: function (scroll, size) {
+                var offset = this.direction == "horizontal" ? 
+                                this.bar.offsetWidth - this.bar.clientWidth : 
+                                this.bar.offsetHeight - this.bar.clientHeight;
+                                
+                this.maxSize = scroll - 8;        // 8 = distance from top + distance from bottom
+                this.size = Math.round(this.maxSize * this.maxSize / size) + offset;
+                this.maxScroll = this.maxSize - this.size;
+                this.bar.style[this.direction == "horizontal" ? "width" : "height"] = (this.size - offset) + "px";
+            },
+            
+            setPosition: function (pos) {
+                pos = this.direction == "horizontal" ? "translate3d(" + Math.round(pos) + "px,0,0)" : "translate3d(0," + Math.round(pos) + "px,0)";
+                this.bar.style.webkitTransform = pos;
+            },
+            
+            scrollTo: function (pos, runtime) {
+                this.bar.style.webkitTransitionDuration = (runtime || "400ms") + ",300ms";
+                this.setPosition(pos);
+            },
+            
+            show: function () {
+                this.visible = true;
+                this.bar.style.opacity = "1";
+            },
+        
+            hide: function () {
+                this.visible = false;
+                this.bar.style.opacity = "0";
+            },
+            
+            remove: function () {
+                this.bar.parentNode.removeChild(this.bar);
+                return null;
+            }
+    };
+    
+    //load stylesheet(s)
+    $(function() {
+        window.scrollTo(0,0);
+        var stringRules = "", 
+            rules = cssRules, 
+            o = window.innerHeight > window.innerWidth ? "portrait" : "landscape",
+            buildProperties = function (name, value) {
+                stringRules += name + ":" + ($.isFunction(value) ? value(rules.variables) : value) + ";";
+            },
+            buildRules = function (name, properties) {
+                stringRules += name + "{";
+                
+                $.each(properties, buildProperties);
+                
+                stringRules += "}";
+            };
+        
+        $.each(rules.defaults, buildRules);
+        $.each(rules[o], buildRules);
+        
+        
+        $(document.createElement("style"))
+            .attr({type:"text/css",media:"screen"})
+            .html(stringRules)
+            .appendTo("head");
+        
+        $(window).one("orientationchange", function () {
+            //ensure repaint
+            setTimeout(function () {
+                window.scrollTo(0,0);
+                stringRules = "";
+                
+                $.each(rules[window.innerHeight > window.innerWidth ? "portrait" : "landscape"], buildRules);
+                
+                $(document.createElement("style"))
+                    .attr({type:"text/css",media:"screen"})
+                    .html(stringRules)
+                    .appendTo("head");
+            },30)
+        });
+    });
+    
 })(jQuery);

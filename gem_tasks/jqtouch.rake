@@ -24,17 +24,22 @@ all_scripts = [
   'js/jquery.event.drag-1.0.js',
   'js/jquery.event.drop-1.0.js',
   'js/jquery.touch.js',
+  'js/scrolling.css.js',
   'js/chain.js',
   'js/extensions/jqt.autotitles.js',
   'js/extensions/jqt.database.js',
   'js/extensions/jqt.dynamicheight.js',
   'js/extensions/jqt.floaty.js',
   'js/extensions/jqt.gestures.js',
+  'js/extensions/jqt.horizontal-scroll.js',
   'js/extensions/jqt.location.js',
   'js/extensions/jqt.offline.js',
+  'js/extensions/jqt.photo.js',
   'js/extensions/jqt.scaling.js',
+  'js/extensions/jqt.scroll.js',
   'js/extensions/jqt.scrolling.js',
-  'js/extensions/jqt.sliding.js'
+  'js/extensions/jqt.sliding.js',
+  'js/extensions/jqt.vertical-scroll.js'
 ].collect {|filename| File.read(File.join(JQTOUCH_SRC, filename))}.join "\n\n"
 
 all_stylesheets = [
@@ -42,7 +47,8 @@ all_stylesheets = [
   'css/scrolling.css',
   'css/spinningwheel.css',
   'css/zflow.css',
-  'css/jqtouch-ical.css'  
+  'css/jqtouch-ical.css',
+  'css/jqt.photo.css'  
 ].collect {|filename| File.read(File.join(JQTOUCH_SRC, filename))}.join "\n\n"
 
 namespace :build do

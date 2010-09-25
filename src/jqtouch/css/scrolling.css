@@ -38,22 +38,62 @@
     height: 370px;        
 }
 
+.fullscreen.profile .vertical-scroll, 
+.fullscreen.profile .vertical-slide 
+{
+	height:420px;
+}
+
 .landscape .vertical-scroll, 
 .landscape .vertical-slide
 {
 	height: 230px;
 }
+
+.fullscreen.landscape .vertical-scroll, 
+.fullscreen.landscape .vertical-slide {height:255px;}
+
+
 .vertical-scroll > div, 
 .vertical-slide > div
 {
     margin: 0 auto;
+	padding-bottom:5px;
 }
-.vertical-scroll.use-bottom-toolbar, .vertical-slide.use-bottom-toolbar
+
+.fullscreen .vertical-scroll > div, 
+.fullscreen .vertical-slide > div 
+{
+	padding-bottom:10px;
+}
+
+.fullscreen .vertical-scroll.use-bottom-toolbar > div, 
+.fullscreen .vertical-slide.use-bottom-toolbar > div 
+{
+	padding-bottom:0;
+}
+
+.vertical-scroll.use-bottom-toolbar, 
+.vertical-slide.use-bottom-toolbar
 {
 	height: 325px !important;
 }
-.landscape .vertical-scroll.use-bottom-toolbar, .landscape .vertical-slide.use-bottom-toolbar
+
+.fullscreen.profile .vertical-scroll.use-bottom-toolbar, 
+.fullscreen.profile .vertical-slide.use-bottom-toolbar
+{
+	height: 370px !important;
+}
+
+.landscape .vertical-scroll.use-bottom-toolbar, 
+.landscape .vertical-slide.use-bottom-toolbar
 {
 	height: 185px !important;
+}
+
+.fullscreen.landscape .vertical-scroll.use-bottom-toolbar, 
+.fullscreen.landscape .vertical-slide.use-bottom-toolbar
+{
+	height: 210px !important;
 }
 
