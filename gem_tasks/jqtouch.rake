@@ -119,6 +119,16 @@ namespace :build do
         next if /^\./ =~ image
         FileUtils.cp(File.join(src_dir, image), dest_dir)    
         manifest.print "image 'jqtouch/ical/#{image}'\n"
+      end
+      
+      # Photo Images
+      FileUtils.mkdir_p(File.join(JQTOUCH_DEST_IMAGES, 'photo'))    
+      src_dir = File.join(JQTOUCH_SRC_IMAGES, 'photo')
+      dest_dir = File.join(JQTOUCH_DEST_IMAGES, 'photo')      
+      Dir.foreach(src_dir) do |image|
+        next if /^\./ =~ image
+        FileUtils.cp(File.join(src_dir, image), dest_dir)    
+        manifest.print "image 'jqtouch/photo/#{image}'\n"
       end 
       
       # iPhone Icons    
