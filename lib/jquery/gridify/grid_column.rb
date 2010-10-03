@@ -31,7 +31,7 @@ module Gridify
                   
                   # visiblity
                   #:always_hidden,          # (false)
-                  :sorttype,
+                  :sort_type,
                   :summary_type,
                   :summary_tpl,
                   :hidden                   # initial hide state (false)
@@ -100,7 +100,7 @@ module Gridify
       vals[:resizable]  = false         if resizable==false
       vals[:fixed]      = fixed_width   unless fixed_width==false
       vals[:sortable]   = false         if sortable==false
-      vals[:sorttype]   = jqgrid_type   if sortable 
+      vals[:sort_type]   = jqgrid_type   if sortable 
       vals[:search]     = false         if searchable==false  
       vals[:editable]   = true          if editable
       vals[:align]      = align         if align
@@ -119,7 +119,7 @@ module Gridify
       vals[:editoptions]    = edit_options if editable && edit_options
       vals[:editrules]      = validations  if editable && validations
       
-      vals[:sorttype]       = sorttype if sorttype
+      vals[:sort_type]      = sort_type if sort_type
       vals[:summaryType]    = summary_type if summary_type
       vals[:summaryTpl]     = summary_tpl if summary_tpl
       # and more...

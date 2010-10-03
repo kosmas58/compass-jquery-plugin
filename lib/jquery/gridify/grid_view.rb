@@ -115,7 +115,6 @@ module Gridify
       vals[:postData]          = { :grid => name, :datatype => data_type } #identify which grid making the request
       vals[:colNames]          = colNames if colNames.present?
       vals[:colModel]          = column_model if colModel.present?
-      #vals[:colModel]          = colModel if colModel.present?
       vals[:datatype]          = data_type if data_type
       if data_format.present?
         case data_type
