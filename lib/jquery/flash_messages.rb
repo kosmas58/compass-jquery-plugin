@@ -22,17 +22,17 @@ module FlashMessages
 #      end
 #    end
     
-  FLASH_NOTICE_KEYS = [:error, :warning, :notice, :success]
-
-  def flash_messages
-    return unless messages = flash.keys.select{|k| FLASH_NOTICE_KEYS.include?(k)}
-    formatted_messages = messages.map do |type|      
-      content_tag(:div, nil, :class => type.to_s) do
-        message_for_item(flash[type], flash["#{type}_item".to_sym])
+    FLASH_NOTICE_KEYS = [:error, :warning, :notice, :success]
+  
+    def flash_messages
+      return unless messages = flash.keys.select{|k| FLASH_NOTICE_KEYS.include?(k)}
+      formatted_messages = messages.map do |type|      
+        content_tag(:div, nil, :class => type.to_s + " ui-corner-all") do
+          message_for_item(flash[type], flash["#{type}_item".to_sym])
+        end
       end
+      formatted_messages.join
     end
-    formatted_messages.join
-  end
 
     def message_for_item(message, item = nil)
       if item.is_a?(Array)
