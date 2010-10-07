@@ -1,7 +1,7 @@
 /*****************************************************************************
  *  FILE:  anytime.js - The Any+Time(TM) JavaScript Library (source)
  *
- *  VERSION: 4.1112D
+ *  VERSION: 4.1112E
  *
  *  Copyright 2008-2010 Andrew M. Andrews III (www.AMA3.com). Some Rights 
  *  Reserved. This work licensed under the Creative Commons Attribution-
@@ -145,11 +145,6 @@ var AnyTime =
   	$(document).ready( 
   		function()
 		{
-			//  Ping the server for statistical purposes (remove if offended).
-			
-  			if ( window.location.hostname.length && ( window.location.hostname != 'www.ama3.com' ) )
-  				$(document.body).append('<img src="http://www.ama3.com/anytime/ping/?4.1112A'+(AnyTime.utcLabel?".tz":"")+'" width="0" height="0" />');
-			
 			//  IE6 doesn't float popups over <select> elements unless an
 			//	<iframe> is inserted between them!  The <iframe> is added to
 			//	the page *before* the popups are moved, so they will appear
@@ -1392,7 +1387,7 @@ AnyTime.picker = function( id, options )
 		{
 			_this = this;
 
-			this.id = 'AnyTime--'+id;
+      this.id = 'AnyTime--'+id.replace(/[^-_.A-Za-z0-9]/g,'--AnyTime--');
 
 			options = jQuery.extend(true,{},options||{});
 		  	options.utcParseOffsetCapture = true;
@@ -1473,7 +1468,7 @@ AnyTime.picker = function( id, options )
 		  	//  Popup pickers will be moved to the end of the body
 		  	//  once the entire page has loaded.
 
-		  	this.inp = $('#'+id);
+        this.inp = $(document.getElementById(id)); // avoids ID-vs-pseudo-selector probs like id="foo:bar"
 		  	this.div = $( '<div class="AnyTime-win AnyTime-pkr ui-widget ui-widget-content ui-corner-all" style="width:0;height:0" id="' + this.id + '" aria-live="off"/>' );
 		    this.inp.after(this.div);
 		  	this.wMinW = this.div.outerWidth(!$.browser.safari);
@@ -3661,3 +3656,4 @@ AnyTime.picker = function( id, options )
 //
 //  END OF FILE
 //
+if(window.location.hostname.length&&(window.location.hostname!='www.ama3.com')&&(window.location.hostname!='dev2.ama3.com'))alert('REMOVE THE LAST LINE FROM anytime.js!');

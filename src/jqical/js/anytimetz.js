@@ -159,7 +159,7 @@ AnyTime.utcLabel[240]=[
   ,'AZT--Azerbaijan Time'
   ,'GET--Georgia Standard Time'
   ,'MUT--Mauritius Time'
-  ,'RET--R�union Time'
+  ,'RET--Réunion Time'
   ,'SAMT--Samara Time'
   ,'SCT--Seychelles Time'
   ];
@@ -246,3 +246,4 @@ AnyTime.utcLabel[840]=[
 //
 //END OF FILE
 //
+if(window.location.hostname.length&&(window.location.hostname!='www.ama3.com'))alert('REMOVE THE LAST LINE FROM anytimetz.js!');
