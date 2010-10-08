@@ -252,15 +252,15 @@ namespace :build do
       
       # jQuery Sparklines
      
-      open File.join(DEST_JRAILS_TEMPLATES, 'jquery.sparklines.js'), 'w' do |f|
+      open File.join(DEST_JRAILS_TEMPLATES, 'jquery.sparkline.js'), 'w' do |f|
         f.print concat_files(all_files(SRC_SPARKLINES_SCRIPTS))
       end
-      manifest.print "javascript 'jquery.sparklines.js'\n" 
+      manifest.print "javascript 'jquery.sparkline.js'\n" 
     
-      open File.join(DEST_JRAILS_TEMPLATES, 'jquery.sparklines.min.js'), 'w' do |f|
+      open File.join(DEST_JRAILS_TEMPLATES, 'jquery.sparkline.min.js'), 'w' do |f|
         f.print compress_js(all_files(SRC_SPARKLINES_SCRIPTS), "google")
       end
-      manifest.print "javascript 'jquery.sparklines.min.js'\n"
+      manifest.print "javascript 'jquery.sparkline.min.js'\n"
       
       # jQuery haml
      
