@@ -9,7 +9,7 @@
     _/
 
     Created by David Kaneda <http://www.davidkaneda.com>
-    Documentation and issue tracking on Google Code <http://code.google.com/p/jqtouch/>
+    Documentation and issue tracking on GitHub <http://wiki.github.com/senchalabs/jQTouch/>
 
     Special thanks to Jonathan Stark <http://jonathanstark.com/>
     and pinch/zoom <http://www.pinchzoom.com/>
@@ -27,9 +27,9 @@
     $.jQTouch = function(options) {
 
         // Set support values
-        $.support.WebKitCSSMatrix = (typeof WebKitCSSMatrix == "object");
-        $.support.touch = (typeof Touch == "object");
-        $.support.WebKitAnimationEvent = (typeof WebKitTransitionEvent == "object");
+        $.support.WebKitCSSMatrix = (typeof WebKitCSSMatrix != "undefined");
+        $.support.touch = (typeof TouchEvent != "undefined");
+        $.support.WebKitAnimationEvent = (typeof WebKitTransitionEvent != "undefined");
 
         // Initialize internal variables
         var $body,
@@ -49,7 +49,7 @@
             extensions=$.jQTouch.prototype.extensions,
             defaultAnimations=['slide','flip','slideup','swap','cube','pop','dissolve','fade','back'],
             animations=[],
-            hairextensions='';
+            hairExtensions='';
         // Get the party started
         init(options);
 
@@ -78,7 +78,7 @@
                 submitSelector: '.submit',
                 swapSelector: '.swap',
                 useAnimations: true,
-                useFastTouch: true // Experimental.
+                useFastTouch: false // Experimental.
             };
             jQTSettings = $.extend({}, defaults, options);
 
@@ -91,25 +91,25 @@
             // Set icon
             if (jQTSettings.icon) {
                 var precomposed = (jQTSettings.addGlossToIcon) ? '' : '-precomposed';
-                hairextensions += '<link rel="apple-touch-icon' + precomposed + '" href="' + jQTSettings.icon + '" />';
+                hairExtensions += '<link rel="apple-touch-icon' + precomposed + '" href="' + jQTSettings.icon + '" />';
             }
             // Set startup screen
             if (jQTSettings.startupScreen) {
-                hairextensions += '<link rel="apple-touch-startup-image" href="' + jQTSettings.startupScreen + '" />';
+                hairExtensions += '<link rel="apple-touch-startup-image" href="' + jQTSettings.startupScreen + '" />';
             }
             // Set viewport
             if (jQTSettings.fixedViewport) {
-                hairextensions += '<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"/>';
+                hairExtensions += '<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"/>';
             }
             // Set full-screen
             if (jQTSettings.fullScreen) {
-                hairextensions += '<meta name="apple-mobile-web-app-capable" content="yes" />';
+                hairExtensions += '<meta name="apple-mobile-web-app-capable" content="yes" />';
                 if (jQTSettings.statusBar) {
-                    hairextensions += '<meta name="apple-mobile-web-app-status-bar-style" content="' + jQTSettings.statusBar + '" />';
+                    hairExtensions += '<meta name="apple-mobile-web-app-status-bar-style" content="' + jQTSettings.statusBar + '" />';
                 }
             }
-            if (hairextensions) {
-                $head.prepend(hairextensions);
+            if (hairExtensions) {
+                $head.prepend(hairExtensions);
             }
 
             // Initialize on document ready:
@@ -368,8 +368,12 @@
             // Define callback to run after animation completes
             var callback = function animationEnd(event) {
 
-                fromPage[0].removeEventListener('webkitTransitionEnd', callback);
-                fromPage[0].removeEventListener('webkitAnimationEnd', callback);
+                // fromPage[0].removeEventListener('webkitTransitionEnd', callback, false);
+                // fromPage[0].removeEventListener('webkitAnimationEnd', callback, false);
+                if($.support.WebKitAnimationEvent) {
+                    fromPage[0].removeEventListener('webkitTransitionEnd', callback);
+                    fromPage[0].removeEventListener('webkitAnimationEnd', callback);
+                }
 
                 if (animation) {
                         toPage.removeClass('start in ' + animation.name);
@@ -532,7 +536,11 @@
         function addAnimation(animation) {
             if (typeof(animation.selector) == 'string' && typeof(animation.name) == 'string') {
                 animations.push(animation);
-                $(animation.selector).tap(liveTap);
+                // $(animation.selector).tap(liveTap);
+                // ignore backSelector since they've already been attached
+                if(animation.selector != jQTSettings.backSelector) {
+                    $(animation.selector).tap(liveTap);
+                }
                 touchSelectors.push(animation.selector);
             }
         }

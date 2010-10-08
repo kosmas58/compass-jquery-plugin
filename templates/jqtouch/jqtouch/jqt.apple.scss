@@ -150,7 +150,7 @@ div#jqt {
     a {
       padding: 12px 22px 12px 10px; } }
   #plastic ul li.arrow, #metal ul li.arrow {
-    background-image: url("../images/chevron_dg.png");
+    background-image: url("jqtouch/apple/chevron.png");
     background-position: right center;
     background-repeat: no-repeat; }
   ul li a, li.img a + a {
@@ -165,13 +165,16 @@ div#jqt {
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0); }
   ul {
     li {
-      a {
-        &.active {
-          background: #194fdb image_url("jqtouch/apple/selection.png") 0 0 repeat-x;
-          color: #fff; }
-        &.button {
-          background-color: #194fdb;
-          color: #fff; } }
+      a.active {
+        background: #194fdb image_url("jqtouch/apple/selection.png") 0 0 repeat-x;
+        color: #fff; }
+      &.arrow a.active {
+        background-image: image_url("jqtouch/apple/listArrowSel.png");
+        background-position: right center;
+        background-repeat: no-repeat; }
+      a.button {
+        background-color: #194fdb;
+        color: #fff; }
       &.img a + {
         a {
           margin: -10px 10px -20px -5px;
@@ -275,6 +278,8 @@ div#jqt {
           margin: -12px 0 0 17px; } } }
     &.edgetoedge {
       -webkit-border-radius: 0;
+      * {
+        -webkit-border-radius: 0; }
       li.sep {
         background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(139, 159, 171, 1)), to(rgba(181, 193, 201, 1)));
         border-bottom: 1px solid #b5c1c9;
@@ -360,7 +365,7 @@ div#jqt {
     &.arrow small.counter {
       margin-right: 15px; } }
   #plastic ul li.arrow, #metal ul li.arrow {
-    background-image: image_url("jqtouch/apple/listArrowSel.png");
+    background-image: image_url("jqtouch/apple/chevron.png");
     background-position: right center;
     background-repeat: no-repeat; }
   .edgetoedge ul, .metal ul, .plastic ul {
@@ -372,7 +377,6 @@ div#jqt {
   .metal ul li {
     border-top: 1px solid rgb(238, 238, 238);
     border-bottom: 1px solid rgb(156, 158, 165);
-    background: url("../images/bgMetal.png") top left repeat-x;
     font-size: 26px;
     text-shadow: #fff 0 1px 0;
     a {
@@ -399,7 +403,7 @@ div#jqt {
       a small {
         padding-right: 0;
         line-height: 17px; }
-      background: image_url("jqtouch/apple/bgMetal.png") top left repeat-x, url("../images/chevron_dg.png") right center no-repeat; } }
+      background: image_url("jqtouch/apple/chevron.png") right center no-repeat; } }
   .plastic {
     margin: 0;
     padding: 0;
@@ -582,3 +586,12 @@ div#jqt {
 /* @group Toggle */
 
 /* @end */
+
+input[type='submit'] {
+  -webkit-border-radius: 4px;
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(238, 238, 238, 1)), to(rgba(156, 158, 160, 1)));
+  border: 1px outset #aaa;
+  display: block;
+  font-size: inherit;
+  font-weight: inherit;
+  padding: 10px; }

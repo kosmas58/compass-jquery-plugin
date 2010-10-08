@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kosmas Schuetz"]
-  s.date = %q{2010-10-07}
+  s.date = %q{2010-10-08}
   s.description = %q{A compass plugin that integrates jRails, jQuery, jQuery UI and Themes, jqGrid and more into the Compass Sass framework.}
   s.email = %q{kosmas.schuetz@gmx.com}
   s.extra_rdoc_files = [
@@ -314,6 +314,19 @@ Gem::Specification.new do |s|
      "templates/jqtouch/jqtouch/apple/toolButton.png",
      "templates/jqtouch/jqtouch/apple/toolbar.png",
      "templates/jqtouch/jqtouch/apple/whiteButton.png",
+     "templates/jqtouch/jqtouch/default/backButton.png",
+     "templates/jqtouch/jqtouch/default/backButtonActive.png",
+     "templates/jqtouch/jqtouch/default/bigButton.png",
+     "templates/jqtouch/jqtouch/default/bigButtonActive.png",
+     "templates/jqtouch/jqtouch/default/button.png",
+     "templates/jqtouch/jqtouch/default/buttonActive.png",
+     "templates/jqtouch/jqtouch/default/chevron.png",
+     "templates/jqtouch/jqtouch/default/chevronActive.png",
+     "templates/jqtouch/jqtouch/default/chevronCircle.png",
+     "templates/jqtouch/jqtouch/default/chevronCircleActive.png",
+     "templates/jqtouch/jqtouch/default/loading.gif",
+     "templates/jqtouch/jqtouch/default/toggleSwitch.png",
+     "templates/jqtouch/jqtouch/default/toolbarBackground.png",
      "templates/jqtouch/jqtouch/glyphish/Read me first - license.txt",
      "templates/jqtouch/jqtouch/glyphish/icons/01-refresh.png",
      "templates/jqtouch/jqtouch/glyphish/icons/02-redo.png",
@@ -588,6 +601,7 @@ Gem::Specification.new do |s|
      "templates/jqtouch/jqtouch/iphone-emulator.scss",
      "templates/jqtouch/jqtouch/iphone_fullsize.png",
      "templates/jqtouch/jqtouch/jqt.apple.scss",
+     "templates/jqtouch/jqtouch/jqt.default.scss",
      "templates/jqtouch/jqtouch/jqt.jqt.scss",
      "templates/jqtouch/jqtouch/jqt/activeButton.png",
      "templates/jqtouch/jqtouch/jqt/back_button.png",
