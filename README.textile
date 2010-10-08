@@ -193,6 +193,7 @@ h3. jQuery Plugins included
 * Andrew M Andrews III for <b>"Any+Time":http://www.ama3.com/anytime/</b>
 * Adam Shaw for <b>"FullCalendar":http://arshaw.com/fullcalendar/</b>
 * Steven Wittens for <b>"Farbtastic Colorpicker plugin":http://acko.net/dev/farbtastic</b>
+* Gareth Watts from Splunk Inc for <b>"jQuery Sparklines plugin":http://omnipotent.net/jquery.sparkline/</b>
 
 h2. Note on Patches/Pull Requests
 
