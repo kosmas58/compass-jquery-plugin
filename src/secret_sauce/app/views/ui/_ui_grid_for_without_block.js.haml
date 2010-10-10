@@ -47,8 +47,8 @@
             } else {
               $.ajax({method: "GET", url: "#{url}#{actions[:update]}/"+rowId,
                 success: function(data, status) {
-                  var dWidth = $(data).css("width")
-                  var dHeight = $(data).css("height")
+                  var dWidth = $(data).css("width");
+                  var dHeight = $(data).css("height");
                   $("##{name}_update_dialog").append(data)
                   $("#widget_submit").hide(); // HACK: easy way to make submit on enter work
                   $("##{name}_update_dialog").find("form").submit(function() {
@@ -72,11 +72,11 @@
                       "Cancel": function() {$(this).dialog('close');}
                     },
                     title: "Edit",
-                    width: dWidth,
-                    height: dHeight,
+                    //width: dWidth,
+                    //height: dHeight,
                     modal: true,
                     draggable: false,
-                    resizable: false,
+                    //resizable: false,
                     close: function() {
                       $(this).dialog('destroy');
                       $("##{name}_update_dialog").children().remove();
@@ -126,11 +126,11 @@
                     "Cancel": function() {$(this).dialog('close');}
                   },
                   title: "New",
-                  width: dWidth,
-                  height: dHeight,
+                  //width: dWidth,
+                  //height: dHeight,
                   modal: true,
                   draggable: false,
-                  resizable: false,
+                  //resizable: false,
                   close: function() {
                     $(this).dialog('destroy');
                     $("##{name}_create_dialog").children().remove();
