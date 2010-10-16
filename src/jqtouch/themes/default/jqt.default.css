@@ -17,7 +17,7 @@ div#jqt > * {
     border-bottom: 1px solid #000;
     padding: 10px;
     height: 45px;
-    background: image_url("jqtouch/default/toolbarBackground.png") #000000 repeat-x;
+    background:image_url("jqtouch/default/toolbarBackground.png") #000000 repeat-x;
     position: relative;
 }
 #jqt .black-translucent .toolbar {
@@ -67,10 +67,7 @@ div#jqt.landscape .toolbar > h1 {
     -webkit-border-image: image_url("jqtouch/default/button.png") 0 5 0 5;
 }
 #jqt .button.active, 
-#jqt .button:hover, 
 #jqt .cancel.active, 
-#jqt .cancel:hover, 
-#jqt .add:hover, 
 #jqt .add.active {
     -webkit-border-image: image_url("jqtouch/default/buttonActive.png") 0 5 0 5;
 }
@@ -82,7 +79,7 @@ div#jqt.landscape .toolbar > h1 {
     border-width: 0 8px 0 14px;
     -webkit-border-image: image_url("jqtouch/default/backButton.png") 0 8 0 14;
 }
-#jqt .back.active, #jqt .back:hover {
+#jqt .back.active {
     -webkit-border-image: image_url("jqtouch/default/backButtonActive.png") 0 8 0 14;
 }
 #jqt .leftButton, #jqt .cancel {
@@ -106,9 +103,7 @@ div#jqt.landscape .toolbar > h1 {
     text-decoration: inherit;
     text-shadow: rgba(255,255,255,.8) 0 1px 0;
 }
-#jqt .bigButton.active, 
-#jqt .bigButton:active, 
-#jqt .bigButton:hover {
+#jqt .bigButton.active {
     -webkit-border-image: image_url("jqtouch/default/bigButtonActive.png") 0 12 0 12;
     color: #000000;
 }
@@ -177,7 +172,8 @@ div#jqt.landscape .toolbar > h1 {
     -webkit-tap-highlight-color: rgba(0,0,0,0);
     text-shadow: rgba(0,0,0,.2) 0 1px 1px;
 }
-#jqt ul li a.active, #jqt ul li a.button {
+#jqt ul li a.active, 
+#jqt ul li a.button {
     background-color: #53b401;
     color: #fff;
 }
