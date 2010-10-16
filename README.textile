@@ -44,6 +44,34 @@ alternatively you can include:
 
 into your layouts.
 
+h3. jQuery TOOLS
+
+Use compass to install the jQuery TOOLS javascript library into your project.
+
+<pre>compass install [-r jquery] jquery/jqtools <project name></pre>
+
+
+To use the javacripts include:
+
+<pre>
+= javascript_include_tag :jqtools</pre>
+
+h3. jQuery Dynatree Plugin
+
+Use compass to install the jQuery Dynatree javascript library into your project.
+
+<pre>compass install [-r jquery] jquery/dynatree <project name></pre>
+
+You will find all the stylesheets in easy-to-read Sass format at:
+
+<pre>stylesheets/jquery.ui</pre>
+
+To use the localized stylesheets and javacripts include:
+
+<pre>
+= stylesheet_link_tag 'compiled/jquery.ui/dynatree.[skin].css', :media => 'screen, projection'
+= javascript_include_tag :dynatree</pre>
+
 h3. jQuery Dynatree Plugin
 
 Use compass to install the jQuery Dynatree javascript library into your project.
@@ -194,6 +222,7 @@ h3. jQuery Plugins included
 * Adam Shaw for <b>"FullCalendar":http://arshaw.com/fullcalendar/</b>
 * Steven Wittens for <b>"Farbtastic Colorpicker plugin":http://acko.net/dev/farbtastic</b>
 * Gareth Watts from Splunk Inc for <b>"jQuery Sparklines plugin":http://omnipotent.net/jquery.sparkline/</b>
+* Juan G. Hurtado for <b>"jQuery TOOLS":http://github.com/jquerytools/jquerytools</b>
 
 h2. Note on Patches/Pull Requests
 

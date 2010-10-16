@@ -1,0 +1,2 @@
+module JqTools#:nodoc:  
+end
