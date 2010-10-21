@@ -4,10 +4,9 @@ body {
   background: #000;
   color: #ddd; }
 
-div#jqt > * {
-  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#333333), to(#5e5e65)); }
-
 #jqt {
+  > * {
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#333333), to(#5e5e65)); }
   h1, h2 {
     font: bold 18px "Helvetica Neue", Helvetica;
     text-shadow: rgba(255, 255, 255, 0.2) 0 1px 1px;
@@ -21,11 +20,7 @@ div#jqt > * {
     background: image_url("jqtouch/default/toolbarBackground.png") black repeat-x;
     position: relative; }
   .black-translucent .toolbar {
-    margin-top: 20px; } }
-
-/* @group Toolbar */
-
-div#jqt {
+    margin-top: 20px; }
   .toolbar > h1 {
     position: absolute;
     overflow: hidden;
@@ -44,9 +39,7 @@ div#jqt {
     color: #fff; }
   &.landscape .toolbar > h1 {
     margin-left: -125px;
-    width: 250px; } }
-
-#jqt {
+    width: 250px; }
   .button, .back, .cancel, .add {
     position: absolute;
     overflow: hidden;
@@ -488,6 +481,8 @@ div#jqt {
           a small {
             padding-right: 15px;
             line-height: 17px; } } } } } }
+
+/* @group Toolbar */
 
 /* @end */
 /* @group Lists */

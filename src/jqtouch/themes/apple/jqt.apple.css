@@ -1,8 +1,8 @@
-body, #jqt {
+body {
     background: rgb(0,0,0);
 }
 
-body > *, #jqt > * {
+#jqt > * {
     background: rgb(197,204,211) image_url("jqtouch/apple/pinstripes.png");
 }
 
@@ -28,7 +28,7 @@ body > *, #jqt > * {
 	margin-top: 20px;
 }
 
-div#jqt .toolbar > h1 {
+#jqt .toolbar > h1 {
     position: absolute;
     overflow: hidden;
     left: 50%;
@@ -46,7 +46,7 @@ div#jqt .toolbar > h1 {
     color: #fff;
 }
 
-div#jqt.landscape .toolbar > h1 {
+#jqt.landscape .toolbar > h1 {
     margin-left: -125px;
     width: 250px;
 }
@@ -79,7 +79,7 @@ div#jqt.landscape .toolbar > h1 {
 }
 
 #jqt .blueButton {
-    -webkit-border-image: image_url("jqtouch/apple/actionButton.png") 0 5 0 5;
+    -webkit-border-image: image_url("jqtouch/apple/activeButton.png") 0 5 0 5;
     border-width: 0 5px;
 }
 
@@ -195,7 +195,7 @@ div#jqt.landscape .toolbar > h1 {
 }
 
 #jqt #plastic ul li.arrow, #jqt #metal ul li.arrow {
-    background-image: url("jqtouch/apple/chevron.png");
+    background-image: image_url("jqtouch/apple/chevron.png");
     background-position: right center;
     background-repeat: no-repeat;
 }
@@ -215,10 +215,9 @@ div#jqt.landscape .toolbar > h1 {
 }
 
 #jqt ul li a.active {
-    background: #194fdb image_url("jqtouch/apple/selection.png") 0 0 repeat-x;
+    background-color: #194fdb;
     color: #fff;
 }
-
 #jqt ul li.arrow a.active {
     background-image: image_url("jqtouch/apple/listArrowSel.png");
     background-position: right center;
@@ -283,7 +282,8 @@ div#jqt.landscape .toolbar > h1 {
     padding: 0;
 }
 
-/* @end */
+/*
+@end */
 
 /* @group Forms */
 
@@ -354,8 +354,8 @@ div#jqt.landscape .toolbar > h1 {
 /* @end */
 
 /* @group Edge to edge */
-#jqt ul.edgetoedge, #jqt ul.edgetoedge *  {
-    -webkit-border-radius: 0;
+#jqt ul.edgetoedge, #jqt ul.edgetoedge * {
+    -webkit-border-radius: 0 !important;
 }
 	
 #jqt ul.edgetoedge li.sep {
@@ -525,7 +525,7 @@ div#jqt.landscape .toolbar > h1 {
 }
 
 #jqt .metal ul li.arrow {
-    background: image_url("jqtouch/apple/chevron.png") right center no-repeat;
+    background:  image_url("jqtouch/apple/chevron.png") right center no-repeat;
 }
 
 #jqt .plastic {
@@ -715,6 +715,8 @@ div#jqt.landscape .toolbar > h1 {
 }
 /* @end */
 
+
+
 #jqt .info {
     background: #dce1eb;
     font-size: 12px;
@@ -726,7 +728,6 @@ div#jqt.landscape .toolbar > h1 {
     border-top: 1px solid rgba(76, 86, 108, .3);
     font-weight: bold;
 }
-
 input[type='submit'] {
     -webkit-border-radius: 4px;
     background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(238,238,238,1)), to(rgba(156,158,160,1)));

@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kosmas Schuetz"]
-  s.date = %q{2010-10-16}
+  s.date = %q{2010-10-21}
   s.description = %q{A compass plugin that integrates jRails, jQuery, jQuery UI and Themes, jqGrid and more into the Compass Sass framework.}
   s.email = %q{kosmas.schuetz@gmx.com}
   s.extra_rdoc_files = [
@@ -300,7 +300,6 @@ Gem::Specification.new do |s|
      "templates/jqtools/jquery.tools.min.js",
      "templates/jqtools/manifest.rb",
      "templates/jqtouch/config/initializers/jqtouch.rb",
-     "templates/jqtouch/jqtouch/apple/actionButton.png",
      "templates/jqtouch/jqtouch/apple/activeButton.png",
      "templates/jqtouch/jqtouch/apple/backButton.png",
      "templates/jqtouch/jqtouch/apple/cancel.png",
