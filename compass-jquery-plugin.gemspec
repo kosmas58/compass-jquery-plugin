@@ -629,6 +629,7 @@ Gem::Specification.new do |s|
      "templates/jqtouch/jqtouch/jqt_startup.png",
      "templates/jqtouch/jqtouch/jqtouch.png",
      "templates/jqtouch/jqtouch/jqtouch.scss",
+     "templates/jqtouch/jqtouch/jqtouch4.png",
      "templates/jqtouch/jqtouch/photo/btnBack.png",
      "templates/jqtouch/jqtouch/photo/loading.gif",
      "templates/jqtouch/jqtouch/photo/navNext.png",
