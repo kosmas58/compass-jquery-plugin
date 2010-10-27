@@ -3,11 +3,11 @@ require 'lib/handle_js_files'
 require 'lib/jquery.ui'
 
 # Compass generator for jrails 0.1+
-SRC_JRAILS = File.join(GEM_ROOT, 'src', 'jrails', 'jrails.1.4.2')
+SRC_JRAILS = File.join(GEM_ROOT, 'src', 'jrails', 'jrails.1.4.3')
 SRC_JRAILS_SCRIPTS = SRC_JRAILS + "/*.js"
-SRC_JQUERY = File.join(GEM_ROOT, 'src', 'jrails', 'jquery.1.4.2')
+SRC_JQUERY = File.join(GEM_ROOT, 'src', 'jrails', 'jquery.1.4.3')
 SRC_JQUERY_SCRIPTS = SRC_JQUERY + "/*.js"
-SRC_JQUERY_UI = File.join(GEM_ROOT, 'src', 'jrails', 'jquery.ui.1.8.5')
+SRC_JQUERY_UI = File.join(GEM_ROOT, 'src', 'jrails', 'jquery.ui.1.8.6')
 SRC_JQUERY_UI_SCRIPTS = File.join(SRC_JQUERY_UI, 'js') + "/*.js"
 SRC_JQUERY_UI_THEMES = File.join(SRC_JQUERY_UI, 'themes')
 SRC_JQUERY_UI_TRANSLATIONS = File.join(SRC_JQUERY_UI, 'js', 'i18n') #+ "/*.js"
@@ -55,15 +55,15 @@ namespace :build do
       
       # jQuery 1.4
     
-      open File.join(DEST_JRAILS_TEMPLATES, 'jquery-1.4.2.js'), 'w' do |f|
+      open File.join(DEST_JRAILS_TEMPLATES, 'jquery-1.4.3.js'), 'w' do |f|
         f.print concat_files(all_files(SRC_JQUERY_SCRIPTS))
       end
-      manifest.print "javascript 'jquery-1.4.2.js'\n" 
+      manifest.print "javascript 'jquery-1.4.3.js'\n" 
     
-      open File.join(DEST_JRAILS_TEMPLATES, 'jquery-1.4.2.min.js'), 'w' do |f|
+      open File.join(DEST_JRAILS_TEMPLATES, 'jquery-1.4.3.min.js'), 'w' do |f|
         f.print compress_js(all_files(SRC_JQUERY_SCRIPTS), "google")
       end
-      manifest.print "javascript 'jquery-1.4.2.min.js'\n" 
+      manifest.print "javascript 'jquery-1.4.3.min.js'\n" 
       
       # jQuery 1.4 Compat 1.3
       
@@ -128,7 +128,7 @@ namespace :build do
         end
       end      
     
-      # jQuery.UI 1.8.5
+      # jQuery.UI 1.8.6
     
       # Scripts
       
@@ -169,15 +169,15 @@ namespace :build do
         'jquery.ui.widget.js'
       ].collect {|filename| File.read(File.join(SRC_JQUERY_UI, 'js', filename))}.join "\n\n"  
       
-      open File.join(DEST_JRAILS_TEMPLATES, 'jquery-ui-1.8.5.js'), 'w' do |f|
+      open File.join(DEST_JRAILS_TEMPLATES, 'jquery-ui-1.8.6.js'), 'w' do |f|
         f.print concat_files(all_jquery_ui_scripts)
       end
-      manifest.print "javascript 'jquery-ui-1.8.5.js'\n"
+      manifest.print "javascript 'jquery-ui-1.8.6.js'\n"
     
-      open File.join(DEST_JRAILS_TEMPLATES, 'jquery-ui-1.8.5.min.js'), 'w' do |f|
+      open File.join(DEST_JRAILS_TEMPLATES, 'jquery-ui-1.8.6.min.js'), 'w' do |f|
         f.print compress_js(all_jquery_ui_scripts, "google")
       end
-      manifest.print "javascript 'jquery-ui-1.8.5.min.js'\n"
+      manifest.print "javascript 'jquery-ui-1.8.6.min.js'\n"
       
       # jQuery UI locales
   
