@@ -2,7 +2,7 @@ require 'fileutils'
 require 'lib/handle_js_files'
 
 # Compass generator for jquery.mobile 3.5+
-JQMOBILE_SRC = File.join(GEM_ROOT, 'src', 'jquery.mobile')
+JQMOBILE_SRC = File.join(GEM_ROOT, 'src', 'jqmobile')
 JQMOBILE_SRC_STYLESHEETS = File.join(JQMOBILE_SRC, 'css')
 JQMOBILE_SRC_IMAGES = File.join(JQMOBILE_SRC, 'images')
 JQMOBILE_SRC_THEMES = File.join(JQMOBILE_SRC, 'themes')

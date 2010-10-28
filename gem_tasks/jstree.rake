@@ -32,7 +32,8 @@ all_scripts = [
   'js/plugins/html_data.js',
   'js/plugins/themeroller.js',
   'js/plugins/unique.js',
-  'js/plugins/radio.js'
+  'js/plugins/radio.js',
+  'js/plugins/wholerow.js'
 ].collect {|filename| File.read(File.join(JSTREE_SRC, filename))}.join "\n\n"
 
 namespace :build do
