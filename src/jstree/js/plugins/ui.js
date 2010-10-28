@@ -252,5 +252,3 @@
     // include the selection plugin by default
     $.jstree.defaults.plugins.push("ui");
 })(jQuery);
-
- */
