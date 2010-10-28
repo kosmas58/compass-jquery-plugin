@@ -33,7 +33,7 @@ namespace :build do
         open(File.join(EMULATORS_DEST_STYLESHEETS, file.gsub(/\.css$/,'.scss')), 'w') do |f|
           f.write EMULATORS_MESSAGE2 + sass
         end
-        manifest.print "stylesheet 'emulators/#{file.gsub(/\.css$/,'.scss')}'\n"
+        manifest.print "stylesheet '#{file.gsub(/\.css$/,'.scss')}'\n"
       end
 
       # Emulator Images  
@@ -45,7 +45,7 @@ namespace :build do
       Dir.foreach(src_dir) do |image|
         next unless /\.png$/ =~ image
         FileUtils.cp(File.join(src_dir, image), dest_dir)
-        manifest.print "image 'emulators/#{image}'\n"
+        manifest.print "image '#{image}'\n"
       end
     end
   end
