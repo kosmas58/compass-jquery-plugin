@@ -17,15 +17,16 @@ namespace :build do
   task :emulators do    
     
     FileUtils.remove_dir EMULATORS_DEST_TEMPLATES if File.exists? EMULATORS_DEST_TEMPLATES 
-    FileUtils.mkdir_p(File.join(EMULATORS_DEST_TEMPLATES, 'config', 'initializers'))
+    FileUtils.mkdir_p(File.join(EMULATORS_DEST_TEMPLATES))
     
     open File.join(EMULATORS_DEST_TEMPLATES, 'manifest.rb'), 'w' do |manifest|
-      manifest.print EMULATORS_MESSAGE1 
+      manifest.print EMULATORS_MESSAGE1
       
       # Stylesheets
       FileUtils.mkdir_p(EMULATORS_DEST_STYLESHEETS)
-      
-      Dir.foreach File.join(EMULATORS_SRC_STYLESHEETS) do |file|
+
+      Dir.foreach EMULATORS_SRC_STYLESHEETS do |file|
+        next unless /\.css$/ =~ file
         css = File.read File.join(EMULATORS_SRC_STYLESHEETS, file)
         sass = ''
         IO.popen("sass-convert -F css -T scss", 'r+') { |f| f.print(css); f.close_write; sass = f.read }
@@ -43,7 +44,7 @@ namespace :build do
       
       Dir.foreach(src_dir) do |image|
         next unless /\.png$/ =~ image
-        FileUtils.cp(File.join(src_dir, image), dest_dir)    
+        FileUtils.cp(File.join(src_dir, image), dest_dir)
         manifest.print "image 'emulators/#{image}'\n"
       end
     end

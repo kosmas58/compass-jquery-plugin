@@ -68,7 +68,7 @@ namespace :build do
         
         Dir.foreach(src_dir) do |image|
           next if /^\./ =~ image
-          FileUtils.cp(File.join(src_dir, image), dest_dir)    
+          FileUtils.cp(File.join(src_dir, image), dest_dir)
           manifest.print "image 'jquery.ui/dynatree.#{skin}/#{image}'\n"
         end
       end

@@ -1,7 +1,6 @@
 require 'fileutils'
 require 'lib/handle_js_files'
 
-# Compass generator for jqtouch 3.5+
 JQTOUCH_SRC = File.join(GEM_ROOT, 'src', 'jqtouch')
 JQTOUCH_SRC_STYLESHEETS = File.join(JQTOUCH_SRC, 'css')
 JQTOUCH_SRC_IMAGES = File.join(JQTOUCH_SRC, 'images')
@@ -90,9 +89,9 @@ namespace :build do
       end
       manifest.print "stylesheet 'jqtouch/jqtouch.scss'\n"
       
-      Dir.foreach File.join(JQTOUCH_SRC, 'css') do |file|
-        next unless /\iphone-emulator.css$/ =~ file        
-        css = File.read File.join(JQTOUCH_SRC, 'css', file)
+      Dir.foreach JQTOUCH_SRC_STYLESHEETS do |file|
+        next unless /\iphone-emulator.css$/ =~ file
+        css = File.read File.join(JQTOUCH_SRC_STYLESHEETS, file)
         sass = ''
         IO.popen("sass-convert -F css -T scss", 'r+') { |f| f.print(css); f.close_write; sass = f.read }
         open(File.join(JQTOUCH_DEST_STYLESHEETS, file.gsub(/\.css$/,'.scss')), 'w') do |f|
