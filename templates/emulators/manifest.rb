@@ -4,5 +4,5 @@
 file 'config/initializers/emulators.rb'
 stylesheet 'ipad.landscape.scss'
 stylesheet 'iphone.portrait.scss'
-image 'ipad_landscape.png'
-image 'iphone_portrait.png'
+image 'emulators/ipad_landscape.png'
+image 'emulators/iphone_portrait.png'
