@@ -17,7 +17,7 @@ ActionView::Helpers::PrototypeHelper::JQUERY_VAR = 'jQuery'
 ActionView::Helpers::AssetTagHelper::JAVASCRIPT_DEFAULT_SOURCES = ['jquery-1.4.3.min', 'jquery-ui-1.8.6.min', 'jrails.min']
 ActionView::Helpers::AssetTagHelper::reset_javascript_include_default
 
-ActionView::Helpers::AssetTagHelper.register_javascript_expansion :jquery_142 => ['jquery-1.4.3.min', 'jquery-ui-1.8.6.min']
+ActionView::Helpers::AssetTagHelper.register_javascript_expansion :jquery_143 => ['jquery-1.4.3.min', 'jquery-ui-1.8.6.min']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :jrails => ['jrails.min']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :jhaml => ['jquery.haml.min']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :haml_js => ['haml-js.min']

@@ -5,6 +5,7 @@ require 'lib/handle_js_files'
 JQMOBILE_SRC = File.join(GEM_ROOT, 'src', 'jquery.mobile')
 JQMOBILE_SRC_STYLESHEETS = File.join(JQMOBILE_SRC, 'css')
 JQMOBILE_SRC_IMAGES = File.join(JQMOBILE_SRC, 'images')
+JQMOBILE_SRC_THEMES = File.join(JQMOBILE_SRC, 'themes')
 
 JQMOBILE_DEST_TEMPLATES = File.join(GEM_ROOT, 'templates', 'jqmobile')
 JQMOBILE_DEST_STYLESHEETS = File.join(JQMOBILE_DEST_TEMPLATES, 'jquery.mobile')
@@ -50,40 +51,46 @@ namespace :build do
       end
       manifest.print "javascript 'jquery.mobile.min.js'\n"
       
-      # Stylesheets
-      FileUtils.mkdir_p(JQMOBILE_DEST_STYLESHEETS)
-      
-      open File.join(JQMOBILE_DEST_STYLESHEETS, 'jquery.mobile.scss'), 'w' do |f|
-        sass = JQMOBILE_MESSAGE2 
-        IO.popen("sass-convert -F css -T scss", 'r+') { |ff| ff.print(all_stylesheets); ff.close_write; sass += ff.read }
-        f.print sass
-      end
-      manifest.print "stylesheet 'jquery.mobile/jquery.mobile.scss'\n"
-      
-      Dir.foreach File.join(JQMOBILE_SRC, 'css') do |file|
-        next unless /\iphone-emulator.css$/ =~ file        
-        css = File.read File.join(JQMOBILE_SRC, 'css', file)
-        sass = ''
-        IO.popen("sass-convert -F css -T scss", 'r+') { |f| f.print(css); f.close_write; sass = f.read }
-        open(File.join(JQMOBILE_DEST_STYLESHEETS, file.gsub(/\.css$/,'.scss')), 'w') do |f|
-          f.write JQMOBILE_MESSAGE2 + sass
-        end
-        manifest.print "stylesheet 'jquery.mobile/#{file.gsub(/\.css$/,'.scss')}'\n"
-      end
+#      # Stylesheets
+#      FileUtils.mkdir_p(JQMOBILE_DEST_STYLESHEETS)
+#      
+#      open File.join(JQMOBILE_DEST_STYLESHEETS, 'jquery.mobile.scss'), 'w' do |f|
+#        sass = JQMOBILE_MESSAGE2 
+#        IO.popen("sass-convert -F css -T scss", 'r+') { |ff| ff.print(all_stylesheets); ff.close_write; sass += ff.read }
+#        f.print sass
+#      end
+#      manifest.print "stylesheet 'jquery.mobile/jquery.mobile.scss'\n"
+              
+      # jQuery Mobile Themes
 
-      # iPhone Images  
+      FileUtils.mkdir_p(JQMOBILE_DEST_THEMES)
       
-      # Copy the images directory
-      src_dir = JQMOBILE_SRC_IMAGES
-      dest_dir = JQMOBILE_DEST_IMAGES   
-      
-      Dir.foreach(src_dir) do |image|
-        next unless /\.png$/ =~ image
-        FileUtils.cp(File.join(src_dir, image), dest_dir)    
-        manifest.print "image 'jquery.mobile/#{image}'\n"
-      end
-      
-     
+      Dir.foreach JQMOBILE_SRC_THEMES do |theme|
+        next if /^\./ =~ theme
+    
+        # Convert the stylesheets      
+        Dir.foreach File.join(JQMOBILE_SRC_THEMES, "#{theme}") do |file|
+          next unless /\.css$/ =~ file
+          css = File.read File.join(JQMOBILE_SRC_THEMES, "#{theme}", file)
+          sass = ''
+          IO.popen("sass-convert -F css -T scss", 'r+') { |f| f.print(css); f.close_write; sass = f.read }
+          open File.join(JQMOBILE_DEST_THEMES, "jqm.#{theme}.scss"), 'w' do |f|
+            f.write JQMOBILE_MESSAGE2 + sass
+          end
+          manifest.print "stylesheet 'jquery.mobile/jqm.#{theme}.scss', :media => 'screen, projection'\n"
+        end
+
+        # Copy the theme images directory
+        src_dir = File.join(JQMOBILE_SRC_THEMES, theme, 'images')
+        dest_dir = File.join(JQMOBILE_DEST_IMAGES, "#{theme}")
+        FileUtils.mkdir_p dest_dir
+        
+        Dir.foreach(src_dir) do |image|
+          next if /^\./ =~ image
+          FileUtils.cp(File.join(src_dir, image), dest_dir)    
+          manifest.print "image 'jquery.mobile/#{theme}/#{image}'\n"
+        end
+      end     
     end
   end
 end
