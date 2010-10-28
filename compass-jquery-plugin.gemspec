@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{compass-jquery-plugin}
-  s.version = "0.3.0.beta.23"
+  s.version = "0.3.0.beta.24"
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kosmas Schuetz"]
-  s.date = %q{2010-10-27}
+  s.date = %q{2010-10-28}
   s.description = %q{A compass plugin that integrates jRails, jQuery, jQuery UI and Themes, jqGrid and more into the Compass Sass framework.}
   s.email = %q{kosmas.schuetz@gmx.com}
   s.extra_rdoc_files = [
@@ -29,6 +29,7 @@ Gem::Specification.new do |s|
      "gem_tasks/dynatree.rake",
      "gem_tasks/jqgrid.rake",
      "gem_tasks/jqical.rake",
+     "gem_tasks/jqmobile.rake",
      "gem_tasks/jqtools.rake",
      "gem_tasks/jqtouch.rake",
      "gem_tasks/jrails.rake",
@@ -57,6 +58,7 @@ Gem::Specification.new do |s|
      "lib/jquery/jqical/calendar.rb",
      "lib/jquery/jqical/event.rb",
      "lib/jquery/jqical/helpers/ui_event_helper.rb",
+     "lib/jquery/jqmobile.rb",
      "lib/jquery/jqtools.rb",
      "lib/jquery/jqtouch.rb",
      "lib/jquery/jquery_auto_complete.rb",
@@ -295,6 +297,28 @@ Gem::Specification.new do |s|
      "templates/jqical/jquery.ui/jqical/calendar.png",
      "templates/jqical/jquery.ui/jqical/clock.png",
      "templates/jqical/manifest.rb",
+     "templates/jqmobile/config/initializers/jqmobile.rb",
+     "templates/jqmobile/jquery.mobile.js",
+     "templates/jqmobile/jquery.mobile.min.js",
+     "templates/jqmobile/jquery.mobile/ajax-loader.png",
+     "templates/jqmobile/jquery.mobile/form-check-off.png",
+     "templates/jqmobile/jquery.mobile/form-check-on.png",
+     "templates/jqmobile/jquery.mobile/form-radio-off.png",
+     "templates/jqmobile/jquery.mobile/form-radio-on.png",
+     "templates/jqmobile/jquery.mobile/icon-arrow-white-down.png",
+     "templates/jqmobile/jquery.mobile/icon-arrow-white-left.png",
+     "templates/jqmobile/jquery.mobile/icon-arrow-white-right.png",
+     "templates/jqmobile/jquery.mobile/icon-arrow-white-up.png",
+     "templates/jqmobile/jquery.mobile/icon-delete.png",
+     "templates/jqmobile/jquery.mobile/icon-minus-white.png",
+     "templates/jqmobile/jquery.mobile/icon-plus-white.png",
+     "templates/jqmobile/jquery.mobile/icon-search-black.png",
+     "templates/jqmobile/jquery.mobile/icons-18-black.png",
+     "templates/jqmobile/jquery.mobile/icons-18-white.png",
+     "templates/jqmobile/jquery.mobile/icons-36-black.png",
+     "templates/jqmobile/jquery.mobile/icons-36-white.png",
+     "templates/jqmobile/jquery.mobile/jquery.mobile.scss",
+     "templates/jqmobile/manifest.rb",
      "templates/jqtools/config/initializers/jqtools.rb",
      "templates/jqtools/jquery.tools.js",
      "templates/jqtools/jquery.tools.min.js",
