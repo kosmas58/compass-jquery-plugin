@@ -17,10 +17,16 @@ namespace :build do
   task :emulators do    
     
     FileUtils.remove_dir EMULATORS_DEST_TEMPLATES if File.exists? EMULATORS_DEST_TEMPLATES 
-    FileUtils.mkdir_p(File.join(EMULATORS_DEST_TEMPLATES))
+    FileUtils.mkdir_p(File.join(EMULATORS_DEST_TEMPLATES, 'config', 'initializers'))
     
     open File.join(EMULATORS_DEST_TEMPLATES, 'manifest.rb'), 'w' do |manifest|
       manifest.print EMULATORS_MESSAGE1
+      
+      open File.join(EMULATORS_DEST_TEMPLATES, 'config', 'initializers', 'emulators.rb'), 'w' do |f|
+        f.print(File.read(File.join(EMULATORS_SRC, 'config', 'initializers', 'emulators.rb')))
+      end
+      manifest.print "file 'config/initializers/emulators.rb'\n"
+
       
       # Stylesheets
       FileUtils.mkdir_p(EMULATORS_DEST_STYLESHEETS)

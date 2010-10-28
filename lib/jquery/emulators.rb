@@ -1,0 +1,3 @@
+module Emulators#:nodoc:  
+end
+
