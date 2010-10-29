@@ -2,7 +2,7 @@
 # Install with: compass install jquery/emulators
 
 file 'config/initializers/emulators.rb'
-stylesheet 'ipad.landscape.scss'
-stylesheet 'iphone.portrait.scss'
-image 'ipad.landscape.png'
-image 'iphone.portrait.png'
+stylesheet 'emulators/ipad.landscape.scss', :media => 'screen, projection'
+stylesheet 'emulators/iphone.portrait.scss', :media => 'screen, projection'
+image 'emulators/ipad.landscape.png'
+image 'emulators/iphone.portrait.png'

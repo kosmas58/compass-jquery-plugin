@@ -57,7 +57,7 @@ namespace :build do
         open(File.join(SECRET_SAUCE_DEST_STYLESHEETS, file.gsub(/\.css$/,'.scss')), 'w') do |f|
           f.write SECRET_SAUCE_MESSAGE2 + sass
         end
-        manifest.print "stylesheet 'jquery.ui/#{file.gsub(/\.css$/,'.scss')}'\n"
+        manifest.print "stylesheet 'jquery.ui/#{file.gsub(/\.css$/,'.scss')}', :media => 'screen, projection'\n"
       end      
     end
   end

@@ -87,7 +87,7 @@ namespace :build do
         IO.popen("sass-convert -F css -T scss", 'r+') { |ff| ff.print(all_stylesheets); ff.close_write; sass += ff.read }
         f.print sass
       end
-      manifest.print "stylesheet 'jqtouch/jqtouch.scss'\n"
+      manifest.print "stylesheet 'jqtouch/jqtouch.scss', :media => 'screen, projection'\n"
       
       Dir.foreach JQTOUCH_SRC_STYLESHEETS do |file|
         next unless /\iphone-emulator.css$/ =~ file
@@ -97,7 +97,7 @@ namespace :build do
         open(File.join(JQTOUCH_DEST_STYLESHEETS, file.gsub(/\.css$/,'.scss')), 'w') do |f|
           f.write JQTOUCH_MESSAGE2 + sass
         end
-        manifest.print "stylesheet 'jqtouch/#{file.gsub(/\.css$/,'.scss')}'\n"
+        manifest.print "stylesheet 'jqtouch/#{file.gsub(/\.css$/,'.scss')}', :media => 'screen, projection'\n"
       end
 
       # iPhone Images  
@@ -131,17 +131,7 @@ namespace :build do
         FileUtils.cp(File.join(src_dir, image), dest_dir)    
         manifest.print "image 'jqtouch/photo/#{image}'\n"
       end 
-      
-      # iPhone Icons    
-      FileUtils.mkdir_p(File.join(JQTOUCH_DEST_IMAGES, 'icons'))    
-      src_dir = File.join(JQTOUCH_SRC_IMAGES, 'icons')
-      dest_dir = File.join(JQTOUCH_DEST_IMAGES, 'icons')      
-      Dir.foreach(src_dir) do |image|
-        next if /^\./ =~ image
-        FileUtils.cp(File.join(src_dir, image), dest_dir)    
-        manifest.print "image 'jqtouch/icons/#{image}'\n"
-      end 
-      
+
       # Spinning wheel images    
       FileUtils.mkdir_p(File.join(JQTOUCH_DEST_IMAGES, 'sw'))  
       src_dir = File.join(JQTOUCH_SRC_IMAGES, 'sw')

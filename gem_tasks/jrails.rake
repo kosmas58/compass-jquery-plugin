@@ -15,6 +15,7 @@ SRC_SPARKLINES_SCRIPTS = File.join(GEM_ROOT, 'src', 'jrails', 'sparklines') + "/
 SRC_JHAML_SCRIPTS = File.join(GEM_ROOT, 'src', 'jrails', 'jquery-haml') + "/*.js"
 SRC_HAML_JS_SCRIPTS = File.join(GEM_ROOT, 'src', 'jrails', 'haml-js') + "/*.js"
 SRC_FLASH = File.join(GEM_ROOT, 'src', 'jrails', 'flash_messages')
+SRC_FLASH_JS_SCRIPTS = SRC_FLASH + "/*.js"
 SRC_FLASH_IMAGES = File.join(SRC_FLASH, 'images')
 
 DEST_JRAILS_TEMPLATES = File.join(GEM_ROOT, 'templates', 'jrails')
@@ -274,8 +275,7 @@ namespace :build do
       end
       manifest.print "javascript 'jquery.haml.min.js'\n" 
       
-      # HAML Js
-     
+      # HAML Js     
       open File.join(DEST_JRAILS_TEMPLATES, 'haml.js'), 'w' do |f|
         f.print concat_files(all_files(SRC_HAML_JS_SCRIPTS))
       end
@@ -286,8 +286,18 @@ namespace :build do
       end
       manifest.print "javascript 'haml.min.js'\n"
       
-      #Flash Messages   
-      FileUtils.mkdir_p(File.join(DEST_FLASH_STYLESHEETS))   
+      #Flash Messages  
+      open File.join(DEST_JRAILS_TEMPLATES, 'jquery.flash_messages.js'), 'w' do |f|
+        f.print concat_files(all_files(SRC_FLASH_JS_SCRIPTS))
+      end
+      manifest.print "javascript 'jquery.flash_messages.js'\n" 
+    
+      open File.join(DEST_JRAILS_TEMPLATES, 'jquery.flash_messages.min.js'), 'w' do |f|
+        f.print compress_js(all_files(SRC_FLASH_JS_SCRIPTS), "google")
+      end
+      manifest.print "javascript 'jquery.flash_messages.min.js'\n"
+      
+      FileUtils.mkdir_p(File.join(DEST_FLASH_STYLESHEETS))
       css = File.read File.join(SRC_FLASH, 'flash_messages.css')
       sass = ''
       IO.popen("sass-convert -F css -T scss", 'r+') { |f| f.print(css); f.close_write; sass = f.read }
