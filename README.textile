@@ -9,10 +9,11 @@ h2. Description
 A Sass-based Meta-Framework for Compass that allows you to mix and match any of the following:
 
 * jRails with jQuery 1.4.3 and jQuery.UI 1.8.6 including themes
-* jquery.jstree.js V1.0rc2
+* jquery.jstree.js V1.0rc3
 * jquery.dynatree.js V0.5.3
 * jquery.ribbon.js
-* jquery.jqGrid.js V3.8 (with minor changes to make in RESTful)
+* jquery.jqGrid.js V3.8.1 (with minor changes to make in RESTful)
+* jquery.mobile.js 1.0a1
 * jquery.jqtouch.js V1.0b2
 
 This library requires <b>"Compass":http://wiki.github.com/chriseppstein/compass</b>.
@@ -168,6 +169,40 @@ To use the (localized) stylesheets and javacripts include:
   = stylesheet_link_tag 'compiled/jquery.ui/jqical.css', :media => 'screen, projection'
   = javascript_include_tag :jqical</pre>
 
+h3. Emulators
+
+Use compass to install the emulator stylesheets and fullsize images for iPhone and iPad into your project.
+
+<pre>compass install [-r jquery] jquery/emulators <project name></pre>
+
+You will find all the stylesheets in easy-to-read Sass format at:
+
+<pre>stylesheets/emulators</pre>
+
+To use the localized stylesheets and javacripts include:
+
+<pre>
+= stylesheet_link_tag 'compiled/emulators/ipad.landscape.css', :media => 'screen, projection'
+= stylesheet_link_tag 'compiled/emulators/iphone.portrait.css', :media => 'screen, projection'</pre>
+
+h3. jQuery mobile
+
+Use compass to install the jQuery mobile javascript library and themes into your project.
+
+<pre>compass install [-r jquery] jquery/jqmobile <project name></pre>
+
+You will find all the stylesheets in easy-to-read Sass format at:
+
+<pre>stylesheets/jqmobile</pre>
+
+To use the localized stylesheets and javacripts include:
+
+<pre>
+= stylesheet_link_tag 'compiled/jquery.mobile/jqm.default.css', :media => 'screen, projection'
+= stylesheet_link_tag 'compiled/jquery.mobile/jqm.valencia.css', :media => 'screen, projection'</pre>
+= javascript_include_tag :jqmobile'</pre>
+
+
 h3. jQTouch
 
 Use compass to install the jQTouch javascript library into your project.
@@ -184,10 +219,6 @@ To use the localized stylesheets and javacripts include:
 = stylesheet_link_tag 'compiled/jqtouch/[theme].css', :media => 'screen, projection'
 = javascript_include_tag :jqtouch'</pre>
 
-There is iPhone lookalike stylesheet using an IFrame available for tests without a iPhone. You can include it by
-
-<pre>
-= stylesheet_link_tag 'compiled/jqtouch/iphone-emulator.css', :media => 'screen, projection'</pre>
 
 h2. Thanks to the Contributors:
 
