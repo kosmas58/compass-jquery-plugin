@@ -97,7 +97,7 @@ namespace :build do
             open File.join(DEST_JRAILS_THEMES, file), 'w' do |f|
               f.write sass
             end
-            manifest.print "stylesheet 'jquery.ui/#{file}'"
+            manifest.print "stylesheet 'jquery.ui/#{file}'\n"
           end     
           
           next unless /\.js$/ =~ file
