@@ -97,7 +97,7 @@ namespace :build do
             open File.join(DEST_JRAILS_THEMES, file), 'w' do |f|
               f.write sass
             end
-            manifest.print "stylesheet 'jquery.ui/#{file}', :media => 'screen, projection'\n"    
+            manifest.print "stylesheet 'jquery.ui/#{file}'"
           end     
           
           next unless /\.js$/ =~ file
@@ -230,13 +230,13 @@ namespace :build do
         FileUtils.rm_r(File.join(DEST_JRAILS_THEMES, '_partials'))
       end 
       
-      manifest.print "stylesheet 'jquery.ui/_theme.scss', :media => 'screen, projection'\n" 
+      manifest.print "stylesheet 'jquery.ui/_theme.scss'\n" 
       
       Dir.foreach SRC_JQUERY_UI_THEMES do |theme|
         next if /^\./ =~ theme
   
         # Convert the stylesheet
-        manifest.print "stylesheet 'jquery.ui/#{theme}.scss', :media => 'screen, projection'\n"
+        manifest.print "stylesheet 'jquery.ui/#{theme}.scss'\n"
         ui.convert_theme(theme, File.join(SRC_JQUERY_UI_THEMES, theme), File.join(DEST_JRAILS_THEMES))
   
         # Copy the theme images directory
@@ -304,7 +304,7 @@ namespace :build do
       open File.join(DEST_FLASH_STYLESHEETS, '_flash_messages.scss'), 'w' do |f|
         f.write sass
       end
-      manifest.print "stylesheet 'partials/_flash_messages.scss', :media => 'screen, projection'\n"    
+      manifest.print "stylesheet 'partials/_flash_messages.scss'\n"
       
       # Copy the images directory
       FileUtils.mkdir_p File.join(DEST_FLASH_IMAGES)

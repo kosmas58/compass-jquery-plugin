@@ -78,7 +78,7 @@ namespace :build do
           open File.join(JSTREE_DEST_THEMES, "jstree.#{theme}.scss"), 'w' do |f|
             f.write JSTREE_MESSAGE2 + sass
           end
-          manifest.print "stylesheet 'jquery.ui/jstree.#{theme}.scss', :media => 'screen, projection'\n"
+          manifest.print "stylesheet 'jquery.ui/jstree.#{theme}.scss'\n"
         end
   
         # Copy the theme images directory

@@ -58,7 +58,7 @@ namespace :build do
           open File.join(DYNATREE_DEST_SKINS, "dynatree.#{skin}.scss"), 'w' do |f|
             f.write DYNATREE_MESSAGE2 + sass
           end
-          manifest.print "stylesheet 'jquery.ui/dynatree.#{skin}.scss', :media => 'screen, projection'\n"
+          manifest.print "stylesheet 'jquery.ui/dynatree.#{skin}.scss'\n"
         end
   
         # Copy the skin images directory

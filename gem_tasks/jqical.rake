@@ -67,7 +67,7 @@ namespace :build do
         IO.popen("sass-convert -F css -T scss", 'r+') { |ff| ff.print(all_stylesheets); ff.close_write; sass += ff.read }
         f.print sass
       end
-      manifest.print "stylesheet 'jquery.ui/jqical.scss', :media => 'screen, projection'\n"
+      manifest.print "stylesheet 'jquery.ui/jqical.scss'\n"
       
       # Images  
       

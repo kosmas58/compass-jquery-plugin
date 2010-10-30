@@ -38,7 +38,7 @@ namespace :build do
         open(File.join(EMULATORS_DEST_STYLESHEETS, file.gsub(/\.css$/,'.scss')), 'w') do |f|
           f.write EMULATORS_MESSAGE2 + sass
         end
-        manifest.print "stylesheet 'emulators/#{file.gsub(/\.css$/,'.scss')}', :media => 'screen, projection'\n"
+        manifest.print "stylesheet 'emulators/#{file.gsub(/\.css$/,'.scss')}'\n"
       end
 
       # Emulator Images  

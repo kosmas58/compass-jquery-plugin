@@ -107,7 +107,7 @@ namespace :build do
         IO.popen("sass-convert -F css -T scss", 'r+') { |ff| ff.print(all_stylesheets); ff.close_write; sass += ff.read }
         f.print sass
       end
-      manifest.print "stylesheet 'jquery.ui/jqGrid.scss', :media => 'screen, projection'\n"
+      manifest.print "stylesheet 'jquery.ui/jqGrid.scss'\n"
       
       FileUtils.mkdir_p(JQGRID_DEST_XML)    
       open File.join(JQGRID_DEST_XML, 'ellipsis-xbl.xml'), 'w' do |f|
