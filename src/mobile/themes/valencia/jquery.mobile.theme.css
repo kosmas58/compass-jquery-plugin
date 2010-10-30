@@ -221,7 +221,7 @@
   background-color:             #e5e5e5;
   color:                  #666;
   text-shadow: 0 1px 0px  #fff;
-  background-image: url(images/texture_075.png)/*{bgTexture}*/;
+  background-image: image_url("jquery.mobile/valencia/texture_075.png");
 }
 .ui-body-b, 
 .ui-body-b input, 
@@ -323,7 +323,7 @@
   color:                  #333333;
   text-shadow: 0 1px 0px  #fff;
   background:             #fff;
-  background-image: url(images/texture_075.png)/*{bgTexture}*/;
+  background-image: image_url("jquery.mobile/valencia/texture_075.png");
 }
 .ui-body-c, 
 .ui-body-c input, 
@@ -584,7 +584,7 @@
   background:             #ccc;
   color:                  #111;
   text-shadow: 0 1px 0px  #fff;
-  background-image: url(images/texture_075.png)/*{bgTexture}*/;
+  background-image: image_url("jquery.mobile/valencia/texture_075.png");
 }
 .ui-body-e, 
 .ui-body-e input, 
@@ -710,7 +710,7 @@ a.ui-link-inherit {
 /* .ui-icon { background-position: 50% 50%; background-repeat: no-repeat; background-color: #fff; background-color: rgba(0,0,0,.4);  -moz-border-radius: 9px; -webkit-border-radius: 9px; border-radius: 9px; } */
 
 .ui-icon {
-  background-image:       url(images/icons-18-white.png)/*{icon18White}*/;
+  background-image:       image_url("jquery.mobile/valencia/icons-18-white.png");
   background-repeat:      no-repeat; 
   background-color:       #666; 
   background-color:       rgba(0,0,0,.4);
@@ -728,7 +728,7 @@ a.ui-link-inherit {
 
 /* alt color */
 .ui-icon-black {
-  background-image:       url(images/icons-18-black.png)/*{icon18Black}*/;
+  background-image:       image_url("jquery.mobile/valencia/icons-18-black.png");
 }
 .ui-icon-black-disc {
   background-color:       #fff;
@@ -742,10 +742,10 @@ a.ui-link-inherit {
 @media  screen and (-webkit-min-device-pixel-ratio: 2), screen and (max--moz-device-pixel-ratio: 2) {
   .ui-icon {
     background-size:  558px 18px;
-    background-image: url(images/icons-36-white.png)/*{icon36White}*/;
+    background-image: image_url("jquery.mobile/valencia/icons-36-white.png");
   }
 	.ui-icon-black {
-    background-image: url(images/icons-36-black.png)/*{icon36Black}*/;
+    background-image: image_url("jquery.mobile/valencia/icons-36-black.png");
   }
 }
 
@@ -784,16 +784,16 @@ a.ui-link-inherit {
   border-radius:          0;
 }
 
-.ui-icon-checkbox-off { background-image: url(images/form-check-off.png)/*{formCheckOff}*/; }
-.ui-icon-checkbox-on {  background-image: url(images/form-check-on.png)/*{formCheckOn}*/; }
-.ui-icon-radio-off {    background-image: url(images/form-radio-off.png)/*{formRadioOff}*/; }
-.ui-icon-radio-on {     background-image: url(images/form-radio-on.png)/*{formRadioOn}*/; }
+.ui-icon-checkbox-off { background-image: image_url("jquery.mobile/valencia/form-check-off.png"); }
+.ui-icon-checkbox-on {  background-image: image_url("jquery.mobile/valencia/form-check-on.png"); }
+.ui-icon-radio-off {    background-image: image_url("jquery.mobile/valencia/form-radio-off.png"); }
+.ui-icon-radio-on {     background-image: image_url("jquery.mobile/valencia/form-radio-on.png"); }
 
-.ui-icon-search {       background-image: url(images/icon-search-black.png)/*{iconSearchBlack}*/; }
+.ui-icon-search {       background-image: image_url("jquery.mobile/valencia/icon-search-black.png"); }
 
 /* loading icon */
 .ui-icon-loading {
-  background-image: url(images/ajax-loader.png)/*{ajaxLoader}*/; 
+  background-image: image_url("jquery.mobile/valencia/ajax-loader.png"); 
   width:  40px;
   height: 40px;
   -moz-border-radius:                 20px;

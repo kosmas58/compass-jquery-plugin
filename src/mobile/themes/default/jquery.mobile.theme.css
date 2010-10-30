@@ -36,7 +36,7 @@
 .ui-bar-b .ui-link-inherit { color: #fff; }
 .ui-bar-b .ui-link { color: #7cc4e7; font-weight: bold; }
 
-.ui-body-b { border: 1px solid #C6C6C6; background: #cccccc; color: #333333; text-shadow: 0 1px 0 #fff; font-weight: normal; background-image: none/*{bgTexture}*/; background-image: -moz-linear-gradient(top, #e6e6e6, #cccccc); background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0, #e6e6e6),color-stop(1, #cccccc));  -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#e6e6e6', EndColorStr='#cccccc')"; }
+.ui-body-b { border: 1px solid #C6C6C6; background: #cccccc; color: #333333; text-shadow: 0 1px 0 #fff; font-weight: normal; background-image: -moz-linear-gradient(top, #e6e6e6, #cccccc); background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0, #e6e6e6),color-stop(1, #cccccc));  -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#e6e6e6', EndColorStr='#cccccc')"; }
 .ui-body-b, .ui-body-b input, .ui-body-b select, .ui-body-b textarea, .ui-body-b button { font-family: Helvetica, Arial, sans-serif; }
 .ui-body-b .ui-link-inherit { color: #333333; }
 .ui-body-b .ui-link { color: #2489CE; font-weight: bold; }
@@ -114,7 +114,7 @@
 
 
 /* links within "buttons" */
-a.ui-link-inherit { text-decoration: none; }
+a.ui-link-inherit { text-decoration: none !important; }
 
 /* Active class used as the "on" state across all themes */
 .ui-btn-active { border: 1px solid #155678; background: #4596ce; font-weight: bold; color: #fff; cursor: pointer;  text-shadow: 0 -1px 1px #145072; text-decoration: none; background-image: -moz-linear-gradient(top, #85bae4, #5393c5); background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0, #85bae4),color-stop(1, #5393c5));   -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#85bae4', EndColorStr='#5393c5')"; }
@@ -139,23 +139,23 @@ a.ui-link-inherit { text-decoration: none; }
 
 /* Interaction Cues
 ----------------------------------*/
-.ui-disabled { cursor: default; opacity: .3; }
+.ui-disabled { cursor: default !important; opacity: .3; }
 
 /* Icons
 ----------------------------------*/
 /* .ui-icon { background-position: 50% 50%; background-repeat: no-repeat; background-color: #fff; background-color: rgba(0,0,0,.4);  -moz-border-radius: 9px; -webkit-border-radius: 9px; border-radius: 9px; } */
 
-.ui-icon { background-image: url(images/icons-18-white.png)/*{icon18White}*/; background-repeat: no-repeat; background-color: #666; background-color: rgba(0,0,0,.4);  -moz-border-radius: 9px; -webkit-border-radius: 9px; border-radius: 9px; }
+.ui-icon { background-image: image_url("jquery.mobile/default/icons-18-white.png"); background-repeat: no-repeat; background-color: #666; background-color: rgba(0,0,0,.4);  -moz-border-radius: 9px; -webkit-border-radius: 9px; border-radius: 9px; }
 .ui-icon-disc { background-color: #666; background-color: rgba(0,0,0,.3);  -moz-border-radius: 9px; -webkit-border-radius: 9px; border-radius: 9px; }
 
 /* alt color */
-.ui-icon-black { background-image: url(images/icons-18-black.png)/*{icon18Black}*/; }
+.ui-icon-black { background-image: image_url("jquery.mobile/default/icons-18-black.png"); }
 .ui-icon-black-disc { background-color: #fff; background-color: rgba(255,255,255,.3);  -moz-border-radius: 9px; -webkit-border-radius: 9px; border-radius: 9px; }
 
 /* retina */
 @media  screen and (-webkit-min-device-pixel-ratio: 2), screen and (max--moz-device-pixel-ratio: 2) {
-	.ui-icon { background-image: url(images/icons-36-white.png)/*{icon36White}*/; background-size: 558px 18px; }
-	.ui-icon-black { background-image: url(images/icons-36-black.png)/*{icon36Black}*/; }
+	.ui-icon { background-image: image_url("jquery.mobile/default/icons-36-white.png"); background-size: 558px 18px; }
+	.ui-icon-black { background-image: image_url("jquery.mobile/default/icons-36-black.png"); }
 }
 
 /*plus minus*/
@@ -188,15 +188,15 @@ a.ui-link-inherit { text-decoration: none; }
 .ui-icon-radio-off,
 .ui-icon-radio-on { background-color: transparent; -moz-border-radius: 0; -webkit-border-radius: 0; border-radius: 0; }
 
-.ui-icon-checkbox-off { background-image: url(images/form-check-off.png)/*{formCheckOff}*/; }
-.ui-icon-checkbox-on { background-image: url(images/form-check-on.png)/*{formCheckOn}*/; }
-.ui-icon-radio-off { background-image: url(images/form-radio-off.png)/*{formRadioOff}*/; }
-.ui-icon-radio-on { background-image: url(images/form-radio-on.png)/*{formRadioOn}*/; }
+.ui-icon-checkbox-off { background-image: image_url("jquery.mobile/default/form-check-off.png"); }
+.ui-icon-checkbox-on { background-image: image_url("jquery.mobile/default/form-check-on.png"); }
+.ui-icon-radio-off { background-image: image_url("jquery.mobile/default/form-radio-off.png"); }
+.ui-icon-radio-on { background-image: image_url("jquery.mobile/default/form-radio-on.png"); }
 
-.ui-icon-search { background-image: url(images/icon-search-black.png)/*{iconSearchBlack}*/; }
+.ui-icon-search { background-image: image_url("jquery.mobile/default/icon-search-black.png"); }
 
 /* loading icon */
-.ui-icon-loading { background-image: url(images/ajax-loader.png)/*{ajaxLoader}*/; width: 40px; height: 40px;  -moz-border-radius: 20px; -webkit-border-radius: 20px; border-radius: 20px; }
+.ui-icon-loading { background-image: image_url("jquery.mobile/default/ajax-loader.png"); width: 40px; height: 40px;  -moz-border-radius: 20px; -webkit-border-radius: 20px; border-radius: 20px; }
 
 /* btn Corner radius */
 .ui-btn-corner-tl { -moz-border-radius-topleft: 1em; -webkit-border-top-left-radius: 1em; border-top-left-radius: 1em; }
@@ -234,5 +234,5 @@ a.ui-link-inherit { text-decoration: none; }
 .ui-focus { outline-width: 0;  -moz-box-shadow: 0px 0px 12px #387bbe; -webkit-box-shadow: 0px 0px 12px #387bbe; box-shadow: 0px 0px 12px #387bbe; }
 
 /* unset box shadow in browsers that don't do it right */
-.ui-mobile-nosupport-boxshadow * { -moz-box-shadow: none; -webkit-box-shadow: none; box-shadow: none; }
+.ui-mobile-nosupport-boxshadow * { -moz-box-shadow: none !important; -webkit-box-shadow: none !important; box-shadow: none !important; }
 .ui-mobile-nosupport-boxshadow .ui-focus { outline-width: 2px; }
