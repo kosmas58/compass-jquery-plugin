@@ -298,7 +298,7 @@ Gem::Specification.new do |s|
      "templates/jqgrid/jquery.ui/jqGrid.scss",
      "templates/jqgrid/manifest.rb",
      "templates/jqgrid/public/stylesheets/ellipsis-xbl.xml",
-     "templates/jqical/app/views/ui/_ui_event_for.js.haml",
+     "templates/jqical/app/views/shared/_ui_event_for.js.haml",
      "templates/jqical/config/initializers/jqical.rb",
      "templates/jqical/jquery.jqical.js",
      "templates/jqical/jquery.jqical.min.js",

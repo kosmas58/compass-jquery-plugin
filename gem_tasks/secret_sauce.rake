@@ -24,13 +24,13 @@ namespace :build do
     open File.join(SECRET_SAUCE_DEST_TEMPLATES, 'manifest.rb'), 'w' do |manifest|
       manifest.print SECRET_SAUCE_MESSAGE1
     
-      Dir.foreach File.join(SECRET_SAUCE_SRC, 'app', 'views', 'ui') do |file|
+      Dir.foreach File.join(SECRET_SAUCE_SRC, 'app', 'views', 'shared') do |file|
         next unless /\.haml$/ =~ file
-        html = File.read File.join(SECRET_SAUCE_SRC, 'app', 'views', 'ui', file)
+        html = File.read File.join(SECRET_SAUCE_SRC, 'app', 'views', 'shared', file)
         open File.join(SECRET_SAUCE_DEST_VIEWS, file), 'w' do |f|
           f.print(html)
         end
-        manifest.print "file 'app/views/ui/#{file}'\n"
+        manifest.print "file 'app/views/shared/#{file}'\n"
       end      
     
       open File.join(SECRET_SAUCE_DEST_TEMPLATES, 'config', 'initializers', 'secret_sauce.rb'), 'w' do |f|

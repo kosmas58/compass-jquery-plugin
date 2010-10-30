@@ -38,7 +38,7 @@ module SecretSauce
           options[:parent] = "width: 100%;"
           options[:style] << " margin-left: auto; margin-right: auto;"
         end
-        render :partial => 'ui/ui_static_dialog', :locals => options
+        render :partial => 'shared/ui_static_dialog', :locals => options
       end
 
       # builds a form within a ui_static_dialog using UiFormBuilder in this case we are using a
@@ -109,7 +109,7 @@ module SecretSauce
        end
 
        def error_messages_for(*params)
-         render :partial => "ui/ui_form_error_messages", :locals => {:messages => super(*params) }
+         render :partial => "shared/ui_form_error_messages", :locals => {:messages => super(*params) }
        end         
      end     
    end

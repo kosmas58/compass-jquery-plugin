@@ -1733,7 +1733,7 @@ body {
 
 /* links within "buttons" */
 a.ui-link-inherit {
-  text-decoration= none !important; }
+  text-decoration: none; }
 
 /* Active class used as the "on" state across all themes */
 .ui-btn-active {
@@ -1817,7 +1817,7 @@ a.ui-link-inherit {
 /* Interaction Cues
 ----------------------------------*/
 .ui-disabled {
-  cursor= default !important;
+  cursor: default;
   opacity: .3; }
 
 /* Icons
@@ -2059,9 +2059,9 @@ a.ui-link-inherit {
 
 /* unset box shadow in browsers that don't do it right */
 .ui-mobile-nosupport-boxshadow * {
-  -moz-box-shadow= none !important;
-  -webkit-box-shadow= none !important;
-  box-shadow= none !important; }
+  -moz-box-shadow: none;
+  -webkit-box-shadow: none;
+  box-shadow: none; }
 
 .ui-mobile-nosupport-boxshadow .ui-focus {
   outline-width: 2px; }

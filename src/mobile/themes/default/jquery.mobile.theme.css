@@ -114,7 +114,7 @@
 
 
 /* links within "buttons" */
-a.ui-link-inherit { text-decoration: none !important; }
+a.ui-link-inherit { text-decoration: none; }
 
 /* Active class used as the "on" state across all themes */
 .ui-btn-active { border: 1px solid #155678; background: #4596ce; font-weight: bold; color: #fff; cursor: pointer;  text-shadow: 0 -1px 1px #145072; text-decoration: none; background-image: -moz-linear-gradient(top, #85bae4, #5393c5); background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0, #85bae4),color-stop(1, #5393c5));   -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#85bae4', EndColorStr='#5393c5')"; }
@@ -139,7 +139,7 @@ a.ui-link-inherit { text-decoration: none !important; }
 
 /* Interaction Cues
 ----------------------------------*/
-.ui-disabled { cursor: default !important; opacity: .3; }
+.ui-disabled { cursor: default; opacity: .3; }
 
 /* Icons
 ----------------------------------*/
@@ -234,5 +234,5 @@ a.ui-link-inherit { text-decoration: none !important; }
 .ui-focus { outline-width: 0;  -moz-box-shadow: 0px 0px 12px #387bbe; -webkit-box-shadow: 0px 0px 12px #387bbe; box-shadow: 0px 0px 12px #387bbe; }
 
 /* unset box shadow in browsers that don't do it right */
-.ui-mobile-nosupport-boxshadow * { -moz-box-shadow: none !important; -webkit-box-shadow: none !important; box-shadow: none !important; }
+.ui-mobile-nosupport-boxshadow * { -moz-box-shadow: none; -webkit-box-shadow: none; box-shadow: none; }
 .ui-mobile-nosupport-boxshadow .ui-focus { outline-width: 2px; }

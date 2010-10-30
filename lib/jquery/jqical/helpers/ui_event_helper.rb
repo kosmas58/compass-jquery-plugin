@@ -6,7 +6,7 @@ module JqIcal
         options = args.extract_options!
         options[:url]     = {} unless options[:url]
         options[:actions] = {} unless options[:actions]
-        render(:file => 'ui/_ui_event_for.js.haml', :locals => { :domid => domid, :url => options[:url], :actions => options[:actions]})
+        render(:file => 'shared/_ui_event_for.js.haml', :locals => { :domid => domid, :url => options[:url], :actions => options[:actions]})
       end
     end   
   end

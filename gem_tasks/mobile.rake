@@ -37,10 +37,6 @@ all_scripts = [
   'js/jquery.mobile.themeswitcher.js'
 ].collect {|filename| File.read(File.join(MOBILE_SRC, filename))}.join "\n\n"
 
-all_stylesheets = [
-  'css/jquery.mobile-1.0a1.css'  
-].collect {|filename| File.read(File.join(MOBILE_SRC, filename))}.join "\n\n"
-
 namespace :build do
   desc 'Build the stylesheets and templates for jquery.mobile.'
   task :mobile do    
