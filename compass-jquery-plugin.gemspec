@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kosmas Schuetz"]
-  s.date = %q{2010-10-29}
+  s.date = %q{2010-10-30}
   s.description = %q{A compass plugin that integrates jRails, jQuery, jQuery UI and Themes, jqGrid and more into the Compass Sass framework.}
   s.email = %q{kosmas.schuetz@gmx.com}
   s.extra_rdoc_files = [
@@ -41,6 +41,7 @@ Gem::Specification.new do |s|
      "lib/compiler.jar",
      "lib/handle_attributes.rb",
      "lib/handle_js_files.rb",
+     "lib/jquery.mobile.rb",
      "lib/jquery.rb",
      "lib/jquery.ui.rb",
      "lib/jquery/compass_plugin.rb",
@@ -308,6 +309,8 @@ Gem::Specification.new do |s|
      "templates/jqmobile/config/initializers/jqmobile.rb",
      "templates/jqmobile/jquery.mobile.js",
      "templates/jqmobile/jquery.mobile.min.js",
+     "templates/jqmobile/jquery.mobile/_theme.scss",
+     "templates/jqmobile/jquery.mobile/default.scss",
      "templates/jqmobile/jquery.mobile/default/ajax-loader.gif",
      "templates/jqmobile/jquery.mobile/default/ajax-loader.png",
      "templates/jqmobile/jquery.mobile/default/form-check-off.png",
@@ -326,27 +329,6 @@ Gem::Specification.new do |s|
      "templates/jqmobile/jquery.mobile/default/icons-18-white.png",
      "templates/jqmobile/jquery.mobile/default/icons-36-black.png",
      "templates/jqmobile/jquery.mobile/default/icons-36-white.png",
-     "templates/jqmobile/jquery.mobile/jqm.default.scss",
-     "templates/jqmobile/jquery.mobile/jqm.valencia.scss",
-     "templates/jqmobile/jquery.mobile/valencia/ajax-loader.gif",
-     "templates/jqmobile/jquery.mobile/valencia/ajax-loader.png",
-     "templates/jqmobile/jquery.mobile/valencia/form-check-off.png",
-     "templates/jqmobile/jquery.mobile/valencia/form-check-on.png",
-     "templates/jqmobile/jquery.mobile/valencia/form-radio-off.png",
-     "templates/jqmobile/jquery.mobile/valencia/form-radio-on.png",
-     "templates/jqmobile/jquery.mobile/valencia/icon-arrow-white-down.png",
-     "templates/jqmobile/jquery.mobile/valencia/icon-arrow-white-left.png",
-     "templates/jqmobile/jquery.mobile/valencia/icon-arrow-white-right.png",
-     "templates/jqmobile/jquery.mobile/valencia/icon-arrow-white-up.png",
-     "templates/jqmobile/jquery.mobile/valencia/icon-delete.png",
-     "templates/jqmobile/jquery.mobile/valencia/icon-minus-white.png",
-     "templates/jqmobile/jquery.mobile/valencia/icon-plus-white.png",
-     "templates/jqmobile/jquery.mobile/valencia/icon-search-black.png",
-     "templates/jqmobile/jquery.mobile/valencia/icons-18-black.png",
-     "templates/jqmobile/jquery.mobile/valencia/icons-18-white.png",
-     "templates/jqmobile/jquery.mobile/valencia/icons-36-black.png",
-     "templates/jqmobile/jquery.mobile/valencia/icons-36-white.png",
-     "templates/jqmobile/jquery.mobile/valencia/texture_075.png",
      "templates/jqmobile/manifest.rb",
      "templates/jqtools/config/initializers/jqtools.rb",
      "templates/jqtools/jquery.tools.js",
