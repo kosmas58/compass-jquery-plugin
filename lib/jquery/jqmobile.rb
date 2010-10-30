@@ -1,3 +1,0 @@
-module JqMobile#:nodoc:  
-end
-

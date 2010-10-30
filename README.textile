@@ -189,18 +189,17 @@ h3. jQuery mobile
 
 Use compass to install the jQuery mobile javascript library and themes into your project.
 
-<pre>compass install [-r jquery] jquery/jqmobile <project name></pre>
+<pre>compass install [-r jquery] jquery/mobile <project name></pre>
 
 You will find all the stylesheets in easy-to-read Sass format at:
 
-<pre>stylesheets/jqmobile</pre>
+<pre>stylesheets/mobile</pre>
 
 To use the localized stylesheets and javacripts include:
 
 <pre>
-= stylesheet_link_tag 'compiled/jquery.mobile/jqm.default.css', :media => 'screen, projection'
-= stylesheet_link_tag 'compiled/jquery.mobile/jqm.valencia.css', :media => 'screen, projection'</pre>
-= javascript_include_tag :jqmobile'</pre>
+= stylesheet_link_tag "compiled/jquery.mobile/[theme].css", :media => 'screen, projection'
+= javascript_include_tag :mobile'</pre>
 
 
 h3. jQTouch

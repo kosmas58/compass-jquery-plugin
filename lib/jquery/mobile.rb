@@ -1,0 +1,3 @@
+module Mobile#:nodoc:  
+end
+
