@@ -3213,7 +3213,7 @@ $.fn.grid = function(options){
 						'</div>'+
 						'<div data-role=\'content\' data-theme=\'c\'><ul data-role=\'listview\' data-inset=\'true\'></ul></div>'+
 					'</div>' )
-					.appendTo( 'body' ),
+					.appendTo( $.pageContainer ),
 			menu = menuPage.find('ul');	
 		
 		//menu items	
