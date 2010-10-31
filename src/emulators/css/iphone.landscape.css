@@ -1,0 +1,16 @@
+.iphone .emulator {
+  background: image_url("emulators/iphone.landscape.png") no-repeat;
+  width: 740px;
+  height: 420px;
+}
+.iphone .emulator .display-area {
+  position: relative;
+  top: 50px;
+  width: 460px;
+  height: 320px;
+  max-height: 320px;
+  color: #ffffff;
+}
+.iphone .emulator .display-area a {
+  color: #ff5500;
+}

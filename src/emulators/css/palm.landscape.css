@@ -1,0 +1,16 @@
+.palm .emulator {
+  background: image_url("emulators/palm.pre.landscape.png") no-repeat;
+  width: 740px;
+  height: 424px;
+}
+.palm .emulator .display-area {
+  position: relative;
+  top: 52px;
+  width: 460px;
+  height: 320px;
+  max-height: 320px;
+  color: #ffffff;
+}
+.palm .emulator .display-area a {
+  color: #ff5500;
+}
