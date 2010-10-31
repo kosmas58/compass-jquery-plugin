@@ -25,6 +25,7 @@ all_scripts = [
   'js/jquery.mobile.buttonMarkup.js',
   'js/jquery.mobile.forms.button.js',
   'js/jquery.mobile.forms.slider.js',
+  'js/jquery.mobile.forms.ajaxform.js',
   'js/jquery.mobile.collapsible.js',
   'js/jquery.mobile.controlGroup.js',
   'js/jquery.mobile.fieldContain.js',
