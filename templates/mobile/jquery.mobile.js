@@ -3203,7 +3203,8 @@ $.fn.grid = function(options){
 //quick & dirty theme switcher, written to potentially work as a bookmarklet
 (function($){
 	$.themeswitcher = function(){
-		var themesDir = 'http://jquerymobile.com/test/themes/',
+		var themesDir = '/stylesheets/compiled/jquery.mobile/',
+			//themesDir = 'http://jquerymobile.com/test/themes/',
 			themes = ['default','valencia'],
 			currentPage = $('.ui-page-active'),
 			menuPage = $( '<div data-role=\'dialog\' data-theme=\'a\'>' +
@@ -3229,7 +3230,8 @@ $.fn.grid = function(options){
 		
 		//remover, adder
 		function addTheme(theme){
-			$('head').append( '<link rel=\'stylesheet\' href=\''+ themesDir + theme +'/\' />' );
+			$('head').append( '<link rel=\'stylesheet\' href=\''+ themesDir + theme +'.css\' />' );
+			//$('head').append( '<link rel=\'stylesheet\' href=\''+ themesDir + theme +'/\' />' );
 		}
 		
 		//finished with this
