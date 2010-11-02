@@ -1,11 +1,11 @@
 .palm .emulator {
   background: image_url("emulators/palm.pre.landscape.png") no-repeat;
-  width: 740px;
-  height: 424px;
+  width: 760px;
+  height: 432px;
 }
 .palm .emulator .display-area {
   position: relative;
-  top: 52px;
+  top: 56px;
   width: 460px;
   height: 320px;
   max-height: 320px;
