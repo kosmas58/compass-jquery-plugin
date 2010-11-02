@@ -283,11 +283,7 @@ $.widget( "mobile.widget", {
 })( jQuery );
 
 
-/*
-Possible additions:
-	scollTop
-	CSS Matrix
-*/
+(function( $ ) {
 
 // test whether a CSS media type or query applies
 $.media = (function() {
@@ -353,6 +349,10 @@ fakeBody.remove();
 
 //for ruling out shadows via css
 if( !$.support.boxShadow ){ $('html').addClass('ui-mobile-nosupport-boxshadow'); }
+
+})( jQuery );
+
+(function( $ ) {
 
 // add new event shortcuts
 $.each( "touchstart touchmove touchend orientationchange tap taphold swipe swipeleft swiperight scrollstart scrollstop".split( " " ), function( i, name ) {
@@ -550,6 +550,7 @@ $.each({
 	};
 });
 
+})( jQuery );
 
 /*!
  * jQuery hashchange event - v1.3 - 7/21/2010
@@ -974,7 +975,7 @@ jQuery.widget( "mobile.page", jQuery.mobile.widget, {
 			
 			//apply theming and markup modifications to page,header,content,footer
 			if ( role === "header" || role === "footer" ) {
-				$this.addClass( "ui-bar-" + (theme || "a") );
+				$this.addClass( "ui-bar-" + (theme || $this.parent('[data-role=page]').data( "theme" ) || "a") );
 				
 				// add ARIA role
 				$this.attr( "role", role === "header" ? "banner" : "contentinfo" );
@@ -1035,7 +1036,6 @@ jQuery.widget( "mobile.page", jQuery.mobile.widget, {
 				case "navbar":
 				case "listview":
 				case "dialog":
-				case "ajaxform":
 					$this[ role ]();
 					break;
 			}
@@ -1776,7 +1776,8 @@ var attachEvents = function() {
 $.widget( "mobile.button", $.mobile.widget, {
 	options: {},
 	_create: function(){
-		var $el = this.element;
+		var $el = this.element,
+			type = $el.attr('type');
 			$el
 				.addClass('ui-btn-hidden')
 				.attr('tabindex','-1');
@@ -1790,7 +1791,13 @@ $.widget( "mobile.button", $.mobile.widget, {
 			.text( $el.text() || $el.val() )
 			.insertBefore( $el )
 			.click(function(){
-				$el.click(); 
+				if( type == "submit" ){
+					$(this).closest('form').submit();
+				}
+				else{
+					$el.click(); 
+				}
+
 				return false;
 			})
 			.buttonMarkup({
@@ -1965,66 +1972,6 @@ $.fn.slider = function(options){
 			.bind('click', function(e){ return false; });	
 	});
 };
-})(jQuery);
-	
-
-
-/*
-* jQuery Mobile Framework : "ajaxform" plugin
-* Copyright (c) jQuery Project
-* Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
-* Note: Code is in draft form and is subject to change 
-*/  
-(function($){
-
-//ajax response callbacks
-$.formhandlers = {
-	'default' : function(data,type){
-		return $(data).find('[data-role="content"]:eq(0)');
-	}
-};
-
-$.fn.ajaxform = function(options){
-	return $(this).each(function(){	
-		$this = $(this);
-	
-		//extendable options
-		var o = $.extend({
-			submitEvents: '',
-			method: $this.attr('method'),
-			action: $this.attr('action'),
-			injectResponse: true,//should be data-attr driven
-			dataFilter: $.formhandlers['default'], //should be data-attr driven 
-			theme: $this.data('theme') || 'b'
-		}, options);
-				
-		$this.addClass('ui-autoform ui-bar-'+o.theme);
-		
-		$this.bind(o.submitEvents, function(){
-			$(this).submit();
-		});
-		
-		$this.submit(function(){
-			$.pageLoading();
-			$.ajax({
-				url: o.action,
-				type: o.method,
-				data: $(this).serialize(),
-				dataFilter: o.dataFilter,
-				success: function(data,textStatus){
-					$('.ui-page-active .ui-content').replaceWith( data );
-					$('.ui-page-active [data-role="content"]').page();
-					$.pageLoading(true);
-				}
-			});
-			return false;
-		});
-	});
-};
-
-
-
-
 })(jQuery);
 	
 
@@ -2697,7 +2644,7 @@ $.fn.grid = function(options){
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * http://jquery.org/license
  */
-(function( jQuery, window, undefined ) {
+(function( $, window, undefined ) {
 	//some critical feature tests should be placed here.
 	//if we're missing support for any of these, then we're a C-grade browser
 	//to-do: see if we need more qualifiers here.
@@ -2752,9 +2699,9 @@ $.fn.grid = function(options){
 		nextPageRole = null,
 		hashListener = true,
 		unHashedSelectors = '[data-rel=dialog]',
-		baseUrl = location.protocol + '//' + location.host + location.pathname,
+		baseUrl = getPathDir( location.protocol + '//' + location.host + location.pathname ),
 		resolutionBreakpoints = [320,480,768,1024];
-	
+
 	// TODO: don't expose (temporary during code reorg)
 	$.mobile.urlStack = urlStack;
 	
@@ -2777,16 +2724,14 @@ $.fn.grid = function(options){
 		}, 150 );
 	}
 	
+	function getPathDir( path ){
+		var newPath = path.replace(/#/,'').split('/');
+		newPath.pop();
+		return newPath.join('/') + (newPath.length ? '/' : '');
+	}
+	
 	function getBaseURL( nonHashPath ){
-	    var newPath = nonHashPath || location.hash,
-	    	newBaseURL = newPath.replace(/#/,'').split('/');
-	    	
-		if(newBaseURL.length && /[.|&]/.test(newBaseURL[newBaseURL.length-1]) ){
-			newBaseURL.pop();	
-		}
-		newBaseURL = newBaseURL.join('/');
-		if(newBaseURL !== "" && newBaseURL.charAt(newBaseURL.length-1) !== '/'){  newBaseURL += '/'; }
-		return newBaseURL;
+		return getPathDir( nonHashPath || location.hash );
 	}
 	
 	var setBaseURL = !$.support.dynamicBaseTag ? $.noop : function( nonHashPath ){
@@ -2797,6 +2742,33 @@ $.fn.grid = function(options){
 	var resetBaseURL = !$.support.dynamicBaseTag ? $.noop : function(){
 		$('#ui-base').attr('href', baseUrl);
 	}
+	
+	//for form submission
+	$('form').live('submit', function(){
+		var type = $(this).attr("method"),
+			url = $(this).attr( "action" ).replace( location.protocol + "//" + location.host, "");	
+		
+		//external submits use regular HTTP
+		if( /^(:?\w+:)/.test( url ) ){
+			return;
+		}	
+		
+		//if it's a relative href, prefix href with base url
+		if( url.indexOf('/') && url.indexOf('#') !== 0 ){
+			url = getBaseURL() + url;
+		}
+			
+		$.changePage({
+				url: url,
+				type: type,
+				data: $(this).serialize()
+			},
+			undefined,
+			undefined,
+			true
+		);
+		return false;
+	});	
 	
 	//click routing - direct to HTTP or Ajax, accordingly
 	jQuery( "a" ).live( "click", function(event) {
@@ -2824,7 +2796,7 @@ $.fn.grid = function(options){
 				changeHashOnSuccess = !$this.is(unHashedSelectors);
 				
 			nextPageRole = $this.attr( "data-rel" );	
-				
+	
 			//if it's a relative href, prefix href with base url
 			if( href.indexOf('/') && href.indexOf('#') !== 0 ){
 				href = getBaseURL() + href;
@@ -2897,8 +2869,21 @@ $.fn.grid = function(options){
 			from = toIsArray ? to[0] : $.activePage,
 			to = toIsArray ? to[1] : to,
 			url = fileUrl = $.type(to) === "string" ? to.replace( /^#/, "" ) : null,
+			data = undefined,
+			type = 'get',
 			back = (back !== undefined) ? back : ( urlStack.length > 1 && urlStack[ urlStack.length - 2 ].url === url ),
 			transition = (transition !== undefined) ? transition :  ( pageTransition || "slide" );
+		
+		if( $.type(to) === "object" ){
+			url = to.url,
+			data = to.data,
+			type = to.type;
+			//make get requests bookmarkable
+			if( data && type == 'get' ){
+				url += "?" + data;
+				data = undefined;
+			}
+		}
 		
 		//unset pageTransition, forceBack	
 		pageTransition = undefined;
@@ -2999,6 +2984,8 @@ $.fn.grid = function(options){
 
 			$.ajax({
 				url: fileUrl,
+				type: type,
+				data: data,
 				success: function( html ) {
 					setBaseURL(fileUrl);
 					var all = jQuery("<div></div>");
@@ -3198,58 +3185,3 @@ $.fn.grid = function(options){
 	$window.load(hideBrowserChrome);
 	
 })( jQuery, this );
-
-
-//quick & dirty theme switcher, written to potentially work as a bookmarklet
-(function($){
-	$.themeswitcher = function(){
-		var themesDir = '/stylesheets/compiled/jquery.mobile/',
-			//themesDir = 'http://jquerymobile.com/test/themes/',
-			themes = ['default','valencia'],
-			currentPage = $('.ui-page-active'),
-			menuPage = $( '<div data-role=\'dialog\' data-theme=\'a\'>' +
-						'<div data-role=\'header\' data-theme=\'b\'>' +
-							'<a href=\'#\' class=\'ui-btn-left\' data-icon=\'delete\' data-iconpos=\'notext\'>Cancel</a>'+
-							'<div class=\'ui-title\'>Switch Theme:</div>'+
-						'</div>'+
-						'<div data-role=\'content\' data-theme=\'c\'><ul data-role=\'listview\' data-inset=\'true\'></ul></div>'+
-					'</div>' )
-					.appendTo( $.pageContainer ),
-			menu = menuPage.find('ul');	
-		
-		//menu items	
-		$.each(themes, function( i ){
-			$('<li><a href=\'#\'>' + themes[ i ].charAt(0).toUpperCase() + themes[ i ].substr(1) + '</a></li>')
-				.click(function(){
-					addTheme( themes[i] );
-					done();
-					return false;
-				})
-				.appendTo(menu);
-		});	
-		
-		//remover, adder
-		function addTheme(theme){
-			$('head').append( '<link rel=\'stylesheet\' href=\''+ themesDir + theme +'.css\' />' );
-			//$('head').append( '<link rel=\'stylesheet\' href=\''+ themesDir + theme +'/\' />' );
-		}
-		
-		//finished with this
-		function done(){
-			$.changePage(menuPage, currentPage, 'pop', true);
-			menuPage.bind('pagehide',function(){
-				menuPage.remove();
-			});
-			return false;
-		}
-				
-		//destroy
-		menuPage.find('.ui-btn-left').click(done);
-		
-		//create page, listview
-		menuPage.page();
-		
-		//change page now	
-		$.changePage(currentPage, menuPage, 'pop', false);
-	};	
-})(jQuery);

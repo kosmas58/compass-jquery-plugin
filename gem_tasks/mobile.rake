@@ -25,7 +25,6 @@ all_scripts = [
   'js/jquery.mobile.buttonMarkup.js',
   'js/jquery.mobile.forms.button.js',
   'js/jquery.mobile.forms.slider.js',
-  'js/jquery.mobile.forms.ajaxform.js',
   'js/jquery.mobile.collapsible.js',
   'js/jquery.mobile.controlGroup.js',
   'js/jquery.mobile.fieldContain.js',
@@ -34,8 +33,8 @@ all_scripts = [
   'js/jquery.mobile.dialog.js',
   'js/jquery.mobile.navbar.js',
   'js/jquery.mobile.grid.js',
-  'js/jquery.mobile.js',
-  'js/jquery.mobile.themeswitcher.js'
+  'js/jquery.mobile.js'#,
+  #'js/jquery.mobile.themeswitcher.js'
 ].collect {|filename| File.read(File.join(MOBILE_SRC, filename))}.join "\n\n"
 
 namespace :build do

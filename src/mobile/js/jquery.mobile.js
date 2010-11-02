@@ -6,7 +6,7 @@
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * http://jquery.org/license
  */
-(function( jQuery, window, undefined ) {
+(function( $, window, undefined ) {
 	//some critical feature tests should be placed here.
 	//if we're missing support for any of these, then we're a C-grade browser
 	//to-do: see if we need more qualifiers here.
@@ -61,9 +61,9 @@
 		nextPageRole = null,
 		hashListener = true,
 		unHashedSelectors = '[data-rel=dialog]',
-		baseUrl = location.protocol + '//' + location.host + location.pathname,
+		baseUrl = getPathDir( location.protocol + '//' + location.host + location.pathname ),
 		resolutionBreakpoints = [320,480,768,1024];
-	
+
 	// TODO: don't expose (temporary during code reorg)
 	$.mobile.urlStack = urlStack;
 	
@@ -86,16 +86,14 @@
 		}, 150 );
 	}
 	
+	function getPathDir( path ){
+		var newPath = path.replace(/#/,'').split('/');
+		newPath.pop();
+		return newPath.join('/') + (newPath.length ? '/' : '');
+	}
+	
 	function getBaseURL( nonHashPath ){
-	    var newPath = nonHashPath || location.hash,
-	    	newBaseURL = newPath.replace(/#/,'').split('/');
-	    	
-		if(newBaseURL.length && /[.|&]/.test(newBaseURL[newBaseURL.length-1]) ){
-			newBaseURL.pop();	
-		}
-		newBaseURL = newBaseURL.join('/');
-		if(newBaseURL !== "" && newBaseURL.charAt(newBaseURL.length-1) !== '/'){  newBaseURL += '/'; }
-		return newBaseURL;
+		return getPathDir( nonHashPath || location.hash );
 	}
 	
 	var setBaseURL = !$.support.dynamicBaseTag ? $.noop : function( nonHashPath ){
@@ -106,6 +104,33 @@
 	var resetBaseURL = !$.support.dynamicBaseTag ? $.noop : function(){
 		$('#ui-base').attr('href', baseUrl);
 	}
+	
+	//for form submission
+	$('form').live('submit', function(){
+		var type = $(this).attr("method"),
+			url = $(this).attr( "action" ).replace( location.protocol + "//" + location.host, "");	
+		
+		//external submits use regular HTTP
+		if( /^(:?\w+:)/.test( url ) ){
+			return;
+		}	
+		
+		//if it's a relative href, prefix href with base url
+		if( url.indexOf('/') && url.indexOf('#') !== 0 ){
+			url = getBaseURL() + url;
+		}
+			
+		$.changePage({
+				url: url,
+				type: type,
+				data: $(this).serialize()
+			},
+			undefined,
+			undefined,
+			true
+		);
+		return false;
+	});	
 	
 	//click routing - direct to HTTP or Ajax, accordingly
 	jQuery( "a" ).live( "click", function(event) {
@@ -133,7 +158,7 @@
 				changeHashOnSuccess = !$this.is(unHashedSelectors);
 				
 			nextPageRole = $this.attr( "data-rel" );	
-				
+	
 			//if it's a relative href, prefix href with base url
 			if( href.indexOf('/') && href.indexOf('#') !== 0 ){
 				href = getBaseURL() + href;
@@ -206,8 +231,21 @@
 			from = toIsArray ? to[0] : $.activePage,
 			to = toIsArray ? to[1] : to,
 			url = fileUrl = $.type(to) === "string" ? to.replace( /^#/, "" ) : null,
+			data = undefined,
+			type = 'get',
 			back = (back !== undefined) ? back : ( urlStack.length > 1 && urlStack[ urlStack.length - 2 ].url === url ),
 			transition = (transition !== undefined) ? transition :  ( pageTransition || "slide" );
+		
+		if( $.type(to) === "object" ){
+			url = to.url,
+			data = to.data,
+			type = to.type;
+			//make get requests bookmarkable
+			if( data && type == 'get' ){
+				url += "?" + data;
+				data = undefined;
+			}
+		}
 		
 		//unset pageTransition, forceBack	
 		pageTransition = undefined;
@@ -308,6 +346,8 @@
 
 			$.ajax({
 				url: fileUrl,
+				type: type,
+				data: data,
 				success: function( html ) {
 					setBaseURL(fileUrl);
 					var all = jQuery("<div></div>");

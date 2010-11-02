@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kosmas Schuetz"]
-  s.date = %q{2010-11-01}
+  s.date = %q{2010-11-02}
   s.description = %q{A compass plugin that integrates jRails, jQuery, jQuery UI and Themes, jqGrid and more into the Compass Sass framework.}
   s.email = %q{kosmas.schuetz@gmx.com}
   s.extra_rdoc_files = [
@@ -787,14 +787,20 @@ Gem::Specification.new do |s|
      "templates/jrails/jquery.compat-1.3.min.js",
      "templates/jrails/jquery.contextMenu.js",
      "templates/jrails/jquery.contextMenu.min.js",
+     "templates/jrails/jquery.cookie.js",
+     "templates/jrails/jquery.cookie.min.js",
      "templates/jrails/jquery.farbtastic.js",
      "templates/jrails/jquery.farbtastic.min.js",
      "templates/jrails/jquery.flash_messages.js",
      "templates/jrails/jquery.flash_messages.min.js",
+     "templates/jrails/jquery.form.js",
+     "templates/jrails/jquery.form.min.js",
      "templates/jrails/jquery.haml.js",
      "templates/jrails/jquery.haml.min.js",
      "templates/jrails/jquery.hotkeys.js",
      "templates/jrails/jquery.hotkeys.min.js",
+     "templates/jrails/jquery.layout.js",
+     "templates/jrails/jquery.layout.min.js",
      "templates/jrails/jquery.metadata.js",
      "templates/jrails/jquery.metadata.min.js",
      "templates/jrails/jquery.pngFix.js",

@@ -20,7 +20,7 @@
     overflow-x: hidden;
     -webkit-backface-visibility: hidden;
     -webkit-text-size-adjust: none;
-    min-height: 100%; } }
+    -ms-text-size-adjust: none; } }
 
 /* responsive page widths */
 
@@ -42,7 +42,8 @@
 
 .ui-page-active {
   display: block;
-  overflow: visible; }
+  overflow: visible;
+  min-height: 100%; }
 
 /* loading screen */
 
@@ -548,7 +549,7 @@ label.ui-select {
 label.ui-slider {
   display: block; }
 
-input.ui-slider-input {
+input.ui-slider-input, .min-width-480px input.ui-slider-input {
   display: inline-block;
   width: 40px; }
 
@@ -561,7 +562,7 @@ div.ui-slider {
   overflow: visible;
   height: 15px;
   padding: 0;
-  margin: 0 2% 0 15px;
+  margin: 0 2% 0 20px;
   top: 4px;
   width: 66%; }
 
@@ -701,23 +702,20 @@ textarea.ui-input-text {
 
 /* orientation adjustments - incomplete!*/
 
-.min-width-480px label.ui-input-text {
-  vertical-align: top;
-  display: inline-block;
-  width: 20%;
-  margin: 0 2% 0 0; }
-
-label.ui-select {
-  display: inline-block;
-  width: 20%;
-  margin: 0 2% 0 0; }
-
-.min-width-480px input.ui-input-text, textarea.ui-input-text, .ui-input-search {
-  width: 60%;
-  display: inline-block; }
-
-.min-width-480px .ui-input-search {
-  width: 50%; }
+.min-width-480px {
+  label.ui-input-text {
+    vertical-align: top;
+    display: inline-block;
+    width: 20%;
+    margin: 0 2% 0 0; }
+  input.ui-input-text {
+    width: 60%;
+    display: inline-block;
+    textarea.ui-input-text, .ui-input-search {
+      width: 60%;
+      display: inline-block; } }
+  .ui-input-search {
+    width: 50%; } }
 
 /*
 * jQuery Mobile Framework
@@ -903,9 +901,12 @@ ol.ui-listview .ui-li-jsnumbering:before {
 
 .ui-li-aside {
   float: right;
-  width: 25%;
+  width: 50%;
   text-align: right;
   margin: .3em 0; }
+
+.min-width-480px .ui-li-aside {
+  width: 45%; }
 
 .ui-li-has-alt .ui-btn-inner {
   padding-right: 95px; }

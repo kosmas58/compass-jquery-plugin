@@ -29,7 +29,7 @@ jQuery.widget( "mobile.page", jQuery.mobile.widget, {
 			
 			//apply theming and markup modifications to page,header,content,footer
 			if ( role === "header" || role === "footer" ) {
-				$this.addClass( "ui-bar-" + (theme || "a") );
+				$this.addClass( "ui-bar-" + (theme || $this.parent('[data-role=page]').data( "theme" ) || "a") );
 				
 				// add ARIA role
 				$this.attr( "role", role === "header" ? "banner" : "contentinfo" );
@@ -90,7 +90,6 @@ jQuery.widget( "mobile.page", jQuery.mobile.widget, {
 				case "navbar":
 				case "listview":
 				case "dialog":
-				case "ajaxform":
 					$this[ role ]();
 					break;
 			}

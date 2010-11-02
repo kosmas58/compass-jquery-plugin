@@ -1,8 +1,4 @@
-/*
-Possible additions:
-	scollTop
-	CSS Matrix
-*/
+(function( $ ) {
 
 // test whether a CSS media type or query applies
 $.media = (function() {
@@ -68,3 +64,5 @@ fakeBody.remove();
 
 //for ruling out shadows via css
 if( !$.support.boxShadow ){ $('html').addClass('ui-mobile-nosupport-boxshadow'); }
+
+})( jQuery );
