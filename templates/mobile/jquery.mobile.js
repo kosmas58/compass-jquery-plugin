@@ -1321,7 +1321,7 @@ $.widget( "mobile.checkboxradio", $.mobile.widget, {
 			.bind({
 
 				click: function() {
-					jQuery( "input[name='" + input.attr( "name" ) + "']" ).checkboxradio( "refresh" );
+					jQuery( "input[name='" + input.attr( "name" ) + "'][type='" + inputtype + "']" ).checkboxradio( "refresh" );
 				},
 
 				focus: function() { 
@@ -2927,6 +2927,7 @@ $.fn.grid = function(options){
 			}
 			
 			if(transition){		
+				$pageContainer.addClass('ui-mobile-viewport-transitioning');
 				// animate in / out
 				from.addClass( transition + " out " + ( back ? "reverse" : "" ) );
 				to.addClass( activePageClass + " " + transition +
@@ -2937,6 +2938,7 @@ $.fn.grid = function(options){
 					from.add( to ).removeClass(" out in reverse " + transitions );
 					from.removeClass( activePageClass );
 					loadComplete();
+					$pageContainer.removeClass('ui-mobile-viewport-transitioning');
 				});
 			}
 			else{
@@ -3161,7 +3163,7 @@ $.fn.grid = function(options){
 		$startPage = $.activePage = $pages.first();
 		
 		//set page container
-		$pageContainer = $startPage.parent();
+		$pageContainer = $startPage.parent().addClass('ui-mobile-viewport');
 		
 		jQuery.extend({
 			pageContainer: $pageContainer
