@@ -20,7 +20,7 @@ class JqueryMobileTheme
     
     # Fix stuff
     theme.gsub!(/\;filter:Alpha/, "; filter: Alpha")
-    theme.gsub! /url\(images(.*)\)/, "image_url(\"jquery/mobile/#{name}\\1\")"
+    theme.gsub! /url\(images(.+?)\)/, "image_url(\"jquery/mobile/#{name}\\1\")"
     
     # Convert the stylesheet
     open File.join(MOBILE_DEST_THEMES, "#{name}.scss"), 'w' do |f|
