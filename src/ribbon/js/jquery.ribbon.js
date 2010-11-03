@@ -18,7 +18,7 @@ Feel free to use this script as long as you don't remove this comment.
             }
         });
 
-        $('head').append('<link href="/stylesheets/compiled/jquery/ribbon.' + settings.theme + '.css" rel="stylesheet" type="text/css" />" />');
+        $('head').append('<link href="/stylesheets/compiled/jquery/ribbon/' + settings.theme + '.css" rel="stylesheet" type="text/css" />" />');
 
         if (!isLoaded) {
             SetupMenu(settings);
