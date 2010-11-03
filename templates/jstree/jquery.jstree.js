@@ -1441,7 +1441,7 @@
             set_theme : function (theme_name, theme_url) {
                 if(!theme_name) { return false; }
                 //if(!theme_url) { theme_url = $.jstree._themes + theme_name + '/style.css'; }
-                if(!theme_url) { theme_url = $.jstree._themes + 'jstree.' + theme_name + '.css'; }
+                if(!theme_url) { theme_url = $.jstree._themes + theme_name + '.css'; }
                 if($.inArray(theme_url, themes_loaded) == -1) {
                     $.vakata.css.add_sheet({ "url" : theme_url });
                     themes_loaded.push(theme_url);
