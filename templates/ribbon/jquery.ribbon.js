@@ -98,13 +98,13 @@ Feel free to use this script as long as you don't remove this comment.
         }
 
         if (!settings.backStage) {
-            $('.orb li:first ul:first').append('<img src="/images/jquery/ribbon.' + settings.theme + '/menu_bottom.png" style="margin-left: -10px; margin-bottom: -22px;" />');
-            $('.orb li:first ul:first').prepend('<img src="/images/jquery/ribbon.' + settings.theme + '/menu_top.png" style="margin-left: -10px; margin-top: -22px;" />');
+            $('.orb li:first ul:first').append('<img src="/images/jquery/ribbon/' + settings.theme + '/menu_bottom.png" style="margin-left: -10px; margin-bottom: -22px;" />');
+            $('.orb li:first ul:first').prepend('<img src="/images/jquery/ribbon/' + settings.theme + '/menu_top.png" style="margin-left: -10px; margin-top: -22px;" />');
         }
 
         $('.ribbon-list div').each(function() {
 			if ($(this).children('ul').length > 0) { 
-				$(this).append('<img src="/images/jquery/ribbon.' + settings.theme + '/arrow_down.png" style="float: right; margin-top: 5px;" />')
+				$(this).append('<img src="/images/jquery/ribbon/' + settings.theme + '/arrow_down.png" style="float: right; margin-top: 5px;" />')
 			}
 		});
 
