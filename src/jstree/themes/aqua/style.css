@@ -7,7 +7,7 @@
 .jstree-aqua { font-family: "Lucida Grande", Verdana, Geneva, Arial, Helvetica, sans-serif; font-size: 1.0em; }
 
 .jstree-aqua li, 
-.jstree-aqua ins { background-image: image_url("jquery.ui/jstree.aqua/d.png"); background-repeat:no-repeat; background-color:transparent; }
+.jstree-aqua ins { background-image: image_url("jquery/jstree/aqua/d.png"); background-repeat:no-repeat; background-color:transparent; }
 .jstree-aqua li { background-position:-108px 0; background-repeat:repeat-y; }
 .jstree-aqua li.jstree-last { background:transparent; }
 .jstree-aqua .jstree-leaf > ins { background-position:-72px 0; }
@@ -16,11 +16,11 @@
 .jstree-aqua .jstree-open > ins:hover { background-position:-54px -18px; }
 .jstree-aqua .jstree-closed > ins:hover { background-position:-36px -18px; }
 
-.jstree-aqua .jstree-hovered { background-image: image_url("jquery.ui/jstree.aqua/hovered.png"); background-repeat:repeat-x; border:1px solid #f2ffff; -moz-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px; padding:0 2px 0 1px; }
-.jstree-aqua .jstree-clicked { color: white; background-image: image_url("jquery.ui/jstree.aqua/clicked.png"); background-repeat:repeat-x; border:1px solid #a2b0cc; -moz-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px; padding:0 2px 0 1px; }
+.jstree-aqua .jstree-hovered { background-image: image_url("jquery/jstree/aqua/hovered.png"); background-repeat:repeat-x; border:1px solid #f2ffff; -moz-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px; padding:0 2px 0 1px; }
+.jstree-aqua .jstree-clicked { color: white; background-image: image_url("jquery/jstree/aqua/clicked.png"); background-repeat:repeat-x; border:1px solid #a2b0cc; -moz-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px; padding:0 2px 0 1px; }
 .jstree-aqua a .jstree-icon { background-position:-54px -36px; }
 .jstree-aqua .jstree-open > a .jstree-icon { background-position:-54px -54px; }
-.jstree-aqua a.jstree-loading .jstree-icon { background: image_url("jquery.ui/jstree.aqua/throbber.gif") center center no-repeat !important; }
+.jstree-aqua a.jstree-loading .jstree-icon { background: image_url("jquery/jstree/aqua/throbber.gif") center center no-repeat !important; }
 
 .jstree-aqua.jstree-focused { background: #edf2f9; }
 
@@ -54,9 +54,9 @@
 .jstree-aqua .jstree-undetermined > a > .jstree-radio:hover { background-position:-20px -91px; }
 
 #vakata-dragged.jstree-aqua ins { background:transparent !important; }
-#vakata-dragged.jstree-aqua .jstree-ok { background: image_url("jquery.ui/jstree.aqua/d.png") -56px -71px no-repeat !important; }
-#vakata-dragged.jstree-aqua .jstree-invalid { background: image_url("jquery.ui/jstree.aqua/d.png") -72px -71px no-repeat !important; }
-#jstree-marker.jstree-aqua { background: image_url("jquery.ui/jstree.aqua/d.png") -95px -75px no-repeat !important; }
+#vakata-dragged.jstree-aqua .jstree-ok { background: image_url("jquery/jstree/aqua/d.png") -56px -71px no-repeat !important; }
+#vakata-dragged.jstree-aqua .jstree-invalid { background: image_url("jquery/jstree/aqua/d.png") -72px -71px no-repeat !important; }
+#jstree-marker.jstree-aqua { background: image_url("jquery/jstree/aqua/d.png") -95px -75px no-repeat !important; }
 
 .jstree-aqua a.jstree-search { color:aqua; }
 
@@ -76,7 +76,7 @@
 .jstree-aqua ins,
 #vakata-dragged.jstree-aqua .jstree-invalid, 
 #vakata-dragged.jstree-aqua .jstree-ok, 
-#jstree-marker.jstree-aqua { _background-image: image_url("jquery.ui/jstree.aqua/d.gif"); }
+#jstree-marker.jstree-aqua { _background-image: image_url("jquery/jstree/aqua/d.gif"); }
 .jstree-aqua .jstree-leaf ins { _background-position:-72px 0; }
 .jstree-aqua .jstree-open ins { _background-position:-54px 0; }
 .jstree-aqua .jstree-closed ins:hover { _background-position:-36px 0; }

@@ -13,7 +13,7 @@
 	position:relative;
 	width:100%; height:43px;
 	border-top:1px solid #000; border-bottom:1px solid #000;
-	background: image_url("jqtouch/sw/header.png") 0 0 repeat-x;
+	background: image_url("jquery/touch/sw/header.png") 0 0 repeat-x;
 	opacity: 0.9;
 }
 
@@ -31,13 +31,13 @@
 #sw-cancel {
 	left:7px;
 	float:left;
-	-webkit-border-image: image_url("jqtouch/sw/button-cancel.png") 5;
+	-webkit-border-image: image_url("jquery/touch/sw/button-cancel.png") 5;
 }
 
 #sw-done {
 	right:7px;
 	float:right;
-	-webkit-border-image: image_url("jqtouch/sw/button-done.png") 5;
+	-webkit-border-image: image_url("jquery/touch/sw/button-done.png") 5;
 }
 
 .sw-pressed { opacity:0.4; }
@@ -62,7 +62,7 @@
 	padding-top:86px;
 	border-left:2px solid #0d0e0f;
 	background-color:#fcfcfc;
-	background-image: image_url("jqtouch/sw/slot-border.png");
+	background-image: image_url("jquery/touch/sw/slot-border.png");
 	background-position: 0 0, 100% 0;
 	background-repeat: repeat-y;
 }
@@ -92,5 +92,5 @@
 	left:0; right:0; bottom:0;
 	height:183px;
 	border-width:16px;
-	-webkit-border-image: image_url("jqtouch/sw/alpha.png") 16;
+	-webkit-border-image: image_url("jquery/touch/sw/alpha.png") 16;
 }

@@ -71,7 +71,7 @@
       //      });
       //  }
       //  if($.jstree._themes === false) { $.jstree._themes = "themes/"; }
-      if($.jstree._themes === false) { $.jstree._themes = "/stylesheets/compiled/jquery.ui/"; }
+      if($.jstree._themes === false) { $.jstree._themes = "/stylesheets/compiled/jquery/jstree/"; }
     });
     // include the themes plugin by default
     $.jstree.defaults.plugins.push("themes");

@@ -30,7 +30,7 @@ ul.dynatree-container li
     background-color: transparent;
     background-position: 0 0;
     background-repeat: repeat-y;
-    background-image: image_url("jquery.ui/dynatree.xp/vline.png");
+    background-image: image_url("jquery/dynatree/xp/vline.png");
     
     margin:0;
 /*    padding:3px 0 3px 16px;*/
@@ -103,21 +103,21 @@ span.dynatree-empty
 }
 span.dynatree-vline
 {
-	background-image: image_url("jquery.ui/dynatree.xp/ltL_ns.png");
+	background-image: image_url("jquery/dynatree/xp/ltL_ns.png");
 }
 span.dynatree-connector
 {
-	background-image: image_url("jquery.ui/dynatree.xp/ltL_nes.png");
+	background-image: image_url("jquery/dynatree/xp/ltL_nes.png");
 }
 .dynatree-lastsib span.dynatree-connector
 {
-	background-image: image_url("jquery.ui/dynatree.xp/ltL_ne.png");
+	background-image: image_url("jquery/dynatree/xp/ltL_ne.png");
 }
 */
 
 span.dynatree-connector
 {
-    background-image: image_url("jquery.ui/dynatree.xp/ltL_ne.png");
+    background-image: image_url("jquery/dynatree/xp/ltL_ne.png");
 }
 
 /******************************************************************************* 
@@ -133,30 +133,30 @@ span.dynatree-connector
  
 span.dynatree-expander
 {
-	background-image: image_url("jquery.ui/dynatree.xp/ltP_nes.png");
+	background-image: image_url("jquery/dynatree/xp/ltP_nes.png");
 	cursor: pointer;
 }
 .dynatree-exp-cl span.dynatree-expander /* Collapsed, not delayed, last sibling */
 {
-	background-image: image_url("jquery.ui/dynatree.xp/ltP_ne.png");
+	background-image: image_url("jquery/dynatree/xp/ltP_ne.png");
 }
 .dynatree-exp-cd span.dynatree-expander /* Collapsed, delayed, not last sibling */
 {
-	background-image: image_url("jquery.ui/dynatree.xp/ltD_nes.png");
+	background-image: image_url("jquery/dynatree/xp/ltD_nes.png");
 }
 .dynatree-exp-cdl span.dynatree-expander /* Collapsed, delayed, last sibling */
 {
-	background-image: image_url("jquery.ui/dynatree.xp/ltD_ne.png");
+	background-image: image_url("jquery/dynatree/xp/ltD_ne.png");
 }
 .dynatree-exp-e span.dynatree-expander,  /* Expanded, not delayed, not last sibling */
 .dynatree-exp-ed span.dynatree-expander  /* Expanded, delayed, not last sibling */
 {
-	background-image: image_url("jquery.ui/dynatree.xp/ltM_nes.png");
+	background-image: image_url("jquery/dynatree/xp/ltM_nes.png");
 }
 .dynatree-exp-el span.dynatree-expander,  /* Expanded, not delayed, last sibling */
 .dynatree-exp-edl span.dynatree-expander  /* Expanded, delayed, last sibling */
 {
-	background-image: image_url("jquery.ui/dynatree.xp/ltM_ne.png");
+	background-image: image_url("jquery/dynatree/xp/ltM_ne.png");
 }
 
 
@@ -166,29 +166,29 @@ span.dynatree-expander
 span.dynatree-checkbox
 {
 	margin-left: 3px;
-	background-image: image_url("jquery.ui/dynatree.xp/cbUnchecked.png");
+	background-image: image_url("jquery/dynatree/xp/cbUnchecked.png");
 }
 span.dynatree-checkbox:hover
 {
-	background-image: image_url("jquery.ui/dynatree.xp/cbUnchecked_hover.png");
+	background-image: image_url("jquery/dynatree/xp/cbUnchecked_hover.png");
 }
 
 .dynatree-partsel span.dynatree-checkbox
 {
-	background-image: image_url("jquery.ui/dynatree.xp/cbIntermediate.png");
+	background-image: image_url("jquery/dynatree/xp/cbIntermediate.png");
 }
 .dynatree-partsel span.dynatree-checkbox:hover
 {
-	background-image: image_url("jquery.ui/dynatree.xp/cbIntermediate_hover.png");
+	background-image: image_url("jquery/dynatree/xp/cbIntermediate_hover.png");
 }
 
 .dynatree-selected span.dynatree-checkbox
 {
-	background-image: image_url("jquery.ui/dynatree.xp/cbChecked.png");
+	background-image: image_url("jquery/dynatree/xp/cbChecked.png");
 }
 .dynatree-selected span.dynatree-checkbox:hover
 {
-	background-image: image_url("jquery.ui/dynatree.xp/cbChecked_hover.png");
+	background-image: image_url("jquery/dynatree/xp/cbChecked_hover.png");
 }
 
 /******************************************************************************* 
@@ -199,29 +199,29 @@ span.dynatree-checkbox:hover
 span.dynatree-radio
 {
 	margin-left: 3px;
-	background-image: image_url("jquery.ui/dynatree.xp/rbUnchecked.png");
+	background-image: image_url("jquery/dynatree/xp/rbUnchecked.png");
 }
 span.dynatree-radio:hover
 {
-	background-image: image_url("jquery.ui/dynatree.xp/rbUnchecked_hover.png");
+	background-image: image_url("jquery/dynatree/xp/rbUnchecked_hover.png");
 }
 
 .dynatree-partsel span.dynatree-radio
 {
-	background-image: image_url("jquery.ui/dynatree.xp/rbIntermediate.png");
+	background-image: image_url("jquery/dynatree/xp/rbIntermediate.png");
 }
 .dynatree-partsel span.dynatree-radio:hover
 {
-	background-image: image_url("jquery.ui/dynatree.xp/rbIntermediate_hover.png");
+	background-image: image_url("jquery/dynatree/xp/rbIntermediate_hover.png");
 }
 
 .dynatree-selected span.dynatree-radio
 {
-	background-image: image_url("jquery.ui/dynatree.xp/rbChecked.png");
+	background-image: image_url("jquery/dynatree/xp/rbChecked.png");
 }
 .dynatree-selected span.dynatree-radio:hover
 {
-	background-image: image_url("jquery.ui/dynatree.xp/rbChecked_hover.png");
+	background-image: image_url("jquery/dynatree/xp/rbChecked_hover.png");
 }
 
 /******************************************************************************* 
@@ -237,29 +237,29 @@ span.dynatree-radio:hover
 span.dynatree-icon /* Default icon */
 {
 	margin-left: 3px;
-	background-image: image_url("jquery.ui/dynatree.xp/ltDoc.png");
+	background-image: image_url("jquery/dynatree/xp/ltDoc.png");
 }
 
 .dynatree-ico-cf span.dynatree-icon  /* Collapsed Folder */
 {
-	background-image: image_url("jquery.ui/dynatree.xp/ltFld.png");
+	background-image: image_url("jquery/dynatree/xp/ltFld.png");
 }
 
 .dynatree-ico-ef span.dynatree-icon  /* Expanded Folder */
 {
-	background-image: image_url("jquery.ui/dynatree.xp/ltFld_o.png");
+	background-image: image_url("jquery/dynatree/xp/ltFld_o.png");
 }
 
 /* Status node icons */
 
 .dynatree-statusnode-wait span.dynatree-icon
 {
-	background-image: image_url("jquery.ui/dynatree.xp/ltWait.gif");
+	background-image: image_url("jquery/dynatree/xp/ltWait.gif");
 }
 
 .dynatree-statusnode-error span.dynatree-icon
 {
-	background-image: image_url("jquery.ui/dynatree.xp/ltError.png");
+	background-image: image_url("jquery/dynatree/xp/ltError.png");
 }
 
 /******************************************************************************* 
@@ -358,7 +358,7 @@ div.dynatree-drag-helper.dynatree-drop-accept
 }
 div.dynatree-drop-accept span.dynatree-drag-helper-img
 { 
-    background-image: image_url("jquery.ui/dynatree.xp/drop_accept.png");
+    background-image: image_url("jquery/dynatree/xp/drop_accept.png");
 }
 div.dynatree-drag-helper.dynatree-drop-reject
 { 
@@ -366,7 +366,7 @@ div.dynatree-drag-helper.dynatree-drop-reject
 }
 div.dynatree-drop-reject span.dynatree-drag-helper-img
 { 
-    background-image: image_url("jquery.ui/dynatree.xp/drop_reject.png");
+    background-image: image_url("jquery/dynatree/xp/drop_reject.png");
 }
 /* Source node while dragging */
 span.dynatree-drag-source
@@ -387,7 +387,7 @@ span.dynatree-drop-target a
 { 
     background-repeat: no-repeat;
     background-position: right;
-    /*background-image: image_url("jquery.ui/dynatree.xp/drop_child.png");*/
+    /*background-image: image_url("jquery/dynatree/xp/drop_child.png");*/
 }
 span.dynatree-drop-target.dynatree-drop-accept a
 { 
@@ -403,22 +403,22 @@ span.dynatree-drop-target.dynatree-drop-after a
 {
     /*background-repeat: repeat-x;
     background-position: bottom;
-    background-image: image_url("jquery.ui/dynatree.xp/drop_append.png");*/
+    background-image: image_url("jquery/dynatree/xp/drop_append.png");*/
 }
 /* Drop marker icon */
 #dynatree_drop_marker
 {
 	width:24px;
 	position: absolute;
-    background-image: image_url("jquery.ui/dynatree.xp/drop_here.png");
+    background-image: image_url("jquery/dynatree/xp/drop_here.png");
 }
 #dynatree_drop_marker.dynatree_drop_copy
 {
-    background-image: image_url("jquery.ui/dynatree.xp/copy_here.png");
+    background-image: image_url("jquery/dynatree/xp/copy_here.png");
 }
 #dynatree_drop_marker.dynatree_drop_move
 {
-    background-image: image_url("jquery.ui/dynatree.xp/move_here.png");
+    background-image: image_url("jquery/dynatree/xp/move_here.png");
 }
 
 

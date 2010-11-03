@@ -30,7 +30,7 @@
  */
 #jqt .jqt-photo.jqt-photo-toolbar-hidden .toolbar{opacity:0;display:none;}
 
-#jqt .jqt-photo .jqt-photo-image-slide .jqt-photo-not-loaded{background:#000 image_url("jqtouch/photo/loading.gif") no-repeat center center;}
+#jqt .jqt-photo .jqt-photo-image-slide .jqt-photo-not-loaded{background:#000 image_url("jquery/touch/photo/loading.gif") no-repeat center center;}
 
 #jqt .jqt-photo .jqt-photo-image-slide .jqt-photo-img{max-width:100%;max-height:100%;vertical-align:middle;border:none;outline:none;background:#000;}
 #jqt .jqt-photo .jqt-photo-image-slide img.jqt-photo-presized{max-width:auto;max-height:auto;}
@@ -55,9 +55,9 @@
 #jqt .jqt-photo.jqt-photo-toolbar-animation-out .toolbar{opacity:0;}
 
 /* toolbar */
-#jqt .jqt-photo .toolbar{width:100%;position:absolute;top:0;z-index:20;background:transparent  image_url("jqtouch/photo/toolbar.png") repeat-x;
+#jqt .jqt-photo .toolbar{width:100%;position:absolute;top:0;z-index:20;background:transparent  image_url("jquery/touch/photo/toolbar.png") repeat-x;
     -webkit-transition-duration:.65s;-webkit-transition-property:opacity;}
-#jqt .jqt-photo .toolbar .back{-webkit-border-image: image_url("jqtouch/photo/btnBack.png") 0 5 0 15;}
+#jqt .jqt-photo .toolbar .back{-webkit-border-image: image_url("jquery/touch/photo/btnBack.png") 0 5 0 15;}
 
 #jqt .jqt-photo .toolbar-bottom{padding:0;font-size:30px;text-align:center;vertical-align:top;}
 #jqt .jqt-photo .toolbar-bottom div{display:inline-block;padding:0;width:50px;height:100%;}
@@ -73,24 +73,24 @@
 
 
 /* slideshow images */
-#jqt .jqt-photo .jqt-photo-prev{background: image_url("jqtouch/photo/navPrev.png") no-repeat center center;}
-#jqt .jqt-photo .jqt-photo-play{background: image_url("jqtouch/photo/navPlay.png") no-repeat center center;}
-#jqt .jqt-photo .jqt-photo-next{background: image_url("jqtouch/photo/navNext.png") no-repeat center center;}
-#jqt .jqt-photo .toolbar-bottom .jqt-photo-pause{display:none;background: image_url("jqtouch/photo/navPause.png") no-repeat center center;}
+#jqt .jqt-photo .jqt-photo-prev{background: image_url("jquery/touch/photo/navPrev.png") no-repeat center center;}
+#jqt .jqt-photo .jqt-photo-play{background: image_url("jquery/touch/photo/navPlay.png") no-repeat center center;}
+#jqt .jqt-photo .jqt-photo-next{background: image_url("jquery/touch/photo/navNext.png") no-repeat center center;}
+#jqt .jqt-photo .toolbar-bottom .jqt-photo-pause{display:none;background: image_url("jquery/touch/photo/navPause.png") no-repeat center center;}
 
 /* hovers */
 #jqt .jqt-photo .jqt-photo-prev.hover{
 	background:-webkit-gradient(radial, 50% 50%, 2, 50% 50%, 25, from(rgba(255,255,255,1)), to(rgba(255,255,255,0))) no-repeat center center,
-	image_url("jqtouch/photo/navPrev.png") no-repeat center center;}
+	image_url("jquery/touch/photo/navPrev.png") no-repeat center center;}
 #jqt .jqt-photo .jqt-photo-play.hover{
 	background:-webkit-gradient(radial, 50% 50%, 2, 50% 50%, 25, from(rgba(255,255,255,1)), to(rgba(255,255,255,0))) no-repeat center center,
-	image_url("jqtouch/photo/navPlay.png") no-repeat center center;}
+	image_url("jquery/touch/photo/navPlay.png") no-repeat center center;}
 #jqt .jqt-photo .jqt-photo-next.hover{
 	background:-webkit-gradient(radial, 50% 50%, 2, 50% 50%, 25, from(rgba(255,255,255,1)), to(rgba(255,255,255,0))) no-repeat center center,
-	image_url("jqtouch/photo/navNext.png") no-repeat center center;}
+	image_url("jquery/touch/photo/navNext.png") no-repeat center center;}
 #jqt .jqt-photo .toolbar-bottom .jqt-photo-pause.hover{
 	background:-webkit-gradient(radial, 50% 50%, 2, 50% 50%, 25, from(rgba(255,255,255,1)), to(rgba(255,255,255,0))) no-repeat center center,
-    image_url("jqtouch/photo/navPause.png") no-repeat center center;}
+    image_url("jquery/touch/photo/navPause.png") no-repeat center center;}
 
 /* */
 #jqt .jqt-photo.jqt-photo-playing .jqt-photo-pause{display:inline-block;}

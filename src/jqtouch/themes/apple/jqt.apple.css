@@ -3,7 +3,7 @@ body {
 }
 
 #jqt > * {
-    background: rgb(197,204,211) image_url("jqtouch/apple/pinstripes.png");
+    background: rgb(197,204,211) image_url("jquery/touch/apple/pinstripes.png");
 }
 
 #jqt h1, #jqt h2 {
@@ -20,7 +20,7 @@ body {
     border-bottom: 1px solid #2d3642;
     padding: 10px;
     height: 45px;
-    background: image_url("jqtouch/apple/toolbar.png") #6d84a2 repeat-x;
+    background: image_url("jquery/touch/apple/toolbar.png") #6d84a2 repeat-x;
     position: relative;
 }
 
@@ -71,15 +71,15 @@ body {
     text-decoration: none;
     white-space: nowrap;
     background: none;
-    -webkit-border-image: image_url("jqtouch/apple/toolButton.png") 0 5 0 5;
+    -webkit-border-image: image_url("jquery/touch/apple/toolButton.png") 0 5 0 5;
 }
 
 #jqt .button.active, #jqt .cancel.active, #jqt .add.active {
-    -webkit-border-image: image_url("jqtouch/apple/toolButton.png") 0 5 0 5;	
+    -webkit-border-image: image_url("jquery/touch/apple/toolButton.png") 0 5 0 5;	
 }
 
 #jqt .blueButton {
-    -webkit-border-image: image_url("jqtouch/apple/activeButton.png") 0 5 0 5;
+    -webkit-border-image: image_url("jquery/touch/apple/activeButton.png") 0 5 0 5;
     border-width: 0 5px;
 }
 
@@ -89,11 +89,11 @@ body {
     padding: 0;
     max-width: 55px;
     border-width: 0 8px 0 14px;
-    -webkit-border-image: image_url("jqtouch/apple/backButton.png") 0 8 0 14;
+    -webkit-border-image: image_url("jquery/touch/apple/backButton.png") 0 8 0 14;
 }
 
 #jqt .back.active {
-    -webkit-border-image: image_url("jqtouch/apple/backButton.png") 0 8 0 14;
+    -webkit-border-image: image_url("jquery/touch/apple/backButton.png") 0 8 0 14;
 }
 
 #jqt .leftButton, #jqt .cancel {
@@ -121,26 +121,26 @@ body {
 
 #jqt .whiteButton.active, #jqt .grayButton.active, #jqt .redButton.active, #jqt .blueButton.active, #jqt .greenButton.active,
 #jqt .whiteButton:active, #jqt .grayButton:active, #jqt .redButton:active, #jqt .blueButton:active, #jqt .greenButton:active {
-    -webkit-border-image: image_url("jqtouch/apple/activeButton.png") 0 12 0 12;
+    -webkit-border-image: image_url("jquery/touch/apple/activeButton.png") 0 12 0 12;
 }
 
 #jqt .whiteButton {
-    -webkit-border-image: image_url("jqtouch/apple/whiteButton.png") 0 12 0 12;
+    -webkit-border-image: image_url("jquery/touch/apple/whiteButton.png") 0 12 0 12;
     text-shadow: rgba(255, 255, 255, 0.7) 0 1px 0;
 }
 
 #jqt .grayButton {
-    -webkit-border-image: image_url("jqtouch/apple/grayButton.png") 0 12 0 12;
+    -webkit-border-image: image_url("jquery/touch/apple/grayButton.png") 0 12 0 12;
     color: #FFFFFF;
 }
 
 #jqt .redButton {
-    -webkit-border-image: image_url("jqtouch/apple/redButton.png") 0 12 0 12;
+    -webkit-border-image: image_url("jquery/touch/apple/redButton.png") 0 12 0 12;
     color: #FFFFFF;
 }
 
 #jqt .greenButton {
-    -webkit-border-image: image_url("jqtouch/apple/greenButton.png") 0 12 0 12;
+    -webkit-border-image: image_url("jquery/touch/apple/greenButton.png") 0 12 0 12;
     color: #FFFFFF;
 }
 
@@ -185,7 +185,7 @@ body {
 /* universal arrows */
 
 #jqt ul li.arrow {
-    background-image: image_url("jqtouch/apple/chevron.png");
+    background-image: image_url("jquery/touch/apple/chevron.png");
     background-position: right center;
     background-repeat: no-repeat;
 }
@@ -195,7 +195,7 @@ body {
 }
 
 #jqt #plastic ul li.arrow, #jqt #metal ul li.arrow {
-    background-image: image_url("jqtouch/apple/chevron.png");
+    background-image: image_url("jquery/touch/apple/chevron.png");
     background-position: right center;
     background-repeat: no-repeat;
 }
@@ -219,7 +219,7 @@ body {
     color: #fff;
 }
 #jqt ul li.arrow a.active {
-    background-image: image_url("jqtouch/apple/listArrowSel.png");
+    background-image: image_url("jquery/touch/apple/listArrowSel.png");
     background-position: right center;
     background-repeat: no-repeat;
 }
@@ -331,7 +331,7 @@ body {
 
 #jqt ul li select {
     text-indent: 0px;
-    background: transparent image_url("jqtouch/apple/chevron.png") no-repeat 103% 3px;
+    background: transparent image_url("jquery/touch/apple/chevron.png") no-repeat 103% 3px;
     -webkit-appearance: textfield;
     margin-left: -6px;
     width: 104%;
@@ -371,7 +371,7 @@ body {
 
 #jqt .edgetoedge h4 {
     color: #fff;
-    background: rgb(154,159,170) image_url("jqtouch/apple/listGroup.png") top left repeat-x;
+    background: rgb(154,159,170) image_url("jquery/touch/apple/listGroup.png") top left repeat-x;
     border-top: 1px solid rgb(165,177,186);
     text-shadow: #666 0 1px 0;
     margin: 0;
@@ -469,7 +469,7 @@ body {
 /* @group Plastic */
 
 #jqt #plastic ul li.arrow, #jqt #metal ul li.arrow {
-    background-image: image_url("jqtouch/apple/chevron.png");
+    background-image: image_url("jquery/touch/apple/chevron.png");
     background-position: right center;
     background-repeat: no-repeat;
 }
@@ -525,7 +525,7 @@ body {
 }
 
 #jqt .metal ul li.arrow {
-    background:  image_url("jqtouch/apple/chevron.png") right center no-repeat;
+    background:  image_url("jquery/touch/apple/chevron.png") right center no-repeat;
 }
 
 #jqt .plastic {
@@ -701,7 +701,7 @@ body {
     -webkit-tap-highlight-color: rgba(0,0,0,0);
     margin: 0;
     -webkit-border-radius: 5px;
-    background: #fff image_url("jqtouch/apple/on_off.png") 0 0 no-repeat;
+    background: #fff image_url("jquery/touch/apple/on_off.png") 0 0 no-repeat;
     height: 27px;
     overflow: hidden;
     width: 149px;

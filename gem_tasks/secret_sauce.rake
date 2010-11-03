@@ -6,7 +6,7 @@ SECRET_SAUCE_SRC         = File.join(GEM_ROOT, 'src', 'secret_sauce')
 SECRET_SAUCE_SRC_SCRIPTS = SECRET_SAUCE_SRC + "/*.js"
 
 SECRET_SAUCE_DEST_TEMPLATES   = File.join(GEM_ROOT, 'templates', 'secret_sauce')
-SECRET_SAUCE_DEST_STYLESHEETS = File.join(SECRET_SAUCE_DEST_TEMPLATES, 'jquery.ui')
+SECRET_SAUCE_DEST_STYLESHEETS = File.join(SECRET_SAUCE_DEST_TEMPLATES, 'jquery')
 SECRET_SAUCE_DEST_CONFIG      = File.join(SECRET_SAUCE_DEST_TEMPLATES, 'config', 'initializers') 
 SECRET_SAUCE_DEST_VIEWS       = File.join(SECRET_SAUCE_DEST_TEMPLATES, 'app', 'views', 'shared')
 
@@ -57,7 +57,7 @@ namespace :build do
         open(File.join(SECRET_SAUCE_DEST_STYLESHEETS, file.gsub(/\.css$/,'.scss')), 'w') do |f|
           f.write SECRET_SAUCE_MESSAGE2 + sass
         end
-        manifest.print "stylesheet 'jquery.ui/#{file.gsub(/\.css$/,'.scss')}'\n"
+        manifest.print "stylesheet 'jquery/#{file.gsub(/\.css$/,'.scss')}'\n"
       end      
     end
   end

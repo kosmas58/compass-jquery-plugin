@@ -7,7 +7,7 @@
 .jstree-aero { font-family: segoe ui, Verdana, Geneva, Arial, Helvetica, sans-serif; font-size: 1.0em; }
 
 .jstree-aero li, 
-.jstree-aero ins { background-image: image_url("jquery.ui/jstree.aero/d.png"); background-repeat:no-repeat; background-color:transparent; }
+.jstree-aero ins { background-image: image_url("jquery/jstree/aero/d.png"); background-repeat:no-repeat; background-color:transparent; }
 .jstree-aero li { background-position:-108px 0; background-repeat:repeat-y; }
 .jstree-aero li.jstree-last { background:transparent; }
 .jstree-aero .jstree-leaf > ins { background-position:-72px 0; }
@@ -16,10 +16,10 @@
 .jstree-aero .jstree-open > ins:hover { background-position:-54px -18px; }
 .jstree-aero .jstree-closed > ins:hover { background-position:-36px -18px; }
 
-.jstree-aero .jstree-hovered { background-image: image_url("jquery.ui/jstree.aero/hovered.png"); background-repeat:repeat-x; border:1px solid #b8d6fb; -moz-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px; padding:0 2px 0 1px; }
-.jstree-aero .jstree-clicked { background-image: image_url("jquery.ui/jstree.aero/clicked.png"); background-repeat:repeat-x; border:1px solid #84acdd; -moz-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px; padding:0 2px 0 1px; }
+.jstree-aero .jstree-hovered { background-image: image_url("jquery/jstree/aero/hovered.png"); background-repeat:repeat-x; border:1px solid #b8d6fb; -moz-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px; padding:0 2px 0 1px; }
+.jstree-aero .jstree-clicked { background-image: image_url("jquery/jstree/aero/clicked.png"); background-repeat:repeat-x; border:1px solid #84acdd; -moz-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px; padding:0 2px 0 1px; }
 .jstree-aero a .jstree-icon { background-position:-56px -36px; }
-.jstree-aero a.jstree-loading .jstree-icon { background: image_url("jquery.ui/jstree.aero/throbber.gif") center center no-repeat !important; }
+.jstree-aero a.jstree-loading .jstree-icon { background: image_url("jquery/jstree/aero/throbber.gif") center center no-repeat !important; }
 
 .jstree-aero.jstree-focused { background:white; }
 
@@ -53,9 +53,9 @@
 .jstree-aero .jstree-undetermined > a > .jstree-radio:hover { background-position:-20px -91px; }
 
 #vakata-dragged.jstree-aero ins { background:transparent !important; }
-#vakata-dragged.jstree-aero .jstree-ok { background: image_url("jquery.ui/jstree.aero/d.png") -56px -71px no-repeat !important; }
-#vakata-dragged.jstree-aero .jstree-invalid { background: image_url("jquery.ui/jstree.aero/d.png") -72px -71px no-repeat !important; }
-#jstree-marker.jstree-aero { background: image_url("jquery.ui/jstree.aero/d.png") -95px -75px no-repeat !important; }
+#vakata-dragged.jstree-aero .jstree-ok { background: image_url("jquery/jstree/aero/d.png") -56px -71px no-repeat !important; }
+#vakata-dragged.jstree-aero .jstree-invalid { background: image_url("jquery/jstree/aero/d.png") -72px -71px no-repeat !important; }
+#jstree-marker.jstree-aero { background: image_url("jquery/jstree/aero/d.png") -95px -75px no-repeat !important; }
 
 .jstree-aero a.jstree-search { color:aqua; }
 
@@ -75,7 +75,7 @@
 .jstree-aero ins,
 #vakata-dragged.jstree-aero .jstree-invalid, 
 #vakata-dragged.jstree-aero .jstree-ok, 
-#jstree-marker.jstree-aero { _background-image: image_url("jquery.ui/jstree.aero/d.gif"); }
+#jstree-marker.jstree-aero { _background-image: image_url("jquery/jstree/aero/d.gif"); }
 .jstree-aero .jstree-leaf ins { _background-position:-72px 0; }
 .jstree-aero .jstree-open ins { _background-position:-54px 0; }
 .jstree-aero .jstree-closed ins:hover { _background-position:-36px 0; }

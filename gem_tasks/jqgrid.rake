@@ -8,7 +8,7 @@ JQGRID_SRC_TRANSLATIONS = File.join(JQGRID_SRC, 'js', 'i18n') + "/*.js"
 
 JQGRID_DEST_TEMPLATES = File.join(GEM_ROOT, 'templates', 'jqgrid')
 JQGRID_DEST_LOCALES = File.join(JQGRID_DEST_TEMPLATES, 'config', 'locales', 'jquery', 'jqgrid')
-JQGRID_DEST_STYLESHEETS = File.join(JQGRID_DEST_TEMPLATES, 'jquery.ui')
+JQGRID_DEST_STYLESHEETS = File.join(JQGRID_DEST_TEMPLATES, 'jquery')
 JQGRID_DEST_TRANSLATIONS = File.join(JQGRID_DEST_TEMPLATES, 'i18n', 'jqgrid')
 JQGRID_DEST_XML = File.join(JQGRID_DEST_TEMPLATES, 'public', 'stylesheets')
 
@@ -107,7 +107,7 @@ namespace :build do
         IO.popen("sass-convert -F css -T scss", 'r+') { |ff| ff.print(all_stylesheets); ff.close_write; sass += ff.read }
         f.print sass
       end
-      manifest.print "stylesheet 'jquery.ui/jqGrid.scss'\n"
+      manifest.print "stylesheet 'jquery/jqGrid.scss'\n"
       
       FileUtils.mkdir_p(JQGRID_DEST_XML)    
       open File.join(JQGRID_DEST_XML, 'ellipsis-xbl.xml'), 'w' do |f|

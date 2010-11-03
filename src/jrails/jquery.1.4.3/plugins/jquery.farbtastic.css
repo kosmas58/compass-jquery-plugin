@@ -34,18 +34,18 @@
   height: 101px;
 }
 .farbtastic .wheel {
-  background-image: image_url("jquery.ui/farbtastic/wheel.png");
+  background-image: image_url("jquery/ui/farbtastic/wheel.png");
   width: 195px;
   height: 195px;
 }
 .farbtastic .overlay {
-  background-image: image_url("jquery.ui/farbtastic/mask.png");
+  background-image: image_url("jquery/ui/farbtastic/mask.png");
 }
 .farbtastic .marker {
   width: 17px;
   height: 17px;
   margin: -8px 0 0 -8px;
   overflow: hidden; 
-  background-image: image_url("jquery.ui/farbtastic/marker.png");
+  background-image: image_url("jquery/ui/farbtastic/marker.png");
 }
 

@@ -20,14 +20,14 @@ class JqueryMobileTheme
     
     # Fix stuff
     theme.gsub!(/\;filter:Alpha/, "; filter: Alpha")
-    theme.gsub! /url\(images(.*)\)/, "image_url(\"jquery.mobile/#{name}\\1\")"
+    theme.gsub! /url\(images(.*)\)/, "image_url(\"jquery/mobile/#{name}\\1\")"
     
     # Convert the stylesheet
     open File.join(MOBILE_DEST_THEMES, "#{name}.scss"), 'w' do |f|
       sass = MOBILE_MESSAGE2
       IO.popen("sass-convert -F css -T scss", 'r+') { |ff| ff.print(theme); ff.close_write; sass += ff.read }
       f.print sass
-      f.print "\n@import \"jquery.mobile/_base\"\n"
+      f.print "\n@import \"jquery/mobile/_base\"\n"
     end
   end
 end

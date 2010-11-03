@@ -7,7 +7,7 @@ MOBILE_SRC_IMAGES = File.join(MOBILE_SRC, 'images')
 MOBILE_SRC_THEMES = File.join(MOBILE_SRC, 'themes')
 
 MOBILE_DEST_TEMPLATES = File.join(GEM_ROOT, 'templates', 'mobile')
-MOBILE_DEST_THEMES = File.join(MOBILE_DEST_TEMPLATES, 'jquery.mobile')
+MOBILE_DEST_THEMES = File.join(MOBILE_DEST_TEMPLATES, 'jquery', 'mobile')
 MOBILE_DEST_IMAGES = File.join(MOBILE_DEST_THEMES)
 
 all_scripts = [
@@ -90,12 +90,12 @@ namespace :build do
         IO.popen("sass-convert -F css -T scss", 'r+') { |ff| ff.print(base_stylesheets); ff.close_write; sass += ff.read }
         f.print sass
       end
-      manifest.print "stylesheet 'jquery.mobile/_base.scss'\n"
+      manifest.print "stylesheet 'jquery/mobile/_base.scss'\n"
 
       Dir.foreach MOBILE_SRC_THEMES do |theme|
         next if /^\./ =~ theme
         mobile.convert_theme(theme, File.join(MOBILE_SRC_THEMES, theme), File.join(MOBILE_DEST_THEMES))
-        manifest.print "stylesheet 'jquery.mobile/#{theme}.scss'\n"
+        manifest.print "stylesheet 'jquery/mobile/#{theme}.scss'\n"
         
         # Copy the theme images directory
         src_dir = File.join(MOBILE_SRC_THEMES, theme, 'images')
@@ -105,7 +105,7 @@ namespace :build do
         Dir.foreach(src_dir) do |image|
           next if /^\./ =~ image
           FileUtils.cp(File.join(src_dir, image), dest_dir)
-          manifest.print "image 'jquery.mobile/#{theme}/#{image}'\n"
+          manifest.print "image 'jquery/mobile/#{theme}/#{image}'\n"
         end
       end
     end

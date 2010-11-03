@@ -7,7 +7,7 @@
 .jstree-crystal { font-family: "Lucida Grande", Verdana, Geneva, Arial, Helvetica, sans-serif; font-size: 1.0em; }
 
 .jstree-crystal li,
-.jstree-crystal ins { background-image: image_url("jquery.ui/jstree.crystal/d.png"); background-repeat:no-repeat; background-color:transparent; }
+.jstree-crystal ins { background-image: image_url("jquery/jstree/crystal/d.png"); background-repeat:no-repeat; background-color:transparent; }
 .jstree-crystal li { background-position:-108px 0; background-repeat:repeat-y; }
 .jstree-crystal li.jstree-last { background:transparent; }
 .jstree-crystal .jstree-leaf > ins { background-position:-72px 0; }
@@ -20,7 +20,7 @@
 .jstree-crystal .jstree-clicked { background:#beebff; border:1px solid #99defd; padding:0 2px 0 1px; }
 .jstree-crystal a .jstree-icon { background-position:-56px -36px; }
 .jstree-crystal .jstree-open > a .jstree-icon { background-position:-56px -54px; }
-.jstree-crystal a.jstree-loading .jstree-icon { background: image_url("jquery.ui/jstree.crystal/throbber.gif") center center no-repeat !important; }
+.jstree-crystal a.jstree-loading .jstree-icon { background: image_url("jquery/jstree/crystal/throbber.gif") center center no-repeat !important; }
 
 .jstree-crystal.jstree-focused { background:white; }
 
@@ -54,9 +54,9 @@
 .jstree-crystal .jstree-undetermined > a > .jstree-radio:hover { background-position:-20px -91px; }
 
 #vakata-dragged.jstree-crystal ins { background:transparent !important; }
-#vakata-dragged.jstree-crystal .jstree-ok { background: image_url("jquery.ui/jstree.crystal/d.png") -56px -71px no-repeat !important; }
-#vakata-dragged.jstree-crystal .jstree-invalid { background: image_url("jquery.ui/jstree.crystal/d.png") -72px -71px no-repeat !important; }
-#jstree-marker.jstree-crystal { background: image_url("jquery.ui/jstree.crystal/d.png") -95px -75px no-repeat !important; }
+#vakata-dragged.jstree-crystal .jstree-ok { background: image_url("jquery/jstree/crystal/d.png") -56px -71px no-repeat !important; }
+#vakata-dragged.jstree-crystal .jstree-invalid { background: image_url("jquery/jstree/crystal/d.png") -72px -71px no-repeat !important; }
+#jstree-marker.jstree-crystal { background: image_url("jquery/jstree/crystal/d.png") -95px -75px no-repeat !important; }
 
 .jstree-crystal a.jstree-search { color:aqua; }
 
@@ -76,7 +76,7 @@
 .jstree-crystal ins,
 #vakata-dragged.jstree-crystal .jstree-invalid,
 #vakata-dragged.jstree-crystal .jstree-ok,
-#jstree-marker.jstree-crystal { _background-image: image_url("jquery.ui/jstree.crystal/d.gif"); }
+#jstree-marker.jstree-crystal { _background-image: image_url("jquery/jstree/crystal/d.gif"); }
 .jstree-crystal .jstree-leaf ins { _background-position:-72px 0; }
 .jstree-crystal .jstree-open ins { _background-position:-54px 0; }
 .jstree-crystal .jstree-closed ins:hover { _background-position:-36px 0; }

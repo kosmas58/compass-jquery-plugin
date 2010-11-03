@@ -106,7 +106,7 @@ class JqueryUiTheme
       # Remove variable comments
       capture.gsub! /\/\*\{\w*\}\*\/$/, ''
       # Update url
-      capture.gsub! /^url\(images(.*)\)/, "image_url(\"jquery.ui/#{name}\\1\")"
+      capture.gsub! /^url\(images(.*)\)/, "image_url(\"jquery/ui/#{name}\\1\")"
       # Quote most things
       capture = "\"#{capture}\"" if capture =~ /[^#%0-9a-fptxm\-\.]/ and !(capture =~ /^image_url/) and !(capture =~ /^[A-Za-z]+/)
       vars[VARIABLE_NAME_BASE + regexp_variables[index]] ||= capture
@@ -118,7 +118,7 @@ class JqueryUiTheme
       vars.each do |variable_name, value|
         f.print "$#{variable_name}: #{value} !default;\n"
       end
-      f.print "\n@import \"jquery.ui/_theme\"\n"
+      f.print "\n@import \"jquery/ui/_theme\"\n"
     end
   end
 

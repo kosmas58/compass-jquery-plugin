@@ -5,7 +5,7 @@ JQICAL_SRC = File.join(GEM_ROOT, 'src', 'jqical')
 JQICAL_SRC_IMAGES = File.join(JQICAL_SRC, 'images')
 
 JQICAL_DEST_TEMPLATES = File.join(GEM_ROOT, 'templates', 'jqical')
-JQICAL_DEST_STYLESHEETS = File.join(JQICAL_DEST_TEMPLATES, 'jquery.ui')
+JQICAL_DEST_STYLESHEETS = File.join(JQICAL_DEST_TEMPLATES, 'jquery')
 JQICAL_DEST_IMAGES = File.join(JQICAL_DEST_STYLESHEETS, 'jqical')
 JQICAL_DEST_CONFIG = File.join(JQICAL_DEST_TEMPLATES, 'config', 'initializers') 
 JQICAL_DEST_VIEWS = File.join(JQICAL_DEST_TEMPLATES, 'app', 'views', 'shared')
@@ -67,7 +67,7 @@ namespace :build do
         IO.popen("sass-convert -F css -T scss", 'r+') { |ff| ff.print(all_stylesheets); ff.close_write; sass += ff.read }
         f.print sass
       end
-      manifest.print "stylesheet 'jquery.ui/jqical.scss'\n"
+      manifest.print "stylesheet 'jquery/jqical.scss'\n"
       
       # Images  
       
@@ -79,7 +79,7 @@ namespace :build do
       Dir.foreach(src_dir) do |image|
         next unless /\.png$/ =~ image
         FileUtils.cp(File.join(src_dir, image), dest_dir)    
-        manifest.print "image 'jquery.ui/jqical/#{image}'\n"
+        manifest.print "image 'jquery/jqical/#{image}'\n"
       end
     end
   end

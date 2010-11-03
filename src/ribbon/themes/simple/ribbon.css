@@ -63,7 +63,7 @@ ul.ribbon .orb
     display: block;
     width: 56px;
     height: 22px;
-    background-image: image_url("jquery.ui/ribbon.simple/orb.png");
+    background-image: image_url("jquery/ribbon/simple/orb.png");
     background-position: right bottom;
     background-repeat: no-repeat;
     cursor: pointer;
@@ -76,14 +76,14 @@ ul.ribbon .orb
 
 ul.ribbon .orb li ul
 {
-    background-image: image_url("jquery.ui/ribbon.simple/menu_middle.png");
+    background-image: image_url("jquery/ribbon/simple/menu_middle.png");
     background-repeat: repeat-y;
     background-position: right;
 }
 
 ul.ribbon .orb:hover
 {
-    background-image: image_url("jquery.ui/ribbon.simple/orb_hover.png");
+    background-image: image_url("jquery/ribbon/simple/orb_hover.png");
 }
 
 ul.ribbon .orb span
@@ -125,14 +125,14 @@ ul.ribbon .orb li ul li a
 
 ul.ribbon .orb li ul li a.arrow
 {
-    background-image: image_url("jquery.ui/ribbon.simple/arrow.png");
+    background-image: image_url("jquery/ribbon/simple/arrow.png");
     background-repeat: no-repeat;
     background-position: center right;
 }
 
 li.arrow
 {
-    background-image: image_url("jquery.ui/ribbon.simple/arrow_down.png");
+    background-image: image_url("jquery/ribbon/simple/arrow_down.png");
     background-repeat: no-repeat;
     background-position: center right;
 }
@@ -169,7 +169,7 @@ ul.ribbon .orb li ul li ul li a
 
 ul.ribbon .orb li ul li ul li:hover
 {
-    background-image: image_url("jquery.ui/ribbon.simple/orb_submenu_item_hover.png");
+    background-image: image_url("jquery/ribbon/simple/orb_submenu_item_hover.png");
     background-repeat: repeat-x;
     height: 51px;
     margin: 0px;
@@ -184,7 +184,7 @@ ul.ribbon .orb li ul li ul li:hover a
 
 ul.ribbon .orb li ul li:hover
 {
-    background-image: image_url("jquery.ui/ribbon.simple/menu_item_hover.png");
+    background-image: image_url("jquery/ribbon/simple/menu_item_hover.png");
     background-repeat: no-repeat;
     padding-left: 8px;
     border: 1px solid #FFB700;
@@ -276,7 +276,7 @@ ul.menu li a
 ul.menu li a.active
 {
     background-color: #d9e3f3;
-    background-image: image_url("jquery.ui/ribbon.simple/menuitem_background.png");
+    background-image: image_url("jquery/ribbon/simple/menuitem_background.png");
     background-repeat: no-repeat;
 }
 
@@ -290,7 +290,7 @@ ul.menu .submenu
     border: 1px solid #3b5a82;
     border-bottom: 1px solid #9FAEC2;
     border-top: 0px;
-    background-image: image_url("jquery.ui/ribbon.simple/menu_background.png");
+    background-image: image_url("jquery/ribbon/simple/menu_background.png");
     background-repeat: repeat-x;
     border-top: 0px;
     margin-left: -1px;
@@ -333,7 +333,7 @@ ul.menu li ul li div:hover
 {
     padding: 4px;
     padding-top: 0px;
-    background-image: image_url("jquery.ui/ribbon.simple/item_background.png");
+    background-image: image_url("jquery/ribbon/simple/item_background.png");
     background-repeat: repeat-x;
     height: 52px;
     border: 1px solid #FFB700;
@@ -377,7 +377,7 @@ ul.menu li ul div.ribbon-list div img
 ul.menu li ul div.ribbon-list div:hover
 {
     padding: 0px;
-    background-image: image_url("jquery.ui/ribbon.simple/item_small_background.png");
+    background-image: image_url("jquery/ribbon/simple/item_small_background.png");
     background-repeat: repeat-x;
     height: 18px;
     border: 1px solid #FFB700;
@@ -393,7 +393,7 @@ ul.menu li ul div.ribbon-list ul
 
 ul.menu li ul div.ribbon-list ul li
 {
-	background-image: image_url("jquery.ui/ribbon.simple/menu_dropdownitembg.png");
+	background-image: image_url("jquery/ribbon/simple/menu_dropdownitembg.png");
 	background-repeat: repeat-y;
 	margin: 0px;
 	border: 0px;
@@ -404,7 +404,7 @@ ul.menu li ul div.ribbon-list ul li
 
 ul.menu li ul div.ribbon-list ul li:hover
 {
-	background-image: image_url("jquery.ui/ribbon.simple/menu_dropdownitembghover.png");
+	background-image: image_url("jquery/ribbon/simple/menu_dropdownitembghover.png");
 	background-repeat: repeat-x;
 	border: 1px solid #FFB700;
 	padding: 0px;

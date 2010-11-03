@@ -20,8 +20,8 @@ SRC_FLASH_IMAGES = File.join(SRC_FLASH, 'images')
 
 DEST_JRAILS_TEMPLATES = File.join(GEM_ROOT, 'templates', 'jrails')
 DEST_JRAILS_TRANSLATIONS = File.join(DEST_JRAILS_TEMPLATES, 'i18n', 'jquery.ui')
-DEST_JRAILS_THEMES = File.join(DEST_JRAILS_TEMPLATES, 'jquery.ui')
-DEST_JRAILS_IMAGES = File.join(DEST_JRAILS_TEMPLATES, 'jquery.ui')
+DEST_JRAILS_THEMES = File.join(DEST_JRAILS_TEMPLATES, 'jquery', 'ui')
+DEST_JRAILS_IMAGES = File.join(DEST_JRAILS_TEMPLATES, 'jquery', 'ui')
 DEST_FLASH_STYLESHEETS = File.join(DEST_JRAILS_TEMPLATES, 'partials')
 DEST_FLASH_IMAGES = File.join(DEST_JRAILS_IMAGES, 'flash_messages')
 
@@ -97,7 +97,7 @@ namespace :build do
             open File.join(DEST_JRAILS_THEMES, file), 'w' do |f|
               f.write sass
             end
-            manifest.print "stylesheet 'jquery.ui/#{file}'\n"
+            manifest.print "stylesheet 'jquery/ui/#{file}'\n"
           end     
           
           next unless /\.js$/ =~ file
@@ -125,7 +125,7 @@ namespace :build do
         Dir.foreach(src_dir) do |image|
           next if /^\./ =~ image
           FileUtils.cp(File.join(src_dir, image), dest_dir)    
-          manifest.print "image 'jquery.ui/#{plugin}/#{image}'\n"
+          manifest.print "image 'jquery/ui/#{plugin}/#{image}'\n"
         end
       end      
     
@@ -230,13 +230,13 @@ namespace :build do
         FileUtils.rm_r(File.join(DEST_JRAILS_THEMES, '_partials'))
       end 
       
-      manifest.print "stylesheet 'jquery.ui/_theme.scss'\n" 
+      manifest.print "stylesheet 'jquery/ui/_theme.scss'\n" 
       
       Dir.foreach SRC_JQUERY_UI_THEMES do |theme|
         next if /^\./ =~ theme
   
         # Convert the stylesheet
-        manifest.print "stylesheet 'jquery.ui/#{theme}.scss'\n"
+        manifest.print "stylesheet 'jquery/ui/#{theme}.scss'\n"
         ui.convert_theme(theme, File.join(SRC_JQUERY_UI_THEMES, theme), File.join(DEST_JRAILS_THEMES))
   
         # Copy the theme images directory
@@ -247,7 +247,7 @@ namespace :build do
         Dir.foreach(src_dir) do |image|
           next if /^\./ =~ image
           FileUtils.cp(File.join(src_dir, image), dest_dir)    
-          manifest.print "image 'jquery.ui/#{theme}/#{image}'\n"
+          manifest.print "image 'jquery/ui/#{theme}/#{image}'\n"
         end     
       end
       
@@ -314,7 +314,7 @@ namespace :build do
       Dir.foreach(src_dir) do |image|
         next unless /\.png$/ =~ image
         FileUtils.cp(File.join(src_dir, image), dest_dir)    
-        manifest.print "image 'jquery.ui/flash_messages/#{image}'\n"
+        manifest.print "image 'jquery/ui/flash_messages/#{image}'\n"
       end
     end
   end
