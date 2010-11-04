@@ -1,4 +1,5 @@
 .blackberry .emulator {
+  margin-top: 160px;
   background: image_url("emulators/blackberry.torch.landscape.png") no-repeat;
   width: 840px;
   height: 460px;

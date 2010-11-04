@@ -1,4 +1,5 @@
 .palm .emulator {
+  margin-top: 160px;
   background: image_url("emulators/palm.pre.landscape.png") no-repeat;
   width: 770px;
   height: 432px;

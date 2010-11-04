@@ -1,4 +1,5 @@
 .iphone .emulator {
+  margin-top: 160px;
   background: image_url("emulators/iphone.landscape.png") no-repeat;
   width: 740px;
   height: 420px;

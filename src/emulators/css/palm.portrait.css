@@ -1,11 +1,12 @@
 .palm .emulator {
+  margin-top: 56px;
   background: image_url("emulators/palm.pre.portrait.png") no-repeat;
   width: 416px;
-  height: 730px;
+  height: 740px;
 }
 .palm .emulator .display-area {
   position: relative;
-  top: 123px;
+  top: 126px;
   width: 320px;
   height: 460px;
   max-height: 460px;

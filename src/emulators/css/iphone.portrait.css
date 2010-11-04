@@ -1,7 +1,8 @@
 .iphone .emulator {
+	margin-top: 56px;
   background: image_url("emulators/iphone.portrait.png") no-repeat;
   width: 390px;
-  height: 732px;
+  height: 740px;
 }
 .iphone .emulator .display-area {
   position: relative;

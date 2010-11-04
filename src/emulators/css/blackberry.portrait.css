@@ -1,11 +1,11 @@
 .blackberry .emulator {
   background: image_url("emulators/blackberry.torch.portrait.png") no-repeat;
   width: 534px;
-  height: 836px;
+  height: 852px;
 }
 .blackberry .emulator .display-area {
   position: relative;
-  top: 141px;
+  top: 157px;
   width: 360px;
   height: 480px;
   max-height: 480px;
