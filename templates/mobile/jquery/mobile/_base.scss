@@ -21,7 +21,6 @@
 .ui-mobile-viewport {
   margin: 0;
   overflow-x: hidden;
-  -webkit-backface-visibility: hidden;
   -webkit-text-size-adjust: none;
   -ms-text-size-adjust: none;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0); }
@@ -39,7 +38,6 @@
   min-height: 100%;
   position: absolute;
   display: none;
-  -webkit-backface-visibility: hidden;
   border: 0; }
 
 .ui-page-active {
@@ -1242,6 +1240,9 @@ Built by David Kaneda and maintained by Jonathan Stark.
 
 .flip {
   -webkit-animation-duration: .65s;
+  -webkit-backface-visibility: hidden;
+  -webkit-transform: translateX(0);
+  /* Needed to work around an iOS 3.1 bug that causes listview thumbs to disappear when -webkit-visibility:hidden is used. */
   &.in {
     -webkit-transform: rotateY(0) scale(1);
     -webkit-animation-name: flipinfromleft; }

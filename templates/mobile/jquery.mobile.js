@@ -1120,7 +1120,7 @@ $.fixedToolbars = (function(){
 	var currentstate = 'inline',
 		delayTimer,
 		ignoreTargets = 'a,input,textarea,select,button,label,.ui-header-fixed,.ui-footer-fixed',
-		toolbarSelector = '.ui-page-active .ui-header-fixed:first, .ui-page-active .ui-footer-fixed:not(.ui-footer-duplicate):last',
+		toolbarSelector = '.ui-header-fixed:first, .ui-footer-fixed:not(.ui-footer-duplicate):last',
 		stickyFooter, //for storing quick references to duplicate footers
 		supportTouch = $.support.touch,
 		touchStartEvent = supportTouch ? "touchstart" : "mousedown",
@@ -1209,7 +1209,8 @@ $.fixedToolbars = (function(){
 	return {
 		show: function(immediately){
 			currentstate = 'overlay';
-			return $( toolbarSelector ).each(function(){
+			var $ap = $.activePage ? $.activePage : $(".ui-page-active");
+			return $ap.children( toolbarSelector ).each(function(){
 				var el = $(this),
 					fromTop = $(window).scrollTop(),
 					thisTop = el.offset().top,
@@ -1230,7 +1231,8 @@ $.fixedToolbars = (function(){
 		},
 		hide: function(immediately){
 			currentstate = 'inline';
-			return $( toolbarSelector ).each(function(){
+			var $ap = $.activePage ? $.activePage : $(".ui-page-active");
+			return $ap.children( toolbarSelector ).each(function(){
 				var el = $(this);
 				
 				//add state class
@@ -2410,8 +2412,6 @@ jQuery.widget( "mobile.listview", jQuery.mobile.widget, {
 			}
 				
 			if ( pos === 0 ) {
-				item.find( "img" ).addClass( "ui-corner-tl" );
-
 				if ( o.inset ) {
 					itemClass += " ui-corner-top";
 
@@ -2425,7 +2425,6 @@ jQuery.widget( "mobile.listview", jQuery.mobile.widget, {
 				}
 
 			} else if ( pos === li.length - 1 ) {
-				item.find( "img" ).addClass( "ui-corner-bl" );
 
 				if ( o.inset ) {
 					itemClass += " ui-corner-bottom";
@@ -2854,12 +2853,12 @@ $.fn.grid = function(options){
 	
 	//remove active classes after page transition or error
 	function removeActiveLinkClass(forceRemoval){
-		if(activeClickedLink && (!activeClickedLink.closest( '.ui-page-active' ).length) || forceRemoval ){
+		if( !!activeClickedLink && (!activeClickedLink.closest( '.ui-page-active' ).length || forceRemoval )){
 			activeClickedLink.removeClass( activeBtnClass );
 		}
 		activeClickedLink = null;
 	}
-	
+
 
 	//for getting or creating a new page 
 	function changePage( to, transition, back, changeHash){
@@ -2871,13 +2870,16 @@ $.fn.grid = function(options){
 			url = fileUrl = $.type(to) === "string" ? to.replace( /^#/, "" ) : null,
 			data = undefined,
 			type = 'get',
+			isFormRequest = false,
+			duplicateCachedPage = null,
 			back = (back !== undefined) ? back : ( urlStack.length > 1 && urlStack[ urlStack.length - 2 ].url === url ),
 			transition = (transition !== undefined) ? transition :  ( pageTransition || "slide" );
 		
-		if( $.type(to) === "object" ){
+		if( $.type(to) === "object" && to.url ){
 			url = to.url,
 			data = to.data,
-			type = to.type;
+			type = to.type,
+			isFormRequest = true;
 			//make get requests bookmarkable
 			if( data && type == 'get' ){
 				url += "?" + data;
@@ -2924,6 +2926,11 @@ $.fn.grid = function(options){
 					}, 500);
 				}
 				removeActiveLinkClass();
+				
+				//if there's a duplicateCachedPage, remove it from the DOM now that it's hidden
+				if( duplicateCachedPage != null ){
+					duplicateCachedPage.remove();
+				}
 			}
 			
 			if(transition){		
@@ -2974,13 +2981,18 @@ $.fn.grid = function(options){
 		}
 		
 		// find the "to" page, either locally existing in the dom or by creating it through ajax
-		if ( to.length ) {
+		if ( to.length && !isFormRequest ) {
 			if( fileUrl ){
 				setBaseURL(fileUrl);
 			}	
 			enhancePage();
 			transitionPages();
 		} else { 
+		
+			//if to exists in DOM, save a reference to it in duplicateCachedPage for removal after page change
+			if( to.length ){
+				duplicateCachedPage = to;
+			}
 			
 			pageLoading();
 
@@ -3065,6 +3077,7 @@ $.fn.grid = function(options){
 				changePage( $startPage, transition, true );
 			}
 			else{
+				$.activePage = $startPage;
 				$startPage.trigger("pagebeforeshow", {prevPage: $('')});
 				$startPage.addClass( activePageClass );
 				pageLoading( true );
@@ -3184,6 +3197,8 @@ $.fn.grid = function(options){
 		$html.addClass( jQuery.event.special.orientationchange.orientation( $window ) );
 	});
 	
-	$window.load(hideBrowserChrome);
+	$window
+		.load(hideBrowserChrome)
+		.unload(removeActiveLinkClass);
 	
 })( jQuery, this );

@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{compass-jquery-plugin}
-  s.version = "0.3.0.beta.24"
+  s.version = "0.3.0.beta.25"
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kosmas Schuetz"]
-  s.date = %q{2010-11-03}
+  s.date = %q{2010-11-04}
   s.description = %q{A compass plugin that integrates jRails, jQuery, jQuery UI and Themes, jqGrid and more into the Compass Sass framework.}
   s.email = %q{kosmas.schuetz@gmx.com}
   s.extra_rdoc_files = [
@@ -1301,7 +1301,6 @@ Gem::Specification.new do |s|
      "templates/mobile/jquery.mobile.min.js",
      "templates/mobile/jquery/mobile/_base.scss",
      "templates/mobile/jquery/mobile/default.scss",
-     "templates/mobile/jquery/mobile/default/ajax-loader.gif",
      "templates/mobile/jquery/mobile/default/ajax-loader.png",
      "templates/mobile/jquery/mobile/default/form-check-off.png",
      "templates/mobile/jquery/mobile/default/form-check-on.png",
@@ -1320,7 +1319,6 @@ Gem::Specification.new do |s|
      "templates/mobile/jquery/mobile/default/icons-36-black.png",
      "templates/mobile/jquery/mobile/default/icons-36-white.png",
      "templates/mobile/jquery/mobile/valencia.scss",
-     "templates/mobile/jquery/mobile/valencia/ajax-loader.gif",
      "templates/mobile/jquery/mobile/valencia/ajax-loader.png",
      "templates/mobile/jquery/mobile/valencia/form-check-off.png",
      "templates/mobile/jquery/mobile/valencia/form-check-on.png",
