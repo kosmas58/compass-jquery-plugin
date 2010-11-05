@@ -32,8 +32,8 @@ all_scripts = [
   'js/jquery.mobile.dialog.js',
   'js/jquery.mobile.navbar.js',
   'js/jquery.mobile.grid.js',
-  'js/jquery.mobile.js',
-  'js/jquery.mobile.themeswitcher.js'
+  'js/jquery.mobile.js'#,
+  #'js/jquery.mobile.themeswitcher.js'
 ].collect {|filename| File.read(File.join(MOBILE_SRC, filename))}.join "\n\n"
 
 namespace :build do
@@ -108,6 +108,31 @@ namespace :build do
           manifest.print "image 'jquery/mobile/#{theme}/#{image}'\n"
         end
       end
+      
+      # glyphish Images
+      FileUtils.mkdir_p(File.join(MOBILE_DEST_TEMPLATES, 'glyphish', 'icons'))
+       
+      src_dir = File.join(MOBILE_SRC_IMAGES, 'glyphish', 'icons')
+      dest_dir = File.join(MOBILE_DEST_TEMPLATES, 'glyphish', 'icons')
+      Dir.foreach(src_dir) do |image|
+        next if /^\./ =~ image
+        FileUtils.cp(File.join(src_dir, image), dest_dir)    
+        manifest.print "image 'glyphish/icons/#{image}'\n"
+      end
+      FileUtils.mkdir_p(File.join(MOBILE_DEST_TEMPLATES, 'glyphish', 'mini-icons'))    
+      src_dir = File.join(MOBILE_SRC_IMAGES, 'glyphish', 'icons')
+      dest_dir = File.join(MOBILE_DEST_TEMPLATES, 'glyphish', 'mini-icons')      
+      Dir.foreach(src_dir) do |image|
+        next if /^\./ =~ image
+        FileUtils.cp(File.join(src_dir, image), dest_dir)    
+        manifest.print "image 'glyphish/mini-icons/#{image}'\n"
+      end 
+      
+      open File.join(MOBILE_DEST_TEMPLATES, 'glyphish', 'Read me first - license.txt'), 'w' do |f|
+        f.print(File.read(File.join(MOBILE_SRC_IMAGES, 'glyphish', 'Read me first - license.txt')))
+      end
+      manifest.print "image 'glyphish/Read me first - license.txt'\n"
+
     end
   end
 end
