@@ -418,11 +418,15 @@ $.event.special.tap = {
 				
 				var moved = false,
 					touching = true,
+					origPos = [ event.pageX, event.pageY ],
 					originalType,
 					timer;
 				
 				function moveHandler() {
-					moved = true;
+					if ((Math.abs(origPos[0] - event.pageX) > 10) ||
+					    (Math.abs(origPos[1] - event.pageY) > 10)) {
+					    moved = true;
+					}
 				}
 				
 				timer = setTimeout(function() {
@@ -551,6 +555,7 @@ $.each({
 });
 
 })( jQuery );
+
 
 /*!
  * jQuery hashchange event - v1.3 - 7/21/2010
@@ -1082,7 +1087,7 @@ jQuery.widget( "mobile.page", jQuery.mobile.widget, {
 		this.element
 			.find( "input, textarea" )
 			.not( "[type='radio'], [type='checkbox'], button, [type='button'], [type='submit'], [type='reset'], [type='image']" )
-			.customTextInput();
+			.textinput();
 
 		this.element
 			.find( "input, select" )
@@ -1378,20 +1383,30 @@ $.widget( "mobile.checkboxradio", $.mobile.widget, {
 
 
 /*
-* jQuery Mobile Framework : "customTextInput" plugin for text inputs, textareas (based on code from Filament Group,Inc)
+* jQuery Mobile Framework : "textinput" plugin for text inputs, textareas (based on code from Filament Group,Inc)
 * Copyright (c) jQuery Project
 * Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
 * Note: Code is in draft form and is subject to change 
 */
-(function($){
-jQuery.fn.customTextInput = function(options){
-	return $(this).each(function(){	
-		var input = $(this);
+(function ( $ ) {
+$.widget( "mobile.textinput", $.mobile.widget, {
+	options: {
+		theme: undefined,
+	},
+	_create: function(){
+		var input = this.element,
+			o = this.options,
+			theme = o.theme,
+			themeclass;
+			
+		if ( !theme ) {
+			var themedParent = this.element.closest("[class*='ui-bar-'],[class*='ui-body-']"); 
+				theme = themedParent.length ?
+					/ui-(bar|body)-([a-z])/.exec( themedParent.attr("class") )[2] :
+					"c";
+		}	
 		
-		var o = $.extend({
-			search: input.is('[type="search"],[data-type="search"]'), 
-			theme: input.data("theme") || "c"
-		}, options);
+		themeclass = " ui-body-" + theme;
 		
 		$('label[for='+input.attr('id')+']').addClass('ui-input-text');
 		
@@ -1400,8 +1415,8 @@ jQuery.fn.customTextInput = function(options){
 		var focusedEl = input;
 		
 		//"search" input widget
-		if(o.search){
-			focusedEl = input.wrap('<div class="ui-input-search ui-shadow-inset ui-btn-corner-all ui-body-c ui-btn-shadow ui-icon-search"></div>').parent();
+		if( input.is('[type="search"],[data-type="search"]') ){
+			focusedEl = input.wrap('<div class="ui-input-search ui-shadow-inset ui-btn-corner-all ui-btn-shadow ui-icon-search'+ themeclass +'"></div>').parent();
 			var clearbtn = $('<a href="#" class="ui-input-clear" title="clear text">clear text</a>')
 				.click(function(){
 					input.val('').focus();
@@ -1425,7 +1440,7 @@ jQuery.fn.customTextInput = function(options){
 			input.keyup(toggleClear);	
 		}
 		else{
-			input.addClass('ui-corner-all ui-shadow-inset');
+			input.addClass('ui-corner-all ui-shadow-inset' + themeclass);
 		}
 				
 		input
@@ -1453,9 +1468,17 @@ jQuery.fn.customTextInput = function(options){
 				keyupTimeout = setTimeout( keyup, keyupTimeoutBuffer );
 			});
 		}
-	});
-};
-})(jQuery);
+	},
+	
+	disable: function(){
+		( this.element.attr("disabled",true).is('[type="search"],[data-type="search"]') ? this.element.parent() : this.element ).addClass("ui-disabled");
+	},
+	
+	enable: function(){
+		( this.element.attr("disabled", false).is('[type="search"],[data-type="search"]') ? this.element.parent() : this.element ).removeClass("ui-disabled");
+	}
+});
+})( jQuery );
 
 
 /*
@@ -1984,23 +2007,24 @@ $.fn.slider = function(options){
 * Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
 * Note: Code is in draft form and is subject to change 
 */ 
-(function($){
-$.fn.collapsible = function(options){
-	return $(this).each(function(){
-		var o = $.extend({
-			expandCueText: ' click to expand contents',
-			collapseCueText: ' click to collapse contents',
-			collapsed: $(this).is('[data-state="collapsed"]'),
-			heading: '>h1,>h2,>h3,>h4,>h5,>h6,>legend',
-			theme: $(this).data('theme'),
-			iconTheme: $(this).data('icontheme') || 'd'
-		},options);
+(function ( $ ) {
+$.widget( "mobile.collapsible", $.mobile.widget, {
+	options: {
+		expandCueText: ' click to expand contents',
+		collapseCueText: ' click to collapse contents',
+		collapsed: false,
+		heading: '>:header,>legend',
+		theme: undefined,
+		iconTheme: 'd'
+	},
+	_create: function(){
 
-		//define
-		var collapsibleContain = $(this).addClass('ui-collapsible-contain'),
-			collapsibleHeading = $(this).find(o.heading).eq(0),
+		var $el = this.element,
+			o = this.options,
+			collapsibleContain = $el.addClass('ui-collapsible-contain'),
+			collapsibleHeading = $el.find(o.heading).eq(0),
 			collapsibleContent = collapsibleContain.wrapInner('<div class="ui-collapsible-content"></div>').find('.ui-collapsible-content'),
-			collapsibleParent = $(this).closest('[data-role=collapsible-set]').addClass('ui-collapsible-set');				
+			collapsibleParent = $el.closest('[data-role="collapsible-set"]').addClass('ui-collapsible-set');				
 		
 		//replace collapsibleHeading if it's a legend	
 		if(collapsibleHeading.is('legend')){
@@ -2121,9 +2145,9 @@ $.fn.collapsible = function(options){
 			return false;
 		});
 			
-	});	
-};	
-})(jQuery);
+	}
+});
+})( jQuery );
 
 /*
 * jQuery Mobile Framework : prototype for "controlgroup" plugin - corner-rounding for groups of buttons, checks, radios, etc
@@ -2366,7 +2390,7 @@ jQuery.widget( "mobile.listview", jQuery.mobile.widget, {
 						shadow: false,
 						corners: false,
 						iconpos: "right",
-						icon: item.data("icon") || "arrow-r",
+						icon: a.length > 1 ? false : item.data("icon") || "arrow-r",
 						theme: o.theme
 					});
 
@@ -2375,7 +2399,8 @@ jQuery.widget( "mobile.listview", jQuery.mobile.widget, {
 				if ( a.length > 1 ) {
 					itemClass += " ui-li-has-alt";
 
-					var last = a.last();
+					var last = a.last(),
+						splittheme = $list.data( "splittheme" ) || last.data( "theme" ) || o.splitTheme;
 					
 					last
 						.attr( "title", last.text() )
@@ -2384,7 +2409,7 @@ jQuery.widget( "mobile.listview", jQuery.mobile.widget, {
 						.buttonMarkup({
 							shadow: false,
 							corners: false,
-							theme: o.theme,
+							theme: splittheme,
 							icon: false,
 							iconpos: false
 						})
@@ -2392,7 +2417,7 @@ jQuery.widget( "mobile.listview", jQuery.mobile.widget, {
 							.append( jQuery( "<span>" ).buttonMarkup({
 								shadow: true,
 								corners: true,
-								theme: $list.data( "splittheme" ) || last.data( "theme" ) || o.splitTheme,
+								theme: splittheme,
 								iconpos: "notext",
 								icon: $list.data( "spliticon" ) || last.data( "icon" ) ||  o.splitIcon
 							} ) );
@@ -2539,12 +2564,18 @@ $( "[data-role='listview']" ).live( "listviewcreate", function() {
 $.widget( "mobile.dialog", $.mobile.widget, {
 	options: {},
 	_create: function(){	
-		var $el = this.element,
-			$closeBtn = $('<a href="#" data-icon="delete" data-iconpos="notext">Close</a>')
-							.click(function(){
-								$.changePage([$el, $.activePage], undefined, true );
-								return false;
-							});
+		var self = this,
+			$el = self.element,
+			$closeBtn = $('<a href="#" data-icon="delete" data-iconpos="notext">Close</a>');
+			
+		$el.delegate("a, submit", "click submit", function(e){
+			if( e.type == "click" && ( $(e.target).closest('[data-back]') || $(e.target).closest($closeBtn) ) ){
+				self.close();
+				return false;
+			}
+			//otherwise, assume we're headed somewhere new. set activepage to dialog so the transition will work
+			$.activePage = this.element;
+		});
 	
 		this.element
 			.bind("pageshow",function(){
@@ -2561,6 +2592,9 @@ $.widget( "mobile.dialog", $.mobile.widget, {
 				.last()
 				.addClass('ui-corner-bottom ui-overlay-shadow');
 
+	},
+	close: function(){
+		$.changePage([this.element, $.activePage], undefined, true );
 	}
 });
 })( jQuery );
@@ -3007,7 +3041,7 @@ $.fn.grid = function(options){
 					//rewrite src and href attrs to use a base url
 					if( !$.support.dynamicBaseTag ){
 						var baseUrl = getBaseURL(fileUrl);
-						to.find('[src],[href]').each(function(){
+						to.find('[src],link[href]').each(function(){
 							var thisAttr = $(this).is('[href]') ? 'href' : 'src',
 								thisUrl = $(this).attr(thisAttr);
 							
@@ -3077,7 +3111,6 @@ $.fn.grid = function(options){
 				changePage( $startPage, transition, true );
 			}
 			else{
-				$.activePage = $startPage;
 				$startPage.trigger("pagebeforeshow", {prevPage: $('')});
 				$startPage.addClass( activePageClass );
 				pageLoading( true );
@@ -3202,3 +3235,59 @@ $.fn.grid = function(options){
 		.unload(removeActiveLinkClass);
 	
 })( jQuery, this );
+
+
+//quick & dirty theme switcher, written to potentially work as a bookmarklet
+(function($){
+  $.themeswitcher = function(){
+    var
+      themesDir = '/stylesheets/compiled/jquery/mobile/',
+      //themesDir = 'http://jquerymobile.com/test/themes/',
+      themes = ['default','valencia'],
+      currentPage = $.activePage,
+      menuPage = 
+        $( '<div data-role=\'dialog\' data-theme=\'a\'>' +
+           '<div data-role=\'header\' data-theme=\'b\'>' +
+           '<div class=\'ui-title\'>Switch Theme:</div>'+
+           '</div>'+
+           '<div data-role=\'content\' data-theme=\'c\'><ul data-role=\'listview\' data-inset=\'true\'></ul></div>'+
+           '</div>'
+        ).appendTo( $.pageContainer ),
+      menu = menuPage.find('ul');	
+    
+    //menu items	
+    $.each(themes, function( i ){
+      $('<li><a href=\'#\'>' + themes[ i ].charAt(0).toUpperCase() + themes[ i ].substr(1) + '</a></li>')
+      .click(function(){
+        addTheme( themes[i] );
+        done();
+        return false;
+      })
+      .appendTo(menu);
+    });	
+    
+    //remover, adder
+    function addTheme(theme){
+      $('head').append( '<link rel=\'stylesheet\' href=\''+ themesDir + theme +'.css\' />' );
+    }
+    
+    //finished with this
+    function done(){
+      $.changePage([menuPage, currentPage], 'pop', true);
+      menuPage.bind('pagehide',function(){
+        menuPage.remove();
+      });
+      return false;
+    }
+            
+    //destroy
+    menuPage.find('.ui-btn-left').click(done);
+    
+    //create page, listview
+    menuPage.page();
+    
+    //change page now	
+    $.changePage([currentPage, menuPage], 'pop', false);
+  };
+})(jQuery);
+
