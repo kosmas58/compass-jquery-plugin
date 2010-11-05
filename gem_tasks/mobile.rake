@@ -32,8 +32,8 @@ all_scripts = [
   'js/jquery.mobile.dialog.js',
   'js/jquery.mobile.navbar.js',
   'js/jquery.mobile.grid.js',
-  'js/jquery.mobile.js'#,
-  #'js/jquery.mobile.themeswitcher.js'
+  'js/jquery.mobile.js',
+  'js/jquery.mobile.themeswitcher.js'
 ].collect {|filename| File.read(File.join(MOBILE_SRC, filename))}.join "\n\n"
 
 namespace :build do
