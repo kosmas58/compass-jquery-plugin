@@ -512,34 +512,71 @@ $.event.special.swipe = {
 	}
 };
 
-$.event.special.orientationchange = {
-	orientation: function( elem ) {
-		return document.documentElement && document.documentElement.clientWidth / document.documentElement.clientHeight < 1.1 ? "portrait" : "landscape";
-	},
+(function(jQuery){
+	// "Cowboy" Ben Alman
 	
-	setup: function() {
-		var thisObject = this,
-			$this = $( thisObject ),
-			orientation = $.event.special.orientationchange.orientation( $this );
-
-		function handler() {
-			var newOrientation = $.event.special.orientationchange.orientation( $this );
+	var win = jQuery(window),
+		special_event,
+		get_orientation,
+		last_orientation;
+	
+	jQuery.event.special.orientationchange = special_event = {
+		setup: function(){
+			// If the event is supported natively, return false so that jQuery
+			// will bind to the event using DOM methods.
+			if ( jQuery.support.orientation ) { return false; }
 			
-			if ( orientation !== newOrientation ) {
-				$.event.handle.call( thisObject, "orientationchange", {
-					orientation: newOrientation
-				} );
-				orientation = newOrientation;
-			}
+			// Get the current orientation to avoid initial double-triggering.
+			last_orientation = get_orientation();
+			
+			// Because the orientationchange event doesn't exist, simulate the
+			// event by testing window dimensions on resize.
+			win.bind( "resize", handler );
+		},
+		teardown: function(){
+			// If the event is not supported natively, return false so that
+			// jQuery will unbind the event using DOM methods.
+			if ( jQuery.support.orientation ) { return false; }
+			
+			// Because the orientationchange event doesn't exist, unbind the
+			// resize event handler.
+			win.unbind( "resize", handler );
+		},
+		add: function( handleObj ) {
+			// Save a reference to the bound event handler.
+			var old_handler = handleObj.handler;
+			
+			handleObj.handler = function( event ) {
+				// Modify event object, adding the .orientation property.
+				event.orientation = get_orientation();
+				
+				// Call the originally-bound event handler and return its result.
+				return old_handler.apply( this, arguments );
+			};
 		}
-
-		if ( $.support.orientation ) {
-			thisObject.addEventListener( "orientationchange", handler, false );
-		} else {
-			$this.bind( "resize", handler );
+	};
+	
+	// If the event is not supported natively, this handler will be bound to
+	// the window resize event to simulate the orientationchange event.
+	function handler() {
+		// Get the current orientation.
+		var orientation = get_orientation();
+		
+		if ( orientation !== last_orientation ) {
+			// The orientation has changed, so trigger the orientationchange event.
+			last_orientation = orientation;
+			win.trigger( "orientationchange" );
 		}
-	}
-};
+	};
+	
+	// Get the current page orientation. This method is exposed publicly, should it
+	// be needed, as jQuery.event.special.orientationchange.orientation()
+	special_event.orientation = get_orientation = function() {
+		var elem = document.documentElement;
+		return elem && elem.clientWidth / elem.clientHeight < 1.1 ? "portrait" : "landscape";
+	};
+	
+})(jQuery);
 
 $.each({
 	scrollstop: "scrollstart",
@@ -952,10 +989,29 @@ $.each({
 (function ( jQuery ) {
 
 jQuery.widget( "mobile.page", jQuery.mobile.widget, {
-	options: {},
+	options: {
+		backBtnText: "Back",
+		addBackBtn: true,
+		degradeInputs: {
+			color: true,
+			date: true,
+			datetime: true,
+			"datetime-local": true,
+			email: true,
+			month: true,
+			number: true,
+			range: true,
+			search: true,
+			tel: true,
+			time: true,
+			url: true,
+			week: true
+		}
+	},
 	
 	_create: function() {
-		var $elem = this.element;
+		var $elem = this.element,
+			o = this.options;
 
 		if ( this._trigger( "beforeCreate" ) === false ) {
 			return;
@@ -999,11 +1055,11 @@ jQuery.widget( "mobile.page", jQuery.mobile.widget, {
 				}
 				
 				// auto-add back btn on pages beyond first view
-				if ( jQuery.mobile.addBackBtn && role === "header" &&
+				if ( o.addBackBtn && role === "header" &&
 						(jQuery.mobile.urlStack.length > 1 || jQuery(".ui-page").length > 1) &&
 						!leftbtn && !$this.data( "noBackBtn" ) ) {
 
-					jQuery( "<a href='#' class='ui-btn-left' data-icon='arrow-l'>Back</a>" )
+					jQuery( "<a href='#' class='ui-btn-left' data-icon='arrow-l'>"+ o.backBtnText +"</a>" )
 						.click(function() {
 							history.back();
 							return false;
@@ -1064,10 +1120,11 @@ jQuery.widget( "mobile.page", jQuery.mobile.widget, {
 	},
 	
 	_enchanceControls: function() {
+		var o = this.options;
 		// degrade inputs to avoid poorly implemented native functionality
 		this.element.find( "input" ).each(function() {
 			var type = this.getAttribute( "type" );
-			if ( jQuery.mobile.degradeInputs[ type ] ) {
+			if ( o.degradeInputs[ type ] ) {
 				jQuery( this ).replaceWith(
 					jQuery( "<div>" ).html( jQuery(this).clone() ).html()
 						.replace( /type="([a-zA-Z]+)"/, "data-type='$1'" ) );
@@ -1391,7 +1448,7 @@ $.widget( "mobile.checkboxradio", $.mobile.widget, {
 (function ( $ ) {
 $.widget( "mobile.textinput", $.mobile.widget, {
 	options: {
-		theme: undefined,
+		theme: undefined
 	},
 	_create: function(){
 		var input = this.element,
@@ -2409,7 +2466,7 @@ jQuery.widget( "mobile.listview", jQuery.mobile.widget, {
 						.buttonMarkup({
 							shadow: false,
 							corners: false,
-							theme: splittheme,
+							theme: o.theme,
 							icon: false,
 							iconpos: false
 						})
@@ -2677,36 +2734,43 @@ $.fn.grid = function(options){
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * http://jquery.org/license
  */
+ 
 (function( $, window, undefined ) {
-	//some critical feature tests should be placed here.
-	//if we're missing support for any of these, then we're a C-grade browser
-	//to-do: see if we need more qualifiers here.
-	if ( !jQuery.support.mediaquery ) {
-		return;
-	}	
 	
-	//these properties should be made easy to override externally
+	//define jQuery.mobile hash
 	jQuery.mobile = {};
 	
 	jQuery.extend(jQuery.mobile, {
 		subPageUrlKey: 'ui-page', //define the key used in urls for sub-pages. Defaults to &ui-page=
-		degradeInputs: {
-			color: true,
-			date: true,
-			datetime: true,
-			"datetime-local": true,
-			email: true,
-			month: true,
-			number: true,
-			range: true,
-			search: true,
-			tel: true,
-			time: true,
-			url: true,
-			week: true
-		},
-		addBackBtn: true
-	});
+		
+		//anchor links that match these selectors will be untrackable in history 
+		//(no change in URL, not bookmarkable)
+		nonHistorySelectors: '[data-rel=dialog]',
+		
+		//class assigned to page currently in view, and during transitions
+		activePageClass: 'ui-page-active',
+		
+		//class used for "active" button state, from CSS framework
+		activeBtnClass: 'ui-btn-active',
+		
+		//available CSS transitions
+		transitions: ['slide', 'slideup', 'slidedown', 'pop', 'flip', 'fade'],
+		
+		//set default transition
+		defaultTransition: 'slide',
+		
+		//support conditions that must be met in order to proceed
+		gradeA: function(){
+			return jQuery.support.mediaquery;
+		}
+		
+	}, jQuery.mobileDefaults);
+	
+	//if device support condition(s) aren't met, leave things as they are -> a basic, usable experience,
+	//otherwise, proceed with the enhancements
+	if ( !jQuery.mobile.gradeA() ) {
+		return;
+	}	
 
 	var $window = jQuery(window),
 		$html = jQuery('html'),
@@ -2715,23 +2779,14 @@ $.fn.grid = function(options){
 		$loader = jQuery('<div class="ui-loader ui-body-a ui-corner-all"><span class="ui-icon ui-icon-loading spin"></span><h1>loading</h1></div>'),
 		$startPage,
 		$pageContainer,
-		startPageId = 'ui-page-start',
-		activePageClass = 'ui-page-active',
-		activeBtnClass = 'ui-btn-active',
 		activeClickedLink = null,
-		pageTransition,
-		forceBack,
-		transitions = 'slide slideup slidedown pop flip fade',
 		transitionDuration = 350,
-		backBtnText = "Back",
 		urlStack = [ {
-			url: location.hash.replace( /^#/, "" ),
-			transition: "slide"
+			url: location.hash.replace( /^#/, "" )
 		} ],
 		focusable = "[tabindex],a,button:visible,select:visible,input",
 		nextPageRole = null,
 		hashListener = true,
-		unHashedSelectors = '[data-rel=dialog]',
 		baseUrl = getPathDir( location.protocol + '//' + location.host + location.pathname ),
 		resolutionBreakpoints = [320,480,768,1024];
 
@@ -2816,7 +2871,7 @@ $.fn.grid = function(options){
 			return false;
 		}
 		
-		activeClickedLink = $this.closest( ".ui-btn" ).addClass( activeBtnClass );
+		activeClickedLink = $this.closest( ".ui-btn" ).addClass( $.mobile.activeBtnClass );
 		
 		if( external ){
 			//deliberately redirect, in case click was triggered
@@ -2824,9 +2879,9 @@ $.fn.grid = function(options){
 		}
 		else {	
 			//use ajax
-			var pageTransition = $this.data( "transition" ) || "slide",
-				forceBack = $this.data( "back" ) || undefined,
-				changeHashOnSuccess = !$this.is(unHashedSelectors);
+			var transition = $this.data( "transition" ),
+				back = $this.data( "back" ),
+				changeHashOnSuccess = !$this.is( $.mobile.nonHistorySelectors );
 				
 			nextPageRole = $this.attr( "data-rel" );	
 	
@@ -2837,7 +2892,7 @@ $.fn.grid = function(options){
 			
 			href.replace(/^#/,'');
 			
-			changePage(href, pageTransition, forceBack, changeHashOnSuccess);			
+			changePage(href, transition, back, changeHashOnSuccess);			
 		}
 		event.preventDefault();
 	});
@@ -2888,7 +2943,7 @@ $.fn.grid = function(options){
 	//remove active classes after page transition or error
 	function removeActiveLinkClass(forceRemoval){
 		if( !!activeClickedLink && (!activeClickedLink.closest( '.ui-page-active' ).length || forceRemoval )){
-			activeClickedLink.removeClass( activeBtnClass );
+			activeClickedLink.removeClass( $.mobile.activeBtnClass );
 		}
 		activeClickedLink = null;
 	}
@@ -2907,7 +2962,7 @@ $.fn.grid = function(options){
 			isFormRequest = false,
 			duplicateCachedPage = null,
 			back = (back !== undefined) ? back : ( urlStack.length > 1 && urlStack[ urlStack.length - 2 ].url === url ),
-			transition = (transition !== undefined) ? transition :  ( pageTransition || "slide" );
+			transition = transition || $.mobile.defaultTransition;
 		
 		if( $.type(to) === "object" && to.url ){
 			url = to.url,
@@ -2920,10 +2975,6 @@ $.fn.grid = function(options){
 				data = undefined;
 			}
 		}
-		
-		//unset pageTransition, forceBack	
-		pageTransition = undefined;
-		forceBack = undefined;
 			
 		//reset base to pathname for new request
 		resetBaseURL();
@@ -2968,20 +3019,20 @@ $.fn.grid = function(options){
 				$pageContainer.addClass('ui-mobile-viewport-transitioning');
 				// animate in / out
 				from.addClass( transition + " out " + ( back ? "reverse" : "" ) );
-				to.addClass( activePageClass + " " + transition +
+				to.addClass( $.mobile.activePageClass + " " + transition +
 					" in " + ( back ? "reverse" : "" ) );
 				
 				// callback - remove classes, etc
 				to.animationComplete(function() {
-					from.add( to ).removeClass(" out in reverse " + transitions );
-					from.removeClass( activePageClass );
+					from.add( to ).removeClass(" out in reverse " + $.mobile.transitions.join(' ') );
+					from.removeClass( $.mobile.activePageClass );
 					loadComplete();
 					$pageContainer.removeClass('ui-mobile-viewport-transitioning');
 				});
 			}
 			else{
-				from.removeClass( activePageClass );
-				to.addClass( activePageClass );
+				from.removeClass( $.mobile.activePageClass );
+				to.addClass( $.mobile.activePageClass );
 				loadComplete();
 			}
 		};
@@ -3112,7 +3163,7 @@ $.fn.grid = function(options){
 			}
 			else{
 				$startPage.trigger("pagebeforeshow", {prevPage: $('')});
-				$startPage.addClass( activePageClass );
+				$startPage.addClass( $.mobile.activePageClass );
 				pageLoading( true );
 				
 				if( $startPage.trigger("pageshow", {prevPage: $('')}) !== false ){
@@ -3127,8 +3178,8 @@ $.fn.grid = function(options){
 	$html.addClass('ui-mobile');
 	
 	//add orientation class on flip/resize.
-	$window.bind( "orientationchange", function( event, data ) {
-		$html.removeClass( "portrait landscape" ).addClass( data.orientation );
+	$window.bind( "orientationchange.htmlclass", function( event ) {
+		$html.removeClass( "portrait landscape" ).addClass( event.orientation );
 	});
 	
 	//add breakpoint classes for faux media-q support
@@ -3215,11 +3266,6 @@ $.fn.grid = function(options){
 			pageContainer: $pageContainer
 		});
 		
-		//make sure it has an ID - for finding it later
-		if(!$startPage.attr('id')){ 
-			$startPage.attr('id', startPageId); 
-		}
-		
 		//initialize all pages present
 		$pages.page();
 		
@@ -3227,7 +3273,7 @@ $.fn.grid = function(options){
 		$window.trigger( "hashchange", [ true ] );
 		
 		//update orientation 
-		$html.addClass( jQuery.event.special.orientationchange.orientation( $window ) );
+		$window.trigger( "orientationchange.htmlclass" );
 	});
 	
 	$window
