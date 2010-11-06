@@ -25,6 +25,3 @@ def all_files(pattern)
   FileList[pattern].collect {|filename| File.read(filename)}.join "\n\n"
 end
 
-
- 
-      
