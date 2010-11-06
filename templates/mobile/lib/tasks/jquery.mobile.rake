@@ -1,5 +1,5 @@
 require 'fileutils'
-JQUERY_MOBILE_SRC = File.join(RAILS_ROOT, 'tmp', 'jquery-mobile')
+JQ_MOBILE_SRC = File.join(RAILS_ROOT, 'tmp', 'jquery-mobile')
 
 def convert2haml(src, dest)
   tmp = src.gsub(/\.html$/, '.tmp')
@@ -40,7 +40,7 @@ namespace :jquery do
       task :api do
         puts "Haml conversion started for API-Viewer:"
         
-        path = File.join(JQUERY_MOBILE_SRC, 'experiments/api-viewer')
+        path = File.join(JQ_MOBILE_SRC, 'experiments/api-viewer')
         cleanup("#{path}/*.html.haml")
         Dir["#{path}/*.html"].each do |src|
           dest = src.gsub(/\.html$/, '.html.haml')
@@ -60,7 +60,7 @@ namespace :jquery do
       task :docs do
         puts "Haml conversion started for /docs files:"
         
-        path = File.join(JQUERY_MOBILE_SRC, 'docs')
+        path = File.join(JQ_MOBILE_SRC, 'docs')
         cleanup("#{path}/*.html.haml")
         Dir["#{path}/*.html"].each do |src|
           dest = src.gsub(/\.html$/, '.html.haml')
@@ -79,7 +79,7 @@ namespace :jquery do
       task :experiments do
         puts "Haml conversion started for /experiments files:"
         
-        path = File.join(JQUERY_MOBILE_SRC, 'experiments')
+        path = File.join(JQ_MOBILE_SRC, 'experiments')
         cleanup("#{path}/**/*.html.haml")
         Dir["#{path}/**/*.html"].each do |src|
           next if /api-viewer/ =~ src
@@ -93,7 +93,7 @@ namespace :jquery do
       task :speed do
         puts "Haml conversion started for /speed files:"
         
-        path = File.join(JQUERY_MOBILE_SRC, 'speed')
+        path = File.join(JQ_MOBILE_SRC, 'speed')
         cleanup("#{path}/*.html.haml")
         Dir["#{path}/*.html"].each do |src|
           dest = src.gsub(/\.html$/, '.html.haml')

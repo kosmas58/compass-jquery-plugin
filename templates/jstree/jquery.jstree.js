@@ -4330,7 +4330,7 @@
 
 /*
  * jsTree radio plugin
- * Inserts radioes in front of every node
+ * Inserts radios in front of every node
  * Depends on the ui plugin
  * DOES NOT WORK NICELY WITH MULTITREE DRAG'N'DROP
  */
@@ -4345,10 +4345,10 @@
 
             this.get_container()
                 .bind("open_node.jstree create_node.jstree clean_node.jstree", $.proxy(function (e, data) { 
-                        this._prepare_radioes(data.rslt.obj);
+                        this._prepare_radios(data.rslt.obj);
                     }, this))
                 .bind("loaded.jstree", $.proxy(function (e) {
-                        this._prepare_radioes();
+                        this._prepare_radios();
                     }, this))
                 .delegate( (this.data.ui && this.data.radio.noui ? "a" : "ins.jstree-radio") , "click.jstree", $.proxy(function (e) {
                         e.preventDefault();
@@ -4367,9 +4367,9 @@
         defaults : {
             override_ui : false,
             two_state : false,
-            real_radioes : false,
+            real_radios : false,
             checked_parent_open : true,
-            real_radioes_names : function (n) { return [ ("check_" + (n[0].id || Math.ceil(Math.random() * 10000))) , 1]; }
+            real_radios_names : function (n) { return [ ("check_" + (n[0].id || Math.ceil(Math.random() * 10000))) , 1]; }
         },
         __destroy : function () {
             this.get_container()
@@ -4382,10 +4382,10 @@
                     this.check_node(n, false);
                 }
             },
-            _prepare_radioes : function (obj) {
+            _prepare_radios : function (obj) {
                 obj = !obj || obj == -1 ? this.get_container().find("> ul > li") : this._get_node(obj);
                 if(obj === false) { return; } // added for removing root nodes
-                var c, _this = this, t, ts = this._get_settings().radio.two_state, rc = this._get_settings().radio.real_radioes, rcn = this._get_settings().radio.real_radioes_names;
+                var c, _this = this, t, ts = this._get_settings().radio.two_state, rc = this._get_settings().radio.real_radios, rcn = this._get_settings().radio.real_radios_names;
                 obj.each(function () {
                     t = $(this);
                     c = t.is("li") && (t.hasClass("jstree-checked") || (rc && t.children(":checked").length)) ? "jstree-checked" : "jstree-unchecked";
@@ -4412,7 +4412,7 @@
             },
             change_state : function (obj, state) {
                 obj = this._get_node(obj);
-                var coll = false, rc = this._get_settings().radio.real_radioes;
+                var coll = false, rc = this._get_settings().radio.real_radios;
                 if(!obj || obj === -1) { return false; }
                 state = (state === false || state === true) ? state : obj.hasClass("jstree-checked");
                 if(this._get_settings().radio.two_state) {
@@ -4513,13 +4513,13 @@
                 return get_all || this._get_settings().radio.two_state ? obj.find(".jstree-unchecked") : obj.find("> ul > .jstree-unchecked, .jstree-undetermined > ul > .jstree-unchecked");
             },
 
-            show_radioes : function () { this.get_container().children("ul").removeClass("jstree-no-radioes"); },
-            hide_radioes : function () { this.get_container().children("ul").addClass("jstree-no-radioes"); },
+            show_radios : function () { this.get_container().children("ul").removeClass("jstree-no-radios"); },
+            hide_radios : function () { this.get_container().children("ul").addClass("jstree-no-radios"); },
 
             _repair_state : function (obj) {
                 obj = this._get_node(obj);
                 if(!obj.length) { return; }
-                var rc = this._get_settings().radio.real_radioes,
+                var rc = this._get_settings().radio.real_radios,
                     a = obj.find("> ul > .jstree-checked").length,
                     b = obj.find("> ul > .jstree-undetermined").length,
                     c = obj.find("> ul > li").length;
