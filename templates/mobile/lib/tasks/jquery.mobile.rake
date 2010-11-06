@@ -16,13 +16,13 @@ def convert2haml(src, dest)
   puts "Converted: #{src}"
 end
 
-def cleanup(dir)
-  puts "Cleanup started for: #{dir}"
-  Dir["#{dir}/*.html.haml"].each do |file|
+def cleanup(pattern)
+  puts "Cleanup started for: #{pattern}"
+  Dir["#{pattern}"].each do |file|
     FileUtils.remove_file file if File.exists? file
     puts "Removed: #{file}"
   end
-  puts "Cleanup finished for: #{dir}"
+  puts "Cleanup finished for: #{pattern}"
 end
 
 namespace :jquery do
@@ -41,19 +41,51 @@ namespace :jquery do
         puts "Haml conversion started for API-Viewer:"
         
         path = File.join(SRC, 'experiments/api-viewer')
-        cleanup(path)
+        cleanup("#{path}/*.html.haml")
         Dir["#{path}/*.html"].each do |src|
           dest = src.gsub(/\.html$/, '.html.haml')
           convert2haml(src, dest)
         end
         
         path = File.join(path, 'docs')
-        cleanup(path)
+        cleanup("#{path}/*.html.haml")
         Dir["#{path}/**/*.html"].each do |src|
           dest = src.gsub(/\/index.html$/, '.html.haml')
           convert2haml(src, dest)
         end
-        puts "Haml conversion finished for API-Viewer"
+        puts "Haml conversion finished for API-Viewer."
+      end
+      
+      desc 'Convert /docs files to haml'
+      task :docs do
+        puts "Haml conversion started for /docs files:"
+        
+        path = File.join(SRC, 'docs')
+        cleanup("#{path}/*.html.haml")
+        Dir["#{path}/*.html"].each do |src|
+          dest = src.gsub(/\.html$/, '.html.haml')
+          convert2haml(src, dest)
+        end
+        
+        cleanup("#{path}/**/*.html.haml")
+        Dir["#{path}/**/*.html"].each do |src|
+          dest = src.gsub(/\.html$/, '.html.haml')
+          convert2haml(src, dest)
+        end
+        puts "Haml conversion finished for /docs files."
+      end
+      
+      desc 'Convert /speed files to haml'
+      task :speed do
+        puts "Haml conversion started for /speed files:"
+        
+        path = File.join(SRC, 'speed')
+        cleanup("#{path}/*.html.haml")
+        Dir["#{path}/*.html"].each do |src|
+          dest = src.gsub(/\.html$/, '.html.haml')
+          convert2haml(src, dest)
+        end
+        puts "Haml conversion finished  for /speed files."
       end
     end
   end
