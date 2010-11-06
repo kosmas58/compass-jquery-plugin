@@ -42,6 +42,7 @@ namespace :build do
 
     FileUtils.remove_dir MOBILE_DEST_TEMPLATES if File.exists? MOBILE_DEST_TEMPLATES
     FileUtils.mkdir_p(File.join(MOBILE_DEST_TEMPLATES, 'config', 'initializers'))
+    FileUtils.mkdir_p(File.join(MOBILE_DEST_TEMPLATES, 'lib', 'tasks'))
 
     open File.join(MOBILE_DEST_TEMPLATES, 'manifest.rb'), 'w' do |manifest|
       manifest.print MOBILE_MESSAGE1
@@ -49,7 +50,12 @@ namespace :build do
       open File.join(MOBILE_DEST_TEMPLATES, 'config', 'initializers', 'mobile.rb'), 'w' do |f|
         f.print(File.read(File.join(MOBILE_SRC, 'config', 'initializers', 'mobile.rb')))
       end
-      manifest.print "file 'config/initializers/mobile.rb'\n"
+      
+      manifest.print "file 'lib/tasks/mobile.rake'\n"
+      open File.join(MOBILE_DEST_TEMPLATES, 'lib', 'tasks', 'jquery.mobile.rake'), 'w' do |f|
+        f.print(File.read(File.join(MOBILE_SRC, 'lib', 'tasks', 'jquery.mobile.rake')))
+      end
+      manifest.print "file 'lib/tasks/mobile.rake.rb'\n"
 
       #JavaScripts
 

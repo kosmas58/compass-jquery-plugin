@@ -9,6 +9,7 @@ h2. Description
 A Sass-based Meta-Framework for Compass that allows you to mix and match any of the following:
 
 * jRails with jQuery 1.4.3 and jQuery.UI 1.8.6 including themes
+* jQuery Tools 1.2.5
 * jquery.jstree.js V1.0rc3
 * jquery.dynatree.js V0.5.3
 * jquery.ribbon.js
@@ -49,12 +50,12 @@ h3. jQuery TOOLS
 
 Use compass to install the jQuery TOOLS javascript library into your project.
 
-<pre>compass install [-r jquery] jquery/jqtools <project name></pre>
+<pre>compass install [-r jquery] jquery/tools <project name></pre>
 
 To use the javacripts include:
 
 <pre>
-= javascript_include_tag :jqtools</pre>
+= javascript_include_tag :tools</pre>
 
 h3. jQuery Dynatree Plugin
 
@@ -136,11 +137,11 @@ To use the localized stylesheets and javacripts include:
 = stylesheet_link_tag 'compiled/jquery/secret_sauce.css', :media => 'screen, projection'
 = javascript_include_tag :secret_sauce</pre>
 
-h3. jqIcal
+h3. jquery.ical
 
-Use compass to install the jqIcal javascript library into your project.
+Use compass to install the jquery.ical javascript library into your project.
 
-<pre>compass install [-r jquery] jquery/jqical <project name></pre>
+<pre>compass install [-r jquery] jquery/ical <project name></pre>
 
 You will find all the stylesheets in easy-to-read Sass format.
 
@@ -149,8 +150,8 @@ You will find all the stylesheets in easy-to-read Sass format.
 To use the (localized) stylesheets and javacripts include:
 
 <pre>
-  = stylesheet_link_tag 'compiled/jquery/jqical.css', :media => 'screen, projection'
-  = javascript_include_tag :jqical</pre>
+  = stylesheet_link_tag 'compiled/jquery/ical.css', :media => 'screen, projection'
+  = javascript_include_tag :ical</pre>
 
 h3. Emulators
 
