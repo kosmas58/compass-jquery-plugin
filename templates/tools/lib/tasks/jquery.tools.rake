@@ -1,5 +1,5 @@
 require 'fileutils'
-SRC = File.join(RAILS_ROOT, 'tmp', 'jquerytools')
+JQUERY_TOOLS_SRC = File.join(RAILS_ROOT, 'tmp', 'jquerytools')
 
 def convert2haml(src, dest)
   system "html2haml -x #{src} #{dest}"
@@ -30,7 +30,7 @@ namespace :jquery do
       task :test do
         puts "Haml conversion started for /test files:"
         
-        path = File.join(SRC, 'test')
+        path = File.join(JQUERY_TOOLS_SRC, 'test')
         cleanup("#{path}/**/*.html.haml")
         Dir["#{path}/**/*.htm"].each do |src|
           dest = src.gsub(/\.htm$/, '.html.haml')
