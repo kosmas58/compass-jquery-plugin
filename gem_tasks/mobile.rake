@@ -50,7 +50,7 @@ namespace :build do
       open File.join(MOBILE_DEST_TEMPLATES, 'config', 'initializers', 'mobile.rb'), 'w' do |f|
         f.print(File.read(File.join(MOBILE_SRC, 'config', 'initializers', 'mobile.rb')))
       end
-      manifest.print "file 'config/initializers/mobile.b'\n"
+      manifest.print "file 'config/initializers/mobile.rb'\n"
       
       open File.join(MOBILE_DEST_TEMPLATES, 'lib', 'tasks', 'jquery.mobile.rake'), 'w' do |f|
         f.print(File.read(File.join(MOBILE_SRC, 'lib', 'tasks', 'jquery.mobile.rake')))
