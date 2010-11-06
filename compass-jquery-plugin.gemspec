@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kosmas Schuetz"]
-  s.date = %q{2010-11-06}
+  s.date = %q{2010-11-07}
   s.description = %q{A compass plugin that integrates jRails, jQuery, jQuery UI and Themes, jqGrid and more into the Compass Sass framework.}
   s.email = %q{kosmas.schuetz@gmx.com}
   s.extra_rdoc_files = [
@@ -38,7 +38,7 @@ Gem::Specification.new do |s|
      "gem_tasks/rubygems.rake",
      "gem_tasks/secret_sauce.rake",
      "gem_tasks/tools.rake",
-     "lib/compiler.jar",
+     "lib/google-compiler-20100917.jar",
      "lib/handle_attributes.rb",
      "lib/handle_js_files.rb",
      "lib/jquery.mobile.rb",
@@ -76,6 +76,9 @@ Gem::Specification.new do |s|
      "lib/jquery/secret_sauce/helpers/ui_grid_helper.rb",
      "lib/jquery/secret_sauce/model/find_for_grid.rb",
      "lib/jquery/tools.rb",
+     "lib/js.jar",
+     "lib/jslint-check.js",
+     "lib/jslint.js",
      "lib/yuicompressor-2.4.2.jar",
      "spec/compass-jquery-plugin_spec.rb",
      "spec/spec.opts",
@@ -513,8 +516,8 @@ Gem::Specification.new do |s|
      "templates/jrails/i18n/jquery.ui/datepicker-zh-HK.min.js",
      "templates/jrails/i18n/jquery.ui/datepicker-zh-TW.js",
      "templates/jrails/i18n/jquery.ui/datepicker-zh-TW.min.js",
-     "templates/jrails/jquery-1.4.3.js",
-     "templates/jrails/jquery-1.4.3.min.js",
+     "templates/jrails/jquery-1.4.4.js",
+     "templates/jrails/jquery-1.4.4.min.js",
      "templates/jrails/jquery-ui-1.8.6.js",
      "templates/jrails/jquery-ui-1.8.6.min.js",
      "templates/jrails/jquery.bgiframe.js",

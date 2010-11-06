@@ -1,5 +1,5 @@
 GEM_ROOT = File.expand_path(File.join(File.dirname(__FILE__), '..'))
-GOOGLE_JS_COMPRESSOR = File.join(GEM_ROOT, 'lib', 'compiler.jar')
+GOOGLE_JS_COMPRESSOR = File.join(GEM_ROOT, 'lib', 'google-compiler-20100917.jar')
 YUI_JS_COMPRESSOR = File.join(GEM_ROOT, 'lib', 'yuicompressor-2.4.2.jar')
 
 def compress_js(scripts, compressor)
