@@ -35,6 +35,7 @@ namespace :build do
     
     FileUtils.remove_dir TOOLS_DEST_TEMPLATES if File.exists? TOOLS_DEST_TEMPLATES 
     FileUtils.mkdir_p(File.join(TOOLS_DEST_TEMPLATES, 'config', 'initializers'))
+    FileUtils.mkdir_p(File.join(TOOLS_DEST_TEMPLATES, 'lib', 'tasks'))
     
     open File.join(TOOLS_DEST_TEMPLATES, 'manifest.rb'), 'w' do |manifest|
       manifest.print TOOLS_MESSAGE1
@@ -42,7 +43,12 @@ namespace :build do
       open File.join(TOOLS_DEST_TEMPLATES, 'config', 'initializers', 'tools.rb'), 'w' do |f|
         f.print(File.read(File.join(TOOLS_SRC, 'config', 'initializers', 'tools.rb')))
       end
-      manifest.print "file 'config/initializers/tools.rb'\n"  
+      manifest.print "file 'config/initializers/tools.rb'\n"
+      
+      open File.join(TOOLS_DEST_TEMPLATES, 'lib', 'tasks', 'jquery.tools.rake'), 'w' do |f|
+        f.print(File.read(File.join(TOOLS_SRC, 'lib', 'tasks', 'jquery.tools.rake')))
+      end
+      manifest.print "file 'lib/tasks/jquery.tools.rake'\n"
     
       #JavaScripts
     

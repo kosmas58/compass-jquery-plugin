@@ -2,5 +2,6 @@
 # Install with: compass install jquery/tools
 
 file 'config/initializers/tools.rb'
+file 'lib/tasks/jquery.tools.rake'
 javascript 'jquery.tools.js'
 javascript 'jquery.tools.min.js'

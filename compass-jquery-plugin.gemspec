@@ -1426,6 +1426,7 @@ Gem::Specification.new do |s|
      "templates/tools/config/initializers/tools.rb",
      "templates/tools/jquery.tools.js",
      "templates/tools/jquery.tools.min.js",
+     "templates/tools/lib/tasks/jquery.tools.rake",
      "templates/tools/manifest.rb"
   ]
   s.homepage = %q{http://github.com/kosmas58/compass-jquery-plugin}
