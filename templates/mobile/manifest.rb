@@ -2,7 +2,7 @@
 # Install with: compass install jquery/mobile
 
 file 'lib/tasks/mobile.rake'
-file 'lib/tasks/mobile.rake.rb'
+file 'lib/tasks/mobile.rake'
 javascript 'jquery.mobile.js'
 javascript 'jquery.mobile.min.js'
 stylesheet 'jquery/mobile/_base.scss'

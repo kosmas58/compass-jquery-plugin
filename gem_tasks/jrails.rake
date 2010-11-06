@@ -57,7 +57,7 @@ namespace :build do
       open File.join(JRAILS_DEST_TEMPLATES, 'lib', 'tasks', 'haml.rake'), 'w' do |f|
         f.print(File.read(File.join(SRC, 'lib', 'tasks', 'haml.rake')))
       end
-      manifest.print "file 'lib/tasks/haml.rake.rb'\n"
+      manifest.print "file 'lib/tasks/haml.rake'\n"
     
       open File.join(JRAILS_DEST_TEMPLATES, 'jrails.js'), 'w' do |f|
         f.print concat_files(all_files(JRAILS_SRC_SCRIPTS))

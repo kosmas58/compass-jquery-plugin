@@ -3,7 +3,7 @@
 
 file 'config/initializers/jrails.rb'
 file 'lib/tasks/haml.rake'
-file 'lib/tasks/haml.rake.rb'
+file 'lib/tasks/haml.rake'
 javascript 'jrails.js'
 javascript 'jrails.min.js'
 javascript 'jquery-1.4.3.js'

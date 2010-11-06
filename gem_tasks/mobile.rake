@@ -55,7 +55,7 @@ namespace :build do
       open File.join(MOBILE_DEST_TEMPLATES, 'lib', 'tasks', 'jquery.mobile.rake'), 'w' do |f|
         f.print(File.read(File.join(MOBILE_SRC, 'lib', 'tasks', 'jquery.mobile.rake')))
       end
-      manifest.print "file 'lib/tasks/mobile.rake.rb'\n"
+      manifest.print "file 'lib/tasks/mobile.rake'\n"
 
       #JavaScripts
 
