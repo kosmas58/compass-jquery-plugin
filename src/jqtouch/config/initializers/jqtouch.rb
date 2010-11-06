@@ -5,4 +5,4 @@ ActionView::Helpers::AssetTagHelper.register_stylesheet_expansion :jqt_apple   =
 ActionView::Helpers::AssetTagHelper.register_stylesheet_expansion :jqt_default => ['compiled/jquery/touch/default.css']
 ActionView::Helpers::AssetTagHelper.register_stylesheet_expansion :jqt_jqt     => ['compiled/jquery/touch/jqt.css']
 
-ActionView::Helpers::AssetTagHelper.register_javascript_expansion :jqtouch => ['jquery-1.4.3.min', 'jquery.jqtouch.min']
+ActionView::Helpers::AssetTagHelper.register_javascript_expansion :jqtouch => ['jquery-1.4.4.min', 'jquery.jqtouch.min']
