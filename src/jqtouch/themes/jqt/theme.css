@@ -17,7 +17,7 @@ body {
     border-bottom: 1px solid #000;
     padding: 10px;
     height: 45px;
-    background: image_url("jquery/touch/jqt/toolbar.png") #000000 repeat-x;
+    background: url(img/toolbar.png) #000000 repeat-x;
     position: relative;
 }
 #jqt .black-translucent .toolbar {
@@ -64,14 +64,14 @@ body {
     text-decoration: none;
     white-space: nowrap;
     background: none;
-    -webkit-border-image: image_url("jquery/touch/jqt/button.png") 0 5 0 5;
+    -webkit-border-image: url(img/button.png) 0 5 0 5;
 }
 #jqt .button.active, #jqt .cancel.active, #jqt .add.active {
-    -webkit-border-image: image_url("jquery/touch/jqt/button_clicked.png") 0 5 0 5;
+    -webkit-border-image: url(img/button_clicked.png) 0 5 0 5;
     color: #aaa;
 }
 #jqt .blueButton {
-    -webkit-border-image: image_url("jquery/touch/jqt/blueButton.png") 0 5 0 5;
+    -webkit-border-image: url(img/blueButton.png) 0 5 0 5;
     border-width: 0 5px;
 }
 #jqt .back {
@@ -80,10 +80,10 @@ body {
     padding: 0;
     max-width: 55px;
     border-width: 0 8px 0 14px;
-    -webkit-border-image: image_url("jquery/touch/jqt/back_button.png") 0 8 0 14;
+    -webkit-border-image: url(img/back_button.png) 0 8 0 14;
 }
 #jqt .back.active {
-    -webkit-border-image: image_url("jquery/touch/jqt/back_button_clicked.png") 0 8 0 14;
+    -webkit-border-image: url(img/back_button_clicked.png) 0 8 0 14;
 }
 #jqt .leftButton, #jqt .cancel {
     left: 6px;
@@ -108,24 +108,24 @@ body {
 
 #jqt .whiteButton.active, #jqt .grayButton.active, #jqt .redButton.active, #jqt .blueButton.active, #jqt .greenButton.active,
 #jqt .whiteButton:active, #jqt .grayButton:active, #jqt .redButton:active, #jqt .blueButton:active, #jqt .greenButton:active {
-    -webkit-border-image: image_url("jquery/touch/jqt/activeButton.png") 0 12 0 12;
+    -webkit-border-image: url(img/activeButton.png) 0 12 0 12;
 }
 #jqt .whiteButton {
-    -webkit-border-image: image_url("jquery/touch/jqt/whiteButton.png") 0 12 0 12;
+    -webkit-border-image: url(img/whiteButton.png) 0 12 0 12;
     text-shadow: rgba(255, 255, 255, 0.7) 0 1px 0;
 }
 #jqt .grayButton {
-    -webkit-border-image: image_url("jquery/touch/jqt/grayButton.png") 0 12 0 12;
+    -webkit-border-image: url(img/grayButton.png) 0 12 0 12;
     color: #FFFFFF;
 }
 
 #jqt .redButton {
-    -webkit-border-image: image_url("jquery/touch/jqt/redButton.png") 0 12 0 12;
+    -webkit-border-image: url(img/redButton.png) 0 12 0 12;
     color: #FFFFFF;
 }
 
 #jqt .greenButton {
-    -webkit-border-image: image_url("jquery/touch/jqt/greenButton.png") 0 12 0 12;
+    -webkit-border-image: url(img/greenButton.png) 0 12 0 12;
     color: #FFFFFF;
 }
 
@@ -166,7 +166,7 @@ body {
 }
 #jqt ul li.arrow {
     background-color: #4c4d4e !important;
-    background-image: image_url("jquery/touch/jqt/chevron.png") !important;
+    background-image: url(img/chevron.png) !important;
     background-position: right center !important;
     background-repeat: no-repeat !important;
 }
@@ -176,7 +176,7 @@ body {
 }
 
 #jqt ul li.forward {
-    background-image: image_url("jquery/touch/jqt/chevron_circle.png"), -webkit-gradient(linear, 0% 0%, 0% 100%, from(#4c4d4e), to(#404142));
+    background-image: url(img/chevron_circle.png), -webkit-gradient(linear, 0% 0%, 0% 100%, from(#4c4d4e), to(#404142));
     background-position: right center;
     background-repeat: no-repeat;
 }
@@ -198,17 +198,17 @@ body {
     color: #fff;
 }
 #jqt ul li a.active.loading {
-    background-image: image_url("jquery/touch/jqt/loading.gif");
+    background-image: url(img/loading.gif);
     background-position: 95% center;
     background-repeat: no-repeat;
 }
 #jqt ul li.arrow a.active {
-    background-image: image_url("jquery/touch/jqt/chevron.png");
+    background-image: url(img/chevron.png);
     background-position: right center;
     background-repeat: no-repeat;
 }
 #jqt ul li.forward a.active {
-    background-image: image_url("jquery/touch/jqt/chevron_circle.png");
+    background-image: url(img/chevron_circle.png);
     background-position: right center;
     background-repeat: no-repeat;
 }
@@ -296,7 +296,7 @@ body {
 }
 #jqt ul li select {
     text-indent: 0px;
-    background: transparent image_url("jquery/touch/jqt/chevron.png") no-repeat right center;
+    background: transparent url(img/chevron.png) no-repeat right center;
     -webkit-appearance: textfield;
     margin-left: -6px;
     width: 104%;
@@ -399,7 +399,7 @@ body {
     -webkit-tap-highlight-color: rgba(0,0,0,0);
     -webkit-transition: left .15s;
     background-color: transparent;
-    background: #fff image_url("jquery/touch/jqt/on_off.png") 0 0 no-repeat;
+    background: #fff url(img/on_off.png) 0 0 no-repeat;
     border: 0;
     height: 27px;
     left: -55px;
@@ -438,7 +438,7 @@ body {
 }
 #jqt ul.edgetoedge li.arrow {
     background-color: #404142 !important;
-    background-image: image_url("jquery/touch/jqt/chevron.png");
+    background-image: url(img/chevron.png);
     background-position: right center;
     background-repeat: no-repeat;
 }
@@ -480,7 +480,7 @@ body {
     padding: 10px 10px 10px 10px;
 }
 #jqt ul.plastic li a.active.loading {
-    background-image: image_url("jquery/touch/jqt/loading.gif");
+    background-image: url(img/loading.gif);
     background-position: 95% center;
     background-repeat: no-repeat;
 }
@@ -495,22 +495,22 @@ body {
     background-color: #1c1c1f;
 }
 #jqt ul.plastic li.arrow {
-    background-image: image_url("jquery/touch/jqt/chevron.png");
+    background-image: url(img/chevron.png);
     background-position: right center;
     background-repeat: no-repeat;
 }
 #jqt ul.plastic li.arrow a.active {
-    background-image: image_url("jquery/touch/jqt/chevron.png");
+    background-image: url(img/chevron.png);
     background-position: right center;
     background-repeat: no-repeat;
 }
 #jqt ul.plastic li.forward {
-    background-image: image_url("jquery/touch/jqt/chevron_circle.png");
+    background-image: url(img/chevron_circle.png);
     background-position: right center;
     background-repeat: no-repeat;
 }
 #jqt ul.plastic li.forward a.active {
-    background-image: image_url("jquery/touch/jqt/chevron_circle.png");
+    background-image: url(img/chevron_circle.png);
     background-position: right center;
     background-repeat: no-repeat;
 }
@@ -553,10 +553,10 @@ body {
     font-weight: bold;
 }
 #jqt ul.metal li.arrow {
-    background-image: image_url("jquery/touch/jqt/chevron.png");
+    background-image: url(img/chevron.png);
     background-position: right center;
     background-repeat: no-repeat;
-    background-image: image_url("jquery/touch/jqt/chevron.png"), -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(238,238,238,1)), to(rgba(156,158,160,1)));
+    background-image: url(img/chevron.png), -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(238,238,238,1)), to(rgba(156,158,160,1)));
     background-repeat: no-repeat;
     background-position: right center;
 }

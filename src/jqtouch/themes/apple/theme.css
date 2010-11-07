@@ -3,7 +3,7 @@ body {
 }
 
 #jqt > * {
-    background: rgb(197,204,211) image_url("jquery/touch/apple/pinstripes.png");
+    background: rgb(197,204,211) url(img/pinstripes.png);
 }
 
 #jqt h1, #jqt h2 {
@@ -20,7 +20,7 @@ body {
     border-bottom: 1px solid #2d3642;
     padding: 10px;
     height: 45px;
-    background: image_url("jquery/touch/apple/toolbar.png") #6d84a2 repeat-x;
+    background: url(img/toolbar.png) #6d84a2 repeat-x;
     position: relative;
 }
 
@@ -71,15 +71,15 @@ body {
     text-decoration: none;
     white-space: nowrap;
     background: none;
-    -webkit-border-image: image_url("jquery/touch/apple/toolButton.png") 0 5 0 5;
+    -webkit-border-image: url(img/toolButton.png) 0 5 0 5;
 }
 
 #jqt .button.active, #jqt .cancel.active, #jqt .add.active {
-    -webkit-border-image: image_url("jquery/touch/apple/toolButton.png") 0 5 0 5;	
+    -webkit-border-image: url(img/toolButton.png) 0 5 0 5;	
 }
 
 #jqt .blueButton {
-    -webkit-border-image: image_url("jquery/touch/apple/activeButton.png") 0 5 0 5;
+    -webkit-border-image: url(img/activeButton.png) 0 5 0 5;
     border-width: 0 5px;
 }
 
@@ -89,11 +89,11 @@ body {
     padding: 0;
     max-width: 55px;
     border-width: 0 8px 0 14px;
-    -webkit-border-image: image_url("jquery/touch/apple/backButton.png") 0 8 0 14;
+    -webkit-border-image: url(img/backButton.png) 0 8 0 14;
 }
 
 #jqt .back.active {
-    -webkit-border-image: image_url("jquery/touch/apple/backButton.png") 0 8 0 14;
+    -webkit-border-image: url(img/backButton.png) 0 8 0 14;
 }
 
 #jqt .leftButton, #jqt .cancel {
@@ -121,26 +121,26 @@ body {
 
 #jqt .whiteButton.active, #jqt .grayButton.active, #jqt .redButton.active, #jqt .blueButton.active, #jqt .greenButton.active,
 #jqt .whiteButton:active, #jqt .grayButton:active, #jqt .redButton:active, #jqt .blueButton:active, #jqt .greenButton:active {
-    -webkit-border-image: image_url("jquery/touch/apple/activeButton.png") 0 12 0 12;
+    -webkit-border-image: url(img/activeButton.png) 0 12 0 12;
 }
 
 #jqt .whiteButton {
-    -webkit-border-image: image_url("jquery/touch/apple/whiteButton.png") 0 12 0 12;
+    -webkit-border-image: url(img/whiteButton.png) 0 12 0 12;
     text-shadow: rgba(255, 255, 255, 0.7) 0 1px 0;
 }
 
 #jqt .grayButton {
-    -webkit-border-image: image_url("jquery/touch/apple/grayButton.png") 0 12 0 12;
+    -webkit-border-image: url(img/grayButton.png) 0 12 0 12;
     color: #FFFFFF;
 }
 
 #jqt .redButton {
-    -webkit-border-image: image_url("jquery/touch/apple/redButton.png") 0 12 0 12;
+    -webkit-border-image: url(img/redButton.png) 0 12 0 12;
     color: #FFFFFF;
 }
 
 #jqt .greenButton {
-    -webkit-border-image: image_url("jquery/touch/apple/greenButton.png") 0 12 0 12;
+    -webkit-border-image: url(img/greenButton.png) 0 12 0 12;
     color: #FFFFFF;
 }
 
@@ -185,7 +185,7 @@ body {
 /* universal arrows */
 
 #jqt ul li.arrow {
-    background-image: image_url("jquery/touch/apple/chevron.png");
+    background-image: url(img/chevron.png);
     background-position: right center;
     background-repeat: no-repeat;
 }
@@ -194,8 +194,8 @@ body {
 	padding: 12px 22px 12px 10px;
 }
 
-#jqt #plastic ul li.arrow, #jqt #metal ul li.arrow {
-    background-image: image_url("jquery/touch/apple/chevron.png");
+#jqt ul.plastic li.arrow, #jqt ul.metal li.arrow {
+    background-image: url(img/chevron.png);
     background-position: right center;
     background-repeat: no-repeat;
 }
@@ -219,7 +219,7 @@ body {
     color: #fff;
 }
 #jqt ul li.arrow a.active {
-    background-image: image_url("jquery/touch/apple/listArrowSel.png");
+    background-image: url(img/listArrowSel.png);
     background-position: right center;
     background-repeat: no-repeat;
 }
@@ -331,7 +331,7 @@ body {
 
 #jqt ul li select {
     text-indent: 0px;
-    background: transparent image_url("jquery/touch/apple/chevron.png") no-repeat 103% 3px;
+    background: transparent url(img/chevron.png) no-repeat 103% 3px;
     -webkit-appearance: textfield;
     margin-left: -6px;
     width: 104%;
@@ -369,9 +369,9 @@ body {
     text-shadow: #636a6f 0 1px 0;
 }
 
-#jqt .edgetoedge h4 {
+#jqt ul.edgetoedge h4 {
     color: #fff;
-    background: rgb(154,159,170) image_url("jquery/touch/apple/listGroup.png") top left repeat-x;
+    background: rgb(154,159,170) url(img/listGroup.png) top left repeat-x;
     border-top: 1px solid rgb(165,177,186);
     text-shadow: #666 0 1px 0;
     margin: 0;
@@ -384,7 +384,7 @@ body {
     background-color: rgb(255,255,255);
 }
 
-#jqt .edgetoedge ul, #jqt .metal ul, #jqt .plastic ul {
+#jqt ul.edgetoedge, #jqt ul.metal, #jqt ul.plastic {
     -webkit-border-radius: 0;
     margin: 0;
     border-left: 0;
@@ -392,36 +392,36 @@ body {
     border-top: 0;
 }
 
-#jqt .metal ul {
+#jqt ul.metal {
     border-top: 0;
     border-bottom: 0;
     background: rgb(180,180,180);
 }
 
-#jqt .edgetoedge ul li:first-child,
-#jqt .edgetoedge ul li:first-child a,
-#jqt .edgetoedge ul li:last-child,
-#jqt .edgetoedge ul li:last-child a,
-#jqt .metal ul li:first-child a,
-#jqt .metal ul li:last-child a {
+#jqt ul.edgetoedge li:first-child,
+#jqt ul.edgetoedge li:first-child a,
+#jqt ul.edgetoedge li:last-child,
+#jqt ul.edgetoedge li:last-child a,
+#jqt ul.metal li:first-child a,
+#jqt ul.metal li:last-child a {
     -webkit-border-radius: 0;
 }
 
-#jqt .edgetoedge ul li small {
+#jqt ul.edgetoedge li small {
     font-size: 16px;
     line-height: 28px;
 }
 
-#jqt .edgetoedge li, #jqt .metal li {
+#jqt ul.edgetoedge li, #jqt .metal li {
     -webkit-border-radius: 0;
 }
 
-#jqt .edgetoedge li em {
+#jqt ul.edgetoedge li em {
     font-weight: normal;
     font-style: normal;
 }
 
-#jqt .edgetoedge h4 + ul {
+#jqt ul.edgetoedge h4 + ul {
     border-top: 1px solid rgb(152,158,164);
     border-bottom: 1px solid rgb(113,125,133);
 }
@@ -469,12 +469,12 @@ body {
 /* @group Plastic */
 
 #jqt #plastic ul li.arrow, #jqt #metal ul li.arrow {
-    background-image: image_url("jquery/touch/apple/chevron.png");
+    background-image: url(img/chevron.png);
     background-position: right center;
     background-repeat: no-repeat;
 }
 
-#jqt .edgetoedge ul, #jqt .metal ul, #jqt .plastic ul {
+#jqt ul.edgetoedge, #jqt ul.metal, #jqt ul.plastic {
     -webkit-border-radius: 0;
     margin: 0;
     border-left: 0;
@@ -482,28 +482,28 @@ body {
     border-top: 0;
 }
 
-#jqt .metal ul li {
+#jqt ul.metal li {
     border-top: 1px solid rgb(238,238,238);
     border-bottom: 1px solid rgb(156,158,165);
     font-size: 26px;
     text-shadow: #fff 0 1px 0;
 }
 
-#jqt .metal ul li a {
+#jqt ul.metal li a {
     line-height: 26px;
     margin: 0;
     padding: 13px 0;
 }
 
-#jqt .metal ul li a:hover {
+#jqt ul.metal li a:hover {
     color: rgb(0,0,0);
 }
 
-#jqt .metal ul li:hover small {
+#jqt ul.metal li:hover small {
     color: inherit;
 }
 
-#jqt .metal ul li a em {
+#jqt ul.metal li a em {
     display: block;
     font-size: 14px;
     font-style: normal;
@@ -512,20 +512,20 @@ body {
     line-height: 14px;
 }
 
-#jqt .metal ul li small {
+#jqt ul.metal li small {
     float: right;
     position: relative;
     margin-top: 10px;
     font-weight: bold;
 }
 
-#jqt .metal ul li.arrow a small {
+#jqt ul.metal li.arrow a small {
     padding-right: 0;
     line-height: 17px;
 }
 
-#jqt .metal ul li.arrow {
-    background:  image_url("jquery/touch/apple/chevron.png") right center no-repeat;
+#jqt ul.metal li.arrow {
+    background:  url(img/chevron.png) right center no-repeat;
 }
 
 #jqt .plastic {
@@ -534,7 +534,7 @@ body {
     background: rgb(173,173,173);
 }
 
-#jqt .plastic ul {
+#jqt ul.plastic {
     -webkit-border-radius: 0;
     margin: 0;
     border-left: 0;
@@ -543,40 +543,40 @@ body {
     background-color: rgb(173,173,173);
 }
 
-#jqt .plastic ul li {
+#jqt ul.plastic li {
     -webkit-border-radius: 0;
     border-top: 1px solid rgb(191,191,191);
     border-bottom: 1px solid rgb(157,157,157);
 }
 
-#jqt .plastic ul li:nth-child(odd) {
+#jqt ul.plastic li:nth-child(odd) {
     background-color: rgb(152,152,152);
     border-top: 1px solid rgb(181,181,181);
     border-bottom: 1px solid rgb(138,138,138);
 }
 
-#jqt .plastic ul + p {
+#jqt ul.plastic + p {
     font-size: 11px;
     color: #2f3237;
     text-shadow: none;
     padding: 10px 10px;
 }
 
-#jqt .plastic ul + p strong {
+#jqt ul.plastic + p strong {
     font-size: 14px;
     line-height: 18px;
     text-shadow: #fff 0 1px 0;
 }
 
-#jqt .plastic ul li a {
+#jqt ul.plastic li a {
     text-shadow: rgb(211,211,211) 0 1px 0;
 }
 
-#jqt .plastic ul li:nth-child(odd) a {
+#jqt ul.plastic li:nth-child(odd) a {
     text-shadow: rgb(191,191,191) 0 1px 0;
 }
 
-#jqt .plastic ul li small {
+#jqt ul.plastic li small {
     color: #3C3C3C;
     text-shadow: rgb(211,211,211) 0 1px 0;
     font-size: 13px;
@@ -701,7 +701,7 @@ body {
     -webkit-tap-highlight-color: rgba(0,0,0,0);
     margin: 0;
     -webkit-border-radius: 5px;
-    background: #fff image_url("jquery/touch/apple/on_off.png") 0 0 no-repeat;
+    background: #fff url(img/on_off.png) 0 0 no-repeat;
     height: 27px;
     overflow: hidden;
     width: 149px;

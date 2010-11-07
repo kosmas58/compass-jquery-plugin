@@ -134,17 +134,28 @@ body {
       a {
         -webkit-border-bottom-left-radius: 8px;
         -webkit-border-bottom-right-radius: 8px; } } }
-  ul li.arrow {
-    background-image: image_url("jquery/touch/apple/chevron.png");
-    background-position: right center;
-    background-repeat: no-repeat;
-    a {
-      padding: 12px 22px 12px 10px; } }
-  #plastic ul li.arrow, #metal ul li.arrow {
-    background-image: image_url("jquery/touch/apple/chevron.png");
-    background-position: right center;
-    background-repeat: no-repeat; }
-  ul li a, li.img a + a {
+  ul {
+    li.arrow {
+      background-image: image_url("jquery/touch/apple/chevron.png");
+      background-position: right center;
+      background-repeat: no-repeat;
+      a {
+        padding: 12px 22px 12px 10px; } }
+    &.plastic li.arrow, &.metal li.arrow {
+      background-image: image_url("jquery/touch/apple/chevron.png");
+      background-position: right center;
+      background-repeat: no-repeat; }
+    li a {
+      color: #000;
+      text-decoration: none;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+      display: block;
+      padding: 12px 10px 12px 10px;
+      margin: -10px;
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0); } }
+  li.img a + a {
     color: #000;
     text-decoration: none;
     text-overflow: ellipsis;
@@ -279,162 +290,160 @@ body {
         font-size: 16px;
         margin: 1px 0 0 0;
         padding: 2px 10px;
-        text-shadow: #636a6f 0 1px 0; } } }
-  .edgetoedge {
-    h4 {
-      color: #fff;
-      background: rgb(154, 159, 170) image_url("jquery/touch/apple/listGroup.png") top left repeat-x;
-      border-top: 1px solid rgb(165, 177, 186);
-      text-shadow: #666 0 1px 0;
-      margin: 0;
-      padding: 2px 10px; }
+        text-shadow: #636a6f 0 1px 0; }
+      h4 {
+        color: #fff;
+        background: rgb(154, 159, 170) image_url("jquery/touch/apple/listGroup.png") top left repeat-x;
+        border-top: 1px solid rgb(165, 177, 186);
+        text-shadow: #666 0 1px 0;
+        margin: 0;
+        padding: 2px 10px; } } }
+  .edgetoedge, .metal {
     margin: 0;
     padding: 0;
     background-color: rgb(255, 255, 255); }
-  .metal {
-    margin: 0;
-    padding: 0;
-    background-color: rgb(255, 255, 255); }
-  .edgetoedge ul, .metal ul, .plastic ul {
-    -webkit-border-radius: 0;
-    margin: 0;
-    border-left: 0;
-    border-right: 0;
-    border-top: 0; }
-  .metal ul {
-    border-top: 0;
-    border-bottom: 0;
-    background: rgb(180, 180, 180); }
-  .edgetoedge ul li {
-    &:first-child, &:last-child {
-      -webkit-border-radius: 0;
-      a {
-        -webkit-border-radius: 0; } } }
-  .metal ul li {
-    &:first-child a, &:last-child a {
-      -webkit-border-radius: 0; } }
-  .edgetoedge {
-    ul li small {
-      font-size: 16px;
-      line-height: 28px; }
-    li {
-      -webkit-border-radius: 0; } }
-  .metal li {
-    -webkit-border-radius: 0; }
-  .edgetoedge {
-    li em {
-      font-weight: normal;
-      font-style: normal; }
-    h4 + ul {
-      border-top: 1px solid rgb(152, 158, 164);
-      border-bottom: 1px solid rgb(113, 125, 133); } }
-  ul li {
-    small {
-      color: #369;
-      font: 17px "Helvetica Neue", Helvetica;
-      text-align: right;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
-      display: block;
-      width: 23%;
-      float: right;
-      padding: 3px 0px; }
-    &.arrow small {
-      padding: 0 15px; }
-    small.counter {
-      font-size: 17px !important;
-      line-height: 13px !important;
-      font-weight: bold;
-      background: rgb(154, 159, 170);
-      color: #fff;
-      -webkit-border-radius: 11px;
-      padding: 4px 10px 5px 10px;
-      display: inline !important;
-      width: auto;
-      margin-top: -22px; }
-    &.arrow small.counter {
-      margin-right: 15px; } }
-  #plastic ul li.arrow, #metal ul li.arrow {
-    background-image: image_url("jquery/touch/apple/chevron.png");
-    background-position: right center;
-    background-repeat: no-repeat; }
-  .edgetoedge ul, .metal ul, .plastic ul {
-    -webkit-border-radius: 0;
-    margin: 0;
-    border-left: 0;
-    border-right: 0;
-    border-top: 0; }
-  .metal ul li {
-    border-top: 1px solid rgb(238, 238, 238);
-    border-bottom: 1px solid rgb(156, 158, 165);
-    font-size: 26px;
-    text-shadow: #fff 0 1px 0;
-    a {
-      line-height: 26px;
-      margin: 0;
-      padding: 13px 0;
-      &:hover {
-        color: rgb(0, 0, 0); } }
-    &:hover small {
-      color: inherit; }
-    a em {
-      display: block;
-      font-size: 14px;
-      font-style: normal;
-      color: #444;
-      width: 50%;
-      line-height: 14px; }
-    small {
-      float: right;
-      position: relative;
-      margin-top: 10px;
-      font-weight: bold; }
-    &.arrow {
-      a small {
-        padding-right: 0;
-        line-height: 17px; }
-      background: image_url("jquery/touch/apple/chevron.png") right center no-repeat; } }
-  .plastic {
-    margin: 0;
-    padding: 0;
-    background: rgb(173, 173, 173);
-    ul {
+  ul {
+    &.edgetoedge, &.metal, &.plastic {
       -webkit-border-radius: 0;
       margin: 0;
       border-left: 0;
       border-right: 0;
+      border-top: 0; }
+    &.metal {
       border-top: 0;
-      background-color: rgb(173, 173, 173);
-      li {
+      border-bottom: 0;
+      background: rgb(180, 180, 180); }
+    &.edgetoedge li {
+      &:first-child, &:last-child {
         -webkit-border-radius: 0;
-        border-top: 1px solid rgb(191, 191, 191);
-        border-bottom: 1px solid rgb(157, 157, 157);
-        &:nth-child(odd) {
-          background-color: rgb(152, 152, 152);
-          border-top: 1px solid rgb(181, 181, 181);
-          border-bottom: 1px solid rgb(138, 138, 138); } }
-      + p {
-        font-size: 11px;
-        color: #2f3237;
-        text-shadow: none;
-        padding: 10px 10px;
-        strong {
-          font-size: 14px;
-          line-height: 18px;
-          text-shadow: #fff 0 1px 0; } }
-      li {
         a {
-          text-shadow: rgb(211, 211, 211) 0 1px 0; }
-        &:nth-child(odd) a {
-          text-shadow: rgb(191, 191, 191) 0 1px 0; }
-        small {
-          color: #3C3C3C;
-          text-shadow: rgb(211, 211, 211) 0 1px 0;
-          font-size: 13px;
-          font-weight: bold;
-          text-transform: uppercase;
-          line-height: 24px; } } } }
+          -webkit-border-radius: 0; } } }
+    &.metal li {
+      &:first-child a, &:last-child a {
+        -webkit-border-radius: 0; } }
+    &.edgetoedge li {
+      small {
+        font-size: 16px;
+        line-height: 28px; }
+      -webkit-border-radius: 0; } }
+  .metal li {
+    -webkit-border-radius: 0; }
+  ul {
+    &.edgetoedge {
+      li em {
+        font-weight: normal;
+        font-style: normal; }
+      h4 + ul {
+        border-top: 1px solid rgb(152, 158, 164);
+        border-bottom: 1px solid rgb(113, 125, 133); } }
+    li {
+      small {
+        color: #369;
+        font: 17px "Helvetica Neue", Helvetica;
+        text-align: right;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+        display: block;
+        width: 23%;
+        float: right;
+        padding: 3px 0px; }
+      &.arrow small {
+        padding: 0 15px; }
+      small.counter {
+        font-size: 17px !important;
+        line-height: 13px !important;
+        font-weight: bold;
+        background: rgb(154, 159, 170);
+        color: #fff;
+        -webkit-border-radius: 11px;
+        padding: 4px 10px 5px 10px;
+        display: inline !important;
+        width: auto;
+        margin-top: -22px; }
+      &.arrow small.counter {
+        margin-right: 15px; } } }
+  #plastic ul li.arrow, #metal ul li.arrow {
+    background-image: image_url("jquery/touch/apple/chevron.png");
+    background-position: right center;
+    background-repeat: no-repeat; }
+  ul {
+    &.edgetoedge, &.metal, &.plastic {
+      -webkit-border-radius: 0;
+      margin: 0;
+      border-left: 0;
+      border-right: 0;
+      border-top: 0; }
+    &.metal li {
+      border-top: 1px solid rgb(238, 238, 238);
+      border-bottom: 1px solid rgb(156, 158, 165);
+      font-size: 26px;
+      text-shadow: #fff 0 1px 0;
+      a {
+        line-height: 26px;
+        margin: 0;
+        padding: 13px 0;
+        &:hover {
+          color: rgb(0, 0, 0); } }
+      &:hover small {
+        color: inherit; }
+      a em {
+        display: block;
+        font-size: 14px;
+        font-style: normal;
+        color: #444;
+        width: 50%;
+        line-height: 14px; }
+      small {
+        float: right;
+        position: relative;
+        margin-top: 10px;
+        font-weight: bold; }
+      &.arrow {
+        a small {
+          padding-right: 0;
+          line-height: 17px; }
+        background: image_url("jquery/touch/apple/chevron.png") right center no-repeat; } } }
+  .plastic {
+    margin: 0;
+    padding: 0;
+    background: rgb(173, 173, 173); }
+  ul.plastic {
+    -webkit-border-radius: 0;
+    margin: 0;
+    border-left: 0;
+    border-right: 0;
+    border-top: 0;
+    background-color: rgb(173, 173, 173);
+    li {
+      -webkit-border-radius: 0;
+      border-top: 1px solid rgb(191, 191, 191);
+      border-bottom: 1px solid rgb(157, 157, 157);
+      &:nth-child(odd) {
+        background-color: rgb(152, 152, 152);
+        border-top: 1px solid rgb(181, 181, 181);
+        border-bottom: 1px solid rgb(138, 138, 138); } }
+    + p {
+      font-size: 11px;
+      color: #2f3237;
+      text-shadow: none;
+      padding: 10px 10px;
+      strong {
+        font-size: 14px;
+        line-height: 18px;
+        text-shadow: #fff 0 1px 0; } }
+    li {
+      a {
+        text-shadow: rgb(211, 211, 211) 0 1px 0; }
+      &:nth-child(odd) a {
+        text-shadow: rgb(191, 191, 191) 0 1px 0; }
+      small {
+        color: #3C3C3C;
+        text-shadow: rgb(211, 211, 211) 0 1px 0;
+        font-size: 13px;
+        font-weight: bold;
+        text-transform: uppercase;
+        line-height: 24px; } } }
   #plastic ul {
     &.minibanner {
       margin: 10px;

@@ -41,6 +41,7 @@ Gem::Specification.new do |s|
      "lib/google-compiler-20100917.jar",
      "lib/handle_attributes.rb",
      "lib/handle_js_files.rb",
+     "lib/jqtouch.rb",
      "lib/jquery.mobile.rb",
      "lib/jquery.rb",
      "lib/jquery.ui.rb",
