@@ -1,6 +1,6 @@
 require 'fileutils'
 require 'lib/handle_js_files'
-require 'lib/jquery.ui'
+require 'lib/jquery_ui_theme'
 
 # Compass generator for jrails 0.1+
 SRC = File.join(GEM_ROOT, 'src', 'jrails')

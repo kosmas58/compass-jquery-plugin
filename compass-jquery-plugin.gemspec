@@ -41,10 +41,8 @@ Gem::Specification.new do |s|
      "lib/google-compiler-20100917.jar",
      "lib/handle_attributes.rb",
      "lib/handle_js_files.rb",
-     "lib/jqtouch.rb",
-     "lib/jquery.mobile.rb",
+     "lib/jqtouch_theme.rb",
      "lib/jquery.rb",
-     "lib/jquery.ui.rb",
      "lib/jquery/compass_plugin.rb",
      "lib/jquery/dynatree.rb",
      "lib/jquery/emulators.rb",
@@ -77,6 +75,8 @@ Gem::Specification.new do |s|
      "lib/jquery/secret_sauce/helpers/ui_grid_helper.rb",
      "lib/jquery/secret_sauce/model/find_for_grid.rb",
      "lib/jquery/tools.rb",
+     "lib/jquery_mobile_theme.rb",
+     "lib/jquery_ui_theme.rb",
      "lib/js.jar",
      "lib/jslint-check.js",
      "lib/jslint.js",
@@ -1448,17 +1448,17 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<haml>, [">= 3.0.4"])
-      s.add_runtime_dependency(%q<compass>, [">= 0.10.1"])
+      s.add_runtime_dependency(%q<haml>, [">= 3.0.23"])
+      s.add_runtime_dependency(%q<compass>, [">= 0.10.6"])
       s.add_runtime_dependency(%q<ri_cal>, [">= 0.8.7"])
     else
-      s.add_dependency(%q<haml>, [">= 3.0.4"])
-      s.add_dependency(%q<compass>, [">= 0.10.1"])
+      s.add_dependency(%q<haml>, [">= 3.0.23"])
+      s.add_dependency(%q<compass>, [">= 0.10.6"])
       s.add_dependency(%q<ri_cal>, [">= 0.8.7"])
     end
   else
-    s.add_dependency(%q<haml>, [">= 3.0.4"])
-    s.add_dependency(%q<compass>, [">= 0.10.1"])
+    s.add_dependency(%q<haml>, [">= 3.0.23"])
+    s.add_dependency(%q<compass>, [">= 0.10.6"])
     s.add_dependency(%q<ri_cal>, [">= 0.8.7"])
   end
 end

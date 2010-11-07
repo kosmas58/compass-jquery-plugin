@@ -1,6 +1,6 @@
 require 'fileutils'
 require 'lib/handle_js_files'
-require 'lib/jqtouch'
+require 'lib/jqtouch_theme'
 
 JQTOUCH_SRC = File.join(GEM_ROOT, 'src', 'jqtouch')
 JQTOUCH_SRC_STYLESHEETS = File.join(JQTOUCH_SRC, 'css')

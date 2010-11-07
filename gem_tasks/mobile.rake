@@ -1,6 +1,6 @@
 require 'fileutils'
 require 'lib/handle_js_files'
-require 'lib/jquery.mobile'
+require 'lib/jquery_mobile_theme'
 
 MOBILE_SRC = File.join(GEM_ROOT, 'src', 'mobile')
 MOBILE_SRC_IMAGES = File.join(MOBILE_SRC, 'images')
