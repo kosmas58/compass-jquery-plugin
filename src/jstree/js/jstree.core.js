@@ -2,6 +2,79 @@
  * jsTree core
  */
 (function ($) {
+    // Common functions not related to jsTree 
+    // decided to move them to a `vakata` "namespace"
+    $.vakata = {};
+    // CSS related functions
+    $.vakata.css = {
+        get_css : function(rule_name, delete_flag, sheet) {
+            rule_name = rule_name.toLowerCase();
+            var css_rules = sheet.cssRules || sheet.rules,
+                j = 0;
+            do {
+                if(css_rules.length && j > css_rules.length + 5) { return false; }
+                if(css_rules[j].selectorText && css_rules[j].selectorText.toLowerCase() == rule_name) {
+                    if(delete_flag === true) {
+                        if(sheet.removeRule) { sheet.removeRule(j); }
+                        if(sheet.deleteRule) { sheet.deleteRule(j); }
+                        return true;
+                    }
+                    else { return css_rules[j]; }
+                }
+            }
+            while (css_rules[++j]);
+            return false;
+        },
+        add_css : function(rule_name, sheet) {
+            if($.jstree.css.get_css(rule_name, false, sheet)) { return false; }
+            if(sheet.insertRule) { sheet.insertRule(rule_name + ' { }', 0); } else { sheet.addRule(rule_name, null, 0); }
+            return $.vakata.css.get_css(rule_name);
+        },
+        remove_css : function(rule_name, sheet) { 
+            return $.vakata.css.get_css(rule_name, true, sheet); 
+        },
+        add_sheet : function(opts) {
+            var tmp = false, is_new = true;
+            if(opts.str) {
+                if(opts.title) { tmp = $("style[id='" + opts.title + "-stylesheet']")[0]; }
+                if(tmp) { is_new = false; }
+                else {
+                    tmp = document.createElement("style");
+                    tmp.setAttribute('type',"text/css");
+                    if(opts.title) { tmp.setAttribute("id", opts.title + "-stylesheet"); }
+                }
+                if(tmp.styleSheet) {
+                    if(is_new) { 
+                        document.getElementsByTagName("head")[0].appendChild(tmp); 
+                        tmp.styleSheet.cssText = opts.str; 
+                    }
+                    else {
+                        tmp.styleSheet.cssText = tmp.styleSheet.cssText + " " + opts.str; 
+                    }
+                }
+                else {
+                    tmp.appendChild(document.createTextNode(opts.str));
+                    document.getElementsByTagName("head")[0].appendChild(tmp);
+                }
+                return tmp.sheet || tmp.styleSheet;
+            }
+            if(opts.url) {
+                if(document.createStyleSheet) {
+                    try { tmp = document.createStyleSheet(opts.url); } catch (e) { }
+                }
+                else {
+                    tmp			= document.createElement('link');
+                    tmp.rel		= 'stylesheet';
+                    tmp.type	= 'text/css';
+                    tmp.media	= "all";
+                    tmp.href	= opts.url;
+                    document.getElementsByTagName("head")[0].appendChild(tmp);
+                    return tmp.styleSheet;
+                }
+            }
+        }
+    };
+
     // private variables 
     var instances = [],			// instance array (used by $.jstree.reference/create/focused)
         focused_instance = -1,	// the index in the instance array of the currently focused instance
@@ -168,8 +241,6 @@
     };
     // set the prototype for all instances
     $.jstree._fn = $.jstree._instance.prototype = {};
-
-    // css functions - used internally
 
     // load the css when DOM is ready
     $(function() {

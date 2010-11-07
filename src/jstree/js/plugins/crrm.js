@@ -1,4 +1,4 @@
-/* 
+/*
  * jsTree CRRM plugin
  * Handles creating/renaming/removing/moving nodes by user interaction.
  */

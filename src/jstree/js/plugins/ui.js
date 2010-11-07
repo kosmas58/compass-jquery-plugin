@@ -3,6 +3,16 @@
  * This plugins handles selecting/deselecting/hovering/dehovering nodes
  */
 (function ($) {
+    /*
+    DESELECT ON OUTSIDE CLICK
+            var _this = this;
+            $(document).bind("click", function (e) {
+                if(!$(e.target).parents(".jstree:eq(0)").length) {
+                    // $.jstree._focused().deselect_all();
+                    _this.deselect_all();
+                }
+            });
+    */
     var scrollbar_width, e1, e2;
     $(function() {
         if (/msie/.test(navigator.userAgent.toLowerCase())) {
@@ -72,7 +82,7 @@
                         clk.each(function () { _this.deselect_node(this); });
                         if(s && clk.length) { 
                             data.rslt.prev.each(function () { 
-                                if(this.parentNode) { _this.select_node(this); }
+                                if(this.parentNode) { _this.select_node(this); return false; /* if return false is removed all prev nodes will be selected */}
                             });
                         }
                     }, this))
@@ -117,6 +127,7 @@
                 s = $.map($.makeArray(s), function (n) { return "#" + n.toString().replace(/^#/,"").replace(/\\\//g,"/").replace(/\//g,"\\\/").replace(/\\\./g,".").replace(/\./g,"\\."); });
                 // this.deselect_all(); WHY deselect, breaks plugin state notifier?
                 $.each(s, function (i, val) { if(val && val !== "#") { _this.select_node(val); } });
+                this.data.ui.selected = this.data.ui.selected.filter(function () { return this.parentNode; });
                 this.__callback();
             },
             refresh : function (obj) {

@@ -115,8 +115,7 @@
                                         .replace(s.item_clsd,"").replace(s.item_open,"").replace(s.item_leaf,"")
                                         .indexOf("ui-icon-") === -1; 
                                 }).removeClass(s.item_clsd + " " + s.item_open).addClass(s.item_leaf || "jstree-no-icon");
-            }
-        },
+            }        },
         defaults : {
             "opened"	: "ui-icon-triangle-1-se",
             "closed"	: "ui-icon-triangle-1-e",
@@ -136,4 +135,3 @@
         $.vakata.css.add_sheet({ str : css_string, title : "jstree" });
     });
 })(jQuery);
-

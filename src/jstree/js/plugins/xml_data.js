@@ -1,5 +1,5 @@
 /* 
- * jsTree XML 1.0
+ * jsTree XML plugin
  * The XML data store. Datastores are build by overriding the `load_node` and `_is_loaded` functions.
  */
 (function ($) {
@@ -93,7 +93,7 @@
             '						<xsl:if test="string-length(attribute::icon) > 0 and contains(@icon,\'/\')"><xsl:attribute name="style">background:url(<xsl:value-of select="@icon" />) center center no-repeat;</xsl:attribute></xsl:if>' + 
             '						<xsl:text>&#xa0;</xsl:text>' + 
             '					</ins>' + 
-            '					<xsl:copy-of select="./child::node()" />' + // was <xsl:value-of select="current()" />
+            '					<xsl:copy-of select="./child::node()" />' + 
             '				</a>' + 
             '			</xsl:for-each>' + 
             '			<xsl:if test="$children or @hasChildren"><xsl:call-template name="nodes"><xsl:with-param name="node" select="current()" /></xsl:call-template></xsl:if>' + 
@@ -158,7 +158,7 @@
             '				<xsl:if test="string-length(attribute::icon) > 0 and contains(@icon,\'/\')"><xsl:attribute name="style">background:url(<xsl:value-of select="@icon" />) center center no-repeat;</xsl:attribute></xsl:if>' + 
             '				<xsl:text>&#xa0;</xsl:text>' + 
             '			</ins>' + 
-            '			<xsl:copy-of select="./child::node()" />' + // was <xsl:value-of select="current()" />
+            '			<xsl:copy-of select="./child::node()" />' + 
             '		</a>' + 
             '	</xsl:for-each>' + 
             '	<xsl:if test="$children">' + 
@@ -211,14 +211,14 @@
                                     if(d.length > 10) {
                                         d = $(d);
                                         if(obj === -1 || !obj) { this.get_container().children("ul").empty().append(d.children()); }
-                                        else { obj.children("a.jstree-loading").removeClass("jstree-loading"); obj.append(d); $.removeData(obj, "jstree-is-loading"); }
+                                        else { obj.children("a.jstree-loading").removeClass("jstree-loading"); obj.append(d); obj.removeData("jstree-is-loading"); }
                                         if(s.clean_node) { this.clean_node(obj); }
                                         if(s_call) { s_call.call(this); }
                                     }
                                     else {
                                         if(obj && obj !== -1) { 
                                             obj.children("a.jstree-loading").removeClass("jstree-loading");
-                                            $.removeData(obj, "jstree-is-loading");
+                                            obj.removeData("jstree-is-loading");
                                             if(s.correct_state) { 
                                                 this.correct_state(obj);
                                                 if(s_call) { s_call.call(this); } 
@@ -262,7 +262,7 @@
                             if(ef) { ef.call(this, x, t, e); }
                             if(obj !== -1 && obj.length) {
                                 obj.children("a.jstree-loading").removeClass("jstree-loading");
-                                $.removeData(obj, "jstree-is-loading");
+                                obj.removeData("jstree-is-loading");
                                 if(t === "success" && s.correct_state) { this.correct_state(obj); }
                             }
                             else {
@@ -283,14 +283,14 @@
                                     if(d.length > 10) {
                                         d = $(d);
                                         if(obj === -1 || !obj) { this.get_container().children("ul").empty().append(d.children()); }
-                                        else { obj.children("a.jstree-loading").removeClass("jstree-loading"); obj.append(d); $.removeData(obj, "jstree-is-loading"); }
+                                        else { obj.children("a.jstree-loading").removeClass("jstree-loading"); obj.append(d); obj.removeData("jstree-is-loading"); }
                                         if(s.clean_node) { this.clean_node(obj); }
                                         if(s_call) { s_call.call(this); }
                                     }
                                     else {
                                         if(obj && obj !== -1) { 
                                             obj.children("a.jstree-loading").removeClass("jstree-loading");
-                                            $.removeData(obj, "jstree-is-loading");
+                                            obj.removeData("jstree-is-loading");
                                             if(s.correct_state) { 
                                                 this.correct_state(obj);
                                                 if(s_call) { s_call.call(this); } 
@@ -371,7 +371,7 @@
                             result += ' icon="' + tmp1.children("ins").get(0).className.replace(/jstree[^ ]*|$/ig,'').replace(/\s+$/ig," ").replace(/^ /,"").replace(/ $/,"") + '"';
                         }
                         if(tmp1.children("ins").get(0).style.backgroundImage.length) {
-                            result += ' icon="' + tmp1.children("ins").get(0).style.backgroundImage.replace("url(","").replace(")","") + '"';
+                            result += ' icon="' + tmp1.children("ins").get(0).style.backgroundImage.replace("url(","").replace(")","").replace(/'/ig,"").replace(/"/ig,"") + '"';
                         }
                         result += ">";
                         result += "<![CDATA[" + _this.get_text(tmp1, lang) + "]]>";

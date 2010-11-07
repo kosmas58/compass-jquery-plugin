@@ -14,7 +14,7 @@
             }
 
             this.get_container()
-                .bind("open_node.jstree create_node.jstree clean_node.jstree", $.proxy(function (e, data) { 
+                .bind("open_node.jstree create_node.jstree clean_node.jstree refresh.jstree", $.proxy(function (e, data) { 
                         this._prepare_radios(data.rslt.obj);
                     }, this))
                 .bind("loaded.jstree", $.proxy(function (e) {
@@ -70,14 +70,20 @@
                             else {
                                 $t.children(":radio").addClass("jstree-real-radio");
                             }
-                            if(c === "jstree-checked") { $t.children(":radio").attr("checked","checked"); }
+                            if(c === "jstree-checked") { 
+                                $t.children(":radio").attr("checked","checked"); 
+                            }
+                        }
+                        if(c === "jstree-checked" && !ts) {
+                            $t.find("li").addClass("jstree-checked");
                         }
                     });
                 });
                 if(!ts) {
                     if(obj.length === 1 && obj.is("li")) { this._repair_state(obj); }
-                    else if(obj.is("li")) { obj.each(function () { _this._repair_state(this); }); }
+                    if(obj.is("li")) { obj.each(function () { _this._repair_state(this); }); }
                     else { obj.find("> ul > li").each(function () { _this._repair_state(this); }); }
+                    obj.find(".jstree-checked").parent().parent().each(function () { _this._repair_state(this); }); 
                 }
             },
             change_state : function (obj, state) {
@@ -163,7 +169,7 @@
             },
             uncheck_all : function () {
                 var _this = this,
-                    coll = this._get_settings().radio.two_state ? this.get_container_ul().find("li") : this.get_container().children("li");
+                    coll = this._get_settings().radio.two_state ? this.get_container_ul().find("li") : this.get_container_ul().children("li");
                 coll.each(function () {
                     _this.change_state(this, true);
                 });

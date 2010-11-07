@@ -1,5 +1,5 @@
 /* 
- * jsTree JSON 1.0
+ * jsTree JSON plugin
  * The JSON data store. Datastores are build by overriding the `load_node` and `_is_loaded` functions.
  */
 (function ($) {
@@ -33,7 +33,7 @@
                 obj = this._get_node(obj);
                 var s = this._get_settings().json_data;
                 if(obj && obj !== -1 && s.progressive_unload && ($.isFunction(s.data) || !!s.ajax)) {
-                    $.removeData(obj, "jstree-children");
+                    obj.removeData("jstree-children");
                 }
                 return this.__call_old();
             },
@@ -47,7 +47,7 @@
                     d = this._parse_json(obj.data("jstree-children"), obj);
                     if(d) {
                         obj.append(d);
-                        if(!s.progressive_unload) { $.removeData(obj, "jstree-children"); }
+                        if(!s.progressive_unload) { obj.removeData("jstree-children"); }
                     }
                     this.clean_node(obj);
                     if(s_call) { s_call.call(this); }
@@ -70,14 +70,14 @@
                                 }
                                 else {
                                     obj.children("a.jstree-loading").removeClass("jstree-loading");
-                                    $.removeData(obj, "jstree-is-loading");
+                                    obj.removeData("jstree-is-loading");
                                     if(s.correct_state) { this.correct_state(obj); }
                                 }
                                 if(e_call) { e_call.call(this); }
                             }
                             else {
                                 if(obj === -1 || !obj) { this.get_container().children("ul").empty().append(d.children()); }
-                                else { obj.append(d).children("a.jstree-loading").removeClass("jstree-loading"); $.removeData(obj, "jstree-is-loading"); }
+                                else { obj.append(d).children("a.jstree-loading").removeClass("jstree-loading"); obj.removeData("jstree-is-loading"); }
                                 this.clean_node(obj);
                                 if(s_call) { s_call.call(this); }
                             }
@@ -102,7 +102,7 @@
                             if(ef) { ef.call(this, x, t, e); }
                             if(obj != -1 && obj.length) {
                                 obj.children("a.jstree-loading").removeClass("jstree-loading");
-                                $.removeData(obj, "jstree-is-loading");
+                                obj.removeData("jstree-is-loading");
                                 if(t === "success" && s.correct_state) { this.correct_state(obj); }
                             }
                             else {
@@ -119,7 +119,7 @@
                             d = this._parse_json(d, obj);
                             if(d) {
                                 if(obj === -1 || !obj) { this.get_container().children("ul").empty().append(d.children()); }
-                                else { obj.append(d).children("a.jstree-loading").removeClass("jstree-loading"); $.removeData(obj, "jstree-is-loading"); }
+                                else { obj.append(d).children("a.jstree-loading").removeClass("jstree-loading"); obj.removeData("jstree-is-loading"); }
                                 this.clean_node(obj);
                                 if(s_call) { s_call.call(this); }
                             }
@@ -132,7 +132,7 @@
                                 }
                                 else {
                                     obj.children("a.jstree-loading").removeClass("jstree-loading");
-                                    $.removeData(obj, "jstree-is-loading");
+                                    obj.removeData("jstree-is-loading");
                                     if(s.correct_state) { 
                                         this.correct_state(obj);
                                         if(s_call) { s_call.call(this); } 

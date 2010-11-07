@@ -174,6 +174,8 @@
                         if($.vakata.dnd.is_drag && $.vakata.dnd.user_data.jstree) {
                             if(this.data.dnd.i1) { clearInterval(this.data.dnd.i1); }
                             if(this.data.dnd.i2) { clearInterval(this.data.dnd.i2); }
+                            if(this.data.dnd.to1) { clearTimeout(this.data.dnd.to1); }
+                            if(this.data.dnd.to2) { clearTimeout(this.data.dnd.to2); }
                             if($.vakata.dnd.helper.children("ins").hasClass("jstree-ok")) {
                                 $.vakata.dnd.helper.children("ins").attr("class","jstree-invalid");
                             }
@@ -350,7 +352,7 @@
         },
         defaults : {
             copy_modifier	: "ctrl",
-            check_timeout	: 200,
+            check_timeout	: 100,
             open_timeout	: 500,
             drop_target		: ".jstree-drop",
             drop_check		: function (data) { return true; },

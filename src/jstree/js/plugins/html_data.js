@@ -1,5 +1,5 @@
 /* 
- * jsTree HTML data 1.0
+ * jsTree HTML plugin
  * The HTML data store. Datastores are build by replacing the `load_node` and `_is_loaded` functions.
  */
 (function ($) {
@@ -38,14 +38,14 @@
                                 d = $(d);
                                 if(!d.is("ul")) { d = $("<ul />").append(d); }
                                 if(obj == -1 || !obj) { this.get_container().children("ul").empty().append(d.children()).find("li, a").filter(function () { return !this.firstChild || !this.firstChild.tagName || this.firstChild.tagName !== "INS"; }).prepend("<ins class='jstree-icon'>&#160;</ins>").end().filter("a").children("ins:first-child").not(".jstree-icon").addClass("jstree-icon"); }
-                                else { obj.children("a.jstree-loading").removeClass("jstree-loading"); obj.append(d).children("ul").find("li, a").filter(function () { return !this.firstChild || !this.firstChild.tagName || this.firstChild.tagName !== "INS"; }).prepend("<ins class='jstree-icon'>&#160;</ins>").end().filter("a").children("ins:first-child").not(".jstree-icon").addClass("jstree-icon"); $.removeData(obj, "jstree-is-loading"); }
+                                else { obj.children("a.jstree-loading").removeClass("jstree-loading"); obj.append(d).children("ul").find("li, a").filter(function () { return !this.firstChild || !this.firstChild.tagName || this.firstChild.tagName !== "INS"; }).prepend("<ins class='jstree-icon'>&#160;</ins>").end().filter("a").children("ins:first-child").not(".jstree-icon").addClass("jstree-icon"); obj.removeData("jstree-is-loading"); }
                                 this.clean_node(obj);
                                 if(s_call) { s_call.call(this); }
                             }
                             else {
                                 if(obj && obj !== -1) {
                                     obj.children("a.jstree-loading").removeClass("jstree-loading");
-                                    $.removeData(obj, "jstree-is-loading");
+                                    obj.removeData("jstree-is-loading");
                                     if(s.correct_state) { 
                                         this.correct_state(obj);
                                         if(s_call) { s_call.call(this); } 
@@ -90,7 +90,7 @@
                             if(ef) { ef.call(this, x, t, e); }
                             if(obj != -1 && obj.length) {
                                 obj.children("a.jstree-loading").removeClass("jstree-loading");
-                                $.removeData(obj, "jstree-is-loading");
+                                obj.removeData("jstree-is-loading");
                                 if(t === "success" && s.correct_state) { this.correct_state(obj); }
                             }
                             else {
@@ -108,14 +108,14 @@
                                 d = $(d);
                                 if(!d.is("ul")) { d = $("<ul />").append(d); }
                                 if(obj == -1 || !obj) { this.get_container().children("ul").empty().append(d.children()).find("li, a").filter(function () { return !this.firstChild || !this.firstChild.tagName || this.firstChild.tagName !== "INS"; }).prepend("<ins class='jstree-icon'>&#160;</ins>").end().filter("a").children("ins:first-child").not(".jstree-icon").addClass("jstree-icon"); }
-                                else { obj.children("a.jstree-loading").removeClass("jstree-loading"); obj.append(d).children("ul").find("li, a").filter(function () { return !this.firstChild || !this.firstChild.tagName || this.firstChild.tagName !== "INS"; }).prepend("<ins class='jstree-icon'>&#160;</ins>").end().filter("a").children("ins:first-child").not(".jstree-icon").addClass("jstree-icon"); $.removeData(obj, "jstree-is-loading"); }
+                                else { obj.children("a.jstree-loading").removeClass("jstree-loading"); obj.append(d).children("ul").find("li, a").filter(function () { return !this.firstChild || !this.firstChild.tagName || this.firstChild.tagName !== "INS"; }).prepend("<ins class='jstree-icon'>&#160;</ins>").end().filter("a").children("ins:first-child").not(".jstree-icon").addClass("jstree-icon"); obj.removeData("jstree-is-loading"); }
                                 this.clean_node(obj);
                                 if(s_call) { s_call.call(this); }
                             }
                             else {
                                 if(obj && obj !== -1) {
                                     obj.children("a.jstree-loading").removeClass("jstree-loading");
-                                    $.removeData(obj, "jstree-is-loading");
+                                    obj.removeData("jstree-is-loading");
                                     if(s.correct_state) { 
                                         this.correct_state(obj);
                                         if(s_call) { s_call.call(this); } 
