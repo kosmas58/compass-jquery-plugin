@@ -2755,6 +2755,12 @@ $.fn.grid = function(options){
 		//class used for "active" button state, from CSS framework
 		activeBtnClass: 'ui-btn-active',
 		
+		//automatically handle link clicks through Ajax, when possible
+		ajaxLinksEnabled: true,
+		
+		//automatically handle form submissions through Ajax, when possible
+		ajaxFormsEnabled: true,
+		
 		//available CSS transitions
 		transitions: ['slide', 'slideup', 'slidedown', 'pop', 'flip', 'fade'],
 		
@@ -2818,7 +2824,7 @@ $.fn.grid = function(options){
 		$pageContainer,
 		
 		//will be defined when a link is clicked and given an active class
-		activeClickedLink = null,
+		$activeClickedLink = null,
 		
 		//array of pages that are visited during a single page load
 		//length will grow as pages are visited, and shrink as "back" link/button is clicked
@@ -2891,6 +2897,8 @@ $.fn.grid = function(options){
 	
 	//for form submission
 	$('form').live('submit', function(){
+		if( !$.mobile.ajaxFormsEnabled ){ return; }
+		
 		var type = $(this).attr("method"),
 			url = $(this).attr( "action" ).replace( location.protocol + "//" + location.host, "");	
 		
@@ -2929,9 +2937,9 @@ $.fn.grid = function(options){
 			return false;
 		}
 		
-		activeClickedLink = $this.closest( ".ui-btn" ).addClass( $.mobile.activeBtnClass );
+		$activeClickedLink = $this.closest( ".ui-btn" ).addClass( $.mobile.activeBtnClass );
 		
-		if( external ){
+		if( external || !$.mobile.ajaxLinksEnabled ){
 			//deliberately redirect, in case click was triggered
 			location.href = href;
 		}
@@ -3003,10 +3011,10 @@ $.fn.grid = function(options){
 	
 	//remove active classes after page transition or error
 	function removeActiveLinkClass(forceRemoval){
-		if( !!activeClickedLink && (!activeClickedLink.closest( '.ui-page-active' ).length || forceRemoval )){
-			activeClickedLink.removeClass( $.mobile.activeBtnClass );
+		if( !!$activeClickedLink && (!$activeClickedLink.closest( '.ui-page-active' ).length || forceRemoval )){
+			$activeClickedLink.removeClass( $.mobile.activeBtnClass );
 		}
-		activeClickedLink = null;
+		$activeClickedLink = null;
 	}
 
 
@@ -3298,6 +3306,7 @@ $.fn.grid = function(options){
 		}
 	};	
 	
+	//TODO - add to jQuery.mobile, not $
 	jQuery.extend({
 		pageLoading: pageLoading,
 		changePage: changePage,
