@@ -1153,7 +1153,7 @@ jQuery.widget( "mobile.page", jQuery.mobile.widget, {
 
 		this.element
 			.find( "select:not([data-role='slider'])" )
-			.customSelect();
+			.selectmenu();
 	}
 });
 
@@ -1544,63 +1544,65 @@ $.widget( "mobile.textinput", $.mobile.widget, {
 * Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
 * Note: Code is in draft form and is subject to change 
 */  
-(function($){
-$.fn.customSelect = function(options){
-	return $(this).each(function(){	
-		var select = $(this)
+(function ( $ ) {
+$.widget( "mobile.selectmenu", $.mobile.widget, {
+	options: {
+		theme: undefined
+	},
+	_create: function(){
+		var select = this.element
 						.attr( "tabindex", "-1" )
 						.wrap( "<div class='ui-select'>" ),
+			self = this,			
 			selectID = select.attr( "id" ),
 			label = $( "label[for="+ selectID +"]" )
 						.addClass( "ui-select" ),
-				
-		//extendable options
-		o = $.extend({
-			chooseText: label.text(),
-			theme: select.data("theme")
-		}, options),
-
-		buttonId = selectID + "-button",
-		menuId = selectID + "-menu",
-		thisPage = select.closest( ".ui-page" ),
-		menuType,
-		currScroll,		
-		button = $( "<a>", { 
-				"href": "#",
-				"role": "button",
-				"id": buttonId,
-				"aria-haspopup": "true",
-				"aria-owns": menuId 
-			})
-			.text( $( this.options.item(this.selectedIndex) ).text() )
-			.insertBefore( select )
-			.buttonMarkup({
-				iconpos: 'right',
-				icon: 'arrow-d',
-				theme: o.theme
-			}),
-		menuPage = $( "<div data-role='dialog' data-theme='a'>" +
-					"<div data-role='header' data-theme='b'>" +
-						"<div class='ui-title'>" + o.chooseText + "</div>"+
-					"</div>"+
-					"<div data-role='content'></div>"+
-				"</div>" )
-				.appendTo( $.pageContainer )
-				.page(),	
-		menuPageContent = menuPage.find( ".ui-content" ),			
-		screen = $( "<div>", {
-						"class": "ui-listbox-screen ui-overlay ui-screen-hidden fade"
+			chooseText = label.text(),
+			buttonId = selectID + "-button",
+			menuId = selectID + "-menu",
+			thisPage = select.closest( ".ui-page" ),
+			menuType,
+			currScroll,		
+			button = $( "<a>", { 
+					"href": "#",
+					"role": "button",
+					"id": buttonId,
+					"aria-haspopup": "true",
+					"aria-owns": menuId 
 				})
-				.appendTo( thisPage ),					
-		listbox = $( "<div>", { "class": "ui-listbox ui-listbox-hidden ui-body-a ui-overlay-shadow ui-corner-all pop"} )
-				.insertAfter(screen),
-		list = $( "<ul>", { 
-				"class": "ui-listbox-list", 
-				"id": menuId, 
-				"role": "listbox", 
-				"aria-labelledby": buttonId
-			})
-			.appendTo( listbox );
+				.text( $( select[0].options.item(select[0].selectedIndex) ).text() )
+				.insertBefore( select )
+				.buttonMarkup({
+					iconpos: 'right',
+					icon: 'arrow-d',
+					theme: this.options.theme
+				}),
+				
+			theme = /ui-btn-up-([a-z])/.exec( button.attr("class") )[1],
+				
+			menuPage = $( "<div data-role='dialog' data-theme='"+ theme +"'>" +
+						"<div data-role='header'>" +
+							"<div class='ui-title'>" + chooseText + "</div>"+
+						"</div>"+
+						"<div data-role='content'></div>"+
+					"</div>" )
+					.appendTo( $.pageContainer )
+					.page(),	
+			menuPageContent = menuPage.find( ".ui-content" ),			
+			screen = $( "<div>", {
+							"class": "ui-listbox-screen ui-overlay ui-screen-hidden fade"
+					})
+					.appendTo( thisPage ),					
+			listbox = $( "<div>", { "class": "ui-listbox ui-listbox-hidden ui-overlay-shadow ui-corner-all pop ui-body-" + theme } )
+					.insertAfter(screen),
+			list = $( "<ul>", { 
+					"class": "ui-listbox-list", 
+					"id": menuId, 
+					"role": "listbox", 
+					"aria-labelledby": buttonId,
+					"data-theme": theme
+				})
+				.appendTo( listbox );
 			
 		//populate menu
 		select.find( "option" ).each(function( i ){
@@ -1681,8 +1683,7 @@ $.fn.customSelect = function(options){
 		//select properties,events
 		select
 			.change(function(){ 
-				var $el = select.get(0);
-				button.find( ".ui-btn-text" ).text( $($el.options.item($el.selectedIndex)).text() ); 
+				self.refresh();
 			})
 			.focus(function(){
 				$(this).blur();
@@ -1732,10 +1733,25 @@ $.fn.customSelect = function(options){
 			hidemenu();
 			return false;
 		});	
-	});
-};
-
-})(jQuery);
+	},
+	
+	refresh: function(){
+		var select = this.element;
+		select.prev().find( ".ui-btn-text" ).text( $(select[0].options.item(select[0].selectedIndex)).text() ); 
+		//TODO - refresh should populate the menu with new options from the select
+	},
+	
+	disable: function(){
+		this.element.attr("disabled",true);
+		this.element.prev('a').addClass('ui-disabled');
+	},
+	
+	enable: function(){
+		this.element.attr("disabled",false);
+		this.element.prev('a').removeClass('ui-disabled');
+	}
+});
+})( jQuery );
 	
 
 
@@ -2645,6 +2661,9 @@ $.widget( "mobile.dialog", $.mobile.widget, {
 			.addClass('ui-corner-top ui-overlay-shadow')
 				.prepend( $closeBtn )
 			.end()
+			.find('.ui-content:not([class*="ui-body-"])')
+				.addClass('ui-body-c')
+			.end()	
 			.find('.ui-content,[data-role=footer]')
 				.last()
 				.addClass('ui-corner-bottom ui-overlay-shadow');
@@ -2737,8 +2756,8 @@ $.fn.grid = function(options){
 
 (function( $, window, undefined ) {
 	
-	//jQuery.mobile obj extendable options
-	jQuery.mobile = jQuery.extend({
+	//jQuery.mobile configurable options
+	jQuery.mobile = {
 		
 		//define the url parameter used for referencing widget-generated sub-pages. 
 		//Translates to to example.html&ui-page=subpageIdentifier
@@ -2781,8 +2800,10 @@ $.fn.grid = function(options){
 		gradeA: function(){
 			return jQuery.support.mediaquery;
 		}
-		
-	}, jQuery.mobile );
+	};
+	
+	//trigger mobileinit event - useful hook for configuring $.mobile settings before they're used
+	$( window.document ).trigger('mobileinit');
 	
 	//if device support condition(s) aren't met, leave things as they are -> a basic, usable experience,
 	//otherwise, proceed with the enhancements
@@ -2808,13 +2829,13 @@ $.fn.grid = function(options){
 			: undefined,
 			
 		//define meta viewport tag, if content is defined	
-		$metaViewport = $.mobile.metaViewportContent ? $("<meta>", { name: "viewport", content: $.mobile.metaViewportContent}) : undefined,
+		$metaViewport = $.mobile.metaViewportContent ? $("<meta>", { name: "viewport", content: $.mobile.metaViewportContent}).prependTo( $head ) : undefined,
 		
 		//define baseUrl for use in relative url management
 		baseUrl = getPathDir( location.protocol + '//' + location.host + location.pathname ),
 		
 		//define base element, for use in routing asset urls that are referenced in Ajax-requested markup
-		$base = $.support.dynamicBaseTag ? $("<base>", { href: baseUrl }) : undefined,
+		$base = $.support.dynamicBaseTag ? $("<base>", { href: baseUrl }).prependTo( $head ) : undefined,
 		
 		//will be defined as first page element in DOM
 		$startPage,
@@ -2846,10 +2867,12 @@ $.fn.grid = function(options){
 		
 		//media-query-like width breakpoints, which are translated to classes on the html element 
 		resolutionBreakpoints = [320,480,768,1024];
-		
+	
+	//add mobile, initial load "rendering" classes to docEl
+	$html.addClass('ui-mobile ui-mobile-rendering');	
 		
 	//prepend head markup additions
-	$head.prepend( $.mobile.headExtras || {}, $metaViewport || {}, $base || {} );
+	if( $.mobile.headExtras ){ $head.prepend( $.mobile.headExtras ); }
 
 	// TODO: don't expose (temporary during code reorg)
 	$.mobile.urlStack = urlStack;
@@ -2896,7 +2919,7 @@ $.fn.grid = function(options){
     resetBaseURL(); 
 	
 	//for form submission
-	$('form').live('submit', function(){
+	$('form').live('submit', function(event){
 		if( !$.mobile.ajaxFormsEnabled ){ return; }
 		
 		var type = $(this).attr("method"),
@@ -2921,7 +2944,7 @@ $.fn.grid = function(options){
 			undefined,
 			true
 		);
-		return false;
+		event.preventDefault();
 	});	
 	
 	//click routing - direct to HTTP or Ajax, accordingly
@@ -3059,7 +3082,7 @@ $.fn.grid = function(options){
 		function transitionPages() {
 				
 			//kill the keyboard
-			jQuery( document.activeElement ).blur();
+			jQuery( window.document.activeElement ).blur();
 			
 			//trigger before show/hide events
 			from.data("page")._trigger("beforehide", {nextPage: to});
@@ -3084,7 +3107,7 @@ $.fn.grid = function(options){
 				}
 			}
 			
-			if(transition){		
+			if(transition && (transition !== 'none')){		
 				$pageContainer.addClass('ui-mobile-viewport-transitioning');
 				// animate in / out
 				from.addClass( transition + " out " + ( back ? "reverse" : "" ) );
@@ -3243,9 +3266,6 @@ $.fn.grid = function(options){
 		});
 	});	
 	
-	//add mobile, loading classes to doc
-	$html.addClass('ui-mobile');
-	
 	//add orientation class on flip/resize.
 	$window.bind( "orientationchange.htmlclass", function( event ) {
 		$html.removeClass( "portrait landscape" ).addClass( event.orientation );
@@ -3334,6 +3354,9 @@ $.fn.grid = function(options){
 		
 		//update orientation 
 		$window.trigger( "orientationchange.htmlclass" );
+		
+		//remove rendering class
+		$html.removeClass('ui-mobile-rendering');
 	});
 	
 	$window
