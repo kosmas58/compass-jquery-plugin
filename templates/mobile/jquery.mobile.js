@@ -262,6 +262,12 @@ $.Widget.prototype = {
 })( jQuery );
 
 
+/*
+* jQuery Mobile Framework : widget factory extentions for mobile
+* Copyright (c) jQuery Project
+* Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
+* Note: Code is in draft form and is subject to change 
+*/
 (function( $ ) {
 
 $.widget( "mobile.widget", {
@@ -283,6 +289,12 @@ $.widget( "mobile.widget", {
 })( jQuery );
 
 
+/*
+* jQuery Mobile Framework : support tests
+* Copyright (c) jQuery Project
+* Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
+* Note: Code is in draft form and is subject to change 
+*/
 (function( $ ) {
 
 // test whether a CSS media type or query applies
@@ -986,6 +998,12 @@ $.each({
 })(jQuery,this);
 
 
+/*
+* jQuery Mobile Framework : "page" plugin
+* Copyright (c) jQuery Project
+* Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
+* Note: Code is in draft form and is subject to change 
+*/
 (function ( jQuery ) {
 
 jQuery.widget( "mobile.page", jQuery.mobile.widget, {
@@ -1161,7 +1179,7 @@ jQuery.widget( "mobile.page", jQuery.mobile.widget, {
 
 
 /*
-* jQuery Mobile Framework : prototype for "fixHeaderFooter" plugin - on-demand positioning for headers,footers
+* jQuery Mobile Framework : "fixHeaderFooter" plugin - on-demand positioning for headers,footers
 * Copyright (c) jQuery Project
 * Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
 * Note: Code is in draft form and is subject to change 
@@ -1329,7 +1347,7 @@ $.fixedToolbars = (function(){
 })(jQuery);
 
 /*
-* jQuery Mobile Framework : "customCheckboxRadio" plugin (based on code from Filament Group,Inc)
+* jQuery Mobile Framework : "checkboxradio" plugin
 * Copyright (c) jQuery Project
 * Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
 * Note: Code is in draft form and is subject to change 
@@ -1440,7 +1458,7 @@ $.widget( "mobile.checkboxradio", $.mobile.widget, {
 
 
 /*
-* jQuery Mobile Framework : "textinput" plugin for text inputs, textareas (based on code from Filament Group,Inc)
+* jQuery Mobile Framework : "textinput" plugin for text inputs, textareas
 * Copyright (c) jQuery Project
 * Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
 * Note: Code is in draft form and is subject to change 
@@ -1539,7 +1557,7 @@ $.widget( "mobile.textinput", $.mobile.widget, {
 
 
 /*
-* jQuery Mobile Framework : "customSelect" plugin (based on code from Filament Group,Inc)
+* jQuery Mobile Framework : "selectmenu" plugin
 * Copyright (c) jQuery Project
 * Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
 * Note: Code is in draft form and is subject to change 
@@ -1756,7 +1774,7 @@ $.widget( "mobile.selectmenu", $.mobile.widget, {
 
 
 /*
-* jQuery Mobile Framework : sample plugin for making button-like links
+* jQuery Mobile Framework : plugin for making button-like links
 * Copyright (c) jQuery Project
 * Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
 * Note: Code is in draft form and is subject to change 
@@ -1865,7 +1883,7 @@ var attachEvents = function() {
 
 
 /*
-* jQuery Mobile Framework : sample plugin for making button links that proxy to native input/buttons
+* jQuery Mobile Framework : "button" plugin - links that proxy to native input/buttons
 * Copyright (c) jQuery Project
 * Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
 * Note: Code is in draft form and is subject to change 
@@ -1912,21 +1930,25 @@ $.widget( "mobile.button", $.mobile.widget, {
 })( jQuery );
 
 /*
-* jQuery Mobile Framework : "slider" plugin (based on code from Filament Group,Inc)
+* jQuery Mobile Framework : "slider" plugin
 * Copyright (c) jQuery Project
 * Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
 * Note: Code is in draft form and is subject to change 
 */  
-(function($){
-$.fn.slider = function(options){
-	return this.each(function(){	
-		var control = $(this),
-			themedParent = control.parents('[class*=ui-bar-],[class*=ui-body-]').eq(0),
+(function ( $ ) {
+$.widget( "mobile.slider", $.mobile.widget, {
+	options: {
+		theme: undefined,
+		trackTheme: undefined
+	},
+	_create: function(){	
+		var control = this.element,
+			themedParent = control.parents('[class*=ui-bar-],[class*=ui-body-]').eq(0),			
 			
 			o = $.extend({
-				trackTheme: (themedParent.length ? themedParent.attr('class').match(/ui-(bar|body)-([a-z])/)[2] : 'c'),
-				theme: control.data("theme") || (themedParent.length ? themedParent.attr('class').match(/ui-(bar|body)-([a-z])/)[2] : 'c')
-			},options),
+				trackTheme: themedParent.length ? themedParent.attr('class').match(/ui-(bar|body)-([a-z])/)[2] : 'c',
+				theme: themedParent.length ? themedParent.attr('class').match(/ui-(bar|body)-([a-z])/)[2] : 'c'
+			},this.options),
 			
 			cType = control[0].nodeName.toLowerCase(),
 			selectClass = (cType == 'select') ? 'ui-slider-switch' : '',
@@ -2037,6 +2059,13 @@ $.fn.slider = function(options){
 			.keyup(function(e){
 				slideUpdate(e, $(this).val() );
 			});
+			
+		$(document).bind($.support.touch ? "touchmove" : "mousemove", function(event){
+			if(dragging){
+				slideUpdate(event);
+				return false;
+			}
+		});
 					
 		slider
 			.bind($.support.touch ? "touchstart" : "mousedown", function(event){
@@ -2046,36 +2075,38 @@ $.fn.slider = function(options){
 				}
 				slideUpdate(event);
 				return false;
-			})
-			.bind($.support.touch ? "touchmove" : "mousemove", function(event){
-				slideUpdate(event);
-				return false;
-			})
+			});
+			
+		slider
+			.add(document)	
 			.bind($.support.touch ? "touchend" : "mouseup", function(event){
-				dragging = false;
-				if(cType == 'select'){
-					if(val == control[0].selectedIndex){
-						val = val == 0 ? 1 : 0;
-						//tap occurred, but value didn't change. flip it!
-						slideUpdate(event,val);
+				if(dragging){
+					dragging = false;
+					if(cType == 'select'){
+						if(val == control[0].selectedIndex){
+							val = val == 0 ? 1 : 0;
+							//tap occurred, but value didn't change. flip it!
+							slideUpdate(event,val);
+						}
+						updateSnap();
 					}
-					updateSnap();
+					return false;
 				}
-				return false;
-			})
-			.insertAfter(control);
+			});
+			
+		slider.insertAfter(control);	
 		
 		handle
 			.css('left', percent + '%')
 			.bind('click', function(e){ return false; });	
-	});
-};
-})(jQuery);
+	}
+});
+})( jQuery );
 	
 
 
 /*
-* jQuery Mobile Framework : "collapsible" plugin (based on code from Filament Group,Inc)
+* jQuery Mobile Framework : "collapsible" plugin
 * Copyright (c) jQuery Project
 * Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
 * Note: Code is in draft form and is subject to change 
@@ -2223,7 +2254,7 @@ $.widget( "mobile.collapsible", $.mobile.widget, {
 })( jQuery );
 
 /*
-* jQuery Mobile Framework : prototype for "controlgroup" plugin - corner-rounding for groups of buttons, checks, radios, etc
+* jQuery Mobile Framework: "controlgroup" plugin - corner-rounding for groups of buttons, checks, radios, etc
 * Copyright (c) jQuery Project
 * Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
 * Note: Code is in draft form and is subject to change 
@@ -2266,7 +2297,7 @@ $.fn.controlgroup = function(options){
 })(jQuery);
 
 /*
-* jQuery Mobile Framework : prototype for "fieldcontain" plugin - simple class additions to make form row separators
+* jQuery Mobile Framework : "fieldcontain" plugin - simple class additions to make form row separators
 * Copyright (c) jQuery Project
 * Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
 * Note: Code is in draft form and is subject to change 
@@ -2281,7 +2312,7 @@ $.fn.fieldcontain = function(options){
 })(jQuery);
 
 /*
-* jQuery Mobile Framework : listview plugin
+* jQuery Mobile Framework : "listview" plugin
 * Copyright (c) jQuery Project
 * Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
 * Note: Code is in draft form and is subject to change 
@@ -2619,7 +2650,7 @@ $( "[data-role='listview']" ).live( "listviewcreate", function() {
 				//listview._numberItems();
 			})
 			.appendTo( wrapper )
-			.customTextInput();
+			.textinput();
 	
 	wrapper.insertBefore( list );
 });
@@ -2628,7 +2659,7 @@ $( "[data-role='listview']" ).live( "listviewcreate", function() {
 
 
 /*
-* jQuery Mobile Framework : prototype for "dialog" plugin.
+* jQuery Mobile Framework : "dialog" plugin.
 * Copyright (c) jQuery Project
 * Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
 * Note: Code is in draft form and is subject to change 
@@ -2639,8 +2670,9 @@ $.widget( "mobile.dialog", $.mobile.widget, {
 	_create: function(){	
 		var self = this,
 			$el = self.element,
+			$prevPage = $.activePage,
 			$closeBtn = $('<a href="#" data-icon="delete" data-iconpos="notext">Close</a>');
-			
+	
 		$el.delegate("a, submit", "click submit", function(e){
 			if( e.type == "click" && ( $(e.target).closest('[data-back]') || $(e.target).closest($closeBtn) ) ){
 				self.close();
@@ -2667,16 +2699,26 @@ $.widget( "mobile.dialog", $.mobile.widget, {
 			.find('.ui-content,[data-role=footer]')
 				.last()
 				.addClass('ui-corner-bottom ui-overlay-shadow');
+		
+		$(window).bind('hashchange',function(){
+			if( $el.is('.ui-page-active') ){
+				self.close();
+				$el.bind('pagehide',function(){
+					$.mobile.updateHash( $prevPage.attr('id'), true);
+				});
+			}
+		});		
 
 	},
+	
 	close: function(){
-		$.changePage([this.element, $.activePage], undefined, true );
+		$.changePage([this.element, $.activePage], undefined, true, true );
 	}
 });
 })( jQuery );
 
 /*
-* jQuery Mobile Framework : prototype for "navbar" plugin
+* jQuery Mobile Framework : "navbar" plugin
 * Copyright (c) jQuery Project
 * Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
 * Note: Code is in draft form and is subject to change 
@@ -2716,7 +2758,7 @@ $.widget( "mobile.navbar", $.mobile.widget, {
 })( jQuery );
 
 /*
-* jQuery Mobile Framework : plugin for creating grids
+* jQuery Mobile Framework : plugin for creating CSS grids
 * Copyright (c) jQuery Project
 * Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
 * Note: Code is in draft form and is subject to change 
@@ -2764,9 +2806,9 @@ $.fn.grid = function(options){
 		//hash segment before &ui-page= is used to make Ajax request
 		subPageUrlKey: 'ui-page',
 		
-		//anchor links that match these selectors will be untrackable in history 
+		//anchor links with a data-rel, or pages with a data-role, that match these selectors will be untrackable in history 
 		//(no change in URL, not bookmarkable)
-		nonHistorySelectors: '[data-rel=dialog]',
+		nonHistorySelectors: 'dialog',
 		
 		//class assigned to page currently in view, and during transitions
 		activePageClass: 'ui-page-active',
@@ -2783,7 +2825,7 @@ $.fn.grid = function(options){
 		//available CSS transitions
 		transitions: ['slide', 'slideup', 'slidedown', 'pop', 'flip', 'fade'],
 		
-		//set default transition
+		//set default transition - 'none' for no transitions
 		defaultTransition: 'slide',
 		
 		//show loading message during Ajax requests
@@ -2970,7 +3012,7 @@ $.fn.grid = function(options){
 			//use ajax
 			var transition = $this.data( "transition" ),
 				back = $this.data( "back" ),
-				changeHashOnSuccess = !$this.is( $.mobile.nonHistorySelectors );
+				changeHashOnSuccess = !$this.is( "[data-rel="+ $.mobile.nonHistorySelectors +"]" );
 				
 			nextPageRole = $this.attr( "data-rel" );	
 	
@@ -3018,6 +3060,12 @@ $.fn.grid = function(options){
 		}
 	}
 	
+	//update hash, with or without triggering hashchange event
+	$.mobile.updateHash = function(url, disableListening){
+		if(disableListening) { hashListener = false; }
+		location.hash = url;
+	}
+
 	//wrap page and transfer data-attrs if it has an ID
 	function wrapNewPage( newPage ){
 		var copyAttrs = ['data-role', 'data-theme', 'data-fullscreen'], //TODO: more page-level attrs?
@@ -3096,8 +3144,7 @@ $.fn.grid = function(options){
 				}
 				reFocus( to );
 				if( changeHash && url ){
-					hashListener = false;
-					location.hash = url;
+					$.mobile.updateHash(url, true);
 				}
 				removeActiveLinkClass();
 				
@@ -3238,6 +3285,11 @@ $.fn.grid = function(options){
 				hashListener = true;
 				return; 
 			} 
+			
+			if( $(".ui-page-active").is("[data-role=" + $.mobile.nonHistorySelectors + "]") ){
+				return;
+			}
+			
 			var to = location.hash,
 				transition = triggered ? false : undefined;
 				
