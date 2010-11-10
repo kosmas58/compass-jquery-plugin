@@ -8,13 +8,11 @@ h2. Description
 
 A Sass-based Meta-Framework for Compass that allows you to mix and match any of the following:
 
-* jRails with jQuery 1.4.4.rc2 and jQuery.UI 1.8.6 including themes
+* jRails with jQuery 1.4.3 and jQuery.UI 1.8.6 including themes
 * jQuery Tools 1.2.5
 * jquery.jstree.js V1.0rc3
 * jquery.dynatree.js V0.5.4
 * jquery.ribbon.js
-* jquery.jqGrid.js V3.8.1 (with minor changes to make in RESTful)
-* jquery.mobile.js 1.0a1
 * jquery.jqtouch.js V1.0b2
 
 This library requires <b>"Compass":http://wiki.github.com/chriseppstein/compass</b>.
@@ -105,38 +103,6 @@ To use the localized stylesheets and javacripts include:
 = stylesheet_link_tag 'compiled/jquery/ribbon/[theme].css', :media => 'screen, projection'
 = javascript_include_tag :ribbon</pre>
 
-h3. jqGrid
-
-Use compass to install the jqGrid javascript library into your project.
-
-<pre>compass install [-r jquery] jquery/jqgrid <project name></pre>
-
-You will find the jqGrid stylesheet in easy-to-read Sass format at:
-
-<pre>stylesheets/jquery.ui</pre>
-
-To use the localized stylesheets and javacripts include:
-
-<pre>
-= stylesheet_link_tag 'compiled/jquery/jqGrid.css', :media => 'screen, projection'
-= raw jqgrid_javascripts(I18n.locale)</pre>
-
-h3. Secret Sauce
-
-Use compass to install the Secret Sauce for jqGrid javascript library into your project.
-
-<pre>compass install [-r jquery] jquery/secret_sauce <project name></pre>
-
-You will find all the stylesheets in easy-to-read Sass format.
-
-<pre>stylesheets/jquery.ui</pre>
-
-To use the localized stylesheets and javacripts include:
-
-<pre>
-= stylesheet_link_tag 'compiled/jquery/secret_sauce.css', :media => 'screen, projection'
-= javascript_include_tag :secret_sauce</pre>
-
 h3. jquery.ical
 
 Use compass to install the jquery.ical javascript library into your project.
@@ -168,23 +134,6 @@ To use the localized stylesheets and javacripts include:
 <pre>
 = stylesheet_link_tag 'compiled/emulators/ipad.landscape.css', :media => 'screen, projection'
 = stylesheet_link_tag 'compiled/emulators/iphone.portrait.css', :media => 'screen, projection'</pre>
-
-h3. jQuery mobile
-
-Use compass to install the jQuery mobile javascript library and themes into your project.
-
-<pre>compass install [-r jquery] jquery/mobile <project name></pre>
-
-You will find all the stylesheets in easy-to-read Sass format at:
-
-<pre>stylesheets/mobile</pre>
-
-To use the localized stylesheets and javacripts include:
-
-<pre>
-= stylesheet_link_tag "compiled/jquery/mobile/[theme].css", :media => 'screen, projection'
-= javascript_include_tag :mobile'</pre>
-
 
 h3. jQTouch
 
