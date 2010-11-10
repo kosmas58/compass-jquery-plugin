@@ -35,41 +35,41 @@ FLASH_DEST_IMAGES = File.join(JRAILS_DEST_IMAGES, 'flash_messages')
 
 namespace :build do
   desc 'Build the stylesheets and templates for jRails.'
-  task :jrails do    
-    
-    FileUtils.remove_dir JRAILS_DEST_TEMPLATES if File.exists? JRAILS_DEST_TEMPLATES 
+  task :jrails do
+
+    FileUtils.remove_dir JRAILS_DEST_TEMPLATES if File.exists? JRAILS_DEST_TEMPLATES
     FileUtils.mkdir_p(File.join(JRAILS_DEST_TEMPLATES, 'config', 'initializers'))
     FileUtils.mkdir_p(File.join(JRAILS_DEST_TEMPLATES, 'lib', 'tasks'))
     FileUtils.mkdir_p(File.join(JRAILS_DEST_THEMES))
-    
+
     open File.join(JRAILS_DEST_TEMPLATES, 'manifest.rb'), 'w' do |manifest|
-      
+
       # jRails
       manifest.print JRAILS_MESSAGE1
-      
+
       open File.join(JRAILS_DEST_TEMPLATES, 'config', 'initializers', 'jrails.rb'), 'w' do |f|
         f.print(File.read(File.join(JRAILS_SRC, 'config', 'initializers', 'jrails.rb')))
       end
-      manifest.print "file 'config/initializers/jrails.rb'\n" 
-      
+      manifest.print "file 'config/initializers/jrails.rb'\n"
+
       manifest.print "file 'lib/tasks/haml.rake'\n"
       open File.join(JRAILS_DEST_TEMPLATES, 'lib', 'tasks', 'haml.rake'), 'w' do |f|
         f.print(File.read(File.join(SRC, 'lib', 'tasks', 'haml.rake')))
       end
       manifest.print "file 'lib/tasks/haml.rake'\n"
-    
+
       open File.join(JRAILS_DEST_TEMPLATES, 'jrails.js'), 'w' do |f|
         f.print concat_files(all_files(JRAILS_SRC_SCRIPTS))
       end
-      manifest.print "javascript 'jrails.js'\n" 
-    
+      manifest.print "javascript 'jrails.js'\n"
+
       open File.join(JRAILS_DEST_TEMPLATES, 'jrails.min.js'), 'w' do |f|
         f.print compress_js(all_files(JRAILS_SRC_SCRIPTS), "google")
       end
-      manifest.print "javascript 'jrails.min.js'\n" 
-   
+      manifest.print "javascript 'jrails.min.js'\n"
+
       # jQuery 1.4
-      
+
       all_jquery_scripts = [
         'intro.js',
         'core.js',
@@ -88,19 +88,19 @@ namespace :build do
         'dimensions.js',
         'outro.js'
       ].collect {|filename| File.read(File.join(JQUERY_SRC, 'js', filename))}.join "\n\n"
-      
-      open File.join(JRAILS_DEST_TEMPLATES, 'jquery-1.4.4.js'), 'w' do |f|
+
+      open File.join(JRAILS_DEST_TEMPLATES, 'jquery.js'), 'w' do |f|
         f.print concat_files(all_jquery_scripts)
       end
-      manifest.print "javascript 'jquery-1.4.4.js'\n" 
-    
-      open File.join(JRAILS_DEST_TEMPLATES, 'jquery-1.4.4.min.js'), 'w' do |f|
+      manifest.print "javascript 'jquery.js'\n"
+
+      open File.join(JRAILS_DEST_TEMPLATES, 'jquery.min.js'), 'w' do |f|
         f.print compress_js(all_jquery_scripts, "google")
       end
-      manifest.print "javascript 'jquery-1.4.4.min.js'\n"
+      manifest.print "javascript 'jquery.min.js'\n"
 
       # jQuery 1.4 Compat 1.3
-      
+
       ['compat-1.3'].each do |path|
         Dir.foreach File.join(JQUERY_SRC, path) do |file|
           next unless /\.js$/ =~ file
@@ -108,20 +108,20 @@ namespace :build do
           manifest.print "javascript '#{file}'\n"
           open File.join(JRAILS_DEST_TEMPLATES, file), 'w' do |f|
             f.write js
-          end               
+          end
           file.gsub!(/\.js$/, '.min.js')
           manifest.print "javascript '#{file}'\n"
           open File.join(JRAILS_DEST_TEMPLATES, file), 'w' do |f|
             f.write compress_js(js, "google")
           end
         end
-      end   
-      
+      end
+
       # jQuery 1.4 Plugins
-      
+
       ['plugins'].each do |path|
         Dir.foreach File.join(JQUERY_SRC, path) do |file|
-                    
+
           if /\.css$/ =~ file
             css = File.read File.join(JQUERY_SRC, path, file)
             sass = ''
@@ -131,41 +131,41 @@ namespace :build do
               f.write sass
             end
             manifest.print "stylesheet 'jquery/ui/#{file}'\n"
-          end     
-          
+          end
+
           next unless /\.js$/ =~ file
           js = File.read File.join(JQUERY_SRC, path, file)
           manifest.print "javascript '#{file}'\n"
           open File.join(JRAILS_DEST_TEMPLATES, file), 'w' do |f|
             f.write js
-          end               
+          end
           file.gsub!(/\.js$/, '.min.js')
           manifest.print "javascript '#{file}'\n"
           open File.join(JRAILS_DEST_TEMPLATES, file), 'w' do |f|
             f.write compress_js(js, "google")
           end
         end
-      end     
-      
+      end
+
       Dir.foreach File.join(JQUERY_SRC, 'plugins', 'images')  do |plugin|
         next if /^\./ =~ plugin
-  
+
         # Copy the theme images directory
         src_dir = File.join(JQUERY_SRC, 'plugins', 'images', plugin)
         dest_dir = File.join(JRAILS_DEST_IMAGES, plugin)
         FileUtils.mkdir_p dest_dir
-        
+
         Dir.foreach(src_dir) do |image|
           next if /^\./ =~ image
-          FileUtils.cp(File.join(src_dir, image), dest_dir)    
+          FileUtils.cp(File.join(src_dir, image), dest_dir)
           manifest.print "image 'jquery/ui/#{plugin}/#{image}'\n"
         end
-      end      
-    
+      end
+
       # jQuery.UI 1.8.6
-    
+
       # Scripts
-      
+
       all_jquery_ui_scripts = [
         'jquery-ui.js',
         'jquery.effects.blind.js',
@@ -202,30 +202,30 @@ namespace :build do
         'jquery.ui.tabs.js',
         'jquery.ui.widget.js'
       ].collect {|filename| File.read(File.join(JQUERY_UI_SRC, 'js', filename))}.join "\n\n"
-      
-      open File.join(JRAILS_DEST_TEMPLATES, 'jquery-ui-1.8.6.js'), 'w' do |f|
+
+      open File.join(JRAILS_DEST_TEMPLATES, 'jquery-ui.js'), 'w' do |f|
         f.print concat_files(all_jquery_ui_scripts)
       end
-      manifest.print "javascript 'jquery-ui-1.8.6.js'\n"
-    
-      open File.join(JRAILS_DEST_TEMPLATES, 'jquery-ui-1.8.6.min.js'), 'w' do |f|
+      manifest.print "javascript 'jquery-ui.js'\n"
+
+      open File.join(JRAILS_DEST_TEMPLATES, 'jquery-ui.min.js'), 'w' do |f|
         f.print compress_js(all_jquery_ui_scripts, "google")
       end
-      manifest.print "javascript 'jquery-ui-1.8.6.min.js'\n"
-      
+      manifest.print "javascript 'jquery-ui.min.js'\n"
+
       # jQuery UI locales
-  
+
       ['i18n'].each do |path|
         FileUtils.mkdir_p(JRAILS_DEST_TRANSLATIONS)
         Dir.foreach JQUERY_UI_SRC_TRANSLATIONS do |file|
           next unless /^jquery.ui\.datepicker-(.+)\.js$/ =~ file
           lang = file
           js = File.read File.join(JQUERY_UI_SRC_TRANSLATIONS, file)
-          file.gsub!(/^jquery.ui\./,'')          
+          file.gsub!(/^jquery.ui\./,'')
           manifest.print "javascript '#{File.join(path, 'jquery.ui', file)}'\n"
           open File.join(JRAILS_DEST_TRANSLATIONS, file), 'w' do |f|
             f.write js
-          end               
+          end
           file.gsub!(/\.js$/, '.min.js')
           manifest.print "javascript '#{File.join(path, 'jquery.ui', file)}'\n"
           open File.join(JRAILS_DEST_TRANSLATIONS, file), 'w' do |f|
@@ -235,10 +235,10 @@ namespace :build do
       end
 
       # jQuery UI Themes
-      
-      ui = JqueryUiTheme.new(File.join(JQUERY_UI_SRC_THEMES, 'base')) 
+
+      ui = JqueryUiTheme.new(File.join(JQUERY_UI_SRC_THEMES, 'base'))
       ui.convert_css(File.join(JRAILS_DEST_THEMES, '_partials'))
-       
+
       all_jquery_ui_stylesheets = [
         '_core.scss',
         '_accordion.scss',
@@ -254,82 +254,82 @@ namespace :build do
         '_slider.scss',
         '_tabs.scss',
         '_theme.scss'
-        ].collect {|filename| File.read(File.join(JRAILS_DEST_THEMES, '_partials', filename))}.join "\n\n"  
-                
+        ].collect {|filename| File.read(File.join(JRAILS_DEST_THEMES, '_partials', filename))}.join "\n\n"
+
       open File.join(JRAILS_DEST_THEMES, '_theme.scss'), 'w' do |f|
         sass = JRAILS_MESSAGE2
         f.print(all_jquery_ui_stylesheets)
         f.print sass
         FileUtils.rm_r(File.join(JRAILS_DEST_THEMES, '_partials'))
-      end 
-      
-      manifest.print "stylesheet 'jquery/ui/_theme.scss'\n" 
-      
+      end
+
+      manifest.print "stylesheet 'jquery/ui/_theme.scss'\n"
+
       Dir.foreach JQUERY_UI_SRC_THEMES do |theme|
         next if /^\./ =~ theme
-  
+
         # Convert the stylesheet
         manifest.print "stylesheet 'jquery/ui/#{theme}.scss'\n"
         ui.convert_theme(theme, File.join(JQUERY_UI_SRC_THEMES, theme), File.join(JRAILS_DEST_THEMES))
-  
+
         # Copy the theme images directory
         src_dir = File.join(JQUERY_UI_SRC_THEMES, theme, 'images')
         dest_dir = File.join(JRAILS_DEST_IMAGES, theme)
         FileUtils.mkdir_p dest_dir
-                
+
         Dir.foreach(src_dir) do |image|
           next if /^\./ =~ image
-          FileUtils.cp(File.join(src_dir, image), dest_dir)    
+          FileUtils.cp(File.join(src_dir, image), dest_dir)
           manifest.print "image 'jquery/ui/#{theme}/#{image}'\n"
-        end     
+        end
       end
-      
+
       # jQuery Sparklines
-     
+
       open File.join(JRAILS_DEST_TEMPLATES, 'jquery.sparkline.js'), 'w' do |f|
         f.print concat_files(all_files(SPARKLINES_SRC_SCRIPTS))
       end
-      manifest.print "javascript 'jquery.sparkline.js'\n" 
-    
+      manifest.print "javascript 'jquery.sparkline.js'\n"
+
       open File.join(JRAILS_DEST_TEMPLATES, 'jquery.sparkline.min.js'), 'w' do |f|
         f.print compress_js(all_files(SPARKLINES_SRC_SCRIPTS), "google")
       end
       manifest.print "javascript 'jquery.sparkline.min.js'\n"
-      
+
       # jQuery haml
-     
+
       open File.join(JRAILS_DEST_TEMPLATES, 'jquery.haml.js'), 'w' do |f|
         f.print concat_files(all_files(JHAML_SRC_SCRIPTS))
       end
-      manifest.print "javascript 'jquery.haml.js'\n" 
-    
+      manifest.print "javascript 'jquery.haml.js'\n"
+
       open File.join(JRAILS_DEST_TEMPLATES, 'jquery.haml.min.js'), 'w' do |f|
         f.print compress_js(all_files(JHAML_SRC_SCRIPTS), "google")
       end
-      manifest.print "javascript 'jquery.haml.min.js'\n" 
-      
-      # HAML Js     
+      manifest.print "javascript 'jquery.haml.min.js'\n"
+
+      # HAML Js
       open File.join(JRAILS_DEST_TEMPLATES, 'haml.js'), 'w' do |f|
         f.print concat_files(all_files(HAML_SRC_JS_SCRIPTS))
       end
-      manifest.print "javascript 'haml.js'\n" 
-    
+      manifest.print "javascript 'haml.js'\n"
+
       open File.join(JRAILS_DEST_TEMPLATES, 'haml.min.js'), 'w' do |f|
         f.print compress_js(all_files(JHAML_SRC_SCRIPTS), "google")
       end
       manifest.print "javascript 'haml.min.js'\n"
-      
-      #Flash Messages  
+
+      #Flash Messages
       open File.join(JRAILS_DEST_TEMPLATES, 'jquery.flash_messages.js'), 'w' do |f|
         f.print concat_files(all_files(FLASH_SRC_JS_SCRIPTS))
       end
-      manifest.print "javascript 'jquery.flash_messages.js'\n" 
-    
+      manifest.print "javascript 'jquery.flash_messages.js'\n"
+
       open File.join(JRAILS_DEST_TEMPLATES, 'jquery.flash_messages.min.js'), 'w' do |f|
         f.print compress_js(all_files(FLASH_SRC_JS_SCRIPTS), "google")
       end
       manifest.print "javascript 'jquery.flash_messages.min.js'\n"
-      
+
       FileUtils.mkdir_p(File.join(FLASH_DEST_STYLESHEETS))
       css = File.read File.join(FLASH_SRC, 'flash_messages.css')
       sass = ''
@@ -338,15 +338,15 @@ namespace :build do
         f.write sass
       end
       manifest.print "stylesheet 'partials/_flash_messages.scss'\n"
-      
+
       # Copy the images directory
       FileUtils.mkdir_p File.join(FLASH_DEST_IMAGES)
       src_dir = FLASH_SRC_IMAGES
-      dest_dir = FLASH_DEST_IMAGES   
-      
+      dest_dir = FLASH_DEST_IMAGES
+
       Dir.foreach(src_dir) do |image|
         next unless /\.png$/ =~ image
-        FileUtils.cp(File.join(src_dir, image), dest_dir)    
+        FileUtils.cp(File.join(src_dir, image), dest_dir)
         manifest.print "image 'jquery/ui/flash_messages/#{image}'\n"
       end
     end
@@ -363,4 +363,3 @@ namespace :jrails do
     end
   end
 end
-  

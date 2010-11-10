@@ -32,9 +32,6 @@ jQuery.event = {
 
 		if ( handler === false ) {
 			handler = returnFalse;
-		} else if ( !handler ) {
-		  // Fixes bug #7229. Fix recommended by jdalton
-		  return;
 		}
 
 		var handleObjIn, handleObj;
@@ -1068,7 +1065,7 @@ function liveHandler( event ) {
 	if ( event.liveFired === this || !events || !events.live || event.button && event.type === "click" ) {
 		return;
 	}
-	
+
 	if ( event.namespace ) {
 		namespace = new RegExp("(^|\\.)" + event.namespace.split(".").join("\\.(?:.*\\.)?") + "(\\.|$)");
 	}
@@ -1131,9 +1128,6 @@ function liveHandler( event ) {
 
 			if ( ret === false ) {
 				stop = false;
-			}
-			if ( event.isImmediatePropagationStopped() ) {
-				break;
 			}
 		}
 	}
