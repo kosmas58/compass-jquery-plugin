@@ -89,15 +89,15 @@ namespace :build do
         'outro.js'
       ].collect {|filename| File.read(File.join(JQUERY_SRC, 'js', filename))}.join "\n\n"
       
-      open File.join(JRAILS_DEST_TEMPLATES, 'jquery-1.4.4.js'), 'w' do |f|
+      open File.join(JRAILS_DEST_TEMPLATES, 'jquery.js'), 'w' do |f|
         f.print concat_files(all_jquery_scripts)
       end
-      manifest.print "javascript 'jquery-1.4.4.js'\n" 
+      manifest.print "javascript 'jquery.js'\n" 
     
-      open File.join(JRAILS_DEST_TEMPLATES, 'jquery-1.4.4.min.js'), 'w' do |f|
+      open File.join(JRAILS_DEST_TEMPLATES, 'jquery.min.js'), 'w' do |f|
         f.print compress_js(all_jquery_scripts, "google")
       end
-      manifest.print "javascript 'jquery-1.4.4.min.js'\n"
+      manifest.print "javascript 'jquery.min.js'\n"
 
       # jQuery 1.4 Compat 1.3
       
@@ -203,15 +203,15 @@ namespace :build do
         'jquery.ui.widget.js'
       ].collect {|filename| File.read(File.join(JQUERY_UI_SRC, 'js', filename))}.join "\n\n"
       
-      open File.join(JRAILS_DEST_TEMPLATES, 'jquery-ui-1.8.6.js'), 'w' do |f|
+      open File.join(JRAILS_DEST_TEMPLATES, 'jquery-ui.js'), 'w' do |f|
         f.print concat_files(all_jquery_ui_scripts)
       end
-      manifest.print "javascript 'jquery-ui-1.8.6.js'\n"
+      manifest.print "javascript 'jquery-ui.js'\n"
     
-      open File.join(JRAILS_DEST_TEMPLATES, 'jquery-ui-1.8.6.min.js'), 'w' do |f|
+      open File.join(JRAILS_DEST_TEMPLATES, 'jquery-ui.min.js'), 'w' do |f|
         f.print compress_js(all_jquery_ui_scripts, "google")
       end
-      manifest.print "javascript 'jquery-ui-1.8.6.min.js'\n"
+      manifest.print "javascript 'jquery-ui.min.js'\n"
       
       # jQuery UI locales
   

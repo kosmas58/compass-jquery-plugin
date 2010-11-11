@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kosmas Schuetz"]
-  s.date = %q{2010-11-10}
+  s.date = %q{2010-11-11}
   s.description = %q{A compass plugin that integrates jRails, jQuery, jQuery UI and Themes, jqGrid and more into the Compass Sass framework.}
   s.email = %q{kosmas.schuetz@gmx.com}
   s.extra_rdoc_files = [
@@ -517,10 +517,8 @@ Gem::Specification.new do |s|
      "templates/jrails/i18n/jquery.ui/datepicker-zh-HK.min.js",
      "templates/jrails/i18n/jquery.ui/datepicker-zh-TW.js",
      "templates/jrails/i18n/jquery.ui/datepicker-zh-TW.min.js",
-     "templates/jrails/jquery-1.4.4.js",
-     "templates/jrails/jquery-1.4.4.min.js",
-     "templates/jrails/jquery-ui-1.8.6.js",
-     "templates/jrails/jquery-ui-1.8.6.min.js",
+     "templates/jrails/jquery-ui.js",
+     "templates/jrails/jquery-ui.min.js",
      "templates/jrails/jquery.bgiframe.js",
      "templates/jrails/jquery.bgiframe.min.js",
      "templates/jrails/jquery.compat-1.3.js",
@@ -539,10 +537,12 @@ Gem::Specification.new do |s|
      "templates/jrails/jquery.haml.min.js",
      "templates/jrails/jquery.hotkeys.js",
      "templates/jrails/jquery.hotkeys.min.js",
+     "templates/jrails/jquery.js",
      "templates/jrails/jquery.layout.js",
      "templates/jrails/jquery.layout.min.js",
      "templates/jrails/jquery.metadata.js",
      "templates/jrails/jquery.metadata.min.js",
+     "templates/jrails/jquery.min.js",
      "templates/jrails/jquery.pngFix.js",
      "templates/jrails/jquery.pngFix.min.js",
      "templates/jrails/jquery.sparkline.js",
