@@ -118,30 +118,88 @@ module Gridify
       # stringify
       only = Array(only).map {|s| s.to_s }
       except = Array(except).map {|s| s.to_s }
-      presets ||= {}
-      presets.stringify_keys!
+      presets ||= []
       
-      self.colModel = klass.columns.collect do |ar|
-        #debugger
-        next if only.present? && !only.include?(ar.name)
-        next if except.present? && except.include?(ar.name)
-        is_key = (ar.name=='id')
+      if presets.length > 0
+        hashed_defs = {}
+        
+        klass.columns.collect do |ar|
+          #debugger
+          next if only.present? && !only.include?(ar.name)
+          next if except.present? && except.include?(ar.name)
+          hashed_defs[ar.name] = strct2args(ar)
+        end.compact
+        
+        col_include.each do |sub_model|
+          my_model = sub_model.to_s
+          if klass.inheritable_attributes[:reflections][sub_model].options[:class_name]
+            my_class = klass.inheritable_attributes[:reflections][sub_model].options[:class_name].to_s
+            model = klass.inheritable_attributes[:reflections][sub_model].options[:class_name].to_s
+          else
+            my_class = my_model
+          end
+          Object.const_get(my_class.capitalize).columns.collect do |ar|
+            #debugger
+            next if only.present? && !only.include?("#{my_model}.#{ar.name}")
+            next if except.present? && except.include?("#{my_model}.#{ar.name}")
+            hashed_defs["#{my_model}.#{ar.name}"] = strct2args(ar)
+          end
+        end
+
+        # Take sequence from colModel
+        self.colModel = []
+        presets.each do |col|
+          # create column with default args merged with options given for this column
+          self.colModel << GridColumn.new(hashed_defs[col[:name]].merge(col))
+        end
+      else
+        # Take sequence from database definition
+        self.colModel = klass.columns.collect do |ar|
+          #debugger
+          next if only.present? && !only.include?(ar.name)
+          next if except.present? && except.include?(ar.name)
+          args = strct2args(ar)
+          # create column with default args merged with options given for this column
+          GridColumn.new(args)
+        end.compact
+        
+        col_include.each do |sub_model|
+          my_model = sub_model.to_s
+          if klass.inheritable_attributes[:reflections][sub_model].options[:class_name]
+            my_class = klass.inheritable_attributes[:reflections][sub_model].options[:class_name].to_s
+            model = klass.inheritable_attributes[:reflections][sub_model].options[:class_name].to_s
+          else
+            my_class = my_model
+          end
+          Object.const_get(my_class.capitalize).columns.collect do |ar|
+            #debugger
+            next if only.present? && !only.include?("#{my_model}.#{ar.name}")
+            next if except.present? && except.include?("#{my_model}.#{ar.name}")
+            args = strct2args(ar, "#{my_model}.")
+            # create column with default args merged with options given for this column
+            self.colModel << GridColumn.new(args)
+          end
+        end
+      end
+    end
+    
+    private
+  
+      def strct2args(record, prefix="")
+        is_key = (record.name=='id')
         edit = editable && !is_key && 
           # only edit accessible attributes
-          (klass.accessible_attributes.nil? || klass.accessible_attributes.include?(ar.name))
+          (klass.accessible_attributes.nil? || klass.accessible_attributes.include?(record.name))
         args = {
-          :ar_column => ar,
-          :name => ar.name,
-          :value_type => ar.type,
+          :ar_column => record,
+          :name => "#{prefix}#{record.name}",
+          :value_type => record.type,
           :key => is_key,
           #:hidden => is_key,
           :searchable => searchable,
           :sortable => sortable,
           :editable => edit
         }
-        # create column with default args merged with options given for this column
-        GridColumn.new args.merge( presets[ar.name]||{} )
-      end.compact
-    end
+      end
   end
 end
