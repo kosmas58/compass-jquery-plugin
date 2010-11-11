@@ -127,22 +127,24 @@ module Gridify
           #debugger
           next if only.present? && !only.include?(ar.name)
           next if except.present? && except.include?(ar.name)
-          hashed_defs[ar.name] = strct2args(ar)
+          hashed_defs[ar.name] = strct2args(klass, ar)
         end.compact
         
-        col_include.each do |sub_model|
-          my_model = sub_model.to_s
-          if klass.inheritable_attributes[:reflections][sub_model].options[:class_name]
-            my_class = klass.inheritable_attributes[:reflections][sub_model].options[:class_name].to_s
-            model = klass.inheritable_attributes[:reflections][sub_model].options[:class_name].to_s
-          else
-            my_class = my_model
-          end
-          Object.const_get(my_class.capitalize).columns.collect do |ar|
-            #debugger
-            next if only.present? && !only.include?("#{my_model}.#{ar.name}")
-            next if except.present? && except.include?("#{my_model}.#{ar.name}")
-            hashed_defs["#{my_model}.#{ar.name}"] = strct2args(ar)
+        if col_include
+            col_include.each do |sub_model|
+            my_model = sub_model.to_s
+            if klass.inheritable_attributes[:reflections][sub_model].options[:class_name]
+              my_class = klass.inheritable_attributes[:reflections][sub_model].options[:class_name].to_s
+              model = klass.inheritable_attributes[:reflections][sub_model].options[:class_name].to_s
+            else
+              my_class = my_model
+            end
+            Object.const_get(my_class.capitalize).columns.collect do |ar|
+              #debugger
+              next if only.present? && !only.include?("#{my_model}.#{ar.name}")
+              next if except.present? && except.include?("#{my_model}.#{ar.name}")
+              hashed_defs["#{my_model}.#{ar.name}"] = strct2args(klass, ar)
+            end
           end
         end
 
@@ -150,6 +152,7 @@ module Gridify
         self.colModel = []
         presets.each do |col|
           # create column with default args merged with options given for this column
+          willi = hashed_defs[col[:name]]
           self.colModel << GridColumn.new(hashed_defs[col[:name]].merge(col))
         end
       else
@@ -158,26 +161,28 @@ module Gridify
           #debugger
           next if only.present? && !only.include?(ar.name)
           next if except.present? && except.include?(ar.name)
-          args = strct2args(ar)
+          args = strct2args(klass, ar)
           # create column with default args merged with options given for this column
           GridColumn.new(args)
         end.compact
         
-        col_include.each do |sub_model|
-          my_model = sub_model.to_s
-          if klass.inheritable_attributes[:reflections][sub_model].options[:class_name]
-            my_class = klass.inheritable_attributes[:reflections][sub_model].options[:class_name].to_s
-            model = klass.inheritable_attributes[:reflections][sub_model].options[:class_name].to_s
-          else
-            my_class = my_model
-          end
-          Object.const_get(my_class.capitalize).columns.collect do |ar|
-            #debugger
-            next if only.present? && !only.include?("#{my_model}.#{ar.name}")
-            next if except.present? && except.include?("#{my_model}.#{ar.name}")
-            args = strct2args(ar, "#{my_model}.")
-            # create column with default args merged with options given for this column
-            self.colModel << GridColumn.new(args)
+        if col_include
+          col_include.each do |sub_model|
+            my_model = sub_model.to_s
+            if klass.inheritable_attributes[:reflections][sub_model].options[:class_name]
+              my_class = klass.inheritable_attributes[:reflections][sub_model].options[:class_name].to_s
+              model = klass.inheritable_attributes[:reflections][sub_model].options[:class_name].to_s
+            else
+              my_class = my_model
+            end
+            Object.const_get(my_class.capitalize).columns.collect do |ar|
+              #debugger
+              next if only.present? && !only.include?("#{my_model}.#{ar.name}")
+              next if except.present? && except.include?("#{my_model}.#{ar.name}")
+              args = strct2args(klass, ar, "#{my_model}.")
+              # create column with default args merged with options given for this column
+              self.colModel << GridColumn.new(args)
+            end
           end
         end
       end
@@ -185,11 +190,11 @@ module Gridify
     
     private
   
-      def strct2args(record, prefix="")
+      def strct2args(my_class, record, prefix="")
         is_key = (record.name=='id')
         edit = editable && !is_key && 
           # only edit accessible attributes
-          (klass.accessible_attributes.nil? || klass.accessible_attributes.include?(record.name))
+          (my_class.accessible_attributes.nil? || my_class.accessible_attributes.include?(record.name))
         args = {
           :ar_column => record,
           :name => "#{prefix}#{record.name}",
