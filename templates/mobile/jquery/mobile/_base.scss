@@ -725,12 +725,13 @@ textarea.ui-input-text {
 * Copyright (c) jQuery Project
 * Dual licensed under the MIT (MIT-LICENSE.txt) or GPL (GPL-LICENSE.txt) licenses.
 */
+
 /* content configurations. */
 
-.ui-grid-a, .ui-grid-b, .ui-grid-c {
+.ui-grid-a, .ui-grid-b, .ui-grid-c, .ui-grid-d {
   overflow: hidden; }
 
-.ui-block-a, .ui-block-b, .ui-block-c, .ui-block-d {
+.ui-block-a, .ui-block-b, .ui-block-c, .ui-block-d, .ui-block-e {
   margin: 0;
   padding: 0;
   border: 0;
@@ -749,6 +750,22 @@ textarea.ui-input-text {
 .ui-grid-b {
   .ui-block-a, .ui-block-b, .ui-block-c {
     width: 33.333%; }
+  .ui-block-a {
+    clear: left; } }
+
+/* grid c: 25/25/25/25 */
+
+.ui-grid-c {
+  .ui-block-a, .ui-block-b, .ui-block-c, .ui-block-d {
+    width: 25%; }
+  .ui-block-a {
+    clear: left; } }
+
+/* grid d: 20/20/20/20/20 */
+
+.ui-grid-d {
+  .ui-block-a, .ui-block-b, .ui-block-c, .ui-block-d, .ui-block-e {
+    width: 20%; }
   .ui-block-a {
     clear: left; } }
 
@@ -775,7 +792,9 @@ textarea.ui-input-text {
     border-right-width: 0; } }
 
 .ui-header-fixed, .ui-footer-fixed {
-  z-index: 1000; }
+  z-index: 1000;
+  -webkit-transform: translateZ(0);
+  /* Force header/footer rendering to go through the same rendering pipeline as native page scrolling. */ }
 
 .ui-footer-duplicate {
   display: none; }
