@@ -141,15 +141,15 @@
     color: #fff; } }
 
 .ui-btn-hover-b {
-  border: 1px solid #397cbe;
-  background: #5397d5;
+  border: 1px solid #00516e;
+  background: #4b88b6;
   font-weight: bold;
   color: #fff;
   text-shadow: 0 -1px 1px #014d68;
-  background-image: -moz-linear-gradient(top, #71a2d0, #397cbe);
+  background-image: -moz-linear-gradient(top, #72b0d4, #4b88b6);
   text-decoration: none;
-  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #71a2d0), color-stop(1, #397cbe));
-  -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#71a2d0', EndColorStr='#397cbe')";
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #72b0d4), color-stop(1, #4b88b6));
+  -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#72b0d4', EndColorStr='#4b88b6')";
   a.ui-link-inherit {
     color: #fff; } }
 
@@ -593,7 +593,8 @@ a.ui-link-inherit {
   background-color: transparent;
   -moz-border-radius: 0;
   -webkit-border-radius: 0;
-  border-radius: 0; }
+  border-radius: 0;
+  background-size: 20px 20px; }
 
 .ui-icon-checkbox-off {
   background-image: image_url("jquery/mobile/default/form-check-off.png"); }
@@ -608,7 +609,8 @@ a.ui-link-inherit {
   background-image: image_url("jquery/mobile/default/form-radio-on.png"); }
 
 .ui-icon-search {
-  background-image: image_url("jquery/mobile/default/icon-search-black.png"); }
+  background-image: image_url("jquery/mobile/default/icon-search-black.png");
+  background-size: 16px 16px; }
 
 /* loading icon */
 

@@ -609,7 +609,8 @@ a.ui-link-inherit {
   background-color: transparent;
   -moz-border-radius: 0;
   -webkit-border-radius: 0;
-  border-radius: 0; }
+  border-radius: 0;
+  background-size: 20px 20px; }
 
 .ui-icon-checkbox-off {
   background-image: image_url("jquery/mobile/valencia/form-check-off.png"); }
@@ -624,7 +625,8 @@ a.ui-link-inherit {
   background-image: image_url("jquery/mobile/valencia/form-radio-on.png"); }
 
 .ui-icon-search {
-  background-image: image_url("jquery/mobile/valencia/icon-search-black.png"); }
+  background-image: image_url("jquery/mobile/valencia/icon-search-black.png");
+  background-size: 16px 16px; }
 
 /* loading icon */
 
@@ -634,7 +636,8 @@ a.ui-link-inherit {
   height: 40px;
   -moz-border-radius: 20px;
   -webkit-border-radius: 20px;
-  border-radius: 20px; }
+  border-radius: 20px;
+  background-size: 35px 35px; }
 
 /* btn Corner radius */
 

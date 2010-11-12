@@ -80,7 +80,7 @@ $.fixedToolbars = (function(){
 			if( stickyFooter && stickyFooter.length ){
 				stickyFooter.appendTo(event.target).css('top',0);
 			}
-			$.fixedToolbars.show(true);
+			$.fixedToolbars.show(true, this);
 		});
 		
 	});
@@ -130,20 +130,20 @@ $.fixedToolbars = (function(){
 		else{
 			//relval = -1 * (thisTop - (fromTop + screenHeight) + thisCSStop + thisHeight);
 			//if( relval > thisTop ){ relval = 0; }
-			relval = fromTop + screenHeight - thisHeight - thisTop;
+			relval = fromTop + screenHeight - thisHeight - (thisTop - thisCSStop);
 			return el.css('top', ( useRelative ) ? relval : fromTop + screenHeight - thisHeight );
 		}
 	}
 
 	//exposed methods
 	return {
-		show: function(immediately){
+		show: function(immediately, page){
 			currentstate = 'overlay';
-			var $ap = $.activePage ? $.activePage : $(".ui-page-active");
+			var $ap = page ? $(page) : ($.mobile.activePage ? $.mobile.activePage : $(".ui-page-active"));
 			return $ap.children( toolbarSelector ).each(function(){
 				var el = $(this),
 					fromTop = $(window).scrollTop(),
-					thisTop = el.offset().top,
+					thisTop = getOffsetTop(el[0]), // el.offset().top returns the wrong value on iPad iOS 3.2.1, call our workaround instead.
 					screenHeight = window.innerHeight,
 					thisHeight = el.outerHeight(),
 					alreadyVisible = (el.is('.ui-header-fixed') && fromTop <= thisTop + thisHeight) || (el.is('.ui-footer-fixed') && thisTop <= fromTop + screenHeight);	
@@ -161,23 +161,28 @@ $.fixedToolbars = (function(){
 		},
 		hide: function(immediately){
 			currentstate = 'inline';
-			var $ap = $.activePage ? $.activePage : $(".ui-page-active");
+			var $ap = $.mobile.activePage ? $.mobile.activePage : $(".ui-page-active");
 			return $ap.children( toolbarSelector ).each(function(){
 				var el = $(this);
+
+				var thisCSStop = el.css('top'); thisCSStop = thisCSStop == 'auto' ? 0 : parseFloat(thisCSStop);
 				
 				//add state class
 				el.addClass('ui-fixed-inline').removeClass('ui-fixed-overlay');
 				
-				if(immediately){
-					el.css('top',0);
-				}
-				else{
-					if( el.css('top') !== 'auto' && parseFloat(el.css('top')) !== 0 ){
-						var classes = 'out reverse';
-						el.addClass(classes).animationComplete(function(){
-							el.removeClass(classes);
-							el.css('top',0);
-						});	
+				if (thisCSStop < 0 || (el.is('.ui-header-fixed') && thisCSStop != 0))
+				{
+					if(immediately){
+						el.css('top',0);
+					}
+					else{
+						if( el.css('top') !== 'auto' && parseFloat(el.css('top')) !== 0 ){
+							var classes = 'out reverse';
+							el.addClass(classes).animationComplete(function(){
+								el.removeClass(classes);
+								el.css('top',0);
+							});	
+						}
 					}
 				}
 			});

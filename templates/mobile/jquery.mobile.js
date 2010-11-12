@@ -1260,7 +1260,7 @@ $.fixedToolbars = (function(){
 			if( stickyFooter && stickyFooter.length ){
 				stickyFooter.appendTo(event.target).css('top',0);
 			}
-			$.fixedToolbars.show(true);
+			$.fixedToolbars.show(true, this);
 		});
 		
 	});
@@ -1310,20 +1310,20 @@ $.fixedToolbars = (function(){
 		else{
 			//relval = -1 * (thisTop - (fromTop + screenHeight) + thisCSStop + thisHeight);
 			//if( relval > thisTop ){ relval = 0; }
-			relval = fromTop + screenHeight - thisHeight - thisTop;
+			relval = fromTop + screenHeight - thisHeight - (thisTop - thisCSStop);
 			return el.css('top', ( useRelative ) ? relval : fromTop + screenHeight - thisHeight );
 		}
 	}
 
 	//exposed methods
 	return {
-		show: function(immediately){
+		show: function(immediately, page){
 			currentstate = 'overlay';
-			var $ap = $.activePage ? $.activePage : $(".ui-page-active");
+			var $ap = page ? $(page) : ($.mobile.activePage ? $.mobile.activePage : $(".ui-page-active"));
 			return $ap.children( toolbarSelector ).each(function(){
 				var el = $(this),
 					fromTop = $(window).scrollTop(),
-					thisTop = el.offset().top,
+					thisTop = getOffsetTop(el[0]), // el.offset().top returns the wrong value on iPad iOS 3.2.1, call our workaround instead.
 					screenHeight = window.innerHeight,
 					thisHeight = el.outerHeight(),
 					alreadyVisible = (el.is('.ui-header-fixed') && fromTop <= thisTop + thisHeight) || (el.is('.ui-footer-fixed') && thisTop <= fromTop + screenHeight);	
@@ -1341,23 +1341,28 @@ $.fixedToolbars = (function(){
 		},
 		hide: function(immediately){
 			currentstate = 'inline';
-			var $ap = $.activePage ? $.activePage : $(".ui-page-active");
+			var $ap = $.mobile.activePage ? $.mobile.activePage : $(".ui-page-active");
 			return $ap.children( toolbarSelector ).each(function(){
 				var el = $(this);
+
+				var thisCSStop = el.css('top'); thisCSStop = thisCSStop == 'auto' ? 0 : parseFloat(thisCSStop);
 				
 				//add state class
 				el.addClass('ui-fixed-inline').removeClass('ui-fixed-overlay');
 				
-				if(immediately){
-					el.css('top',0);
-				}
-				else{
-					if( el.css('top') !== 'auto' && parseFloat(el.css('top')) !== 0 ){
-						var classes = 'out reverse';
-						el.addClass(classes).animationComplete(function(){
-							el.removeClass(classes);
-							el.css('top',0);
-						});	
+				if (thisCSStop < 0 || (el.is('.ui-header-fixed') && thisCSStop != 0))
+				{
+					if(immediately){
+						el.css('top',0);
+					}
+					else{
+						if( el.css('top') !== 'auto' && parseFloat(el.css('top')) !== 0 ){
+							var classes = 'out reverse';
+							el.addClass(classes).animationComplete(function(){
+								el.removeClass(classes);
+								el.css('top',0);
+							});	
+						}
 					}
 				}
 			});
@@ -1803,7 +1808,7 @@ $.widget( "mobile.selectmenu", $.mobile.widget, {
 		
 			self.menuType = "page";		
 			self.menuPageContent.append( self.list );
-			$.changePage(self.menuPage, 'pop', false, false);
+			$.mobile.changePage(self.menuPage, 'pop', false, false);
 		}
 		else {
 			self.menuType = "overlay";
@@ -1832,12 +1837,15 @@ $.widget( "mobile.selectmenu", $.mobile.widget, {
 		var self = this;
 		
 		function focusButton(){
-			setTimeout(self.button.focus, 40);
+			setTimeout(function(){
+				self.button.focus();
+			}, 40);
+			
 			self.listbox.removeAttr('style').append( self.list );
 		}
 		
 		if(self.menuType == "page"){			
-			$.changePage([self.menuPage,self.thisPage], 'pop', true, false);
+			$.mobile.changePage([self.menuPage,self.thisPage], 'pop', true, false);
 			self.menuPage.one("pagehide",function(){
 				focusButton();
 				//return false;
@@ -2729,6 +2737,12 @@ $.widget( "mobile.listview", $.mobile.widget, {
 })( jQuery );
 
 
+/*
+* jQuery Mobile Framework : "listview" filter extension
+* Copyright (c) jQuery Project
+* Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
+* Note: Code is in draft form and is subject to change 
+*/
 (function($, undefined ) {
 
 $.mobile.listview.prototype.options.filter = false;
@@ -2778,7 +2792,7 @@ $.widget( "mobile.dialog", $.mobile.widget, {
 	_create: function(){	
 		var self = this,
 			$el = self.element,
-			$prevPage = $.activePage,
+			$prevPage = $.mobile.activePage,
 			$closeBtn = $('<a href="#" data-icon="delete" data-iconpos="notext">Close</a>');
 	
 		$el.delegate("a, submit", "click submit", function(e){
@@ -2787,7 +2801,7 @@ $.widget( "mobile.dialog", $.mobile.widget, {
 				return false;
 			}
 			//otherwise, assume we're headed somewhere new. set activepage to dialog so the transition will work
-			$.activePage = this.element;
+			$.mobile.activePage = this.element;
 		});
 	
 		this.element
@@ -2820,7 +2834,7 @@ $.widget( "mobile.dialog", $.mobile.widget, {
 	},
 	
 	close: function(){
-		$.changePage([this.element, $.activePage], undefined, true, true );
+		$.mobile.changePage([this.element, $.mobile.activePage], undefined, true, true );
 	}
 });
 })( jQuery );
@@ -2834,18 +2848,19 @@ $.widget( "mobile.dialog", $.mobile.widget, {
 (function($, undefined ) {
 $.widget( "mobile.navbar", $.mobile.widget, {
 	options: {
-		iconpos: 'top'
+		iconpos: 'top',
+		grid: null
 	},
 	_create: function(){
 		var $navbar = this.element,
 			$navbtns = $navbar.find("a"),
-			iconpos = $navbtns.filter('icon').length ? this.options.iconpos : undefined;
+			iconpos = $navbtns.filter('[data-icon]').length ? this.options.iconpos : undefined;
 		
 		$navbar
 			.addClass('ui-navbar')
 			.attr("role","navigation")
 			.find("ul")
-				.grid({grid: $navbtns.length > 2 ? "b" : "a"});		
+				.grid({grid: this.options.grid });		
 		
 		if( !iconpos ){ 
 			$navbar.addClass("ui-navbar-noicons");
@@ -2875,20 +2890,42 @@ $.widget( "mobile.navbar", $.mobile.widget, {
 $.fn.grid = function(options){
 	return $(this).each(function(){
 		var o = $.extend({
-			grid: 'a'
+			grid: null
 		},options);
-		
-		$(this).addClass('ui-grid-' + o.grid);
+	
 			
-		var $kids = $(this).children();
-			iterator = o.grid == 'a' ? 2 : 3;
-		
-			$kids.filter(':nth-child(' + iterator + 'n+1)').addClass('ui-block-a');
-			$kids.filter(':nth-child(' + iterator + 'n+2)').addClass('ui-block-b');
+		var $kids = $(this).children(),
+			gridCols = {a: 2, b:3, c:4, d:5},
+			grid = o.grid,
+			iterator;
 			
-		if(iterator == 3){	
+			if( !grid ){
+				if( $kids.length <= 5 ){
+					for(var letter in gridCols){
+						if(gridCols[letter] == $kids.length){ grid = letter; }
+					}
+				}
+				else{
+					grid = 'a';
+				}
+			}
+			iterator = gridCols[grid];
+			
+		$(this).addClass('ui-grid-' + grid);
+	
+		$kids.filter(':nth-child(' + iterator + 'n+1)').addClass('ui-block-a');
+		$kids.filter(':nth-child(' + iterator + 'n+2)').addClass('ui-block-b');
+			
+		if(iterator > 2){	
 			$kids.filter(':nth-child(3n+3)').addClass('ui-block-c');
-		}			
+		}	
+		if(iterator> 3){	
+			$kids.filter(':nth-child(4n+4)').addClass('ui-block-d');
+		}	
+		if(iterator > 4){	
+			$kids.filter(':nth-child(5n+5)').addClass('ui-block-e');
+		}
+				
 	});	
 };
 })(jQuery);
@@ -2896,7 +2933,7 @@ $.fn.grid = function(options){
 
 
 /*!
- * jQuery Mobile
+ * jQuery Mobile v@VERSION
  * http://jquerymobile.com/
  *
  * Copyright 2010, jQuery Project
@@ -2942,9 +2979,6 @@ $.fn.grid = function(options){
 		
 		//configure meta viewport tag's content attr:
 		metaViewportContent: "width=device-width, minimum-scale=1, maximum-scale=1",
-		
-		//additional markup to prepend to head
-		headExtras: undefined,
 		
 		//support conditions that must be met in order to proceed
 		gradeA: function(){
@@ -3020,9 +3054,6 @@ $.fn.grid = function(options){
 	
 	//add mobile, initial load "rendering" classes to docEl
 	$html.addClass('ui-mobile ui-mobile-rendering');	
-		
-	//prepend head markup additions
-	if( $.mobile.headExtras ){ $head.prepend( $.mobile.headExtras ); }
 
 	// TODO: don't expose (temporary during code reorg)
 	$.mobile.urlStack = urlStack;
@@ -3085,7 +3116,7 @@ $.fn.grid = function(options){
 			url = getBaseURL() + url;
 		}
 			
-		$.changePage({
+		changePage({
 				url: url,
 				type: type,
 				data: $(this).serialize()
@@ -3213,7 +3244,7 @@ $.fn.grid = function(options){
 
 		//from is always the currently viewed page
 		var toIsArray = $.type(to) === "array",
-			from = toIsArray ? to[0] : $.activePage,
+			from = toIsArray ? to[0] : $.mobile.activePage,
 			to = toIsArray ? to[1] : to,
 			url = fileUrl = $.type(to) === "string" ? to.replace( /^#/, "" ) : null,
 			data = undefined,
@@ -3265,7 +3296,7 @@ $.fn.grid = function(options){
 				pageLoading( true );
 				//trigger show/hide events, allow preventing focus change through return false		
 				if( from.data("page")._trigger("hide", null, {nextPage: to}) !== false && to.data("page")._trigger("show", null, {prevPage: from}) !== false ){
-					$.activePage = to;
+					$.mobile.activePage = to;
 				}
 				reFocus( to );
 				if( changeHash && url ){
@@ -3430,7 +3461,7 @@ $.fn.grid = function(options){
 			}
 			//there's no hash, the active page is not the start page, and it's not manually triggered hashchange
 			// > probably backed out to the first page visited
-			else if( $.activePage.length && !$startPage.is( $.activePage ) && !triggered ) {
+			else if( $.mobile.activePage.length && $startPage[0] !== $.mobile.activePage[0] && !triggered ) {
 				changePage( $startPage, transition, true );
 			}
 			else{
@@ -3507,7 +3538,7 @@ $.fn.grid = function(options){
 	};	
 	
 	//TODO - add to jQuery.mobile, not $
-	$.extend({
+	$.extend($.mobile, {
 		pageLoading: pageLoading,
 		changePage: changePage,
 		silentScroll: silentScroll
@@ -3517,7 +3548,7 @@ $.fn.grid = function(options){
 	$(function(){
 		var $pages = $("[data-role='page']");
 		//set up active page
-		$startPage = $.activePage = $pages.first();
+		$startPage = $.mobile.activePage = $pages.first();
 		
 		//set page container
 		$pageContainer = $startPage.parent().addClass('ui-mobile-viewport');
@@ -3551,45 +3582,30 @@ $.fn.grid = function(options){
       themesDir = '/stylesheets/compiled/jquery/mobile/',
       //themesDir = 'http://jquerymobile.com/test/themes/',
       themes = ['default','valencia'],
-      currentPage = $.activePage,
-      menuPage = 
-        $( '<div data-role=\'dialog\' data-theme=\'a\'>' +
-           '<div data-role=\'header\' data-theme=\'b\'>' +
-           '<div class=\'ui-title\'>Switch Theme:</div>'+
-           '</div>'+
-           '<div data-role=\'content\' data-theme=\'c\'><ul data-role=\'listview\' data-inset=\'true\'></ul></div>'+
-           '</div>'
-        ).appendTo( $.pageContainer ),
+      currentPage = $.mobile.activePage,
+      menuPage = $( '<div data-role=\'dialog\' data-theme=\'a\'>' +
+                      '<div data-role=\'header\' data-theme=\'b\'>' +
+                        '<div class=\'ui-title\'>Switch Theme:</div>'+
+                      '</div>'+
+                       '<div data-role=\'content\' data-theme=\'c\'><ul data-role=\'listview\' data-inset=\'true\'></ul></div>'+
+                    '</div>' )
+      .appendTo( $.pageContainer ),
       menu = menuPage.find('ul');	
     
-    //menu items	
-    $.each(themes, function( i ){
-      $('<li><a href=\'#\'>' + themes[ i ].charAt(0).toUpperCase() + themes[ i ].substr(1) + '</a></li>')
-      .click(function(){
-        addTheme( themes[i] );
-        done();
-        return false;
-      })
-      .appendTo(menu);
-    });	
-    
+      //menu items	
+      $.each(themes, function( i ){
+        $('<li><a href=\'#\'>' + themes[ i ].charAt(0).toUpperCase() + themes[ i ].substr(1) + '</a></li>')
+        .click(function(){
+          addTheme( themes[i] );
+        })
+       .appendTo(menu);
+      });	
+        
     //remover, adder
     function addTheme(theme){
       $('head').append( '<link rel=\'stylesheet\' href=\''+ themesDir + theme +'.css\' />' );
     }
-    
-    //finished with this
-    function done(){
-      $.changePage([menuPage, currentPage], 'pop', true);
-      menuPage.bind('pagehide',function(){
-        menuPage.remove();
-      });
-      return false;
-    }
-            
-    //destroy
-    menuPage.find('.ui-btn-left').click(done);
-    
+
     //create page, listview
     menuPage.page();
     

@@ -116,22 +116,31 @@ namespace :build do
       end
       
       # glyphish Images
-      FileUtils.mkdir_p(File.join(MOBILE_DEST_TEMPLATES, 'glyphish', 'icons'))
-       
-      src_dir = File.join(MOBILE_SRC_IMAGES, 'glyphish', 'icons')
-      dest_dir = File.join(MOBILE_DEST_TEMPLATES, 'glyphish', 'icons')
+      FileUtils.mkdir_p(File.join(MOBILE_DEST_TEMPLATES, 'glyphish', 'icons-black'))
+      src_dir = File.join(MOBILE_SRC_IMAGES, 'glyphish', 'icons-black')
+      dest_dir = File.join(MOBILE_DEST_TEMPLATES, 'glyphish', 'icons-black')
       Dir.foreach(src_dir) do |image|
         next if /^\./ =~ image
-        FileUtils.cp(File.join(src_dir, image), dest_dir)    
-        manifest.print "image 'glyphish/icons/#{image}'\n"
+        FileUtils.cp(File.join(src_dir, image), dest_dir)
+        manifest.print "image 'glyphish/icons-black/#{image}'\n"
       end
-      FileUtils.mkdir_p(File.join(MOBILE_DEST_TEMPLATES, 'glyphish', 'mini-icons'))    
-      src_dir = File.join(MOBILE_SRC_IMAGES, 'glyphish', 'icons')
-      dest_dir = File.join(MOBILE_DEST_TEMPLATES, 'glyphish', 'mini-icons')      
+      
+      FileUtils.mkdir_p(File.join(MOBILE_DEST_TEMPLATES, 'glyphish', 'icons-white'))
+      src_dir = File.join(MOBILE_SRC_IMAGES, 'glyphish', 'icons-white')
+      dest_dir = File.join(MOBILE_DEST_TEMPLATES, 'glyphish', 'icons-white')
       Dir.foreach(src_dir) do |image|
         next if /^\./ =~ image
-        FileUtils.cp(File.join(src_dir, image), dest_dir)    
-        manifest.print "image 'glyphish/mini-icons/#{image}'\n"
+        FileUtils.cp(File.join(src_dir, image), dest_dir)
+        manifest.print "image 'glyphish/icons-white/#{image}'\n"
+      end
+      
+      FileUtils.mkdir_p(File.join(MOBILE_DEST_TEMPLATES, 'glyphish', 'mini-icons-black'))
+      src_dir = File.join(MOBILE_SRC_IMAGES, 'glyphish', 'mini-icons-black')
+      dest_dir = File.join(MOBILE_DEST_TEMPLATES, 'glyphish', 'mini-icons-black')
+      Dir.foreach(src_dir) do |image|
+        next if /^\./ =~ image
+        FileUtils.cp(File.join(src_dir, image), dest_dir)
+        manifest.print "image 'glyphish/mini-icons-black/#{image}'\n"
       end 
       
       open File.join(MOBILE_DEST_TEMPLATES, 'glyphish', 'Read me first - license.txt'), 'w' do |f|
