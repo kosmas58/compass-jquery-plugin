@@ -298,7 +298,7 @@ $.widget( "mobile.widget", {
 (function($, undefined ) {
 
 // test whether a CSS media type or query applies
-$.media = (function() {
+$.mobile.media = (function() {
 	// TODO: use window.matchMedia once at least one UA implements it
 	var cache = {},
 		$html = $( "html" ),
@@ -350,7 +350,7 @@ $.extend( $.support, {
 	touch: "ontouchend" in document,
 	cssTransitions: "WebKitTransitionEvent" in window,
 	pushState: !!history.pushState,
-	mediaquery: $.media('only all'),
+	mediaquery: $.mobile.media('only all'),
 	cssPseudoElement: !!propExists('content'),
 	boxShadow: !!propExists('boxShadow') && !bb,
 	scrollTop: ("pageXOffset" in window || "scrollTop" in document.documentElement || "scrollTop" in fakeBody[0]) && !webos,
@@ -1018,7 +1018,7 @@ $.widget( "mobile.page", $.mobile.widget, {
 			email: false,
 			month: false,
 			number: false,
-			range: true,
+			range: "number",
 			search: true,
 			tel: false,
 			time: false,
@@ -1141,11 +1141,13 @@ $.widget( "mobile.page", $.mobile.widget, {
 		var o = this.options;
 		// degrade inputs to avoid poorly implemented native functionality
 		this.element.find( "input" ).each(function() {
-			var type = this.getAttribute( "type" );
+			var type = this.getAttribute( "type" ),
+				optType = o.degradeInputs[ type ] || "text";
+			
 			if ( o.degradeInputs[ type ] ) {
 				$( this ).replaceWith(
 					$( "<div>" ).html( $(this).clone() ).html()
-						.replace( /type="([a-zA-Z]+)"/, "data-type='$1'" ) );
+						.replace( /type="([a-zA-Z]+)"/, "type="+ optType +" data-type='$1'" ) );
 			}
 		});
 		
