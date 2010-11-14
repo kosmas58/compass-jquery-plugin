@@ -33,7 +33,6 @@ ul.dynatree-container li
     padding:1px 0 0 0;
 }
 
-
 ul.dynatree-container img {
 	width: 16px; height: 16px;
 	margin-left: 3px;
@@ -103,7 +102,9 @@ span.dynatree-icon {
 	background-image: image_url("jquery/dynatree/aqua/document.png");
 }
 
-span.dynatree-checkbox {
+span.dynatree-checkbox,
+span.dynatree-radio,
+#dynatree-drop-marker {
 	width: 16px;
 	height: 16px;
 	display: -moz-inline-box;
@@ -206,7 +207,7 @@ span.custom2 span.dynatree-icon {
 }
 
 .dynatree-folder.dynatree-expanded span.dynatree-icon {
-	background-image: image_url("jquery/dynatree/aqua/folder_open.png");
+	background-image: image_url("jquery/dynatree/aqua/folder.png");
 }
 
 .dynatree-statusnode-wait span.dynatree-icon {
@@ -255,6 +256,30 @@ div.dynatree-drop-reject span.dynatree-drag-helper-img
 { 
     background-image: image_url("jquery/dynatree/aqua/drop_reject.png");
 }
+
+/*** Drop marker icon *********************************************************/
+
+#dynatree-drop-marker
+{
+	width:24px;
+	position: absolute;
+    background-image: image_url("jquery/dynatree/aqua/drop_here.png");
+}
+#dynatree-drop-marker.dynatree-drop-after,
+#dynatree-drop-marker.dynatree-drop-before
+{
+	width:64px;
+	background-image: image_url("jquery/dynatree/aqua/drop_sibling_here.png");
+}
+#dynatree-drop-marker.dynatree-drop-copy
+{
+    background-image:image_url("jquery/dynatree/aqua/copy_here.png");
+}
+#dynatree-drop-marker.dynatree-drop-move
+{
+    background-image: image_url("jquery/dynatree/aqua/move_here.png");
+}
+
 /* Source node while dragging */
 span.dynatree-drag-source
 { 
@@ -274,13 +299,14 @@ span.dynatree-drop-target a
 { 
     background-repeat: no-repeat;
     background-position: right;
-    /*background-image: image_url("jquery/dynatree/aqua/drop_child.png");*/
+    background-image: image_url("jquery/dynatree/aqua/drop_child.png");
 }
 span.dynatree-drop-target.dynatree-drop-accept a
 { 
     /*border: 1px solid green;*/ 
     background-color: #3169C6 !important;
     color: white !important; /* @ IE6 */
+    text-decoration: none;    
 }
 span.dynatree-drop-target.dynatree-drop-reject
 { 
@@ -291,20 +317,5 @@ span.dynatree-drop-target.dynatree-drop-after a
     /*background-repeat: repeat-x;
     background-position: bottom;
     background-image: image_url("jquery/dynatree/aqua/drop_append.png");*/
-}
-/* Drop marker icon */
-#dynatree_drop_marker
-{
-	width:24px;
-	position: absolute;
-    background-image: image_url("jquery/dynatree/aqua/drop_here.png");
-}
-#dynatree_drop_marker.dynatree_drop_copy
-{
-    background-image: image_url("jquery/dynatree/aqua/copy_here.png");
-}
-#dynatree_drop_marker.dynatree_drop_move
-{
-    background-image: image_url("jquery/dynatree/aqua/move_here.png");
 }
 

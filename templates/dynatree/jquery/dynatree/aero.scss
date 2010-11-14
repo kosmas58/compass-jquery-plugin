@@ -80,7 +80,7 @@ span {
     background-position: left;
     margin-left: 3px;
     background-image: image_url("jquery/dynatree/aero/document.png"); }
-  &.dynatree-checkbox {
+  &.dynatree-checkbox, &.dynatree-radio {
     width: 16px;
     height: 16px;
     display: -moz-inline-box;
@@ -89,9 +89,22 @@ span {
     background-repeat: no-repeat;
     background-position: left;
     margin-left: 3px;
-    background-image: image_url("jquery/dynatree/aero/cbUnchecked.png");
-    &:hover {
-      background-image: image_url("jquery/dynatree/aero/cbUnchecked_hover.png"); } }
+    background-image: image_url("jquery/dynatree/aero/cbUnchecked.png"); } }
+
+#dynatree-drop-marker {
+  width: 16px;
+  height: 16px;
+  display: -moz-inline-box;
+  display: inline-block;
+  vertical-align: top;
+  background-repeat: no-repeat;
+  background-position: left;
+  margin-left: 3px;
+  background-image: image_url("jquery/dynatree/aero/cbUnchecked.png"); }
+
+span {
+  &.dynatree-checkbox:hover {
+    background-image: image_url("jquery/dynatree/aero/cbUnchecked_hover.png"); }
   &.dynatree-radio {
     margin-left: 3px;
     background-image: image_url("jquery/dynatree/aero/rbUnchecked.png");
@@ -188,6 +201,20 @@ div {
   &.dynatree-drop-reject span.dynatree-drag-helper-img {
     background-image: image_url("jquery/dynatree/aero/drop_reject.png"); } }
 
+/*** Drop marker icon *********************************************************/
+
+#dynatree-drop-marker {
+  width: 24px;
+  position: absolute;
+  background-image: image_url("jquery/dynatree/aero/drop_here.png");
+  &.dynatree-drop-after, &.dynatree-drop-before {
+    width: 64px;
+    background-image: image_url("jquery/dynatree/aero/drop_sibling_here.png"); }
+  &.dynatree-drop-copy {
+    background-image: image_url("jquery/dynatree/aero/copy_here.png"); }
+  &.dynatree-drop-move {
+    background-image: image_url("jquery/dynatree/aero/move_here.png"); } }
+
 /* Source node while dragging */
 
 span {
@@ -201,12 +228,13 @@ span {
     a {
       background-repeat: no-repeat;
       background-position: right;
-      /*background-image: image_url("jquery/dynatree/aero/drop_child.png");*/ }
+      background-image: image_url("jquery/dynatree/aero/drop_child.png"); }
     &.dynatree-drop-accept a {
       /*border: 1px solid green;*/
       background-color: #3169C6 !important;
       color: white !important;
-      /* @ IE6 */ }
+      /* @ IE6 */
+      text-decoration: none; }
     &.dynatree-drop-reject {
       /*border: 1px solid red;*/ }
     &.dynatree-drop-after a {
@@ -215,14 +243,3 @@ span {
       background-image: image_url("jquery/dynatree/aero/drop_append.png");*/ } } }
 
 /* Target node while dragging cursor is over it */
-
-/* Drop marker icon */
-
-#dynatree_drop_marker {
-  width: 24px;
-  position: absolute;
-  background-image: image_url("jquery/dynatree/aero/drop_here.png");
-  &.dynatree_drop_copy {
-    background-image: image_url("jquery/dynatree/aero/copy_here.png"); }
-  &.dynatree_drop_move {
-    background-image: image_url("jquery/dynatree/aero/move_here.png"); } }
