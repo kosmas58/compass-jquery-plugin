@@ -757,8 +757,10 @@ button.ui-button::-moz-focus-inner {
   position: absolute;
   top: 0;
   visibility: hidden;
-  overflow: auto; }
+  overflow: auto;
+  z-index: 1005; }
 
+/* z-index: 1005 to make selectmenu work with dialog */
 .ui-selectmenu-open {
   visibility: visible; }
 
