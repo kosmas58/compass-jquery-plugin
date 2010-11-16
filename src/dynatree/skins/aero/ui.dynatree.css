@@ -298,9 +298,9 @@ span.dynatree-drop-target
 }
 span.dynatree-drop-target a
 { 
-    background-repeat: no-repeat;
-    background-position: right;
-    background-image: image_url("jquery/dynatree/aero/drop_child.png");
+    /*background-repeat: no-repeat;*/
+    /*background-position: right;*/
+    /*background-image: image_url("jquery/dynatree/aero/drop_child.png");*/
 }
 span.dynatree-drop-target.dynatree-drop-accept a
 { 

@@ -226,9 +226,9 @@ span {
   &.dynatree-drop-target {
     /*border: 1px solid gray;*/
     a {
-      background-repeat: no-repeat;
-      background-position: right;
-      background-image: image_url("jquery/dynatree/aero/drop_child.png"); }
+      /*background-repeat: no-repeat;*/
+      /*background-position: right;*/
+      /*background-image: image_url("jquery/dynatree/aero/drop_child.png");*/ }
     &.dynatree-drop-accept a {
       /*border: 1px solid green;*/
       background-color: #3169C6 !important;

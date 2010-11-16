@@ -259,7 +259,7 @@ span.dynatree-icon /* Default icon */
 
 .dynatree-statusnode-wait span.dynatree-icon
 {
-	background-image: image_url("jquery/dynatree/xp/ltWait.png"); 
+	background-image: image_url("jquery/dynatree/xp/ltWait.gif"); 
 }
 
 .dynatree-statusnode-error span.dynatree-icon
