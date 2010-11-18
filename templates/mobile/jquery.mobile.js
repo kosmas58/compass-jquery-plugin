@@ -290,18 +290,30 @@ $.widget( "mobile.widget", {
 
 
 /*
-* jQuery Mobile Framework : support tests
+* jQuery Mobile Framework : resolution and CSS media query related helpers and behavior
 * Copyright (c) jQuery Project
 * Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
 * Note: Code is in draft form and is subject to change 
-*/
+*/ 
 (function($, undefined ) {
 
-// test whether a CSS media type or query applies
+var $window = $(window),
+	$html = $( "html" ),
+	
+	//media-query-like width breakpoints, which are translated to classes on the html element 
+	resolutionBreakpoints = [320,480,768,1024];
+
+
+/* $.mobile.media method: pass a CSS media type or query and get a bool return
+	note: this feature relies on actual media query support for media queries, though types will work most anywhere
+	examples:
+		$.mobile.media('screen') //>> tests for screen media type
+		$.mobile.media('screen and (min-width: 480px)') //>> tests for screen media type with window width > 480px
+		$.mobile.media('@media screen and (-webkit-min-device-pixel-ratio: 2)') //>> tests for webkit 2x pixel ratio (iPhone 4)
+*/
 $.mobile.media = (function() {
 	// TODO: use window.matchMedia once at least one UA implements it
 	var cache = {},
-		$html = $( "html" ),
 		testDiv = $( "<div id='jquery-mediatest'>" ),
 		fakeBody = $( "<body>" ).append( testDiv );
 	
@@ -317,6 +329,85 @@ $.mobile.media = (function() {
 		return cache[ query ];
 	};
 })();
+
+/*
+	private function for adding/removing breakpoint classes to HTML element for faux media-query support
+	It does not require media query support, instead using JS to detect screen width > cross-browser support
+	This function is called on orientationchange, resize, and mobileinit, and is bound via the 'htmlclass' event namespace
+*/	
+function detectResolutionBreakpoints(){
+	var currWidth = $window.width(),
+		minPrefix = "min-width-",
+		maxPrefix = "max-width-",
+		minBreakpoints = [],
+		maxBreakpoints = [],
+		unit = "px",
+		breakpointClasses;
+		
+	$html.removeClass( minPrefix + resolutionBreakpoints.join(unit + " " + minPrefix) + unit + " " + 
+		maxPrefix + resolutionBreakpoints.join( unit + " " + maxPrefix) + unit );
+				
+	$.each(resolutionBreakpoints,function( i ){
+		if( currWidth >= resolutionBreakpoints[ i ] ){
+			minBreakpoints.push( minPrefix + resolutionBreakpoints[ i ] + unit );
+		}
+		if( currWidth <= resolutionBreakpoints[ i ] ){
+			maxBreakpoints.push( maxPrefix + resolutionBreakpoints[ i ] + unit );
+		}
+	});
+	
+	if( minBreakpoints.length ){ breakpointClasses = minBreakpoints.join(" "); }
+	if( maxBreakpoints.length ){ breakpointClasses += " " +  maxBreakpoints.join(" "); }
+	
+	$html.addClass( breakpointClasses );	
+};
+
+/* $.mobile.addResolutionBreakpoints method: 
+	pass either a number or an array of numbers and they'll be added to the min/max breakpoint classes
+	Examples: 
+		$.mobile.addResolutionBreakpoints( 500 );
+		$.mobile.addResolutionBreakpoints( [500, 1200] );
+*/	
+$.mobile.addResolutionBreakpoints = function( newbps ){
+	if( $.type( newbps ) === "array" ){
+		resolutionBreakpoints = resolutionBreakpoints.concat( newbps );
+	}
+	else {
+		resolutionBreakpoints.push( newbps );
+	}
+	resolutionBreakpoints.sort(function(a,b){ return a-b; })
+	detectResolutionBreakpoints();
+}
+
+/* 	on mobileinit, add classes to HTML element 
+	and set handlers to update those on orientationchange and resize*/
+$(document).bind("mobileinit.htmlclass", function(){
+	/* bind to orientationchange and resize  
+	to add classes to HTML element for min/max breakpoints and orientation */
+	$window.bind("orientationchange.htmlclass resize.htmlclass", function(event){
+		//add orientation class to HTML element on flip/resize.
+		if(event.orientation){
+			$html.removeClass( "portrait landscape" ).addClass( event.orientation );
+		}
+		//add classes to HTML element for min/max breakpoints	
+		detectResolutionBreakpoints();
+	});
+	
+	//trigger event manually
+	$window.trigger( "orientationchange.htmlclass" );
+});
+
+})(jQuery);
+
+/*
+* jQuery Mobile Framework : support tests
+* Copyright (c) jQuery Project
+* Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
+* Note: Code is in draft form and is subject to change 
+*/
+(function($, undefined ) {
+
+
 
 var fakeBody = $( "<body>" ).prependTo( "html" ),
 	fbCSS = fakeBody[0].style,
@@ -2012,7 +2103,7 @@ $.widget( "mobile.button", $.mobile.widget, {
 				.attr('tabindex','-1');
 		
 		//add ARIA role
-		$( "<a>", { 
+		this.button = $( "<a>", { 
 				"href": "#",
 				"role": "button",
 				"aria-label": $el.attr( "type" ) 
@@ -2020,11 +2111,13 @@ $.widget( "mobile.button", $.mobile.widget, {
 			.text( $el.text() || $el.val() )
 			.insertBefore( $el )
 			.click(function(){
-				if( type == "submit" ){
-					$(this).closest('form').submit();
-				}
-				else{
-					$el.click(); 
+				if(!o.disabled){
+					if( type == "submit" ){
+						$(this).closest('form').submit();
+					}
+					else{
+						$el.click(); 
+					}
 				}
 
 				return false;
@@ -2038,6 +2131,18 @@ $.widget( "mobile.button", $.mobile.widget, {
 				shadow: o.shadow,
 				iconshadow: o.iconshadow
 			});
+	},
+
+	enable: function(){
+		this.element.attr("disabled", false);
+		this.button.removeClass("ui-disabled").attr("aria-disabled", false);
+		return this._setOption("disabled", false);
+	},
+
+	disable: function(){
+		this.element.attr("disabled", true);
+		this.button.addClass("ui-disabled").attr("aria-disabled", true);
+		return this._setOption("disabled", true);
 	}
 });
 })( jQuery );
@@ -2052,10 +2157,13 @@ $.widget( "mobile.button", $.mobile.widget, {
 $.widget( "mobile.slider", $.mobile.widget, {
 	options: {
 		theme: null,
-		trackTheme: null
+		trackTheme: null,
+		disabled: false
 	},
 	_create: function(){	
-		var control = this.element,
+		var self = this,
+
+			control = this.element,
 		
 			parentTheme = control.parents('[class*=ui-bar-],[class*=ui-body-]').eq(0),	
 			
@@ -2073,8 +2181,6 @@ $.widget( "mobile.slider", $.mobile.widget, {
 			val = (cType == 'input') ? parseFloat(control.val()) : control[0].selectedIndex,
 			min = (cType == 'input') ? parseFloat(control.attr('min')) : 0,
 			max = (cType == 'input') ? parseFloat(control.attr('max')) : control.find('option').length-1,
-			percent = ((parseFloat(val) - min) / (max - min)) * 100,
-			snappedPercent = percent,
 			slider = $('<div class="ui-slider '+ selectClass +' ui-btn-down-'+ trackTheme+' ui-btn-corner-all" role="application"></div>'),
 			handle = $('<a href="#" class="ui-slider-handle"></a>')
 				.appendTo(slider)
@@ -2087,10 +2193,15 @@ $.widget( "mobile.slider", $.mobile.widget, {
 					'aria-valuetext': val,
 					'title': val,
 					'aria-labelledby': labelID
-				}),
-			dragging = false;
-			
-						
+				});
+
+		$.extend(this, {
+			slider: slider,
+			handle: handle,
+			dragging: false,
+			beforeStart: null
+		});
+
 		if(cType == 'select'){
 			slider.wrapInner('<div class="ui-slider-inneroffset"></div>');
 			var options = control.find('option');
@@ -2105,118 +2216,133 @@ $.widget( "mobile.slider", $.mobile.widget, {
 			
 		}	
 		
-		function updateControl(val){
-			if(cType == 'input'){ 
-				control.val(val); 
-			}
-			else { 
-				control[0].selectedIndex = val;
-			}
-			control.trigger("change");
-		}
-			
-		function slideUpdate(event, val){
-			if (val){
-				percent = (parseFloat(val) - min) / (max - min) * 100;
-			} else {
-				var data = event.originalEvent.touches ? event.originalEvent.touches[ 0 ] : event,
-					// a slight tolerance helped get to the ends of the slider
-					tol = 8;
-				if( !dragging 
-						|| data.pageX < slider.offset().left - tol 
-						|| data.pageX > slider.offset().left + slider.width() + tol ){ 
-					return; 
-				}
-				percent = Math.round(((data.pageX - slider.offset().left) / slider.width() ) * 100);
-			}
-			
-			if( percent < 0 ) { percent = 0; }
-			if( percent > 100 ) { percent = 100; }
-			var newval = Math.round( (percent/100) * (max-min) ) + min;
-			
-			if( newval < min ) { newval = min; }
-			if( newval > max ) { newval = max; }
-			//flip the stack of the bg colors
-			if(percent > 60 && cType == 'select'){ 
-				
-			}
-			snappedPercent = Math.round( newval / (max-min) * 100 );
-			handle.css('left', percent + '%');
-			handle.attr({
-					'aria-valuenow': (cType == 'input') ? newval : control.find('option').eq(newval).attr('value'),
-					'aria-valuetext': (cType == 'input') ? newval : control.find('option').eq(newval).text(),
-					'title': newval
-				});
-			updateSwitchClass(newval);
-			updateControl(newval);
-		}
-		
-		function updateSwitchClass(val){
-			if(cType == 'input'){return;}
-			if(val == 0){ slider.addClass('ui-slider-switch-a').removeClass('ui-slider-switch-b'); }
-			else { slider.addClass('ui-slider-switch-b').removeClass('ui-slider-switch-a'); }
-		}
-		
-		updateSwitchClass(val);
-		
-		function updateSnap(){
-			if(cType == 'select'){
-				handle
-					.addClass('ui-slider-handle-snapping')
-					.css('left', snappedPercent + '%')
-					.animationComplete(function(){
-						handle.removeClass('ui-slider-handle-snapping');
-					});
-			}
-		}
-		
 		label.addClass('ui-slider');
 		
 		control
 			.addClass((cType == 'input') ? 'ui-slider-input' : 'ui-slider-switch')
-			.keyup(function(e){
-				slideUpdate(e, $(this).val() );
+			.keyup(function(){
+				self.refresh( $(this).val() );
 			});
 			
 		$(document).bind($.support.touch ? "touchmove" : "mousemove", function(event){
-			if(dragging){
-				slideUpdate(event);
+			if ( self.dragging ) {
+				self.refresh( event );
 				return false;
 			}
 		});
 					
 		slider
 			.bind($.support.touch ? "touchstart" : "mousedown", function(event){
-				dragging = true;
-				if((cType == 'select')){
-					val = control[0].selectedIndex;
+				self.dragging = true;
+				if ( cType === "select" ) {
+					self.beforeStart = control[0].selectedIndex;
 				}
-				slideUpdate(event);
+				self.refresh( event );
 				return false;
 			});
 			
 		slider
 			.add(document)	
-			.bind($.support.touch ? "touchend" : "mouseup", function(event){
-				if(dragging){
-					dragging = false;
-					if(cType == 'select'){
-						if(val == control[0].selectedIndex){
-							val = val == 0 ? 1 : 0;
+			.bind($.support.touch ? "touchend" : "mouseup", function(){
+				if ( self.dragging ) {
+					self.dragging = false;
+					if ( cType === "select" ) {
+						if ( self.beforeStart === control[0].selectedIndex ) {
 							//tap occurred, but value didn't change. flip it!
-							slideUpdate(event,val);
+							self.refresh( self.beforeStart === 0 ? 1 : 0 );
 						}
-						updateSnap();
+						var curval = (cType === "input") ? parseFloat(control.val()) : control[ 0 ].selectedIndex;
+						var snapped = Math.round( curval / (max - min) * 100 );
+						handle
+							.addClass("ui-slider-handle-snapping")
+							.css("left", snapped + "%")
+							.animationComplete(function(){
+								handle.removeClass("ui-slider-handle-snapping");
+							});
 					}
 					return false;
 				}
 			});
+
+		slider.insertAfter(control);
+		handle.bind('click', function(e){ return false; });
+		this.refresh();
+	},
+
+	refresh: function(val){
+		if ( this.options.disabled ) { return; }
+
+		var control = this.element, percent,
+			cType = control[0].nodeName.toLowerCase(),
+			min = (cType === "input") ? parseFloat(control.attr("min")) : 0,
+			max = (cType === "input") ? parseFloat(control.attr("max")) : control.find("option").length - 1;
+
+		if ( typeof val === "object" ) {
+			var data = val.originalEvent.touches ? val.originalEvent.touches[ 0 ] : val,
+				// a slight tolerance helped get to the ends of the slider
+				tol = 8;
+			if ( !this.dragging
+					|| data.pageX < this.slider.offset().left - tol
+					|| data.pageX > this.slider.offset().left + this.slider.width() + tol ) {
+				return;
+			}
+			percent = Math.round( ((data.pageX - this.slider.offset().left) / this.slider.width() ) * 100 );
+		} else {
+			if ( val == null ) {
+				val = (cType === "input") ? parseFloat(control.val()) : control[ 0 ].selectedIndex;
+			}
+			percent = (parseFloat(val) - min) / (max - min) * 100;
+		}
+
+		if ( isNaN(percent) ) { return; }
+		if ( percent < 0 ) { percent = 0; }
+		if ( percent > 100 ) { percent = 100; }
+
+		var newval = Math.round( (percent / 100) * (max - min) ) + min;
+		if ( newval < min ) { newval = min; }
+		if ( newval > max ) { newval = max; }
+
+		//flip the stack of the bg colors
+		if ( percent > 60 && cType === "select" ) {
 			
-		slider.insertAfter(control);	
-		
-		handle
-			.css('left', percent + '%')
-			.bind('click', function(e){ return false; });	
+		}
+		this.handle.css("left", percent + "%");
+		this.handle.attr({
+				"aria-valuenow": (cType === "input") ? newval : control.find("option").eq(newval).attr("value"),
+				"aria-valuetext": (cType === "input") ? newval : control.find("option").eq(newval).text(),
+				title: newval
+			});
+
+		// add/remove classes for flip toggle switch
+		if ( cType === "select" ) {
+			if ( newval === 0 ) {
+				this.slider.addClass("ui-slider-switch-a")
+					.removeClass("ui-slider-switch-b");
+			} else {
+				this.slider.addClass("ui-slider-switch-b")
+					.removeClass("ui-slider-switch-a");
+			}
+		}
+
+		// update control's value
+		if ( cType === "input" ) {
+			control.val(newval);
+		} else {
+			control[ 0 ].selectedIndex = newval;
+		}
+		control.trigger("change");
+	},
+
+	enable: function(){
+		this.element.attr("disabled", false);
+		this.slider.removeClass("ui-disabled").attr("aria-disabled", false);
+		return this._setOption("disabled", false);
+	},
+
+	disable: function(){
+		this.element.attr("disabled", true);
+		this.slider.addClass("ui-disabled").attr("aria-disabled", true);
+		return this._setOption("disabled", true);
 	}
 });
 })( jQuery );
@@ -3049,10 +3175,7 @@ $.fn.grid = function(options){
 		
 		//enable/disable hashchange event listener
 		//toggled internally when location.hash is updated to match the url of a successful page load
-		hashListener = true,
-		
-		//media-query-like width breakpoints, which are translated to classes on the html element 
-		resolutionBreakpoints = [320,480,768,1024];
+		hashListener = true;
 	
 	//add mobile, initial load "rendering" classes to docEl
 	$html.addClass('ui-mobile ui-mobile-rendering');	
@@ -3482,54 +3605,6 @@ $.fn.grid = function(options){
 		});
 	});	
 	
-	//add orientation class on flip/resize.
-	$window.bind( "orientationchange.htmlclass", function( event ) {
-		$html.removeClass( "portrait landscape" ).addClass( event.orientation );
-	});
-	
-	//add breakpoint classes for faux media-q support
-	function detectResolutionBreakpoints(){
-		var currWidth = $window.width(),
-			minPrefix = "min-width-",
-			maxPrefix = "max-width-",
-			minBreakpoints = [],
-			maxBreakpoints = [],
-			unit = "px",
-			breakpointClasses;
-			
-		$html.removeClass( minPrefix + resolutionBreakpoints.join(unit + " " + minPrefix) + unit + " " + 
-			maxPrefix + resolutionBreakpoints.join( unit + " " + maxPrefix) + unit );
-					
-		$.each(resolutionBreakpoints,function( i ){
-			if( currWidth >= resolutionBreakpoints[ i ] ){
-				minBreakpoints.push( minPrefix + resolutionBreakpoints[ i ] + unit );
-			}
-			if( currWidth <= resolutionBreakpoints[ i ] ){
-				maxBreakpoints.push( maxPrefix + resolutionBreakpoints[ i ] + unit );
-			}
-		});
-		
-		if( minBreakpoints.length ){ breakpointClasses = minBreakpoints.join(" "); }
-		if( maxBreakpoints.length ){ breakpointClasses += " " +  maxBreakpoints.join(" "); }
-		
-		$html.addClass( breakpointClasses );	
-	};
-	
-	//add breakpoints now and on oc/resize events
-	$window.bind( "orientationchange resize", detectResolutionBreakpoints);
-	detectResolutionBreakpoints();
-	
-	//common breakpoints, overrideable, changeable
-	$.mobile.addResolutionBreakpoints = function( newbps ){
-		if( $.type( newbps ) === "array" ){
-			resolutionBreakpoints = resolutionBreakpoints.concat( newbps );
-		}
-		else {
-			resolutionBreakpoints.push( newbps );
-		}
-		detectResolutionBreakpoints();
-	} 
-	
 	//animation complete callback
 	//TODO - update support test and create special event for transitions
 	//check out transitionEnd (opera per Paul's request)
@@ -3567,9 +3642,6 @@ $.fn.grid = function(options){
 		
 		//trigger a new hashchange, hash or not
 		$window.trigger( "hashchange", [ true ] );
-		
-		//update orientation 
-		$window.trigger( "orientationchange.htmlclass" );
 		
 		//remove rendering class
 		$html.removeClass('ui-mobile-rendering');

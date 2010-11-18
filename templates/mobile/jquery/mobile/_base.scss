@@ -420,11 +420,13 @@
 
 .ui-checkbox, .ui-radio {
   position: relative;
-  margin: .2em 0 .5em; }
+  margin: .2em 0 .5em;
+  z-index: 1; }
 
 .ui-checkbox .ui-btn, .ui-radio .ui-btn {
   margin: 0;
-  text-align: left; }
+  text-align: left;
+  z-index: 2; }
 
 .ui-checkbox .ui-btn-icon-left .ui-btn-inner, .ui-radio .ui-btn-icon-left .ui-btn-inner {
   padding-left: 45px; }
@@ -447,7 +449,8 @@
   width: 10px;
   height: 10px;
   margin: -5px 0 0 0;
-  outline: 0 !important; }
+  outline: 0 !important;
+  z-index: 1; }
 
 /*
 * jQuery Mobile Framework
