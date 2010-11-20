@@ -502,7 +502,7 @@ label.ui-select {
 
 /*listbox*/
 
-.ui-listbox {
+.ui-selectmenu {
   position: absolute;
   padding: 0;
   z-index: 100 !important;
@@ -512,11 +512,11 @@ label.ui-select {
   .ui-listview {
     margin: 0; } }
 
-.ui-listbox-hidden {
+.ui-selectmenu-hidden {
   top: -999999px;
   left: -99999px; }
 
-.ui-listbox-screen {
+.ui-selectmenu-screen {
   position: absolute;
   top: 0;
   left: 0;
@@ -527,16 +527,11 @@ label.ui-select {
 .ui-screen-hidden {
   display: none; }
 
-.ui-listbox-list {
+.ui-selectmenu-list {
   .ui-li .ui-icon {
     display: none; }
   .ui-btn-active .ui-icon {
     display: block; } }
-
-/*used in listbox - to be removed/replaced with page-style hiding*/
-
-.ui-helper-hidden, .ui-mobile .ui-content-hidden {
-  display: none; }
 
 .min-width-480px {
   label.ui-select {
@@ -664,7 +659,7 @@ label.ui-input-text {
   font-weight: normal;
   margin: 0 0 .3em; }
 
-input.ui-input-text {
+input.ui-input-text, textarea.ui-input-text {
   background-image: none;
   padding: .4em;
   line-height: 1.4;
@@ -672,13 +667,10 @@ input.ui-input-text {
   display: block;
   width: 95%; }
 
+input.ui-input-text {
+  -webkit-appearance: none; }
+
 textarea.ui-input-text {
-  background-image: none;
-  padding: .4em;
-  line-height: 1.4;
-  font-size: 16px;
-  display: block;
-  width: 95%;
   height: 50px;
   -webkit-transition: height 200ms linear;
   -moz-transition: height 200ms linear;

@@ -293,14 +293,14 @@ $.widget( "mobile.widget", {
 * jQuery Mobile Framework : resolution and CSS media query related helpers and behavior
 * Copyright (c) jQuery Project
 * Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
-* Note: Code is in draft form and is subject to change 
-*/ 
+* Note: Code is in draft form and is subject to change
+*/
 (function($, undefined ) {
 
 var $window = $(window),
 	$html = $( "html" ),
-	
-	//media-query-like width breakpoints, which are translated to classes on the html element 
+
+	//media-query-like width breakpoints, which are translated to classes on the html element
 	resolutionBreakpoints = [320,480,768,1024];
 
 
@@ -316,7 +316,7 @@ $.mobile.media = (function() {
 	var cache = {},
 		testDiv = $( "<div id='jquery-mediatest'>" ),
 		fakeBody = $( "<body>" ).append( testDiv );
-	
+
 	return function( query ) {
 		if ( !( query in cache ) ) {
 			var styleBlock = $( "<style type='text/css'>" +
@@ -334,7 +334,7 @@ $.mobile.media = (function() {
 	private function for adding/removing breakpoint classes to HTML element for faux media-query support
 	It does not require media query support, instead using JS to detect screen width > cross-browser support
 	This function is called on orientationchange, resize, and mobileinit, and is bound via the 'htmlclass' event namespace
-*/	
+*/
 function detectResolutionBreakpoints(){
 	var currWidth = $window.width(),
 		minPrefix = "min-width-",
@@ -343,31 +343,31 @@ function detectResolutionBreakpoints(){
 		maxBreakpoints = [],
 		unit = "px",
 		breakpointClasses;
-		
-	$html.removeClass( minPrefix + resolutionBreakpoints.join(unit + " " + minPrefix) + unit + " " + 
+
+	$html.removeClass( minPrefix + resolutionBreakpoints.join(unit + " " + minPrefix) + unit + " " +
 		maxPrefix + resolutionBreakpoints.join( unit + " " + maxPrefix) + unit );
-				
-	$.each(resolutionBreakpoints,function( i ){
-		if( currWidth >= resolutionBreakpoints[ i ] ){
-			minBreakpoints.push( minPrefix + resolutionBreakpoints[ i ] + unit );
+
+	$.each(resolutionBreakpoints,function( i, breakPoint ){
+		if( currWidth >= breakPoint ){
+			minBreakpoints.push( minPrefix + breakPoint + unit );
 		}
-		if( currWidth <= resolutionBreakpoints[ i ] ){
-			maxBreakpoints.push( maxPrefix + resolutionBreakpoints[ i ] + unit );
+		if( currWidth <= breakPoint ){
+			maxBreakpoints.push( maxPrefix + breakPoint + unit );
 		}
 	});
-	
+
 	if( minBreakpoints.length ){ breakpointClasses = minBreakpoints.join(" "); }
 	if( maxBreakpoints.length ){ breakpointClasses += " " +  maxBreakpoints.join(" "); }
-	
-	$html.addClass( breakpointClasses );	
+
+	$html.addClass( breakpointClasses );
 };
 
-/* $.mobile.addResolutionBreakpoints method: 
+/* $.mobile.addResolutionBreakpoints method:
 	pass either a number or an array of numbers and they'll be added to the min/max breakpoint classes
-	Examples: 
+	Examples:
 		$.mobile.addResolutionBreakpoints( 500 );
 		$.mobile.addResolutionBreakpoints( [500, 1200] );
-*/	
+*/
 $.mobile.addResolutionBreakpoints = function( newbps ){
 	if( $.type( newbps ) === "array" ){
 		resolutionBreakpoints = resolutionBreakpoints.concat( newbps );
@@ -375,24 +375,24 @@ $.mobile.addResolutionBreakpoints = function( newbps ){
 	else {
 		resolutionBreakpoints.push( newbps );
 	}
-	resolutionBreakpoints.sort(function(a,b){ return a-b; })
+	resolutionBreakpoints.sort(function(a,b){ return a-b; });
 	detectResolutionBreakpoints();
-}
+};
 
-/* 	on mobileinit, add classes to HTML element 
+/* 	on mobileinit, add classes to HTML element
 	and set handlers to update those on orientationchange and resize*/
 $(document).bind("mobileinit.htmlclass", function(){
-	/* bind to orientationchange and resize  
+	/* bind to orientationchange and resize
 	to add classes to HTML element for min/max breakpoints and orientation */
 	$window.bind("orientationchange.htmlclass resize.htmlclass", function(event){
 		//add orientation class to HTML element on flip/resize.
 		if(event.orientation){
 			$html.removeClass( "portrait landscape" ).addClass( event.orientation );
 		}
-		//add classes to HTML element for min/max breakpoints	
+		//add classes to HTML element for min/max breakpoints
 		detectResolutionBreakpoints();
 	});
-	
+
 	//trigger event manually
 	$window.trigger( "orientationchange.htmlclass" );
 });
@@ -1861,6 +1861,259 @@ $.widget( "mobile.page", $.mobile.widget, {
 
 
 /*
+ * jQuery UI Position @VERSION
+ *
+ * Copyright 2010, AUTHORS.txt (http://jqueryui.com/about)
+ * Dual licensed under the MIT or GPL Version 2 licenses.
+ * http://jquery.org/license
+ *
+ * http://docs.jquery.com/UI/Position
+ */
+(function( $, undefined ) {
+
+$.ui = $.ui || {};
+
+var horizontalPositions = /left|center|right/,
+	verticalPositions = /top|center|bottom/,
+	center = "center",
+	_position = $.fn.position,
+	_offset = $.fn.offset;
+
+$.fn.position = function( options ) {
+	if ( !options || !options.of ) {
+		return _position.apply( this, arguments );
+	}
+
+	// make a copy, we don't want to modify arguments
+	options = $.extend( {}, options );
+
+	var target = $( options.of ),
+		targetElem = target[0],
+		collision = ( options.collision || "flip" ).split( " " ),
+		offset = options.offset ? options.offset.split( " " ) : [ 0, 0 ],
+		targetWidth,
+		targetHeight,
+		basePosition;
+
+	if ( targetElem.nodeType === 9 ) {
+		targetWidth = target.width();
+		targetHeight = target.height();
+		basePosition = { top: 0, left: 0 };
+	// TODO: use $.isWindow() in 1.9
+	} else if ( targetElem.setTimeout ) {
+		targetWidth = target.width();
+		targetHeight = target.height();
+		basePosition = { top: target.scrollTop(), left: target.scrollLeft() };
+	} else if ( targetElem.preventDefault ) {
+		// force left top to allow flipping
+		options.at = "left top";
+		targetWidth = targetHeight = 0;
+		basePosition = { top: options.of.pageY, left: options.of.pageX };
+	} else {
+		targetWidth = target.outerWidth();
+		targetHeight = target.outerHeight();
+		basePosition = target.offset();
+	}
+
+	// force my and at to have valid horizontal and veritcal positions
+	// if a value is missing or invalid, it will be converted to center 
+	$.each( [ "my", "at" ], function() {
+		var pos = ( options[this] || "" ).split( " " );
+		if ( pos.length === 1) {
+			pos = horizontalPositions.test( pos[0] ) ?
+				pos.concat( [center] ) :
+				verticalPositions.test( pos[0] ) ?
+					[ center ].concat( pos ) :
+					[ center, center ];
+		}
+		pos[ 0 ] = horizontalPositions.test( pos[0] ) ? pos[ 0 ] : center;
+		pos[ 1 ] = verticalPositions.test( pos[1] ) ? pos[ 1 ] : center;
+		options[ this ] = pos;
+	});
+
+	// normalize collision option
+	if ( collision.length === 1 ) {
+		collision[ 1 ] = collision[ 0 ];
+	}
+
+	// normalize offset option
+	offset[ 0 ] = parseInt( offset[0], 10 ) || 0;
+	if ( offset.length === 1 ) {
+		offset[ 1 ] = offset[ 0 ];
+	}
+	offset[ 1 ] = parseInt( offset[1], 10 ) || 0;
+
+	if ( options.at[0] === "right" ) {
+		basePosition.left += targetWidth;
+	} else if (options.at[0] === center ) {
+		basePosition.left += targetWidth / 2;
+	}
+
+	if ( options.at[1] === "bottom" ) {
+		basePosition.top += targetHeight;
+	} else if ( options.at[1] === center ) {
+		basePosition.top += targetHeight / 2;
+	}
+
+	basePosition.left += offset[ 0 ];
+	basePosition.top += offset[ 1 ];
+
+	return this.each(function() {
+		var elem = $( this ),
+			elemWidth = elem.outerWidth(),
+			elemHeight = elem.outerHeight(),
+			marginLeft = parseInt( $.curCSS( this, "marginLeft", true ) ) || 0,
+			marginTop = parseInt( $.curCSS( this, "marginTop", true ) ) || 0,
+			collisionWidth = elemWidth + marginLeft +
+				parseInt( $.curCSS( this, "marginRight", true ) ) || 0,
+			collisionHeight = elemHeight + marginTop +
+				parseInt( $.curCSS( this, "marginBottom", true ) ) || 0,
+			position = $.extend( {}, basePosition ),
+			collisionPosition;
+
+		if ( options.my[0] === "right" ) {
+			position.left -= elemWidth;
+		} else if ( options.my[0] === center ) {
+			position.left -= elemWidth / 2;
+		}
+
+		if ( options.my[1] === "bottom" ) {
+			position.top -= elemHeight;
+		} else if ( options.my[1] === center ) {
+			position.top -= elemHeight / 2;
+		}
+
+		// prevent fractions (see #5280)
+		position.left = parseInt( position.left );
+		position.top = parseInt( position.top );
+
+		collisionPosition = {
+			left: position.left - marginLeft,
+			top: position.top - marginTop
+		};
+
+		$.each( [ "left", "top" ], function( i, dir ) {
+			if ( $.ui.position[ collision[i] ] ) {
+				$.ui.position[ collision[i] ][ dir ]( position, {
+					targetWidth: targetWidth,
+					targetHeight: targetHeight,
+					elemWidth: elemWidth,
+					elemHeight: elemHeight,
+					collisionPosition: collisionPosition,
+					collisionWidth: collisionWidth,
+					collisionHeight: collisionHeight,
+					offset: offset,
+					my: options.my,
+					at: options.at
+				});
+			}
+		});
+
+		if ( $.fn.bgiframe ) {
+			elem.bgiframe();
+		}
+		elem.offset( $.extend( position, { using: options.using } ) );
+	});
+};
+
+$.ui.position = {
+	fit: {
+		left: function( position, data ) {
+			var win = $( window ),
+				over = data.collisionPosition.left + data.collisionWidth - win.width() - win.scrollLeft();
+			position.left = over > 0 ? position.left - over : Math.max( position.left - data.collisionPosition.left, position.left );
+		},
+		top: function( position, data ) {
+			var win = $( window ),
+				over = data.collisionPosition.top + data.collisionHeight - win.height() - win.scrollTop();
+			position.top = over > 0 ? position.top - over : Math.max( position.top - data.collisionPosition.top, position.top );
+		}
+	},
+
+	flip: {
+		left: function( position, data ) {
+			if ( data.at[0] === center ) {
+				return;
+			}
+			var win = $( window ),
+				over = data.collisionPosition.left + data.collisionWidth - win.width() - win.scrollLeft(),
+				myOffset = data.my[ 0 ] === "left" ?
+					-data.elemWidth :
+					data.my[ 0 ] === "right" ?
+						data.elemWidth :
+						0,
+				atOffset = data.at[ 0 ] === "left" ?
+					data.targetWidth :
+					-data.targetWidth,
+				offset = -2 * data.offset[ 0 ];
+			position.left += data.collisionPosition.left < 0 ?
+				myOffset + atOffset + offset :
+				over > 0 ?
+					myOffset + atOffset + offset :
+					0;
+		},
+		top: function( position, data ) {
+			if ( data.at[1] === center ) {
+				return;
+			}
+			var win = $( window ),
+				over = data.collisionPosition.top + data.collisionHeight - win.height() - win.scrollTop(),
+				myOffset = data.my[ 1 ] === "top" ?
+					-data.elemHeight :
+					data.my[ 1 ] === "bottom" ?
+						data.elemHeight :
+						0,
+				atOffset = data.at[ 1 ] === "top" ?
+					data.targetHeight :
+					-data.targetHeight,
+				offset = -2 * data.offset[ 1 ];
+			position.top += data.collisionPosition.top < 0 ?
+				myOffset + atOffset + offset :
+				over > 0 ?
+					myOffset + atOffset + offset :
+					0;
+		}
+	}
+};
+
+// offset setter from jQuery 1.4
+if ( !$.offset.setOffset ) {
+	$.offset.setOffset = function( elem, options ) {
+		// set position first, in-case top/left are set even on static elem
+		if ( /static/.test( $.curCSS( elem, "position" ) ) ) {
+			elem.style.position = "relative";
+		}
+		var curElem   = $( elem ),
+			curOffset = curElem.offset(),
+			curTop    = parseInt( $.curCSS( elem, "top",  true ), 10 ) || 0,
+			curLeft   = parseInt( $.curCSS( elem, "left", true ), 10)  || 0,
+			props     = {
+				top:  (options.top  - curOffset.top)  + curTop,
+				left: (options.left - curOffset.left) + curLeft
+			};
+		
+		if ( 'using' in options ) {
+			options.using.call( elem, props );
+		} else {
+			curElem.css( props );
+		}
+	};
+
+	$.fn.offset = function( options ) {
+		var elem = this[ 0 ];
+		if ( !elem || !elem.ownerDocument ) { return null; }
+		if ( options ) { 
+			return this.each(function() {
+				$.offset.setOffset( this, options );
+			});
+		}
+		return _offset.call( this );
+	};
+}
+
+}( jQuery ));
+
+/*
 * jQuery Mobile Framework : "fixHeaderFooter" plugin - on-demand positioning for headers,footers
 * Copyright (c) jQuery Project
 * Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
@@ -2343,14 +2596,14 @@ $.widget( "mobile.selectmenu", $.mobile.widget, {
 					
 			menuPageContent = menuPage.find( ".ui-content" ),	
 					
-			screen = $( "<div>", {"class": "ui-listbox-screen ui-overlay ui-screen-hidden fade"})
+			screen = $( "<div>", {"class": "ui-selectmenu-screen ui-screen-hidden"})
 						.appendTo( thisPage ),		
 								
-			listbox = $( "<div>", { "class": "ui-listbox ui-listbox-hidden ui-overlay-shadow ui-corner-all pop ui-body-" + o.overlayTheme } )
+			listbox = $( "<div>", { "class": "ui-selectmenu ui-selectmenu-hidden ui-overlay-shadow ui-corner-all pop ui-body-" + o.overlayTheme } )
 					.insertAfter(screen),
 					
 			list = $( "<ul>", { 
-					"class": "ui-listbox-list", 
+					"class": "ui-selectmenu-list", 
 					"id": menuId, 
 					"role": "listbox", 
 					"aria-labelledby": buttonId,
@@ -2395,7 +2648,7 @@ $.widget( "mobile.selectmenu", $.mobile.widget, {
 			});		
 		
 		//button events
-		button.click(function(event){
+		button.bind( $.support.touch ? "touchstart" : "click", function(event){
 			self.open();
 			return false;
 		});
@@ -2469,9 +2722,14 @@ $.widget( "mobile.selectmenu", $.mobile.widget, {
 		
 		var self = this,
 			menuHeight = self.list.outerHeight(),
+			menuWidth = self.list.outerWidth(),
 			scrollTop = $(window).scrollTop(),
 			btnOffset = self.button.offset().top,
-			screenHeight = window.innerHeight;
+			screenHeight = window.innerHeight,
+			screenWidth = window.innerWidth;
+			
+		//add active class to button
+		self.button.addClass( $.mobile.activeBtnClass );
 			
 		function focusMenuItem(){
 			self.list.find( ".ui-btn-active" ).focus();
@@ -2494,19 +2752,19 @@ $.widget( "mobile.selectmenu", $.mobile.widget, {
 		}
 		else {
 			self.menuType = "overlay";
-			
+						
 			self.screen
 				.height( $(document).height() )
 				.removeClass('ui-screen-hidden');
 				
 			self.listbox
 				.append( self.list )
-				.removeClass( "ui-listbox-hidden" )
-				.css({
-					top: scrollTop + (screenHeight/2), 
-					"margin-top": -menuHeight/2,
-					left: window.innerWidth/2,
-					"margin-left": -1* self.listbox.outerWidth() / 2
+				.removeClass( "ui-selectmenu-hidden" )
+				.position({
+					my: "center center",
+					at: "center center",
+					of: self.button,
+					collision: "fit"
 				})
 				.addClass("in");
 				
@@ -2521,6 +2779,8 @@ $.widget( "mobile.selectmenu", $.mobile.widget, {
 		function focusButton(){
 			setTimeout(function(){
 				self.button.focus();
+				//remove active class from button
+				self.button.removeClass( $.mobile.activeBtnClass );
 			}, 40);
 			
 			self.listbox.removeAttr('style').append( self.list );
@@ -2535,7 +2795,7 @@ $.widget( "mobile.selectmenu", $.mobile.widget, {
 		}
 		else{
 			self.screen.addClass( "ui-screen-hidden" );
-			self.listbox.addClass( "ui-listbox-hidden" ).removeAttr( "style" ).removeClass("in");
+			self.listbox.addClass( "ui-selectmenu-hidden" ).removeAttr( "style" ).removeClass("in");
 			focusButton();
 		}
 		
@@ -3072,7 +3332,7 @@ $.widget( "mobile.collapsible", $.mobile.widget, {
 			set.last().data('collapsible-last', true)	
 		}
 					
-		collapsibleHeading.click(function(){ 
+		collapsibleHeading.bind( $.support.touch ? "touchstart" : "click", function(){ 
 			if( collapsibleHeading.is('.ui-collapsible-heading-collapsed') ){
 				collapsibleContain.trigger('expand'); 
 			}	
@@ -3291,6 +3551,12 @@ $.widget( "mobile.listview", $.mobile.widget, {
 		}
 	},
 	
+	_removeCorners: function(li){
+		li
+			.add( li.find(".ui-btn-inner, .ui-li-link-alt, .ui-li-thumb") )
+			.removeClass( "ui-corner-top ui-corner-bottom ui-corner-br ui-corner-bl ui-corner-tr ui-corner-tl" );
+	},
+	
 	refresh: function( create ) {
 		this._createSubPages();
 		
@@ -3372,34 +3638,37 @@ $.widget( "mobile.listview", $.mobile.widget, {
 			} else {
 				itemClass += " ui-li-static ui-btn-up-" + o.theme;
 			}
-				
-			if ( pos === 0 ) {
-				if ( o.inset ) {
-					itemClass += " ui-corner-top";
-
-					item
-						.add( item.find( ".ui-btn-inner" ) )
-						.find( ".ui-li-link-alt" )
-							.addClass( "ui-corner-tr" )
-						.end()
-						.find( ".ui-li-thumb" )
-							.addClass( "ui-corner-tl" );
-				}
-
-			} else if ( pos === li.length - 1 ) {
-
-				if ( o.inset ) {
-					itemClass += " ui-corner-bottom";
-
-					item
-						.add( item.find( ".ui-btn-inner" ) )
-						.find( ".ui-li-link-alt" )
-							.addClass( "ui-corner-br" )
-						.end()
-						.find( ".ui-li-thumb" )
-							.addClass( "ui-corner-bl" );
+			
+			
+			if( o.inset ){	
+				if ( pos === 0 ) {
+						itemClass += " ui-corner-top";
+	
+						item
+							.add( item.find( ".ui-btn-inner" ) )
+							.find( ".ui-li-link-alt" )
+								.addClass( "ui-corner-tr" )
+							.end()
+							.find( ".ui-li-thumb" )
+								.addClass( "ui-corner-tl" );
+						
+						self._removeCorners( item.next() );		
+	
+				} else if ( pos === li.length - 1 ) {
+						itemClass += " ui-corner-bottom";
+	
+						item
+							.add( item.find( ".ui-btn-inner" ) )
+							.find( ".ui-li-link-alt" )
+								.addClass( "ui-corner-br" )
+							.end()
+							.find( ".ui-li-thumb" )
+								.addClass( "ui-corner-bl" );
+						
+						self._removeCorners( item.prev() );		
 				}
 			}
+
 
 			if ( counter && itemClass.indexOf( "ui-li-divider" ) < 0 ) {
 				item
