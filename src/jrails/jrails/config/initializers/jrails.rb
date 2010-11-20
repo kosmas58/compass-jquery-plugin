@@ -33,6 +33,8 @@ ActionView::Helpers::AssetTagHelper.register_javascript_expansion :layout => ['j
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :pngFix => ['jquery.pngFix.min']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :sparklines => ['jquery.sparkline.min']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :themeSwitcher => ['jquery.themeswitchertool.min']
+ActionView::Helpers::AssetTagHelper.register_javascript_expansion :tmpl => ['jquery.tmpl.min']
+ActionView::Helpers::AssetTagHelper.register_javascript_expansion :tmpl_plus => ['jquery.tmplPlus.min']
 
 require 'jquery/jrails'
 require 'jquery/jquery_selector_assertions' if RAILS_ENV == 'test'
