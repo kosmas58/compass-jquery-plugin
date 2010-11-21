@@ -39,7 +39,7 @@ body {
   &.landscape .toolbar > h1 {
     margin-left: -125px;
     width: 250px; }
-  .button, .back, .cancel, .add {
+  .button, .back, .cancel, .add, .backRemote {
     position: absolute;
     overflow: hidden;
     top: 8px;
@@ -65,15 +65,15 @@ body {
   .blueButton {
     -webkit-border-image: image_url("jquery/touch/apple/activeButton.png") 0 5 0 5;
     border-width: 0 5px; }
-  .back {
+  .back, .backRemote {
     left: 6px;
     right: auto;
     padding: 0;
     max-width: 55px;
     border-width: 0 8px 0 14px;
-    -webkit-border-image: image_url("jquery/touch/apple/backButton.png") 0 8 0 14;
-    &.active {
-      -webkit-border-image: image_url("jquery/touch/apple/backButton.png") 0 8 0 14; } }
+    -webkit-border-image: image_url("jquery/touch/apple/backButton.png") 0 8 0 14; }
+  .back.active, .backRemote.active {
+    -webkit-border-image: image_url("jquery/touch/apple/backButton.png") 0 8 0 14; }
   .leftButton, .cancel {
     left: 6px;
     right: auto; }

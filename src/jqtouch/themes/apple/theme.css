@@ -51,7 +51,7 @@ body {
     width: 250px;
 }
 
-#jqt .button, #jqt .back, #jqt .cancel, #jqt .add {
+#jqt .button, #jqt .back, #jqt .cancel, #jqt .add, #jqt .backRemote {
     position: absolute;
     overflow: hidden;
     top: 8px;
@@ -83,7 +83,7 @@ body {
     border-width: 0 5px;
 }
 
-#jqt .back {
+#jqt .back, #jqt .backRemote {
     left: 6px;
     right: auto;
     padding: 0;
@@ -92,7 +92,7 @@ body {
     -webkit-border-image: url(img/backButton.png) 0 8 0 14;
 }
 
-#jqt .back.active {
+#jqt .back.active, #jqt .backRemote.active {
     -webkit-border-image: url(img/backButton.png) 0 8 0 14;
 }
 
