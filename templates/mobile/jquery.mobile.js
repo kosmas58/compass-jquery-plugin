@@ -265,8 +265,8 @@ $.Widget.prototype = {
 /*
 * jQuery Mobile Framework : widget factory extentions for mobile
 * Copyright (c) jQuery Project
-* Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
-* Note: Code is in draft form and is subject to change 
+* Dual licensed under the MIT or GPL Version 2 licenses.
+* http://jquery.org/license
 */
 (function($, undefined ) {
 
@@ -292,8 +292,8 @@ $.widget( "mobile.widget", {
 /*
 * jQuery Mobile Framework : resolution and CSS media query related helpers and behavior
 * Copyright (c) jQuery Project
-* Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
-* Note: Code is in draft form and is subject to change
+* Dual licensed under the MIT or GPL Version 2 licenses.
+* http://jquery.org/license
 */
 (function($, undefined ) {
 
@@ -402,8 +402,8 @@ $(document).bind("mobileinit.htmlclass", function(){
 /*
 * jQuery Mobile Framework : support tests
 * Copyright (c) jQuery Project
-* Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
-* Note: Code is in draft form and is subject to change 
+* Dual licensed under the MIT or GPL Version 2 licenses.
+* http://jquery.org/license
 */
 (function($, undefined ) {
 
@@ -455,6 +455,12 @@ if( !$.support.boxShadow ){ $('html').addClass('ui-mobile-nosupport-boxshadow');
 
 })( jQuery );
 
+/*
+* jQuery Mobile Framework : events
+* Copyright (c) jQuery Project
+* Dual licensed under the MIT or GPL Version 2 licenses.
+* http://jquery.org/license
+*/
 (function($, undefined ) {
 
 // add new event shortcuts
@@ -1681,8 +1687,8 @@ $.each({
 /*
 * jQuery Mobile Framework : "page" plugin
 * Copyright (c) jQuery Project
-* Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
-* Note: Code is in draft form and is subject to change 
+* Dual licensed under the MIT or GPL Version 2 licenses.
+* http://jquery.org/license
 */
 (function($, undefined ) {
 
@@ -2116,8 +2122,8 @@ if ( !$.offset.setOffset ) {
 /*
 * jQuery Mobile Framework : "fixHeaderFooter" plugin - on-demand positioning for headers,footers
 * Copyright (c) jQuery Project
-* Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
-* Note: Code is in draft form and is subject to change 
+* Dual licensed under the MIT or GPL Version 2 licenses.
+* http://jquery.org/license
 */
 (function($, undefined ) {
 $.fn.fixHeaderFooter = function(options){
@@ -2319,8 +2325,8 @@ $.fixedToolbars = (function(){
 /*
 * jQuery Mobile Framework : "checkboxradio" plugin
 * Copyright (c) jQuery Project
-* Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
-* Note: Code is in draft form and is subject to change 
+* Dual licensed under the MIT or GPL Version 2 licenses.
+* http://jquery.org/license
 */  
 (function($, undefined ) {
 $.widget( "mobile.checkboxradio", $.mobile.widget, {
@@ -2428,8 +2434,8 @@ $.widget( "mobile.checkboxradio", $.mobile.widget, {
 /*
 * jQuery Mobile Framework : "textinput" plugin for text inputs, textareas
 * Copyright (c) jQuery Project
-* Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
-* Note: Code is in draft form and is subject to change 
+* Dual licensed under the MIT or GPL Version 2 licenses.
+* http://jquery.org/license
 */
 (function($, undefined ) {
 $.widget( "mobile.textinput", $.mobile.widget, {
@@ -2527,8 +2533,8 @@ $.widget( "mobile.textinput", $.mobile.widget, {
 /*
 * jQuery Mobile Framework : "selectmenu" plugin
 * Copyright (c) jQuery Project
-* Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
-* Note: Code is in draft form and is subject to change 
+* Dual licensed under the MIT or GPL Version 2 licenses.
+* http://jquery.org/license
 */  
 (function($, undefined ) {
 $.widget( "mobile.selectmenu", $.mobile.widget, {
@@ -2820,8 +2826,8 @@ $.widget( "mobile.selectmenu", $.mobile.widget, {
 /*
 * jQuery Mobile Framework : plugin for making button-like links
 * Copyright (c) jQuery Project
-* Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
-* Note: Code is in draft form and is subject to change 
+* Dual licensed under the MIT or GPL Version 2 licenses.
+* http://jquery.org/license
 */ 
 (function($, undefined ) {
 
@@ -2929,8 +2935,8 @@ var attachEvents = function() {
 /*
 * jQuery Mobile Framework : "button" plugin - links that proxy to native input/buttons
 * Copyright (c) jQuery Project
-* Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
-* Note: Code is in draft form and is subject to change 
+* Dual licensed under the MIT or GPL Version 2 licenses.
+* http://jquery.org/license
 */ 
 (function($, undefined ) {
 $.widget( "mobile.button", $.mobile.widget, {
@@ -2999,8 +3005,8 @@ $.widget( "mobile.button", $.mobile.widget, {
 /*
 * jQuery Mobile Framework : "slider" plugin
 * Copyright (c) jQuery Project
-* Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
-* Note: Code is in draft form and is subject to change 
+* Dual licensed under the MIT or GPL Version 2 licenses.
+* http://jquery.org/license
 */  
 (function($, undefined ) {
 $.widget( "mobile.slider", $.mobile.widget, {
@@ -3201,8 +3207,8 @@ $.widget( "mobile.slider", $.mobile.widget, {
 /*
 * jQuery Mobile Framework : "collapsible" plugin
 * Copyright (c) jQuery Project
-* Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
-* Note: Code is in draft form and is subject to change 
+* Dual licensed under the MIT or GPL Version 2 licenses.
+* http://jquery.org/license
 */ 
 (function($, undefined ) {
 $.widget( "mobile.collapsible", $.mobile.widget, {
@@ -3349,8 +3355,8 @@ $.widget( "mobile.collapsible", $.mobile.widget, {
 /*
 * jQuery Mobile Framework: "controlgroup" plugin - corner-rounding for groups of buttons, checks, radios, etc
 * Copyright (c) jQuery Project
-* Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
-* Note: Code is in draft form and is subject to change 
+* Dual licensed under the MIT or GPL Version 2 licenses.
+* http://jquery.org/license
 */
 (function($, undefined ) {
 $.fn.controlgroup = function(options){
@@ -3392,14 +3398,11 @@ $.fn.controlgroup = function(options){
 /*
 * jQuery Mobile Framework : "fieldcontain" plugin - simple class additions to make form row separators
 * Copyright (c) jQuery Project
-* Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
-* Note: Code is in draft form and is subject to change 
+* Dual licensed under the MIT or GPL Version 2 licenses.
+* http://jquery.org/license
 */
 (function($, undefined ) {
 $.fn.fieldcontain = function(options){
-	var o = $.extend({
-		theme: 'c'
-	},options);
 	return $(this).addClass('ui-field-contain ui-body ui-br');
 };
 })(jQuery);
@@ -3407,8 +3410,8 @@ $.fn.fieldcontain = function(options){
 /*
 * jQuery Mobile Framework : "listview" plugin
 * Copyright (c) jQuery Project
-* Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
-* Note: Code is in draft form and is subject to change 
+* Dual licensed under the MIT or GPL Version 2 licenses.
+* http://jquery.org/license
 */
 (function($, undefined ) {
 
@@ -3685,6 +3688,11 @@ $.widget( "mobile.listview", $.mobile.widget, {
 		});
 	},
 	
+	//create a string for ID/subpage url creation
+	_idStringEscape: function( str ){
+		return str.replace(/[^a-zA-Z0-9]/g, '-');
+	},
+	
 	_createSubPages: function() {
 		var parentList = this.element,
 			parentPage = parentList.closest( ".ui-page" ),
@@ -3696,7 +3704,7 @@ $.widget( "mobile.listview", $.mobile.widget, {
 			var list = $( this ),
 				parent = list.parent(),
 				title = parent.contents()[ 0 ].nodeValue.split("\n")[0],
-				id = parentId + "&" + $.mobile.subPageUrlKey + "=" + $.mobile.idStringEscape(title + " " + i),
+				id = parentId + "&" + $.mobile.subPageUrlKey + "=" + self.idStringEscape(title + " " + i),
 				theme = list.data( "theme" ) || o.theme,
 				countTheme = list.data( "counttheme" ) || parentList.data( "counttheme" ) || o.countTheme,
 				newPage = list.wrap( "<div data-role='page'><div data-role='content'></div></div>" )
@@ -3726,8 +3734,8 @@ $.widget( "mobile.listview", $.mobile.widget, {
 /*
 * jQuery Mobile Framework : "listview" filter extension
 * Copyright (c) jQuery Project
-* Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
-* Note: Code is in draft form and is subject to change 
+* Dual licensed under the MIT or GPL Version 2 licenses.
+* http://jquery.org/license
 */
 (function($, undefined ) {
 
@@ -3828,8 +3836,8 @@ $.widget( "mobile.dialog", $.mobile.widget, {
 /*
 * jQuery Mobile Framework : "navbar" plugin
 * Copyright (c) jQuery Project
-* Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
-* Note: Code is in draft form and is subject to change 
+* Dual licensed under the MIT or GPL Version 2 licenses.
+* http://jquery.org/license
 */
 (function($, undefined ) {
 $.widget( "mobile.navbar", $.mobile.widget, {
@@ -3869,8 +3877,8 @@ $.widget( "mobile.navbar", $.mobile.widget, {
 /*
 * jQuery Mobile Framework : plugin for creating CSS grids
 * Copyright (c) jQuery Project
-* Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
-* Note: Code is in draft form and is subject to change 
+* Dual licensed under the MIT or GPL Version 2 licenses.
+* http://jquery.org/license
 */ 
 (function($, undefined ) {
 $.fn.grid = function(options){
