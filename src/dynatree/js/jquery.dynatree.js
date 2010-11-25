@@ -491,7 +491,7 @@ DynaTreeNode.prototype = {
 					}
 				}catch(e){};
 				if( this.childList.length === 1 ){
-					this.childList = null;
+					this.childList = [];
 				}else{
 					this.childList.shift();
 				}
@@ -518,7 +518,7 @@ DynaTreeNode.prototype = {
 				this.isLoading = false;
 				this.render();
 				if( this.tree.options.autoFocus ) {
-					if( this === this.tree.tnRoot && this.childList ) {
+					if( this === this.tree.tnRoot && this.childList && this.childList.length > 0) {
 						// special case: using ajaxInit
 						this.childList[0].focus();
 					} else {
@@ -987,7 +987,7 @@ DynaTreeNode.prototype = {
 		 */
 		if( this.tree.timer ) {
 			clearTimeout(this.tree.timer);
-			logMsg("clearTimeout(%o)", this.tree.timer);
+			this.tree.logDebug("clearTimeout(%o)", this.tree.timer);
 		}
 		var self = this; // required for closures
 		switch (mode) {
@@ -996,19 +996,20 @@ DynaTreeNode.prototype = {
 			break;
 		case "expand":
 			this.tree.timer = setTimeout(function(){
-				logMsg("setTimeout: trigger");
+				self.tree.logDebug("setTimeout: trigger expand");
 				self.expand(true);
 			}, ms);
 			break;
 		case "activate":
 			this.tree.timer = setTimeout(function(){
+				self.tree.logDebug("setTimeout: trigger activate");
 				self.activate();
 			}, ms);
 			break;
 		default:
 			throw "Invalid mode " + mode;
 		}
-		logMsg("setTimeout(%s, %s): %s", mode, ms, this.tree.timer);
+		this.tree.logDebug("setTimeout(%s, %s): %s", mode, ms, this.tree.timer);
 	},
 
 	toggleExpand: function() {
@@ -1612,14 +1613,9 @@ DynaTreeNode.prototype = {
 				var prevPhase = self.tree.phase;
 				self.tree.phase = "init";
 
-				if($.isArray(data) && data.length === 0){
-					// Set to [] which is interpreted as 'no children' for lazy
-					// nodes
-					self.childList = [];
-				}else{
+				if(!$.isArray(data) || data.length !== 0){
 					self.addChild(data, null);
 				}
-
 				self.tree.phase = "postInit";
 				if( orgSuccess ){
 					orgSuccess.call(options, self);
@@ -1630,6 +1626,12 @@ DynaTreeNode.prototype = {
 				// This should be the last command, so node.isLoading is true
 				// while the callbacks run
 				self.setLazyNodeStatus(DTNodeStatus_Ok);
+				if($.isArray(data) && data.length === 0){
+					// Set to [] which is interpreted as 'no children' for lazy
+					// nodes
+					self.childList = [];
+					self.render();
+				}
 				},
 			error: function(XMLHttpRequest, textStatus, errorThrown){
 				// <this> is the request options
@@ -1928,9 +1930,9 @@ DynaTree.prototype = {
 		// find container element
 		this.divTree = this.$tree.get(0);
 
-		var parentPos = $(this.divTree).parent().offset();
-		this.parentTop = parentPos.top;
-		this.parentLeft = parentPos.left;
+//		var parentPos = $(this.divTree).parent().offset();
+//		this.parentTop = parentPos.top;
+//		this.parentLeft = parentPos.left;
 
 		_initDragAndDrop(this);
 	},
@@ -2165,7 +2167,7 @@ DynaTree.prototype = {
 	},
 
 	serializeArray: function(stopOnParents) {
-		// Return a JavaScript array of objects, ready to be encoded as a JSON 
+		// Return a JavaScript array of objects, ready to be encoded as a JSON
 		// string for selected nodes
 		var nodeList = this.getSelectedNodes(stopOnParents),
 			name = this.$tree.attr("name") || this.$tree.attr("id"),
@@ -2512,7 +2514,7 @@ TODO: better?
 				.append($(event.target).closest('a').clone());
 			// Attach node reference to helper object
 			helper.data("dtSourceNode", node);
-			logMsg("helper.sourceNode=%o", helper.data("dtSourceNode"));
+			this.logDebug("helper.sourceNode=%o", helper.data("dtSourceNode"));
 			res = helper;
 			break;
 		case "start":
@@ -2552,15 +2554,21 @@ TODO: better?
 				hitMode = enterResponse;
 			} else {
 				// Calculate hitMode from relative cursor position.
-				var nodeOfs = nodeTag.position();
+				var nodeOfs = nodeTag.offset();
 //				var relPos = { x: event.clientX - nodeOfs.left,
 //							y: event.clientY - nodeOfs.top };
-				nodeOfs.top += this.parentTop;
-				nodeOfs.left += this.parentLeft;
+//				nodeOfs.top += this.parentTop;
+//				nodeOfs.left += this.parentLeft;
 				var relPos = { x: event.pageX - nodeOfs.left,
 							   y: event.pageY - nodeOfs.top };
 				var relPos2 = { x: relPos.x / nodeTag.width(),
 								y: relPos.y / nodeTag.height() };
+//				this.logDebug("event.page: %s/%s", event.pageX, event.pageY);
+//				this.logDebug("event.client: %s/%s", event.clientX, event.clientY);
+//				this.logDebug("nodeOfs: %s/%s", nodeOfs.left, nodeOfs.top);
+////				this.logDebug("parent: %s/%s", this.parentLeft, this.parentTop);
+//				this.logDebug("relPos: %s/%s", relPos.x, relPos.y);
+//				this.logDebug("relPos2: %s/%s", relPos2.x, relPos2.y);
 				if( enterResponse.after && relPos2.y > 0.75 ){
 					hitMode = "after";
 				} else if(!enterResponse.over && enterResponse.after && relPos2.y > 0.5 ){
@@ -2576,21 +2584,21 @@ TODO: better?
 				// TODO: these are no-ops when moving nodes, but not in copy mode
 				if( dnd.preventVoidMoves ){
 					if(node === otherNode){
-						logMsg("    drop over source node prevented");
+						this.logDebug("    drop over source node prevented");
 						hitMode = null;
 					}else if(hitMode === "before" && otherNode && node === otherNode.getNextSibling()){
-						logMsg("    drop after source node prevented");
+						this.logDebug("    drop after source node prevented");
 						hitMode = null;
 					}else if(hitMode === "after" && otherNode && node === otherNode.getPrevSibling()){
-						logMsg("    drop before source node prevented");
+						this.logDebug("    drop before source node prevented");
 						hitMode = null;
 					}else if(hitMode === "over" && otherNode
 							&& otherNode.parent === node && otherNode.isLastSibling() ){
-						logMsg("    drop last child over own parent prevented");
+						this.logDebug("    drop last child over own parent prevented");
 						hitMode = null;
 					}
 				}
-				logMsg("hitMode: %s - %s - %s", hitMode, (node.parent === otherNode), node.isLastSibling());
+				this.logDebug("hitMode: %s - %s - %s", hitMode, (node.parent === otherNode), node.isLastSibling());
 				ui.helper.data("hitMode", hitMode);
 //    			logMsg("    clientPos: %s/%s", event.clientX, event.clientY);
 //    			logMsg("    clientPos: %s/%s", event.pageX, event.pageY);
@@ -2703,42 +2711,40 @@ $.widget("ui.dynatree", {
 	},
 
 	bind: function() {
-		var $this = this.element;
-		var o = this.options;
-
 		// Prevent duplicate binding
 		this.unbind();
 
 		var eventNames = "click.dynatree dblclick.dynatree";
-		if( o.keyboard ){
+		if( this.options.keyboard ){
 			// Note: leading ' '!
 			eventNames += " keypress.dynatree keydown.dynatree";
 		}
-		$this.bind(eventNames, function(event){
+		this.element.bind(eventNames, function(event){
 			var dtnode = getDtNodeFromElement(event.target);
 			if( !dtnode ){
 				return true;  // Allow bubbling of other events
 			}
-			var prevPhase = dtnode.tree.phase;
-			dtnode.tree.phase = "userEvent";
+			var tree = dtnode.tree;
+			var o = tree.options;
+			tree.logDebug("event(%s): dtnode: %s", event.type, dtnode);
+			var prevPhase = tree.phase;
+			tree.phase = "userEvent";
 			try {
-				dtnode.tree.logDebug("bind(%o): dtnode: %o", event, dtnode);
-
 				switch(event.type) {
 				case "click":
-					return ( o.onClick && o.onClick(dtnode, event)===false ) ? false : dtnode._onClick(event);
+					return ( o.onClick && o.onClick.call(tree, dtnode, event)===false ) ? false : dtnode._onClick(event);
 				case "dblclick":
-					return ( o.onDblClick && o.onDblClick(dtnode, event)===false ) ? false : dtnode._onDblClick(event);
+					return ( o.onDblClick && o.onDblClick.call(tree, dtnode, event)===false ) ? false : dtnode._onDblClick(event);
 				case "keydown":
-					return ( o.onKeydown && o.onKeydown(dtnode, event)===false ) ? false : dtnode._onKeydown(event);
+					return ( o.onKeydown && o.onKeydown.call(tree, dtnode, event)===false ) ? false : dtnode._onKeydown(event);
 				case "keypress":
-					return ( o.onKeypress && o.onKeypress(dtnode, event)===false ) ? false : dtnode._onKeypress(event);
+					return ( o.onKeypress && o.onKeypress.call(tree, dtnode, event)===false ) ? false : dtnode._onKeypress(event);
 				}
 			} catch(e) {
 				var _ = null; // issue 117
-				dtnode.tree.logWarning("bind(%o): dtnode: %o, error: %o", event, dtnode, e);
+				tree.logWarning("bind(%o): dtnode: %o, error: %o", event, dtnode, e);
 			} finally {
-				dtnode.tree.phase = prevPhase;
+				tree.phase = prevPhase;
 			}
 		});
 
@@ -3030,7 +3036,7 @@ var _registerDnd = function() {
 //	            draggable.offset.click.left -= event.target.offsetLeft;
 				draggable.offset.click.top = -2;
 				draggable.offset.click.left = + 16;
-				logMsg("    draggable.offset.click FIXED: %s/%s", draggable.offset.click.left, draggable.offset.click.top);
+//				logMsg("    draggable.offset.click FIXED: %s/%s", draggable.offset.click.left, draggable.offset.click.top);
 				// Trigger onDragStart event
 				// TODO: when called as connectTo..., the return value is ignored(?)
 				return sourceNode.tree._onDragEvent("start", sourceNode, null, event, ui, draggable);
@@ -3041,7 +3047,7 @@ var _registerDnd = function() {
 			var sourceNode = ui.helper.data("dtSourceNode") || null;
 			var prevTargetNode = ui.helper.data("dtTargetNode") || null;
 			var targetNode = getDtNodeFromElement(event.target);
-			logMsg("getDtNodeFromElement(%o): %s", event.target, targetNode);
+//			logMsg("getDtNodeFromElement(%o): %s", event.target, targetNode);
 			if(event.target && !targetNode){
 				// We got a drag event, but the targetNode could not be found
 				// at the event location. This may happen, if the mouse

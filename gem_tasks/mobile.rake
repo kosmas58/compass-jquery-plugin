@@ -18,6 +18,7 @@ all_scripts = [
   'js/jquery.mobile.event.js',
   'js/jquery.mobile.hashchange.js',
   'js/jquery.mobile.core.js',
+  'js/jquery.mobile.navigation.js',
   'js/jquery.mobile.page.js',
   'js/jquery.ui.position.js',
   'js/jquery.mobile.fixHeaderFooter.js',

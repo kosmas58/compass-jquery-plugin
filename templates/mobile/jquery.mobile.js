@@ -1146,22 +1146,23 @@ $.each({
 		}
 	});
 	
-	//trigger mobileinit event - useful hook for configuring $.mobile settings before they're used
-	$( window.document ).trigger('mobileinit');
 	
+//trigger mobileinit event - useful hook for configuring $.mobile settings before they're used
+	$( window.document ).trigger('mobileinit');
+
+
+//support conditions	
 	//if device support condition(s) aren't met, leave things as they are -> a basic, usable experience,
 	//otherwise, proceed with the enhancements
 	if ( !$.mobile.gradeA() ) {
 		return;
 	}	
 
-	//define vars for interal use
+
+//define vars for interal use
 	var $window = $(window),
 		$html = $('html'),
 		$head = $('head'),
-		
-		//to be populated at DOM ready
-		$body,
 		
 		//loading div which appears during Ajax requests
 		//will not appear if $.mobile.loadingMessage is false
@@ -1170,23 +1171,142 @@ $.each({
 						'<span class="ui-icon ui-icon-loading spin"></span>'+
 						'<h1>'+ $.mobile.loadingMessage +'</h1>'+
 					'</div>')
-			: undefined,
+			: undefined;
+
+
+//add mobile, initial load "rendering" classes to docEl
+	$html.addClass('ui-mobile ui-mobile-rendering');			
+		
 			
-		//define meta viewport tag, if content is defined	
-		$metaViewport = $.mobile.metaViewportContent ? $("<meta>", { name: "viewport", content: $.mobile.metaViewportContent}).prependTo( $head ) : undefined,
+//define & prepend meta viewport tag, if content is defined	
+	$.mobile.metaViewportContent ? $("<meta>", { name: "viewport", content: $.mobile.metaViewportContent}).prependTo( $head ) : undefined;			
+
+	
+//expose some core utilities
+	$.extend($.mobile, {
+	
+		// turn on/off page loading message.
+		pageLoading: function ( done ) {
+			if ( done ) {
+				$html.removeClass( "ui-loading" );
+			} else {
+				if( $.mobile.loadingMessage ){
+					$loader.appendTo($.mobile.pageContainer).css({top: $(window).scrollTop() + 75});
+				}	
+				$html.addClass( "ui-loading" );
+			}
+		},
 		
-		//define baseUrl for use in relative url management
-		baseUrl = getPathDir( location.protocol + '//' + location.host + location.pathname ),
+		//scroll page vertically: scroll to 0 to hide iOS address bar, or pass a Y value
+		silentScroll: function( ypos ) {
+			// prevent scrollstart and scrollstop events
+			$.event.special.scrollstart.enabled = false;
+			setTimeout(function() {
+				window.scrollTo( 0, ypos || 0 );
+			},20);	
+			setTimeout(function() {
+				$.event.special.scrollstart.enabled = true;
+			}, 150 );
+		}
+	});	
+	
+	
+//dom-ready inits
+	$(function(){
 		
-		//define base element, for use in routing asset urls that are referenced in Ajax-requested markup
-		$base = $.support.dynamicBaseTag ? $("<base>", { href: baseUrl }).prependTo( $head ) : undefined,
+		//find present pages		
+		var $pages = $("[data-role='page']");
 		
-		//will be defined as first page element in DOM
-		$startPage,
+		//set up active page
+		$.mobile.startPage = $.mobile.activePage = $pages.first();
 		
-		//will be defined as $startPage.parent(), which is usually the body element
-		//will receive ui-mobile-viewport class
-		$pageContainer,
+		//set page container
+		$.mobile.pageContainer = $.mobile.startPage.parent().addClass('ui-mobile-viewport');
+		
+		//cue page loading message
+		$.mobile.pageLoading();
+		
+		//initialize all pages present
+		$pages.page();
+		
+		//trigger a new hashchange, hash or not
+		$window.trigger( "hashchange", [ true ] );
+		
+		//remove rendering class
+		$html.removeClass('ui-mobile-rendering');
+	});
+	
+	
+//window load event	
+	//hide iOS browser chrome on load
+	$window.load( $.mobile.silentScroll );	
+	
+})( jQuery, this );
+
+
+/*
+* jQuery Mobile Framework : core utilities for auto ajax navigation, base tag mgmt, 
+* Copyright (c) jQuery Project
+* Dual licensed under the MIT or GPL Version 2 licenses.
+* http://jquery.org/license
+*/ 
+(function($, undefined ) {
+
+	//define vars for interal use
+	var $window = $(window),
+		$html = $('html'),
+		$head = $('head'),
+
+		//url path helpers for use in relative url management
+		path = {
+			
+			//get path from current hash, or from a file path
+			get: function( newPath ){
+				if( newPath == undefined ){
+					newPath = location.hash;
+				}
+				newPath = newPath.replace(/#/,'').split('/');
+				newPath.pop();
+				return newPath.join('/') + (newPath.length ? '/' : '');
+			},
+			
+			//return the substring of a filepath before the sub-page key, for making a server request 
+			getFilePath: function( path ){
+				var splitkey = '&' + $.mobile.subPageUrlKey;
+				return path.indexOf( splitkey ) > -1 ? path.split( splitkey )[0] : path;
+			},
+			
+			set: function( path, disableListening){
+				if(disableListening) { hashListener = false; }
+				location.hash = path;
+			},
+			
+			//location pathname from intial directory request
+			origin: null,
+			
+			setOrigin: function(){
+				path.origin = path.get( location.protocol + '//' + location.host + location.pathname );
+			}
+		},
+				
+		//base element management, defined depending on dynamic base tag support
+		base = $.support.dynamicBaseTag ? {
+		
+			//define base element, for use in routing asset urls that are referenced in Ajax-requested markup
+			element: $("<base>", { href: path.origin }).prependTo( $head ),
+			
+			//set the generated BASE element's href attribute to a new page's base path
+			set: function( href ){
+				base.element.attr('href', path.origin + path.get( href ));
+			},
+			
+			//set the generated BASE element's href attribute to a new page's base path
+			reset: function(){
+				base.element.attr('href', path.origin );
+			}
+			
+		} : undefined,	
+
 		
 		//will be defined when a link is clicked and given an active class
 		$activeClickedLink = null,
@@ -1207,56 +1327,272 @@ $.each({
 		
 		//enable/disable hashchange event listener
 		//toggled internally when location.hash is updated to match the url of a successful page load
-		hashListener = true;
+		hashListener = true;	
+		
+		//set location pathname from intial directory request
+		path.setOrigin();
 	
-	//add mobile, initial load "rendering" classes to docEl
-	$html.addClass('ui-mobile ui-mobile-rendering');	
 
-	// TODO: don't expose (temporary during code reorg)
-	$.mobile.urlStack = urlStack;
+/* 
+	internal utility functions
+--------------------------------------*/	
+
+
+	//direct focus to the page title, or otherwise first focusable element
+	function reFocus( page ){
+		var pageTitle = page.find( ".ui-title:eq(0)" );
+		if( pageTitle.length ){
+			pageTitle.focus();
+		}
+		else{
+			page.find( focusable ).eq(0).focus();
+		}
+	};
 	
-	//consistent string escaping for urls and IDs
-	function idStringEscape(str){
-		return str.replace(/[^a-zA-Z0-9]/g, '-');
-	}
+	//remove active classes after page transition or error
+	function removeActiveLinkClass( forceRemoval ){
+		if( !!$activeClickedLink && (!$activeClickedLink.closest( '.ui-page-active' ).length || forceRemoval )){
+			$activeClickedLink.removeClass( $.mobile.activeBtnClass );
+		}
+		$activeClickedLink = null;
+	};
+
 	
-	$.mobile.idStringEscape = idStringEscape;
+	//animation complete callback
+	$.fn.animationComplete = function( callback ){
+		if($.support.cssTransitions){
+			return $(this).one('webkitAnimationEnd', callback);
+		}
+		else{
+			callback();
+		}
+	};	
+
+
+
+/* exposed $.mobile methods	 */
+
+	//update location.hash, with or without triggering hashchange event
+	$.mobile.updateHash = path.set;
 	
-	// hide address bar
-	function silentScroll( ypos ) {
-		// prevent scrollstart and scrollstop events
-		$.event.special.scrollstart.enabled = false;
-		setTimeout(function() {
-			window.scrollTo( 0, ypos || 0 );
-		},20);	
-		setTimeout(function() {
-			$.event.special.scrollstart.enabled = true;
-		}, 150 );
-	}
+	//url stack, useful when plugins need to be aware of previous pages viewed
+	$.mobile.urlStack = urlStack;		
+
+	// changepage function 
+	$.mobile.changePage = function( to, transition, back, changeHash){
+
+		//from is always the currently viewed page
+		var toIsArray = $.type(to) === "array",
+			from = toIsArray ? to[0] : $.mobile.activePage,
+			to = toIsArray ? to[1] : to,
+			url = fileUrl = $.type(to) === "string" ? to.replace( /^#/, "" ) : null,
+			data = undefined,
+			type = 'get',
+			isFormRequest = false,
+			duplicateCachedPage = null,
+			back = (back !== undefined) ? back : ( urlStack.length > 1 && urlStack[ urlStack.length - 2 ].url === url ),
+			transition = (transition !== undefined) ? transition : $.mobile.defaultTransition;
+		
+		if( $.type(to) === "object" && to.url ){
+			url = to.url,
+			data = to.data,
+			type = to.type,
+			isFormRequest = true;
+			//make get requests bookmarkable
+			if( data && type == 'get' ){
+				url += "?" + data;
+				data = undefined;
+			}
+		}
+			
+		//reset base to pathname for new request
+		if(base){ base.reset(); }
+			
+		// if the new href is the same as the previous one
+		if ( back ) {
+			var pop = urlStack.pop();
+			if( pop ){
+				transition = pop.transition;
+			}
+		} else {
+			urlStack.push({ url: url, transition: transition });
+		}
+		
+		//function for transitioning between two existing pages
+		function transitionPages() {
+				
+			//kill the keyboard
+			$( window.document.activeElement ).blur();
+			
+			//get current scroll distance
+			var currScroll = $window.scrollTop();
+			
+			//set as data for returning to that spot
+			from.data('lastScroll', currScroll);
+			
+			//trigger before show/hide events
+			from.data("page")._trigger("beforehide", {nextPage: to});
+			to.data("page")._trigger("beforeshow", {prevPage: from});
+			
+			function loadComplete(){
+				$.mobile.pageLoading( true );
+				//trigger show/hide events, allow preventing focus change through return false		
+				if( from.data("page")._trigger("hide", null, {nextPage: to}) !== false && to.data("page")._trigger("show", null, {prevPage: from}) !== false ){
+					$.mobile.activePage = to;
+				}
+				reFocus( to );
+				if( changeHash !== false && url ){
+					path.set(url, true);
+				}
+				removeActiveLinkClass();
+				
+				//if there's a duplicateCachedPage, remove it from the DOM now that it's hidden
+				if( duplicateCachedPage != null ){
+					duplicateCachedPage.remove();
+				}
+				
+				//jump to top or prev scroll, if set
+				$.mobile.silentScroll( to.data( 'lastScroll' ) );
+			};
+			
+			if(transition && (transition !== 'none')){	
+				$.mobile.pageContainer.addClass('ui-mobile-viewport-transitioning');
+				// animate in / out
+				from.addClass( transition + " out " + ( back ? "reverse" : "" ) );
+				to.addClass( $.mobile.activePageClass + " " + transition +
+					" in " + ( back ? "reverse" : "" ) );
+				
+				// callback - remove classes, etc
+				to.animationComplete(function() {
+					from.add( to ).removeClass("out in reverse " + transition );
+					from.removeClass( $.mobile.activePageClass );
+					loadComplete();
+					$.mobile.pageContainer.removeClass('ui-mobile-viewport-transitioning');
+				});
+			}
+			else{
+				from.removeClass( $.mobile.activePageClass );
+				to.addClass( $.mobile.activePageClass );
+				loadComplete();
+			}
+		};
+		
+		//shared page enhancements
+		function enhancePage(){
+			
+			//set next page role, if defined
+			if ( nextPageRole ) {
+				to.attr( "data-role", nextPageRole );
+				nextPageRole = undefined;
+			}
+			
+			//run page plugin			
+			to.page();
+		};
+
+		//if url is a string
+		if( url ){
+			to = $( "[id='" + url + "']" ),
+			fileUrl = path.getFilePath(url);
+		}
+		else{ //find base url of element, if avail
+			var toID = to.attr('id'),
+				toIDfileurl = path.getFilePath(toID);
+				
+			if(toID != toIDfileurl){
+				fileUrl = toIDfileurl;
+			}	
+		}
+		
+		// find the "to" page, either locally existing in the dom or by creating it through ajax
+		if ( to.length && !isFormRequest ) {
+			if( fileUrl && base ){
+				base.set( fileUrl );
+			}	
+			enhancePage();
+			transitionPages();
+		} else { 
+		
+			//if to exists in DOM, save a reference to it in duplicateCachedPage for removal after page change
+			if( to.length ){
+				duplicateCachedPage = to;
+			}
+			
+			$.mobile.pageLoading();
+
+			$.ajax({
+				url: fileUrl,
+				type: type,
+				data: data,
+				success: function( html ) {
+				
+					if(base){ base.set(fileUrl); }
+					
+					var all = $("<div></div>");
+					//workaround to allow scripts to execute when included in page divs
+					all.get(0).innerHTML = html;
+					to = all.find('[data-role="page"]');
+					
+					//rewrite src and href attrs to use a base url
+					if( !$.support.dynamicBaseTag ){
+						var newPath = path.get( fileUrl );
+						to.find('[src],link[href]').each(function(){
+							var thisAttr = $(this).is('[href]') ? 'href' : 'src',
+								thisUrl = $(this).attr(thisAttr);
+							
+							//if full path exists and is same, chop it - helps IE out
+							thisUrl.replace( location.protocol + '//' + location.host + location.pathname, '' );
+								
+							if( !/^(\w+:|#|\/)/.test(thisUrl) ){
+								$(this).attr(thisAttr, newPath + thisUrl);
+							}
+						});
+					}
+					
+					//preserve ID on a retrieved page
+					if ( to.attr('id') ) {
+						//wrap page and transfer data-attrs if it has an ID
+						var copyAttrs = ['data-role', 'data-theme', 'data-fullscreen'], //TODO: more page-level attrs?
+							wrapper = to.wrap( "<div>" ).parent();
+							
+						$.each(copyAttrs,function(i){
+							if( to.attr( copyAttrs[ i ] ) ){
+								wrapper.attr( copyAttrs[ i ], to.attr( copyAttrs[ i ] ) );
+								to.removeAttr( copyAttrs[ i ] );
+							}
+						});	
+						to = wrapper;
+					}
+
+					to
+						.attr( "id", fileUrl )
+						.appendTo( $.mobile.pageContainer );
+						
+					enhancePage();
+					transitionPages();
+				},
+				error: function() {
+					$.mobile.pageLoading( true );
+					removeActiveLinkClass(true);
+					$("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all'><h1>Error Loading Page</h1></div>")
+						.css({ "display": "block", "opacity": 0.96, "top": $(window).scrollTop() + 100 })
+						.appendTo( $.mobile.pageContainer )
+						.delay( 800 )
+						.fadeOut( 400, function(){
+							$(this).remove();
+						});
+				}
+			});
+		}
+
+	};
+
+
+
 	
-	function getPathDir( path ){
-		var newPath = path.replace(/#/,'').split('/');
-		newPath.pop();
-		return newPath.join('/') + (newPath.length ? '/' : '');
-	}
+/* Event Bindings - hashchange, submit, and click */	
 	
-	function getBaseURL( nonHashPath ){
-		return getPathDir( nonHashPath || location.hash );
-	}
-	
-	var setBaseURL = !$.support.dynamicBaseTag ? $.noop : function( nonHashPath ){
-		//set base url for new page assets
-		$base.attr('href', baseUrl + getBaseURL( nonHashPath ));
-	}
-	
-	var resetBaseURL = !$.support.dynamicBaseTag ? $.noop : function(){
-		$base.attr('href', baseUrl);
-	}
-	
-	//set base href to pathname
-    resetBaseURL(); 
-	
-	//for form submission
+	//bind to form submit events, handle with Ajax
 	$('form').live('submit', function(event){
 		if( !$.mobile.ajaxFormsEnabled ){ return; }
 		
@@ -1270,10 +1606,10 @@ $.each({
 		
 		//if it's a relative href, prefix href with base url
 		if( url.indexOf('/') && url.indexOf('#') !== 0 ){
-			url = getBaseURL() + url;
+			url = path.get() + url;
 		}
 			
-		changePage({
+		$.mobile.changePage({
 				url: url,
 				type: type,
 				data: $(this).serialize()
@@ -1285,8 +1621,10 @@ $.each({
 		event.preventDefault();
 	});	
 	
+	
 	//click routing - direct to HTTP or Ajax, accordingly
 	$( "a" ).live( "click", function(event) {
+		if( !$.mobile.ajaxLinksEnabled ){ return; }
 		var $this = $(this),
 			//get href, remove same-domain protocol and host
 			href = $this.attr( "href" ).replace( location.protocol + "//" + location.host, ""),
@@ -1325,364 +1663,53 @@ $.each({
 	
 			//if it's a relative href, prefix href with base url
 			if( href.indexOf('/') && href.indexOf('#') !== 0 ){
-				href = getBaseURL() + href;
+				href = path.get() + href;
 			}
 			
 			href.replace(/^#/,'');
 			
-			changePage(href, transition, back, changeHashOnSuccess);			
+			$.mobile.changePage(href, transition, back, changeHashOnSuccess);			
 		}
 		event.preventDefault();
 	});
-	
-	// turn on/off page loading message.
-	function pageLoading( done ) {
-		if ( done ) {
-			$html.removeClass( "ui-loading" );
-		} else {
 		
-			if( $.mobile.loadingMessage ){
-				$loader.appendTo($pageContainer).css({top: $(window).scrollTop() + 75});
-			}	
-			$html.addClass( "ui-loading" );
-		}
-	};
+		
 	
-	//for directing focus to the page title, or otherwise first focusable element
-	function reFocus(page){
-		var pageTitle = page.find( ".ui-title:eq(0)" );
-		if( pageTitle.length ){
-			pageTitle.focus();
+	//hashchange event handler	
+	$window.bind( "hashchange", function(e, triggered) {
+		if( !hashListener ){ 
+			hashListener = true;
+			return; 
+		} 
+		
+		if( $(".ui-page-active").is("[data-role=" + $.mobile.nonHistorySelectors + "]") ){
+			return;
 		}
+		
+		var to = location.hash,
+			transition = triggered ? false : undefined;
+			
+		//if to is defined, use it
+		if ( to ){
+			$.mobile.changePage( to, transition);
+		}
+		//there's no hash, the active page is not the start page, and it's not manually triggered hashchange
+		//we probably backed out to the first page visited
+		else if( $.mobile.activePage.length && $.mobile.startPage[0] !== $.mobile.activePage[0] && !triggered ) {
+			$.mobile.changePage( $.mobile.startPage, transition, true );
+		}
+		//probably the first page - show it
 		else{
-			page.find( focusable ).eq(0).focus();
-		}
-	}
-	
-	//function for setting role of next page
-	function setPageRole( newPage ) {
-		if ( nextPageRole ) {
-			newPage.attr( "data-role", nextPageRole );
-			nextPageRole = undefined;
-		}
-	}
-	
-	//update hash, with or without triggering hashchange event
-	$.mobile.updateHash = function(url, disableListening){
-		if(disableListening) { hashListener = false; }
-		location.hash = url;
-	}
-
-	//wrap page and transfer data-attrs if it has an ID
-	function wrapNewPage( newPage ){
-		var copyAttrs = ['data-role', 'data-theme', 'data-fullscreen'], //TODO: more page-level attrs?
-			wrapper = newPage.wrap( "<div>" ).parent();
+			$.mobile.startPage.trigger("pagebeforeshow", {prevPage: $('')});
+			$.mobile.startPage.addClass( $.mobile.activePageClass );
+			$.mobile.pageLoading( true );
 			
-		$.each(copyAttrs,function(i){
-			if( newPage.attr( copyAttrs[ i ] ) ){
-				wrapper.attr( copyAttrs[ i ], newPage.attr( copyAttrs[ i ] ) );
-				newPage.removeAttr( copyAttrs[ i ] );
-			}
-		});
-		return wrapper;
-	}
-	
-	//remove active classes after page transition or error
-	function removeActiveLinkClass(forceRemoval){
-		if( !!$activeClickedLink && (!$activeClickedLink.closest( '.ui-page-active' ).length || forceRemoval )){
-			$activeClickedLink.removeClass( $.mobile.activeBtnClass );
-		}
-		$activeClickedLink = null;
-	}
-
-
-	//for getting or creating a new page 
-	function changePage( to, transition, back, changeHash){
-
-		//from is always the currently viewed page
-		var toIsArray = $.type(to) === "array",
-			from = toIsArray ? to[0] : $.mobile.activePage,
-			to = toIsArray ? to[1] : to,
-			url = fileUrl = $.type(to) === "string" ? to.replace( /^#/, "" ) : null,
-			data = undefined,
-			type = 'get',
-			isFormRequest = false,
-			duplicateCachedPage = null,
-			back = (back !== undefined) ? back : ( urlStack.length > 1 && urlStack[ urlStack.length - 2 ].url === url ),
-			transition = (transition !== undefined) ? transition : $.mobile.defaultTransition;
-		
-		if( $.type(to) === "object" && to.url ){
-			url = to.url,
-			data = to.data,
-			type = to.type,
-			isFormRequest = true;
-			//make get requests bookmarkable
-			if( data && type == 'get' ){
-				url += "?" + data;
-				data = undefined;
+			if( $.mobile.startPage.trigger("pageshow", {prevPage: $('')}) !== false ){
+				reFocus($.mobile.startPage);
 			}
 		}
-			
-		//reset base to pathname for new request
-		resetBaseURL();
-			
-		// if the new href is the same as the previous one
-		if ( back ) {
-			var pop = urlStack.pop();
-			if( pop ){
-				transition = pop.transition;
-			}
-		} else {
-			urlStack.push({ url: url, transition: transition });
-		}
-		
-		//function for transitioning between two existing pages
-		function transitionPages() {
-				
-			//kill the keyboard
-			$( window.document.activeElement ).blur();
-			
-			//get current scroll distance
-			var currScroll = $window.scrollTop();
-			
-			//set as data for returning to that spot
-			from.data('lastScroll', currScroll);
-			
-			//trigger before show/hide events
-			from.data("page")._trigger("beforehide", {nextPage: to});
-			to.data("page")._trigger("beforeshow", {prevPage: from});
-			
-			function loadComplete(){
-				pageLoading( true );
-				//trigger show/hide events, allow preventing focus change through return false		
-				if( from.data("page")._trigger("hide", null, {nextPage: to}) !== false && to.data("page")._trigger("show", null, {prevPage: from}) !== false ){
-					$.mobile.activePage = to;
-				}
-				reFocus( to );
-				if( changeHash && url ){
-					$.mobile.updateHash(url, true);
-				}
-				removeActiveLinkClass();
-				
-				//if there's a duplicateCachedPage, remove it from the DOM now that it's hidden
-				if( duplicateCachedPage != null ){
-					duplicateCachedPage.remove();
-				}
-				
-				//jump to top or prev scroll, if set
-				silentScroll( to.data( 'lastScroll' ) );
-			}
-			
-			if(transition && (transition !== 'none')){	
-				$pageContainer.addClass('ui-mobile-viewport-transitioning');
-				// animate in / out
-				from.addClass( transition + " out " + ( back ? "reverse" : "" ) );
-				to.addClass( $.mobile.activePageClass + " " + transition +
-					" in " + ( back ? "reverse" : "" ) );
-				
-				// callback - remove classes, etc
-				to.animationComplete(function() {
-					from.add( to ).removeClass("out in reverse " + transition );
-					from.removeClass( $.mobile.activePageClass );
-					loadComplete();
-					$pageContainer.removeClass('ui-mobile-viewport-transitioning');
-				});
-			}
-			else{
-				from.removeClass( $.mobile.activePageClass );
-				to.addClass( $.mobile.activePageClass );
-				loadComplete();
-			}
-		};
-		
-		//shared page enhancements
-		function enhancePage(){
-			setPageRole( to );
-			to.page();
-		}
-		
-		//get the actual file in a jq-mobile nested url
-		function getFileURL( url ){
-			return url.match( '&' + $.mobile.subPageUrlKey ) ? url.split( '&' + $.mobile.subPageUrlKey )[0] : url;
-		}
-
-		//if url is a string
-		if( url ){
-			to = $( "[id='" + url + "']" ),
-			fileUrl = getFileURL(url);
-		}
-		else{ //find base url of element, if avail
-			var toID = to.attr('id'),
-				toIDfileurl = getFileURL(toID);
-				
-			if(toID != toIDfileurl){
-				fileUrl = toIDfileurl;
-			}	
-		}
-		
-		// find the "to" page, either locally existing in the dom or by creating it through ajax
-		if ( to.length && !isFormRequest ) {
-			if( fileUrl ){
-				setBaseURL(fileUrl);
-			}	
-			enhancePage();
-			transitionPages();
-		} else { 
-		
-			//if to exists in DOM, save a reference to it in duplicateCachedPage for removal after page change
-			if( to.length ){
-				duplicateCachedPage = to;
-			}
-			
-			pageLoading();
-
-			$.ajax({
-				url: fileUrl,
-				type: type,
-				data: data,
-				success: function( html ) {
-					setBaseURL(fileUrl);
-					var all = $("<div></div>");
-					//workaround to allow scripts to execute when included in page divs
-					all.get(0).innerHTML = html;
-					to = all.find('[data-role="page"]');
-					
-					//rewrite src and href attrs to use a base url
-					if( !$.support.dynamicBaseTag ){
-						var baseUrl = getBaseURL(fileUrl);
-						to.find('[src],link[href]').each(function(){
-							var thisAttr = $(this).is('[href]') ? 'href' : 'src',
-								thisUrl = $(this).attr(thisAttr);
-							
-							//if full path exists and is same, chop it - helps IE out
-							thisUrl.replace( location.protocol + '//' + location.host + location.pathname, '' );
-								
-							if( !/^(\w+:|#|\/)/.test(thisUrl) ){
-								$(this).attr(thisAttr, baseUrl + thisUrl);
-							}
-						});
-					}
-					
-					//preserve ID on a retrieved page
-					if ( to.attr('id') ) {
-						to = wrapNewPage( to );
-					}
-
-					to
-						.attr( "id", fileUrl )
-						.appendTo( $pageContainer );
-						
-					enhancePage();
-					transitionPages();
-				},
-				error: function() {
-					pageLoading( true );
-					removeActiveLinkClass(true);
-					$("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all'><h1>Error Loading Page</h1></div>")
-						.css({ "display": "block", "opacity": 0.96, "top": $(window).scrollTop() + 100 })
-						.appendTo( $pageContainer )
-						.delay( 800 )
-						.fadeOut( 400, function(){
-							$(this).remove();
-						});
-				}
-			});
-		}
-
-	};
-
-	
-	$(function() {
-
-		$body = $( "body" );
-		pageLoading();
-		
-		// needs to be bound at domready (for IE6)
-		// find or load content, make it active
-		$window.bind( "hashchange", function(e, triggered) {
-			if( !hashListener ){ 
-				hashListener = true;
-				return; 
-			} 
-			
-			if( $(".ui-page-active").is("[data-role=" + $.mobile.nonHistorySelectors + "]") ){
-				return;
-			}
-			
-			var to = location.hash,
-				transition = triggered ? false : undefined;
-				
-			// either we've backed up to the root page url
-			// or it's the first page load with no hash present
-			//there's a hash and it wasn't manually triggered
-			// > probably a new page, "back" will be figured out by changePage
-			if ( to ){
-				changePage( to, transition);
-			}
-			//there's no hash, the active page is not the start page, and it's not manually triggered hashchange
-			// > probably backed out to the first page visited
-			else if( $.mobile.activePage.length && $startPage[0] !== $.mobile.activePage[0] && !triggered ) {
-				changePage( $startPage, transition, true );
-			}
-			else{
-				$startPage.trigger("pagebeforeshow", {prevPage: $('')});
-				$startPage.addClass( $.mobile.activePageClass );
-				pageLoading( true );
-				
-				if( $startPage.trigger("pageshow", {prevPage: $('')}) !== false ){
-					reFocus($startPage);
-				}
-			}
-
-		});
-	});	
-	
-	//animation complete callback
-	//TODO - update support test and create special event for transitions
-	//check out transitionEnd (opera per Paul's request)
-	$.fn.animationComplete = function(callback){
-		if($.support.cssTransitions){
-			return $(this).one('webkitAnimationEnd', callback);
-		}
-		else{
-			callback();
-		}
-	};	
-	
-	//TODO - add to jQuery.mobile, not $
-	$.extend($.mobile, {
-		pageLoading: pageLoading,
-		changePage: changePage,
-		silentScroll: silentScroll
 	});
-
-	//dom-ready
-	$(function(){
-		var $pages = $("[data-role='page']");
-		//set up active page
-		$startPage = $.mobile.activePage = $pages.first();
-		
-		//set page container
-		$pageContainer = $startPage.parent().addClass('ui-mobile-viewport');
-		
-		$.extend({
-			pageContainer: $pageContainer
-		});
-		
-		//initialize all pages present
-		$pages.page();
-		
-		//trigger a new hashchange, hash or not
-		$window.trigger( "hashchange", [ true ] );
-		
-		//remove rendering class
-		$html.removeClass('ui-mobile-rendering');
-	});
-	
-	$window.load(silentScroll);	
-	
-})( jQuery, this );
-
+})( jQuery );
 
 /*
 * jQuery Mobile Framework : "page" plugin
@@ -2597,7 +2624,7 @@ $.widget( "mobile.selectmenu", $.mobile.widget, {
 						"</div>"+
 						"<div data-role='content'></div>"+
 					"</div>" )
-					.appendTo( $.pageContainer )
+					.appendTo( $.mobile.pageContainer )
 					.page(),	
 					
 			menuPageContent = menuPage.find( ".ui-content" ),	
@@ -3698,13 +3725,14 @@ $.widget( "mobile.listview", $.mobile.widget, {
 			parentPage = parentList.closest( ".ui-page" ),
 			parentId = parentPage.attr( "id" ),
 			o = this.options,
+			self = this,
 			persistentFooterID = parentPage.find( "[data-role='footer']" ).data( "id" );
 
 		$( parentList.find( "ul, ol" ).toArray().reverse() ).each(function( i ) {
 			var list = $( this ),
 				parent = list.parent(),
 				title = parent.contents()[ 0 ].nodeValue.split("\n")[0],
-				id = parentId + "&" + $.mobile.subPageUrlKey + "=" + self.idStringEscape(title + " " + i),
+				id = parentId + "&" + $.mobile.subPageUrlKey + "=" + self._idStringEscape(title + " " + i),
 				theme = list.data( "theme" ) || o.theme,
 				countTheme = list.data( "counttheme" ) || parentList.data( "counttheme" ) || o.countTheme,
 				newPage = list.wrap( "<div data-role='page'><div data-role='content'></div></div>" )
@@ -3717,7 +3745,7 @@ $.widget( "mobile.listview", $.mobile.widget, {
 										"data-theme": theme,
 										"data-count-theme": countTheme
 									})
-									.appendTo( $.pageContainer );
+									.appendTo( $.mobile.pageContainer );
 				
 				
 				
@@ -3941,7 +3969,7 @@ $.fn.grid = function(options){
         '</div>'+
         '<div data-role=\'content\' data-theme=\'c\'><ul data-role=\'listview\' data-inset=\'true\'></ul></div>'+
       '</div>' )
-    .appendTo( $.pageContainer ),
+    .appendTo( $.mobile.pageContainer ),
     menu = menuPage.find('ul');	
 
     //menu items	
