@@ -37,6 +37,7 @@ ActionView::Helpers::AssetTagHelper.register_javascript_expansion :tmpl => ['jqu
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :tmpl_plus => ['jquery.tmplPlus.min']
 
 require 'jquery/jrails'
+require 'handle_attributes'
 require 'jquery/jquery_selector_assertions' if RAILS_ENV == 'test'
 require 'jquery/jquery_auto_complete'
 require 'jquery/flash_messages'
