@@ -152,7 +152,6 @@ module Gridify
         self.colModel = []
         presets.each do |col|
           # create column with default args merged with options given for this column
-          willi = hashed_defs[col[:name]]
           self.colModel << GridColumn.new(hashed_defs[col[:name]].merge(col))
         end
       else
