@@ -6483,7 +6483,7 @@ $.jgrid.extend({
                 }
                 else {
                   mtype = "POST";
-                }				
+                }
                 $.ajax($.extend({
                     url:url,
                     data: $.isFunction($t.p.serializeRowData) ? $t.p.serializeRowData.call($t, tmp) : tmp,
@@ -7206,7 +7206,7 @@ addSubGrid : function(t,pos) {
                         type:ts.p.mtype,
                         url: ts.p.subGridUrl,
                         dataType:ts.p.subgridtype,
-                        data: $.isFunction(ts.p.serializeSubGridData)? ts.p.serializeSubGridData(ts, dp) : dp,
+                        data: $.isFunction(ts.p.serializeSubGridData)? ts.p.serializeSubGridData.call(ts, dp) : dp,
                         complete: function(sxml) {
                             if(ts.p.subgridtype == "xml") {
                                 subGridXml(sxml.responseXML, sid);
