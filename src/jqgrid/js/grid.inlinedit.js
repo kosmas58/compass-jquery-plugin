@@ -179,7 +179,7 @@ $.jgrid.extend({
                 }
                 else {
                   mtype = "POST";
-                }				
+                }
                 $.ajax($.extend({
                     url:url,
                     data: $.isFunction($t.p.serializeRowData) ? $t.p.serializeRowData.call($t, tmp) : tmp,
