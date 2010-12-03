@@ -2588,7 +2588,8 @@ $.widget( "mobile.selectmenu", $.mobile.widget, {
 		shadow: true,
 		iconshadow: true,
 		menuPageTheme: 'b',
-		overlayTheme: 'a'
+		overlayTheme: 'a',
+		hidePlaceholderMenuItems: true
 	},
 	_create: function(){
 	
@@ -2696,13 +2697,13 @@ $.widget( "mobile.selectmenu", $.mobile.widget, {
 		//button events
 		button.bind( $.support.touch ? "touchstart" : "click", function(event){
 			self.open();
-			return false;
+			event.preventDefault();
 		});
 		
 		//events for list items
-		list.delegate("li",'click', function(){
+		list.delegate("li:not(.ui-disabled, .ui-li-divider)", "click", function(event){
 				//update select	
-				var newIndex = list.find( "li" ).index( this ),
+				var newIndex = list.find( "li:not(.ui-li-divider)" ).index( this ),
 					prevIndex = select[0].selectedIndex;
 
 				select[0].selectedIndex = newIndex;
@@ -2716,30 +2717,64 @@ $.widget( "mobile.selectmenu", $.mobile.widget, {
 				
 				//hide custom select
 				self.close();
-				return false;
+				event.preventDefault();
 			});	
 	
 		//events on "screen" overlay
-		screen.click(function(){
+		screen.click(function(event){
 			self.close();
-			return false;
-		});	
+			event.preventDefault();
+		});
 	},
 	
 	_buildList: function(){
-		var self = this;
+		var self = this, 
+			optgroups = [],
+			o = this.options;
 		
 		self.list.empty().filter('.ui-listview').listview('destroy');
 		
 		//populate menu with options from select element
 		self.select.find( "option" ).each(function( i ){
-				var anchor = $("<a>", { 
-							"role": "option", 
-							"href": "#"
-						})
-						.text( $(this).text() );
+			var $this = $(this),
+				$parent = $this.parent();
 			
-			$( "<li>", {"data-icon": "checkbox-on"})
+			// are we inside an optgroup?
+			if( $parent.is("optgroup") ){
+				var optLabel = $parent.attr("label");
+				
+				// has this optgroup already been built yet?
+				if( $.inArray(optLabel, optgroups) === -1 ){
+					var optgroup = $('<li data-role="list-divider"></li>')
+						.text( optLabel )
+						.appendTo( self.list );
+					
+					optgroups.push( optLabel );
+				}
+			}
+
+			var anchor = $("<a>", { 
+				"role": "option", 
+				"href": "#",
+				"text": $(this).text()
+			}),
+		
+			item = $( "<li>", {"data-icon": "checkbox-on"});
+			
+			// support disabled option tags
+			if( this.disabled ){
+				item
+					.addClass("ui-disabled")
+					.attr("aria-disabled", true);
+			}
+			
+			if( o.hidePlaceholderMenuItems ){
+				if( !this.getAttribute('value') || $(this).text().length == 0 || $(this).data('placeholder')){
+					item.addClass('ui-selectmenu-placeholder');
+				}
+			}
+
+			item
 				.append( anchor )
 				.appendTo( self.list );
 		});
@@ -2759,7 +2794,7 @@ $.widget( "mobile.selectmenu", $.mobile.widget, {
 			
 		self.button.find( ".ui-btn-text" ).text( $(select[0].options.item(selected)).text() ); 
 		self.list
-			.find('li').removeClass( $.mobile.activeBtnClass ).attr('aria-selected', false)
+			.find('li:not(.ui-li-divider)').removeClass( $.mobile.activeBtnClass ).attr('aria-selected', false)
 			.eq(selected).addClass( $.mobile.activeBtnClass ).find('a').attr('aria-selected', true);		
 	},
 	
@@ -2947,7 +2982,7 @@ $.fn.buttonMarkup.defaults = {
 };
 
 var attachEvents = function() {
-	$(".ui-btn").live({
+	$(".ui-btn:not(.ui-disabled)").live({
 		mousedown: function() {
 			var theme = $(this).attr( "data-theme" );
 			$(this).removeClass( "ui-btn-up-" + theme ).addClass( "ui-btn-down-" + theme );
@@ -3005,12 +3040,21 @@ $.widget( "mobile.button", $.mobile.widget, {
 			} )
 			.text( $el.text() || $el.val() )
 			.insertBefore( $el )
-			.click(function(){
+			.click(function(e){
 				if(!o.disabled){
-					$el.click(); 
+				if ( $el.attr("type") !== "reset" ){
+					var $buttonPlaceholder = $("<input>", 
+							{type: "hidden", name: $el.attr("name"), value: $el.attr("value")})
+							.insertBefore($el);
+							
+					}
+					$el.submit();	
+					$buttonPlaceholder.remove();				
 				}
-
-				return false;
+				else{
+					$el.trigger("click")
+				}
+				e.preventDefault();
 			})
 			.buttonMarkup({
 				theme: o.theme, 

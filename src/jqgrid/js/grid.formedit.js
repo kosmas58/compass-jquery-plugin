@@ -270,6 +270,9 @@ $.jgrid.extend({
                                 if( e.which == 27 ) {
                                     hideFilter($("#"+fid));
                                 }
+                                if (e.which == 13) {
+                                    $(".ui-search", this).click();
+                                }
                             });
                         }
                     }
