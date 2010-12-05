@@ -1392,6 +1392,11 @@ $.each({
 			duplicateCachedPage = null,
 			back = (back !== undefined) ? back : ( urlStack.length > 1 && urlStack[ urlStack.length - 2 ].url === url ),
 			transition = (transition !== undefined) ? transition : $.mobile.defaultTransition;
+			
+		//If we are trying to transition to the same page that we are currently on ignore the request.
+		if(urlStack.length > 1 && url === urlStack[urlStack.length -1].url) {
+			return;
+		}
 		
 		if( $.type(to) === "object" && to.url ){
 			url = to.url,
@@ -1407,6 +1412,9 @@ $.each({
 			
 		//reset base to pathname for new request
 		if(base){ base.reset(); }
+		
+		//kill the keyboard
+		$( window.document.activeElement ).add(':focus').blur();
 			
 		// if the new href is the same as the previous one
 		if ( back ) {
@@ -1420,9 +1428,6 @@ $.each({
 		
 		//function for transitioning between two existing pages
 		function transitionPages() {
-				
-			//kill the keyboard
-			$( window.document.activeElement ).blur();
 			
 			//get current scroll distance
 			var currScroll = $window.scrollTop();
@@ -1694,12 +1699,12 @@ $.each({
 			
 		//if to is defined, use it
 		if ( to ){
-			$.mobile.changePage( to, transition);
+			$.mobile.changePage( to, transition, undefined, false);
 		}
 		//there's no hash, the active page is not the start page, and it's not manually triggered hashchange
 		//we probably backed out to the first page visited
 		else if( $.mobile.activePage.length && $.mobile.startPage[0] !== $.mobile.activePage[0] && !triggered ) {
-			$.mobile.changePage( $.mobile.startPage, transition, true );
+			$.mobile.changePage( $.mobile.startPage, transition, true, false );
 		}
 		//probably the first page - show it
 		else{
