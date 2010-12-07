@@ -1217,6 +1217,10 @@ $.each({
 		//find present pages		
 		var $pages = $("[data-role='page']");
 		
+		$pages.each(function(){
+			$(this).attr('data-url', $(this).attr('id'));
+		});
+		
 		//set up active page
 		$.mobile.startPage = $.mobile.activePage = $pages.first();
 		
@@ -1266,14 +1270,19 @@ $.each({
 					newPath = location.hash;
 				}
 				newPath = newPath.replace(/#/,'').split('/');
-				newPath.pop();
+				if(newPath.length){
+					var lastSegment = newPath[newPath.length-1];
+					if( lastSegment.indexOf('.') > -1 || lastSegment == ''){
+						newPath.pop();
+					}
+				}
 				return newPath.join('/') + (newPath.length ? '/' : '');
 			},
 			
 			//return the substring of a filepath before the sub-page key, for making a server request 
 			getFilePath: function( path ){
 				var splitkey = '&' + $.mobile.subPageUrlKey;
-				return path.indexOf( splitkey ) > -1 ? path.split( splitkey )[0] : path;
+				return path && path.indexOf( splitkey ) > -1 ? path.split( splitkey )[0] : path;
 			},
 			
 			set: function( path, disableListening){
@@ -1282,7 +1291,7 @@ $.each({
 			},
 			
 			//location pathname from intial directory request
-			origin: null,
+			origin: '',
 			
 			setOrigin: function(){
 				path.origin = path.get( location.protocol + '//' + location.host + location.pathname );
@@ -1331,7 +1340,6 @@ $.each({
 		
 		//set location pathname from intial directory request
 		path.setOrigin();
-	
 
 /* 
 	internal utility functions
@@ -1380,7 +1388,7 @@ $.each({
 
 	// changepage function 
 	$.mobile.changePage = function( to, transition, back, changeHash){
-
+	
 		//from is always the currently viewed page
 		var toIsArray = $.type(to) === "array",
 			from = toIsArray ? to[0] : $.mobile.activePage,
@@ -1393,10 +1401,12 @@ $.each({
 			back = (back !== undefined) ? back : ( urlStack.length > 1 && urlStack[ urlStack.length - 2 ].url === url ),
 			transition = (transition !== undefined) ? transition : $.mobile.defaultTransition;
 			
+
 		//If we are trying to transition to the same page that we are currently on ignore the request.
-		if(urlStack.length > 1 && url === urlStack[urlStack.length -1].url) {
+		if(urlStack.length > 1 && url === urlStack[urlStack.length -1].url && !toIsArray ) {
 			return;
 		}
+		
 		
 		if( $.type(to) === "object" && to.url ){
 			url = to.url,
@@ -1409,6 +1419,9 @@ $.each({
 				data = undefined;
 			}
 		}
+		
+		
+		
 			
 		//reset base to pathname for new request
 		if(base){ base.reset(); }
@@ -1489,9 +1502,12 @@ $.each({
 		function enhancePage(){
 			
 			//set next page role, if defined
-			if ( nextPageRole ) {
-				to.attr( "data-role", nextPageRole );
-				nextPageRole = undefined;
+			if ( nextPageRole || to.data('role') == 'dialog' ) {
+				changeHash = false;
+				if(nextPageRole){
+					to.attr( "data-role", nextPageRole );
+					nextPageRole = null;
+				}
 			}
 			
 			//run page plugin			
@@ -1500,11 +1516,11 @@ $.each({
 
 		//if url is a string
 		if( url ){
-			to = $( "[id='" + url + "']" ),
+			to = $( "[data-url='" + url + "']" );
 			fileUrl = path.getFilePath(url);
 		}
 		else{ //find base url of element, if avail
-			var toID = to.attr('id'),
+			var toID = to.attr('data-url'),
 				toIDfileurl = path.getFilePath(toID);
 				
 			if(toID != toIDfileurl){
@@ -1533,13 +1549,12 @@ $.each({
 				type: type,
 				data: data,
 				success: function( html ) {
-				
 					if(base){ base.set(fileUrl); }
 					
 					var all = $("<div></div>");
 					//workaround to allow scripts to execute when included in page divs
 					all.get(0).innerHTML = html;
-					to = all.find('[data-role="page"]');
+					to = all.find('[data-role="page"], [data-role="dialog"]').first();
 					
 					//rewrite src and href attrs to use a base url
 					if( !$.support.dynamicBaseTag ){
@@ -1556,24 +1571,9 @@ $.each({
 							}
 						});
 					}
-					
-					//preserve ID on a retrieved page
-					if ( to.attr('id') ) {
-						//wrap page and transfer data-attrs if it has an ID
-						var copyAttrs = ['data-role', 'data-theme', 'data-fullscreen'], //TODO: more page-level attrs?
-							wrapper = to.wrap( "<div>" ).parent();
-							
-						$.each(copyAttrs,function(i){
-							if( to.attr( copyAttrs[ i ] ) ){
-								wrapper.attr( copyAttrs[ i ], to.attr( copyAttrs[ i ] ) );
-								to.removeAttr( copyAttrs[ i ] );
-							}
-						});	
-						to = wrapper;
-					}
 
 					to
-						.attr( "id", fileUrl )
+						.attr( "data-url", fileUrl )
 						.appendTo( $.mobile.pageContainer );
 						
 					enhancePage();
@@ -1582,6 +1582,7 @@ $.each({
 				error: function() {
 					$.mobile.pageLoading( true );
 					removeActiveLinkClass(true);
+					base.set(path.get());
 					$("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all'><h1>Error Loading Page</h1></div>")
 						.css({ "display": "block", "opacity": 0.96, "top": $(window).scrollTop() + 100 })
 						.appendTo( $.mobile.pageContainer )
@@ -1594,8 +1595,6 @@ $.each({
 		}
 
 	};
-
-
 
 	
 /* Event Bindings - hashchange, submit, and click */	
@@ -1632,6 +1631,7 @@ $.each({
 	
 	//click routing - direct to HTTP or Ajax, accordingly
 	$( "a" ).live( "click", function(event) {
+	
 		if( !$.mobile.ajaxLinksEnabled ){ return; }
 		var $this = $(this),
 			//get href, remove same-domain protocol and host
@@ -1664,8 +1664,7 @@ $.each({
 		else {	
 			//use ajax
 			var transition = $this.data( "transition" ),
-				back = $this.data( "back" ),
-				changeHashOnSuccess = !$this.is( "[data-rel="+ $.mobile.nonHistorySelectors +"]" );
+				back = $this.data( "back" );
 				
 			nextPageRole = $this.attr( "data-rel" );	
 	
@@ -1676,7 +1675,7 @@ $.each({
 			
 			href.replace(/^#/,'');
 			
-			$.mobile.changePage(href, transition, back, changeHashOnSuccess);			
+			$.mobile.changePage(href, transition, back);			
 		}
 		event.preventDefault();
 	});
@@ -3031,36 +3030,11 @@ $.widget( "mobile.button", $.mobile.widget, {
 	},
 	_create: function(){
 		var $el = this.element,
-			o = this.options,
-			type = $el.attr('type');
-			$el
-				.addClass('ui-btn-hidden')
-				.attr('tabindex','-1');
+			o = this.options;
 		
 		//add ARIA role
-		this.button = $( "<a>", { 
-				"href": "#",
-				"role": "button",
-				"aria-label": $el.attr( "type" ) 
-			} )
+		this.button = $( "<div></div>" )
 			.text( $el.text() || $el.val() )
-			.insertBefore( $el )
-			.click(function(e){
-				if(!o.disabled){
-				if ( $el.attr("type") !== "reset" ){
-					var $buttonPlaceholder = $("<input>", 
-							{type: "hidden", name: $el.attr("name"), value: $el.attr("value")})
-							.insertBefore($el);
-							
-					}
-					$el.submit();	
-					$buttonPlaceholder.remove();				
-				}
-				else{
-					$el.trigger("click")
-				}
-				e.preventDefault();
-			})
 			.buttonMarkup({
 				theme: o.theme, 
 				icon: o.icon,
@@ -3069,7 +3043,24 @@ $.widget( "mobile.button", $.mobile.widget, {
 				corners: o.corners,
 				shadow: o.shadow,
 				iconshadow: o.iconshadow
+			})
+			.insertBefore( $el )
+			.append( $el.addClass('ui-btn-hidden') );
+		
+		//add hidden input during submit
+		if( $el.attr('type') !== 'reset' ){
+			$el.click(function(){
+				var $buttonPlaceholder = $("<input>", 
+						{type: "hidden", name: $el.attr("name"), value: $el.attr("value")})
+						.insertBefore($el);
+						
+				//bind to doc to remove after submit handling	
+				$(document).submit(function(){
+					 $buttonPlaceholder.remove();
+				});
 			});
+		}
+			
 	},
 
 	enable: function(){
@@ -3783,7 +3774,7 @@ $.widget( "mobile.listview", $.mobile.widget, {
 	_createSubPages: function() {
 		var parentList = this.element,
 			parentPage = parentList.closest( ".ui-page" ),
-			parentId = parentPage.attr( "id" ),
+			parentId = parentPage.data( "url" ),
 			o = this.options,
 			self = this,
 			persistentFooterID = parentPage.find( "[data-role='footer']" ).data( "id" );
@@ -3801,7 +3792,7 @@ $.widget( "mobile.listview", $.mobile.widget, {
 								.after( persistentFooterID ? $( "<div>", { "data-role": "footer", "data-id": persistentFooterID, "class": "ui-footer-duplicate" } ) : "" )
 								.parent()
 									.attr({
-										id: id,
+										"data-url": id,
 										"data-theme": theme,
 										"data-count-theme": countTheme
 									})
@@ -3908,7 +3899,7 @@ $.widget( "mobile.dialog", $.mobile.widget, {
 			if( $el.is('.ui-page-active') ){
 				self.close();
 				$el.bind('pagehide',function(){
-					$.mobile.updateHash( $prevPage.attr('id'), true);
+					$.mobile.updateHash( $prevPage.attr('data-url'), true);
 				});
 			}
 		});		
@@ -4017,13 +4008,14 @@ $.fn.grid = function(options){
 //quick & dirty theme switcher, written to potentially work as a bookmarklet
 (function($){
   $.themeswitcher = function(){
+  if( $('[data-url=themeswitcher]').length ){ return; }
   var 
     themesDir = '/stylesheets/compiled/jquery/mobile/',
     //themesDir = 'http://jquerymobile.com/test/themes/',themesDir = 'http://jquerymobile.com/test/themes/',
     themes = ['default','valencia'],
     currentPage = $.mobile.activePage,
     menuPage = $(
-      '<div data-role=\'dialog\' data-theme=\'a\'>' +
+      '<div data-url="themeswitcher" data-role=\'dialog\' data-theme=\'a\'>' +
         '<div data-role=\'header\' data-theme=\'b\'>' +
           '<div class=\'ui-title\'>Switch Theme:</div>'+
         '</div>'+
@@ -4049,8 +4041,5 @@ $.fn.grid = function(options){
     
     //create page, listview
     menuPage.page();
-    
-    //change page now	
-    $.mobile.changePage([currentPage, menuPage], 'pop', false);
   };
 })(jQuery);
