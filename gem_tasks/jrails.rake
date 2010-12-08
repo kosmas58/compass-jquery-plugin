@@ -162,7 +162,7 @@ namespace :build do
         end
       end      
     
-      # jQuery.UI 1.8.6
+      # jQuery.UI 1.8.7
     
       # Scripts
       
