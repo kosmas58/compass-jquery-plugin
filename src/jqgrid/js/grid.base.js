@@ -684,7 +684,8 @@ $.fn.jqGrid = function( pin ) {
             _index : {},
             grouping : false,
             groupingView : {groupField:[],groupOrder:[], groupText:[],groupColumnShow:[],groupSummary:[], showSummaryOnHide: false, sortitems:[], sortnames:[], groupDataSorted : false, summary:[],summaryval:[], plusicon: 'ui-icon-circlesmall-plus', minusicon: 'ui-icon-circlesmall-minus'},
-            ignoreCase : false
+            ignoreCase : false,
+            cmTemplate : {}
         }, $.jgrid.defaults, pin || {});
         var grid={
             headers:[],
@@ -849,7 +850,7 @@ $.fn.jqGrid = function( pin ) {
         }
         $(this).empty();
         this.p = p ;
-        var i, dir,ts;
+        var i, dir,ts, clm;
         if(this.p.colNames.length === 0) {
             for (i=0;i<this.p.colModel.length;i++){
                 this.p.colNames[i] = this.p.colModel[i].label || this.p.colModel[i].name;
@@ -1888,9 +1889,10 @@ $.fn.jqGrid = function( pin ) {
         if ($.inArray(ts.p.multikey,sortkeys) == -1 ) {ts.p.multikey = false;}
         ts.p.keyIndex=false;
         for (i=0; i<ts.p.colModel.length;i++) {
-            if (ts.p.colModel[i].key===true) {
+            clm = ts.p.colModel[i];
+            clm = $.extend(clm, ts.p.cmTemplate, clm.template || {});
+            if (ts.p.keyIndex === false && ts.p.colModel[i].key===true) {
                 ts.p.keyIndex = i;
-                break;
             }
         }
         ts.p.sortorder = ts.p.sortorder.toLowerCase();
