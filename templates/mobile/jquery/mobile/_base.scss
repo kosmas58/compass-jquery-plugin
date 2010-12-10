@@ -1253,7 +1253,8 @@ Built by David Kaneda and maintained by Jonathan Stark.
     z-index: 10;
     -webkit-animation-name: fadein; }
   &.out {
-    z-index: 0; } }
+    z-index: 0;
+    -webkit-animation-name: fadeout; } }
 
 /* The properties in this body rule are only necessary for the 'flip' transition.
  * We need specify the perspective to create a projection matrix. This will add
