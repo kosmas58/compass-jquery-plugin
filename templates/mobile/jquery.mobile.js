@@ -402,8 +402,8 @@ $(document).bind("mobileinit.htmlclass", function(){
 /*
 * jQuery Mobile Framework : support tests
 * Copyright (c) jQuery Project
-* Dual licensed under the MIT or GPL Version 2 licenses.
-* http://jquery.org/license
+* Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
+* Note: Code is in draft form and is subject to change 
 */
 (function($, undefined ) {
 
@@ -420,7 +420,7 @@ function propExists( prop ){
 	var uc_prop = prop.charAt(0).toUpperCase() + prop.substr(1),
 		props   = (prop + ' ' + vendors.join(uc_prop + ' ') + uc_prop).split(' ');
 	for(var v in props){
-		if( fbCSS[ props[v] ] !== undefined ){
+		if( fbCSS[ v ] !== undefined ){
 			return true;
 		}
 	}
@@ -432,6 +432,7 @@ function baseTagTest(){
 		base = $("<base>", {"href": fauxBase}).appendTo("head"),
 		link = $( "<a href='testurl'></a>" ).prependTo( fakeBody ),
 		rebase = link[0].href;
+	base[0].href = location.pathname;	
 	base.remove();
 	return rebase.indexOf(fauxBase) === 0;
 };
