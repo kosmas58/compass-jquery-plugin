@@ -181,7 +181,9 @@
   margin: .5em 5px;
   padding: 0;
   &:focus, a:focus {
-    outline: none; } }
+    outline: none; }
+  &:visited {
+    color: #fff; } }
 
 .ui-header .ui-btn, .ui-footer .ui-btn, .ui-bar .ui-btn {
   display: inline-block;
