@@ -223,6 +223,7 @@ h3. jQuery Plugins included
 * John Reisig et. al. for <b>"jQuery Form Plugin":http://malsup.com/jquery/form/</b>
 * Tony Tomov for <b>"jQuery Grid Plugin":http://www.trirand.com/blog/</b>
 * Tim Caswell for <b>"jQuery haml Plugin":http://github.com/creationix/jquery-haml</b>
+* Takayuki Miwa for <b>"jQuery history plugin":http://tkyk.github.com/jquery-history-plugin/</b>
 * Ivan Bozhanov for <b>"jQuery jsTree Plugin":http://jstree.com/</b>
 * Fabrizio Balliano and Fabrizio Balliano for <b>"jQuery Layout Plugin":http://www.fabrizioballiano.net/</b>
 * Andreas Eberhard for <b>"jQuery PngFix Plugin (for IE)":http://jquery.andreaseberhard.de/</b>

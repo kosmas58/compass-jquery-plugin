@@ -28,6 +28,7 @@ ActionView::Helpers::AssetTagHelper.register_javascript_expansion :cookie => ['j
 ActionView::Helpers::AssetTagHelper.register_stylesheet_expansion :farbtastic => ['compiled/jquery/ui/farbtastic.css']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :farbtastic => ['jquery.farbtastic.min']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :form => ['jquery.form.min']
+ActionView::Helpers::AssetTagHelper.register_javascript_expansion :history => ['jquery.history.min']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :hotkeys => ['jquery.hotkeys.min']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :layout => ['jquery.layout.min']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :pngFix => ['jquery.pngFix.min']
