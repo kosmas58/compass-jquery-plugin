@@ -1265,9 +1265,11 @@ Built by David Kaneda and maintained by Jonathan Stark.
  * value.
  */
 
-.ui-mobile-viewport-transitioning {
+.ui-mobile-viewport-perspective {
   -webkit-perspective: 1000;
-  position: absolute;
+  position: absolute; }
+
+.ui-mobile-viewport-transitioning {
   width: 100%;
   height: 100%;
   overflow: hidden;
