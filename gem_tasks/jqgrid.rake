@@ -42,7 +42,6 @@ all_scripts = [
 
 all_stylesheets = [
   'css/ui.jqgrid.css',
-  'css/jquery.searchFilter.css',
   'plugins/ui.multiselect.css'  
 ].collect {|filename| File.read(File.join(JQGRID_SRC, filename))}.join "\n\n"
 

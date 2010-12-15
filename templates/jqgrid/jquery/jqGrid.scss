@@ -588,11 +588,8 @@ tr.ui-search-toolbar {
         margin: 0.1em; } } }
   .ui-state-default {
     cursor: pointer; }
-  .divider {
-    height: 1px;
-    div {
-      background-color: black;
-      height: 1px; } } }
+  .divider hr {
+    margin: 1px; } }
 
 /* Multiselect
 ----------------------------------*/
