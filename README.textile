@@ -13,7 +13,7 @@ A Sass-based Meta-Framework for Compass that allows you to mix and match any of 
 * jquery.jstree.js V1.0rc3
 * jquery.dynatree.js V1.0.2
 * jquery.ribbon.js
-* jquery.jqGrid.js V3.8.1 (with minor changes to make in RESTful)
+* jquery.jqGrid.js V3.8.2 (with minor changes to make in RESTful)
 * jquery.mobile.js 1.0a2
 * jquery.jqtouch.js V1.0b2
 

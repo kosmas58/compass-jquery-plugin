@@ -67,8 +67,8 @@ $.extend($.jgrid,{
         var tsp = {m : 1, d : 1, y : 1970, h : 0, i : 0, s : 0},k,hl,dM;
         if(date && date !== null && date !== undefined){
             date = $.trim(date);
-            date = date.split(/[\\\/:_;.\t\T\s-]/);
-            format = format.split(/[\\\/:_;.\t\T\s-]/);
+            date = date.split(/[\\\/:_;.,\t\T\s-]/);
+            format = format.split(/[\\\/:_;.,\t\T\s-]/);
             var dfmt  = $.jgrid.formatter.date.monthNames;
             var afmt  = $.jgrid.formatter.date.AmPm;
             var h12to24 = function(ampm, h){
@@ -115,7 +115,7 @@ $.extend($.jgrid,{
         return sid.replace(/([\.\:\[\]])/g,"\\$1");
     },
     getAccessor : function(obj, expr) {
-        var ret,p,prm, i;
+        var ret,p,prm = [], i;
         if( typeof expr === 'function') { return expr(obj); }
         ret = obj[expr];
         if(ret===undefined) {
@@ -2419,8 +2419,12 @@ $.jgrid.extend({
                     if( $t.p.selrow != pt.id) {
                         $t.p.selrow = pt.id;
                         $(pt).addClass("ui-state-highlight").attr("aria-selected","true");
-                        if( $t.p.onSelectRow && onsr) { $t.p.onSelectRow.call($t,$t.p.selrow, true); }
-                    } else {$t.p.selrow = null;}
+                        stat = true;
+                    } else {
+                        stat = false;
+                        $t.p.selrow = null;
+                    }
+                    if( $t.p.onSelectRow && onsr) { $t.p.onSelectRow.call($t, pt.id, stat); }
                 }
             } else {
                 $t.p.selrow = pt.id;
@@ -2430,16 +2434,15 @@ $.jgrid.extend({
                     stat = true;
                     $("#jqg_"+$t.p.id+"_"+$.jgrid.jqID($t.p.selrow)).attr("checked",stat);
                     $t.p.selarrrow.push($t.p.selrow);
-                    if( $t.p.onSelectRow && onsr) { $t.p.onSelectRow.call($t,$t.p.selrow, stat); }
                 } else {
                     if(pt.className !== "ui-subgrid") { $(pt).removeClass("ui-state-highlight").attr("aria-selected","false");}
                     stat = false;
                     $("#jqg_"+$t.p.id+"_"+$.jgrid.jqID($t.p.selrow)).attr("checked",stat);
                     $t.p.selarrrow.splice(ia,1);
-                    if( $t.p.onSelectRow && onsr) { $t.p.onSelectRow.call($t,$t.p.selrow, stat); }
                     tpsr = $t.p.selarrrow[0];
                     $t.p.selrow = (tpsr === undefined) ? null : tpsr;
                 }
+                if( $t.p.onSelectRow && onsr) { $t.p.onSelectRow.call($t, pt.id , stat); }
             }
         });
     },
@@ -2729,12 +2732,12 @@ $.jgrid.extend({
             $(this.p.colModel).each(function(i) {
                 if ($.inArray(this.name,colname) !== -1 && this.hidden === sw) {
                     $("tr",$t.grid.hDiv).each(function(){
-                        $("th:eq("+i+")",this).css("display",show);
+                        $(this).children("th:eq("+i+")").css("display",show);
                     });
                     $($t.rows).each(function(j){
-                        $("td:eq("+i+")",$t.rows[j]).css("display",show);
+                        $(this).children("td:eq("+i+")").css("display",show);
                     });
-                    if($t.p.footerrow) { $("td:eq("+i+")",$t.grid.sDiv).css("display", show); }
+                    if($t.p.footerrow) { $($t.grid.sDiv).children("td:eq("+i+")").css("display", show); }
                     if(show == "none") { $t.p.tblwidth -= this.width+$t.p.cellLayout;} else {$t.p.tblwidth += this.width;}
                     this.hidden = !sw;
                     fndh=true;
