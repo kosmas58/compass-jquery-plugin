@@ -26,10 +26,13 @@ ul {
       -moz-background-origin: padding;
       background-attachment: scroll;
       background-color: transparent;
-      background-position: 0 0;
       background-repeat: repeat-y;
-      background-image: none;
-      /* no v-lines */
+      background-image: image-url("jquery/dynatree/xp/vline.gif");
+      background-position: 0 0;
+      /*
+      background-image: url("icons_96x256.gif");
+      background-position: -80px -64px;
+      */
       margin: 0;
       padding: 1px 0 0 0;
       &.dynatree-lastsib {
@@ -92,29 +95,13 @@ ul.dynatree-container img {
  * Lines and connectors
  */
 
-/*
-span.dynatree-empty
-{
-}
-span.dynatree-vline
-{
-}
-*/
-
 span {
   &.dynatree-connector {
-    background-image: none; }
+    background-position: -16px -64px; }
   &.dynatree-expander {
     background-position: 0px -80px;
-    cursor: pointer;
-    &:hover {
-      background-position: -16px -80px; } } }
+    cursor: pointer; } }
 
-/*
-.dynatree-lastsib span.dynatree-connector
-{
-}
-*/
 /*******************************************************************************
  * Expander icon
  * Note: IE6 doesn't correctly evaluate multiples class names,
@@ -126,13 +113,20 @@ span {
  * 3rd character (optional): 'l': Last sibling
  */
 
-.dynatree-exp-cl span.dynatree-expander, .dynatree-exp-cd span.dynatree-expander, .dynatree-exp-cdl span.dynatree-expander {}
+.dynatree-exp-cl span.dynatree-expander {
+  background-position: 0px -96px; }
 
-.dynatree-exp-e span.dynatree-expander, .dynatree-exp-ed span.dynatree-expander, .dynatree-exp-el span.dynatree-expander, .dynatree-exp-edl span.dynatree-expander {
+.dynatree-exp-cd span.dynatree-expander {
+  background-position: -64px -80px; }
+
+.dynatree-exp-cdl span.dynatree-expander {
+  background-position: -64px -96px; }
+
+.dynatree-exp-e span.dynatree-expander, .dynatree-exp-ed span.dynatree-expander {
   background-position: -32px -80px; }
 
-.dynatree-exp-e span.dynatree-expander:hover, .dynatree-exp-ed span.dynatree-expander:hover, .dynatree-exp-el span.dynatree-expander:hover, .dynatree-exp-edl span.dynatree-expander:hover {
-  background-position: -48px -80px; }
+.dynatree-exp-el span.dynatree-expander, .dynatree-exp-edl span.dynatree-expander {
+  background-position: -32px -96px; }
 
 .dynatree-loading span.dynatree-expander {
   background-position: 0 0;
@@ -194,9 +188,6 @@ span.dynatree-icon {
   margin-left: 3px;
   background-position: 0px 0px; }
 
-.dynatree-has-children span.dynatree-icon {
-  /*    background-position: 0px -16px; */ }
-
 .dynatree-ico-cf span.dynatree-icon {
   background-position: 0px -16px; }
 
@@ -233,11 +224,6 @@ ul.dynatree-container a {
   margin: 0px;
   margin-left: 3px;
   /*	outline: 0; /* @ Firefox, prevent dotted border after click */
-  /* Set transparent border to prevent jumping when active node gets a border
-     (we can do this, because this theme doesn't use vertical lines)
-     */
-  border: 1px solid white;
-  /* Note: 'transparent' would not work in IE6 */
   &:hover {
     /*	text-decoration: underline; */
     background: #F2F7FD;
@@ -255,8 +241,7 @@ span {
     /* Otherwise italic font will be outside bounds */
     /*	line-height: 16px; /* should be the same as img height, in case 16 px */ }
   &.dynatree-folder a {
-    /*	font-weight: bold; */
-    /* custom */ } }
+    font-weight: bold; } }
 
 ul.dynatree-container a:focus {
   background-color: #EFEBDE;
@@ -266,15 +251,14 @@ span {
   &.dynatree-focused a:link {
     background-color: #EFEBDE;
     /* gray */ }
-  &.dynatree-has-children a {
-    /*	font-style: oblique; /* custom: */ }
-  &.dynatree-expanded a {}
+  &.dynatree-has-children a, &.dynatree-expanded a {}
   &.dynatree-selected a {
-    /*	color: green; */
+    color: green;
     font-style: italic; }
   &.dynatree-active a {
-    border: 1px solid #99DEFD;
-    background-color: #D8F0FA; } }
+    background-color: #3169C6 !important;
+    color: white !important;
+    /* @ IE6 */ } }
 
 /*******************************************************************************
  * Drag'n'drop support
@@ -345,6 +329,13 @@ span {
     &.dynatree-drop-after a {
       /*background-repeat: repeat-x;
       background-position: bottom;
-      background-image: url("drop_append.gif");*/ } } }
+      background-image: url("drop_append.gif");*/ } }
+  &.custom1 a {
+    background-color: maroon;
+    color: yellow; } }
 
 /*** Target node while dragging cursor is over it *****************************/
+
+/*******************************************************************************
+ * Custom node classes (sample)
+ */
