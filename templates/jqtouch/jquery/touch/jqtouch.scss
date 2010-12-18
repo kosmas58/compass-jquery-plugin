@@ -38,6 +38,10 @@ body {
   .in, .out {
     -webkit-animation-duration: 350ms;
     -webkit-animation-timing-function: ease-in-out; }
+  .in {
+    z-index: 10; }
+  .out {
+    z-index: 0; }
   &.supports3d {
     -webkit-perspective: 800;
     -webkit-transform-style: preserve-3d;
