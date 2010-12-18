@@ -77,7 +77,7 @@ span.dynatree-drag-helper-img,
 	vertical-align: top;
 	background-repeat: no-repeat;
 	background-position: left;
-	background-image: image-url("jquery/dynatree/aqua/icons.png");
+	background-image: image_url("jquery/dynatree/aqua/icons.png");
 	background-position: 0 0;
 }
 
@@ -159,7 +159,7 @@ span.dynatree-expander:hover
 .dynatree-loading span.dynatree-expander  /* 'Loading' status overrides all others */
 {
 	background-position: 0 0;
-	background-image: image-url("jquery/dynatree/aqua/loading.gif");
+	background-image: image_url("jquery/dynatree/aqua/loading.gif");
 }
 
 
@@ -262,7 +262,7 @@ span.dynatree-icon /* Default icon */
 
 .dynatree-statusnode-wait span.dynatree-icon
 {
-	background-image: image-url("jquery/dynatree/aqua/loading.gif");
+	background-image: image_url("jquery/dynatree/aqua/loading.gif");
 }
 
 .dynatree-statusnode-error span.dynatree-icon

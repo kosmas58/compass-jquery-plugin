@@ -27,7 +27,7 @@ ul {
       background-attachment: scroll;
       background-color: transparent;
       background-repeat: repeat-y;
-      background-image: image-url("jquery/dynatree/xp/vline.png");
+      background-image: image_url("jquery/dynatree/xp/vline.png");
       background-position: 0 0;
       /*
       background-image: url("icons_96x256.gif");
@@ -66,7 +66,7 @@ span {
     vertical-align: top;
     background-repeat: no-repeat;
     background-position: left;
-    background-image: image-url("jquery/dynatree/xp/icons.png");
+    background-image: image_url("jquery/dynatree/xp/icons.png");
     background-position: 0 0; } }
 
 #dynatree-drop-marker {
@@ -79,7 +79,7 @@ span {
   vertical-align: top;
   background-repeat: no-repeat;
   background-position: left;
-  background-image: image-url("jquery/dynatree/xp/icons.png");
+  background-image: image_url("jquery/dynatree/xp/icons.png");
   background-position: 0 0; }
 
 /** Used by 'icon' node option: */
@@ -130,7 +130,7 @@ span {
 
 .dynatree-loading span.dynatree-expander {
   background-position: 0 0;
-  background-image: image-url("jquery/dynatree/xp/loading.gif"); }
+  background-image: image_url("jquery/dynatree/xp/loading.gif"); }
 
 /*******************************************************************************
  * Checkbox icon
@@ -197,7 +197,7 @@ span.dynatree-icon {
 /* Status node icons */
 
 .dynatree-statusnode-wait span.dynatree-icon {
-  background-image: image-url("jquery/dynatree/xp/loading.gif"); }
+  background-image: image_url("jquery/dynatree/xp/loading.gif"); }
 
 .dynatree-statusnode-error span.dynatree-icon {
   background-position: 0px -112px;
