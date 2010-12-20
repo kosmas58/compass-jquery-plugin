@@ -24,11 +24,12 @@ $.widget("ui.selectmenu", {
 		},
 		width: null, 
 		menuWidth: null, 
-		handleWidth: 26, 
+		handleWidth: 26,
 		maxHeight: null,
 		icons: null, 
 		format: null,
-		bgImage: function() {}
+		bgImage: function() {},
+		wrapperElement: ""
 	},	
 	
 	_create: function() {
@@ -44,9 +45,10 @@ $.widget("ui.selectmenu", {
 		this._safemouseup = true;
 		
 		//create menu button wrapper
-		this.newelement = $('<a class="'+ this.widgetBaseClass +' ui-widget ui-state-default ui-corner-all" id="'+this.ids[0]+'" role="button" href="#" aria-haspopup="true" aria-owns="'+this.ids[1]+'"></a>')
+		this.newelement = $('<a class="'+ this.widgetBaseClass +' ui-widget ui-state-default ui-corner-all" id="'+this.ids[0]+'" role="button" href="#" tabindex="0" aria-haspopup="true" aria-owns="'+this.ids[1]+'"></a>')
 			.insertAfter(this.element);
-		
+		// 
+		this.newelement.wrap(o.wrapperElement);
 		//transfer tabindex
 		var tabindex = this.element.attr('tabindex');
 		if(tabindex){ this.newelement.attr('tabindex', tabindex); }
@@ -71,7 +73,7 @@ $.widget("ui.selectmenu", {
 		//click toggle for menu visibility
 		this.newelement
 			.bind('mousedown', function(event){
-				self._toggle(event);
+				self._toggle(event, true);
 				//make sure a click won't open/close instantly
 				if(o.style == "popup"){
 					self._safemouseup = false;
@@ -133,6 +135,7 @@ $.widget("ui.selectmenu", {
 		//create menu portion, append to body
 		var cornerClass = (o.style == "dropdown")? " ui-corner-bottom" : " ui-corner-all";
 		this.list = $('<ul class="' + self.widgetBaseClass + '-menu ui-widget ui-widget-content'+cornerClass+'" aria-hidden="true" role="listbox" aria-labelledby="'+this.ids[0]+'" id="'+this.ids[1]+'"></ul>').appendTo('body');				
+		this.list.wrap(o.wrapperElement);
 		
 		//serialize selectmenu element options	
 		var selectOptionData = [];
@@ -161,7 +164,7 @@ $.widget("ui.selectmenu", {
 				.mouseup(function(event){
 						if(self._safemouseup){
 							var changed = $(this).data('index') != self._selectedIndex();
-							self.value($(this).data('index'));
+							self.index($(this).data('index'));
 							self.select(event);
 							if(changed){ self.change(event); }
 							self.close(event,true);
@@ -327,7 +330,12 @@ $.widget("ui.selectmenu", {
 		if(this.element.attr('disabled') == true){ this.disable(); }
 		
 		//update value
-		this.value(this._selectedIndex());
+		this.index(this._selectedIndex());
+		
+		// needed when selectmenu is placed at the very bottom / top of the page
+        window.setTimeout(function() {
+            self._refreshPosition();
+        }, 200);
 		
 		// needed when window is resized
 		$(window).resize(function(){
@@ -345,6 +353,7 @@ $.widget("ui.selectmenu", {
 			.attr('for',this.element.attr('id'))
 			.unbind('click');
 		this.newelement.remove();
+		// FIXME option.wrapper needs
 		this.list.remove();
 		this.element.show();	
 		
@@ -377,7 +386,7 @@ $.widget("ui.selectmenu", {
 		this._prevChar[0] = C;
 	},
 	_uiHash: function(){
-		var index = this.value();
+		var index = this.index();
 		return {
 			index: index,
 			option: $("option", this.element).get(index),
@@ -392,10 +401,12 @@ $.widget("ui.selectmenu", {
 			this._closeOthers(event);
 			this.newelement
 				.addClass('ui-state-active');
-			
-			this.list
-				.appendTo('body')
-				.addClass(self.widgetBaseClass + '-open')
+			if (self.options.wrapperElement) {
+				this.list.parent().appendTo('body');
+			} else {
+				this.list.appendTo('body');
+			}
+			this.list.addClass(self.widgetBaseClass + '-open')
 				.attr('aria-hidden', false)
 				.find('li:not(.'+ self.widgetBaseClass +'-group):eq('+ this._selectedIndex() +') a')[0].focus();	
 			if(this.options.style == "dropdown"){ this.newelement.removeClass('ui-corner-all').addClass('ui-corner-top'); }	
@@ -411,7 +422,7 @@ $.widget("ui.selectmenu", {
 				.attr('aria-hidden', true)
 				.removeClass(this.widgetBaseClass+'-open');
 			if(this.options.style == "dropdown"){ this.newelement.removeClass('ui-corner-top').addClass('ui-corner-all'); }
-			if(retainFocus){this.newelement[0].focus();}	
+			if(retainFocus){this.newelement.focus();}	
 			this._trigger("close", event, this._uiHash());
 		}
 	},
@@ -484,13 +495,26 @@ $.widget("ui.selectmenu", {
 					.attr("aria-disabled", value);
 		}
 	},
-	value: function(newValue) {
+	index: function(newValue) {
 		if (arguments.length) {
 			this.element[0].selectedIndex = newValue;
 			this._refreshValue();
-			this._refreshPosition();
+		} else {
+			return this._selectedIndex();
 		}
-		return this.element[0].selectedIndex;
+	},
+	value: function(newValue) {
+		if (arguments.length) {
+			// FIXME test for number is a kind of legacy support, could be removed at any time (Dez. 2010)
+			if (typeof newValue == "number") {
+					this.index(newValue);
+			} else if (typeof newValue == "string") {
+				this.element[0].value = newValue;
+				this._refreshValue();
+			}
+		} else {
+			return this.element[0].value;
+		}
 	},
 	_refreshValue: function() {
 		var activeClass = (this.options.style == "popup") ? " ui-state-active" : "";
@@ -526,20 +550,24 @@ $.widget("ui.selectmenu", {
 		this.list.attr('aria-activedescendant', activeID);
 	},
 	_refreshPosition: function(){	
-		var o = this.options;		
+		var o = this.options;				
 		// if its a native pop-up we need to calculate the position of the selected li
 		if (o.style == "popup" && !o.positionOptions.offset) {
 			var selected = this.list.find('li:not(.ui-selectmenu-group):eq('+this._selectedIndex()+')');
 			// var _offset = "0 -" + (selected.outerHeight() + selected.offset().top - this.list.offset().top);
 			var _offset = "0 -" + (selected.outerHeight() + selected.offset().top - this.list.offset().top);
 		}
-		this.list.position({
-			// set options for position plugin
-			of: o.positionOptions.of || this.newelement,
-			my: o.positionOptions.my,
-			at: o.positionOptions.at,
-			offset: o.positionOptions.offset || _offset
-		});
+		this.list
+			.css({
+				zIndex: this.element.zIndex()
+			})
+			.position({
+				// set options for position plugin
+				of: o.positionOptions.of || this.newelement,
+				my: o.positionOptions.my,
+				at: o.positionOptions.at,
+				offset: o.positionOptions.offset || _offset
+			});
 	}
 });
 })(jQuery);
