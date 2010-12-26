@@ -15,7 +15,6 @@ A Sass-based Meta-Framework for Compass that allows you to mix and match any of 
 * jquery.ribbon.js
 * jquery.jqGrid.js V3.8.2 (with minor changes to make in RESTful)
 * jquery.mobile.js 1.0a2
-* jquery.jqtouch.js V1.0b2
 
 This library requires <b>"Compass":http://wiki.github.com/chriseppstein/compass</b>.
 
@@ -186,23 +185,6 @@ To use the localized stylesheets and javacripts include:
 = javascript_include_tag :mobile'</pre>
 
 
-h3. jQTouch
-
-Use compass to install the jQTouch javascript library into your project.
-
-<pre>compass install [-r jquery] jquery/jqtouch <project name></pre>
-
-You will find all the stylesheets in easy-to-read Sass format at:
-
-<pre>stylesheets/jqtouch</pre>
-
-To use the localized stylesheets and javacripts include:
-
-<pre>
-= stylesheet_link_tag 'compiled/jquery/touch/[theme].css', :media => 'screen, projection'
-= javascript_include_tag :jqtouch'</pre>
-
-
 h2. Thanks to the Contributors:
 
 h3. Rails
@@ -233,8 +215,6 @@ h3. jQuery Plugins included
 * John Reisig et. al. for <b>"jQuery Templating Plugin":https://github.com/jquery/jquery-tmpl/</b>
 * Juan G. Hurtado for <b>"jQuery TOOLS":http://github.com/jquerytools/jquerytools</b>
 * Michael Aufreiter for <b>"jQuery UI Multiselect Plugin":http://quasipartikel.at</b>
-
-* David Kaneda for <b>"jQTouch":http://www.jqtouch.com/</b>
 * Andrew M Andrews III for <b>"Any+Time":http://www.ama3.com/anytime/</b>
 * Steven Wittens for <b>"Farbtastic Colorpicker plugin":http://acko.net/dev/farbtastic</b>
 * Adam Shaw for <b>"FullCalendar":http://arshaw.com/fullcalendar/</b>
