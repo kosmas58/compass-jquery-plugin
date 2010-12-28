@@ -16,14 +16,9 @@ Gem::Specification.new do |s|
   s.add_dependency("compass", [">= 0.10.6"])
   s.add_dependency("ri_cal", [">= 0.8.7"])
   
-  s.add_development_dependency("rspec")
-  
-  s.files         = 'git ls-files'.split("\n")
-  
-  s.files  = Dir['lib/**/*.rb'] 
-  s.files += Dir['templates/*']
-  s.files += ['Rakefile', 'Gemfile', 'README.md', 'CHANGELOG.md', 'ROADMAP.md', 'LICENSE', 'VERSION.yml'] 
-  s.test_files    = 'git ls-files -- {test,spec,features}/*'.split("\n")
-  s.executables   = 'git ls-files -- bin/*'.split("\n").map{ |f| File.basename(f) }
+  s.files  = Dir['lib/**/*.rb']
+  s.files += Dir['templates/**/*']
+  s.files += ['Rakefile', 'Gemfile', 'README.md', 'CHANGELOG.md', 'ROADMAP.md', 'LICENSE', 'VERSION.yml']
+
   s.require_paths = ["lib"]
 end
