@@ -1,10 +1,12 @@
-h1. compass-jquery-plugin
+compass-jquery-plugin
+=====================
 
-Get gem from <b>"Gemcutter":http://gemcutter.org/gems/compass-jquery-plugin</b>.
-Get source from <b>"github":http://github.com/kosmas58/compass-jquery-plugin</b>.
+Get gem from [Gemcutter][1].
 
+Get source from [github][2].
 
-h2. Description
+Description
+-----------
 
 A Sass-based Meta-Framework for Compass that allows you to mix and match any of the following:
 
@@ -16,9 +18,10 @@ A Sass-based Meta-Framework for Compass that allows you to mix and match any of 
 * jquery.jqGrid.js V3.8.2 (with minor changes to make in RESTful)
 * jquery.mobile.js 1.0a2
 
-This library requires <b>"Compass":http://wiki.github.com/chriseppstein/compass</b>.
+This library requires [Compass][3].
 
-h3. jRails, jQuery and jQuery.UI including themes
+jRails, jQuery and jQuery.UI including themes
+---------------------------------------------
 
 Use compass to install the jRails, jQuery and jQuery.UI javascript library including themes into your project.
 
@@ -45,7 +48,8 @@ alternatively you can include:
 
 into your layouts.
 
-h3. jQuery TOOLS
+jQuery TOOLS
+------------
 
 Use compass to install the jQuery TOOLS javascript library into your project.
 
@@ -56,7 +60,8 @@ To use the javacripts include:
 <pre>
 = javascript_include_tag :tools</pre>
 
-h3. jQuery Dynatree Plugin
+jQuery Dynatree Plugin
+----------------------
 
 Use compass to install the jQuery Dynatree javascript library into your project.
 
@@ -72,7 +77,8 @@ To use the localized stylesheets and javacripts include:
 = stylesheet_link_tag 'compiled/jquery/dynatree/[skin].css', :media => 'screen, projection'
 = javascript_include_tag :dynatree</pre>
 
-h3. jQuery jsTree Plugin
+jQuery jsTree Plugin
+--------------------
 
 Use compass to install the jQuery jsTree javascript library into your project.
 
@@ -88,7 +94,8 @@ To use the localized stylesheets and javacripts include:
 = stylesheet_link_tag 'compiled/jquery/jstree/[theme].css', :media => 'screen, projection'
 = javascript_include_tag :jstree</pre>
 
-h3. jQuery Ribbon Plugin
+jQuery Ribbon Plugin
+--------------------
 
 Use compass to install the jQuery Ribbon javascript library into your project.
 
@@ -104,7 +111,8 @@ To use the localized stylesheets and javacripts include:
 = stylesheet_link_tag 'compiled/jquery/ribbon/[theme].css', :media => 'screen, projection'
 = javascript_include_tag :ribbon</pre>
 
-h3. jqGrid
+jqGrid
+------
 
 Use compass to install the jqGrid javascript library into your project.
 
@@ -120,7 +128,8 @@ To use the localized stylesheets and javacripts include:
 = stylesheet_link_tag 'compiled/jquery/jqGrid.css', :media => 'screen, projection'
 = raw jqgrid_javascripts(I18n.locale)</pre>
 
-h3. Secret Sauce
+Secret Sauce
+------------
 
 Use compass to install the Secret Sauce for jqGrid javascript library into your project.
 
@@ -136,7 +145,8 @@ To use the localized stylesheets and javacripts include:
 = stylesheet_link_tag 'compiled/jquery/secret_sauce.css', :media => 'screen, projection'
 = javascript_include_tag :secret_sauce</pre>
 
-h3. jquery.ical
+jquery.ical
+-----------
 
 Use compass to install the jquery.ical javascript library into your project.
 
@@ -152,7 +162,8 @@ To use the (localized) stylesheets and javacripts include:
   = stylesheet_link_tag 'compiled/jquery/ical.css', :media => 'screen, projection'
   = javascript_include_tag :ical</pre>
 
-h3. Emulators
+Emulators
+---------
 
 Use compass to install the emulator stylesheets and fullsize images for iPhone and iPad into your project.
 
@@ -168,7 +179,8 @@ To use the localized stylesheets and javacripts include:
 = stylesheet_link_tag 'compiled/emulators/ipad.landscape.css', :media => 'screen, projection'
 = stylesheet_link_tag 'compiled/emulators/iphone.portrait.css', :media => 'screen, projection'</pre>
 
-h3. jQuery mobile
+jQuery mobile
+-------------
 
 Use compass to install the jQuery mobile javascript library and themes into your project.
 
@@ -185,46 +197,51 @@ To use the localized stylesheets and javacripts include:
 = javascript_include_tag :mobile'</pre>
 
 
-h2. Thanks to the Contributors:
+Thanks to the Contributors:
+===========================
 
-h3. Rails
+Rails:
+------
 
-* aaron for <b>"jRails":http://code.google.com/p/ennerchi/</b>
-* David Turnbull for <b>"compass-jquery":http://github.com/dturnbull/compass-jquery/tree/master</b>
-* Jonathan Linowes for <b>"gridify":http://github.com/linoj/gridify</b>
-* ahe for <b>"2dc_jqgrid":http://github.com/ahe/2dc_jqgrid/tree/master</b>
-* scrubber for <b>"jquery_grid_for_rails":http://github.com/scrubber/jquery_grid_for_rails/tree/master</b>
-* ariesroyaal for <b>"secret_sauce":http://github.com/ariesroyaal/secret_sauce/tree/master</b> now <b>"at":http://github.com/fugufish/secret_sauce</b>.
-* Ryan Heath for <b>"pretty_flash":http://github.com/rpheath/pretty_flash</b>
+* aaron for [jRails][4]
+* David Turnbull for [compass-jquery][5]
+* Jonathan Linowes for [gridify][6]
+* ahe for [2dc_jqgrid][7]
+* scrubber for [jquery_grid_for_rails][8]
+* ariesroyaal for [secret_sauce][9] now [at][10].
+* Ryan Heath for [pretty_flash][11].
 
-h3. jQuery Plugins included
+jQuery Plugins included:
+------------------------
 
-* Chris Domigan for <b>"jQuery ContextMenu Plugin":http://www.trendskitchens.co.nz/jquery/contextmenu/</b>
-* Kalus Hartl for <b>"jQuery Cookie Plugin":http://stilbuero.de</b>
-* Martin Wendt for <b>"jQuery Dynatree Plugin":http://www.wwwendt.de</b>
-* John Reisig et. al. for <b>"jQuery Form Plugin":http://malsup.com/jquery/form/</b>
-* Tony Tomov for <b>"jQuery Grid Plugin":http://www.trirand.com/blog/</b>
-* Tim Caswell for <b>"jQuery haml Plugin":http://github.com/creationix/jquery-haml</b>
-* Takayuki Miwa for <b>"jQuery history plugin":http://tkyk.github.com/jquery-history-plugin/</b>
-* Ivan Bozhanov for <b>"jQuery jsTree Plugin":http://jstree.com/</b>
-* Fabrizio Balliano and Fabrizio Balliano for <b>"jQuery Layout Plugin":http://www.fabrizioballiano.net/</b>
-* Andreas Eberhard for <b>"jQuery PngFix Plugin (for IE)":http://jquery.andreaseberhard.de/</b>
-* Mikael Soederstroem for <b>"jQuery Ribbon Plugin":http://jqueryribbon.codeplex.com/</b>
-* Gareth Watts from Splunk Inc for <b>"jQuery Sparklines plugin":http://omnipotent.net/jquery.sparkline/</b>
-* Denis Howlett for <b>"jQuery Table Drag and Drop Plugin":http://www.isocra.com/2008/02/table-drag-and-drop-jquery-plugin/</b>
-* John Reisig et. al. for <b>"jQuery Templating Plugin":https://github.com/jquery/jquery-tmpl/</b>
-* Juan G. Hurtado for <b>"jQuery TOOLS":http://github.com/jquerytools/jquerytools</b>
-* Michael Aufreiter for <b>"jQuery UI Multiselect Plugin":http://quasipartikel.at</b>
-* Andrew M Andrews III for <b>"Any+Time":http://www.ama3.com/anytime/</b>
-* Steven Wittens for <b>"Farbtastic Colorpicker plugin":http://acko.net/dev/farbtastic</b>
-* Adam Shaw for <b>"FullCalendar":http://arshaw.com/fullcalendar/</b>
+* Chris Domigan for [jQuery ContextMenu Plugin][12]
+* Kalus Hartl for [jQuery Cookie Plugin][13]
+* Martin Wendt for [jQuery Dynatree Plugin][14]
+* John Reisig et. al. for [jQuery Form Plugin][15]
+* Tony Tomov for [jQuery Grid Plugin][16]
+* Tim Caswell for [jQuery haml Plugin][17]
+* Takayuki Miwa for [jQuery history plugin][18]
+* Ivan Bozhanov for [jQuery jsTree Plugin][19]
+* Fabrizio Balliano and Fabrizio Balliano for [jQuery Layout Plugin][20]
+* Andreas Eberhard for [jQuery PngFix Plugin][21] (for IE)
+* Mikael Soederstroem for [jQuery Ribbon Plugin][22]
+* Gareth Watts from Splunk Inc for [jQuery Sparklines plugin][23]
+* Denis Howlett for [jQuery Table Drag and Drop Plugin][24]
+* John Reisig et. al. for [jQuery Templating Plugin][25]
+* Juan G. Hurtado for [jQuery TOOLS][26]
+* Michael Aufreiter for [jQuery UI Multiselect Plugin][27]
+* Andrew M Andrews III for [Any+Time][28]
+* Steven Wittens for [Farbtastic Colorpicker plugin][29]
+* Adam Shaw for [FullCalendar][30]
 
-h3. Other stuff included
+Other stuff included:
+---------------------
 
-* Tim Caswell for <b>"halm-js":http://github.com/creationix/haml-js</b> Server side templating language for JavaScript
-* Rick DeNatale for <b>"ri_cal":http://github.com/rubyredrick/ri_cal/</b>
+* Tim Caswell for [halm-js][31]. Server side templating language for JavaScript.
+* Rick DeNatale for [ri_cal][32]
 
-h2. Note on Patches/Pull Requests
+Note on Patches/Pull Requests
+=============================
 
 * Fork the project.
 * Make your feature addition or bug fix.
@@ -235,7 +252,40 @@ h2. Note on Patches/Pull Requests
    bump version in a commit by itself I can ignore when I pull)
 * Send me a pull request. Bonus points for topic branches.
 
-h2. Copyright
+Copyright
+=========
 
 Copyright (c) 2009-2010 Kosmas Schuetz. See LICENSE for details.
 
+  [1]: http://gemcutter.org/gems/compass-jquery-plugin
+  [2]: http://github.com/kosmas58/compass-jquery-plugin
+  [3]: http://wiki.github.com/chriseppstein/compass
+  [4]: http://code.google.com/p/ennerchi/
+  [5]: http://github.com/dturnbull/compass-jquery/tree/master
+  [6]: http://github.com/linoj/gridify
+  [7]: http://github.com/ahe/2dc_jqgrid/tree/master
+  [8]: http://github.com/scrubber/jquery_grid_for_rails/tree/master
+  [9]: http://github.com/ariesroyaal/secret_sauce/tree/master
+  [10]: http://github.com/fugufish/secret_sauce
+  [11]: http://github.com/rpheath/pretty_flash
+  [12]: http://www.trendskitchens.co.nz/jquery/contextmenu/
+  [13]: http://stilbuero.de
+  [14]: http://www.wwwendt.de
+  [15]: http://malsup.com/jquery/form/
+  [16]: http://www.trirand.com/blog/
+  [17]: http://github.com/creationix/jquery-haml
+  [18]: http://tkyk.github.com/jquery-history-plugin/
+  [19]: http://jstree.com/
+  [20]: http://www.fabrizioballiano.net/
+  [21]: :http://jquery.andreaseberhard.de/
+  [22]: http://jqueryribbon.codeplex.com/
+  [23]: http://omnipotent.net/jquery.sparkline/
+  [24]: http://www.isocra.com/2008/02/table-drag-and-drop-jquery-plugin/
+  [25]: https://github.com/jquery/jquery-tmpl/
+  [26]: http://github.com/jquerytools/jquerytools
+  [27]: http://quasipartikel.at
+  [28]: http://www.ama3.com/anytime/
+  [29]: http://acko.net/dev/farbtastic
+  [30]: http://arshaw.com/fullcalendar/
+  [31]: http://github.com/creationix/haml-js
+  [32]: http://github.com/rubyredrick/ri_cal/
