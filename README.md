@@ -26,7 +26,7 @@ jRails, jQuery and jQuery.UI including themes
 Use compass to install the jRails, jQuery and jQuery.UI javascript library including themes into your project.
 
 For jQuery:
-<pre>compass install [-r jquery] jquery/jrails <project name></pre>
+<pre>compass install [-r jquery] jquery/jquery <project name></pre>
 
 You will find all the stylesheets in easy-to-read Sass format at:
 
