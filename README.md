@@ -20,6 +20,10 @@ A Sass-based Meta-Framework for Compass that allows you to mix and match any of 
 
 This library requires [Compass][3].
 
+For the moment this plugin supports Rails 2.3.
+
+An upgrade to Rails 3.x is planned, but depends on the upgrade of compass which actually has alpha state.
+
 jRails, jQuery and jQuery.UI including themes
 ---------------------------------------------
 
@@ -34,12 +38,6 @@ You will find all the stylesheets in easy-to-read Sass format at:
 
 To use the localized stylesheets and javacripts for jQuery include (using the rails_xss plugin):
 
-<pre>
-= stylesheet_link_tag "compiled/jquery/ui/[theme].css", :media => 'screen, projection'
-= javascript_include_tag :defaults
-= raw jrails_javascripts(I18n.locale)</pre>
-
-alternatively you can include: 
 <pre>
 = stylesheet_link_tag "compiled/jquery/ui/[theme].css", :media => 'screen, projection'
 = javascript_include_tag :jquery_ui
