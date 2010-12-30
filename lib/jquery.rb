@@ -6,10 +6,10 @@ module Compass
   module Jquery
     module Plugin
       version = YAML.load_file(File.dirname(__FILE__) + '/../VERSION.yml')
-      if version[:subcommit]
-        VERSION = "#{version[:major]}.#{version[:minor]}.#{version[:patch]}.#{version[:commit]}.#{version[:subcommit]}"
-      elsif version[:commit]
-        VERSION = "#{version[:major]}.#{version[:minor]}.#{version[:patch]}.#{version[:commit]}"
+      if version[:commit]
+        VERSION = "#{version[:major]}.#{version[:minor]}.#{version[:patch]}.#{version[:state]}.#{version[:commit]}"
+      elsif version[:state]
+        VERSION = "#{version[:major]}.#{version[:minor]}.#{version[:patch]}.#{version[:state]}"
       else
         VERSION = "#{version[:major]}.#{version[:minor]}.#{version[:patch]}"
       end
