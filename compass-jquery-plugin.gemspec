@@ -16,6 +16,8 @@ Gem::Specification.new do |s|
   s.add_dependency("compass", [">= 0.10.6"])
   s.add_dependency("ri_cal", [">= 0.8.7"])
   
+  s.add_development_dependency("rspec", ["~> 1.3.1"])
+  
   s.files  = Dir['lib/**/*.rb']
   s.files += Dir['templates/**/*']
   s.files += ['Rakefile', 'Gemfile', 'README.md', 'CHANGELOG.md', 'ROADMAP.md', 'LICENSE', 'VERSION.yml']
