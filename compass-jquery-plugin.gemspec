@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
   
   s.files  = Dir['lib/**/*.rb']
   s.files += Dir['templates/**/*']
-  s.files += ['Rakefile', 'Gemfile', 'README.md', 'CHANGELOG.md', 'ROADMAP.md', 'LICENSE', 'VERSION.yml']
+  s.files += ['Rakefile', 'Gemfile', 'README.md', 'LICENSE.md', 'VERSION.yml']
 
   s.require_paths = ["lib"]
 end

@@ -24,6 +24,8 @@ For the moment this plugin supports Rails 2.3.
 
 An upgrade to Rails 3.x is planned, but depends on the upgrade of compass which actually has alpha state.
 
+*Hint: When trying to build the gem under Windows, bundler can't locate the rakfile. Apply the patch from [Arve Knudsen][4] to fix it.*
+
 jRails, jQuery and jQuery.UI including themes
 ---------------------------------------------
 
@@ -201,42 +203,42 @@ Thanks to the Contributors:
 Rails:
 ------
 
-* aaron for [jRails][4]
-* David Turnbull for [compass-jquery][5]
-* Jonathan Linowes for [gridify][6]
-* ahe for [2dc_jqgrid][7]
-* scrubber for [jquery_grid_for_rails][8]
-* ariesroyaal for [secret_sauce][9] now [at][10].
-* Ryan Heath for [pretty_flash][11].
+* aaron for [jRails][5]
+* David Turnbull for [compass-jquery][6]
+* Jonathan Linowes for [gridify][7]
+* ahe for [2dc_jqgrid][8]
+* scrubber for [jquery_grid_for_rails][9]
+* ariesroyaal for [secret_sauce][10] now [at][11].
+* Ryan Heath for [pretty_flash][12].
 
 jQuery Plugins included:
 ------------------------
 
-* Chris Domigan for [jQuery ContextMenu Plugin][12]
-* Kalus Hartl for [jQuery Cookie Plugin][13]
-* Martin Wendt for [jQuery Dynatree Plugin][14]
-* John Reisig et. al. for [jQuery Form Plugin][15]
-* Tony Tomov for [jQuery Grid Plugin][16]
-* Tim Caswell for [jQuery haml Plugin][17]
-* Takayuki Miwa for [jQuery history plugin][18]
-* Ivan Bozhanov for [jQuery jsTree Plugin][19]
-* Fabrizio Balliano and Fabrizio Balliano for [jQuery Layout Plugin][20]
-* Andreas Eberhard for [jQuery PngFix Plugin][21] (for IE)
-* Mikael Soederstroem for [jQuery Ribbon Plugin][22]
-* Gareth Watts from Splunk Inc for [jQuery Sparklines plugin][23]
-* Denis Howlett for [jQuery Table Drag and Drop Plugin][24]
-* John Reisig et. al. for [jQuery Templating Plugin][25]
-* Juan G. Hurtado for [jQuery TOOLS][26]
-* Michael Aufreiter for [jQuery UI Multiselect Plugin][27]
-* Andrew M Andrews III for [Any+Time][28]
-* Steven Wittens for [Farbtastic Colorpicker plugin][29]
-* Adam Shaw for [FullCalendar][30]
+* Chris Domigan for [jQuery ContextMenu Plugin][13]
+* Kalus Hartl for [jQuery Cookie Plugin][14]
+* Martin Wendt for [jQuery Dynatree Plugin][15]
+* John Reisig et. al. for [jQuery Form Plugin][16]
+* Tony Tomov for [jQuery Grid Plugin][17]
+* Tim Caswell for [jQuery haml Plugin][18]
+* Takayuki Miwa for [jQuery history plugin][19]
+* Ivan Bozhanov for [jQuery jsTree Plugin][20]
+* Fabrizio Balliano and Fabrizio Balliano for [jQuery Layout Plugin][21]
+* Andreas Eberhard for [jQuery PngFix Plugin][22] (for IE)
+* Mikael Soederstroem for [jQuery Ribbon Plugin][23]
+* Gareth Watts from Splunk Inc for [jQuery Sparklines plugin][24]
+* Denis Howlett for [jQuery Table Drag and Drop Plugin][25]
+* John Reisig et. al. for [jQuery Templating Plugin][26]
+* Juan G. Hurtado for [jQuery TOOLS][27]
+* Michael Aufreiter for [jQuery UI Multiselect Plugin][28]
+* Andrew M Andrews III for [Any+Time][29]
+* Steven Wittens for [Farbtastic Colorpicker plugin][30]
+* Adam Shaw for [FullCalendar][31]
 
 Other stuff included:
 ---------------------
 
-* Tim Caswell for [halm-js][31]. Server side templating language for JavaScript.
-* Rick DeNatale for [ri_cal][32]
+* Tim Caswell for [halm-js][32]. Server side templating language for JavaScript.
+* Rick DeNatale for [ri_cal][33]
 
 Note on Patches/Pull Requests
 =============================
@@ -253,37 +255,39 @@ Note on Patches/Pull Requests
 Copyright
 =========
 
-Copyright (c) 2009-2010 Kosmas Schuetz. See LICENSE for details.
+Copyright (c) 2009-2011 Kosmas Schuetz. See LICENSE for details.
+
 
   [1]: http://gemcutter.org/gems/compass-jquery-plugin
   [2]: http://github.com/kosmas58/compass-jquery-plugin
   [3]: http://wiki.github.com/chriseppstein/compass
-  [4]: http://code.google.com/p/ennerchi/
-  [5]: http://github.com/dturnbull/compass-jquery/tree/master
-  [6]: http://github.com/linoj/gridify
-  [7]: http://github.com/ahe/2dc_jqgrid/tree/master
-  [8]: http://github.com/scrubber/jquery_grid_for_rails/tree/master
-  [9]: http://github.com/ariesroyaal/secret_sauce/tree/master
-  [10]: http://github.com/fugufish/secret_sauce
-  [11]: http://github.com/rpheath/pretty_flash
-  [12]: http://www.trendskitchens.co.nz/jquery/contextmenu/
-  [13]: http://stilbuero.de
-  [14]: http://www.wwwendt.de
-  [15]: http://malsup.com/jquery/form/
-  [16]: http://www.trirand.com/blog/
-  [17]: http://github.com/creationix/jquery-haml
-  [18]: http://tkyk.github.com/jquery-history-plugin/
-  [19]: http://jstree.com/
-  [20]: http://www.fabrizioballiano.net/
-  [21]: :http://jquery.andreaseberhard.de/
-  [22]: http://jqueryribbon.codeplex.com/
-  [23]: http://omnipotent.net/jquery.sparkline/
-  [24]: http://www.isocra.com/2008/02/table-drag-and-drop-jquery-plugin/
-  [25]: https://github.com/jquery/jquery-tmpl/
-  [26]: http://github.com/jquerytools/jquerytools
-  [27]: http://quasipartikel.at
-  [28]: http://www.ama3.com/anytime/
-  [29]: http://acko.net/dev/farbtastic
-  [30]: http://arshaw.com/fullcalendar/
-  [31]: http://github.com/creationix/haml-js
-  [32]: http://github.com/rubyredrick/ri_cal/
+  [4]: http://groups.google.com/group/ruby-bundler/msg/e375ee77b225609f
+  [5]: http://code.google.com/p/ennerchi/
+  [6]: http://github.com/dturnbull/compass-jquery/tree/master
+  [7]: http://github.com/linoj/gridify
+  [8]: http://github.com/ahe/2dc_jqgrid/tree/master
+  [9]: http://github.com/scrubber/jquery_grid_for_rails/tree/master
+  [10]: http://github.com/ariesroyaal/secret_sauce/tree/master
+  [11]: http://github.com/fugufish/secret_sauce
+  [12]: http://github.com/rpheath/pretty_flash
+  [13]: http://www.trendskitchens.co.nz/jquery/contextmenu/
+  [14]: http://stilbuero.de
+  [15]: http://www.wwwendt.de
+  [16]: http://malsup.com/jquery/form/
+  [17]: http://www.trirand.com/blog/
+  [18]: http://github.com/creationix/jquery-haml
+  [19]: http://tkyk.github.com/jquery-history-plugin/
+  [20]: http://jstree.com/
+  [21]: http://www.fabrizioballiano.net/
+  [22]: :http://jquery.andreaseberhard.de/
+  [23]: http://jqueryribbon.codeplex.com/
+  [24]: http://omnipotent.net/jquery.sparkline/
+  [25]: http://www.isocra.com/2008/02/table-drag-and-drop-jquery-plugin/
+  [26]: https://github.com/jquery/jquery-tmpl/
+  [27]: http://github.com/jquerytools/jquerytools
+  [28]: http://quasipartikel.at
+  [29]: http://www.ama3.com/anytime/
+  [30]: http://acko.net/dev/farbtastic
+  [31]: http://arshaw.com/fullcalendar/
+  [32]: http://github.com/creationix/haml-js
+  [33]: http://github.com/rubyredrick/ri_cal/
