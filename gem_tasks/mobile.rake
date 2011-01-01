@@ -11,7 +11,6 @@ MOBILE_DEST_THEMES = File.join(MOBILE_DEST_TEMPLATES, 'jquery', 'mobile')
 MOBILE_DEST_IMAGES = File.join(MOBILE_DEST_THEMES)
 
 all_scripts = [
-  'js/jquery.ui.position.js',
   'js/jquery.ui.widget.js',
   'js/jquery.mobile.widget.js',
   'js/jquery.mobile.media.js',
@@ -21,6 +20,7 @@ all_scripts = [
   'js/jquery.mobile.core.js',
   'js/jquery.mobile.navigation.js',
   'js/jquery.mobile.page.js',
+  'js/jquery.ui.position.js',
   'js/jquery.mobile.fixHeaderFooter.js',
   'js/jquery.mobile.forms.checkboxradio.js',
   'js/jquery.mobile.forms.textinput.js',
@@ -77,6 +77,10 @@ namespace :build do
 
       base_stylesheets = [
         'jquery.mobile.core.css',
+        'jquery.mobile.transitions.css',
+        'jquery.mobile.grids.css',
+        'jquery.mobile.headerfooter.css',
+        'jquery.mobile.navbar.css',
         'jquery.mobile.button.css',
         'jquery.mobile.collapsible.css',
         'jquery.mobile.controlgroup.css',
@@ -86,11 +90,8 @@ namespace :build do
         'jquery.mobile.forms.select.css',
         'jquery.mobile.forms.slider.css',
         'jquery.mobile.forms.textinput.css',
-        'jquery.mobile.grids.css',
-        'jquery.mobile.headerfooter.css',
         'jquery.mobile.listview.css',
-        'jquery.mobile.navbar.css',
-        'jquery.mobile.transitions.css'
+        'jquery.mobile.forms.slider.css'
         ].collect {|filename| File.read(File.join(MOBILE_SRC_THEMES, 'default', filename))}.join "\n\n"
 
       FileUtils.mkdir_p(MOBILE_DEST_THEMES)
