@@ -2227,16 +2227,16 @@ $.fn.jqGrid = function( pin ) {
             });
         }
         if ($.isFunction(this.p.onRightClickRow)) {
-            $(this).bind('contextmenu', function(e) {
-                td = e.target;
-                ptr = $(td,ts.rows).closest("tr.jqgrow");
-                if($(ptr).length === 0 ){return false;}
-                if(!ts.p.multiselect) {	$(ts).jqGrid("setSelection",ptr[0].id,true);	}
-                ri = ptr[0].rowIndex;
-                ci = $.jgrid.getCellIndex(td);
-                ts.p.onRightClickRow.call(ts,$(ptr).attr("id"),ri,ci, e);
-                return false;
-            });
+            //$(this).bind('contextmenu', function(e) {
+            //    td = e.target;
+            //    ptr = $(td,ts.rows).closest("tr.jqgrow");
+            //    if($(ptr).length === 0 ){return false;}
+            //    if(!ts.p.multiselect) {	$(ts).jqGrid("setSelection",ptr[0].id,true);	}
+            //    ri = ptr[0].rowIndex;
+            //    ci = $.jgrid.getCellIndex(td);
+            //    ts.p.onRightClickRow.call(ts,$(ptr).attr("id"),ri,ci, e);
+            //    return false;
+            //});
         }
         grid.bDiv = document.createElement("div");
         $(grid.bDiv)

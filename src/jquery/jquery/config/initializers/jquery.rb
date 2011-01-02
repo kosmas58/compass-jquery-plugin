@@ -1,5 +1,5 @@
 # ====
-# The following options can be changed by creating an initializer in config/initializers/jrails.rb
+# The following options can be changed by creating an initializer in config/initializers/jquery.rb
 # ====
 # ActionView::Helpers::PrototypeHelper::JQUERY_VAR
 # jRails uses jQuery.noConflict() by default
@@ -37,7 +37,7 @@ ActionView::Helpers::AssetTagHelper.register_javascript_expansion :themeSwitcher
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :tmpl => ['jquery.tmpl.min']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :tmpl_plus => ['jquery.tmplPlus.min']
 
-require 'jquery/jrails'
+require 'jquery/jquery'
 require 'handle_attributes'
 require 'jquery/jquery_selector_assertions' if RAILS_ENV == 'test'
 require 'jquery/jquery_auto_complete'

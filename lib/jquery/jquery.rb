@@ -1,7 +1,7 @@
 module ActionView
   module Helpers  
     
-    def jrails_javascripts(locale)
+    def jquery_javascripts(locale)
       if locale != 'en'
       else
         js = capture { javascript_include_tag "i18n/jquery.ui/datepicker-#{locale}.min.js" }  

@@ -44,7 +44,7 @@ To use the localized stylesheets and javacripts for jQuery include (using the ra
 = stylesheet_link_tag "compiled/jquery/ui/[theme].css", :media => 'screen, projection'
 = javascript_include_tag :jquery_ui
 = javascript_include_tag :jrails
-= raw jrails_javascripts(I18n.locale)</pre>
+= raw jquery_javascripts(I18n.locale)</pre>
 
 into your layouts.
 

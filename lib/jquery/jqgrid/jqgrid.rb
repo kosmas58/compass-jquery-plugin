@@ -4,7 +4,7 @@ module ActionView
     def jqgrid_javascripts(locale)
       js = capture { javascript_include_tag "i18n/jqgrid/locale-#{locale}.min" } 
       js << capture {javascript_tag "jQuery.jgrid.no_legacy_api = true;" }
-      js << capture { javascript_include_tag 'jquery.jqGrid.min' }  
+      js << capture { javascript_include_tag 'jquery.jqGrid' }
     end
 
     def jqgrid(title, id, action, columns = {}, 
