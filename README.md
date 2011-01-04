@@ -255,8 +255,7 @@ Note on Patches/Pull Requests
 Copyright
 =========
 
-Copyright (c) 2009-2011 Kosmas Schuetz. See LICENSE for details.
-
+Copyright &copy; 2009-2011 Kosmas Schuetz. See LICENSE for details.
 
   [1]: http://gemcutter.org/gems/compass-jquery-plugin
   [2]: http://github.com/kosmas58/compass-jquery-plugin
