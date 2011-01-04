@@ -47,6 +47,7 @@
 	border-top: solid 1px #CCC;
 }
 
+.contextMenu LI.new A { background-image: image_url("jquery/ui/contextMenu/page_white_new.png"); }
 .contextMenu LI.edit A { background-image: image_url("jquery/ui/contextMenu/page_white_edit.png"); }
 .contextMenu LI.cut A { background-image: image_url("jquery/ui/contextMenu/cut.png"); }
 .contextMenu LI.copy A { background-image: image_url("jquery/ui/contextMenu/page_white_copy.png"); }

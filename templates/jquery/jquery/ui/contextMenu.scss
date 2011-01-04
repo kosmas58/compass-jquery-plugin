@@ -35,6 +35,8 @@
       background-color: transparent; }
     &.separator {
       border-top: solid 1px #CCC; }
+    &.new A {
+      background-image: image_url("jquery/ui/contextMenu/page_white_new.png"); }
     &.edit A {
       background-image: image_url("jquery/ui/contextMenu/page_white_edit.png"); }
     &.cut A {
