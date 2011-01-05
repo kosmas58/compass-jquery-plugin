@@ -22,6 +22,12 @@ module Gridify
       self.current_page  = params[:page].to_i if params[:page]
       self.rows_per_page = params[:rows].to_i if params[:rows]
       self.total_rows    = params[:total_rows].to_i if params[:total_rows]
+      if tree_grid
+        self.nodeid  = params[:nodeid].to_i if params[:nodeid]
+        self.n_level = params[:n_level].to_i if params[:n_level]
+        self.n_left  = params[:n_left].to_i if params[:n_left]
+        self.n_right = params[:n_right].to_i if params[:n_right]
+      end
     end
 
     # return find args (scope) for current settings
@@ -43,6 +49,7 @@ module Gridify
           find_args[:order] = "upper(#{sort_by}) #{sort_order}"
         end
       end
+      
       if total_rows.present? && total_rows > 0
         find_args[:limit] = total_rows
         offset = (current_page.to_i-1) * rows_per_page if current_page.present?
@@ -52,9 +59,31 @@ module Gridify
         offset = (current_page.to_i-1) * rows_per_page if current_page.present?
         find_args[:offset] = offset if offset && offset > 0
       end
+      
       cond = rules_to_conditions
       find_args[:conditions] = cond unless cond.blank?
+      
+      add_tree_grid_args(find_args, cond) if tree_grid
       find_args
+    end
+    
+    def add_tree_grid_args(args, cond)
+      args[:order] = "lft"
+      if nodeid
+        tcond = "lft > #{n_left} AND rgt < #{n_right} AND level = #{n_level+1}"
+        if cond.blank?
+          args[:conditions] = tcond
+        else
+          args[:conditions] += "AND #{tcond}"
+        end
+      else
+        tcond = "level=0"
+        if cond.blank?
+          args[:conditions] = tcond
+        else
+          args[:conditions] += "AND #{tcond}"
+        end
+      end
     end
 
     def find( params )

@@ -201,8 +201,14 @@ module Gridify
         end
       end
       
+      if tree_grid
+        vals[:treeGrid]      = tree_grid
+        vals[:gridview]      = false
+        vals[:sortable]      = false
+      end
+      
       #subgrid
-      if sub_grid      
+      if sub_grid
         vals[:subGrid]      = sub_grid
         vals[:subGridUrl]   = sub_grid_url
         vals[:subGridModel] = sub_grid_model
