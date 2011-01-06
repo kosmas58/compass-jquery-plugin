@@ -62,30 +62,9 @@ module Gridify
       
       cond = rules_to_conditions
       find_args[:conditions] = cond unless cond.blank?
-      
-      add_tree_grid_args(find_args, cond) if tree_grid
       find_args
     end
     
-    def add_tree_grid_args(args, cond)
-      args[:order] = "lft"
-      if nodeid
-        tcond = "lft > #{n_left} AND rgt < #{n_right} AND level = #{n_level+1}"
-        if cond.blank?
-          args[:conditions] = tcond
-        else
-          args[:conditions] += "AND #{tcond}"
-        end
-      else
-        tcond = "level=0"
-        if cond.blank?
-          args[:conditions] = tcond
-        else
-          args[:conditions] += "AND #{tcond}"
-        end
-      end
-    end
-
     def find( params )
       #debugger
       update_from_params params
