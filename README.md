@@ -17,6 +17,7 @@ A Sass-based Meta-Framework for Compass that allows you to mix and match any of 
 * jquery.ribbon.js
 * jquery.jqGrid.js V3.8.2 (with minor changes to make in RESTful)
 * jquery.mobile.js 1.0a2
+* jquery.jqtouch.js V1.0b2
 
 This library requires [Compass][3].
 
@@ -195,6 +196,24 @@ To use the localized stylesheets and javacripts include:
 <pre>
 = stylesheet_link_tag "compiled/jquery/mobile/[theme].css", :media => 'screen, projection'
 = javascript_include_tag :mobile'</pre>
+
+
+jQTouch
+-------
+
+Use compass to install the jQTouch javascript library into your project.
+
+<pre>compass install [-r jquery] jquery/jqtouch <project name></pre>
+
+You will find all the stylesheets in easy-to-read Sass format at:
+
+<pre>stylesheets/jqtouch</pre>
+
+To use the localized stylesheets and javacripts include:
+
+<pre>
+= stylesheet_link_tag 'compiled/jquery/touch/[theme].css', :media => 'screen, projection'
+= javascript_include_tag :jqtouch'</pre>
 
 
 Thanks to the Contributors:

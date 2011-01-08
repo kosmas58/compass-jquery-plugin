@@ -11,6 +11,7 @@ namespace :build do
     "build:ribbon",
     "build:ical",
     "build:mobile",
+    "build:jqtouch",
     "build:emulators"
   ] do
   end

@@ -1,0 +1,99 @@
+/**
+ *
+ *
+ *
+ *
+ *
+ */
+ 
+.horizontal-scroll, 
+.horizontal-scroll .scroll-container, 
+.horizontal-slide, 
+.horizontal-slide .slide-container
+{
+    width: 320px;
+    height: 100%;
+    overflow: hidden;
+    padding: 0;
+}
+.landscape .horizontal-scroll, 
+.landscape .horizontal-scroll .scroll-container, 
+.landscape .horizontal-slide, 
+.landscape .horizontal-slide .slide-container
+{
+    width: 480px;
+}
+.profile .horizontal-scroll, 
+.profile .horizontal-scroll .scroll-container, 
+.profile .horizontal-slide, 
+.profile .horizontal-slide .slide-container
+{
+    width: 320px;
+}
+.vertical-scroll, .vertical-slide
+{
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    height: 370px;        
+}
+
+.fullscreen.profile .vertical-scroll, 
+.fullscreen.profile .vertical-slide 
+{
+	height:420px;
+}
+
+.landscape .vertical-scroll, 
+.landscape .vertical-slide
+{
+	height: 230px;
+}
+
+.fullscreen.landscape .vertical-scroll, 
+.fullscreen.landscape .vertical-slide {height:255px;}
+
+
+.vertical-scroll > div, 
+.vertical-slide > div
+{
+    margin: 0 auto;
+	padding-bottom:5px;
+}
+
+.fullscreen .vertical-scroll > div, 
+.fullscreen .vertical-slide > div 
+{
+	padding-bottom:10px;
+}
+
+.fullscreen .vertical-scroll.use-bottom-toolbar > div, 
+.fullscreen .vertical-slide.use-bottom-toolbar > div 
+{
+	padding-bottom:0;
+}
+
+.vertical-scroll.use-bottom-toolbar, 
+.vertical-slide.use-bottom-toolbar
+{
+	height: 325px !important;
+}
+
+.fullscreen.profile .vertical-scroll.use-bottom-toolbar, 
+.fullscreen.profile .vertical-slide.use-bottom-toolbar
+{
+	height: 370px !important;
+}
+
+.landscape .vertical-scroll.use-bottom-toolbar, 
+.landscape .vertical-slide.use-bottom-toolbar
+{
+	height: 185px !important;
+}
+
+.fullscreen.landscape .vertical-scroll.use-bottom-toolbar, 
+.fullscreen.landscape .vertical-slide.use-bottom-toolbar
+{
+	height: 210px !important;
+}
+
