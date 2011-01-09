@@ -1667,7 +1667,7 @@ $.each({
 /* Event Bindings - hashchange, submit, and click */
 
 	//bind to form submit events, handle with Ajax
-	$('form').live('submit', function(event){
+	$("form[data-ajax!='false']").live('submit', function(event){
 		if( !$.mobile.ajaxFormsEnabled ){ return; }
 
 		var type = $(this).attr("method"),
