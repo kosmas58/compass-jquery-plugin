@@ -528,6 +528,7 @@ $.event.special.tap = {
 				
 				var moved = false,
 					touching = true,
+					origTarget = event.target,
 					origPos = [ event.pageX, event.pageY ],
 					originalType,
 					timer;
@@ -555,7 +556,10 @@ $.event.special.tap = {
 						clearTimeout( timer );
 						touching = false;
 						
-						if ( !moved ) {
+						/* ONLY trigger a 'tap' event if the start target is
+						 * the same as the stop target.
+						 */
+						if ( !moved && (origTarget == event.target)) {
 							originalType = event.type;
 							event.type = "tap";
 							$.event.handle.call( thisObject, event );
@@ -1510,11 +1514,6 @@ $.each({
 				}
 				removeActiveLinkClass();
 
-				//if there's a duplicateCachedPage, remove it from the DOM now that it's hidden
-				if( duplicateCachedPage != null ){
-					duplicateCachedPage.remove();
-				}
-
 				//jump to top or prev scroll, if set
 				$.mobile.silentScroll( to.data( 'lastScroll' ) );
 
@@ -1522,6 +1521,11 @@ $.each({
 				from.data("page")._trigger("hide", null, {nextPage: to});
 				if( to.data("page")._trigger("show", null, {prevPage: from}) !== false ){
 					$.mobile.activePage = to;
+				}
+
+				//if there's a duplicateCachedPage, remove it from the DOM now that it's hidden
+				if (duplicateCachedPage != null) {
+				    duplicateCachedPage.remove();
 				}
 			};
 
@@ -1783,6 +1787,7 @@ $.each({
 		}
 	});
 })( jQuery );
+
 
 /*
 * jQuery Mobile Framework : "page" plugin
@@ -2238,13 +2243,16 @@ if ( !$.offset.setOffset ) {
 */
 (function($, undefined ) {
 $.fn.fixHeaderFooter = function(options){
-	if( !$.support.scrollTop ){ return $(this); }
-	return $(this).each(function(){
-		if( $(this).data('fullscreen') ){ $(this).addClass('ui-page-fullscreen'); }
-		$(this).find('.ui-header[data-position="fixed"]').addClass('ui-header-fixed ui-fixed-inline fade'); //should be slidedown
-		$(this).find('.ui-footer[data-position="fixed"]').addClass('ui-footer-fixed ui-fixed-inline fade'); //should be slideup		
+	if( !$.support.scrollTop ){ return this; }
+	
+	return this.each(function(){
+		var $this = $(this);
+		
+		if( $this.data('fullscreen') ){ $this.addClass('ui-page-fullscreen'); }
+		$this.find('.ui-header[data-position="fixed"]').addClass('ui-header-fixed ui-fixed-inline fade'); //should be slidedown
+		$this.find('.ui-footer[data-position="fixed"]').addClass('ui-footer-fixed ui-fixed-inline fade'); //should be slideup		
 	});
-};				
+};
 
 //single controller for all showing,hiding,toggling		
 $.fixedToolbars = (function(){
@@ -2459,7 +2467,7 @@ $.widget( "mobile.checkboxradio", $.mobile.widget, {
 	},
 	_create: function(){
 		var input = this.element,
-			label = $("label[for='" + input.attr( "id" ) + "']"),
+			label = input.closest("form,fieldset,[data-role='page']").find("label[for='" + input.attr( "id" ) + "']"),
 			inputtype = input.attr( "type" ),
 			checkedicon = "ui-icon-" + inputtype + "-on",
 			uncheckedicon = "ui-icon-" + inputtype + "-off";
@@ -2524,7 +2532,7 @@ $.widget( "mobile.checkboxradio", $.mobile.widget, {
 	
 	refresh: function( ){
 		var input = this.element,
-			label = $("label[for='" + input.attr( "id" ) + "']"),
+			label = input.closest("form,fieldset,[data-role='page']").find("label[for='" + input.attr( "id" ) + "']"),
 			inputtype = input.attr( "type" ),
 			icon = label.find( ".ui-icon" ),
 			checkedicon = "ui-icon-" + inputtype + "-on",
@@ -2784,6 +2792,7 @@ $.widget( "mobile.selectmenu", $.mobile.widget, {
 		//expose to other methods
 		$.extend(self, {
 			select: select,
+			options: options,
 			selectID: selectID,
 			label: label,
 			buttonId:buttonId,
@@ -2834,7 +2843,7 @@ $.widget( "mobile.selectmenu", $.mobile.widget, {
 
 			// index of option tag to be selected 
 			var newIndex = list.find( "li:not(.ui-li-divider)" ).index( this ),
-				option = options.eq( newIndex )[0];
+				option = self.options.eq( newIndex )[0];
 			
 			// toggle selected status on the tag for multi selects
 			option.selected = isMultiple ? !option.selected : true;
@@ -2952,7 +2961,7 @@ $.widget( "mobile.selectmenu", $.mobile.widget, {
 		var self = this,
 			select = this.element,
 			isMultiple = this.isMultiple,
-			options = select.find("option"),
+			options = this.options = select.find("option"),
 			selected = options.filter(":selected"),
 			
 			// return an array of all selected index's
@@ -3703,7 +3712,7 @@ $.widget( "mobile.collapsible", $.mobile.widget, {
 (function($, undefined ) {
 $.fn.controlgroup = function(options){
 		
-	return $(this).each(function(){
+	return this.each(function(){
 		var o = $.extend({
 			direction: $( this ).data( "type" ) || "vertical",
 			shadow: false
@@ -3745,7 +3754,7 @@ $.fn.controlgroup = function(options){
 */
 (function($, undefined ) {
 $.fn.fieldcontain = function(options){
-	return $(this).addClass('ui-field-contain ui-body ui-br');
+	return this.addClass('ui-field-contain ui-body ui-br');
 };
 })(jQuery);
 
@@ -4233,7 +4242,7 @@ $.widget( "mobile.navbar", $.mobile.widget, {
 */ 
 (function($, undefined ) {
 $.fn.grid = function(options){
-	return $(this).each(function(){
+	return this.each(function(){
 		var o = $.extend({
 			grid: null
 		},options);
