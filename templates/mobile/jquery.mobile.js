@@ -1258,7 +1258,7 @@ $.each({
 		//find present pages
 		var $pages = $("[data-role='page']");
 
-		$pages.each(function(){
+		$("[data-role='page'], [data-role='dialog']").each(function(){
 			$(this).attr('data-url', $(this).attr('id'));
 		});
 
@@ -2792,7 +2792,7 @@ $.widget( "mobile.selectmenu", $.mobile.widget, {
 		//expose to other methods
 		$.extend(self, {
 			select: select,
-			options: options,
+			optionElems: options,
 			selectID: selectID,
 			label: label,
 			buttonId:buttonId,
@@ -2828,10 +2828,19 @@ $.widget( "mobile.selectmenu", $.mobile.widget, {
 			});
 		
 		//button events
-		button.bind( $.support.touch ? "touchstart" : "click", function(event){
-			self.open();
-			event.preventDefault();
-		});
+		button
+			.bind( $.support.touch ? "touchend" : "click" , function( event ){
+				if( $( this ).data( "moved" ) ){
+					$( this ).removeData( "moved" );
+				}
+				else{
+					self.open();
+					event.preventDefault();
+				}	
+			})
+			.bind( "touchmove", function(event){
+				$( this ).data( "moved", true );
+			});
 		
 		//events for list items
 		list.delegate("li:not(.ui-disabled, .ui-li-divider)", "click", function(event){
@@ -2843,7 +2852,7 @@ $.widget( "mobile.selectmenu", $.mobile.widget, {
 
 			// index of option tag to be selected 
 			var newIndex = list.find( "li:not(.ui-li-divider)" ).index( this ),
-				option = self.options.eq( newIndex )[0];
+				option = self.optionElems.eq( newIndex )[0];
 			
 			// toggle selected status on the tag for multi selects
 			option.selected = isMultiple ? !option.selected : true;
@@ -2961,7 +2970,7 @@ $.widget( "mobile.selectmenu", $.mobile.widget, {
 		var self = this,
 			select = this.element,
 			isMultiple = this.isMultiple,
-			options = this.options = select.find("option"),
+			options = this.optionElems = select.find("option"),
 			selected = options.filter(":selected"),
 			
 			// return an array of all selected index's
@@ -4148,15 +4157,18 @@ $.widget( "mobile.dialog", $.mobile.widget, {
 			$el = self.element,
 			$prevPage = $.mobile.activePage,
 			$closeBtn = $('<a href="#" data-icon="delete" data-iconpos="notext">Close</a>');
-	
-		$el.delegate("a, form", "click submit", function(e){
+
+    var dialogClickHandler = function(e){
 			if( e.type == "click" && ( $(e.target).closest('[data-back]')[0] || this==$closeBtn[0] ) ){
 				self.close();
 				return false;
 			}
 			//otherwise, assume we're headed somewhere new. set activepage to dialog so the transition will work
 			$.mobile.activePage = self.element;
-		});
+		};
+	
+		$el.delegate("a", "click", dialogClickHandler);
+		$el.delegate("form", "submit", dialogClickHandler);
 	
 		this.element
 			.bind("pageshow",function(){
