@@ -4317,7 +4317,7 @@ $.extend($.jgrid,{
     },
     isEmpty : function(val)
     {
-        if (val.match(/^\s+$/) || val === "")	{
+        if (val.match(/^\s+$/) || val === "")    {
             return true;
         } else {
             return false;
@@ -6961,7 +6961,7 @@ $.jgrid.extend({
                 $($t).jqGrid("setCell",$t.rows[iRow].id, iCol, $t.p.savedRow[fr].v, false, false, true);
                 if ($.isFunction($t.p.afterRestoreCell)) {
                     $t.p.afterRestoreCell.call($t, $t.rows[iRow].id, $t.p.savedRow[fr].v, iRow, iCol);
-                }				
+                }                
                 $t.p.savedRow.splice(0,1);
             }
             window.setTimeout(function () { $("#"+$t.p.knv).attr("tabindex","-1").focus();},0);
@@ -7103,7 +7103,7 @@ $.jgrid.extend({
                         if ($t.p.colModel[i].hidden !== true) {
                             ind = i;
                             break;
-                        }						
+                        }                        
                     }
                 }
                 return ind;
@@ -7574,7 +7574,7 @@ $.jgrid.extend({
                     $t.p.colNames.push(n);
                     $t.p.colModel.push({name:n,width:1,hidden:true,sortable:false,resizable:false,hidedlg:true,editable:true,search:false});
                 }
-            });			
+            });            
         });
     },
     expandRow: function (record){
@@ -7749,7 +7749,7 @@ $.jgrid.extend({
             }
         });
         return result;
-    },	
+    },    
     // End NS, adjacency Model
     getNodeAncestors : function(rc) {
         var ancestors = [];
@@ -7758,7 +7758,7 @@ $.jgrid.extend({
             var parent = $(this).jqGrid("getNodeParent",rc);
             while (parent) {
                 ancestors.push(parent);
-                parent = $(this).jqGrid("getNodeParent",parent);	
+                parent = $(this).jqGrid("getNodeParent",parent);    
             }
         });
         return ancestors;
@@ -8889,7 +8889,7 @@ $.jgrid.extend({
                             } else if(cm.editoptions && cm.editoptions.value) {
                                 oSv = cm.editoptions.value;
                             }
-                            if (oSv) {	
+                            if (oSv) {    
                                 var elem = document.createElement("select");
                                 elem.style.width = "100%";
                                 $(elem).attr({name:cm.index || cm.name, id: "gs_"+cm.name});
@@ -9188,7 +9188,7 @@ $.jgrid.extend({
             if (!$t.grid ) { return; }
             var onBeforeShow = typeof p.beforeShowForm === 'function' ? true: false;
             var onAfterShow = typeof p.afterShowForm === 'function' ? true: false;
-            var onAfterSubmit = typeof p.afterSubmitForm === 'function' ? true: false;			
+            var onAfterSubmit = typeof p.afterSubmitForm === 'function' ? true: false;            
             var gID = $t.p.id,
             dtbl = "ColTbl_"+gID,
             IDs = {themodal:'colmod'+gID,modalhead:'colhd'+gID,modalcontent:'colcnt'+gID, scrollelm: dtbl};
@@ -9267,7 +9267,7 @@ $.jgrid.extend({
                 $("#dData, #eData","#"+dtbl+"_2").hover(
                    function(){$(this).addClass('ui-state-hover');}, 
                    function(){$(this).removeClass('ui-state-hover');}
-                );				
+                );                
                 if(onBeforeShow) { p.beforeShowForm($("#"+dtbl)); }
                 $.jgrid.viewModal("#"+IDs.themodal,{gbox:"#gbox_"+gID,jqm:p.jqModal, jqM: true, modal:p.modal});
                 if(onAfterShow) { p.afterShowForm($("#"+dtbl)); }
@@ -9605,7 +9605,7 @@ $.jgrid.extend({
             var    token = /\\.|[dDjlNSwzWFmMntLoYyaABgGhHisueIOPTZcrU]/g,
             timezone = /\b(?:[PMCEA][SDP]T|(?:Pacific|Mountain|Central|Eastern|Atlantic) (?:Standard|Daylight|Prevailing) Time|(?:GMT|UTC)(?:[-+]\d{4})?)\b/g,
             timezoneClip = /[^-+\dA-Z]/g,
-            msDateRegExp = new RegExp("^/Date\((([-+])?[0-9]+)(([-+])([0-9]{2})([0-9]{2}))?\)/$"),
+            msDateRegExp = new RegExp("\/Date\\((([-+])?[0-9]+)(([-+])([0-9]{2})([0-9]{2}))?\\)\/$"),
             msMatch = ((typeof date === 'string') ? date.match(msDateRegExp): null),
             pad = function (value, length) {
                 value = String(value);
@@ -10135,13 +10135,13 @@ $.jqDnR={
     dnr:{},
     e:0,
     drag:function(v){
-        if(M.k == 'd')E.css({left:M.X+v.pageX-M.pX,top:M.Y+v.pageY-M.pY});
-        else {
+         if(M.k == 'd')E.css({left:M.X+v.pageX-M.pX,top:M.Y+v.pageY-M.pY});
+         else {
             E.css({width:Math.max(v.pageX-M.pX+M.W,0),height:Math.max(v.pageY-M.pY+M.H,0)});
             if(M1){E1.css({width:Math.max(v.pageX-M1.pX+M1.W,0),height:Math.max(v.pageY-M1.pY+M1.H,0)});}
         }
-        return false;
-    },
+          return false;
+      },
     stop:function(){
         //E.css('opacity',M.o);
         $(document).unbind('mousemove',J.drag).unbind('mouseup',J.stop);
@@ -10151,23 +10151,23 @@ var J=$.jqDnR,M=J.dnr,E=J.e,E1,
 i=function(e,h,k,aR){
     return e.each(function(){
         h=(h)?$(h,e):e;
-        h.bind('mousedown',{e:e,k:k},function(v){
-            var d=v.data,p={};E=d.e;E1 = aR ? $(aR) : false;
-            // attempt utilization of dimensions plugin to fix IE issues
-            if(E.css('position') != 'relative'){try{E.position(p);}catch(e){}}
-            M={
-                X:p.left||f('left')||0,
-                Y:p.top||f('top')||0,
-                W:f('width')||E[0].scrollWidth||0,
-                H:f('height')||E[0].scrollHeight||0,
-                pX:v.pageX,
-                pY:v.pageY,
-                k:d.k
-                //o:E.css('opacity')
-            };
+         h.bind('mousedown',{e:e,k:k},function(v){
+             var d=v.data,p={};E=d.e;E1 = aR ? $(aR) : false;
+             // attempt utilization of dimensions plugin to fix IE issues
+             if(E.css('position') != 'relative'){try{E.position(p);}catch(e){}}
+             M={
+                 X:p.left||f('left')||0,
+                 Y:p.top||f('top')||0,
+                 W:f('width')||E[0].scrollWidth||0,
+                 H:f('height')||E[0].scrollHeight||0,
+                 pX:v.pageX,
+                 pY:v.pageY,
+                 k:d.k
+                 //o:E.css('opacity')
+             };
             // also resize
             if(E1 && d.k != 'd'){
-                M1={
+                 M1={
                     X:p.left||f1('left')||0,
                     Y:p.top||f1('top')||0,
                     W:E1[0].offsetWidth||f1('width')||0,
@@ -10176,16 +10176,16 @@ i=function(e,h,k,aR){
                     pY:v.pageY,
                     k:d.k
                 };
-            } else {M1 = false;}			
-            //E.css({opacity:0.8});
+            } else {M1 = false;}            
+             //E.css({opacity:0.8});
             try {$("input.hasDatepicker",E[0]).datepicker('hide');}catch (dpe){}
-            $(document).mousemove($.jqDnR.drag).mouseup($.jqDnR.stop);
-            return false;
-        });
+             $(document).mousemove($.jqDnR.drag).mouseup($.jqDnR.stop);
+             return false;
+         });
     });
 },
 f=function(k){return parseInt(E.css(k))||false;};
-f1=function(k){	return parseInt(E1.css(k))||false;};
+f1=function(k){    return parseInt(E1.css(k))||false;};
 })(jQuery);
 
 /*
@@ -11598,9 +11598,9 @@ jQuery.fn.searchFilter = function(fields, options) {
                 // preparsing the index values for SELECT elements.
                 var fieldvalue, fieldindex, opindex, datavalue, dataindex;
                 fieldvalue = filter['field'];
-                if (valueindexmap[fieldvalue]) {
-                    fieldindex = valueindexmap[fieldvalue]['index'];
-                }
+				if (valueindexmap[fieldvalue]) {
+					fieldindex = valueindexmap[fieldvalue]['index'];
+				}
                 if (fieldindex != null) {
                     opindex = valueindexmap[fieldvalue]['ops'][filter['op']];
                     if(opindex === undefined) {
@@ -11628,10 +11628,10 @@ jQuery.fn.searchFilter = function(fields, options) {
                     if (o) {
                         o.selectedIndex = dataindex;
                     }
-                    return true
+					return true
                 } else {
-                    return false
-                }
+					return false
+				}
             }; // end of this.setFilter fn
         } // end of if fields != null
     }
