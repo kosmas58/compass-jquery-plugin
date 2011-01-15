@@ -392,7 +392,14 @@ $(document).bind("mobileinit.htmlclass", function(){
 		//add classes to HTML element for min/max breakpoints
 		detectResolutionBreakpoints();
 	});
+});
 
+/* Manually trigger an orientationchange event when the dom ready event fires.
+   This will ensure that any viewport meta tag that may have been injected
+   has taken effect already, allowing us to properly calculate the width of the
+   document.
+*/
+$(function(){
 	//trigger event manually
 	$window.trigger( "orientationchange.htmlclass" );
 });
@@ -2763,21 +2770,24 @@ $.widget( "mobile.selectmenu", $.mobile.widget, {
 				.appendTo( listbox ),
 			
 			header = $( "<div>", {
-					"data-role": "header",
-					"data-backbtn": false
+					"class": "ui-header ui-bar-" + theme
 				})
 				.prependTo( listbox ),
 				
-			headerTitle = $( "<h1>" )
+			headerTitle = $( "<h1>", {
+					"class": "ui-title"
+				})
 				.appendTo( header ),
 				
 			headerClose = $( "<a>", {
 					"data-iconpos": "notext",
 					"data-icon": "delete",
 					"text": o.closeText,
-					"href": "#"
+					"href": "#",
+					"class": "ui-btn-left"
 				})
-				.appendTo( header ),
+				.appendTo( header )
+				.buttonMarkup(),
 				
 			menuType;
 		
@@ -3339,7 +3349,6 @@ $.widget( "mobile.slider", $.mobile.widget, {
 			min = (cType == 'input') ? parseFloat(control.attr('min')) : 0,
 			max = (cType == 'input') ? parseFloat(control.attr('max')) : control.find('option').length-1,
 			step = window.parseFloat(control.attr('data-step') || 1),
-
 			slider = $('<div class="ui-slider '+ selectClass +' ui-btn-down-'+ trackTheme+' ui-btn-corner-all" role="application"></div>'),
 			handle = $('<a href="#" class="ui-slider-handle"></a>')
 				.appendTo(slider)
@@ -3380,8 +3389,11 @@ $.widget( "mobile.slider", $.mobile.widget, {
 
 		control
 			.addClass((cType == 'input') ? 'ui-slider-input' : 'ui-slider-switch')
-			.keyup(function(){
-				self.refresh( $(this).val() );
+			.change(function(){
+				self.refresh( ((cType == 'input') ? parseFloat(control.val()) : control[0].selectedIndex), true );
+			})
+			.keyup(function(){ // necessary?
+				self.refresh( ((cType == 'input') ? parseFloat(control.val()) : control[0].selectedIndex), true );
 			});
 
 		$(document).bind($.support.touch ? "touchmove" : "mousemove", function(event){
@@ -3497,7 +3509,7 @@ $.widget( "mobile.slider", $.mobile.widget, {
 		this.refresh();
 	},
 
-	refresh: function(val){
+	refresh: function(val, isfromControl){
 		if ( this.options.disabled ) { return; }
 
 		var control = this.element, percent,
@@ -3517,7 +3529,7 @@ $.widget( "mobile.slider", $.mobile.widget, {
 			percent = Math.round( ((data.pageX - this.slider.offset().left) / this.slider.width() ) * 100 );
 		} else {
 			if ( val == null ) {
-				val = (cType === "input") ? parseFloat(control.val()) : control[ 0 ].selectedIndex;
+				val = (cType === "input") ? parseFloat(control.val()) : control[0].selectedIndex;
 			}
 			percent = (parseFloat(val) - min) / (max - min) * 100;
 		}
@@ -3558,7 +3570,7 @@ $.widget( "mobile.slider", $.mobile.widget, {
 		} else {
 			control[ 0 ].selectedIndex = newval;
 		}
-		control.trigger("change");
+		if (!isfromControl) { control.trigger("change"); }
 	},
 
 	enable: function(){
