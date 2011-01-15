@@ -147,10 +147,10 @@ namespace :build do
         manifest.print "image 'glyphish/mini-icons-black/#{image}'\n"
       end 
       
-      open File.join(MOBILE_DEST_TEMPLATES, 'glyphish', 'Read me first - license.txt'), 'w' do |f|
+      open File.join(MOBILE_DEST_TEMPLATES, 'glyphish', 'License.txt'), 'w' do |f|
         f.print(File.read(File.join(MOBILE_SRC_IMAGES, 'glyphish', 'Read me first - license.txt')))
       end
-      manifest.print "image 'glyphish/Read me first - license.txt'\n"
+      manifest.print "image 'glyphish/License.txt'\n"
 
     end
   end
