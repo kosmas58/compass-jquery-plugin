@@ -543,9 +543,9 @@ jQuery.fn.searchFilter = function(fields, options) {
                 // preparsing the index values for SELECT elements.
                 var fieldvalue, fieldindex, opindex, datavalue, dataindex;
                 fieldvalue = filter['field'];
-                if (valueindexmap[fieldvalue]) {
-                    fieldindex = valueindexmap[fieldvalue]['index'];
-                }
+				if (valueindexmap[fieldvalue]) {
+					fieldindex = valueindexmap[fieldvalue]['index'];
+				}
                 if (fieldindex != null) {
                     opindex = valueindexmap[fieldvalue]['ops'][filter['op']];
                     if(opindex === undefined) {
@@ -573,10 +573,10 @@ jQuery.fn.searchFilter = function(fields, options) {
                     if (o) {
                         o.selectedIndex = dataindex;
                     }
-                    return true
+					return true
                 } else {
-                    return false
-                }
+					return false
+				}
             }; // end of this.setFilter fn
         } // end of if fields != null
     }

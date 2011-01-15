@@ -732,7 +732,7 @@ $.jgrid.extend({
                             } else if(cm.editoptions && cm.editoptions.value) {
                                 oSv = cm.editoptions.value;
                             }
-                            if (oSv) {	
+                            if (oSv) {    
                                 var elem = document.createElement("select");
                                 elem.style.width = "100%";
                                 $(elem).attr({name:cm.index || cm.name, id: "gs_"+cm.name});

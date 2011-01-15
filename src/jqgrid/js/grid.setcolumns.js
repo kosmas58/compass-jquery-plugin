@@ -36,7 +36,7 @@ $.jgrid.extend({
             if (!$t.grid ) { return; }
             var onBeforeShow = typeof p.beforeShowForm === 'function' ? true: false;
             var onAfterShow = typeof p.afterShowForm === 'function' ? true: false;
-            var onAfterSubmit = typeof p.afterSubmitForm === 'function' ? true: false;			
+            var onAfterSubmit = typeof p.afterSubmitForm === 'function' ? true: false;            
             var gID = $t.p.id,
             dtbl = "ColTbl_"+gID,
             IDs = {themodal:'colmod'+gID,modalhead:'colhd'+gID,modalcontent:'colcnt'+gID, scrollelm: dtbl};
@@ -115,7 +115,7 @@ $.jgrid.extend({
                 $("#dData, #eData","#"+dtbl+"_2").hover(
                    function(){$(this).addClass('ui-state-hover');}, 
                    function(){$(this).removeClass('ui-state-hover');}
-                );				
+                );                
                 if(onBeforeShow) { p.beforeShowForm($("#"+dtbl)); }
                 $.jgrid.viewModal("#"+IDs.themodal,{gbox:"#gbox_"+gID,jqm:p.jqModal, jqM: true, modal:p.modal});
                 if(onAfterShow) { p.afterShowForm($("#"+dtbl)); }

@@ -159,7 +159,7 @@ $.jgrid.extend({
                     $t.p.colNames.push(n);
                     $t.p.colModel.push({name:n,width:1,hidden:true,sortable:false,resizable:false,hidedlg:true,editable:true,search:false});
                 }
-            });			
+            });            
         });
     },
     expandRow: function (record){
@@ -334,7 +334,7 @@ $.jgrid.extend({
             }
         });
         return result;
-    },	
+    },    
     // End NS, adjacency Model
     getNodeAncestors : function(rc) {
         var ancestors = [];
@@ -343,7 +343,7 @@ $.jgrid.extend({
             var parent = $(this).jqGrid("getNodeParent",rc);
             while (parent) {
                 ancestors.push(parent);
-                parent = $(this).jqGrid("getNodeParent",parent);	
+                parent = $(this).jqGrid("getNodeParent",parent);    
             }
         });
         return ancestors;
