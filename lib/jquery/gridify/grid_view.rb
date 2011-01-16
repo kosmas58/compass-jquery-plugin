@@ -23,7 +23,7 @@ module Gridify
 
       if options[:ready]
         s << %Q^
-        jQuery(document).ready(function(){
+        $(document).ready(function(){
         ^
       end
       

@@ -131,7 +131,7 @@ module Gridify
         end.compact
         
         if col_include
-            col_include.each do |sub_model|
+          col_include.each do |sub_model|
             my_model = sub_model.to_s
             if klass.inheritable_attributes[:reflections][sub_model].options[:class_name]
               my_class = klass.inheritable_attributes[:reflections][sub_model].options[:class_name].to_s
