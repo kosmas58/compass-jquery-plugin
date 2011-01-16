@@ -6110,7 +6110,7 @@ $(function(){
             //cache.addEventListener('obsolete', logEvent, false);
             //cache.addEventListener('progress', logEvent, false);
             //cache.addEventListener('updateready', logEvent, false); 
-			window.addEventListener('cached', logEvent, false);
+            window.addEventListener('cached', logEvent, false);
             window.addEventListener('checking', logEvent, false);
             window.addEventListener('downloading', logEvent, false);
             window.addEventListener('error', logEvent, false);
