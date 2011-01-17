@@ -1,6 +1,7 @@
 /*!
- * jQuery Templates Plugin
+ * jQuery Templates Plugin 1.0.0pre
  * http://github.com/jquery/jquery-tmpl
+ * Requires jQuery 1.4.2
  *
  * Copyright Software Freedom Conservancy, Inc.
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -27,7 +28,7 @@
 			update: tiUpdate
 		};
 		if ( options ) {
-			jQuery.extend( newItem, options, { nodes: [], parent: parentItem } );
+			jQuery.extend( newItem, options, { nodes: [], parent: parentItem });
 		}
 		if ( fn ) {
 			// Build the hierarchical content to be used during insertion into DOM
@@ -60,7 +61,7 @@
 				for ( i = 0, l = insert.length; i < l; i++ ) {
 					cloneIndex = i;
 					elems = (i > 0 ? this.clone(true) : this).get();
-					jQuery.fn[ original ].apply( jQuery(insert[i]), elems );
+					jQuery( insert[i] )[ original ]( elems );
 					ret = ret.concat( elems );
 				}
 				cloneIndex = 0;
@@ -91,14 +92,9 @@
 		},
 
 		domManip: function( args, table, callback, options ) {
-			// This appears to be a bug in the appendTo, etc. implementation
-			// it should be doing .call() instead of .apply(). See #6227
-			if ( args[0] && args[0].nodeType ) {
-				var dmArgs = jQuery.makeArray( arguments ), argsLength = args.length, i = 0, tmplItem;
-				while ( i < argsLength && !(tmplItem = jQuery.data( args[i++], "tmplItem" ))) {}
-				if ( argsLength > 1 ) {
-					dmArgs[0] = [jQuery.makeArray( args )];
-				}
+			if ( args[0] && jQuery.isArray( args[0] )) {
+				var dmArgs = jQuery.makeArray( arguments ), elems = args[0], elemsLength = elems.length, i = 0, tmplItem;
+				while ( i < elemsLength && !(tmplItem = jQuery.data( elems[i++], "tmplItem" ))) {}
 				if ( tmplItem && cloneIndex ) {
 					dmArgs[2] = function( fragClone ) {
 						// Handler called by oldManip when rendered template has been inserted into DOM.
@@ -187,7 +183,10 @@
 				}
 				if ( tmpl.nodeType ) {
 					// If this is a template block, use cached copy, or generate tmpl function and cache.
-					tmpl = jQuery.data( tmpl, "tmpl" ) || jQuery.data( tmpl, "tmpl", buildTmplFn( tmpl.innerHTML ));
+					tmpl = jQuery.data( tmpl, "tmpl" ) || jQuery.data( tmpl, "tmpl", buildTmplFn( tmpl.innerHTML )); 
+					// Issue: In IE, if the container element is not a script block, the innerHTML will remove quotes from attribute values whenever the value does not include white space. 
+					// This means that foo="${x}" will not work if the value of x includes white space: foo="${x}" -> foo=value of x. 
+					// To correct this, include space in tag: foo="${ x }" -> foo="value of x"
 				}
 				return typeof name === "string" ? (jQuery.template[name] = tmpl) : tmpl;
 			}
@@ -341,7 +340,7 @@
 						args = args ? ("," + unescape( args ) + ")") : (parens ? ")" : "");
 						// Support for target being things like a.toLowerCase();
 						// In that case don't call with template item as 'this' pointer. Just evaluate...
-						expr = parens ? (target.indexOf(".") > -1 ? target + parens : ("(" + target + ").call($item" + args)) : target;
+						expr = parens ? (target.indexOf(".") > -1 ? target + unescape( parens ) : ("(" + target + ").call($item" + args)) : target;
 						exprAutoFnDetect = parens ? expr : "(typeof(" + target + ")==='function'?(" + target + ").call($item):(" + target + "))";
 					} else {
 						exprAutoFnDetect = expr = def.$1 || "null";
@@ -352,13 +351,7 @@
 							.split( "$notnull_1" ).join( target ? "typeof(" + target + ")!=='undefined' && (" + target + ")!=null" : "true" )
 							.split( "$1a" ).join( exprAutoFnDetect )
 							.split( "$1" ).join( expr )
-							.split( "$2" ).join( fnargs ?
-								fnargs.replace( /\s*([^\(]+)\s*(\((.*?)\))?/g, function( all, name, parens, params ) {
-									params = params ? ("," + params + ")") : (parens ? ")" : "");
-									return params ? ("(" + name + ").call($item" + params) : all;
-								})
-								: (def.$2||"")
-							) +
+							.split( "$2" ).join( fnargs || def.$2 || "" ) +
 						"_.push('";
 				}) +
 			"');}return _;"
@@ -407,7 +400,7 @@
 					if ( !(tmplItem = newTmplItems[key]) ) {
 						// The item is for wrapped content, and was copied from the temporary parent wrappedItem.
 						tmplItem = wrappedItems[key];
-						tmplItem = newTmplItem( tmplItem, newTmplItems[pntNode]||wrappedItems[pntNode], null, true );
+						tmplItem = newTmplItem( tmplItem, newTmplItems[pntNode]||wrappedItems[pntNode] );
 						tmplItem.key = ++itemKey;
 						newTmplItems[itemKey] = tmplItem;
 					}
@@ -443,7 +436,7 @@
 			function cloneTmplItem( key ) {
 				key = key + keySuffix;
 				tmplItem = newClonedItems[key] = 
-					(newClonedItems[key] || newTmplItem( tmplItem, newTmplItems[tmplItem.parent.key + keySuffix] || tmplItem.parent, null, true ));
+					(newClonedItems[key] || newTmplItem( tmplItem, newTmplItems[tmplItem.parent.key + keySuffix] || tmplItem.parent ));
 			}
 		}
 	}

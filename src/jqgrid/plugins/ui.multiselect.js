@@ -28,7 +28,20 @@
 (function($) {
 
 $.widget("ui.multiselect", {
-	_init: function() {
+  options: {
+		sortable: true,
+		searchable: true,
+		animated: 'fast',
+		show: 'slideDown',
+		hide: 'slideUp',
+		dividerLocation: 0.6,
+		nodeComparator: function(node1,node2) {
+			var text1 = node1.text(),
+			    text2 = node2.text();
+			return text1 == text2 ? 0 : (text1 < text2 ? -1 : 1);
+		}
+	},
+	_create: function() {
 		this.element.hide();
 		this.id = this.element.attr("id");
 		this.container = $('<div class="ui-multiselect ui-helper-clearfix ui-widget"></div>').insertAfter(this.element);
@@ -61,7 +74,7 @@ $.widget("ui.multiselect", {
 		
 		// make selection sortable
 		if (this.options.sortable) {
-			$("ul.selected").sortable({
+			this.selectedList.sortable({
 				placeholder: 'ui-state-highlight',
 				axis: 'y',
 				update: function(event, ui) {
@@ -99,11 +112,12 @@ $.widget("ui.multiselect", {
 		}
 		
 		// batch actions
-		$(".remove-all").click(function() {
+		this.container.find(".remove-all").click(function() {
 			that._populateLists(that.element.find('option').removeAttr('selected'));
 			return false;
 		});
-		$(".add-all").click(function() {
+		
+		this.container.find(".add-all").click(function() {
 			that._populateLists(that.element.find('option').attr('selected', 'selected'));
 			return false;
 		});
@@ -112,7 +126,7 @@ $.widget("ui.multiselect", {
 		this.element.show();
 		this.container.remove();
 
-		$.widget.prototype.destroy.apply(this, arguments);
+		$.Widget.prototype.destroy.apply(this, arguments);
 	},
 	_populateLists: function(options) {
 		this.selectedList.children('.ui-element').remove();
@@ -246,21 +260,24 @@ $.widget("ui.multiselect", {
 			that.count += 1;
 			that._updateCount();
 			return false;
-		})
-		// make draggable
-		.each(function() {
-			$(this).parent().draggable({
-	      connectToSortable: 'ul.selected',
-				helper: function() {
-					var selectedItem = that._cloneWithData($(this)).width($(this).width() - 50);
-					selectedItem.width($(this).width());
-					return selectedItem;
-				},
-				appendTo: '.ui-multiselect',
-				containment: '.ui-multiselect',
-				revert: 'invalid'
-	    });
 		});
+		
+		// make draggable
+		if (this.options.sortable) {
+  		elements.each(function() {
+  			$(this).parent().draggable({
+  	      connectToSortable: that.selectedList,
+  				helper: function() {
+  					var selectedItem = that._cloneWithData($(this)).width($(this).width() - 50);
+  					selectedItem.width($(this).width());
+  					return selectedItem;
+  				},
+  				appendTo: that.container,
+  				containment: that.container,
+  				revert: 'invalid'
+  	    });
+  		});		  
+		}
 	},
 	_registerRemoveEvents: function(elements) {
 		var that = this;
@@ -291,24 +308,12 @@ $.widget("ui.multiselect", {
 });
 		
 $.extend($.ui.multiselect, {
-	defaults: {
-		sortable: true,
-		searchable: true,
-		animated: 'fast',
-		show: 'slideDown',
-		hide: 'slideUp',
-		dividerLocation: 0.6,
-		nodeComparator: function(node1,node2) {
-			var text1 = node1.text(),
-			    text2 = node2.text();
-			return text1 == text2 ? 0 : (text1 < text2 ? -1 : 1);
-		}
-	},
 	locale: {
 		addAll:'Add all',
 		removeAll:'Remove all',
 		itemsCount:'items selected'
 	}
 });
+
 
 })(jQuery);

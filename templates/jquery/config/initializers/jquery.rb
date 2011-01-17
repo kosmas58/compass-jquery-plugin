@@ -35,8 +35,7 @@ ActionView::Helpers::AssetTagHelper.register_javascript_expansion :offline => ['
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :pngFix => ['jquery.pngFix.min']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :sparklines => ['jquery.sparkline.min']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :themeSwitcher => ['jquery.themeswitchertool.min']
-ActionView::Helpers::AssetTagHelper.register_javascript_expansion :tmpl => ['jquery.tmpl.min']
-ActionView::Helpers::AssetTagHelper.register_javascript_expansion :tmpl_plus => ['jquery.tmplPlus.min']
+ActionView::Helpers::AssetTagHelper.register_javascript_expansion :tmpl => ['jquery.tmpl.min', 'jquery.tmplPlus.min']
 
 require 'jquery/jquery'
 require 'handle_attributes'

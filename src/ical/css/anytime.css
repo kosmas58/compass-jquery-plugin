@@ -1,7 +1,7 @@
 /*****************************************************************************
  *  FILE:  anytime.css - The Any+Time(TM) JavaScript Library (stylesheet)
  *
- *  VERSION: 4.1112E
+ *  VERSION: 4.1112H
  *
  *  Copyright 2008-2010 Andrew M. Andrews III (www.AMA3.com). Some Rights 
  *  Reserved. This work licensed under the Creative Commons Attribution-
@@ -166,7 +166,7 @@ div.AnyTime-win
 
 .AnyTime-pkr .AnyTime-body
 {
-	padding:0.5em;
+  padding:0.5em;
 }
 
 /*
@@ -284,7 +284,7 @@ div.AnyTime-win
 
 .AnyTime-pkr .AnyTime-mon7-btn
 {
-	clear:left;
+  clear:left;
 }
 
 
@@ -615,7 +615,7 @@ div.AnyTime-win
 
 .AnyTime-pkr .AnyTime-body-yr-selector
 {
-  padding:1em;	
+  padding:1em;  
 }
 
 /*
