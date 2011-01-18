@@ -78,8 +78,7 @@
             }
 
             // Swap in newly download files when update is ready
-            //cache.addEventListener('updateready', function(e){
-            window.addEventListener('updateready', function(e){
+            cache.addEventListener('updateready', function(e){
                     // Don't perform "swap" if this is the first cache
                     if (cacheStatusValues[cache.status] != 'idle') {
                         cache.swapCache();
