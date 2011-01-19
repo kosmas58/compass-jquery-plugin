@@ -653,12 +653,11 @@ $.jgrid.extend({
                     }
                     delete postdata[$t.p.id+"_id"];
                     postdata = $.extend(postdata,rp_ge.editData,onCS);
-                    
+
                     if($t.p.restful) {
                         rp_ge.mtype = postdata.id == "_empty" ? "POST" : "PUT";
                         rp_ge.url = postdata.id == "_empty" ? $t.p.url : $t.p.url+"/"+postdata.id;
                     }
-
                     var ajaxOptions = $.extend({
                         url: rp_ge.url ? rp_ge.url : $($t).jqGrid('getGridParam','editurl'),
                         type: rp_ge.mtype,
@@ -1626,7 +1625,8 @@ $.jgrid.extend({
             afterRefresh : null,
             cloneToTop : false
         }, $.jgrid.nav, o ||{});
-        return this.each(function() {       
+        return this.each(function() {
+            if(this.nav) { return; }
             var alertIDs = {themodal:'alertmod',modalhead:'alerthd',modalcontent:'alertcnt'},
             $t = this, vwidth, vheight, twd, tdw;
             if(!$t.grid || typeof elem != 'string') { return; }
@@ -1857,6 +1857,7 @@ $.jgrid.extend({
                     $t.p._nvtd[1] = twd;
                 }
                 tdw =null; twd=null; navtbl =null;
+                this.nav = true;
             }
         });
     },
@@ -1874,6 +1875,7 @@ $.jgrid.extend({
             if( elem.indexOf("#") !== 0) { elem = "#"+elem; }
             var findnav = $(".navtable",elem)[0], $t = this;
             if (findnav) {
+                if( p.id && $("#"+p.id, findnav).html() !=null )  { return; }
                 var tbd = $("<td></td>");
                 if(p.buttonicon.toString().toUpperCase() == "NONE") {
                     $(tbd).addClass('ui-pg-button ui-corner-all').append("<div class='ui-pg-div'>"+p.caption+"</div>");
