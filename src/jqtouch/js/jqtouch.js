@@ -17,8 +17,8 @@
     (c) 2010 by jQTouch project members.
     See LICENSE.txt for license.
 
-    $Revision: 160 $
-    $Date: Tue Jan 18 00:22:18 EST 2011 $
+    $Revision: 161 $
+    $Date: Wed Jan 19 23:43:35 EST 2011 $
     $LastChangedBy: jonathanstark $
 
 
@@ -66,7 +66,6 @@
                 statusBar: 'default', // other options: black-translucent, black
                 submitSelector: '.submit',
                 touchSelector: 'a, .touch',
-                unloadMessage: 'Are you sure you want to leave this page? Doing so will log you out of the app.',
                 useAnimations: true,
                 useFastTouch: true, // experimental
                 animations: [ // highest to lowest priority
@@ -118,7 +117,13 @@
         }
         function clickHandler(e) {
             _debug();
-            
+
+            if (!tapReady) {
+                _debug('ClickHandler handler aborted because tap is not ready');
+                e.preventDefault();
+                return false;
+            }
+
             // Figure out whether to prevent default
             var $el = $(e.target);
 
@@ -197,7 +202,7 @@
                     finalAnimationName = animation.name;
                 }
 
-                _debug('finalAnimationName is ' + finalAnimationName);
+                // _debug('finalAnimationName is ' + finalAnimationName);
 
                 // Bind internal "cleanup" callback
                 fromPage.bind('webkitAnimationEnd', navigationEndHandler);
@@ -214,14 +219,14 @@
             // Define private navigationEnd callback
             function navigationEndHandler(event) {
                 _debug();
-
+                
                 if ($.support.animationEvents && animation && jQTSettings.useAnimations) {
                     fromPage.unbind('webkitAnimationEnd', navigationEndHandler);
-                    fromPage.attr('class', '');
-                    toPage.attr('class', 'current');
+                    fromPage.removeClass(finalAnimationName + ' out current');
+                    toPage.removeClass(finalAnimationName + ' in');
                     // toPage.css('top', 0);
                 } else {
-                    fromPage.attr('class', '');
+                    fromPage.removeClass(finalAnimationName + ' out current');
                 }
 
                 // Housekeeping
@@ -237,7 +242,7 @@
                 setHash(currentPage.attr('id'));
                 tapReady = true;
 
-                // Finally, trigger custom events
+                // Trigger custom events
                 toPage.trigger('pageAnimationEnd', {direction:'in', animation:animation});
                 fromPage.trigger('pageAnimationEnd', {direction:'out', animation:animation});
 
@@ -317,7 +322,7 @@
                 if(location.hash === hist[1].hash) {
                     goBack();
                 } else {
-                    _debug(location.hash + ' === ' + hist[1].id);
+                    _debug(location.hash + ' !== ' + hist[1].hash);
                 }
             } 
         }
@@ -382,7 +387,7 @@
                     $node.attr('id', 'page-' + (++newPageCount));
                 }
 
-                // remove any existing instance
+                // Remove any existing instance
                 $('#' + $node.attr('id')).remove();
 
                 $body.trigger('pageInserted', {page: $node.appendTo($body)});
@@ -416,8 +421,14 @@
             // Trim leading # if need be
             hash = hash.replace(/^#/, ''),
 
+            // Remove listener
+            window.onhashchange = null;
+
             // Change hash
-            history.pushState(null, null, '#' + hash);
+            location.hash = '#' + hash;
+            
+            // Add listener
+            window.onhashchange = hashChangeHandler;
 
         }
         function showPageByHref(href, options) {
@@ -878,10 +889,13 @@
             // Go to the top of the "current" page
             $(currentPage).addClass('current');
             initialPageId = $(currentPage).attr('id');
-            history.replaceState(null, null, '#' + initialPageId);
+            if(history.replaceState !== undefined) {
+                history.replaceState(null, null, '#' + initialPageId);
+            } else {
+                setHash(initialPageId);
+            }
             addPageToHistory(currentPage);
             scrollTo(0, 0);
-            window.onhashchange = hashChangeHandler;
 
         });
 
