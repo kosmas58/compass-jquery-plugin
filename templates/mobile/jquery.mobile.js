@@ -1,7 +1,7 @@
 /*!
- * jQuery UI Widget @VERSION
+ * jQuery UI Widget 1.8.9
  *
- * Copyright 2010, AUTHORS.txt (http://jqueryui.com/about)
+ * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * http://jquery.org/license
  *
@@ -96,15 +96,19 @@ $.widget.bridge = function( name, object ) {
 
 		if ( isMethodCall ) {
 			this.each(function() {
-				var instance = $.data( this, name );
-				if ( !instance ) {
-					throw "cannot call methods on " + name + " prior to initialization; " +
-						"attempted to call method '" + options + "'";
-				}
-				if ( !$.isFunction( instance[options] ) ) {
-					throw "no such method '" + options + "' for " + name + " widget instance";
-				}
-				var methodValue = instance[ options ].apply( instance, args );
+				var instance = $.data( this, name ),
+					methodValue = instance && $.isFunction( instance[options] ) ?
+						instance[ options ].apply( instance, args ) :
+						instance;
+				// TODO: add this back in 1.9 and use $.error() (see #5972)
+//				if ( !instance ) {
+//					throw "cannot call methods on " + name + " prior to initialization; " +
+//						"attempted to call method '" + options + "'";
+//				}
+//				if ( !$.isFunction( instance[options] ) ) {
+//					throw "no such method '" + options + "' for " + name + " widget instance";
+//				}
+//				var methodValue = instance[ options ].apply( instance, args );
 				if ( methodValue !== instance && methodValue !== undefined ) {
 					returnValue = methodValue;
 					return false;
@@ -158,11 +162,7 @@ $.Widget.prototype = {
 		this._init();
 	},
 	_getCreateOptions: function() {
-		var options = {};
-		if ( $.metadata ) {
-			options = $.metadata.get( element )[ this.widgetName ];
-		}
-		return options;
+		return $.metadata && $.metadata.get( this.element[0] )[ this.widgetName ];
 	},
 	_create: function() {},
 	_init: function() {},
@@ -319,9 +319,17 @@ $.mobile.media = (function() {
 
 	return function( query ) {
 		if ( !( query in cache ) ) {
-			var styleBlock = $( "<style type='text/css'>" +
-				"@media " + query + "{#jquery-mediatest{position:absolute;}}" +
-				"</style>" );
+			var styleBlock = document.createElement('style'),
+        		cssrule = "@media " + query + " { #jquery-mediatest { position:absolute; } }";
+	        //must set type for IE!	
+	        styleBlock.type = "text/css";
+	        if (styleBlock.styleSheet){ 
+	          styleBlock.styleSheet.cssText = cssrule;
+	        } 
+	        else {
+	          styleBlock.appendChild(document.createTextNode(cssrule));
+	        } 
+				
 			$html.prepend( fakeBody ).prepend( styleBlock );
 			cache[ query ] = testDiv.css( "position" ) === "absolute";
 			fakeBody.add( styleBlock ).remove();
@@ -1205,11 +1213,11 @@ $.each({
 	});
 
 
-//trigger mobileinit event - useful hook for configuring $.mobile settings before they're used
+	//trigger mobileinit event - useful hook for configuring $.mobile settings before they're used
 	$( window.document ).trigger('mobileinit');
 
 
-//support conditions
+	//support conditions
 	//if device support condition(s) aren't met, leave things as they are -> a basic, usable experience,
 	//otherwise, proceed with the enhancements
 	if ( !$.mobile.gradeA() ) {
@@ -1217,7 +1225,7 @@ $.each({
 	}
 
 
-//define vars for interal use
+	//define vars for interal use
 	var $window = $(window),
 		$html = $('html'),
 		$head = $('head'),
@@ -1232,15 +1240,15 @@ $.each({
 			: undefined;
 
 
-//add mobile, initial load "rendering" classes to docEl
+	//add mobile, initial load "rendering" classes to docEl
 	$html.addClass('ui-mobile ui-mobile-rendering');
 
 
-//define & prepend meta viewport tag, if content is defined
+	//define & prepend meta viewport tag, if content is defined
 	$.mobile.metaViewportContent ? $("<meta>", { name: "viewport", content: $.mobile.metaViewportContent}).prependTo( $head ) : undefined;
 
 
-//expose some core utilities
+	//expose some core utilities
 	$.extend($.mobile, {
 
 		// turn on/off page loading message.
@@ -1269,7 +1277,7 @@ $.each({
 	});
 
 
-//dom-ready inits
+	//dom-ready inits
 	$(function(){
 
 		//find present pages
@@ -1299,7 +1307,7 @@ $.each({
 	});
 
 
-//window load event
+	//window load event
 	//hide iOS browser chrome on load
 	$window.load( $.mobile.silentScroll );
 
@@ -1470,6 +1478,12 @@ $.each({
 
 	//url stack, useful when plugins need to be aware of previous pages viewed
 	$.mobile.urlStack = urlStack;
+
+	//check for an external resource
+	$.mobile.isExternalLink = function(anchor){
+		var $anchor = $(anchor);
+		return /^(:?\w+:)/.test( $anchor.attr('href') ) || $anchor.is( "[rel=external]" );
+	},
 
 	// changepage function
 	$.mobile.changePage = function( to, transition, back, changeHash){
@@ -1754,7 +1768,7 @@ $.each({
 			//if target attr is specified, it's external, and we mimic _blank... for now
 			target = $this.is( "[target]" ),
 			//if it still starts with a protocol, it's external, or could be :mailto, etc
-			external = target || /^(:?\w+:)/.test( href ) || $this.is( "[rel=external]" );
+			external = target || $.mobile.isExternalLink(this);
 
 		if( href === '#' ){
 			//for links created purely for interaction - ignore
@@ -4212,29 +4226,40 @@ $( "[data-role='listview']" ).live( "listviewcreate", function() {
 * jQuery Mobile Framework : "dialog" plugin.
 * Copyright (c) jQuery Project
 * Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
-* Note: Code is in draft form and is subject to change 
+* Note: Code is in draft form and is subject to change
 */
 (function($, undefined ) {
 $.widget( "mobile.dialog", $.mobile.widget, {
 	options: {},
-	_create: function(){	
+	_create: function(){
 		var self = this,
 			$el = self.element,
 			$prevPage = $.mobile.activePage,
 			$closeBtn = $('<a href="#" data-icon="delete" data-iconpos="notext">Close</a>');
 
     var dialogClickHandler = function(e){
+			var $target = $(e.target);
+
+			// fixes issues with target links in dialogs breaking
+			// page transitions by reseting the active page below
+			if( $target.attr('target') || $.mobile.isExternalLink($target) ) {
+				return;
+			}
+
 			if( e.type == "click" && ( $(e.target).closest('[data-back]')[0] || this==$closeBtn[0] ) ){
 				self.close();
 				return false;
 			}
+
 			//otherwise, assume we're headed somewhere new. set activepage to dialog so the transition will work
 			$.mobile.activePage = self.element;
 		};
-	
+
+		// NOTE avoid click handler in the case of an external resource
+		// TODO add function in navigation to handle external check
 		$el.delegate("a", "click", dialogClickHandler);
 		$el.delegate("form", "submit", dialogClickHandler);
-	
+
 		this.element
 			.bind("pageshow",function(){
 				return false;
@@ -4248,11 +4273,11 @@ $.widget( "mobile.dialog", $.mobile.widget, {
 			.end()
 			.find('.ui-content:not([class*="ui-body-"])')
 				.addClass('ui-body-c')
-			.end()	
+			.end()
 			.find('.ui-content,[data-role=footer]')
 				.last()
 				.addClass('ui-corner-bottom ui-overlay-shadow');
-		
+
 		$(window).bind('hashchange',function(){
 			if( $el.is('.ui-page-active') ){
 				self.close();
@@ -4260,10 +4285,10 @@ $.widget( "mobile.dialog", $.mobile.widget, {
 					$.mobile.updateHash( $prevPage.attr('data-url'), true);
 				});
 			}
-		});		
+		});
 
 	},
-	
+
 	close: function(){
 		$.mobile.changePage([this.element, $.mobile.activePage], undefined, true, true );
 	}
