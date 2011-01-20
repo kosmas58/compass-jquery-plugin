@@ -1,6 +1,6 @@
 /*jslint browser: true */ /*global jQuery: true */
 
-/**
+/*
  * jQuery Cookie plugin
  *
  * Copyright (c) 2010 Klaus Hartl (stilbuero.de)
@@ -10,9 +10,9 @@
  *
  */
 
-// TODO JsDoc
 
-/**
+
+/*
  * Create a cookie with the given key and value and other optional parameters.
  *
  * @example $.cookie('the_cookie', 'the_value');

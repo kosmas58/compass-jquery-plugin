@@ -2943,7 +2943,7 @@ $.fn.jqGrid = function( pin ) {
             //     ci = $.jgrid.getCellIndex(td);
             //     ts.p.onRightClickRow.call(ts,$(ptr).attr("id"),ri,ci, e);
             //     return false;
-            }// );
+            // });
         }
         grid.bDiv = document.createElement("div");
         $(grid.bDiv)
