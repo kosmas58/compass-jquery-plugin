@@ -1257,7 +1257,9 @@ $.each({
 				$html.removeClass( "ui-loading" );
 			} else {
 				if( $.mobile.loadingMessage ){
-					$loader.appendTo($.mobile.pageContainer).css({top: $(window).scrollTop() + 75});
+					var activeLink = $( "." + $.mobile.activeBtnClass ).eq(0),
+						yPos = activeLink.length ? activeLink.offset().top : $(window).scrollTop() + 75;
+					$loader.appendTo($.mobile.pageContainer).css({top: yPos});
 				}
 				$html.addClass( "ui-loading" );
 			}
@@ -2364,9 +2366,10 @@ $.fixedToolbars = (function(){
 		
 	//before page is shown, check for duplicate footer
 	$('.ui-page').live('pagebeforeshow', function(event, ui){
-		var page = $(event.target);
-		var footer = page.find('[data-role="footer"]:not(.ui-sticky-footer)');
-		var id = footer.data('id');
+		var page = $(event.target),
+			footer = page.find('[data-role="footer"]:not(.ui-sticky-footer)'),
+			id = footer.data('id');
+		stickyFooter = null;
 		if (id)
 		{
 			stickyFooter = $('.ui-footer[data-id="' + id + '"].ui-sticky-footer');
@@ -4148,7 +4151,7 @@ $.widget( "mobile.listview", $.mobile.widget, {
 		$( parentList.find( "ul, ol" ).toArray().reverse() ).each(function( i ) {
 			var list = $( this ),
 				parent = list.parent(),
-				title = $.trim(parent.contents()[ 0 ].nodeValue.split("\n")[0]) || parent.find('a:first').text(),
+				title = $.trim(parent.contents()[ 0 ].nodeValue) || parent.find('a:first').text(),
 				id = parentId + "&" + $.mobile.subPageUrlKey + "=" + self._idStringEscape(title + " " + i),
 				theme = list.data( "theme" ) || o.theme,
 				countTheme = list.data( "counttheme" ) || parentList.data( "counttheme" ) || o.countTheme,
