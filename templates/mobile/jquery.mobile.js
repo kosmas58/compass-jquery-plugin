@@ -1483,8 +1483,12 @@ $.each({
 
 	//check for an external resource
 	$.mobile.isExternalLink = function(anchor){
-		var $anchor = $(anchor);
-		return /^(:?\w+:)/.test( $anchor.attr('href') ) || $anchor.is( "[rel=external]" );
+		var $anchor = $(anchor),
+			hasProtocol = /^(:?\w+:)/.test( $anchor.attr('href') ),
+			hasRelExternal = $anchor.is( "[rel=external]" ),
+			hasTarget = $anchor.is( "[target]" );
+
+		return hasProtocol || hasRelExternal || hasTarget;
 	},
 
 	// changepage function
@@ -1769,8 +1773,9 @@ $.each({
 			href = $this.attr( "href" ).replace( location.protocol + "//" + location.host, ""),
 			//if target attr is specified, it's external, and we mimic _blank... for now
 			target = $this.is( "[target]" ),
+
 			//if it still starts with a protocol, it's external, or could be :mailto, etc
-			external = target || $.mobile.isExternalLink(this);
+			external = $.mobile.isExternalLink(this);
 
 		if( href === '#' ){
 			//for links created purely for interaction - ignore
@@ -4238,25 +4243,25 @@ $.widget( "mobile.dialog", $.mobile.widget, {
 		var self = this,
 			$el = self.element,
 			$prevPage = $.mobile.activePage,
-			$closeBtn = $('<a href="#" data-icon="delete" data-iconpos="notext">Close</a>');
+			$closeBtn = $('<a href="#" data-icon="delete" data-iconpos="notext">Close</a>'),
 
-    var dialogClickHandler = function(e){
-			var $target = $(e.target);
+			dialogClickHandler = function(e){
+				var $target = $(e.target);
 
-			// fixes issues with target links in dialogs breaking
-			// page transitions by reseting the active page below
-			if( $target.attr('target') || $.mobile.isExternalLink($target) ) {
-				return;
-			}
+				// fixes issues with target links in dialogs breaking
+				// page transitions by reseting the active page below
+				if( $.mobile.isExternalLink($target) ) {
+					return;
+				}
 
-			if( e.type == "click" && ( $(e.target).closest('[data-back]')[0] || this==$closeBtn[0] ) ){
-				self.close();
-				return false;
-			}
+				if( e.type == "click" && ( $(e.target).closest('[data-back]')[0] || this==$closeBtn[0] ) ){
+					self.close();
+					return false;
+				}
 
-			//otherwise, assume we're headed somewhere new. set activepage to dialog so the transition will work
-			$.mobile.activePage = self.element;
-		};
+				//otherwise, assume we're headed somewhere new. set activepage to dialog so the transition will work
+				$.mobile.activePage = self.element;
+			};
 
 		// NOTE avoid click handler in the case of an external resource
 		// TODO add function in navigation to handle external check
