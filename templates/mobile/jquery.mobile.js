@@ -2532,7 +2532,8 @@ $.widget( "mobile.checkboxradio", $.mobile.widget, {
 		theme: null
 	},
 	_create: function(){
-		var input = this.element,
+		var self = this,
+			input = this.element,
 			label = input.closest("form,fieldset,[data-role='page']").find("label[for='" + input.attr( "id" ) + "']"),
 			inputtype = input.attr( "type" ),
 			checkedicon = "ui-icon-" + inputtype + "-on",
@@ -2562,25 +2563,34 @@ $.widget( "mobile.checkboxradio", $.mobile.widget, {
 				if( $(this).parent().is('.ui-disabled') ){ return false; }
 			},
 			
-			mousedown: function() {
-				if( $(this).parent().is('.ui-disabled') ){ return false; }
-				label.data( "state", input.attr( "checked" ) );
+			"touchend mouseup": function( event ){
+				//prevent both events from firing, keep the first
+				if( $(this).parent().is('.ui-disabled') || $(this).data("prevEvent") && $(this).data("prevEvent") !== event.type ){ 
+					return false;
+				}
+				$(this).data("prevEvent", event.type);
+				setTimeout(function(){
+					label.removeData("prevEvent");
+				}, 1000);
+				
+				input.attr( "checked", inputtype === "radio" && true || !input.is( ":checked" ) );
+				input.trigger( "updateAll" );
+				event.preventDefault();
 			},
 			
-			click: function() {
-				setTimeout(function() {
-					if ( input.attr( "checked" ) === label.data( "state" ) ) {
-						input.trigger( "click" );
-					}
-				}, 1);
-			}
+			click: false
+			
 		});
 		
 		input
 			.bind({
 
-				click: function() {
+				updateAll: function() {
 					$( "input[name='" + input.attr( "name" ) + "'][type='" + inputtype + "']" ).checkboxradio( "refresh" );
+				},
+				
+				click: function(){
+					$( this ).trigger( "updateAll" );
 				},
 
 				focus: function() { 
@@ -3983,7 +3993,7 @@ $.widget( "mobile.listview", $.mobile.widget, {
 
 		item.find( "p, dl" ).addClass( "ui-li-desc" );
 
-		item.find( "img" ).addClass( "ui-li-thumb" ).each(function() {
+		item.find( "li" ).find( "img:eq(0)" ).addClass( "ui-li-thumb" ).each(function() {
 			$( this ).closest( "li" )
 				.addClass( $(this).is( ".ui-li-icon" ) ? "ui-li-has-icon" : "ui-li-has-thumb" );
 		});
@@ -4338,7 +4348,8 @@ $.widget( "mobile.navbar", $.mobile.widget, {
 			});
 		
 		$navbar.delegate("a", "click",function(event){
-			$navbtns.removeClass("ui-btn-active");
+			$navbtns.removeClass( "ui-btn-active" );
+			$( this ).addClass( "ui-btn-active" );
 		});	
 	}
 });
