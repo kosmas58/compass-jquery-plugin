@@ -1607,7 +1607,7 @@ $.each({
 			};
 
 			if(transition && (transition !== 'none')){
-				if( perspectiveTransitions.indexOf(transition) >= 0 ){
+				if( $.inArray(transition, perspectiveTransitions) >= 0 ){
 					addContainerClass('ui-mobile-viewport-perspective');
 				}
 

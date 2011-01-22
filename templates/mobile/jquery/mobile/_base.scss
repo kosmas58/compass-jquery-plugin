@@ -555,14 +555,12 @@ Built by David Kaneda and maintained by Jonathan Stark.
       font-size: 12px;
       text-align: center;
       margin: 0;
-      outline: none;
       border-right-width: 0; } }
   .ui-navbar-toggle .ui-btn {
     display: block;
     font-size: 12px;
     text-align: center;
     margin: 0;
-    outline: none;
     border-right-width: 0; }
   li .ui-btn {
     margin-right: -1px;
@@ -627,9 +625,7 @@ Built by David Kaneda and maintained by Jonathan Stark.
   cursor: pointer;
   position: relative;
   margin: .5em 5px;
-  padding: 0;
-  &:focus, a:focus {
-    outline: none; } }
+  padding: 0; }
 
 .ui-header .ui-btn, .ui-footer .ui-btn, .ui-bar .ui-btn {
   display: inline-block;
