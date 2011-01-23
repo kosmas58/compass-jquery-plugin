@@ -1,3 +1,256 @@
+/*
+ * jQuery UI Position @VERSION
+ *
+ * Copyright 2010, AUTHORS.txt (http://jqueryui.com/about)
+ * Dual licensed under the MIT or GPL Version 2 licenses.
+ * http://jquery.org/license
+ *
+ * http://docs.jquery.com/UI/Position
+ */
+(function( $, undefined ) {
+
+$.ui = $.ui || {};
+
+var horizontalPositions = /left|center|right/,
+	verticalPositions = /top|center|bottom/,
+	center = "center",
+	_position = $.fn.position,
+	_offset = $.fn.offset;
+
+$.fn.position = function( options ) {
+	if ( !options || !options.of ) {
+		return _position.apply( this, arguments );
+	}
+
+	// make a copy, we don't want to modify arguments
+	options = $.extend( {}, options );
+
+	var target = $( options.of ),
+		targetElem = target[0],
+		collision = ( options.collision || "flip" ).split( " " ),
+		offset = options.offset ? options.offset.split( " " ) : [ 0, 0 ],
+		targetWidth,
+		targetHeight,
+		basePosition;
+
+	if ( targetElem.nodeType === 9 ) {
+		targetWidth = target.width();
+		targetHeight = target.height();
+		basePosition = { top: 0, left: 0 };
+	// TODO: use $.isWindow() in 1.9
+	} else if ( targetElem.setTimeout ) {
+		targetWidth = target.width();
+		targetHeight = target.height();
+		basePosition = { top: target.scrollTop(), left: target.scrollLeft() };
+	} else if ( targetElem.preventDefault ) {
+		// force left top to allow flipping
+		options.at = "left top";
+		targetWidth = targetHeight = 0;
+		basePosition = { top: options.of.pageY, left: options.of.pageX };
+	} else {
+		targetWidth = target.outerWidth();
+		targetHeight = target.outerHeight();
+		basePosition = target.offset();
+	}
+
+	// force my and at to have valid horizontal and veritcal positions
+	// if a value is missing or invalid, it will be converted to center 
+	$.each( [ "my", "at" ], function() {
+		var pos = ( options[this] || "" ).split( " " );
+		if ( pos.length === 1) {
+			pos = horizontalPositions.test( pos[0] ) ?
+				pos.concat( [center] ) :
+				verticalPositions.test( pos[0] ) ?
+					[ center ].concat( pos ) :
+					[ center, center ];
+		}
+		pos[ 0 ] = horizontalPositions.test( pos[0] ) ? pos[ 0 ] : center;
+		pos[ 1 ] = verticalPositions.test( pos[1] ) ? pos[ 1 ] : center;
+		options[ this ] = pos;
+	});
+
+	// normalize collision option
+	if ( collision.length === 1 ) {
+		collision[ 1 ] = collision[ 0 ];
+	}
+
+	// normalize offset option
+	offset[ 0 ] = parseInt( offset[0], 10 ) || 0;
+	if ( offset.length === 1 ) {
+		offset[ 1 ] = offset[ 0 ];
+	}
+	offset[ 1 ] = parseInt( offset[1], 10 ) || 0;
+
+	if ( options.at[0] === "right" ) {
+		basePosition.left += targetWidth;
+	} else if (options.at[0] === center ) {
+		basePosition.left += targetWidth / 2;
+	}
+
+	if ( options.at[1] === "bottom" ) {
+		basePosition.top += targetHeight;
+	} else if ( options.at[1] === center ) {
+		basePosition.top += targetHeight / 2;
+	}
+
+	basePosition.left += offset[ 0 ];
+	basePosition.top += offset[ 1 ];
+
+	return this.each(function() {
+		var elem = $( this ),
+			elemWidth = elem.outerWidth(),
+			elemHeight = elem.outerHeight(),
+			marginLeft = parseInt( $.curCSS( this, "marginLeft", true ) ) || 0,
+			marginTop = parseInt( $.curCSS( this, "marginTop", true ) ) || 0,
+			collisionWidth = elemWidth + marginLeft +
+				parseInt( $.curCSS( this, "marginRight", true ) ) || 0,
+			collisionHeight = elemHeight + marginTop +
+				parseInt( $.curCSS( this, "marginBottom", true ) ) || 0,
+			position = $.extend( {}, basePosition ),
+			collisionPosition;
+
+		if ( options.my[0] === "right" ) {
+			position.left -= elemWidth;
+		} else if ( options.my[0] === center ) {
+			position.left -= elemWidth / 2;
+		}
+
+		if ( options.my[1] === "bottom" ) {
+			position.top -= elemHeight;
+		} else if ( options.my[1] === center ) {
+			position.top -= elemHeight / 2;
+		}
+
+		// prevent fractions (see #5280)
+		position.left = parseInt( position.left );
+		position.top = parseInt( position.top );
+
+		collisionPosition = {
+			left: position.left - marginLeft,
+			top: position.top - marginTop
+		};
+
+		$.each( [ "left", "top" ], function( i, dir ) {
+			if ( $.ui.position[ collision[i] ] ) {
+				$.ui.position[ collision[i] ][ dir ]( position, {
+					targetWidth: targetWidth,
+					targetHeight: targetHeight,
+					elemWidth: elemWidth,
+					elemHeight: elemHeight,
+					collisionPosition: collisionPosition,
+					collisionWidth: collisionWidth,
+					collisionHeight: collisionHeight,
+					offset: offset,
+					my: options.my,
+					at: options.at
+				});
+			}
+		});
+
+		if ( $.fn.bgiframe ) {
+			elem.bgiframe();
+		}
+		elem.offset( $.extend( position, { using: options.using } ) );
+	});
+};
+
+$.ui.position = {
+	fit: {
+		left: function( position, data ) {
+			var win = $( window ),
+				over = data.collisionPosition.left + data.collisionWidth - win.width() - win.scrollLeft();
+			position.left = over > 0 ? position.left - over : Math.max( position.left - data.collisionPosition.left, position.left );
+		},
+		top: function( position, data ) {
+			var win = $( window ),
+				over = data.collisionPosition.top + data.collisionHeight - win.height() - win.scrollTop();
+			position.top = over > 0 ? position.top - over : Math.max( position.top - data.collisionPosition.top, position.top );
+		}
+	},
+
+	flip: {
+		left: function( position, data ) {
+			if ( data.at[0] === center ) {
+				return;
+			}
+			var win = $( window ),
+				over = data.collisionPosition.left + data.collisionWidth - win.width() - win.scrollLeft(),
+				myOffset = data.my[ 0 ] === "left" ?
+					-data.elemWidth :
+					data.my[ 0 ] === "right" ?
+						data.elemWidth :
+						0,
+				atOffset = data.at[ 0 ] === "left" ?
+					data.targetWidth :
+					-data.targetWidth,
+				offset = -2 * data.offset[ 0 ];
+			position.left += data.collisionPosition.left < 0 ?
+				myOffset + atOffset + offset :
+				over > 0 ?
+					myOffset + atOffset + offset :
+					0;
+		},
+		top: function( position, data ) {
+			if ( data.at[1] === center ) {
+				return;
+			}
+			var win = $( window ),
+				over = data.collisionPosition.top + data.collisionHeight - win.height() - win.scrollTop(),
+				myOffset = data.my[ 1 ] === "top" ?
+					-data.elemHeight :
+					data.my[ 1 ] === "bottom" ?
+						data.elemHeight :
+						0,
+				atOffset = data.at[ 1 ] === "top" ?
+					data.targetHeight :
+					-data.targetHeight,
+				offset = -2 * data.offset[ 1 ];
+			position.top += data.collisionPosition.top < 0 ?
+				myOffset + atOffset + offset :
+				over > 0 ?
+					myOffset + atOffset + offset :
+					0;
+		}
+	}
+};
+
+// offset setter from jQuery 1.4
+if ( !$.offset.setOffset ) {
+	$.offset.setOffset = function( elem, options ) {
+		// set position first, in-case top/left are set even on static elem
+		if ( /static/.test( $.curCSS( elem, "position" ) ) ) {
+			elem.style.position = "relative";
+		}
+		var curElem   = $( elem ),
+			curOffset = curElem.offset(),
+			curTop    = parseInt( $.curCSS( elem, "top",  true ), 10 ) || 0,
+			curLeft   = parseInt( $.curCSS( elem, "left", true ), 10)  || 0,
+			props     = {
+				top:  (options.top  - curOffset.top)  + curTop,
+				left: (options.left - curOffset.left) + curLeft
+			};
+		
+		if ( 'using' in options ) {
+			options.using.call( elem, props );
+		} else {
+			curElem.css( props );
+		}
+	};
+
+	$.fn.offset = function( options ) {
+		var elem = this[ 0 ];
+		if ( !elem || !elem.ownerDocument ) { return null; }
+		if ( options ) { 
+			return this.each(function() {
+				$.offset.setOffset( this, options );
+			});
+		}
+		return _offset.call( this );
+	};
+}
+
+}( jQuery ));
+
 /*!
  * jQuery UI Widget 1.8.9
  *
@@ -1125,6 +1378,199 @@ $.each({
 })(jQuery,this);
 
 
+/*
+* jQuery Mobile Framework : "page" plugin
+* Copyright (c) jQuery Project
+* Dual licensed under the MIT or GPL Version 2 licenses.
+* http://jquery.org/license
+*/
+(function($, undefined ) {
+
+$.widget( "mobile.page", $.mobile.widget, {
+	options: {
+		backBtnText: "Back",
+		addBackBtn: true,
+		degradeInputs: {
+			color: false,
+			date: false,
+			datetime: false,
+			"datetime-local": false,
+			email: false,
+			month: false,
+			number: false,
+			range: "number",
+			search: true,
+			tel: false,
+			time: false,
+			url: false,
+			week: false
+		},
+		keepNative: null
+	},
+
+	_create: function() {
+		var $elem = this.element,
+			o = this.options;
+
+		this.keepNative = "[data-role='none'], [data-role='nojs']" + (o.keepNative ? ", " + o.keepNative : "");
+
+		if ( this._trigger( "beforeCreate" ) === false ) {
+			return;
+		}
+
+		//some of the form elements currently rely on the presence of ui-page and ui-content
+		// classes so we'll handle page and content roles outside of the main role processing
+		// loop below.
+		$elem.find( "[data-role='page'], [data-role='content']" ).andSelf().each(function() {
+			$(this).addClass( "ui-" + $(this).data( "role" ) );
+		});
+
+		$elem.find( "[data-role='nojs']" ).addClass( "ui-nojs" );
+
+		// pre-find data els
+		var $dataEls = $elem.find( "[data-role]" ).andSelf().each(function() {
+			var $this = $( this ),
+				role = $this.data( "role" ),
+				theme = $this.data( "theme" );
+
+			//apply theming and markup modifications to page,header,content,footer
+			if ( role === "header" || role === "footer" ) {
+				$this.addClass( "ui-bar-" + (theme || $this.parent('[data-role=page]').data( "theme" ) || "a") );
+
+				// add ARIA role
+				$this.attr( "role", role === "header" ? "banner" : "contentinfo" );
+
+				//right,left buttons
+				var $headeranchors = $this.children( "a" ),
+					leftbtn = $headeranchors.hasClass( "ui-btn-left" ),
+					rightbtn = $headeranchors.hasClass( "ui-btn-right" );
+
+				if ( !leftbtn ) {
+					leftbtn = $headeranchors.eq( 0 ).not( ".ui-btn-right" ).addClass( "ui-btn-left" ).length;
+				}
+
+				if ( !rightbtn ) {
+					rightbtn = $headeranchors.eq( 1 ).addClass( "ui-btn-right" ).length;
+				}
+
+				// auto-add back btn on pages beyond first view
+				if ( o.addBackBtn && role === "header" &&
+						($.mobile.urlStack.length > 1 || $(".ui-page").length > 1) &&
+						!leftbtn && $this.data( "backbtn" ) !== false ) {
+
+					$( "<a href='#' class='ui-btn-left' data-icon='arrow-l'>"+ o.backBtnText +"</a>" )
+						.click(function() {
+							history.back();
+							return false;
+						})
+						.prependTo( $this );
+				}
+
+				//page title
+				$this.children( "h1, h2, h3, h4, h5, h6" )
+					.addClass( "ui-title" )
+					//regardless of h element number in src, it becomes h1 for the enhanced page
+					.attr({ "tabindex": "0", "role": "heading", "aria-level": "1" });
+
+			} else if ( role === "content" ) {
+				if ( theme ) {
+					$this.addClass( "ui-body-" + theme );
+				}
+
+				// add ARIA role
+				$this.attr( "role", "main" );
+
+			} else if ( role === "page" ) {
+				$this.addClass( "ui-body-" + (theme || "c") );
+			}
+
+			switch(role) {
+				case "header":
+				case "footer":
+				case "page":
+				case "content":
+					$this.addClass( "ui-" + role );
+					break;
+				case "collapsible":
+				case "fieldcontain":
+				case "navbar":
+				case "listview":
+				case "dialog":
+					$this[ role ]();
+					break;
+			}
+		});
+		
+		//enhance form controls
+  	this._enhanceControls();
+
+		//links in bars, or those with data-role become buttons
+		$elem.find( "[data-role='button'], .ui-bar > a, .ui-header > a, .ui-footer > a" )
+			.not( ".ui-btn" )
+			.not(this.keepNative)
+			.buttonMarkup();
+
+		$elem
+			.find("[data-role='controlgroup']")
+			.controlgroup();
+
+		//links within content areas
+		$elem.find( "a:not(.ui-btn):not(.ui-link-inherit)" )
+			.not(this.keepNative)
+			.addClass( "ui-link" );
+
+		//fix toolbars
+		$elem.fixHeaderFooter();
+	},
+
+	_enhanceControls: function() {
+		var o = this.options;
+
+		// degrade inputs to avoid poorly implemented native functionality
+		this.element.find( "input" ).not(this.keepNative).each(function() {
+			var type = this.getAttribute( "type" ),
+				optType = o.degradeInputs[ type ] || "text";
+
+			if ( o.degradeInputs[ type ] ) {
+				$( this ).replaceWith(
+					$( "<div>" ).html( $(this).clone() ).html()
+						.replace( /type="([a-zA-Z]+)"/, "type="+ optType +" data-type='$1'" ) );
+			}
+		});
+
+		// enchance form controls
+		this.element
+			.find( "[type='radio'], [type='checkbox']" )
+			.not(this.keepNative)
+			.checkboxradio();
+
+		this.element
+			.find( "button, [type='button'], [type='submit'], [type='reset'], [type='image']" )
+			.not(this.keepNative)
+			.button();
+
+		this.element
+			.find( "input, textarea" )
+			.not( "[type='radio'], [type='checkbox'], button, [type='button'], [type='submit'], [type='reset'], [type='image'], [type='hidden']" )
+			.not(this.keepNative)
+			.textinput();
+
+		this.element
+			.find( "input, select" )
+			.not(this.keepNative)
+			.filter( "[data-role='slider'], [data-type='range']" )
+			.slider();
+
+		this.element
+			.find( "select:not([data-role='slider'])" )
+			.not(this.keepNative)
+			.selectmenu();
+	}
+});
+
+})( jQuery );
+
+
 /*!
  * jQuery Mobile v@VERSION
  * http://jquerymobile.com/
@@ -1337,7 +1783,7 @@ $.each({
 				if( newPath == undefined ){
 					newPath = location.hash;
 				}
-				return newPath.replace(/#/,'').replace(/[^\/]*\.[^\/*]+$/, '');
+				return path.stripHash( newPath ).replace(/[^\/]*\.[^\/*]+$/, '');
 			},
 
 			//return the substring of a filepath before the sub-page key, for making a server request
@@ -1345,9 +1791,12 @@ $.each({
 				var splitkey = '&' + $.mobile.subPageUrlKey;
 				return path && path.indexOf( splitkey ) > -1 ? path.split( splitkey )[0] : path;
 			},
-
+			
+			//set location hash to path, optionally disable hash listening
 			set: function( path, disableListening){
-				if(disableListening) { hashListener = false; }
+				if( disableListening ) { 
+					hashListener = false;
+				}
 				location.hash = path;
 			},
 
@@ -1356,6 +1805,36 @@ $.each({
 
 			setOrigin: function(){
 				path.origin = path.get( location.protocol + '//' + location.host + location.pathname );
+			},
+			
+			//prefix a relative url with the current path
+			makeAbsolute: function( url ){
+				return path.get() + url;
+			},
+			
+			//return a url path with the window's location protocol/hostname removed
+			clean: function( url ){
+				return url.replace( location.protocol + "//" + location.host, "");
+			},
+			
+			//just return the url without an initial #
+			stripHash: function( url ){
+				return url.replace( /^#/, "" );
+			},
+			
+			//check whether a url is referencing the same domain, or an external domain or different protocol
+			//could be mailto, etc
+			isExternal: function( url ){
+				return path.hasProtocol( path.clean( url ) );
+			},
+			
+			hasProtocol: function( url ){
+				return /^(:?\w+:)/.test( url );
+			},
+			
+			//check if the url is relative
+			isRelative: function( url ){
+				return  /^[^\/|#]/.test( url ) && !path.hasProtocol( url );
 			}
 		},
 
@@ -1460,7 +1939,6 @@ $.each({
 		$activeClickedLink = null;
 	};
 
-
 	//animation complete callback
 	$.fn.animationComplete = function( callback ){
 		if($.support.cssTransitions){
@@ -1476,20 +1954,18 @@ $.each({
 /* exposed $.mobile methods	 */
 
 	//update location.hash, with or without triggering hashchange event
+	//TODO - deprecate this one
 	$.mobile.updateHash = path.set;
+	
+	//expose path object on $.mobile
+	$.mobile.path = path;
+	
+	//expose base object on $.mobile
+	$.mobile.base = base;
 
 	//url stack, useful when plugins need to be aware of previous pages viewed
 	$.mobile.urlStack = urlStack;
 
-	//check for an external resource
-	$.mobile.isExternalLink = function(anchor){
-		var $anchor = $(anchor),
-			hasProtocol = /^(:?\w+:)/.test( $anchor.attr('href') ),
-			hasRelExternal = $anchor.is( "[rel=external]" ),
-			hasTarget = $anchor.is( "[target]" );
-
-		return hasProtocol || hasRelExternal || hasTarget;
-	},
 
 	// changepage function
 	$.mobile.changePage = function( to, transition, back, changeHash){
@@ -1735,20 +2211,20 @@ $.each({
 /* Event Bindings - hashchange, submit, and click */
 
 	//bind to form submit events, handle with Ajax
-	$("form[data-ajax!='false']").live('submit', function(event){
+	$( "form[data-ajax!='false']" ).live('submit', function(event){
 		if( !$.mobile.ajaxFormsEnabled ){ return; }
 
 		var type = $(this).attr("method"),
-			url = $(this).attr( "action" ).replace( location.protocol + "//" + location.host, "");
+			url = path.clean( $(this).attr( "action" ) );
 
 		//external submits use regular HTTP
-		if( /^(:?\w+:)/.test( url ) ){
+		if( path.isExternal( url ) ){
 			return;
 		}
 
 		//if it's a relative href, prefix href with base url
-		if( url.indexOf('/') && url.indexOf('#') !== 0 ){
-			url = path.get() + url;
+		if( path.isRelative( url ) ){
+			url = path.makeAbsolute( url );
 		}
 
 		$.mobile.changePage({
@@ -1766,34 +2242,35 @@ $.each({
 
 	//click routing - direct to HTTP or Ajax, accordingly
 	$( "a" ).live( "click", function(event) {
-
-		if( !$.mobile.ajaxLinksEnabled ){ return; }
+		
 		var $this = $(this),
 			//get href, remove same-domain protocol and host
-			href = $this.attr( "href" ).replace( location.protocol + "//" + location.host, ""),
-			//if target attr is specified, it's external, and we mimic _blank... for now
-			target = $this.is( "[target]" ),
+			url = path.clean( $this.attr( "href" ) ),
+			
+			//check if it's external
+			isExternal = path.isExternal( url ) || $this.is( "[rel='external']" ),
+			
+			//if target attr is specified we mimic _blank... for now
+			hasTarget = $this.is( "[target]" );
+			
 
-			//if it still starts with a protocol, it's external, or could be :mailto, etc
-			external = $.mobile.isExternalLink(this);
-
-		if( href === '#' ){
+		if( url === "#" ){
 			//for links created purely for interaction - ignore
 			return false;
 		}
 
 		$activeClickedLink = $this.closest( ".ui-btn" ).addClass( $.mobile.activeBtnClass );
 
-		if( external || !$.mobile.ajaxLinksEnabled ){
-			//remove active link class if external
+		if( isExternal || hasTarget || !$.mobile.ajaxLinksEnabled ){
+			//remove active link class if external (then it won't be there if you come back)
 			removeActiveLinkClass(true);
 
 			//deliberately redirect, in case click was triggered
-			if( target ){
-				window.open(href);
+			if( hasTarget ){
+				window.open( url );
 			}
 			else{
-				location.href = href;
+				location.href = url;
 			}
 		}
 		else {
@@ -1804,13 +2281,13 @@ $.each({
 			nextPageRole = $this.attr( "data-rel" );
 
 			//if it's a relative href, prefix href with base url
-			if( href.indexOf('/') && href.indexOf('#') !== 0 ){
-				href = path.get() + href;
+			if( path.isRelative( url ) ){
+				url = path.makeAbsolute( url );
 			}
 
-			href.replace(/^#/,'');
+			url = path.stripHash( url );
 
-			$.mobile.changePage(href, transition, back);
+			$.mobile.changePage( url, transition, back);
 		}
 		event.preventDefault();
 	});
@@ -1855,450 +2332,391 @@ $.each({
 
 
 /*
-* jQuery Mobile Framework : "page" plugin
+* jQuery Mobile Framework : plugin for making button-like links
+* Copyright (c) jQuery Project
+* Dual licensed under the MIT or GPL Version 2 licenses.
+* http://jquery.org/license
+*/ 
+(function($, undefined ) {
+
+$.fn.buttonMarkup = function( options ){
+	return this.each( function() {
+		var el = $( this ),
+		    o = $.extend( {}, $.fn.buttonMarkup.defaults, el.data(), options),
+
+			// Classes Defined
+			buttonClass,
+			innerClass = "ui-btn-inner",
+			iconClass;
+
+		if ( attachEvents ) {
+			attachEvents();
+		}
+
+		// if not, try to find closest theme container
+		if ( !o.theme ) {
+			var themedParent = el.closest("[class*='ui-bar-'],[class*='ui-body-']"); 
+			o.theme = themedParent.length ?
+				/ui-(bar|body)-([a-z])/.exec( themedParent.attr("class") )[2] :
+				"c";
+		}
+
+		buttonClass = "ui-btn ui-btn-up-" + o.theme;
+		
+		if ( o.inline ) {
+			buttonClass += " ui-btn-inline";
+		}
+		
+		if ( o.icon ) {
+			o.icon = "ui-icon-" + o.icon;
+			o.iconpos = o.iconpos || "left";
+
+			iconClass = "ui-icon " + o.icon;
+
+			if ( o.shadow ) {
+				iconClass += " ui-icon-shadow"
+			}
+		}
+
+		if ( o.iconpos ) {
+			buttonClass += " ui-btn-icon-" + o.iconpos;
+			
+			if ( o.iconpos == "notext" && !el.attr("title") ) {
+				el.attr( "title", el.text() );
+			}
+		}
+		
+		if ( o.corners ) { 
+			buttonClass += " ui-btn-corner-all";
+			innerClass += " ui-btn-corner-all";
+		}
+		
+		if ( o.shadow ) {
+			buttonClass += " ui-shadow";
+		}
+		
+		el
+			.attr( "data-theme", o.theme )
+			.addClass( buttonClass );
+
+		var wrap = ("<D class='" + innerClass + "'><D class='ui-btn-text'></D>" +
+			( o.icon ? "<span class='" + iconClass + "'></span>" : "" ) +
+			"</D>").replace(/D/g, o.wrapperEls);
+
+		el.wrapInner( wrap );
+	});		
+};
+
+$.fn.buttonMarkup.defaults = {
+	corners: true,
+	shadow: true,
+	iconshadow: true,
+	wrapperEls: "span"
+};
+
+var attachEvents = function() {
+	$(".ui-btn:not(.ui-disabled)").live({
+		mousedown: function() {
+			var theme = $(this).attr( "data-theme" );
+			$(this).removeClass( "ui-btn-up-" + theme ).addClass( "ui-btn-down-" + theme );
+		},
+		mouseup: function() {
+			var theme = $(this).attr( "data-theme" );
+			$(this).removeClass( "ui-btn-down-" + theme ).addClass( "ui-btn-up-" + theme );
+		},
+		"mouseover focus": function() {
+			var theme = $(this).attr( "data-theme" );
+			$(this).removeClass( "ui-btn-up-" + theme ).addClass( "ui-btn-hover-" + theme );
+		},
+		"mouseout blur": function() {
+			var theme = $(this).attr( "data-theme" );
+			$(this).removeClass( "ui-btn-hover-" + theme ).addClass( "ui-btn-up-" + theme );
+		}
+	});
+
+	attachEvents = null;
+};
+
+})(jQuery);
+
+
+/*
+* jQuery Mobile Framework : "collapsible" plugin
+* Copyright (c) jQuery Project
+* Dual licensed under the MIT or GPL Version 2 licenses.
+* http://jquery.org/license
+*/ 
+(function($, undefined ) {
+$.widget( "mobile.collapsible", $.mobile.widget, {
+	options: {
+		expandCueText: ' click to expand contents',
+		collapseCueText: ' click to collapse contents',
+		collapsed: false,
+		heading: '>:header,>legend',
+		theme: null,
+		iconTheme: 'd'
+	},
+	_create: function(){
+
+		var $el = this.element,
+			o = this.options,
+			collapsibleContain = $el.addClass('ui-collapsible-contain'),
+			collapsibleHeading = $el.find(o.heading).eq(0),
+			collapsibleContent = collapsibleContain.wrapInner('<div class="ui-collapsible-content"></div>').find('.ui-collapsible-content'),
+			collapsibleParent = $el.closest('[data-role="collapsible-set"]').addClass('ui-collapsible-set');				
+		
+		//replace collapsibleHeading if it's a legend	
+		if(collapsibleHeading.is('legend')){
+			collapsibleHeading = $('<div role="heading">'+ collapsibleHeading.html() +'</div>').insertBefore(collapsibleHeading);
+			collapsibleHeading.next().remove();
+		}	
+		
+		//drop heading in before content
+		collapsibleHeading.insertBefore(collapsibleContent);
+		
+		//modify markup & attributes
+		collapsibleHeading.addClass('ui-collapsible-heading')
+			.append('<span class="ui-collapsible-heading-status"></span>')
+			.wrapInner('<a href="#" class="ui-collapsible-heading-toggle"></a>')
+			.find('a:eq(0)')
+			.buttonMarkup({
+				shadow: !!!collapsibleParent.length,
+				corners:false,
+				iconPos: 'left',
+				icon: 'plus',
+				theme: o.theme
+			})
+			.find('.ui-icon')
+			.removeAttr('class')
+			.buttonMarkup({
+				shadow: true,
+				corners:true,
+				iconPos: 'notext',
+				icon: 'plus',
+				theme: o.iconTheme
+			});
+			
+			if( !collapsibleParent.length ){
+				collapsibleHeading
+					.find('a:eq(0)')	
+					.addClass('ui-corner-all')
+						.find('.ui-btn-inner')
+						.addClass('ui-corner-all');
+			}
+			else {
+				if( collapsibleContain.data('collapsible-last') ){
+					collapsibleHeading
+						.find('a:eq(0), .ui-btn-inner')	
+							.addClass('ui-corner-bottom');
+				}					
+			}
+			
+		
+		//events
+		collapsibleContain	
+			.bind('collapse', function(event){
+				if( !event.isDefaultPrevented() ){
+					event.preventDefault();
+					collapsibleHeading
+						.addClass('ui-collapsible-heading-collapsed')
+						.find('.ui-collapsible-heading-status').text(o.expandCueText);
+					
+					collapsibleHeading.find('.ui-icon').removeClass('ui-icon-minus').addClass('ui-icon-plus');	
+					collapsibleContent.addClass('ui-collapsible-content-collapsed').attr('aria-hidden',true);
+					
+					if( collapsibleContain.data('collapsible-last') ){
+						collapsibleHeading
+							.find('a:eq(0), .ui-btn-inner')
+							.addClass('ui-corner-bottom');
+					}
+				}						
+				
+			})
+			.bind('expand', function(event){
+				if( !event.isDefaultPrevented() ){
+					event.preventDefault();
+					collapsibleHeading
+						.removeClass('ui-collapsible-heading-collapsed')
+						.find('.ui-collapsible-heading-status').text(o.collapseCueText);
+					
+					collapsibleHeading.find('.ui-icon').removeClass('ui-icon-plus').addClass('ui-icon-minus');	
+					collapsibleContent.removeClass('ui-collapsible-content-collapsed').attr('aria-hidden',false);
+					
+					if( collapsibleContain.data('collapsible-last') ){
+						collapsibleHeading
+							.find('a:eq(0), .ui-btn-inner')
+							.removeClass('ui-corner-bottom');
+					}
+					
+				}
+			})
+			.trigger(o.collapsed ? 'collapse' : 'expand');
+			
+		
+		//close others in a set
+		if( collapsibleParent.length && !collapsibleParent.data("collapsiblebound") ){
+			collapsibleParent
+				.data("collapsiblebound", true)
+				.bind("expand", function( event ){
+					$(this).find( ".ui-collapsible-contain" )
+						.not( $(event.target).closest( ".ui-collapsible-contain" ) )
+						.not( "> .ui-collapsible-contain .ui-collapsible-contain" )
+						.trigger( "collapse" );
+				})
+			var set = collapsibleParent.find('[data-role=collapsible]')
+					
+			set.first()
+				.find('a:eq(0)')	
+				.addClass('ui-corner-top')
+					.find('.ui-btn-inner')
+					.addClass('ui-corner-top');
+					
+			set.last().data('collapsible-last', true)	
+		}
+					
+		collapsibleHeading.bind( $.support.touch ? "touchstart" : "click", function(){ 
+			if( collapsibleHeading.is('.ui-collapsible-heading-collapsed') ){
+				collapsibleContain.trigger('expand'); 
+			}	
+			else {
+				collapsibleContain.trigger('collapse'); 
+			}
+			return false;
+		});
+			
+	}
+});
+})( jQuery );
+
+/*
+* jQuery Mobile Framework: "controlgroup" plugin - corner-rounding for groups of buttons, checks, radios, etc
 * Copyright (c) jQuery Project
 * Dual licensed under the MIT or GPL Version 2 licenses.
 * http://jquery.org/license
 */
 (function($, undefined ) {
-
-$.widget( "mobile.page", $.mobile.widget, {
-	options: {
-		backBtnText: "Back",
-		addBackBtn: true,
-		degradeInputs: {
-			color: false,
-			date: false,
-			datetime: false,
-			"datetime-local": false,
-			email: false,
-			month: false,
-			number: false,
-			range: "number",
-			search: true,
-			tel: false,
-			time: false,
-			url: false,
-			week: false
-		},
-		keepNative: null
-	},
-
-	_create: function() {
-		var $elem = this.element,
-			o = this.options;
-
-		this.keepNative = "[data-role='none'], [data-role='nojs']" + (o.keepNative ? ", " + o.keepNative : "");
-
-		if ( this._trigger( "beforeCreate" ) === false ) {
-			return;
+$.fn.controlgroup = function(options){
+		
+	return this.each(function(){
+		var o = $.extend({
+			direction: $( this ).data( "type" ) || "vertical",
+			shadow: false
+		},options);
+		var groupheading = $(this).find('>legend'),
+			flCorners = o.direction == 'horizontal' ? ['ui-corner-left', 'ui-corner-right'] : ['ui-corner-top', 'ui-corner-bottom'],
+			type = $(this).find('input:eq(0)').attr('type');
+		
+		//replace legend with more stylable replacement div	
+		if( groupheading.length ){
+			$(this).wrapInner('<div class="ui-controlgroup-controls"></div>');	
+			$('<div role="heading" class="ui-controlgroup-label">'+ groupheading.html() +'</div>').insertBefore( $(this).children(0) );	
+			groupheading.remove();	
 		}
 
-		//some of the form elements currently rely on the presence of ui-page and ui-content
-		// classes so we'll handle page and content roles outside of the main role processing
-		// loop below.
-		$elem.find( "[data-role='page'], [data-role='content']" ).andSelf().each(function() {
-			$(this).addClass( "ui-" + $(this).data( "role" ) );
-		});
-
-		$elem.find( "[data-role='nojs']" ).addClass( "ui-nojs" );
-
-		// pre-find data els
-		var $dataEls = $elem.find( "[data-role]" ).andSelf().each(function() {
-			var $this = $( this ),
-				role = $this.data( "role" ),
-				theme = $this.data( "theme" );
-
-			//apply theming and markup modifications to page,header,content,footer
-			if ( role === "header" || role === "footer" ) {
-				$this.addClass( "ui-bar-" + (theme || $this.parent('[data-role=page]').data( "theme" ) || "a") );
-
-				// add ARIA role
-				$this.attr( "role", role === "header" ? "banner" : "contentinfo" );
-
-				//right,left buttons
-				var $headeranchors = $this.children( "a" ),
-					leftbtn = $headeranchors.hasClass( "ui-btn-left" ),
-					rightbtn = $headeranchors.hasClass( "ui-btn-right" );
-
-				if ( !leftbtn ) {
-					leftbtn = $headeranchors.eq( 0 ).not( ".ui-btn-right" ).addClass( "ui-btn-left" ).length;
-				}
-
-				if ( !rightbtn ) {
-					rightbtn = $headeranchors.eq( 1 ).addClass( "ui-btn-right" ).length;
-				}
-
-				// auto-add back btn on pages beyond first view
-				if ( o.addBackBtn && role === "header" &&
-						($.mobile.urlStack.length > 1 || $(".ui-page").length > 1) &&
-						!leftbtn && $this.data( "backbtn" ) !== false ) {
-
-					$( "<a href='#' class='ui-btn-left' data-icon='arrow-l'>"+ o.backBtnText +"</a>" )
-						.click(function() {
-							history.back();
-							return false;
-						})
-						.prependTo( $this );
-				}
-
-				//page title
-				$this.children( "h1, h2, h3, h4, h5, h6" )
-					.addClass( "ui-title" )
-					//regardless of h element number in src, it becomes h1 for the enhanced page
-					.attr({ "tabindex": "0", "role": "heading", "aria-level": "1" });
-
-			} else if ( role === "content" ) {
-				if ( theme ) {
-					$this.addClass( "ui-body-" + theme );
-				}
-
-				// add ARIA role
-				$this.attr( "role", "main" );
-
-			} else if ( role === "page" ) {
-				$this.addClass( "ui-body-" + (theme || "c") );
-			}
-
-			switch(role) {
-				case "header":
-				case "footer":
-				case "page":
-				case "content":
-					$this.addClass( "ui-" + role );
-					break;
-				case "collapsible":
-				case "fieldcontain":
-				case "navbar":
-				case "listview":
-				case "dialog":
-					$this[ role ]();
-					break;
-			}
-		});
+		$(this).addClass('ui-corner-all ui-controlgroup ui-controlgroup-'+o.direction);
 		
-		//enhance form controls
-  	this._enhanceControls();
-
-		//links in bars, or those with data-role become buttons
-		$elem.find( "[data-role='button'], .ui-bar > a, .ui-header > a, .ui-footer > a" )
-			.not( ".ui-btn" )
-			.not(this.keepNative)
-			.buttonMarkup();
-
-		$elem
-			.find("[data-role='controlgroup']")
-			.controlgroup();
-
-		//links within content areas
-		$elem.find( "a:not(.ui-btn):not(.ui-link-inherit)" )
-			.not(this.keepNative)
-			.addClass( "ui-link" );
-
-		//fix toolbars
-		$elem.fixHeaderFooter();
-	},
-
-	_enhanceControls: function() {
-		var o = this.options;
-
-		// degrade inputs to avoid poorly implemented native functionality
-		this.element.find( "input" ).not(this.keepNative).each(function() {
-			var type = this.getAttribute( "type" ),
-				optType = o.degradeInputs[ type ] || "text";
-
-			if ( o.degradeInputs[ type ] ) {
-				$( this ).replaceWith(
-					$( "<div>" ).html( $(this).clone() ).html()
-						.replace( /type="([a-zA-Z]+)"/, "type="+ optType +" data-type='$1'" ) );
-			}
-		});
-
-		// enchance form controls
-		this.element
-			.find( "[type='radio'], [type='checkbox']" )
-			.not(this.keepNative)
-			.checkboxradio();
-
-		this.element
-			.find( "button, [type='button'], [type='submit'], [type='reset'], [type='image']" )
-			.not(this.keepNative)
-			.button();
-
-		this.element
-			.find( "input, textarea" )
-			.not( "[type='radio'], [type='checkbox'], button, [type='button'], [type='submit'], [type='reset'], [type='image'], [type='hidden']" )
-			.not(this.keepNative)
-			.textinput();
-
-		this.element
-			.find( "input, select" )
-			.not(this.keepNative)
-			.filter( "[data-role='slider'], [data-type='range']" )
-			.slider();
-
-		this.element
-			.find( "select:not([data-role='slider'])" )
-			.not(this.keepNative)
-			.selectmenu();
-	}
-});
-
-})( jQuery );
-
+		function flipClasses(els){
+			els
+				.removeClass('ui-btn-corner-all ui-shadow')
+				.eq(0).addClass(flCorners[0])
+				.end()
+				.filter(':last').addClass(flCorners[1]).addClass('ui-controlgroup-last');
+		}
+		flipClasses($(this).find('.ui-btn'));
+		flipClasses($(this).find('.ui-btn-inner'));
+		if(o.shadow){
+			$(this).addClass('ui-shadow');
+		}
+	});	
+};
+})(jQuery);
 
 /*
- * jQuery UI Position @VERSION
- *
- * Copyright 2010, AUTHORS.txt (http://jqueryui.com/about)
- * Dual licensed under the MIT or GPL Version 2 licenses.
- * http://jquery.org/license
- *
- * http://docs.jquery.com/UI/Position
- */
-(function( $, undefined ) {
+* jQuery Mobile Framework : "dialog" plugin.
+* Copyright (c) jQuery Project
+* Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
+* Note: Code is in draft form and is subject to change
+*/
+(function($, undefined ) {
+$.widget( "mobile.dialog", $.mobile.widget, {
+	options: {},
+	_create: function(){
+		var self = this,
+			$el = self.element,
+			$prevPage = $.mobile.activePage,
+			$closeBtn = $('<a href="#" data-icon="delete" data-iconpos="notext">Close</a>'),
 
-$.ui = $.ui || {};
+			dialogClickHandler = function(e){
+				var $target = $(e.target);
 
-var horizontalPositions = /left|center|right/,
-	verticalPositions = /top|center|bottom/,
-	center = "center",
-	_position = $.fn.position,
-	_offset = $.fn.offset;
+				// fixes issues with target links in dialogs breaking
+				// page transitions by reseting the active page below
+				if( $.mobile.path.isExternal( $target.closest("a").attr("href") ) ||
+						$target.closest("a[target]").length || 
+						$target.is( "[rel='external']" ) ) {
+					return;
+				}
 
-$.fn.position = function( options ) {
-	if ( !options || !options.of ) {
-		return _position.apply( this, arguments );
-	}
+				if( e.type == "click" && ( $(e.target).closest('[data-back]')[0] || this==$closeBtn[0] ) ){
+					self.close();
+					return false;
+				}
 
-	// make a copy, we don't want to modify arguments
-	options = $.extend( {}, options );
+				//otherwise, assume we're headed somewhere new. set activepage to dialog so the transition will work
+				$.mobile.activePage = self.element;
+			};
 
-	var target = $( options.of ),
-		targetElem = target[0],
-		collision = ( options.collision || "flip" ).split( " " ),
-		offset = options.offset ? options.offset.split( " " ) : [ 0, 0 ],
-		targetWidth,
-		targetHeight,
-		basePosition;
+		// NOTE avoid click handler in the case of an external resource
+		// TODO add function in navigation to handle external check
+		$el.delegate("a", "click", dialogClickHandler);
+		$el.delegate("form", "submit", dialogClickHandler);
 
-	if ( targetElem.nodeType === 9 ) {
-		targetWidth = target.width();
-		targetHeight = target.height();
-		basePosition = { top: 0, left: 0 };
-	// TODO: use $.isWindow() in 1.9
-	} else if ( targetElem.setTimeout ) {
-		targetWidth = target.width();
-		targetHeight = target.height();
-		basePosition = { top: target.scrollTop(), left: target.scrollLeft() };
-	} else if ( targetElem.preventDefault ) {
-		// force left top to allow flipping
-		options.at = "left top";
-		targetWidth = targetHeight = 0;
-		basePosition = { top: options.of.pageY, left: options.of.pageX };
-	} else {
-		targetWidth = target.outerWidth();
-		targetHeight = target.outerHeight();
-		basePosition = target.offset();
-	}
+		this.element
+			.bind("pageshow",function(){
+				return false;
+			})
+			//add ARIA role
+			.attr("role","dialog")
+			.addClass('ui-page ui-dialog ui-body-a')
+			.find('[data-role=header]')
+			.addClass('ui-corner-top ui-overlay-shadow')
+				.prepend( $closeBtn )
+			.end()
+			.find('.ui-content:not([class*="ui-body-"])')
+				.addClass('ui-body-c')
+			.end()
+			.find('.ui-content,[data-role=footer]')
+				.last()
+				.addClass('ui-corner-bottom ui-overlay-shadow');
 
-	// force my and at to have valid horizontal and veritcal positions
-	// if a value is missing or invalid, it will be converted to center 
-	$.each( [ "my", "at" ], function() {
-		var pos = ( options[this] || "" ).split( " " );
-		if ( pos.length === 1) {
-			pos = horizontalPositions.test( pos[0] ) ?
-				pos.concat( [center] ) :
-				verticalPositions.test( pos[0] ) ?
-					[ center ].concat( pos ) :
-					[ center, center ];
-		}
-		pos[ 0 ] = horizontalPositions.test( pos[0] ) ? pos[ 0 ] : center;
-		pos[ 1 ] = verticalPositions.test( pos[1] ) ? pos[ 1 ] : center;
-		options[ this ] = pos;
-	});
-
-	// normalize collision option
-	if ( collision.length === 1 ) {
-		collision[ 1 ] = collision[ 0 ];
-	}
-
-	// normalize offset option
-	offset[ 0 ] = parseInt( offset[0], 10 ) || 0;
-	if ( offset.length === 1 ) {
-		offset[ 1 ] = offset[ 0 ];
-	}
-	offset[ 1 ] = parseInt( offset[1], 10 ) || 0;
-
-	if ( options.at[0] === "right" ) {
-		basePosition.left += targetWidth;
-	} else if (options.at[0] === center ) {
-		basePosition.left += targetWidth / 2;
-	}
-
-	if ( options.at[1] === "bottom" ) {
-		basePosition.top += targetHeight;
-	} else if ( options.at[1] === center ) {
-		basePosition.top += targetHeight / 2;
-	}
-
-	basePosition.left += offset[ 0 ];
-	basePosition.top += offset[ 1 ];
-
-	return this.each(function() {
-		var elem = $( this ),
-			elemWidth = elem.outerWidth(),
-			elemHeight = elem.outerHeight(),
-			marginLeft = parseInt( $.curCSS( this, "marginLeft", true ) ) || 0,
-			marginTop = parseInt( $.curCSS( this, "marginTop", true ) ) || 0,
-			collisionWidth = elemWidth + marginLeft +
-				parseInt( $.curCSS( this, "marginRight", true ) ) || 0,
-			collisionHeight = elemHeight + marginTop +
-				parseInt( $.curCSS( this, "marginBottom", true ) ) || 0,
-			position = $.extend( {}, basePosition ),
-			collisionPosition;
-
-		if ( options.my[0] === "right" ) {
-			position.left -= elemWidth;
-		} else if ( options.my[0] === center ) {
-			position.left -= elemWidth / 2;
-		}
-
-		if ( options.my[1] === "bottom" ) {
-			position.top -= elemHeight;
-		} else if ( options.my[1] === center ) {
-			position.top -= elemHeight / 2;
-		}
-
-		// prevent fractions (see #5280)
-		position.left = parseInt( position.left );
-		position.top = parseInt( position.top );
-
-		collisionPosition = {
-			left: position.left - marginLeft,
-			top: position.top - marginTop
-		};
-
-		$.each( [ "left", "top" ], function( i, dir ) {
-			if ( $.ui.position[ collision[i] ] ) {
-				$.ui.position[ collision[i] ][ dir ]( position, {
-					targetWidth: targetWidth,
-					targetHeight: targetHeight,
-					elemWidth: elemWidth,
-					elemHeight: elemHeight,
-					collisionPosition: collisionPosition,
-					collisionWidth: collisionWidth,
-					collisionHeight: collisionHeight,
-					offset: offset,
-					my: options.my,
-					at: options.at
+		$(window).bind('hashchange',function(){
+			if( $el.is('.ui-page-active') ){
+				self.close();
+				$el.bind('pagehide',function(){
+					$.mobile.updateHash( $prevPage.attr('data-url'), true);
 				});
 			}
 		});
 
-		if ( $.fn.bgiframe ) {
-			elem.bgiframe();
-		}
-		elem.offset( $.extend( position, { using: options.using } ) );
-	});
-};
-
-$.ui.position = {
-	fit: {
-		left: function( position, data ) {
-			var win = $( window ),
-				over = data.collisionPosition.left + data.collisionWidth - win.width() - win.scrollLeft();
-			position.left = over > 0 ? position.left - over : Math.max( position.left - data.collisionPosition.left, position.left );
-		},
-		top: function( position, data ) {
-			var win = $( window ),
-				over = data.collisionPosition.top + data.collisionHeight - win.height() - win.scrollTop();
-			position.top = over > 0 ? position.top - over : Math.max( position.top - data.collisionPosition.top, position.top );
-		}
 	},
 
-	flip: {
-		left: function( position, data ) {
-			if ( data.at[0] === center ) {
-				return;
-			}
-			var win = $( window ),
-				over = data.collisionPosition.left + data.collisionWidth - win.width() - win.scrollLeft(),
-				myOffset = data.my[ 0 ] === "left" ?
-					-data.elemWidth :
-					data.my[ 0 ] === "right" ?
-						data.elemWidth :
-						0,
-				atOffset = data.at[ 0 ] === "left" ?
-					data.targetWidth :
-					-data.targetWidth,
-				offset = -2 * data.offset[ 0 ];
-			position.left += data.collisionPosition.left < 0 ?
-				myOffset + atOffset + offset :
-				over > 0 ?
-					myOffset + atOffset + offset :
-					0;
-		},
-		top: function( position, data ) {
-			if ( data.at[1] === center ) {
-				return;
-			}
-			var win = $( window ),
-				over = data.collisionPosition.top + data.collisionHeight - win.height() - win.scrollTop(),
-				myOffset = data.my[ 1 ] === "top" ?
-					-data.elemHeight :
-					data.my[ 1 ] === "bottom" ?
-						data.elemHeight :
-						0,
-				atOffset = data.at[ 1 ] === "top" ?
-					data.targetHeight :
-					-data.targetHeight,
-				offset = -2 * data.offset[ 1 ];
-			position.top += data.collisionPosition.top < 0 ?
-				myOffset + atOffset + offset :
-				over > 0 ?
-					myOffset + atOffset + offset :
-					0;
-		}
+	close: function(){
+		$.mobile.changePage([this.element, $.mobile.activePage], undefined, true, true );
 	}
+});
+})( jQuery );
+
+/*
+* jQuery Mobile Framework : "fieldcontain" plugin - simple class additions to make form row separators
+* Copyright (c) jQuery Project
+* Dual licensed under the MIT or GPL Version 2 licenses.
+* http://jquery.org/license
+*/
+(function($, undefined ) {
+$.fn.fieldcontain = function(options){
+	return this.addClass('ui-field-contain ui-body ui-br');
 };
-
-// offset setter from jQuery 1.4
-if ( !$.offset.setOffset ) {
-	$.offset.setOffset = function( elem, options ) {
-		// set position first, in-case top/left are set even on static elem
-		if ( /static/.test( $.curCSS( elem, "position" ) ) ) {
-			elem.style.position = "relative";
-		}
-		var curElem   = $( elem ),
-			curOffset = curElem.offset(),
-			curTop    = parseInt( $.curCSS( elem, "top",  true ), 10 ) || 0,
-			curLeft   = parseInt( $.curCSS( elem, "left", true ), 10)  || 0,
-			props     = {
-				top:  (options.top  - curOffset.top)  + curTop,
-				left: (options.left - curOffset.left) + curLeft
-			};
-		
-		if ( 'using' in options ) {
-			options.using.call( elem, props );
-		} else {
-			curElem.css( props );
-		}
-	};
-
-	$.fn.offset = function( options ) {
-		var elem = this[ 0 ];
-		if ( !elem || !elem.ownerDocument ) { return null; }
-		if ( options ) { 
-			return this.each(function() {
-				$.offset.setOffset( this, options );
-			});
-		}
-		return _offset.call( this );
-	};
-}
-
-}( jQuery ));
+})(jQuery);
 
 /*
 * jQuery Mobile Framework : "fixHeaderFooter" plugin - on-demand positioning for headers,footers
@@ -2521,6 +2939,72 @@ $.fixedToolbars = (function(){
 })(jQuery);
 
 /*
+* jQuery Mobile Framework : "button" plugin - links that proxy to native input/buttons
+* Copyright (c) jQuery Project
+* Dual licensed under the MIT or GPL Version 2 licenses.
+* http://jquery.org/license
+*/ 
+(function($, undefined ) {
+$.widget( "mobile.button", $.mobile.widget, {
+	options: {
+		theme: null, 
+		icon: null,
+		iconpos: null,
+		inline: null,
+		corners: true,
+		shadow: true,
+		iconshadow: true
+	},
+	_create: function(){
+		var $el = this.element,
+			o = this.options;
+		
+		//add ARIA role
+		this.button = $( "<div></div>" )
+			.text( $el.text() || $el.val() )
+			.buttonMarkup({
+				theme: o.theme, 
+				icon: o.icon,
+				iconpos: o.iconpos,
+				inline: o.inline,
+				corners: o.corners,
+				shadow: o.shadow,
+				iconshadow: o.iconshadow
+			})
+			.insertBefore( $el )
+			.append( $el.addClass('ui-btn-hidden') );
+		
+		//add hidden input during submit
+		if( $el.attr('type') !== 'reset' ){
+			$el.click(function(){
+				var $buttonPlaceholder = $("<input>", 
+						{type: "hidden", name: $el.attr("name"), value: $el.attr("value")})
+						.insertBefore($el);
+						
+				//bind to doc to remove after submit handling	
+				$(document).submit(function(){
+					 $buttonPlaceholder.remove();
+				});
+			});
+		}
+			
+	},
+
+	enable: function(){
+		this.element.attr("disabled", false);
+		this.button.removeClass("ui-disabled").attr("aria-disabled", false);
+		return this._setOption("disabled", false);
+	},
+
+	disable: function(){
+		this.element.attr("disabled", true);
+		this.button.addClass("ui-disabled").attr("aria-disabled", true);
+		return this._setOption("disabled", true);
+	}
+});
+})( jQuery );
+
+/*
 * jQuery Mobile Framework : "checkboxradio" plugin
 * Copyright (c) jQuery Project
 * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -2639,105 +3123,6 @@ $.widget( "mobile.checkboxradio", $.mobile.widget, {
 	
 	enable: function(){
 		this.element.attr("disabled",false).parent().removeClass("ui-disabled");
-	}
-});
-})( jQuery );
-
-
-/*
-* jQuery Mobile Framework : "textinput" plugin for text inputs, textareas
-* Copyright (c) jQuery Project
-* Dual licensed under the MIT or GPL Version 2 licenses.
-* http://jquery.org/license
-*/
-(function($, undefined ) {
-$.widget( "mobile.textinput", $.mobile.widget, {
-	options: {
-		theme: null
-	},
-	_create: function(){
-		var input = this.element,
-			o = this.options,
-			theme = o.theme,
-			themeclass;
-			
-		if ( !theme ) {
-			var themedParent = this.element.closest("[class*='ui-bar-'],[class*='ui-body-']"); 
-				theme = themedParent.length ?
-					/ui-(bar|body)-([a-z])/.exec( themedParent.attr("class") )[2] :
-					"c";
-		}	
-		
-		themeclass = " ui-body-" + theme;
-		
-		$('label[for='+input.attr('id')+']').addClass('ui-input-text');
-		
-		input.addClass('ui-input-text ui-body-'+ o.theme);
-		
-		var focusedEl = input;
-		
-		//"search" input widget
-		if( input.is('[type="search"],[data-type="search"]') ){
-			focusedEl = input.wrap('<div class="ui-input-search ui-shadow-inset ui-btn-corner-all ui-btn-shadow ui-icon-search'+ themeclass +'"></div>').parent();
-			var clearbtn = $('<a href="#" class="ui-input-clear" title="clear text">clear text</a>')
-				.click(function(){
-					input.val('').focus();
-					input.trigger('change'); 
-					clearbtn.addClass('ui-input-clear-hidden');
-					return false;
-				})
-				.appendTo(focusedEl)
-				.buttonMarkup({icon: 'delete', iconpos: 'notext', corners:true, shadow:true});
-			
-			function toggleClear(){
-				if(input.val() == ''){
-					clearbtn.addClass('ui-input-clear-hidden');
-				}
-				else{
-					clearbtn.removeClass('ui-input-clear-hidden');
-				}
-			}
-			
-			toggleClear();
-			input.keyup(toggleClear);	
-		}
-		else{
-			input.addClass('ui-corner-all ui-shadow-inset' + themeclass);
-		}
-				
-		input
-			.focus(function(){
-				focusedEl.addClass('ui-focus');
-			})
-			.blur(function(){
-				focusedEl.removeClass('ui-focus');
-			});	
-			
-		//autogrow
-		if ( input.is('textarea') ) {
-			var extraLineHeight = 15,
-				keyupTimeoutBuffer = 100,
-				keyup = function() {
-					var scrollHeight = input[0].scrollHeight,
-						clientHeight = input[0].clientHeight;
-					if ( clientHeight < scrollHeight ) {
-						input.css({ height: (scrollHeight + extraLineHeight) });
-					}
-				},
-				keyupTimeout;
-			input.keyup(function() {
-				clearTimeout( keyupTimeout );
-				keyupTimeout = setTimeout( keyup, keyupTimeoutBuffer );
-			});
-		}
-	},
-	
-	disable: function(){
-		( this.element.attr("disabled",true).is('[type="search"],[data-type="search"]') ? this.element.parent() : this.element ).addClass("ui-disabled");
-	},
-	
-	enable: function(){
-		( this.element.attr("disabled", false).is('[type="search"],[data-type="search"]') ? this.element.parent() : this.element ).removeClass("ui-disabled");
 	}
 });
 })( jQuery );
@@ -3212,181 +3597,6 @@ $.widget( "mobile.selectmenu", $.mobile.widget, {
 
 
 /*
-* jQuery Mobile Framework : plugin for making button-like links
-* Copyright (c) jQuery Project
-* Dual licensed under the MIT or GPL Version 2 licenses.
-* http://jquery.org/license
-*/ 
-(function($, undefined ) {
-
-$.fn.buttonMarkup = function( options ){
-	return this.each( function() {
-		var el = $( this ),
-		    o = $.extend( {}, $.fn.buttonMarkup.defaults, el.data(), options),
-
-			// Classes Defined
-			buttonClass,
-			innerClass = "ui-btn-inner",
-			iconClass;
-
-		if ( attachEvents ) {
-			attachEvents();
-		}
-
-		// if not, try to find closest theme container
-		if ( !o.theme ) {
-			var themedParent = el.closest("[class*='ui-bar-'],[class*='ui-body-']"); 
-			o.theme = themedParent.length ?
-				/ui-(bar|body)-([a-z])/.exec( themedParent.attr("class") )[2] :
-				"c";
-		}
-
-		buttonClass = "ui-btn ui-btn-up-" + o.theme;
-		
-		if ( o.inline ) {
-			buttonClass += " ui-btn-inline";
-		}
-		
-		if ( o.icon ) {
-			o.icon = "ui-icon-" + o.icon;
-			o.iconpos = o.iconpos || "left";
-
-			iconClass = "ui-icon " + o.icon;
-
-			if ( o.shadow ) {
-				iconClass += " ui-icon-shadow"
-			}
-		}
-
-		if ( o.iconpos ) {
-			buttonClass += " ui-btn-icon-" + o.iconpos;
-			
-			if ( o.iconpos == "notext" && !el.attr("title") ) {
-				el.attr( "title", el.text() );
-			}
-		}
-		
-		if ( o.corners ) { 
-			buttonClass += " ui-btn-corner-all";
-			innerClass += " ui-btn-corner-all";
-		}
-		
-		if ( o.shadow ) {
-			buttonClass += " ui-shadow";
-		}
-		
-		el
-			.attr( "data-theme", o.theme )
-			.addClass( buttonClass );
-
-		var wrap = ("<D class='" + innerClass + "'><D class='ui-btn-text'></D>" +
-			( o.icon ? "<span class='" + iconClass + "'></span>" : "" ) +
-			"</D>").replace(/D/g, o.wrapperEls);
-
-		el.wrapInner( wrap );
-	});		
-};
-
-$.fn.buttonMarkup.defaults = {
-	corners: true,
-	shadow: true,
-	iconshadow: true,
-	wrapperEls: "span"
-};
-
-var attachEvents = function() {
-	$(".ui-btn:not(.ui-disabled)").live({
-		mousedown: function() {
-			var theme = $(this).attr( "data-theme" );
-			$(this).removeClass( "ui-btn-up-" + theme ).addClass( "ui-btn-down-" + theme );
-		},
-		mouseup: function() {
-			var theme = $(this).attr( "data-theme" );
-			$(this).removeClass( "ui-btn-down-" + theme ).addClass( "ui-btn-up-" + theme );
-		},
-		"mouseover focus": function() {
-			var theme = $(this).attr( "data-theme" );
-			$(this).removeClass( "ui-btn-up-" + theme ).addClass( "ui-btn-hover-" + theme );
-		},
-		"mouseout blur": function() {
-			var theme = $(this).attr( "data-theme" );
-			$(this).removeClass( "ui-btn-hover-" + theme ).addClass( "ui-btn-up-" + theme );
-		}
-	});
-
-	attachEvents = null;
-};
-
-})(jQuery);
-
-
-/*
-* jQuery Mobile Framework : "button" plugin - links that proxy to native input/buttons
-* Copyright (c) jQuery Project
-* Dual licensed under the MIT or GPL Version 2 licenses.
-* http://jquery.org/license
-*/ 
-(function($, undefined ) {
-$.widget( "mobile.button", $.mobile.widget, {
-	options: {
-		theme: null, 
-		icon: null,
-		iconpos: null,
-		inline: null,
-		corners: true,
-		shadow: true,
-		iconshadow: true
-	},
-	_create: function(){
-		var $el = this.element,
-			o = this.options;
-		
-		//add ARIA role
-		this.button = $( "<div></div>" )
-			.text( $el.text() || $el.val() )
-			.buttonMarkup({
-				theme: o.theme, 
-				icon: o.icon,
-				iconpos: o.iconpos,
-				inline: o.inline,
-				corners: o.corners,
-				shadow: o.shadow,
-				iconshadow: o.iconshadow
-			})
-			.insertBefore( $el )
-			.append( $el.addClass('ui-btn-hidden') );
-		
-		//add hidden input during submit
-		if( $el.attr('type') !== 'reset' ){
-			$el.click(function(){
-				var $buttonPlaceholder = $("<input>", 
-						{type: "hidden", name: $el.attr("name"), value: $el.attr("value")})
-						.insertBefore($el);
-						
-				//bind to doc to remove after submit handling	
-				$(document).submit(function(){
-					 $buttonPlaceholder.remove();
-				});
-			});
-		}
-			
-	},
-
-	enable: function(){
-		this.element.attr("disabled", false);
-		this.button.removeClass("ui-disabled").attr("aria-disabled", false);
-		return this._setOption("disabled", false);
-	},
-
-	disable: function(){
-		this.element.attr("disabled", true);
-		this.button.addClass("ui-disabled").attr("aria-disabled", true);
-		return this._setOption("disabled", true);
-	}
-});
-})( jQuery );
-
-/*
 * jQuery Mobile Framework : "slider" plugin
 * Copyright (c) jQuery Project
 * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -3662,207 +3872,155 @@ $.widget( "mobile.slider", $.mobile.widget, {
 
 
 /*
-* jQuery Mobile Framework : "collapsible" plugin
+* jQuery Mobile Framework : "textinput" plugin for text inputs, textareas
+* Copyright (c) jQuery Project
+* Dual licensed under the MIT or GPL Version 2 licenses.
+* http://jquery.org/license
+*/
+(function($, undefined ) {
+$.widget( "mobile.textinput", $.mobile.widget, {
+	options: {
+		theme: null
+	},
+	_create: function(){
+		var input = this.element,
+			o = this.options,
+			theme = o.theme,
+			themeclass;
+			
+		if ( !theme ) {
+			var themedParent = this.element.closest("[class*='ui-bar-'],[class*='ui-body-']"); 
+				theme = themedParent.length ?
+					/ui-(bar|body)-([a-z])/.exec( themedParent.attr("class") )[2] :
+					"c";
+		}	
+		
+		themeclass = " ui-body-" + theme;
+		
+		$('label[for='+input.attr('id')+']').addClass('ui-input-text');
+		
+		input.addClass('ui-input-text ui-body-'+ o.theme);
+		
+		var focusedEl = input;
+		
+		//"search" input widget
+		if( input.is('[type="search"],[data-type="search"]') ){
+			focusedEl = input.wrap('<div class="ui-input-search ui-shadow-inset ui-btn-corner-all ui-btn-shadow ui-icon-search'+ themeclass +'"></div>').parent();
+			var clearbtn = $('<a href="#" class="ui-input-clear" title="clear text">clear text</a>')
+				.click(function(){
+					input.val('').focus();
+					input.trigger('change'); 
+					clearbtn.addClass('ui-input-clear-hidden');
+					return false;
+				})
+				.appendTo(focusedEl)
+				.buttonMarkup({icon: 'delete', iconpos: 'notext', corners:true, shadow:true});
+			
+			function toggleClear(){
+				if(input.val() == ''){
+					clearbtn.addClass('ui-input-clear-hidden');
+				}
+				else{
+					clearbtn.removeClass('ui-input-clear-hidden');
+				}
+			}
+			
+			toggleClear();
+			input.keyup(toggleClear);	
+		}
+		else{
+			input.addClass('ui-corner-all ui-shadow-inset' + themeclass);
+		}
+				
+		input
+			.focus(function(){
+				focusedEl.addClass('ui-focus');
+			})
+			.blur(function(){
+				focusedEl.removeClass('ui-focus');
+			});	
+			
+		//autogrow
+		if ( input.is('textarea') ) {
+			var extraLineHeight = 15,
+				keyupTimeoutBuffer = 100,
+				keyup = function() {
+					var scrollHeight = input[0].scrollHeight,
+						clientHeight = input[0].clientHeight;
+					if ( clientHeight < scrollHeight ) {
+						input.css({ height: (scrollHeight + extraLineHeight) });
+					}
+				},
+				keyupTimeout;
+			input.keyup(function() {
+				clearTimeout( keyupTimeout );
+				keyupTimeout = setTimeout( keyup, keyupTimeoutBuffer );
+			});
+		}
+	},
+	
+	disable: function(){
+		( this.element.attr("disabled",true).is('[type="search"],[data-type="search"]') ? this.element.parent() : this.element ).addClass("ui-disabled");
+	},
+	
+	enable: function(){
+		( this.element.attr("disabled", false).is('[type="search"],[data-type="search"]') ? this.element.parent() : this.element ).removeClass("ui-disabled");
+	}
+});
+})( jQuery );
+
+
+/*
+* jQuery Mobile Framework : plugin for creating CSS grids
 * Copyright (c) jQuery Project
 * Dual licensed under the MIT or GPL Version 2 licenses.
 * http://jquery.org/license
 */ 
 (function($, undefined ) {
-$.widget( "mobile.collapsible", $.mobile.widget, {
-	options: {
-		expandCueText: ' click to expand contents',
-		collapseCueText: ' click to collapse contents',
-		collapsed: false,
-		heading: '>:header,>legend',
-		theme: null,
-		iconTheme: 'd'
-	},
-	_create: function(){
-
-		var $el = this.element,
-			o = this.options,
-			collapsibleContain = $el.addClass('ui-collapsible-contain'),
-			collapsibleHeading = $el.find(o.heading).eq(0),
-			collapsibleContent = collapsibleContain.wrapInner('<div class="ui-collapsible-content"></div>').find('.ui-collapsible-content'),
-			collapsibleParent = $el.closest('[data-role="collapsible-set"]').addClass('ui-collapsible-set');				
-		
-		//replace collapsibleHeading if it's a legend	
-		if(collapsibleHeading.is('legend')){
-			collapsibleHeading = $('<div role="heading">'+ collapsibleHeading.html() +'</div>').insertBefore(collapsibleHeading);
-			collapsibleHeading.next().remove();
-		}	
-		
-		//drop heading in before content
-		collapsibleHeading.insertBefore(collapsibleContent);
-		
-		//modify markup & attributes
-		collapsibleHeading.addClass('ui-collapsible-heading')
-			.append('<span class="ui-collapsible-heading-status"></span>')
-			.wrapInner('<a href="#" class="ui-collapsible-heading-toggle"></a>')
-			.find('a:eq(0)')
-			.buttonMarkup({
-				shadow: !!!collapsibleParent.length,
-				corners:false,
-				iconPos: 'left',
-				icon: 'plus',
-				theme: o.theme
-			})
-			.find('.ui-icon')
-			.removeAttr('class')
-			.buttonMarkup({
-				shadow: true,
-				corners:true,
-				iconPos: 'notext',
-				icon: 'plus',
-				theme: o.iconTheme
-			});
-			
-			if( !collapsibleParent.length ){
-				collapsibleHeading
-					.find('a:eq(0)')	
-					.addClass('ui-corner-all')
-						.find('.ui-btn-inner')
-						.addClass('ui-corner-all');
-			}
-			else {
-				if( collapsibleContain.data('collapsible-last') ){
-					collapsibleHeading
-						.find('a:eq(0), .ui-btn-inner')	
-							.addClass('ui-corner-bottom');
-				}					
-			}
-			
-		
-		//events
-		collapsibleContain	
-			.bind('collapse', function(event){
-				if( !event.isDefaultPrevented() ){
-					event.preventDefault();
-					collapsibleHeading
-						.addClass('ui-collapsible-heading-collapsed')
-						.find('.ui-collapsible-heading-status').text(o.expandCueText);
-					
-					collapsibleHeading.find('.ui-icon').removeClass('ui-icon-minus').addClass('ui-icon-plus');	
-					collapsibleContent.addClass('ui-collapsible-content-collapsed').attr('aria-hidden',true);
-					
-					if( collapsibleContain.data('collapsible-last') ){
-						collapsibleHeading
-							.find('a:eq(0), .ui-btn-inner')
-							.addClass('ui-corner-bottom');
-					}
-				}						
-				
-			})
-			.bind('expand', function(event){
-				if( !event.isDefaultPrevented() ){
-					event.preventDefault();
-					collapsibleHeading
-						.removeClass('ui-collapsible-heading-collapsed')
-						.find('.ui-collapsible-heading-status').text(o.collapseCueText);
-					
-					collapsibleHeading.find('.ui-icon').removeClass('ui-icon-plus').addClass('ui-icon-minus');	
-					collapsibleContent.removeClass('ui-collapsible-content-collapsed').attr('aria-hidden',false);
-					
-					if( collapsibleContain.data('collapsible-last') ){
-						collapsibleHeading
-							.find('a:eq(0), .ui-btn-inner')
-							.removeClass('ui-corner-bottom');
-					}
-					
-				}
-			})
-			.trigger(o.collapsed ? 'collapse' : 'expand');
-			
-		
-		//close others in a set
-		if( collapsibleParent.length && !collapsibleParent.data("collapsiblebound") ){
-			collapsibleParent
-				.data("collapsiblebound", true)
-				.bind("expand", function( event ){
-					$(this).find( ".ui-collapsible-contain" )
-						.not( $(event.target).closest( ".ui-collapsible-contain" ) )
-						.not( "> .ui-collapsible-contain .ui-collapsible-contain" )
-						.trigger( "collapse" );
-				})
-			var set = collapsibleParent.find('[data-role=collapsible]')
-					
-			set.first()
-				.find('a:eq(0)')	
-				.addClass('ui-corner-top')
-					.find('.ui-btn-inner')
-					.addClass('ui-corner-top');
-					
-			set.last().data('collapsible-last', true)	
-		}
-					
-		collapsibleHeading.bind( $.support.touch ? "touchstart" : "click", function(){ 
-			if( collapsibleHeading.is('.ui-collapsible-heading-collapsed') ){
-				collapsibleContain.trigger('expand'); 
-			}	
-			else {
-				collapsibleContain.trigger('collapse'); 
-			}
-			return false;
-		});
-			
-	}
-});
-})( jQuery );
-
-/*
-* jQuery Mobile Framework: "controlgroup" plugin - corner-rounding for groups of buttons, checks, radios, etc
-* Copyright (c) jQuery Project
-* Dual licensed under the MIT or GPL Version 2 licenses.
-* http://jquery.org/license
-*/
-(function($, undefined ) {
-$.fn.controlgroup = function(options){
-		
+$.fn.grid = function(options){
 	return this.each(function(){
 		var o = $.extend({
-			direction: $( this ).data( "type" ) || "vertical",
-			shadow: false
+			grid: null
 		},options);
-		var groupheading = $(this).find('>legend'),
-			flCorners = o.direction == 'horizontal' ? ['ui-corner-left', 'ui-corner-right'] : ['ui-corner-top', 'ui-corner-bottom'],
-			type = $(this).find('input:eq(0)').attr('type');
-		
-		//replace legend with more stylable replacement div	
-		if( groupheading.length ){
-			$(this).wrapInner('<div class="ui-controlgroup-controls"></div>');	
-			$('<div role="heading" class="ui-controlgroup-label">'+ groupheading.html() +'</div>').insertBefore( $(this).children(0) );	
-			groupheading.remove();	
+	
+			
+		var $kids = $(this).children(),
+			gridCols = {a: 2, b:3, c:4, d:5},
+			grid = o.grid,
+			iterator;
+			
+			if( !grid ){
+				if( $kids.length <= 5 ){
+					for(var letter in gridCols){
+						if(gridCols[letter] == $kids.length){ grid = letter; }
+					}
+				}
+				else{
+					grid = 'a';
+				}
+			}
+			iterator = gridCols[grid];
+			
+		$(this).addClass('ui-grid-' + grid);
+	
+		$kids.filter(':nth-child(' + iterator + 'n+1)').addClass('ui-block-a');
+		$kids.filter(':nth-child(' + iterator + 'n+2)').addClass('ui-block-b');
+			
+		if(iterator > 2){	
+			$kids.filter(':nth-child(3n+3)').addClass('ui-block-c');
+		}	
+		if(iterator> 3){	
+			$kids.filter(':nth-child(4n+4)').addClass('ui-block-d');
+		}	
+		if(iterator > 4){	
+			$kids.filter(':nth-child(5n+5)').addClass('ui-block-e');
 		}
-
-		$(this).addClass('ui-corner-all ui-controlgroup ui-controlgroup-'+o.direction);
-		
-		function flipClasses(els){
-			els
-				.removeClass('ui-btn-corner-all ui-shadow')
-				.eq(0).addClass(flCorners[0])
-				.end()
-				.filter(':last').addClass(flCorners[1]).addClass('ui-controlgroup-last');
-		}
-		flipClasses($(this).find('.ui-btn'));
-		flipClasses($(this).find('.ui-btn-inner'));
-		if(o.shadow){
-			$(this).addClass('ui-shadow');
-		}
+				
 	});	
 };
 })(jQuery);
 
-/*
-* jQuery Mobile Framework : "fieldcontain" plugin - simple class additions to make form row separators
-* Copyright (c) jQuery Project
-* Dual licensed under the MIT or GPL Version 2 licenses.
-* http://jquery.org/license
-*/
-(function($, undefined ) {
-$.fn.fieldcontain = function(options){
-	return this.addClass('ui-field-contain ui-body ui-br');
-};
-})(jQuery);
+
 
 /*
 * jQuery Mobile Framework : "listview" plugin
@@ -4241,79 +4399,6 @@ $( "[data-role='listview']" ).live( "listviewcreate", function() {
 
 
 /*
-* jQuery Mobile Framework : "dialog" plugin.
-* Copyright (c) jQuery Project
-* Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
-* Note: Code is in draft form and is subject to change
-*/
-(function($, undefined ) {
-$.widget( "mobile.dialog", $.mobile.widget, {
-	options: {},
-	_create: function(){
-		var self = this,
-			$el = self.element,
-			$prevPage = $.mobile.activePage,
-			$closeBtn = $('<a href="#" data-icon="delete" data-iconpos="notext">Close</a>'),
-
-			dialogClickHandler = function(e){
-				var $target = $(e.target);
-
-				// fixes issues with target links in dialogs breaking
-				// page transitions by reseting the active page below
-				if( $.mobile.isExternalLink($target) ) {
-					return;
-				}
-
-				if( e.type == "click" && ( $(e.target).closest('[data-back]')[0] || this==$closeBtn[0] ) ){
-					self.close();
-					return false;
-				}
-
-				//otherwise, assume we're headed somewhere new. set activepage to dialog so the transition will work
-				$.mobile.activePage = self.element;
-			};
-
-		// NOTE avoid click handler in the case of an external resource
-		// TODO add function in navigation to handle external check
-		$el.delegate("a", "click", dialogClickHandler);
-		$el.delegate("form", "submit", dialogClickHandler);
-
-		this.element
-			.bind("pageshow",function(){
-				return false;
-			})
-			//add ARIA role
-			.attr("role","dialog")
-			.addClass('ui-page ui-dialog ui-body-a')
-			.find('[data-role=header]')
-			.addClass('ui-corner-top ui-overlay-shadow')
-				.prepend( $closeBtn )
-			.end()
-			.find('.ui-content:not([class*="ui-body-"])')
-				.addClass('ui-body-c')
-			.end()
-			.find('.ui-content,[data-role=footer]')
-				.last()
-				.addClass('ui-corner-bottom ui-overlay-shadow');
-
-		$(window).bind('hashchange',function(){
-			if( $el.is('.ui-page-active') ){
-				self.close();
-				$el.bind('pagehide',function(){
-					$.mobile.updateHash( $prevPage.attr('data-url'), true);
-				});
-			}
-		});
-
-	},
-
-	close: function(){
-		$.mobile.changePage([this.element, $.mobile.activePage], undefined, true, true );
-	}
-});
-})( jQuery );
-
-/*
 * jQuery Mobile Framework : "navbar" plugin
 * Copyright (c) jQuery Project
 * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -4354,58 +4439,6 @@ $.widget( "mobile.navbar", $.mobile.widget, {
 	}
 });
 })( jQuery );
-
-/*
-* jQuery Mobile Framework : plugin for creating CSS grids
-* Copyright (c) jQuery Project
-* Dual licensed under the MIT or GPL Version 2 licenses.
-* http://jquery.org/license
-*/ 
-(function($, undefined ) {
-$.fn.grid = function(options){
-	return this.each(function(){
-		var o = $.extend({
-			grid: null
-		},options);
-	
-			
-		var $kids = $(this).children(),
-			gridCols = {a: 2, b:3, c:4, d:5},
-			grid = o.grid,
-			iterator;
-			
-			if( !grid ){
-				if( $kids.length <= 5 ){
-					for(var letter in gridCols){
-						if(gridCols[letter] == $kids.length){ grid = letter; }
-					}
-				}
-				else{
-					grid = 'a';
-				}
-			}
-			iterator = gridCols[grid];
-			
-		$(this).addClass('ui-grid-' + grid);
-	
-		$kids.filter(':nth-child(' + iterator + 'n+1)').addClass('ui-block-a');
-		$kids.filter(':nth-child(' + iterator + 'n+2)').addClass('ui-block-b');
-			
-		if(iterator > 2){	
-			$kids.filter(':nth-child(3n+3)').addClass('ui-block-c');
-		}	
-		if(iterator> 3){	
-			$kids.filter(':nth-child(4n+4)').addClass('ui-block-d');
-		}	
-		if(iterator > 4){	
-			$kids.filter(':nth-child(5n+5)').addClass('ui-block-e');
-		}
-				
-	});	
-};
-})(jQuery);
-
-
 
 //quick & dirty theme switcher, written to potentially work as a bookmarklet
 (function($){

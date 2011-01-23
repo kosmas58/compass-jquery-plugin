@@ -11,31 +11,31 @@ MOBILE_DEST_THEMES = File.join(MOBILE_DEST_TEMPLATES, 'jquery', 'mobile')
 MOBILE_DEST_IMAGES = File.join(MOBILE_DEST_THEMES)
 
 all_scripts = [
+  'js/jquery.ui.position.js',
   'js/jquery.ui.widget.js',
   'js/jquery.mobile.widget.js',
   'js/jquery.mobile.media.js',
   'js/jquery.mobile.support.js',
   'js/jquery.mobile.event.js',
   'js/jquery.mobile.hashchange.js',
+  'js/jquery.mobile.page.js',
   'js/jquery.mobile.core.js',
   'js/jquery.mobile.navigation.js',
-  'js/jquery.mobile.page.js',
-  'js/jquery.ui.position.js',
-  'js/jquery.mobile.fixHeaderFooter.js',
-  'js/jquery.mobile.forms.checkboxradio.js',
-  'js/jquery.mobile.forms.textinput.js',
-  'js/jquery.mobile.forms.select.js',
   'js/jquery.mobile.buttonMarkup.js',
-  'js/jquery.mobile.forms.button.js',
-  'js/jquery.mobile.forms.slider.js',
   'js/jquery.mobile.collapsible.js',
   'js/jquery.mobile.controlGroup.js',
-  'js/jquery.mobile.fieldContain.js',
+  'js/jquery.mobile.dialog.js',
+  'js/jquery.mobile.fieldContain.js',  
+  'js/jquery.mobile.fixHeaderFooter.js',
+  'js/jquery.mobile.forms.button.js',
+  'js/jquery.mobile.forms.checkboxradio.js',
+  'js/jquery.mobile.forms.select.js',
+  'js/jquery.mobile.forms.slider.js',  
+  'js/jquery.mobile.forms.textinput.js',
+  'js/jquery.mobile.grid.js',
   'js/jquery.mobile.listview.js',
   'js/jquery.mobile.listview.filter.js',
-  'js/jquery.mobile.dialog.js',
   'js/jquery.mobile.navbar.js',
-  'js/jquery.mobile.grid.js',
   'js/jquery.mobile.themeswitcher.js'
 ].collect {|filename| File.read(File.join(MOBILE_SRC, filename))}.join "\n\n"
 
@@ -76,22 +76,21 @@ namespace :build do
       mobile = JqueryMobileTheme.new(File.join(MOBILE_SRC_THEMES, 'default')) 
 
       base_stylesheets = [
-        'jquery.mobile.core.css',
-        'jquery.mobile.transitions.css',
-        'jquery.mobile.grids.css',
-        'jquery.mobile.headerfooter.css',
-        'jquery.mobile.navbar.css',
         'jquery.mobile.button.css',
         'jquery.mobile.collapsible.css',
         'jquery.mobile.controlgroup.css',
+        'jquery.mobile.core.css',
         'jquery.mobile.dialog.css',
         'jquery.mobile.forms.checkboxradio.css',
         'jquery.mobile.forms.fieldcontain.css',
         'jquery.mobile.forms.select.css',
         'jquery.mobile.forms.slider.css',
         'jquery.mobile.forms.textinput.css',
+        'jquery.mobile.grids.css',
+        'jquery.mobile.headerfooter.css',
         'jquery.mobile.listview.css',
-        'jquery.mobile.forms.slider.css'
+        'jquery.mobile.navbar.css',	
+        'jquery.mobile.transitions.css'
         ].collect {|filename| File.read(File.join(MOBILE_SRC_THEMES, 'default', filename))}.join "\n\n"
 
       FileUtils.mkdir_p(MOBILE_DEST_THEMES)
