@@ -799,21 +799,37 @@ $.event.special.tap = {
 			$this = $( thisObject );
 		
 		$this
-			.bind( touchStartEvent, function( event ) {
-				if ( event.which && event.which !== 1 ) {
-					return;
+			.bind( "mousedown touchstart", function( event ) {
+				if ( event.which && event.which !== 1 ||
+					//check if event fired once already by a device that fires both mousedown and touchstart (while supporting both events)
+					$this.data( "prevEvent") && $this.data( "prevEvent") !== event.type ) {
+					return false;
 				}
+				
+				//save event type so only this type is let through for a temp duration, 
+				//allowing quick repetitive taps but not duplicative events 
+				$this.data( "prevEvent", event.type );
+				setTimeout(function(){
+					$this.removeData( "prevEvent" );
+				}, 800);
 				
 				var moved = false,
 					touching = true,
 					origTarget = event.target,
-					origPos = [ event.pageX, event.pageY ],
+					origEvent = event.originalEvent,
+					origPos = event.type == "touchstart" ? [origEvent.touches[0].pageX, origEvent.touches[0].pageY] : [ event.pageX, event.pageY ],
 					originalType,
 					timer;
+					
 				
-				function moveHandler() {
-					if ((Math.abs(origPos[0] - event.pageX) > 10) ||
-					    (Math.abs(origPos[1] - event.pageY) > 10)) {
+				function moveHandler( event ) {
+					if( event.type == "scroll" ){
+						moved = true;
+						return;
+					}
+					var newPageXY = event.type == "touchmove" ? event.originalEvent.touches[0] : event;
+					if ((Math.abs(origPos[0] - newPageXY.pageX) > 10) ||
+					    (Math.abs(origPos[1] - newPageXY.pageY) > 10)) {
 					    moved = true;
 					}
 				}
@@ -827,17 +843,21 @@ $.event.special.tap = {
 					}
 				}, 750 );
 				
+				//scroll now cancels tap
+				$(window).one("scroll", moveHandler);
+				
 				$this
-					.one( touchMoveEvent, moveHandler)
-					.one( touchStopEvent, function( event ) {
-						$this.unbind( touchMoveEvent, moveHandler );
+					.bind( "mousemove touchmove", moveHandler )
+					.one( "mouseup touchend", function( event ) {
+						$this.unbind( "mousemove touchmove", moveHandler );
+						$(window).unbind("scroll", moveHandler);
 						clearTimeout( timer );
 						touching = false;
 						
 						/* ONLY trigger a 'tap' event if the start target is
 						 * the same as the stop target.
 						 */
-						if ( !moved && (origTarget == event.target)) {
+						if ( !moved && ( origTarget == event.target ) ) {
 							originalType = event.type;
 							event.type = "tap";
 							$.event.handle.call( thisObject, event );
@@ -1455,7 +1475,7 @@ $.widget( "mobile.page", $.mobile.widget, {
 
 				// auto-add back btn on pages beyond first view
 				if ( o.addBackBtn && role === "header" &&
-						($.mobile.urlStack.length > 1 || $(".ui-page").length > 1) &&
+						($.mobile.urlHistory.getPrev() || $(".ui-page").length > 1) &&
 						!leftbtn && $this.data( "backbtn" ) !== false ) {
 
 					$( "<a href='#' class='ui-btn-left' data-icon='arrow-l'>"+ o.backBtnText +"</a>" )
@@ -1600,11 +1620,16 @@ $.widget( "mobile.page", $.mobile.widget, {
 		//class used for "active" button state, from CSS framework
 		activeBtnClass: 'ui-btn-active',
 
-		//automatically handle link clicks through Ajax, when possible
-		ajaxLinksEnabled: true,
+		//automatically handle clicks and form submissions through Ajax, when same-domain
+		ajaxEnabled: true,
+		
+			// TODO: deprecated - remove at 1.0
+			//automatically handle link clicks through Ajax, when possible
+			ajaxLinksEnabled: true,
 
-		//automatically handle form submissions through Ajax, when possible
-		ajaxFormsEnabled: true,
+			// TODO: deprecated - remove at 1.0
+			//automatically handle form submissions through Ajax, when possible
+			ajaxFormsEnabled: true,
 
 		//set default transition - 'none' for no transitions
 		defaultTransition: 'slide',
@@ -1713,10 +1738,12 @@ $.widget( "mobile.page", $.mobile.widget, {
 
 		//scroll page vertically: scroll to 0 to hide iOS address bar, or pass a Y value
 		silentScroll: function( ypos ) {
+			ypos = ypos || 0;
 			// prevent scrollstart and scrollstop events
 			$.event.special.scrollstart.enabled = false;
 			setTimeout(function() {
-				window.scrollTo( 0, ypos || 0 );
+				window.scrollTo( 0, ypos );
+				$(document).trigger("silentscroll", { x: 0, y: ypos });
 			},20);
 			setTimeout(function() {
 				$.event.special.scrollstart.enabled = true;
@@ -1792,11 +1819,8 @@ $.widget( "mobile.page", $.mobile.widget, {
 				return path && path.indexOf( splitkey ) > -1 ? path.split( splitkey )[0] : path;
 			},
 			
-			//set location hash to path, optionally disable hash listening
-			set: function( path, disableListening){
-				if( disableListening ) { 
-					hashListener = false;
-				}
+			//set location hash to path
+			set: function( path ){
 				location.hash = path;
 			},
 
@@ -1840,24 +1864,56 @@ $.widget( "mobile.page", $.mobile.widget, {
 
 		//will be defined when a link is clicked and given an active class
 		$activeClickedLink = null,
-
-		//array of pages that are visited during a single page load
-		//length will grow as pages are visited, and shrink as "back" link/button is clicked
-		//each item has a url (string matches ID), and transition (saved for reuse when "back" link/button is clicked)
-		urlStack = [ {
-			url: location.hash.replace( /^#/, "" ),
-			transition: undefined
-		} ],
+		
+		//urlHistory is purely here to make guesses at whether the back or forward button was clicked
+		//and provide an appropriate transition
+		urlHistory = {
+			//array of pages that are visited during a single page load. each has a url and optional transition
+			stack: [],
+			
+			//maintain an index number for the active page in the stack
+			activeIndex: 0,
+			
+			//get active
+			getActive: function(){
+				return urlHistory.stack[ urlHistory.activeIndex ];
+			},
+			
+			getPrev: function(){
+				return urlHistory.stack[ urlHistory.activeIndex - 1 ];
+			},
+			
+			getNext: function(){
+				return urlHistory.stack[ urlHistory.activeIndex + 1 ];
+			},
+			
+			// addNew is used whenever a new page is added
+			addNew: function( url, transition ){
+				//if there's forward history, wipe it
+				if( urlHistory.getNext() ){
+					urlHistory.clearForward();
+				}
+				
+				urlHistory.stack.push( {url : url, transition: transition } );
+					
+				urlHistory.activeIndex = urlHistory.stack.length - 1;
+			},
+			
+			//wipe urls ahead of active index
+			clearForward: function(){
+				urlHistory.stack = urlHistory.stack.slice( 0, urlHistory.activeIndex + 1 );
+			},
+			
+			//enable/disable hashchange event listener
+			//toggled internally when location.hash is updated to match the url of a successful page load
+			listeningEnabled: true
+		},
 
 		//define first selector to receive focus when a page is shown
 		focusable = "[tabindex],a,button:visible,select:visible,input",
 
 		//contains role for next page, if defined on clicked link via data-rel
-		nextPageRole = null,
-
-		//enable/disable hashchange event listener
-		//toggled internally when location.hash is updated to match the url of a successful page load
-		hashListener = true;
+		nextPageRole = null;
 
 		//existing base tag?
 		var $base = $head.children("base"),
@@ -1880,7 +1936,7 @@ $.widget( "mobile.page", $.mobile.widget, {
 						//the href is a document relative url
 						docBase = docLocation + href;
 						//XXX: we need some code here to calculate the final path
-						//     just in case the docBase contains up-level (../) references.
+						// just in case the docBase contains up-level (../) references.
 					}
 				}
 				else {
@@ -1954,7 +2010,7 @@ $.widget( "mobile.page", $.mobile.widget, {
 /* exposed $.mobile methods	 */
 
 	//update location.hash, with or without triggering hashchange event
-	//TODO - deprecate this one
+	//TODO - deprecate this one at 1.0
 	$.mobile.updateHash = path.set;
 	
 	//expose path object on $.mobile
@@ -1964,29 +2020,67 @@ $.widget( "mobile.page", $.mobile.widget, {
 	$.mobile.base = base;
 
 	//url stack, useful when plugins need to be aware of previous pages viewed
-	$.mobile.urlStack = urlStack;
-
+	//TODO: deprecate this one at 1.0
+	$.mobile.urlstack = urlHistory.stack;
+	
+	//history stack
+	$.mobile.urlHistory = urlHistory;
 
 	// changepage function
-	$.mobile.changePage = function( to, transition, back, changeHash){
+	// TODO : consider moving args to an object hash
+	$.mobile.changePage = function( to, transition, reverse, changeHash, fromHashChange ){
 
 		//from is always the currently viewed page
 		var toIsArray = $.type(to) === "array",
+			toIsObject = $.type(to) === "object",
 			from = toIsArray ? to[0] : $.mobile.activePage,
 			to = toIsArray ? to[1] : to,
-			url = fileUrl = $.type(to) === "string" ? to.replace( /^#/, "" ) : null,
+			url = fileUrl = $.type(to) === "string" ? path.stripHash( to ) : "",
 			data = undefined,
 			type = 'get',
 			isFormRequest = false,
 			duplicateCachedPage = null,
-			back = (back !== undefined) ? back : ( urlStack.length > 1 && urlStack[ urlStack.length - 2 ].url === url );
-
-		//If we are trying to transition to the same page that we are currently on ignore the request.
-		if(urlStack.length > 1 && url === urlStack[urlStack.length -1].url && !toIsArray ) {
+			currPage = urlHistory.getActive(),
+			back = false,
+			forward = false;
+			
+		// If we are trying to transition to the same page that we are currently on ignore the request.
+		// an illegal same page request is defined by the current page being the same as the url, as long as there's history
+		// and to is not an array or object (those are allowed to be "same")
+		if( currPage && urlHistory.stack.length > 1 && currPage.url === url && !toIsArray && !toIsObject ) {
 			return;
+		}	
+			
+		// if the changePage was sent from a hashChange event
+		// guess if it came from the history menu
+		if( fromHashChange ){
+			
+			// check if url is in history and if it's ahead or behind current page
+			$.each( urlHistory.stack, function( i ){
+				//if the url is in the stack, it's a forward or a back
+				if( this.url == url ){
+					urlIndex = i;
+					//define back and forward by whether url is older or newer than current page
+					back = i < urlHistory.activeIndex;
+					//forward set to opposite of back
+					forward = !back;
+					//reset activeIndex to this one
+					urlHistory.activeIndex = i;
+				}
+			});
+			
+			//if it's a back, use reverse animation
+			if( back ){
+				reverse = true;
+				transition = transition || currPage.transition;
+			}
+			else if ( forward ){
+				transition = transition || urlHistory.getActive().transition;
+			}
 		}
+		
 
-		if( $.type(to) === "object" && to.url ){
+		if( toIsObject && to.url ){
 			url = to.url,
 			data = to.data,
 			type = to.type,
@@ -2010,25 +2104,6 @@ $.widget( "mobile.page", $.mobile.widget, {
 			}
 		}
 
-		// if the new href is the same as the previous one
-		if ( back ) {
-			var pop = urlStack.pop();
-
-			// prefer the explicitly set transition
-			if( pop && !transition ){
-				transition = pop.transition;
-			}
-
-			// ensure a transition has been set where pop is undefined
-			defaultTransition();
-		} else {
-			// If no transition has been passed
-			defaultTransition();
-
-			// push the url and transition onto the stack
-			urlStack.push({ url: url, transition: transition });
-		}
-
 		//function for transitioning between two existing pages
 		function transitionPages() {
 
@@ -2050,8 +2125,18 @@ $.widget( "mobile.page", $.mobile.widget, {
 				reFocus( to );
 
 				if( changeHash !== false && url ){
-					path.set(url, (back !== true));
+					if( !back  ){
+						urlHistory.listeningEnabled = false;
+					}
+					path.set( url );
+					urlHistory.listeningEnabled = true;
 				}
+				
+				//add page to history stack if it's not back or forward, or a dialog
+				if( !back && !forward ){
+					urlHistory.addNew( url, transition );
+				}
+				
 				removeActiveLinkClass();
 
 				//jump to top or prev scroll, if set
@@ -2090,9 +2175,9 @@ $.widget( "mobile.page", $.mobile.widget, {
 				addContainerClass('ui-mobile-viewport-transitioning');
 
 				// animate in / out
-				from.addClass( transition + " out " + ( back ? "reverse" : "" ) );
+				from.addClass( transition + " out " + ( reverse ? "reverse" : "" ) );
 				to.addClass( $.mobile.activePageClass + " " + transition +
-					" in " + ( back ? "reverse" : "" ) );
+					" in " + ( reverse ? "reverse" : "" ) );
 
 				// callback - remove classes, etc
 				to.animationComplete(function() {
@@ -2138,6 +2223,9 @@ $.widget( "mobile.page", $.mobile.widget, {
 				fileUrl = toIDfileurl;
 			}
 		}
+		
+		// ensure a transition has been set where pop is undefined
+		defaultTransition();
 
 		// find the "to" page, either locally existing in the dom or by creating it through ajax
 		if ( to.length && !isFormRequest ) {
@@ -2212,7 +2300,9 @@ $.widget( "mobile.page", $.mobile.widget, {
 
 	//bind to form submit events, handle with Ajax
 	$( "form[data-ajax!='false']" ).live('submit', function(event){
-		if( !$.mobile.ajaxFormsEnabled ){ return; }
+		if( !$.mobile.ajaxEnabled ||
+			//TODO: deprecated - remove at 1.0
+			!$.mobile.ajaxFormsEnabled ){ return; }
 
 		var type = $(this).attr("method"),
 			url = path.clean( $(this).attr( "action" ) );
@@ -2261,7 +2351,9 @@ $.widget( "mobile.page", $.mobile.widget, {
 
 		$activeClickedLink = $this.closest( ".ui-btn" ).addClass( $.mobile.activeBtnClass );
 
-		if( isExternal || hasTarget || !$.mobile.ajaxLinksEnabled ){
+		if( isExternal || hasTarget || !$.mobile.ajaxEnabled ||
+			// TODO: deprecated - remove at 1.0
+			!$.mobile.ajaxLinksEnabled ){
 			//remove active link class if external (then it won't be there if you come back)
 			removeActiveLinkClass(true);
 
@@ -2276,7 +2368,10 @@ $.widget( "mobile.page", $.mobile.widget, {
 		else {
 			//use ajax
 			var transition = $this.data( "transition" ),
-				back = $this.data( "back" );
+				direction = $this.data("direction"),
+				reverse = direction && direction == "reverse" || 
+				// deprecated - remove by 1.0
+				$this.data( "back" );
 
 			nextPageRole = $this.attr( "data-rel" );
 
@@ -2287,7 +2382,7 @@ $.widget( "mobile.page", $.mobile.widget, {
 
 			url = path.stripHash( url );
 
-			$.mobile.changePage( url, transition, back);
+			$.mobile.changePage( url, transition, reverse);
 		}
 		event.preventDefault();
 	});
@@ -2296,8 +2391,10 @@ $.widget( "mobile.page", $.mobile.widget, {
 
 	//hashchange event handler
 	$window.bind( "hashchange", function(e, triggered) {
-		if( !hashListener ){
-			hashListener = true;
+		if( !urlHistory.listeningEnabled || !$.mobile.ajaxEnabled ||
+			// TODO: deprecated - remove at 1.0
+			// only links need to be checked here, as forms don't trigger a hashchange event (they just silently update the hash)
+			( !$.mobile.ajaxLinksEnabled ) ){
 			return;
 		}
 
@@ -2305,20 +2402,21 @@ $.widget( "mobile.page", $.mobile.widget, {
 			return;
 		}
 
-		var to = location.hash,
+		var to = path.stripHash( location.hash ),
 			transition = triggered ? false : undefined;
 
 		//if to is defined, use it
 		if ( to ){
-			$.mobile.changePage( to, transition, undefined, false);
+			$.mobile.changePage( to, transition, undefined, false, true );
 		}
 		//there's no hash, the active page is not the start page, and it's not manually triggered hashchange
 		//we probably backed out to the first page visited
 		else if( $.mobile.activePage.length && $.mobile.startPage[0] !== $.mobile.activePage[0] && !triggered ) {
-			$.mobile.changePage( $.mobile.startPage, transition, true, false );
+			$.mobile.changePage( $.mobile.startPage, transition, true, false, true );
 		}
 		//probably the first page - show it
 		else{
+			urlHistory.addNew( "" );
 			$.mobile.startPage.trigger("pagebeforeshow", {prevPage: $('')});
 			$.mobile.startPage.addClass( $.mobile.activePageClass );
 			$.mobile.pageLoading( true );
@@ -2643,21 +2741,27 @@ $.widget( "mobile.dialog", $.mobile.widget, {
 	_create: function(){
 		var self = this,
 			$el = self.element,
-			$prevPage = $.mobile.activePage,
 			$closeBtn = $('<a href="#" data-icon="delete" data-iconpos="notext">Close</a>'),
 
 			dialogClickHandler = function(e){
-				var $target = $(e.target);
+				var $target = $(e.target),
+					href = $.mobile.path.stripHash( $target.closest("a").attr("href") ),
+					isRelative = $.mobile.path.isRelative( href ),
+					absUrl = isRelative ? $.mobile.path.makeAbsolute( href ) : href;
 
 				// fixes issues with target links in dialogs breaking
 				// page transitions by reseting the active page below
-				if( $.mobile.path.isExternal( $target.closest("a").attr("href") ) ||
+				if( $.mobile.path.isExternal( href ) ||
 						$target.closest("a[target]").length || 
 						$target.is( "[rel='external']" ) ) {
 					return;
 				}
-
-				if( e.type == "click" && ( $(e.target).closest('[data-back]')[0] || this==$closeBtn[0] ) ){
+				
+				
+				//if it's a close button click
+				//or the href is the same as the page we're on, close the dialog
+				if( e.type == "click" &&
+					( this==$closeBtn[0] || absUrl == $.mobile.path.stripHash( location.hash ) ) ){
 					self.close();
 					return false;
 				}
@@ -2673,8 +2777,15 @@ $.widget( "mobile.dialog", $.mobile.widget, {
 
 		this.element
 			.bind("pageshow",function(){
+				self.thisPage = $.mobile.urlHistory.getActive();
+				self.prevPage = $.mobile.urlHistory.getPrev();
 				return false;
 			})
+			.bind("pagehide", function(){
+				$.mobile.urlHistory.stack = $.mobile.urlHistory.stack.slice(0,$.mobile.urlHistory.stack.length-2);
+				$.mobile.urlHistory.activeIndex = $.mobile.urlHistory.stack.length -1;
+			})
+			
 			//add ARIA role
 			.attr("role","dialog")
 			.addClass('ui-page ui-dialog ui-body-a')
@@ -2689,11 +2800,15 @@ $.widget( "mobile.dialog", $.mobile.widget, {
 				.last()
 				.addClass('ui-corner-bottom ui-overlay-shadow');
 
+
+		
 		$(window).bind('hashchange',function(){
+			$.mobile.urlHistory.listeningEnabled = true;
 			if( $el.is('.ui-page-active') ){
 				self.close();
 				$el.bind('pagehide',function(){
-					$.mobile.updateHash( $prevPage.attr('data-url'), true);
+					$.mobile.urlHistory.listeningEnabled = false;
+					$.mobile.updateHash( self.prevPage.url );
 				});
 			}
 		});
@@ -2701,7 +2816,7 @@ $.widget( "mobile.dialog", $.mobile.widget, {
 	},
 
 	close: function(){
-		$.mobile.changePage([this.element, $.mobile.activePage], undefined, true, true );
+		$.mobile.changePage([this.element, $.mobile.activePage], this.thisPage.transition, true, true, true );
 	}
 });
 })( jQuery );
@@ -2741,6 +2856,8 @@ $.fn.fixHeaderFooter = function(options){
 $.fixedToolbars = (function(){
 	if( !$.support.scrollTop ){ return; }
 	var currentstate = 'inline',
+		autoHideMode = false,
+		showDelay = 100,
 		delayTimer,
 		ignoreTargets = 'a,input,textarea,select,button,label,.ui-header-fixed,.ui-footer-fixed',
 		toolbarSelector = '.ui-header-fixed:first, .ui-footer-fixed:not(.ui-footer-duplicate):last',
@@ -2752,20 +2869,30 @@ $.fixedToolbars = (function(){
 		scrollTriggered = false,
         touchToggleEnabled = true;
 
+	function showEventCallback(event)
+	{
+		// An event that affects the dimensions of the visual viewport has
+		// been triggered. If the header and/or footer for the current page are in overlay
+		// mode, we want to hide them, and then fire off a timer to show them at a later
+		// point. Events like a resize can be triggered continuously during a scroll, on
+		// some platforms, so the timer is used to delay the actual positioning until the
+		// flood of events have subsided.
+		//
+		// If we are in autoHideMode, we don't do anything because we know the scroll
+		// callbacks for the plugin will fire off a show when the scrolling has stopped.
+		if (!autoHideMode && currentstate == 'overlay') {
+			if (!delayTimer)
+				$.fixedToolbars.hide(true);
+			$.fixedToolbars.startShowTimer();
+		}
+	}
+
 	$(function() {
 		$(document)
 			.bind(touchStartEvent,function(event){
 				if( touchToggleEnabled ) {
 					if( $(event.target).closest(ignoreTargets).length ){ return; }
 					stateBefore = currentstate;
-				}
-			})
-			.bind('scrollstart',function(event){
-				if( $(event.target).closest(ignoreTargets).length ){ return; } //because it could be a touchmove...
-				scrollTriggered = true;
-				if(stateBefore == null){ stateBefore = currentstate; }
-				if (stateBefore == 'overlay') {
-					$.fixedToolbars.hide(true);
 				}
 			})
 			.bind(touchStopEvent,function(event){
@@ -2777,14 +2904,36 @@ $.fixedToolbars = (function(){
 					}
 				}
 			})
+			.bind('scrollstart',function(event){
+				if( $(event.target).closest(ignoreTargets).length ){ return; } //because it could be a touchmove...
+				scrollTriggered = true;
+				if(stateBefore == null){ stateBefore = currentstate; }
+
+				// We only enter autoHideMode if the headers/footers are in
+				// an overlay state or the show timer was started. If the
+				// show timer is set, clear it so the headers/footers don't
+				// show up until after we're done scrolling.
+				var isOverlayState = stateBefore == 'overlay';
+				autoHideMode = isOverlayState || !!delayTimer;
+				if (autoHideMode){
+					$.fixedToolbars.clearShowTimer();
+					if (isOverlayState) {
+						$.fixedToolbars.hide(true);
+					}
+				}
+			})
 			.bind('scrollstop',function(event){
 				if( $(event.target).closest(ignoreTargets).length ){ return; }
 				scrollTriggered = false;
-				if (stateBefore == 'overlay') {
-					$.fixedToolbars.show();
+				if (autoHideMode) {
+					autoHideMode = false;
+					$.fixedToolbars.startShowTimer();
 				}
 				stateBefore = null;
-			});
+			})
+			.bind('silentscroll', showEventCallback);
+
+			$(window).bind('resize', showEventCallback);
 	});
 		
 	//before page is shown, check for duplicate footer
@@ -2872,6 +3021,7 @@ $.fixedToolbars = (function(){
 	//exposed methods
 	return {
 		show: function(immediately, page){
+			$.fixedToolbars.clearShowTimer();
 			currentstate = 'overlay';
 			var $ap = page ? $(page) : ($.mobile.activePage ? $.mobile.activePage : $(".ui-page-active"));
 			return $ap.children( toolbarSelector ).each(function(){
@@ -2921,10 +3071,19 @@ $.fixedToolbars = (function(){
 				}
 			});
 		},
-		hideAfterDelay: function(){
+		startShowTimer: function(){
+			$.fixedToolbars.clearShowTimer();
+			var args = $.makeArray(arguments);
 			delayTimer = setTimeout(function(){
-				$.fixedToolbars.hide();
-			}, 3000);
+				delayTimer = undefined;
+				$.fixedToolbars.show.apply(null, args);
+			}, showDelay);
+		},
+		clearShowTimer: function() {
+			if (delayTimer) {
+				clearTimeout(delayTimer);
+			}
+			delayTimer = undefined;
 		},
 		toggle: function(from){
 			if(from){ currentstate = from; }
