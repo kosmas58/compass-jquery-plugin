@@ -2124,17 +2124,17 @@ $.widget( "mobile.page", $.mobile.widget, {
 
 				reFocus( to );
 
-				if( changeHash !== false && url ){
+				if( changeHash !== false && fileUrl ){
 					if( !back  ){
 						urlHistory.listeningEnabled = false;
 					}
-					path.set( url );
+					path.set( fileUrl );
 					urlHistory.listeningEnabled = true;
 				}
 				
 				//add page to history stack if it's not back or forward, or a dialog
 				if( !back && !forward ){
-					urlHistory.addNew( url, transition );
+					urlHistory.addNew( fileUrl, transition );
 				}
 				
 				removeActiveLinkClass();
@@ -2248,8 +2248,23 @@ $.widget( "mobile.page", $.mobile.widget, {
 				type: type,
 				data: data,
 				success: function( html ) {
-					if(base){ base.set(fileUrl); }
+					
+					//pre-parse html to check for a data-url, 
+					//use it as the new fileUrl, base path, etc
+					var redirectLoc = / data-url="(.*)"/.test( html ) && RegExp.$1;
 
+					if( redirectLoc ){
+						if(base){
+							base.set( redirectLoc );
+						}	
+						fileUrl = path.makeAbsolute( path.getFilePath( redirectLoc ) );
+					}
+					else {
+						if(base){
+							base.set(fileUrl);
+						}	
+					}
+					
 					var all = $("<div></div>");
 					//workaround to allow scripts to execute when included in page divs
 					all.get(0).innerHTML = html;
@@ -2270,7 +2285,8 @@ $.widget( "mobile.page", $.mobile.widget, {
 							}
 						});
 					}
-
+					
+					//append to page and enhance
 					to
 						.attr( "data-url", fileUrl )
 						.appendTo( $.mobile.pageContainer );
@@ -3216,8 +3232,10 @@ $.widget( "mobile.checkboxradio", $.mobile.widget, {
 					label.removeData("prevEvent");
 				}, 1000);
 				
+				self._cacheVals();
+				
 				input.attr( "checked", inputtype === "radio" && true || !input.is( ":checked" ) );
-				input.trigger( "updateAll" );
+				self._updateAll();
 				event.preventDefault();
 			},
 			
@@ -3227,13 +3245,12 @@ $.widget( "mobile.checkboxradio", $.mobile.widget, {
 		
 		input
 			.bind({
-
-				updateAll: function() {
-					$( "input[name='" + input.attr( "name" ) + "'][type='" + inputtype + "']" ).checkboxradio( "refresh" );
+				mousedown: function(){
+					this._cacheVals();
 				},
 				
 				click: function(){
-					$( this ).trigger( "updateAll" );
+					self._updateAll();
 				},
 
 				focus: function() { 
@@ -3247,6 +3264,28 @@ $.widget( "mobile.checkboxradio", $.mobile.widget, {
 			
 		this.refresh();
 		
+	},
+	
+	_cacheVals: function(){
+		this._getInputSet().each(function(){
+			$(this).data("cacheVal", $(this).is(":checked") );
+		});	
+	},
+		
+	//returns either a set of radios with the same name attribute, or a single checkbox
+	_getInputSet: function(){
+		return this.element.closest( "form,fieldset,[data-role='page']" )
+				.find( "input[name='"+ this.element.attr( "name" ) +"'][type='"+ this.element.attr( "type" ) +"']" );
+	},
+	
+	_updateAll: function(){
+		this._getInputSet().each(function(){
+			var dVal = $(this).data("cacheVal");
+			if( dVal && dVal !== $(this).is(":checked") || $(this).is( "[type='checkbox']" ) ){
+				$(this).trigger("change");
+			}
+		})
+		.checkboxradio( "refresh" );
 	},
 	
 	refresh: function( ){
@@ -3786,7 +3825,9 @@ $.widget( "mobile.slider", $.mobile.widget, {
 			controlID = control.attr('id'),
 			labelID = controlID + '-label',
 			label = $('[for='+ controlID +']').attr('id',labelID),
-			val = (cType == 'input') ? parseFloat(control.val()) : control[0].selectedIndex,
+			val = function(){
+				return (cType == 'input') ? parseFloat(control.val()) : control[0].selectedIndex;
+			},
 			min = (cType == 'input') ? parseFloat(control.attr('min')) : 0,
 			max = (cType == 'input') ? parseFloat(control.attr('max')) : control.find('option').length-1,
 			step = window.parseFloat(control.attr('data-step') || 1),
@@ -3798,12 +3839,11 @@ $.widget( "mobile.slider", $.mobile.widget, {
 					'role': 'slider',
 					'aria-valuemin': min,
 					'aria-valuemax': max,
-					'aria-valuenow': val,
-					'aria-valuetext': val,
-					'title': val,
+					'aria-valuenow': val(),
+					'aria-valuetext': val(),
+					'title': val(),
 					'aria-labelledby': labelID
-				}),
-			switchValues = {'off' : 0, 'on': 1};
+				});
 
 		$.extend(this, {
 			slider: slider,
@@ -3828,15 +3868,20 @@ $.widget( "mobile.slider", $.mobile.widget, {
 
 		label.addClass('ui-slider');
 
+		// monitor the input for updated values
 		control
 			.addClass((cType == 'input') ? 'ui-slider-input' : 'ui-slider-switch')
 			.change(function(){
-				self.refresh( ((cType == 'input') ? parseFloat(control.val()) : control[0].selectedIndex), true );
+				self.refresh( val(), true );
 			})
 			.keyup(function(){ // necessary?
-				self.refresh( ((cType == 'input') ? parseFloat(control.val()) : control[0].selectedIndex), true );
+				self.refresh( val(), true, true );
+			})
+			.blur(function(){
+				self.refresh( val(), true );
 			});
 
+		// prevent screen drag when slider activated
 		$(document).bind($.support.touch ? "touchmove" : "mousemove", function(event){
 			if ( self.dragging ) {
 				self.refresh( event );
@@ -3864,7 +3909,7 @@ $.widget( "mobile.slider", $.mobile.widget, {
 							//tap occurred, but value didn't change. flip it!
 							self.refresh( self.beforeStart === 0 ? 1 : 0 );
 						}
-						var curval = (cType === "input") ? parseFloat(control.val()) : control[ 0 ].selectedIndex;
+						var curval = val();
 						var snapped = Math.round( curval / (max - min) * 100 );
 						handle
 							.addClass("ui-slider-handle-snapping")
@@ -3887,19 +3932,11 @@ $.widget( "mobile.slider", $.mobile.widget, {
 
 		this.handle
 			.bind('keydown', function( event ) {
-				var valuenow = $( this ).attr( "aria-valuenow" ),
-					  index;
+				var index = val();
 
 				if ( self.options.disabled ) {
 					return;
 				}
-
-				// convert switch values to slider
-				if(valuenow.match(/off|on/)){
-					valuenow = switchValues[valuenow];
-				}
-
-				index = window.parseFloat(valuenow, 10);
 
 				// In all cases prevent the default and mark the handle as active
 				switch ( event.keyCode ) {
@@ -3950,7 +3987,7 @@ $.widget( "mobile.slider", $.mobile.widget, {
 		this.refresh();
 	},
 
-	refresh: function(val, isfromControl){
+	refresh: function(val, isfromControl, preventInputUpdate){
 		if ( this.options.disabled ) { return; }
 
 		var control = this.element, percent,
@@ -4005,13 +4042,15 @@ $.widget( "mobile.slider", $.mobile.widget, {
 			}
 		}
 
-		// update control's value
-		if ( cType === "input" ) {
-			control.val(newval);
-		} else {
-			control[ 0 ].selectedIndex = newval;
+		if(!preventInputUpdate){
+			// update control's value
+			if ( cType === "input" ) {
+				control.val(newval);
+			} else {
+				control[ 0 ].selectedIndex = newval;
+			}
+			if (!isfromControl) { control.trigger("change"); }
 		}
-		if (!isfromControl) { control.trigger("change"); }
 	},
 
 	enable: function(){
