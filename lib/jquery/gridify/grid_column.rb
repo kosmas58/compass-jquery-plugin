@@ -89,7 +89,7 @@ module Gridify
     # note, we dont vals[:foo] = foo because dont want to bother generating key if its same as jqGrid default
     def jqgrid_properties
       vals = {
-        :name           => name,
+        :name           => name.gsub(".", "__"),
         :index          => name
       }
       #xmlmap not required when same as :name

@@ -111,7 +111,7 @@ module Gridify
         save = ActiveRecord::Base.include_root_in_json
         ActiveRecord::Base.include_root_in_json = false
         if colInclude
-          json = data.to_json(:include => colInclude)
+          json = build_json(data);
         else
           json = data.to_json
         end
@@ -214,6 +214,21 @@ module Gridify
         end
       end
       cond = [ expr ] + vals
+    end
+    
+    def build_json(data)
+      raw_data = JSON.parse(data.to_json(:include => colInclude))
+      raw_data[resource].each do |row|
+        colInclude.each do |incl|
+          sm = incl.to_s
+          if row[sm]
+            row[sm].each do |k, v|
+              row[sm + "__" + k] = v
+            end
+          end
+        end
+      end
+      return raw_data.to_json()
     end
   end
 end
