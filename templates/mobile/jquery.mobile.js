@@ -649,6 +649,14 @@ $(document).bind("mobileinit.htmlclass", function(){
 		//add orientation class to HTML element on flip/resize.
 		if(event.orientation){
 			$html.removeClass( "portrait landscape" ).addClass( event.orientation );
+			//Set the min-height to the size of the fullscreen.  This is to fix issue #455
+			if( event.orientation === 'portrait' ) {
+			    $( '.ui-page' ).css( 'minHeight', ( screen.availHeight >= screen.availWidth ) ? screen.availHeight : screen.availWidth);
+			} else {
+			    $( '.ui-page' ).css( 'minHeight', ( screen.availHeight <= screen.availWidth ) ? screen.availHeight : screen.availWidth);
+			}
+            
+            $.mobile.silentScroll();
 		}
 		//add classes to HTML element for min/max breakpoints
 		detectResolutionBreakpoints();
@@ -1437,6 +1445,12 @@ $.widget( "mobile.page", $.mobile.widget, {
 		if ( this._trigger( "beforeCreate" ) === false ) {
 			return;
 		}
+		
+		if( $( "html" ).hasClass( 'portrait' ) ) {
+		    $elem.css( 'minHeight', ( screen.availHeight >= screen.availWidth ) ? screen.availHeight : screen.availWidth);
+		} else {
+		    $elem.css( 'minHeight', ( screen.availHeight <= screen.availWidth ) ? screen.availHeight : screen.availWidth);
+		}
 
 		//some of the form elements currently rely on the presence of ui-page and ui-content
 		// classes so we'll handle page and content roles outside of the main role processing
@@ -1475,15 +1489,10 @@ $.widget( "mobile.page", $.mobile.widget, {
 
 				// auto-add back btn on pages beyond first view
 				if ( o.addBackBtn && role === "header" &&
-						($.mobile.urlHistory.getPrev() || $(".ui-page").length > 1) &&
+						$.mobile.urlHistory.stack.length > 0  &&
 						!leftbtn && $this.data( "backbtn" ) !== false ) {
 
-					$( "<a href='#' class='ui-btn-left' data-icon='arrow-l'>"+ o.backBtnText +"</a>" )
-						.click(function() {
-							history.back();
-							return false;
-						})
-						.prependTo( $this );
+					$( "<a href='#' class='ui-btn-left' data-rel='back' data-icon='arrow-l'>"+ o.backBtnText +"</a>" ).prependTo( $this );
 				}
 
 				//page title
@@ -1558,32 +1567,49 @@ $.widget( "mobile.page", $.mobile.widget, {
 			}
 		});
 
+		// We re-find form elements since the degredation code above
+		// may have injected new elements. We cache the non-native control
+		// query to reduce the number of times we search through the entire page.
+
+		var allControls = this.element.find("input, textarea, select, button"),
+			nonNativeControls = allControls.not(this.keepNative);
+
+		// XXX: Temporary workaround for issue 785. Turn off autocorrect and
+		//      autocomplete since the popup they use can't be dismissed by
+		//      the user. Note that we test for the presence of the feature
+		//      by looking for the autocorrect property on the input element.
+
+		var textInputs = allControls.filter( "input[type=text]" );
+		if (textInputs.length && typeof textInputs[0].autocorrect !== "undefined") {
+			textInputs.each(function(){
+				// Set the attribute instead of the property just in case there
+				// is code that attempts to make modifications via HTML.
+				this.setAttribute("autocorrect", "off");
+				this.setAttribute("autocomplete", "off");
+			});
+		}
+
 		// enchance form controls
-		this.element
-			.find( "[type='radio'], [type='checkbox']" )
-			.not(this.keepNative)
+		nonNativeControls
+			.filter( "[type='radio'], [type='checkbox']" )
 			.checkboxradio();
 
-		this.element
-			.find( "button, [type='button'], [type='submit'], [type='reset'], [type='image']" )
-			.not(this.keepNative)
+		nonNativeControls
+			.filter( "button, [type='button'], [type='submit'], [type='reset'], [type='image']" )
 			.button();
 
-		this.element
-			.find( "input, textarea" )
-			.not( "[type='radio'], [type='checkbox'], button, [type='button'], [type='submit'], [type='reset'], [type='image'], [type='hidden']" )
-			.not(this.keepNative)
+		nonNativeControls
+			.filter( "input, textarea" )
+			.not( "[type='radio'], [type='checkbox'], [type='button'], [type='submit'], [type='reset'], [type='image'], [type='hidden']" )
 			.textinput();
 
-		this.element
-			.find( "input, select" )
-			.not(this.keepNative)
+		nonNativeControls
+			.filter( "input, select" )
 			.filter( "[data-role='slider'], [data-type='range']" )
 			.slider();
 
-		this.element
-			.find( "select:not([data-role='slider'])" )
-			.not(this.keepNative)
+		nonNativeControls
+			.filter( "select:not([data-role='slider'])" )
 			.selectmenu();
 	}
 });
@@ -1816,7 +1842,7 @@ $.widget( "mobile.page", $.mobile.widget, {
 			//return the substring of a filepath before the sub-page key, for making a server request
 			getFilePath: function( path ){
 				var splitkey = '&' + $.mobile.subPageUrlKey;
-				return path && path.indexOf( splitkey ) > -1 ? path.split( splitkey )[0] : path;
+				return path && path.split( splitkey )[0].split( dialogHashKey )[0];
 			},
 			
 			//set location hash to path
@@ -1913,7 +1939,10 @@ $.widget( "mobile.page", $.mobile.widget, {
 		focusable = "[tabindex],a,button:visible,select:visible,input",
 
 		//contains role for next page, if defined on clicked link via data-rel
-		nextPageRole = null;
+		nextPageRole = null,
+		
+		//nonsense hash change key for dialogs, so they create a history entry
+		dialogHashKey = "&ui-state=dialog";
 
 		//existing base tag?
 		var $base = $head.children("base"),
@@ -2029,7 +2058,6 @@ $.widget( "mobile.page", $.mobile.widget, {
 	// changepage function
 	// TODO : consider moving args to an object hash
 	$.mobile.changePage = function( to, transition, reverse, changeHash, fromHashChange ){
-
 		//from is always the currently viewed page
 		var toIsArray = $.type(to) === "array",
 			toIsObject = $.type(to) === "object",
@@ -2043,6 +2071,7 @@ $.widget( "mobile.page", $.mobile.widget, {
 			currPage = urlHistory.getActive(),
 			back = false,
 			forward = false;
+			
 			
 		// If we are trying to transition to the same page that we are currently on ignore the request.
 		// an illegal same page request is defined by the current page being the same as the url, as long as there's history
@@ -2087,6 +2116,10 @@ $.widget( "mobile.page", $.mobile.widget, {
 			isFormRequest = true;
 			//make get requests bookmarkable
 			if( data && type == 'get' ){
+				if($.type( data ) == "object" ){
+					data = $.param(data);
+				}
+			
 				url += "?" + data;
 				data = undefined;
 			}
@@ -2106,11 +2139,17 @@ $.widget( "mobile.page", $.mobile.widget, {
 
 		//function for transitioning between two existing pages
 		function transitionPages() {
+		    $.mobile.silentScroll();
 
 			//get current scroll distance
 			var currScroll = $window.scrollTop(),
 					perspectiveTransitions = ["flip"],
 					pageContainerClasses = [];
+			
+			//support deep-links to generated sub-pages	
+			if( url.indexOf( "&" + $.mobile.subPageUrlKey ) > -1 ){
+				to = $( "[data-url='" + url + "']" );
+			}
 
 			//set as data for returning to that spot
 			from.data('lastScroll', currScroll);
@@ -2120,27 +2159,25 @@ $.widget( "mobile.page", $.mobile.widget, {
 			to.data("page")._trigger("beforeshow", {prevPage: from});
 
 			function loadComplete(){
-				$.mobile.pageLoading( true );
 
-				reFocus( to );
-
-				if( changeHash !== false && fileUrl ){
+				if( changeHash !== false && url ){
 					if( !back  ){
 						urlHistory.listeningEnabled = false;
 					}
-					path.set( fileUrl );
+					path.set( url );
 					urlHistory.listeningEnabled = true;
 				}
 				
-				//add page to history stack if it's not back or forward, or a dialog
+				//add page to history stack if it's not back or forward
 				if( !back && !forward ){
-					urlHistory.addNew( fileUrl, transition );
+					urlHistory.addNew( url, transition );
 				}
 				
 				removeActiveLinkClass();
 
-				//jump to top or prev scroll, if set
-				$.mobile.silentScroll( to.data( 'lastScroll' ) );
+				//jump to top or prev scroll, sometimes on iOS the page has not rendered yet.  I could only get by this with a setTimeout, but would like to avoid that.
+				$.mobile.silentScroll( to.data( 'lastScroll' ) ); 
+				reFocus( to );
 
 				//trigger show/hide events, allow preventing focus change through return false
 				from.data("page")._trigger("hide", null, {nextPage: to});
@@ -2166,18 +2203,25 @@ $.widget( "mobile.page", $.mobile.widget, {
 
 				pageContainerClasses = [];
 			};
+			
+			
 
 			if(transition && (transition !== 'none')){
+			    $.mobile.pageLoading( true );
 				if( $.inArray(transition, perspectiveTransitions) >= 0 ){
 					addContainerClass('ui-mobile-viewport-perspective');
 				}
 
 				addContainerClass('ui-mobile-viewport-transitioning');
 
-				// animate in / out
-				from.addClass( transition + " out " + ( reverse ? "reverse" : "" ) );
+				/* animate in / out
+				 * This is in a setTimeout because we were often seeing pages in not animate across but rather go straight to
+				 * the 'to' page.  The loadComplete would still fire, so the browser thought it was applying the animation.  From
+				 * what I could tell this was a problem with the classes not being applied yet.
+				 */ 
+				setTimeout(function() { from.addClass( transition + " out " + ( reverse ? "reverse" : "" ) );
 				to.addClass( $.mobile.activePageClass + " " + transition +
-					" in " + ( reverse ? "reverse" : "" ) );
+					" in " + ( reverse ? "reverse" : "" ) ); } , 0);
 
 				// callback - remove classes, etc
 				to.animationComplete(function() {
@@ -2188,6 +2232,7 @@ $.widget( "mobile.page", $.mobile.widget, {
 				});
 			}
 			else{
+			    $.mobile.pageLoading( true );
 				from.removeClass( $.mobile.activePageClass );
 				to.addClass( $.mobile.activePageClass );
 				loadComplete();
@@ -2199,7 +2244,7 @@ $.widget( "mobile.page", $.mobile.widget, {
 
 			//set next page role, if defined
 			if ( nextPageRole || to.data('role') == 'dialog' ) {
-				changeHash = false;
+				url = urlHistory.getActive().url + dialogHashKey;
 				if(nextPageRole){
 					to.attr( "data-role", nextPageRole );
 					nextPageRole = null;
@@ -2257,7 +2302,7 @@ $.widget( "mobile.page", $.mobile.widget, {
 						if(base){
 							base.set( redirectLoc );
 						}	
-						fileUrl = path.makeAbsolute( path.getFilePath( redirectLoc ) );
+						url = fileUrl = path.makeAbsolute( path.getFilePath( redirectLoc ) );
 					}
 					else {
 						if(base){
@@ -2358,7 +2403,12 @@ $.widget( "mobile.page", $.mobile.widget, {
 			
 			//if target attr is specified we mimic _blank... for now
 			hasTarget = $this.is( "[target]" );
-			
+		
+		//if there's a data-rel=back attr, go back in history
+		if( $this.is( "[data-rel='back']" ) ){
+			window.history.back();
+			return false;
+		}	
 
 		if( url === "#" ){
 			//for links created purely for interaction - ignore
@@ -2388,7 +2438,8 @@ $.widget( "mobile.page", $.mobile.widget, {
 				reverse = direction && direction == "reverse" || 
 				// deprecated - remove by 1.0
 				$this.data( "back" );
-
+				
+			//this may need to be more specific as we use data-rel more	
 			nextPageRole = $this.attr( "data-rel" );
 
 			//if it's a relative href, prefix href with base url
@@ -2413,13 +2464,16 @@ $.widget( "mobile.page", $.mobile.widget, {
 			!$.mobile.ajaxLinksEnabled ) ){
 			return;
 		}
-
-		if( $(".ui-page-active").is("[data-role=" + $.mobile.nonHistorySelectors + "]") ){
-			return;
-		}
-
+		
 		var to = path.stripHash( location.hash ),
-			transition = triggered ? false : undefined;
+			transition = triggered ? false : undefined;	
+
+		//make sure that hash changes that produce a dialog url do nothing	
+		if( urlHistory.stack.length > 1 &&
+				to.indexOf( dialogHashKey ) > -1 &&
+				!$.mobile.activePage.is( ".ui-dialog" ) ){
+			return;
+		}	
 
 		//if to is defined, use it
 		if ( to ){
@@ -2756,83 +2810,56 @@ $.widget( "mobile.dialog", $.mobile.widget, {
 	options: {},
 	_create: function(){
 		var self = this,
-			$el = self.element,
-			$closeBtn = $('<a href="#" data-icon="delete" data-iconpos="notext">Close</a>'),
-
-			dialogClickHandler = function(e){
-				var $target = $(e.target),
-					href = $.mobile.path.stripHash( $target.closest("a").attr("href") ),
-					isRelative = $.mobile.path.isRelative( href ),
-					absUrl = isRelative ? $.mobile.path.makeAbsolute( href ) : href;
-
-				// fixes issues with target links in dialogs breaking
-				// page transitions by reseting the active page below
-				if( $.mobile.path.isExternal( href ) ||
-						$target.closest("a[target]").length || 
-						$target.is( "[rel='external']" ) ) {
-					return;
-				}
-				
-				
-				//if it's a close button click
-				//or the href is the same as the page we're on, close the dialog
-				if( e.type == "click" &&
-					( this==$closeBtn[0] || absUrl == $.mobile.path.stripHash( location.hash ) ) ){
-					self.close();
-					return false;
-				}
-
-				//otherwise, assume we're headed somewhere new. set activepage to dialog so the transition will work
-				$.mobile.activePage = self.element;
-			};
-
-		// NOTE avoid click handler in the case of an external resource
-		// TODO add function in navigation to handle external check
-		$el.delegate("a", "click", dialogClickHandler);
-		$el.delegate("form", "submit", dialogClickHandler);
-
-		this.element
-			.bind("pageshow",function(){
-				self.thisPage = $.mobile.urlHistory.getActive();
-				self.prevPage = $.mobile.urlHistory.getPrev();
-				return false;
-			})
-			.bind("pagehide", function(){
-				$.mobile.urlHistory.stack = $.mobile.urlHistory.stack.slice(0,$.mobile.urlHistory.stack.length-2);
-				$.mobile.urlHistory.activeIndex = $.mobile.urlHistory.stack.length -1;
-			})
-			
+			$el = self.element;
+		
+		/* class the markup for dialog styling */	
+		this.element			
 			//add ARIA role
 			.attr("role","dialog")
 			.addClass('ui-page ui-dialog ui-body-a')
 			.find('[data-role=header]')
 			.addClass('ui-corner-top ui-overlay-shadow')
-				.prepend( $closeBtn )
+				.prepend( '<a href="#" data-icon="delete" data-rel="back" data-iconpos="notext">Close</a>' )
 			.end()
 			.find('.ui-content:not([class*="ui-body-"])')
 				.addClass('ui-body-c')
 			.end()
 			.find('.ui-content,[data-role=footer]')
 				.last()
-				.addClass('ui-corner-bottom ui-overlay-shadow');
-
-
+				.addClass('ui-corner-bottom ui-overlay-shadow')
 		
-		$(window).bind('hashchange',function(){
-			$.mobile.urlHistory.listeningEnabled = true;
-			if( $el.is('.ui-page-active') ){
-				self.close();
-				$el.bind('pagehide',function(){
-					$.mobile.urlHistory.listeningEnabled = false;
-					$.mobile.updateHash( self.prevPage.url );
-				});
-			}
-		});
+		/* bind events 
+			- clicks and submits should use the closing transition that the dialog opened with
+			  unless a data-transition is specified on the link/form
+			- if the click was on the close button, or the link has a data-rel="back" it'll go back in history naturally
+		*/
+		this.element		
+			.bind( "click submit", function(e){
+				var $targetel;
+				if( e.type == "click" ){
+					$targetel = $(e.target).closest("a");
+				}
+				else{
+					$targetel = $(e.target).closest("form");
+				}
+				
+				if( $targetel.length && !$targetel.data("transition") ){
+					$targetel
+						.attr("data-transition", $.mobile.urlHistory.getActive().transition )
+						.attr("data-direction", "reverse");
+				}
+			})
+			//destroy the dialog after hiding
+			.bind("pagehide.dialog",function(){
+				self.destroy();
+				$(this).remove();
+			});
 
 	},
-
+	
+	//close method goes back in history
 	close: function(){
-		$.mobile.changePage([this.element, $.mobile.activePage], this.thisPage.transition, true, true, true );
+		window.history.back();
 	}
 });
 })( jQuery );
@@ -3346,7 +3373,8 @@ $.widget( "mobile.selectmenu", $.mobile.widget, {
 		menuPageTheme: 'b',
 		overlayTheme: 'a',
 		hidePlaceholderMenuItems: true,
-		closeText: 'Close'
+		closeText: 'Close',
+		useNativeMenu: false
 	},
 	_create: function(){
 
@@ -3355,7 +3383,6 @@ $.widget( "mobile.selectmenu", $.mobile.widget, {
 			o = this.options,
 
 			select = this.element
-						.attr( "tabindex", "-1" )
 						.wrap( "<div class='ui-select'>" ),
 
 			selectID = select.attr( "id" ),
@@ -3443,6 +3470,9 @@ $.widget( "mobile.selectmenu", $.mobile.widget, {
 
 			menuType;
 
+		// set to native menu
+		o.useNativeMenu = select.is( "[data-native]");
+
 		// add counter for multi selects
 		if( isMultiple ){
 			self.buttonCount = $('<span>')
@@ -3483,43 +3513,72 @@ $.widget( "mobile.selectmenu", $.mobile.widget, {
 		select
 			.change(function(){
 				self.refresh();
-			})
-			.focus(function(){
-				$(this).blur();
-				button.focus();
 			});
+			
+		//unbind dialog destroy on close
+		menuPage.unbind("pagehide.dialog");
 
-		//button events
-		button
-			.bind( "touchstart" ,function( event ){
-				//set startTouches to cached copy of
-				$( this ).data( "startTouches", $.extend({}, event.originalEvent.touches[ 0 ]) );
-			})
-			.bind( $.support.touch ? "touchend" : "mouseup" , function( event ){
-				//if it's a scroll, don't open
-				if( $( this ).data( "moved" ) ){
-					$( this ).removeData( "moved" );
-				}
-				else{
-					self.open();
-				}
-				event.preventDefault();
-			})
-			.bind( "touchmove", function( event ){
-				//if touch moved enough, set data moved and don't open menu
-				var thisTouches = event.originalEvent.touches[ 0 ],
+		//support for using the native select menu with a custom button
+		if( o.useNativeMenu ){
+
+			select
+				.appendTo(button)
+				.bind( "touchstart mousedown", function( e ){
+					//add active class to button
+					button.addClass( $.mobile.activeBtnClass );
+
+					//ensure button isn't clicked
+					e.stopPropagation();
+				})
+				.bind( "focus mouseover", function(){
+					button.trigger( "mouseover" );
+				})
+				.bind( "blur mouseout", function(){
+					button
+						.trigger( "mouseout" )
+						.removeClass( $.mobile.activeBtnClass );
+				});
+
+			button.attr( "tabindex", "-1" );
+		} else {
+
+			select
+				.attr( "tabindex", "-1" )
+				.focus(function(){
+					$(this).blur();
+					button.focus();
+				});
+
+			//button events
+			button
+				.bind( "touchstart" , function( event ){
+					//set startTouches to cached copy of
+					$( this ).data( "startTouches", $.extend({}, event.originalEvent.touches[ 0 ]) );
+				})
+				.bind( $.support.touch ? "touchend" : "mouseup" , function( event ){
+					//if it's a scroll, don't open
+					if( $( this ).data( "moved" ) ){
+						$( this ).removeData( "moved" );
+					} else {
+						self.open();
+					}
+					event.preventDefault();
+				})
+				.bind( "touchmove", function( event ){
+					//if touch moved enough, set data moved and don't open menu
+					var thisTouches = event.originalEvent.touches[ 0 ],
 					startTouches = $( this ).data( "startTouches" ),
 					deltaX = Math.abs(thisTouches.pageX - startTouches.pageX),
 					deltaY = Math.abs(thisTouches.pageY - startTouches.pageY);
 
-				if( deltaX > 10 || deltaY > 10 ){
-					$( this ).data( "moved", true );
-				}
-			});
+					if( deltaX > 10 || deltaY > 10 ){
+						$( this ).data( "moved", true );
+					}
+				});
+		}
 
 		//events for list items
 		list.delegate("li:not(.ui-disabled, .ui-li-divider)", "click", function(event){
-
 			// clicking on the list item fires click on the link in listview.js.
 			// to prevent this handler from firing twice if the link isn't clicked on,
 			// short circuit unless the target is the link
@@ -3552,16 +3611,19 @@ $.widget( "mobile.selectmenu", $.mobile.widget, {
 		});
 
 		//events on "screen" overlay + close button
-		screen.add( headerClose ).add( menuPageClose ).click(function(event){
-			self.close();
-			event.preventDefault();
+		screen
+			.add( headerClose )
+			.add( menuPageClose )
+			.bind("click", function(event){
+				self.close();
+				event.preventDefault();
 
-			// if the dialog's close icon was clicked, prevent the dialog's close
-			// handler from firing. selectmenu's should take precedence
-			if( $.contains(menuPageClose[0], event.target) ){
-				event.stopImmediatePropagation();
-			}
-		});
+				// if the dialog's close icon was clicked, prevent the dialog's close
+				// handler from firing. selectmenu's should take precedence
+				if( $.contains(menuPageClose[0], event.target) ){
+					event.stopImmediatePropagation();
+				}
+			});
 	},
 
 	_buildList: function(){
@@ -3749,10 +3811,15 @@ $.widget( "mobile.selectmenu", $.mobile.widget, {
 
 			focusMenuItem();
 		}
+
+		// wait before the dialog can be closed
+		setTimeout(function(){
+		 	self.isOpen = true;
+		}, 400);
 	},
 
 	close: function(){
-		if( this.options.disabled ){ return; }
+		if( this.options.disabled || !this.isOpen ){ return; }
 		var self = this;
 
 		function focusButton(){
@@ -3776,6 +3843,8 @@ $.widget( "mobile.selectmenu", $.mobile.widget, {
 			focusButton();
 		}
 
+		// allow the dialog to be closed again
+		this.isOpen = false;
 	},
 
 	disable: function(){
@@ -4640,39 +4709,39 @@ $.widget( "mobile.navbar", $.mobile.widget, {
 
 //quick & dirty theme switcher, written to potentially work as a bookmarklet
 (function($){
-  $.themeswitcher = function(){
-  if( $('[data-url=themeswitcher]').length ){ return; }
-  var 
-    themesDir = '/stylesheets/compiled/jquery/mobile/',
-    //themesDir = 'http://jquerymobile.com/test/themes/',themesDir = 'http://jquerymobile.com/test/themes/',
-    themes = ['default','valencia'],
-    currentPage = $.mobile.activePage,
-    menuPage = $(
-      '<div data-url="themeswitcher" data-role=\'dialog\' data-theme=\'a\'>' +
-        '<div data-role=\'header\' data-theme=\'b\'>' +
-          '<div class=\'ui-title\'>Switch Theme:</div>'+
-        '</div>'+
-        '<div data-role=\'content\' data-theme=\'c\'><ul data-role=\'listview\' data-inset=\'true\'></ul></div>'+
-      '</div>' )
-    .appendTo( $.mobile.pageContainer ),
-    menu = menuPage.find('ul');	
+	$.themeswitcher = function(){
+		if( $('[data-url=themeswitcher]').length ){ return; }
+		var
+		  //themesDir = 'http://jquerymobile.com/test/themes/',
+		  themesDir = '/stylesheets/compiled/jquery/mobile/',
+			themes = ['default','valencia'],
+			currentPage = $.mobile.activePage,
+			menuPage = $( '<div data-url="themeswitcher" data-role=\'dialog\' data-theme=\'a\'>' +
+						'<div data-role=\'header\' data-theme=\'b\'>' +
+							'<div class=\'ui-title\'>Switch Theme:</div>'+
+						'</div>'+
+						'<div data-role=\'content\' data-theme=\'c\'><ul data-role=\'listview\' data-inset=\'true\'></ul></div>'+
+					'</div>' )
+					.appendTo( $.mobile.pageContainer ),
+			menu = menuPage.find('ul');	
+		
+		//menu items	
+		$.each(themes, function( i ){
+			$('<li><a href="#" data-rel="back">' + themes[ i ].charAt(0).toUpperCase() + themes[ i ].substr(1) + '</a></li>')
+				.click(function(){
+					addTheme( themes[i] );
+					return false;
+				})
+				.appendTo(menu);
+		});	
+		
+		//remover, adder
+		function addTheme(theme){
+			$('head').append( '<link rel=\'stylesheet\' href=\''+ themesDir + theme +'/\' />' );
+		}
 
-    //menu items	
-    $.each(themes, function( i ){
-      $('<li><a href=\'#\'>' + themes[ i ].charAt(0).toUpperCase() + themes[ i ].substr(1) + '</a></li>')
-      .click(function(){
-        addTheme( themes[i] );
-        menuPage.dialog('close');
-      })
-      .appendTo(menu);
-    });	
-    
-    //remover, adder
-    function addTheme(theme){
-      $('head').append( '<link rel=\'stylesheet\' href=\''+ themesDir + theme +'.css\' />' );
-    }
-    
-    //create page, listview
-    menuPage.page();
-  };
+		//create page, listview
+		menuPage.page();
+
+	};	
 })(jQuery);
