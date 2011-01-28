@@ -28,7 +28,8 @@
 		
 		//remover, adder
 		function addTheme(theme){
-			$('head').append( '<link rel=\'stylesheet\' href=\''+ themesDir + theme +'/\' />' );
+			//$('head').append( '<link rel=\'stylesheet\' href=\''+ themesDir + theme +'/\' />' );
+      $('head').append( '<link rel=\'stylesheet\' href=\''+ themesDir + theme +'.css\' />' );
 		}
 
 		//create page, listview
