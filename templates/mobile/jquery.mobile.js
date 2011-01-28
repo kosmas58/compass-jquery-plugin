@@ -4714,7 +4714,6 @@ $.widget( "mobile.navbar", $.mobile.widget, {
 	$.themeswitcher = function(){
 		if( $('[data-url=themeswitcher]').length ){ return; }
 		var
-		  //themesDir = 'http://jquerymobile.com/test/themes/',
 		  themesDir = '/stylesheets/compiled/jquery/mobile/',
 			themes = ['default','valencia'],
 			currentPage = $.mobile.activePage,
@@ -4739,8 +4738,7 @@ $.widget( "mobile.navbar", $.mobile.widget, {
 		
 		//remover, adder
 		function addTheme(theme){
-			//$('head').append( '<link rel=\'stylesheet\' href=\''+ themesDir + theme +'/\' />' );
-      $('head').append( '<link rel=\'stylesheet\' href=\''+ themesDir + theme +'.css\' />' );
+			$('head').append( '<link rel=\'stylesheet\' href=\''+ themesDir + theme +'.css\' />' );
 		}
 
 		//create page, listview
