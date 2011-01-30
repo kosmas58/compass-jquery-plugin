@@ -145,7 +145,7 @@ namespace :build do
             f.write compress_js(js, "google")
           end
         end
-      end     
+      end
       
       Dir.foreach File.join(JQUERY_SRC, 'plugins', 'images')  do |plugin|
         next if /^\./ =~ plugin
