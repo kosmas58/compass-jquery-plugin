@@ -2253,7 +2253,7 @@ $.widget( "mobile.page", $.mobile.widget, {
 * Copyright (c) jQuery Project
 * Dual licensed under the MIT or GPL Version 2 licenses.
 * http://jquery.org/license
-*/ 
+*/
 (function($, undefined ) {
 
 $.fn.buttonMarkup = function( options ){
@@ -2272,18 +2272,18 @@ $.fn.buttonMarkup = function( options ){
 
 		// if not, try to find closest theme container
 		if ( !o.theme ) {
-			var themedParent = el.closest("[class*='ui-bar-'],[class*='ui-body-']"); 
+			var themedParent = el.closest("[class*='ui-bar-'],[class*='ui-body-']");
 			o.theme = themedParent.length ?
 				/ui-(bar|body)-([a-z])/.exec( themedParent.attr("class") )[2] :
 				"c";
 		}
 
 		buttonClass = "ui-btn ui-btn-up-" + o.theme;
-		
+
 		if ( o.inline ) {
 			buttonClass += " ui-btn-inline";
 		}
-		
+
 		if ( o.icon ) {
 			o.icon = "ui-icon-" + o.icon;
 			o.iconpos = o.iconpos || "left";
@@ -2291,27 +2291,27 @@ $.fn.buttonMarkup = function( options ){
 			iconClass = "ui-icon " + o.icon;
 
 			if ( o.shadow ) {
-				iconClass += " ui-icon-shadow"
+				iconClass += " ui-icon-shadow";
 			}
 		}
 
 		if ( o.iconpos ) {
 			buttonClass += " ui-btn-icon-" + o.iconpos;
-			
+
 			if ( o.iconpos == "notext" && !el.attr("title") ) {
 				el.attr( "title", el.text() );
 			}
 		}
-		
-		if ( o.corners ) { 
+
+		if ( o.corners ) {
 			buttonClass += " ui-btn-corner-all";
 			innerClass += " ui-btn-corner-all";
 		}
-		
+
 		if ( o.shadow ) {
 			buttonClass += " ui-shadow";
 		}
-		
+
 		el
 			.attr( "data-theme", o.theme )
 			.addClass( buttonClass );
@@ -2321,7 +2321,7 @@ $.fn.buttonMarkup = function( options ){
 			"</D>").replace(/D/g, o.wrapperEls);
 
 		el.wrapInner( wrap );
-	});		
+	});
 };
 
 $.fn.buttonMarkup.defaults = {
