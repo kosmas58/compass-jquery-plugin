@@ -26,7 +26,8 @@ all_scripts = [
   'js/tooltip.js',
   'js/tooltip.dynamic.js',
   'js/tooltip.slide.js',
-  'js/validator.js'
+  'js/validator.js',
+  'js/flowplayer-3.2.4.min.js'
 ].collect {|filename| File.read(File.join(TOOLS_SRC, filename))}.join "\n\n"
 
 namespace :build do
