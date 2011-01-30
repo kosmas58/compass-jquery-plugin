@@ -2,7 +2,7 @@ desc 'Build all stylesheets and templates.'
 
 namespace :build do
   task :all => [
-    "build:jrails",
+    "build:jquery",
     "build:tools",
     "build:dynatree",
     "build:jstree",

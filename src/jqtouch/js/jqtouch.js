@@ -17,8 +17,8 @@
     (c) 2010 by jQTouch project members.
     See LICENSE.txt for license.
 
-    $Revision: 159 $
-    $Date: Tue Dec 28 22:40:38 EST 2010 $
+    $Revision: 161 $
+    $Date: Wed Jan 19 23:43:35 EST 2011 $
     $LastChangedBy: jonathanstark $
 
 
@@ -50,13 +50,13 @@
                 addGlossToIcon: true,
                 backSelector: '.back, .cancel, .goback',
                 cacheGetRequests: true,
-                debug: true,
+                debug: false,
                 fallback2dAnimation: 'fade',
                 fixedViewport: true,
                 formSelector: 'form',
                 fullScreen: true,
                 fullScreenClass: 'fullscreen',
-                hoverDelay: 150,
+                hoverDelay: 50,
                 icon: null,
                 icon4: null, // experimental
                 moveThreshold: 10,
@@ -66,7 +66,6 @@
                 statusBar: 'default', // other options: black-translucent, black
                 submitSelector: '.submit',
                 touchSelector: 'a, .touch',
-                unloadMessage: 'Are you sure you want to leave this page? Doing so will log you out of the app.',
                 useAnimations: true,
                 useFastTouch: true, // experimental
                 animations: [ // highest to lowest priority
@@ -112,34 +111,46 @@
             hist.unshift({
                 page: page,
                 animation: animation,
+                hash: '#' + page.attr('id'),
                 id: page.attr('id')
             });
         }
         function clickHandler(e) {
             _debug();
 
+            if (!tapReady) {
+                _debug('ClickHandler handler aborted because tap is not ready');
+                e.preventDefault();
+                return false;
+            }
+
+            // Figure out whether to prevent default
             var $el = $(e.target);
 
-            if ($el.attr('href')) {
-                if (!$el.isExternalLink()) { // Checks for mailto, maps, tel, checkboxes, etc...
-                    e.preventDefault();
-                    _debug('Preventing default click behavior');
-                }
-            };
-
-            if ($.support.touch) {
-                // The touchstart handler will trigger tap handler
-                _debug('Ignoring click handler because touch support is true');
-            } else {
-                // Convert the click to a tap
-                _debug('Converting click to a tap event');
-                $el.makeActive();
-                $el.trigger('tap', e);
+            // Find the nearest tappable ancestor
+            if (!$el.is(touchSelectors.join(', '))) {
+                var $el = $(e.target).closest(touchSelectors.join(', '));
             }
+
+            // Prevent default if we found an internal link (relative or absolute)
+            if ($el && $el.attr('href') && !$el.isExternalLink()) {
+                _debug('Need to prevent default click behavior');
+                e.preventDefault();
+            } else {
+                _debug('No need to prevent default click behavior');
+            }
+
+            // Trigger a tap event if touchstart is not on the job
+            if ($.support.touch) {
+                _debug('Not converting click to a tap event because touch handler is on the job');
+            } else {
+                _debug('Converting click event to a tap event');
+                $(e.target).trigger('tap', e);
+            }
+
         }
         function doNavigation(fromPage, toPage, animation, backwards) {
             _debug();
-            // _debug('animation.name: ' + animation.name + '; backwards: ' + backwards);
 
             // Error check for target page
             if (toPage.length === 0) {
@@ -191,7 +202,7 @@
                     finalAnimationName = animation.name;
                 }
 
-                _debug('finalAnimationName is ' + finalAnimationName);
+                // _debug('finalAnimationName is ' + finalAnimationName);
 
                 // Bind internal "cleanup" callback
                 fromPage.bind('webkitAnimationEnd', navigationEndHandler);
@@ -208,14 +219,14 @@
             // Define private navigationEnd callback
             function navigationEndHandler(event) {
                 _debug();
-
+                
                 if ($.support.animationEvents && animation && jQTSettings.useAnimations) {
                     fromPage.unbind('webkitAnimationEnd', navigationEndHandler);
-                    fromPage.attr('class', '');
-                    toPage.attr('class', 'current');
+                    fromPage.removeClass(finalAnimationName + ' out current');
+                    toPage.removeClass(finalAnimationName + ' in');
                     // toPage.css('top', 0);
                 } else {
-                    fromPage.attr('class', '');
+                    fromPage.removeClass(finalAnimationName + ' out current');
                 }
 
                 // Housekeeping
@@ -231,7 +242,7 @@
                 setHash(currentPage.attr('id'));
                 tapReady = true;
 
-                // Finally, trigger custom events
+                // Trigger custom events
                 toPage.trigger('pageAnimationEnd', {direction:'in', animation:animation});
                 fromPage.trigger('pageAnimationEnd', {direction:'out', animation:animation});
 
@@ -256,8 +267,7 @@
                 _debug('You are on the first panel.');
             }
 
-            var from = hist[0],
-                to = hist[1];
+            var from = hist[0], to = hist[1];
 
             if (doNavigation(from.page, to.page, from.animation, true)) {
                 return publicObj;
@@ -266,8 +276,6 @@
                 return false;
             }
 
-            // Prevent default behavior
-            return false;
         }
         function goTo(toPage, animation, reverse) {
             _debug();
@@ -306,13 +314,17 @@
                 return false;
             }
         }
-        function hashChange(e) {
+        function hashChangeHandler(e) {
             _debug();
-            if (location.href == hist[1].href) {
-                goBack();
+            if (hist[1] === undefined) {
+                _debug('There is no previous page in history');
             } else {
-                _debug(location.href+' == '+hist[1].href);
-            }
+                if(location.hash === hist[1].hash) {
+                    goBack();
+                } else {
+                    _debug(location.hash + ' !== ' + hist[1].hash);
+                }
+            } 
         }
         function init(options) {
             _debug();
@@ -375,7 +387,7 @@
                     $node.attr('id', 'page-' + (++newPageCount));
                 }
 
-                // remove any existing instance
+                // Remove any existing instance
                 $('#' + $node.attr('id')).remove();
 
                 $body.trigger('pageInserted', {page: $node.appendTo($body)});
@@ -404,27 +416,19 @@
             $body.removeClass('portrait landscape').addClass(orientation).trigger('turn', {orientation: orientation});
         }
         function setHash(hash) {
-            return; // Deactivated at the moment
-
             _debug();
 
-            // trim leading # if need be
+            // Trim leading # if need be
             hash = hash.replace(/^#/, ''),
 
-            // remove listener
-            // window.removeEventListener('hashchange', hashChange, false);
+            // Remove listener
             window.onhashchange = null;
 
-            // change hash
-            if (hash === initialPageId) {
-                location.href = location.href.split('#')[0];
-            } else {
-                location.hash = '#' + hash;
-            }
-
-            // add listener
-            // window.addEventListener('hashchange', hashChange, false);
-            window.onhashchange = hashChange;
+            // Change hash
+            location.hash = '#' + hash;
+            
+            // Add listener
+            window.onhashchange = hashChangeHandler;
 
         }
         function showPageByHref(href, options) {
@@ -567,34 +571,35 @@
         function tapHandler(e){
             _debug();
 
-            // Grab the target element
-            var $el = $(e.target);
-
-            // Find the nearest interactive ancestor
-            if ($el.attr('nodeName')!=='A' && $el.attr('nodeName')!=='AREA') {
-                $el = $el.closest('a, area');
-            }
-
-            var target = $el.attr('target'),
-                hash = $el.attr('hash'),
-                animation = null;
-
-            if (tapReady == false) {
+            if (!tapReady) {
                 _debug('Tap is not ready');
                 return false;
             }
 
-            if (!$el.length) {
-                _debug('Nothing tappable here');
+            // Grab the target element
+            var $el = $(e.target);
+
+            // Find the nearest tappable ancestor
+            if (!$el.is(touchSelectors.join(', '))) {
+                var $el = $(e.target).closest(touchSelectors.join(', '));
+            }
+            
+            // Make sure we have a tappable element
+            if (!$el.length || !$el.attr('href')) {
+                _debug('Could not find a link related to tapped element');
                 return false;
             }
 
-            if ($el.isExternalLink()) {
-                $el.removeClass('active');
-                return true;
-            }
+            // Init some vars
+            var target = $el.attr('target'),
+                hash = $el.attr('hash'),
+                animation = null;
 
-            if ($el.is(jQTSettings.backSelector)) {
+            if ($el.isExternalLink()) {
+                $el.unselect();
+                return true;
+
+            } else if ($el.is(jQTSettings.backSelector)) {
                 // User clicked or tapped a back button
                 goBack(hash);
 
@@ -602,12 +607,12 @@
                 // User clicked or tapped a submit element
                 submitParentForm($el);
 
-            } else if (target == '_webapp') {
+            } else if (target === '_webapp') {
                 // User clicked or tapped an internal link, fullscreen mode
                 window.location = $el.attr('href');
                 return false;
 
-            } else if ($el.attr('href') == '#') {
+            } else if ($el.attr('href') === '#') {
                 // Allow tap on item with no href
                 $el.unselect();
                 return true;
@@ -627,7 +632,7 @@
                     animation = 'slideleft';
                 }
 
-                if (hash && hash!='#') {
+                if (hash && hash !== '#') {
                     // Internal href
                     $el.addClass('active');
                     goTo($(hash).data('referrer', $el), animation, $(this).hasClass('reverse'));
@@ -635,7 +640,6 @@
 
                 } else {
                     // External href
-                    // alert('mkay');
                     $el.addClass('loading active');
                     showPageByHref($el.attr('href'), {
                         animation: animation,
@@ -651,16 +655,18 @@
         }
         function touchStartHandler(e) {
             _debug();
+            
+            if (!tapReady) {
+                _debug('TouchStart handler aborted because tap is not ready');
+                e.preventDefault();
+                return false;
+            }
 
             var $el = $(e.target);
 
-            if ($el.attr('nodeName')!=='A' && $el.attr('nodeName')!=='AREA') {
-                $el = $el.closest('a, area');
-            }
-
             // Error check
             if (!$el.length) {
-                _debug('Could not find a link element.');
+                _debug('Could not find target of touchstart event.');
                 return;
             }
 
@@ -680,7 +686,7 @@
                 startY = touch.pageY;
             }
 
-            // Prep the link
+            // Prep the element
             $el.bind('touchmove',touchmove).bind('touchend',touchend).bind('touchcancel',touchcancel);
 
             hoverTimeout = setTimeout(function() {
@@ -688,9 +694,8 @@
             }, jQTSettings.hoverDelay);
 
             pressTimeout = setTimeout(function() {
-                _debug('press');
                 $el.unbind('touchmove',touchmove).unbind('touchend',touchend).unbind('touchcancel',touchcancel);
-                $el.removeClass('active');
+                $el.unselect();
                 clearTimeout(hoverTimeout);
                 $el.trigger('press');
             }, jQTSettings.pressDelay);
@@ -699,12 +704,27 @@
             function touchcancel(e) {
                 _debug();
                 clearTimeout(hoverTimeout);
-                $el.removeClass('active');
+                $el.unselect();
                 $el.unbind('touchmove',touchmove).unbind('touchend',touchend).unbind('touchcancel',touchcancel);
             }
 
-            function touchmove(e) {
+            function touchend(e) {
                 _debug();
+                // updateChanges();
+                $el.unbind('touchend',touchend).unbind('touchcancel',touchcancel);
+                clearTimeout(hoverTimeout);
+                clearTimeout(pressTimeout);
+                if (Math.abs(deltaX) < jQTSettings.moveThreshold && Math.abs(deltaY) < jQTSettings.moveThreshold && deltaT < jQTSettings.pressDelay) {
+                    // e.preventDefault();
+                    // e.stopImmediatePropagation();
+                    $el.trigger('tap', e);
+                } else {
+                    $el.unselect();
+                }
+            }
+
+            function touchmove(e) {
+                // _debug();
                 updateChanges();
                 var absX = Math.abs(deltaX);
                 var absY = Math.abs(deltaY);
@@ -718,28 +738,15 @@
                     $el.unbind('touchmove',touchmove).unbind('touchend',touchend).unbind('touchcancel',touchcancel);
                     $el.trigger('swipe', {direction:direction, deltaX:deltaX, deltaY: deltaY});
                 }
-                $el.removeClass('active');
+                $el.unselect();
                 clearTimeout(hoverTimeout);
                 if (absX > jQTSettings.moveThreshold || absY > jQTSettings.moveThreshold) {
                     clearTimeout(pressTimeout);
                 }
             }
 
-            function touchend() {
-                _debug();
-                // updateChanges();
-                $el.unbind('touchend',touchend).unbind('touchcancel',touchcancel);
-                clearTimeout(hoverTimeout);
-                clearTimeout(pressTimeout);
-                if (Math.abs(deltaX) < jQTSettings.moveThreshold && Math.abs(deltaY) < jQTSettings.moveThreshold && deltaT < jQTSettings.pressDelay) {
-                    $el.trigger('tap', e);
-                } else {
-                    $el.removeClass('active');
-                }
-            }
-
             function updateChanges() {
-                _debug();
+                // _debug();
                 var firstFinger = event.changedTouches[0] || null;
                 deltaX = firstFinger.pageX - startX;
                 deltaY = firstFinger.pageY - startY;
@@ -771,7 +778,7 @@
             // Define public jQuery functions
             $.fn.isExternalLink = function() {
                 var $el = $(this);
-                return ($el.attr('target') == '_blank' || $el.attr('rel') == 'external' || $el.is('input[type="checkbox"], input[type="radio"], a[href^="http://maps.google.com"], a[href^="mailto:"], a[href^="tel:"], a[href^="javascript:"], a[href*="youtube.com/v"], a[href*="youtube.com/watch"]'));
+                return ($el.attr('target') == '_blank' || $el.attr('rel') == 'external' || $el.is('a[href^="http://maps.google.com"], a[href^="mailto:"], a[href^="tel:"], a[href^="javascript:"], a[href*="youtube.com/v"], a[href*="youtube.com/watch"]'));
             }
             $.fn.makeActive = function() {
                 return $(this).addClass('active');
@@ -834,8 +841,8 @@
                 addAnimation(animation);
             }
 
-            // I'm not so sure about this stuff...
-            touchSelectors.push('input');
+            // Create an array of stuff that needs touch event handling
+            touchSelectors.push('input'); // TODO: Ask DK why inputs are considered touch selectors
             touchSelectors.push(jQTSettings.touchSelector);
             touchSelectors.push(jQTSettings.backSelector);
             touchSelectors.push(jQTSettings.submitSelector);
@@ -844,7 +851,7 @@
             // Make sure we have a jqt element
             $body = $('#jqt');
             if ($body.length === 0) {
-                console.warn('Could not find an element with the id "jqt", so the body id has been set to "jqt". This might cause problems, so you should prolly wrap your panels in a div with the id "jqt".');
+                console.warn('Could not find an element with the id "jqt", so the body id has been set to "jqt". If you are having any problems, wrapping your panels in a div with the id "jqt" might help.');
                 $body = $('body').attr('id', 'jqt');
             }
 
@@ -858,21 +865,19 @@
             }
 
             // Bind events
-            if ($.support.touch) {
-                $body.bind('touchstart', touchStartHandler);
-            }
-            $body.bind('click', clickHandler);
-            $body.bind('mousedown', mousedownHandler);
-            $body.bind('orientationchange', orientationChangeHandler);
-            $body.bind('submit', submitHandler);
-            $body.bind('tap', tapHandler);
-            $body.trigger('orientationchange');
+            $body.bind('touchstart', touchStartHandler)
+                .bind('click', clickHandler)
+                .bind('mousedown', mousedownHandler)
+                .bind('orientationchange', orientationChangeHandler)
+                .bind('submit', submitHandler)
+                .bind('tap', tapHandler)
+                .trigger('orientationchange');
 
             // Normalize href
             if (location.hash.length) {
                 location.replace(location.href.split('#')[0]);
             }
-
+            
             // Make sure exactly one child of body has "current" class
             if ($('#jqt > .current').length == 0) {
                 currentPage = $('#jqt > *:first');
@@ -883,10 +888,15 @@
 
             // Go to the top of the "current" page
             $(currentPage).addClass('current');
-            setHash($(currentPage).attr('id'));
             initialPageId = $(currentPage).attr('id');
+            if(history.replaceState !== undefined) {
+                history.replaceState(null, null, '#' + initialPageId);
+            } else {
+                setHash(initialPageId);
+            }
             addPageToHistory(currentPage);
             scrollTo(0, 0);
+
         });
 
         // Expose public methods and properties

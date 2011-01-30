@@ -22,6 +22,12 @@ module Gridify
       self.current_page  = params[:page].to_i if params[:page]
       self.rows_per_page = params[:rows].to_i if params[:rows]
       self.total_rows    = params[:total_rows].to_i if params[:total_rows]
+      if tree_grid
+        self.nodeid  = params[:nodeid].to_i if params[:nodeid]
+        self.n_level = params[:n_level].to_i if params[:n_level]
+        self.n_left  = params[:n_left].to_i if params[:n_left]
+        self.n_right = params[:n_right].to_i if params[:n_right]
+      end
     end
 
     # return find args (scope) for current settings
@@ -43,6 +49,7 @@ module Gridify
           find_args[:order] = "upper(#{sort_by}) #{sort_order}"
         end
       end
+      
       if total_rows.present? && total_rows > 0
         find_args[:limit] = total_rows
         offset = (current_page.to_i-1) * rows_per_page if current_page.present?
@@ -52,11 +59,12 @@ module Gridify
         offset = (current_page.to_i-1) * rows_per_page if current_page.present?
         find_args[:offset] = offset if offset && offset > 0
       end
+      
       cond = rules_to_conditions
       find_args[:conditions] = cond unless cond.blank?
       find_args
     end
-
+    
     def find( params )
       #debugger
       update_from_params params
@@ -103,7 +111,7 @@ module Gridify
         save = ActiveRecord::Base.include_root_in_json
         ActiveRecord::Base.include_root_in_json = false
         if colInclude
-          json = data.to_json(:include => colInclude)
+          json = build_json(data);
         else
           json = data.to_json
         end
@@ -206,6 +214,21 @@ module Gridify
         end
       end
       cond = [ expr ] + vals
+    end
+    
+    def build_json(data)
+      raw_data = JSON.parse(data.to_json(:include => colInclude))
+      raw_data[resource].each do |row|
+        colInclude.each do |incl|
+          sm = incl.to_s
+          if row[sm]
+            row[sm].each do |k, v|
+              row[sm + "__" + k] = v
+            end
+          end
+        end
+      end
+      return raw_data.to_json()
     end
   end
 end

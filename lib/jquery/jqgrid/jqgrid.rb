@@ -4,7 +4,7 @@ module ActionView
     def jqgrid_javascripts(locale)
       js = capture { javascript_include_tag "i18n/jqgrid/locale-#{locale}.min" } 
       js << capture {javascript_tag "jQuery.jgrid.no_legacy_api = true;" }
-      js << capture { javascript_include_tag 'jquery.jqGrid.min' }  
+      js << capture { javascript_include_tag 'jquery.jqGrid.min' }
     end
 
     def jqgrid(title, id, action, columns = {}, 
@@ -231,6 +231,7 @@ module ActionView
               height: "#{options[:height]}",
               // page: 1,
               rowNum:#{options[:rows_per_page]},
+              // rowTotal : null,
               // records: 0,
               pager: '##{id}_pager',
               // pgbuttons: true,
@@ -270,6 +271,7 @@ module ActionView
               // onHeaderClick: null,
               viewrecords: true,
               // loadonce: false,
+              // multiselect: false,
               // multikey: false,
               editurl:'#{options[:edit_url]}',
               // search: false,
@@ -324,7 +326,14 @@ module ActionView
               #{subgrid_enabled}
               #{subgrid}
               // toppager: false,
-              // headertitles: false      
+              // headertitles: false,
+              // scrollTimeout: 40,
+              // data : [],
+              // _index : {},
+              // grouping : false,
+              // groupingView : {groupField:[],groupOrder:[], groupText:[],groupColumnShow:[],groupSummary:[], showSummaryOnHide: false, sortitems:[], sortnames:[], groupDataSorted : false, summary:[],summaryval:[], plusicon: 'ui-icon-circlesmall-plus', minusicon: 'ui-icon-circlesmall-minus'},
+              // ignoreCase : false,
+              // cmTemplate : {}
             });
             jQuery("##{id}").jqGrid('navGrid', '##{id}_pager',
               {edit:#{edit_button},add:#{options[:add]},del:#{options[:delete]},search:#{options[:search]},refresh:true},
@@ -406,6 +415,8 @@ module ActionView
     end
   end
 end
+
+require 'handle_attributes'
 
 module JqgridJson
   include ActionView::Helpers::JavaScriptHelper

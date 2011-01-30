@@ -94,8 +94,7 @@
     height: 12px; }
   .ui-icon-desc {
     margin-top: 3px;
-    height: 12px;
-    margin-left: -1px; }
+    height: 12px; }
   .ui-i-asc {
     margin-top: 0px;
     height: 16px; }
@@ -449,19 +448,20 @@ tr.ui-search-toolbar {
       border-right: 0px none;
       padding-bottom: 5px;
       padding-top: 5px; } }
+  input.FormElement {
+    padding: .3em; }
+  .data-line {
+    padding-top: .1em;
+    border: 0px none; }
   .CaptionTD {
     text-align: left;
-    vertical-align: top;
-    border-left: 0px none;
-    border-right: 0px none;
-    border-bottom: 0px none;
-    padding: 1px;
+    vertical-align: middle;
+    border: 0px none;
+    padding: 2px;
     white-space: nowrap; }
   .DataTD {
-    padding: 1px;
-    border-left: 0px none;
-    border-right: 0px none;
-    border-bottom: 0px none;
+    padding: 2px;
+    border: 0px none;
     vertical-align: top; }
   .form-view-data {
     white-space: pre; } }
@@ -588,11 +588,8 @@ tr.ui-search-toolbar {
         margin: 0.1em; } } }
   .ui-state-default {
     cursor: pointer; }
-  .divider {
-    height: 1px;
-    div {
-      background-color: black;
-      height: 1px; } } }
+  .divider hr {
+    margin: 1px; } }
 
 /* Multiselect
 ----------------------------------*/

@@ -28,6 +28,14 @@ module Gridify
                   :sub_grid,
                   :sub_grid_url,
                   :sub_grid_model,
+                  
+    #treegrid
+                  :tree_grid,             # default is false
+                  :nodeid,                # Node to expand 
+                  :n_level,               # Node level
+                  :n_left,                # for nested treegrid only
+                  :n_right,               # for nested treegrid only#
+                  
     # grid layout options
                   :width,                 # in pixels, or nil (nil means calculated based on overflow setting)
                   :width_fit,             # :fluid, :scroll, or :visible
@@ -126,18 +134,24 @@ module Gridify
     
     def sortable_rows
       @sortable_rows==true ? true : false 
-    end    
+    end
             
     def dom_id
       @dom_id || "#{resource}_#{name}"
     end   
             
     def grid_view
-      @grid_view==false ? false : true 
+      @grid_view==false ? false : true
     end
     
     def jqgrid_options
       @jqgrid_options || {}
+    end
+    
+    # TreeGrid
+    
+    def tree_grid
+      @tree_grid || false
     end
     
     def ajax_grid_options

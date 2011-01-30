@@ -127,7 +127,7 @@ $.widget( "mobile.listview", $.mobile.widget, {
 
 		item.find( "p, dl" ).addClass( "ui-li-desc" );
 
-		item.find( "img" ).addClass( "ui-li-thumb" ).each(function() {
+		item.find( "li" ).find( "img:eq(0)" ).addClass( "ui-li-thumb" ).each(function() {
 			$( this ).closest( "li" )
 				.addClass( $(this).is( ".ui-li-icon" ) ? "ui-li-has-icon" : "ui-li-has-thumb" );
 		});
@@ -181,13 +181,15 @@ $.widget( "mobile.listview", $.mobile.widget, {
 			var a = item.find( "a" );
 				
 			if ( a.length ) {	
+				var icon = item.data("icon");
+				
 				item
 					.buttonMarkup({
 						wrapperEls: "div",
 						shadow: false,
 						corners: false,
 						iconpos: "right",
-						icon: a.length > 1 ? false : item.data("icon") || "arrow-r",
+						icon: a.length > 1 || icon === false ? false : icon || "arrow-r",
 						theme: o.theme
 					});
 
@@ -245,8 +247,9 @@ $.widget( "mobile.listview", $.mobile.widget, {
 							.end()
 							.find( ".ui-li-thumb" )
 								.addClass( "ui-corner-tl" );
-						
-						self._removeCorners( item.next() );		
+						if(item.next().next().length){
+							self._removeCorners( item.next() );		
+						}
 	
 				} else if ( pos === li.length - 1 ) {
 						itemClass += " ui-corner-bottom";
@@ -259,7 +262,9 @@ $.widget( "mobile.listview", $.mobile.widget, {
 							.find( ".ui-li-thumb" )
 								.addClass( "ui-corner-bl" );
 						
-						self._removeCorners( item.prev() );		
+						if(item.prev().prev().length){
+							self._removeCorners( item.prev() );		
+						}	
 				}
 			}
 
@@ -287,7 +292,7 @@ $.widget( "mobile.listview", $.mobile.widget, {
 	_createSubPages: function() {
 		var parentList = this.element,
 			parentPage = parentList.closest( ".ui-page" ),
-			parentId = parentPage.attr( "id" ),
+			parentId = parentPage.data( "url" ),
 			o = this.options,
 			self = this,
 			persistentFooterID = parentPage.find( "[data-role='footer']" ).data( "id" );
@@ -295,7 +300,7 @@ $.widget( "mobile.listview", $.mobile.widget, {
 		$( parentList.find( "ul, ol" ).toArray().reverse() ).each(function( i ) {
 			var list = $( this ),
 				parent = list.parent(),
-				title = parent.contents()[ 0 ].nodeValue.split("\n")[0],
+				title = $.trim(parent.contents()[ 0 ].nodeValue) || parent.find('a:first').text(),
 				id = parentId + "&" + $.mobile.subPageUrlKey + "=" + self._idStringEscape(title + " " + i),
 				theme = list.data( "theme" ) || o.theme,
 				countTheme = list.data( "counttheme" ) || parentList.data( "counttheme" ) || o.countTheme,
@@ -305,7 +310,7 @@ $.widget( "mobile.listview", $.mobile.widget, {
 								.after( persistentFooterID ? $( "<div>", { "data-role": "footer", "data-id": persistentFooterID, "class": "ui-footer-duplicate" } ) : "" )
 								.parent()
 									.attr({
-										id: id,
+										"data-url": id,
 										"data-theme": theme,
 										"data-count-theme": countTheme
 									})
@@ -314,8 +319,11 @@ $.widget( "mobile.listview", $.mobile.widget, {
 				
 				
 				newPage.page();		
-			
-			parent.html( "<a href='#" + id + "'>" + title + "</a>" );
+			var anchor = parent.find('a:first');
+			if (!anchor.length) {
+				anchor = $("<a></a>").html(title).prependTo(parent.empty());
+			}
+			anchor.attr('href','#' + id);
 		}).listview();
 	}
 });

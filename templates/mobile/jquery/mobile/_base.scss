@@ -2,6 +2,241 @@
 /*
 * jQuery Mobile Framework
 * Copyright (c) jQuery Project
+* Dual licensed under the MIT (MIT-LICENSE.txt) or GPL (GPL-LICENSE.txt) licenses.
+*/
+
+.ui-btn {
+  display: block;
+  text-align: center;
+  cursor: pointer;
+  position: relative;
+  margin: .5em 5px;
+  padding: 0;
+  &:focus, &:active {
+    outline: none; } }
+
+.ui-header .ui-btn, .ui-footer .ui-btn, .ui-bar .ui-btn {
+  display: inline-block;
+  font-size: 13px;
+  margin: 0; }
+
+.ui-btn-inline {
+  display: inline-block; }
+
+.ui-btn-inner {
+  padding: .6em 25px;
+  display: block;
+  height: 100%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative; }
+
+.ui-header .ui-btn-inner, .ui-footer .ui-btn-inner, .ui-bar .ui-btn-inner {
+  padding: .4em 8px .5em; }
+
+.ui-btn-icon-notext {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  padding: 1px 0px 1px 2px;
+  text-indent: -9999px;
+  .ui-btn-inner {
+    padding: 0; }
+  .ui-btn-text {
+    position: absolute;
+    left: -999px; } }
+
+.ui-btn-icon-left .ui-btn-inner {
+  padding-left: 33px; }
+
+.ui-header .ui-btn-icon-left .ui-btn-inner, .ui-footer .ui-btn-icon-left .ui-btn-inner, .ui-bar .ui-btn-icon-left .ui-btn-inner {
+  padding-left: 27px; }
+
+.ui-btn-icon-right .ui-btn-inner {
+  padding-right: 33px; }
+
+.ui-header .ui-btn-icon-right .ui-btn-inner, .ui-footer .ui-btn-icon-right .ui-btn-inner, .ui-bar .ui-btn-icon-right .ui-btn-inner {
+  padding-right: 27px; }
+
+.ui-btn-icon-top .ui-btn-inner {
+  padding-top: 33px; }
+
+.ui-header .ui-btn-icon-top .ui-btn-inner, .ui-footer .ui-btn-icon-top .ui-btn-inner, .ui-bar .ui-btn-icon-top .ui-btn-inner {
+  padding-top: 27px; }
+
+.ui-btn-icon-bottom .ui-btn-inner {
+  padding-bottom: 33px; }
+
+.ui-header .ui-btn-icon-bottom .ui-btn-inner, .ui-footer .ui-btn-icon-bottom .ui-btn-inner, .ui-bar .ui-btn-icon-bottom .ui-btn-inner {
+  padding-bottom: 27px; }
+
+/*btn icon positioning*/
+
+.ui-btn-icon-notext .ui-icon {
+  display: block; }
+
+.ui-btn-icon-left .ui-icon, .ui-btn-icon-right .ui-icon {
+  position: absolute;
+  top: 50%;
+  margin-top: -9px; }
+
+.ui-btn-icon-top .ui-icon, .ui-btn-icon-bottom .ui-icon {
+  position: absolute;
+  left: 50%;
+  margin-left: -9px; }
+
+.ui-btn-icon-left .ui-icon {
+  left: 10px; }
+
+.ui-btn-icon-right .ui-icon {
+  right: 10px; }
+
+.ui-header .ui-btn-icon-left .ui-icon, .ui-footer .ui-btn-icon-left .ui-icon, .ui-bar .ui-btn-icon-left .ui-icon {
+  left: 4px; }
+
+.ui-header .ui-btn-icon-right .ui-icon, .ui-footer .ui-btn-icon-right .ui-icon, .ui-bar .ui-btn-icon-right .ui-icon {
+  right: 4px; }
+
+.ui-header .ui-btn-icon-top .ui-icon, .ui-footer .ui-btn-icon-top .ui-icon, .ui-bar .ui-btn-icon-top .ui-icon {
+  top: 4px; }
+
+.ui-header .ui-btn-icon-bottom .ui-icon, .ui-footer .ui-btn-icon-bottom .ui-icon, .ui-bar .ui-btn-icon-bottom .ui-icon {
+  bottom: 4px; }
+
+.ui-btn-icon-top .ui-icon {
+  top: 5px; }
+
+.ui-btn-icon-bottom .ui-icon {
+  bottom: 5px; }
+
+/*hiding native button,inputs */
+
+.ui-btn-hidden {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  -webkit-appearance: button;
+  opacity: 0;
+  cursor: pointer; }
+
+/*
+* jQuery Mobile Framework
+* Copyright (c) jQuery Project
+* Dual licensed under the MIT (MIT-LICENSE.txt) or GPL (GPL-LICENSE.txt) licenses.
+*/
+
+.ui-collapsible-contain {
+  margin: .5em 0; }
+
+.ui-collapsible-heading {
+  font-size: 16px;
+  display: block;
+  margin: 0 -8px;
+  padding: 0;
+  border-width: 0 0 1px 0;
+  position: relative;
+  a {
+    text-align: left;
+    margin: 0;
+    .ui-btn-inner {
+      padding-left: 40px; }
+    span.ui-btn {
+      position: absolute;
+      left: 6px;
+      top: 50%;
+      margin: -12px 0 0 0;
+      width: 20px;
+      height: 20px;
+      padding: 1px 0px 1px 2px;
+      text-indent: -9999px;
+      .ui-btn-inner {
+        padding: 0; }
+      .ui-icon {
+        left: 0;
+        margin-top: -10px; } } } }
+
+.ui-collapsible-heading-status {
+  position: absolute;
+  left: -9999px; }
+
+.ui-collapsible-content {
+  display: block;
+  padding: 10px 0 10px 8px; }
+
+.ui-collapsible-content-collapsed {
+  display: none; }
+
+.ui-collapsible-set {
+  margin: .5em 0;
+  .ui-collapsible-contain {
+    margin: -1px 0 0; } }
+
+/*
+* jQuery Mobile Framework
+* Copyright (c) jQuery Project
+* Dual licensed under the MIT (MIT-LICENSE.txt) or GPL (GPL-LICENSE.txt) licenses.
+*/
+
+.ui-controlgroup, fieldset.ui-controlgroup {
+  padding: 0;
+  margin: .5em 0 1em; }
+
+.ui-bar .ui-controlgroup {
+  margin: 0 .3em; }
+
+.ui-controlgroup-label {
+  font-size: 16px;
+  line-height: 1.4;
+  font-weight: normal;
+  margin: 0 0 .3em; }
+
+.ui-controlgroup-controls {
+  display: block;
+  width: 95%; }
+
+.ui-controlgroup li {
+  list-style: none; }
+
+.ui-controlgroup-vertical {
+  .ui-btn, .ui-checkbox, .ui-radio {
+    margin: 0;
+    border-bottom-width: 0; }
+  .ui-controlgroup-last {
+    border-bottom-width: 1px; } }
+
+.ui-controlgroup-horizontal {
+  padding: 0;
+  .ui-btn, .ui-checkbox, .ui-radio {
+    margin: 0 -5px 0 0;
+    display: inline-block; }
+  .ui-checkbox .ui-btn, .ui-radio .ui-btn, .ui-checkbox:last-child, .ui-radio:last-child, .ui-controlgroup-last {
+    margin-right: 0; } }
+
+.ui-controlgroup {
+  .ui-checkbox label, .ui-radio label {
+    font-size: 16px; } }
+
+/* conflicts with listview..
+.ui-controlgroup .ui-btn-icon-notext { width: 30px; height: 30px; text-indent: -9999px; }
+.ui-controlgroup .ui-btn-icon-notext .ui-btn-inner {  padding: 5px 6px 5px 5px; }
+*/
+
+.min-width-480px {
+  .ui-controlgroup-label {
+    vertical-align: top;
+    display: inline-block;
+    width: 20%;
+    margin: 0 2% 0 0; }
+  .ui-controlgroup-controls {
+    width: 60%;
+    display: inline-block; } }
+
+/*
+* jQuery Mobile Framework
+* Copyright (c) jQuery Project
 * Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
 * Note: Code is in draft form and is subject to change 
 */
@@ -60,11 +295,11 @@
   position: absolute;
   opacity: .85;
   z-index: 10;
-  top: 75px;
   left: 50%;
   width: 200px;
   margin-left: -130px;
-  padding: 20px 30px;
+  margin-top: -35px;
+  padding: 10px 30px;
   h1 {
     font-size: 15px;
     text-align: center; }
@@ -173,235 +408,6 @@
 * Dual licensed under the MIT (MIT-LICENSE.txt) or GPL (GPL-LICENSE.txt) licenses.
 */
 
-.ui-btn {
-  display: block;
-  text-align: center;
-  cursor: pointer;
-  position: relative;
-  margin: .5em 5px;
-  padding: 0;
-  &:focus, a:focus {
-    outline: none; } }
-
-.ui-header .ui-btn, .ui-footer .ui-btn, .ui-bar .ui-btn {
-  display: inline-block;
-  font-size: 13px;
-  margin: 0; }
-
-.ui-btn-inline {
-  display: inline-block; }
-
-.ui-btn-inner {
-  padding: .6em 25px;
-  display: block;
-  height: 100%;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
-  position: relative; }
-
-.ui-header .ui-btn-inner, .ui-footer .ui-btn-inner, .ui-bar .ui-btn-inner {
-  padding: .4em 8px .5em; }
-
-.ui-btn-icon-notext {
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  padding: 1px 0px 1px 2px;
-  text-indent: -9999px;
-  .ui-btn-inner {
-    padding: 0; }
-  .ui-btn-text {
-    position: absolute;
-    left: -999px; } }
-
-.ui-btn-icon-left .ui-btn-inner {
-  padding-left: 33px; }
-
-.ui-header .ui-btn-icon-left .ui-btn-inner, .ui-footer .ui-btn-icon-left .ui-btn-inner, .ui-bar .ui-btn-icon-left .ui-btn-inner {
-  padding-left: 27px; }
-
-.ui-btn-icon-right .ui-btn-inner {
-  padding-right: 33px; }
-
-.ui-header .ui-btn-icon-right .ui-btn-inner, .ui-footer .ui-btn-icon-right .ui-btn-inner, .ui-bar .ui-btn-icon-right .ui-btn-inner {
-  padding-right: 27px; }
-
-.ui-btn-icon-top .ui-btn-inner {
-  padding-top: 33px; }
-
-.ui-header .ui-btn-icon-top .ui-btn-inner, .ui-footer .ui-btn-icon-top .ui-btn-inner, .ui-bar .ui-btn-icon-top .ui-btn-inner {
-  padding-top: 27px; }
-
-.ui-btn-icon-bottom .ui-btn-inner {
-  padding-bottom: 33px; }
-
-.ui-header .ui-btn-icon-bottom .ui-btn-inner, .ui-footer .ui-btn-icon-bottom .ui-btn-inner, .ui-bar .ui-btn-icon-bottom .ui-btn-inner {
-  padding-bottom: 27px; }
-
-/*btn icon positioning*/
-
-.ui-btn-icon-notext .ui-icon {
-  display: block; }
-
-.ui-btn-icon-left .ui-icon, .ui-btn-icon-right .ui-icon {
-  position: absolute;
-  top: 50%;
-  margin-top: -9px; }
-
-.ui-btn-icon-top .ui-icon, .ui-btn-icon-bottom .ui-icon {
-  position: absolute;
-  left: 50%;
-  margin-left: -9px; }
-
-.ui-btn-icon-left .ui-icon {
-  left: 10px; }
-
-.ui-btn-icon-right .ui-icon {
-  right: 10px; }
-
-.ui-header .ui-btn-icon-left .ui-icon, .ui-footer .ui-btn-icon-left .ui-icon, .ui-bar .ui-btn-icon-left .ui-icon {
-  left: 4px; }
-
-.ui-header .ui-btn-icon-right .ui-icon, .ui-footer .ui-btn-icon-right .ui-icon, .ui-bar .ui-btn-icon-right .ui-icon {
-  right: 4px; }
-
-.ui-header .ui-btn-icon-top .ui-icon, .ui-footer .ui-btn-icon-top .ui-icon, .ui-bar .ui-btn-icon-top .ui-icon {
-  top: 4px; }
-
-.ui-header .ui-btn-icon-bottom .ui-icon, .ui-footer .ui-btn-icon-bottom .ui-icon, .ui-bar .ui-btn-icon-bottom .ui-icon {
-  bottom: 4px; }
-
-.ui-btn-icon-top .ui-icon {
-  top: 5px; }
-
-.ui-btn-icon-bottom .ui-icon {
-  bottom: 5px; }
-
-/*hiding native button,inputs */
-
-.ui-btn-hidden {
-  position: absolute;
-  left: -9999px; }
-
-/*
-* jQuery Mobile Framework
-* Copyright (c) jQuery Project
-* Dual licensed under the MIT (MIT-LICENSE.txt) or GPL (GPL-LICENSE.txt) licenses.
-*/
-
-.ui-collapsible-contain {
-  margin: .5em 0; }
-
-.ui-collapsible-heading {
-  font-size: 16px;
-  display: block;
-  margin: 0 -8px;
-  padding: 0;
-  border-width: 0 0 1px 0;
-  position: relative;
-  a {
-    text-align: left;
-    margin: 0;
-    .ui-btn-inner {
-      padding-left: 40px; }
-    span.ui-btn {
-      position: absolute;
-      left: 6px;
-      top: 50%;
-      margin: -12px 0 0 0;
-      width: 20px;
-      height: 20px;
-      padding: 1px 0px 1px 2px;
-      text-indent: -9999px;
-      .ui-btn-inner {
-        padding: 0; }
-      .ui-icon {
-        left: 0;
-        margin-top: -10px; } } } }
-
-.ui-collapsible-heading-status {
-  position: absolute;
-  left: -99999px; }
-
-.ui-collapsible-content {
-  display: block;
-  padding: 10px 0 10px 8px; }
-
-.ui-collapsible-content-collapsed {
-  display: none; }
-
-.ui-collapsible-set {
-  margin: .5em 0;
-  .ui-collapsible-contain {
-    margin: -1px 0 0; } }
-
-/*
-* jQuery Mobile Framework
-* Copyright (c) jQuery Project
-* Dual licensed under the MIT (MIT-LICENSE.txt) or GPL (GPL-LICENSE.txt) licenses.
-*/
-
-.ui-controlgroup, fieldset.ui-controlgroup {
-  padding: 0;
-  margin: .5em 0 1em; }
-
-.ui-bar .ui-controlgroup {
-  margin: 0 .3em; }
-
-.ui-controlgroup-label {
-  font-size: 16px;
-  line-height: 1.4;
-  font-weight: normal;
-  margin: 0 0 .3em; }
-
-.ui-controlgroup-controls {
-  display: block;
-  width: 95%; }
-
-.ui-controlgroup li {
-  list-style: none; }
-
-.ui-controlgroup-vertical {
-  .ui-btn, .ui-checkbox, .ui-radio {
-    margin: 0;
-    border-bottom-width: 0; }
-  .ui-controlgroup-last {
-    border-bottom-width: 1px; } }
-
-.ui-controlgroup-horizontal {
-  padding: 0;
-  .ui-btn, .ui-checkbox, .ui-radio {
-    margin: 0 -5px 0 0;
-    display: inline-block; }
-  .ui-checkbox .ui-btn, .ui-radio .ui-btn, .ui-checkbox:last-child, .ui-radio:last-child, .ui-controlgroup-last {
-    margin-right: 0; } }
-
-.ui-controlgroup {
-  .ui-checkbox label, .ui-radio label {
-    font-size: 16px; } }
-
-/* conflicts with listview..
-.ui-controlgroup .ui-btn-icon-notext { width: 30px; height: 30px; text-indent: -9999px; }
-.ui-controlgroup .ui-btn-icon-notext .ui-btn-inner {  padding: 5px 6px 5px 5px; }
-*/
-
-.min-width-480px {
-  .ui-controlgroup-label {
-    vertical-align: top;
-    display: inline-block;
-    width: 20%;
-    margin: 0 2% 0 0; }
-  .ui-controlgroup-controls {
-    width: 60%;
-    display: inline-block; } }
-
-/*
-* jQuery Mobile Framework
-* Copyright (c) jQuery Project
-* Dual licensed under the MIT (MIT-LICENSE.txt) or GPL (GPL-LICENSE.txt) licenses.
-*/
-
 .ui-dialog {
   .ui-header, .ui-content, .ui-footer {
     margin: 15px;
@@ -473,7 +479,6 @@
     padding: 0;
     margin: 1em 0; } }
 
-
 /*
 * jQuery Mobile Framework
 * Copyright (c) jQuery Project
@@ -482,9 +487,19 @@
 
 .ui-select {
   display: block;
+  position: relative;
   select {
     position: absolute;
-    left: -99999px; }
+    left: -9999px;
+    top: -9999px; }
+  a select {
+    cursor: pointer;
+    -webkit-appearance: button;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0; }
   .ui-btn-icon-right {
     .ui-btn-inner {
       padding-right: 45px; }
@@ -502,6 +517,15 @@ label.ui-select {
 
 /*listbox*/
 
+.ui-select .ui-btn-text, .ui-selectmenu .ui-btn-text {
+  display: inline-block;
+  min-height: 1em; }
+
+.ui-select .ui-btn-text {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  width: 85%; }
+
 .ui-selectmenu {
   position: absolute;
   padding: 0;
@@ -510,11 +534,13 @@ label.ui-select {
   max-width: 350px;
   padding: 6px;
   .ui-listview {
-    margin: 0; } }
+    margin: 0; }
+  .ui-btn.ui-li-divider {
+    cursor: default; } }
 
 .ui-selectmenu-hidden {
-  top: -999999px;
-  left: -99999px; }
+  top: -9999px;
+  left: -9999px; }
 
 .ui-selectmenu-screen {
   position: absolute;
@@ -527,11 +553,12 @@ label.ui-select {
 .ui-screen-hidden {
   display: none; }
 
-.ui-selectmenu-list {
-  .ui-li .ui-icon {
-    display: none; }
-  .ui-btn-active .ui-icon {
-    display: block; } }
+.ui-selectmenu-list .ui-li .ui-icon {
+  display: none;
+  display: block; }
+
+.ui-li.ui-selectmenu-placeholder {
+  display: none; }
 
 .min-width-480px {
   label.ui-select {
@@ -541,6 +568,12 @@ label.ui-select {
   .ui-select {
     width: 60%;
     display: inline-block; } }
+
+/* when no placeholder is defined in a multiple select, the header height doesn't even extend past the close button.  this shim's content in there */
+
+.ui-selectmenu .ui-header h1:after {
+  content: '.';
+  visibility: hidden; }
 
 /*
 * jQuery Mobile Framework
@@ -981,7 +1014,6 @@ ol.ui-listview .ui-li-jsnumbering:before {
   .ui-li .ui-btn-text {
     overflow: visible; } }
 
-
 /*
 * jQuery Mobile Framework
 * Copyright (c) jQuery Project
@@ -1019,21 +1051,19 @@ ol.ui-listview .ui-li-jsnumbering:before {
   li {
     &.ui-navbar-truncate {
       position: absolute;
-      left: -99999px;
-      top: -99999px; }
+      left: -9999px;
+      top: -9999px; }
     .ui-btn {
       display: block;
       font-size: 12px;
       text-align: center;
       margin: 0;
-      outline: none;
       border-right-width: 0; } }
   .ui-navbar-toggle .ui-btn {
     display: block;
     font-size: 12px;
     text-align: center;
     margin: 0;
-    outline: none;
     border-right-width: 0; }
   li .ui-btn {
     margin-right: -1px;
@@ -1235,7 +1265,8 @@ Built by David Kaneda and maintained by Jonathan Stark.
     z-index: 10;
     -webkit-animation-name: fadein; }
   &.out {
-    z-index: 0; } }
+    z-index: 0;
+    -webkit-animation-name: fadeout; } }
 
 /* The properties in this body rule are only necessary for the 'flip' transition.
  * We need specify the perspective to create a projection matrix. This will add
@@ -1244,15 +1275,19 @@ Built by David Kaneda and maintained by Jonathan Stark.
  * value.
  */
 
-.ui-mobile-viewport-transitioning {
+.ui-mobile-viewport-perspective {
   -webkit-perspective: 1000;
-  position: absolute;
+  position: absolute; }
+
+.ui-mobile-viewport-transitioning {
   width: 100%;
-  height: 100%;
+  height: 120%;
+  /* we want to make sure we take up enough to keep the scroll top hidden during transition, but not too much to overflow our buffer */
   overflow: hidden;
   .ui-page {
     width: 100%;
-    height: 100%;
+    height: 120%;
+    /* we want to make sure we take up enough to keep the scroll top hidden during transition, but not too much to overflow our buffer */
     overflow: hidden; } }
 
 .flip {

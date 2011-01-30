@@ -3,7 +3,7 @@
 /*****************************************************************************
  *  FILE:  anytime.css - The Any+Time(TM) JavaScript Library (stylesheet)
  *
- *  VERSION: 4.1112E
+ *  VERSION: 4.1112H
  *
  *  Copyright 2008-2010 Andrew M. Andrews III (www.AMA3.com). Some Rights 
  *  Reserved. This work licensed under the Creative Commons Attribution-
@@ -489,15 +489,17 @@ div.AnyTime-win {
  */
 
 /*
- * FullCalendar v1.4.7 Stylesheet
+ * FullCalendar v1.4.10 Stylesheet
  *
  * Feel free to edit this file to customize the look of FullCalendar.
  * When upgrading to newer versions, please upgrade this file as well,
  * porting over any customizations afterwards.
  *
- * Date: Mon Jul 5 16:07:40 2010 -0700
+ * Date: Sat Jan 1 23:46:27 2011 -0800
  *
  */
+
+/* TODO: make font sizes look the same in all doctypes */
 
 .fc {
   font-size: 1em;
@@ -643,6 +645,7 @@ table.fc-header {
     /* today */
     background: #ffc; }
   .fc-not-today {
+    /* override jq-ui highlight (TODO: ui-widget-content) */
     background: none; } }
 
 .fc-cell-overlay {
@@ -718,6 +721,7 @@ table.fc-header {
 /* resizable */
 
 .fc .ui-resizable-handle {
+  /*** TODO: don't use ui-resizable anoymore, change class ***/
   display: block;
   position: absolute;
   z-index: 99999;
@@ -876,6 +880,12 @@ table.fc-header {
 .fc-agenda .fc-day-content {
   padding: 2px 2px 0;
   /* distance between events and day edges */ }
+
+/* vertical background columns */
+
+.fc .fc-agenda-bg .ui-state-highlight {
+  background-image: none;
+  /* tall column, don't want repeating background image */ }
 
 /* Vertical Events
 ------------------------------------------------------------------------*/

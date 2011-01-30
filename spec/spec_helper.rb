@@ -1,9 +1,10 @@
-$LOAD_PATH.unshift(File.dirname(__FILE__))
-$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
-require 'lib/jquery'
-require 'spec'
-require 'spec/autorun'
+require "bundler"
+Bundler.setup
 
-Spec::Runner.configure do |config|
-  
-end
+require "rspec"
+require "jquery"
+#require "support/matchers"
+
+#Rspec.configure do |config|
+#  config.include Compass::Jquery::Plugin::Spec::Matchers
+#end

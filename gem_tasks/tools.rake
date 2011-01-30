@@ -61,6 +61,23 @@ namespace :build do
         f.print compress_js(all_scripts, "google")
       end
       manifest.print "javascript 'jquery.tools.min.js'\n"
+      
+      ['plugins'].each do |path|
+        Dir.foreach File.join(TOOLS_SRC, path) do |file|          
+          next unless /\.js$/ =~ file
+          js = File.read File.join(TOOLS_SRC, path, file)
+          manifest.print "javascript '#{file}'\n"
+          open File.join(TOOLS_DEST_TEMPLATES, file), 'w' do |f|
+            f.write js
+          end               
+          file.gsub!(/\.js$/, '.min.js')
+          manifest.print "javascript '#{file}'\n"
+          open File.join(TOOLS_DEST_TEMPLATES, file), 'w' do |f|
+            f.write compress_js(js, "google")
+          end
+        end
+      end
+      
     end
   end
 end

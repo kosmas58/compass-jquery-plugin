@@ -45,7 +45,7 @@
             //cache.addEventListener('obsolete', logEvent, false);
             //cache.addEventListener('progress', logEvent, false);
             //cache.addEventListener('updateready', logEvent, false); 
-			window.addEventListener('cached', logEvent, false);
+            window.addEventListener('cached', logEvent, false);
             window.addEventListener('checking', logEvent, false);
             window.addEventListener('downloading', logEvent, false);
             window.addEventListener('error', logEvent, false);
@@ -78,8 +78,7 @@
             }
 
             // Swap in newly download files when update is ready
-            //cache.addEventListener('updateready', function(e){
-            window.addEventListener('updateready', function(e){
+            cache.addEventListener('updateready', function(e){
                     // Don't perform "swap" if this is the first cache
                     if (cacheStatusValues[cache.status] != 'idle') {
                         cache.swapCache();

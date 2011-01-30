@@ -17,25 +17,24 @@ all_scripts = [
   'js/jquery.mobile.support.js',
   'js/jquery.mobile.event.js',
   'js/jquery.mobile.hashchange.js',
+  'js/jquery.mobile.page.js',
   'js/jquery.mobile.core.js',
   'js/jquery.mobile.navigation.js',
-  'js/jquery.mobile.page.js',
-  'js/jquery.ui.position.js',
-  'js/jquery.mobile.fixHeaderFooter.js',
-  'js/jquery.mobile.forms.checkboxradio.js',
-  'js/jquery.mobile.forms.textinput.js',
-  'js/jquery.mobile.forms.select.js',
   'js/jquery.mobile.buttonMarkup.js',
-  'js/jquery.mobile.forms.button.js',
-  'js/jquery.mobile.forms.slider.js',
   'js/jquery.mobile.collapsible.js',
   'js/jquery.mobile.controlGroup.js',
-  'js/jquery.mobile.fieldContain.js',
+  'js/jquery.mobile.dialog.js',
+  'js/jquery.mobile.fieldContain.js',  
+  'js/jquery.mobile.fixHeaderFooter.js',
+  'js/jquery.mobile.forms.button.js',
+  'js/jquery.mobile.forms.checkboxradio.js',
+  'js/jquery.mobile.forms.select.js',
+  'js/jquery.mobile.forms.slider.js',  
+  'js/jquery.mobile.forms.textinput.js',
+  'js/jquery.mobile.grid.js',
   'js/jquery.mobile.listview.js',
   'js/jquery.mobile.listview.filter.js',
-  'js/jquery.mobile.dialog.js',
   'js/jquery.mobile.navbar.js',
-  'js/jquery.mobile.grid.js',
   'js/jquery.mobile.themeswitcher.js'
 ].collect {|filename| File.read(File.join(MOBILE_SRC, filename))}.join "\n\n"
 
@@ -76,10 +75,10 @@ namespace :build do
       mobile = JqueryMobileTheme.new(File.join(MOBILE_SRC_THEMES, 'default')) 
 
       base_stylesheets = [
-        'jquery.mobile.core.css',
         'jquery.mobile.button.css',
         'jquery.mobile.collapsible.css',
         'jquery.mobile.controlgroup.css',
+        'jquery.mobile.core.css',
         'jquery.mobile.dialog.css',
         'jquery.mobile.forms.checkboxradio.css',
         'jquery.mobile.forms.fieldcontain.css',
@@ -89,7 +88,7 @@ namespace :build do
         'jquery.mobile.grids.css',
         'jquery.mobile.headerfooter.css',
         'jquery.mobile.listview.css',
-        'jquery.mobile.navbar.css',
+        'jquery.mobile.navbar.css',	
         'jquery.mobile.transitions.css'
         ].collect {|filename| File.read(File.join(MOBILE_SRC_THEMES, 'default', filename))}.join "\n\n"
 
@@ -146,10 +145,10 @@ namespace :build do
         manifest.print "image 'glyphish/mini-icons-black/#{image}'\n"
       end 
       
-      open File.join(MOBILE_DEST_TEMPLATES, 'glyphish', 'Read me first - license.txt'), 'w' do |f|
+      open File.join(MOBILE_DEST_TEMPLATES, 'glyphish', 'License.txt'), 'w' do |f|
         f.print(File.read(File.join(MOBILE_SRC_IMAGES, 'glyphish', 'Read me first - license.txt')))
       end
-      manifest.print "image 'glyphish/Read me first - license.txt'\n"
+      manifest.print "image 'glyphish/License.txt'\n"
 
     end
   end
