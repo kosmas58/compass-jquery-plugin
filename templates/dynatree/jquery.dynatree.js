@@ -2,7 +2,7 @@
 	jquery.dynatree.js
 	Dynamic tree view control, with support for lazy loading of branches.
 
-	Copyright (c) 2008-2010, Martin Wendt (http://wwWendt.de)
+	Copyright (c) 2008-2011, Martin Wendt (http://wwWendt.de)
 	Dual licensed under the MIT or GPL Version 2 licenses.
 	http://code.google.com/p/dynatree/wiki/LicenseInfo
 
@@ -18,7 +18,7 @@
 *************************************************************************/
 
 // Note: We currently allow eval() to parse the 'data' attribtes, when initializing from HTML.
-/*jslint laxbreak: true, browser: true, evil: true */
+/*jslint laxbreak: true, browser: true, evil: true, indent: 0, white: false, onevar: false */
 
 /*************************************************************************
  *	Debug functions
@@ -179,10 +179,12 @@ DynaTreeNode.prototype = {
 	},
 
 	_getInnerHtml: function() {
-		var opts = this.tree.options;
-		var cache = this.tree.cache;
-		var level = this.getLevel();
-		var res = "";
+		var tree = this.tree,
+			opts = tree.options,
+			cache = tree.cache,
+			level = this.getLevel(),
+			data = this.data,
+			res = "";
 		// connector (expanded, expandable or simple)
 		if( level < opts.minExpandLevel ) {
 			if(level > 1){
@@ -195,26 +197,33 @@ DynaTreeNode.prototype = {
 			res += cache.tagConnector;
 		}
 		// Checkbox mode
-		if( opts.checkbox && this.data.hideCheckbox !== true && !this.data.isStatusNode ) {
+		if( opts.checkbox && data.hideCheckbox !== true && !data.isStatusNode ) {
 			res += cache.tagCheckbox;
 		}
 		// folder or doctype icon
-		if ( this.data.icon ) {
-			res += "<img src='" + opts.imagePath + this.data.icon + "' alt='' />";
-		} else if ( this.data.icon === false ) {
+		if ( data.icon ) {
+			res += "<img src='" + opts.imagePath + data.icon + "' alt='' />";
+		} else if ( data.icon === false ) {
 			// icon == false means 'no icon'
 			noop(); // keep JSLint happy
 		} else {
 			// icon == null means 'default icon'
 			res += cache.tagNodeIcon;
 		}
-		// node name
-		var tooltip = this.data.tooltip ? " title='" + this.data.tooltip + "'" : "";
-		if( opts.noLink || this.data.noLink ) {
-			res += "<span style='display: inline-block;' class='" + opts.classNames.title + "'" + tooltip + ">" + this.data.title + "</span>";
-		}else{
-			res += "<a href='#' class='" + opts.classNames.title + "'" + tooltip + ">" + this.data.title + "</a>";
+		// node title
+		var nodeTitle = "";
+		if ( opts.onCustomRender ){
+			nodeTitle = opts.onCustomRender.call(tree, this) || "";
 		}
+		if(!nodeTitle){
+			var tooltip = data.tooltip ? " title='" + data.tooltip + "'" : "";
+			if( opts.noLink || data.noLink ) {
+				nodeTitle = "<span style='display: inline-block;' class='" + opts.classNames.title + "'" + tooltip + ">" + data.title + "</span>";
+			}else{
+				nodeTitle = "<a href='#' class='" + opts.classNames.title + "'" + tooltip + ">" + data.title + "</a>";
+			}
+		}
+		res += nodeTitle;
 		return res;
 	},
 
@@ -241,9 +250,9 @@ DynaTreeNode.prototype = {
 	},
 
 
-	render: function(useEffects) {
+	render: function(useEffects, includeInvisible) {
 		/**
-		 * create <li><span>..</span> .. </li> tags for this node.
+		 * Create <li><span>..</span> .. </li> tags for this node.
 		 *
 		 * <li id='key'> // This div contains the node's span and list of child div's.
 		 *   <span class='title'>S S S A</span> // Span contains graphic spans and title <a> tag
@@ -255,11 +264,14 @@ DynaTreeNode.prototype = {
 		 */
 //		this.tree.logDebug("%s.render(%s)", this, useEffects);
 		// ---
-		var opts = this.tree.options;
-		var cn = opts.classNames;
-		var isLastSib = this.isLastSibling();
+		var tree = this.tree,
+			parent = this.parent,
+			data = this.data,
+			opts = tree.options,
+			cn = opts.classNames,
+			isLastSib = this.isLastSibling();
 
-		if( !this.parent && !this.ul ) {
+		if( !parent && !this.ul ) {
 			// Root node has only a <ul>
 			this.li = this.span = null;
 			this.ul = document.createElement("ul");
@@ -268,37 +280,36 @@ DynaTreeNode.prototype = {
 			}else{
 				this.ul.className = cn.container;
 			}
-		} else if( this.parent ) {
+		} else if( parent ) {
 			// Create <li><span /> </li>
 			if( ! this.li ) {
 				this.li = document.createElement("li");
 				this.li.dtnode = this;
-				if( this.data.key && opts.generateIds ){
-					this.li.id = opts.idPrefix + this.data.key;
+				if( data.key && opts.generateIds ){
+					this.li.id = opts.idPrefix + data.key;
 				}
 				this.span = document.createElement("span");
 				this.span.className = cn.title;
 				this.li.appendChild(this.span);
 
-				if( !this.parent.ul ) {
+				if( !parent.ul ) {
 					// This is the parent's first child: create UL tag
 					// (Hidden, because it will be
-					this.parent.ul = document.createElement("ul");
-					this.parent.ul.style.display = "none";
-					this.parent.li.appendChild(this.parent.ul);
+					parent.ul = document.createElement("ul");
+					parent.ul.style.display = "none";
+					parent.li.appendChild(parent.ul);
 //					if( opts.minExpandLevel > this.getLevel() ){
-//						this.parent.ul.className = cn.noConnector;
+//						parent.ul.className = cn.noConnector;
 //					}
 				}
-				this.parent.ul.appendChild(this.li);
+				parent.ul.appendChild(this.li);
 			}
 			// set node connector images, links and text
 			this.span.innerHTML = this._getInnerHtml();
-
 			// Set classes for current status
 			var cnList = [];
 			cnList.push(cn.node);
-			if( this.data.isFolder ){
+			if( data.isFolder ){
 				cnList.push(cn.folder);
 			}
 			if( this.bExpanded ){
@@ -307,7 +318,7 @@ DynaTreeNode.prototype = {
 			if( this.hasChildren() !== false ){
 				cnList.push(cn.hasChildren);
 			}
-			if( this.data.isLazy && this.childList === null ){
+			if( data.isLazy && this.childList === null ){
 				cnList.push(cn.lazy);
 			}
 			if( isLastSib ){
@@ -319,22 +330,22 @@ DynaTreeNode.prototype = {
 			if( this.hasSubSel ){
 				cnList.push(cn.partsel);
 			}
-			if( this.tree.activeNode === this ){
+			if( tree.activeNode === this ){
 				cnList.push(cn.active);
 			}
-			if( this.data.addClass ){
-				cnList.push(this.data.addClass);
+			if( data.addClass ){
+				cnList.push(data.addClass);
 			}
 			// IE6 doesn't correctly evaluate multiple class names,
 			// so we create combined class names that can be used in the CSS
 			cnList.push(cn.combinedExpanderPrefix
 					+ (this.bExpanded ? "e" : "c")
-					+ (this.data.isLazy && this.childList === null ? "d" : "")
+					+ (data.isLazy && this.childList === null ? "d" : "")
 					+ (isLastSib ? "l" : "")
 					);
 			cnList.push(cn.combinedIconPrefix
 					+ (this.bExpanded ? "e" : "c")
-					+ (this.data.isFolder ? "f" : "")
+					+ (data.isFolder ? "f" : "")
 					);
 			this.span.className = cnList.join(" ");
 
@@ -342,13 +353,18 @@ DynaTreeNode.prototype = {
 			this.li.className = isLastSib ? cn.lastsib : "";
 
 			// Hide children, if node is collapsed
-//			this.ul.style.display = ( this.bExpanded || !this.parent ) ? "" : "none";
-		}
-
-		if( this.bExpanded && this.childList ) {
-			for(var i=0, l=this.childList.length; i<l; i++) {
-				this.childList[i].render();
+//			this.ul.style.display = ( this.bExpanded || !parent ) ? "" : "none";
+			// Allow tweaking, binding, ...
+			if(opts.onRender){
+				opts.onRender.call(tree, this, this.span);
 			}
+		}
+		// Visit child nodes
+		if( (this.bExpanded || includeInvisible === true) && this.childList ) {
+			for(var i=0, l=this.childList.length; i<l; i++) {
+				this.childList[i].render(false, includeInvisible);
+			}
+			// Make sure the tag order matches the child array
 			this._fixOrder();
 		}
 		// Hide children, if node is collapsed
@@ -360,7 +376,7 @@ DynaTreeNode.prototype = {
 				var duration = opts.fx.duration || 200;
 				$(this.ul).animate(opts.fx, duration);
 			} else {
-				this.ul.style.display = ( this.bExpanded || !this.parent ) ? "" : "none";
+				this.ul.style.display = ( this.bExpanded || !parent ) ? "" : "none";
 			}
 		}
 	},
@@ -457,6 +473,19 @@ DynaTreeNode.prototype = {
 			p = p.parent;
 		}
 		return false;
+	},
+
+	countChildren: function() {
+		var cl = this.childList;
+		if( !cl ){
+			return 0;
+		}
+		var n = cl.length;
+		for(var i=0, l=n; i<l; i++){
+			var child = cl[i];
+			n += child.countChildren();
+		}
+		return n;
 	},
 
 	/**Sort child list by title.
@@ -568,7 +597,6 @@ DynaTreeNode.prototype = {
 		}
 		return l;
 	},
-
 	getLevel: function() {
 		/**
 		 * Return node depth. 0: System root node, 1: visible top-level node.
@@ -683,7 +711,6 @@ DynaTreeNode.prototype = {
 		if ( fireEvents && opts.onQueryActivate && opts.onQueryActivate.call(this.tree, flag, this) === false ){
 			return; // Callback returned false
 		}
-
 		if( flag ) {
 			// Activate
 			if( this.tree.activeNode ) {
@@ -2223,10 +2250,12 @@ DynaTree.prototype = {
 
 	redraw: function() {
 //		this.logDebug("dynatree.redraw()...");
-		this.tnRoot.render(false);
+		this.tnRoot.render(false, false);
 //		this.logDebug("dynatree.redraw() done.");
 	},
-
+	renderInvisibleNodes: function() {
+		this.tnRoot.render(false, true);
+	},
 	reload: function(callback) {
 		this._load(callback);
 	},
@@ -2339,6 +2368,10 @@ DynaTree.prototype = {
 			this.redraw();
 		}
 		return !bEnable; // return previous value
+	},
+
+	count: function() {
+		return this.tnRoot.countChildren();
 	},
 
 	visit: function(fn, includeRoot) {
@@ -2869,6 +2902,8 @@ $.ui.dynatree.prototype.options = {
 	onSelect: null, // Callback(flag, dtnode) when a node is (de)selected.
 	onExpand: null, // Callback(dtnode) when a node is expanded/collapsed.
 	onLazyRead: null, // Callback(dtnode) when a lazy node is expanded for the first time.
+	onCustomRender: null, // Callback(dtnode) before a node is rendered. Return a HTML string to override.
+	onRender: null, // Callback(dtnode, nodeSpan) after a node was rendered.
 
 	// Drag'n'drop support
 	dnd: {
