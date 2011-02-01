@@ -950,10 +950,9 @@ jQuery.extend({
 
 		if ( length > 1 ) {
 			resolveArray = new Array( length );
-			jQuery.each( args, function( index, element, args ) {
+			jQuery.each( args, function( index, element ) {
 				jQuery.when( element ).then( function( value ) {
-					args = arguments;
-					resolveArray[ index ] = args.length > 1 ? slice.call( args, 0 ) : value;
+					resolveArray[ index ] = arguments.length > 1 ? slice.call( arguments, 0 ) : value;
 					if( ! --length ) {
 						deferred.resolveWith( promise, resolveArray );
 					}
@@ -979,18 +978,20 @@ jQuery.extend({
 		return { browser: match[1] || "", version: match[2] || "0" };
 	},
 
-	subclass: function(){
+	sub: function() {
 		function jQuerySubclass( selector, context ) {
 			return new jQuerySubclass.fn.init( selector, context );
 		}
+		jQuery.extend( true, jQuerySubclass, this );
 		jQuerySubclass.superclass = this;
 		jQuerySubclass.fn = jQuerySubclass.prototype = this();
 		jQuerySubclass.fn.constructor = jQuerySubclass;
 		jQuerySubclass.subclass = this.subclass;
 		jQuerySubclass.fn.init = function init( selector, context ) {
-			if (context && context instanceof jQuery && !(context instanceof jQuerySubclass)){
+			if ( context && context instanceof jQuery && !(context instanceof jQuerySubclass) ) {
 				context = jQuerySubclass(context);
 			}
+
 			return jQuery.fn.init.call( this, selector, context, rootjQuerySubclass );
 		};
 		jQuerySubclass.fn.init.prototype = jQuerySubclass.fn;
@@ -3803,14 +3804,14 @@ var Expr = Sizzle.selectors = {
 		},
 
 		ATTR: function( match, curLoop, inplace, result, not, isXML ) {
-			var name = match[1].replace(/\\/g, "");
+			var name = match[1] = match[1].replace(/\\/g, "");
 			
 			if ( !isXML && Expr.attrMap[name] ) {
 				match[1] = Expr.attrMap[name];
 			}
 
 			// Handle if an un-quoted value was used
-			match[4] = match[4] || match[5] || "";
+			match[4] = ( match[4] || match[5] || "" ).replace(/\\/g, "");
 
 			if ( match[2] === "~=" ) {
 				match[4] = " " + match[4] + " ";
@@ -5155,7 +5156,7 @@ jQuery.fn.extend({
 	clone: function( dataAndEvents, deepDataAndEvents ) {
 		dataAndEvents = dataAndEvents == null ? true : dataAndEvents;
 		deepDataAndEvents = deepDataAndEvents == null ? dataAndEvents : deepDataAndEvents;
-		
+
 		return this.map( function () {
 			return jQuery.clone( this, dataAndEvents, deepDataAndEvents );
 		});
@@ -5280,12 +5281,19 @@ jQuery.fn.extend({
 			if ( first ) {
 				table = table && jQuery.nodeName( first, "tr" );
 
-				for ( var i = 0, l = this.length; i < l; i++ ) {
+				for ( var i = 0, l = this.length, lastIndex = l - 1; i < l; i++ ) {
 					callback.call(
 						table ?
 							root(this[i], first) :
 							this[i],
-						i > 0 || results.cacheable || (this.length > 1 && i > 0) ?
+						// Make sure that we do not leak memory by inadvertently discarding
+						// the original fragment (which might have attached data) instead of
+						// using it; in addition, use the original fragment object for the last
+						// item instead of first because it can end up being emptied incorrectly
+						// in certain situations (Bug #8070).
+						// Fragments from the fragment cache must always be cloned and never used
+						// in place.
+						results.cacheable || (l > 1 && i < lastIndex) ?
 							jQuery.clone( fragment, true, true ) :
 							fragment
 					);
@@ -5453,9 +5461,9 @@ jQuery.each({
 
 jQuery.extend({
 	clone: function( elem, dataAndEvents, deepDataAndEvents ) {
-		var clone = elem.cloneNode(true), 
-				srcElements, 
-				destElements, 
+		var clone = elem.cloneNode(true),
+				srcElements,
+				destElements,
 				i;
 
 		if ( !jQuery.support.noCloneEvent && (elem.nodeType === 1 || elem.nodeType === 11) && !jQuery.isXMLDoc(elem) ) {
@@ -6046,7 +6054,7 @@ function addToPrefiltersOrTransports( structure ) {
 		}
 
 		if ( jQuery.isFunction( func ) ) {
-			var dataTypes = dataTypeExpression.split( rspacesAjax ),
+			var dataTypes = dataTypeExpression.toLowerCase().split( rspacesAjax ),
 				i = 0,
 				length = dataTypes.length,
 				dataType,
@@ -6060,7 +6068,7 @@ function addToPrefiltersOrTransports( structure ) {
 				// any existing element
 				placeBefore = /^\+/.test( dataType );
 				if ( placeBefore ) {
-					dataType = dataType.substr( 1 );
+					dataType = dataType.substr( 1 ) || "*";
 				}
 				list = structure[ dataType ] = structure[ dataType ] || [];
 				// then we add to the structure accordingly
@@ -6086,7 +6094,7 @@ function inspectPrefiltersOrTransports( structure, options, originalOptions, jXH
 		selection;
 
 	for(; i < length && ( executeOnly || !selection ); i++ ) {
-		selection = list[ i ]( options, originalOptions );
+		selection = list[ i ]( options, originalOptions, jXHR );
 		// If we got redirected to another dataType
 		// we try there if not done already
 		if ( typeof selection === "string" ) {
@@ -6470,7 +6478,7 @@ jQuery.extend({
 					} catch(e) {
 						// We have a parsererror
 						statusText = "parsererror";
-						error = "" + e;
+						error = e;
 					}
 				}
 			} else {
@@ -6660,7 +6668,7 @@ jQuery.extend({
 				} catch (e) {
 					// Propagate exception as error if not done
 					if ( status < 2 ) {
-						done( -1, "" + e );
+						done( -1, e );
 					// Simply rethrow otherwise
 					} else {
 						jQuery.error( e );
@@ -6847,7 +6855,7 @@ function ajaxConvert( s, response ) {
 		conversion,
 		// Conversion function
 		conv,
-		// Conversion functions (when text is used in-between)
+		// Conversion functions (transitive conversion)
 		conv1,
 		conv2;
 
@@ -6913,7 +6921,7 @@ var jsc = jQuery.now(),
 jQuery.ajaxSetup({
 	jsonp: "callback",
 	jsonpCallback: function() {
-		return "jsonp" + jsc++;
+		return jQuery.expando + "_" + ( jsc++ );
 	}
 });
 
@@ -7005,7 +7013,10 @@ jQuery.ajaxSetup({
 		script: /javascript/
 	},
 	converters: {
-		"text script": jQuery.globalEval
+		"text script": function( text ) {
+			jQuery.globalEval( text );
+			return text;
+		}
 	}
 });
 

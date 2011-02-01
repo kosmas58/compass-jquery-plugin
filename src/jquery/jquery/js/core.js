@@ -929,10 +929,9 @@ jQuery.extend({
 
 		if ( length > 1 ) {
 			resolveArray = new Array( length );
-			jQuery.each( args, function( index, element, args ) {
+			jQuery.each( args, function( index, element ) {
 				jQuery.when( element ).then( function( value ) {
-					args = arguments;
-					resolveArray[ index ] = args.length > 1 ? slice.call( args, 0 ) : value;
+					resolveArray[ index ] = arguments.length > 1 ? slice.call( arguments, 0 ) : value;
 					if( ! --length ) {
 						deferred.resolveWith( promise, resolveArray );
 					}
@@ -958,18 +957,20 @@ jQuery.extend({
 		return { browser: match[1] || "", version: match[2] || "0" };
 	},
 
-	subclass: function(){
+	sub: function() {
 		function jQuerySubclass( selector, context ) {
 			return new jQuerySubclass.fn.init( selector, context );
 		}
+		jQuery.extend( true, jQuerySubclass, this );
 		jQuerySubclass.superclass = this;
 		jQuerySubclass.fn = jQuerySubclass.prototype = this();
 		jQuerySubclass.fn.constructor = jQuerySubclass;
 		jQuerySubclass.subclass = this.subclass;
 		jQuerySubclass.fn.init = function init( selector, context ) {
-			if (context && context instanceof jQuery && !(context instanceof jQuerySubclass)){
+			if ( context && context instanceof jQuery && !(context instanceof jQuerySubclass) ) {
 				context = jQuerySubclass(context);
 			}
+
 			return jQuery.fn.init.call( this, selector, context, rootjQuerySubclass );
 		};
 		jQuerySubclass.fn.init.prototype = jQuerySubclass.fn;

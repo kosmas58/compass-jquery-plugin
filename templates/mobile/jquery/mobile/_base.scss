@@ -11,7 +11,9 @@
   cursor: pointer;
   position: relative;
   margin: .5em 5px;
-  padding: 0; }
+  padding: 0;
+  &:focus, &:active {
+    outline: none; } }
 
 .ui-header .ui-btn, .ui-footer .ui-btn, .ui-bar .ui-btn {
   display: inline-block;
@@ -485,10 +487,19 @@
 
 .ui-select {
   display: block;
+  position: relative;
   select {
     position: absolute;
     left: -9999px;
     top: -9999px; }
+  a select {
+    cursor: pointer;
+    -webkit-appearance: button;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0; }
   .ui-btn-icon-right {
     .ui-btn-inner {
       padding-right: 45px; }
@@ -1270,10 +1281,14 @@ Built by David Kaneda and maintained by Jonathan Stark.
 
 .ui-mobile-viewport-transitioning {
   width: 100%;
-  height: 100%;
+  height: 120%;
+  /* we want to make sure we take up enough to keep the scroll top hidden during transition, but not too much to overflow our buffer */
+  overflow: hidden;
   .ui-page {
     width: 100%;
-    height: 100%; } }
+    height: 120%;
+    /* we want to make sure we take up enough to keep the scroll top hidden during transition, but not too much to overflow our buffer */
+    overflow: hidden; } }
 
 .flip {
   -webkit-animation-duration: .65s;
