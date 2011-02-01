@@ -3660,7 +3660,7 @@ AnyTime.picker = function( id, options )
 //
 //  END OF FILE
 //
-if(window.location.hostname.length&&(window.location.hostname!='www.ama3.com')&&(window.location.hostname!='dev2.ama3.com'))alert('REMOVE THE LAST LINE FROM anytime.js!');
+
 
 /*****************************************************************************
  *  FILE:  anytimetz.js - The Any+Time(TM) JavaScript Library
@@ -3910,7 +3910,7 @@ AnyTime.utcLabel[840]=[
 //
 //END OF FILE
 //
-if(window.location.hostname.length&&(window.location.hostname!='www.ama3.com'))alert('REMOVE THE LAST LINE FROM anytimetz.js!');
+
 
 /**
  * @preserve
