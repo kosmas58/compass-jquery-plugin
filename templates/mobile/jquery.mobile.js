@@ -1185,7 +1185,7 @@ $.widget( "mobile.page", $.mobile.widget, {
 
 	_create: function() {
 		var $elem = this.element,
-			o = this.options;
+			o = this.options;	
 
 		this.keepNative = "[data-role='none'], [data-role='nojs']" + (o.keepNative ? ", " + o.keepNative : "");
 
@@ -1236,7 +1236,8 @@ $.widget( "mobile.page", $.mobile.widget, {
 
 				// auto-add back btn on pages beyond first view
 				if ( o.addBackBtn && role === "header" &&
-						$.mobile.urlHistory.stack.length > 0  &&
+						$( ".ui-page" ).length > 1 &&
+						$elem.data( "url" ) !== $.mobile.path.stripHash( location.hash ) &&
 						!leftbtn && $this.data( "backbtn" ) !== false ) {
 
 					$( "<a href='#' class='ui-btn-left' data-rel='back' data-icon='arrow-l'>"+ o.backBtnText +"</a>" ).prependTo( $this );
@@ -1381,20 +1382,23 @@ $.widget( "mobile.page", $.mobile.widget, {
 		//define the url parameter used for referencing widget-generated sub-pages.
 		//Translates to to example.html&ui-page=subpageIdentifier
 		//hash segment before &ui-page= is used to make Ajax request
-		subPageUrlKey: 'ui-page',
+		subPageUrlKey: "ui-page",
 
 		//anchor links with a data-rel, or pages with a data-role, that match these selectors will be untrackable in history
 		//(no change in URL, not bookmarkable)
-		nonHistorySelectors: 'dialog',
+		nonHistorySelectors: "dialog",
 
 		//class assigned to page currently in view, and during transitions
-		activePageClass: 'ui-page-active',
+		activePageClass: "ui-page-active",
 
 		//class used for "active" button state, from CSS framework
-		activeBtnClass: 'ui-btn-active',
+		activeBtnClass: "ui-btn-active",
 
 		//automatically handle clicks and form submissions through Ajax, when same-domain
 		ajaxEnabled: true,
+		
+		//automatically load and show pages based on location.hash
+		hashListeningEnabled: true,
 
 		// TODO: deprecated - remove at 1.0
 		//automatically handle link clicks through Ajax, when possible
@@ -1405,7 +1409,7 @@ $.widget( "mobile.page", $.mobile.widget, {
 		ajaxFormsEnabled: true,
 
 		//set default transition - 'none' for no transitions
-		defaultTransition: 'slide',
+		defaultTransition: "slide",
 
 		//show loading message during Ajax requests
 		//if false, message will not appear, but loading classes will still be toggled on html el
@@ -1460,7 +1464,7 @@ $.widget( "mobile.page", $.mobile.widget, {
 
 
 	//trigger mobileinit event - useful hook for configuring $.mobile settings before they're used
-	$( window.document ).trigger('mobileinit');
+	$( window.document ).trigger( "mobileinit" );
 
 
 	//support conditions
@@ -1473,25 +1477,25 @@ $.widget( "mobile.page", $.mobile.widget, {
 
 	//define vars for interal use
 	var $window = $(window),
-		$html = $('html'),
-		$head = $('head'),
+		$html = $( "html" ),
+		$head = $( "head" ),
 
 		//loading div which appears during Ajax requests
 		//will not appear if $.mobile.loadingMessage is false
 		$loader = $.mobile.loadingMessage ?
-			$('<div class="ui-loader ui-body-a ui-corner-all">'+
-						'<span class="ui-icon ui-icon-loading spin"></span>'+
-						'<h1>'+ $.mobile.loadingMessage +'</h1>'+
-					'</div>')
+			$( "<div class='ui-loader ui-body-a ui-corner-all'>" +
+						"<span class='ui-icon ui-icon-loading spin'></span>" +
+						"<h1>" + $.mobile.loadingMessage + "</h1>" +
+					"</div>" )
 			: undefined;
 
 
 	//add mobile, initial load "rendering" classes to docEl
-	$html.addClass('ui-mobile ui-mobile-rendering');
+	$html.addClass( "ui-mobile ui-mobile-rendering" );
 
 
 	//define & prepend meta viewport tag, if content is defined
-	$.mobile.metaViewportContent ? $("<meta>", { name: "viewport", content: $.mobile.metaViewportContent}).prependTo( $head ) : undefined;
+	$.mobile.metaViewportContent ? $( "<meta>", { name: "viewport", content: $.mobile.metaViewportContent}).prependTo( $head ) : undefined;
 
 
 	//expose some core utilities
@@ -1525,7 +1529,7 @@ $.widget( "mobile.page", $.mobile.widget, {
 			$.event.special.scrollstart.enabled = false;
 			setTimeout(function() {
 				window.scrollTo( 0, ypos );
-				$(document).trigger("silentscroll", { x: 0, y: ypos });
+				$(document).trigger( "silentscroll", { x: 0, y: ypos });
 			},20);
 			setTimeout(function() {
 				$.event.special.scrollstart.enabled = true;
@@ -1533,34 +1537,33 @@ $.widget( "mobile.page", $.mobile.widget, {
 		}
 	});
 
-
 	//dom-ready inits
 	$(function(){
-
 		//find present pages
-		var $pages = $("[data-role='page']");
-
-		$("[data-role='page'], [data-role='dialog']").each(function(){
-			$(this).attr('data-url', $(this).attr('id'));
+		var $pages = $( "[data-role='page']" );
+		
+		//add dialogs, set data-url attrs
+		$pages.add( "[data-role='dialog']" ).each(function(){
+			$(this).attr( "data-url", $(this).attr( "id" ));
 		});
-
-		//set up active page
-		$.mobile.startPage = $.mobile.activePage = $pages.first();
-
-		//set page container
-		$.mobile.pageContainer = $.mobile.startPage.parent().addClass('ui-mobile-viewport');
-
+		
+		//define first page in dom case one backs out to the directory root (not always the first page visited, but defined as fallback)
+		$.mobile.firstPage = $pages.first();
+		
+		//define page container
+		$.mobile.pageContainer = $pages.first().parent().addClass( "ui-mobile-viewport" );
+		
 		//cue page loading message
 		$.mobile.pageLoading();
-
-		//initialize all pages present
-		$pages.page();
-
-		//trigger a new hashchange, hash or not
-		$window.trigger( "hashchange", [ true ] );
-
-		//remove rendering class
-		$html.removeClass('ui-mobile-rendering');
+		
+		// if hashchange listening is disabled or there's no hash deeplink, change to the first page in the DOM	
+		if( !$.mobile.hashListeningEnabled || !$.mobile.path.stripHash( location.hash ) ){
+			$.mobile.changePage( $.mobile.firstPage, false, true, false, true );
+		}
+		// otherwise, trigger a hashchange to load a deeplink
+		else {
+			$window.trigger( "hashchange", [ true ] );
+		}
 	});
 
 
@@ -1690,9 +1693,9 @@ $.widget( "mobile.page", $.mobile.widget, {
 				urlHistory.stack = urlHistory.stack.slice( 0, urlHistory.activeIndex + 1 );
 			},
 
-			//enable/disable hashchange event listener
+			//disable hashchange event listener internally to ignore one change
 			//toggled internally when location.hash is updated to match the url of a successful page load
-			listeningEnabled: true
+			ignoreNextHashChange: true
 		},
 
 		//define first selector to receive focus when a page is shown
@@ -1890,7 +1893,7 @@ $.widget( "mobile.page", $.mobile.widget, {
 		if(base){ base.reset(); }
 
 		//kill the keyboard
-		$( window.document.activeElement ).add(':focus').blur();
+		$( window.document.activeElement ).add('input:focus, textarea:focus').blur();
 
 		function defaultTransition(){
 			if(transition === undefined){
@@ -1904,29 +1907,29 @@ $.widget( "mobile.page", $.mobile.widget, {
 
 			//get current scroll distance
 			var currScroll = $window.scrollTop(),
-					perspectiveTransitions = ["flip"],
+					perspectiveTransitions = [ "flip" ],
 					pageContainerClasses = [];
 
 			//support deep-links to generated sub-pages
 			if( url.indexOf( "&" + $.mobile.subPageUrlKey ) > -1 ){
 				to = $( "[data-url='" + url + "']" );
 			}
-
-			//set as data for returning to that spot
-			from.data('lastScroll', currScroll);
-
-			//trigger before show/hide events
-			from.data("page")._trigger("beforehide", {nextPage: to});
-			to.data("page")._trigger("beforeshow", {prevPage: from});
+			
+			if( from ){
+				//set as data for returning to that spot
+				from.data( "lastScroll", currScroll);
+				//trigger before show/hide events
+				from.data( "page" )._trigger( "beforehide", { nextPage: to } );
+			}	
+			to.data( "page" )._trigger( "beforeshow", { prevPage: from || $("") } );
 
 			function loadComplete(){
 
 				if( changeHash !== false && url ){
-					if( !back  ){
-						urlHistory.listeningEnabled = false;
-					}
+					//disable hash listening temporarily
+					urlHistory.ignoreNextHashChange = false;
+					//update hash and history
 					path.set( url );
-					urlHistory.listeningEnabled = true;
 				}
 
 				//add page to history stack if it's not back or forward
@@ -1937,19 +1940,27 @@ $.widget( "mobile.page", $.mobile.widget, {
 				removeActiveLinkClass();
 
 				//jump to top or prev scroll, sometimes on iOS the page has not rendered yet.  I could only get by this with a setTimeout, but would like to avoid that.
-				$.mobile.silentScroll( to.data( 'lastScroll' ) );
+				$.mobile.silentScroll( to.data( "lastScroll" ) ); 
+
 				reFocus( to );
 
-				//trigger show/hide events, allow preventing focus change through return false
-				from.data("page")._trigger("hide", null, {nextPage: to});
-				if( to.data("page")._trigger("show", null, {prevPage: from}) !== false ){
-					$.mobile.activePage = to;
+				//trigger show/hide events
+				if( from ){
+					from.data( "page" )._trigger( "hide", null, { nextPage: to } );
 				}
+				//trigger pageshow, define prevPage as either from or empty jQuery obj
+				to.data( "page" )._trigger( "show", null, { prevPage: from || $("") } );
+				
+				//set "to" as activePage
+				$.mobile.activePage = to;
 
 				//if there's a duplicateCachedPage, remove it from the DOM now that it's hidden
 				if (duplicateCachedPage != null) {
 				    duplicateCachedPage.remove();
 				}
+				
+				//remove initial build class (only present on first pageshow)
+				$html.removeClass( "ui-mobile-rendering" );
 			};
 
 			function addContainerClass(className){
@@ -1979,22 +1990,30 @@ $.widget( "mobile.page", $.mobile.widget, {
 				 * This is in a setTimeout because we were often seeing pages in not animate across but rather go straight to
 				 * the 'to' page.  The loadComplete would still fire, so the browser thought it was applying the animation.  From
 				 * what I could tell this was a problem with the classes not being applied yet.
-				 */
-				setTimeout(function() { from.addClass( transition + " out " + ( reverse ? "reverse" : "" ) );
-				to.addClass( $.mobile.activePageClass + " " + transition +
-					" in " + ( reverse ? "reverse" : "" ) ); } , 0);
+				 */ 
+				setTimeout(function() { 
+					if( from ){
+						from.addClass( transition + " out " + ( reverse ? "reverse" : "" ) );
+					}
+					to.addClass( $.mobile.activePageClass + " " + transition +
+						" in " + ( reverse ? "reverse" : "" ) ); 
+				} , 0);
 
 				// callback - remove classes, etc
 				to.animationComplete(function() {
 					from.add( to ).removeClass("out in reverse " + transition );
-					from.removeClass( $.mobile.activePageClass );
+					if( from ){
+						from.removeClass( $.mobile.activePageClass );
+					}	
 					loadComplete();
 					removeContainerClasses();
 				});
 			}
 			else{
 			    $.mobile.pageLoading( true );
-				from.removeClass( $.mobile.activePageClass );
+			    if( from ){
+					from.removeClass( $.mobile.activePageClass );
+				}	
 				to.addClass( $.mobile.activePageClass );
 				loadComplete();
 			}
@@ -2037,7 +2056,7 @@ $.widget( "mobile.page", $.mobile.widget, {
 		if ( to.length && !isFormRequest ) {
 			if( fileUrl && base ){
 				base.set( fileUrl );
-			}
+			}			
 			enhancePage();
 			transitionPages();
 		} else {
@@ -2063,7 +2082,7 @@ $.widget( "mobile.page", $.mobile.widget, {
 						if(base){
 							base.set( redirectLoc );
 						}
-						url = fileUrl = path.makeAbsolute( path.getFilePath( redirectLoc ) );
+						url = fileUrl = path.getFilePath( redirectLoc );
 					}
 					else {
 						if(base){
@@ -2156,8 +2175,12 @@ $.widget( "mobile.page", $.mobile.widget, {
 	$( "a" ).live( "click", function(event) {
 
 		var $this = $(this),
+		
+			//get href, if defined, otherwise fall to null #
+			href = $this.attr( "href" ) || "#",
+			
 			//get href, remove same-domain protocol and host
-			url = path.clean( $this.attr( "href" ) ),
+			url = path.clean( href ),
 
 			//rel set to external
 			isRelExternal = $this.is( "[rel='external']" ),
@@ -2171,7 +2194,10 @@ $.widget( "mobile.page", $.mobile.widget, {
 			isExternal = path.isExternal( url ) || isRelExternal && !isEmbeddedPage,
 
 			//if target attr is specified we mimic _blank... for now
-			hasTarget = $this.is( "[target]" );
+			hasTarget = $this.is( "[target]" ),
+
+			//if data-ajax attr is set to false, use the default behavior of a link
+			hasAjaxDisabled = $this.is( "[data-ajax='false']" );
 
 		//if there's a data-rel=back attr, go back in history
 		if( $this.is( "[data-rel='back']" ) ){
@@ -2186,7 +2212,7 @@ $.widget( "mobile.page", $.mobile.widget, {
 
 		$activeClickedLink = $this.closest( ".ui-btn" ).addClass( $.mobile.activeBtnClass );
 
-		if( isExternal || hasTarget || !$.mobile.ajaxEnabled ||
+		if( isExternal || hasAjaxDisabled || hasTarget || !$.mobile.ajaxEnabled ||
 			// TODO: deprecated - remove at 1.0
 			!$.mobile.ajaxLinksEnabled ){
 			//remove active link class if external (then it won't be there if you come back)
@@ -2195,6 +2221,9 @@ $.widget( "mobile.page", $.mobile.widget, {
 			//deliberately redirect, in case click was triggered
 			if( hasTarget ){
 				window.open( url );
+			}
+			else if( hasAjaxDisabled ){
+			  return;
 			}
 			else{
 				location.href = url;
@@ -2224,45 +2253,30 @@ $.widget( "mobile.page", $.mobile.widget, {
 	});
 
 
-
 	//hashchange event handler
-	$window.bind( "hashchange", function(e, triggered) {
-		if( !triggered && ( !urlHistory.listeningEnabled || !$.mobile.ajaxEnabled ||
-			// TODO: deprecated - remove at 1.0
-			// only links need to be checked here, as forms don't trigger a hashchange event (they just silently update the hash)
-			!$.mobile.ajaxLinksEnabled ) ){
-			return;
-		}
-
+	$window.bind( "hashchange", function( e, triggered ) {
+		//find first page via hash
 		var to = path.stripHash( location.hash ),
-			transition = triggered ? false : undefined;
-
-		//make sure that hash changes that produce a dialog url do nothing
-		if( urlHistory.stack.length > 1 &&
-				to.indexOf( dialogHashKey ) > -1 &&
-				!$.mobile.activePage.is( ".ui-dialog" ) ){
+			//transition is false if it's the first page, undefined otherwise (and may be overridden by default)
+			transition = $.mobile.urlHistory.stack.length === 0 ? false : undefined;
+			
+		//if listening is disabled (either globally or temporarily), or it's a dialog hash
+		if( !$.mobile.hashListeningEnabled || !urlHistory.ignoreNextHashChange ||
+				urlHistory.stack.length > 1 && to.indexOf( dialogHashKey ) > -1 && !$.mobile.activePage.is( ".ui-dialog" )
+		){
+			if( !urlHistory.ignoreNextHashChange ){
+				urlHistory.ignoreNextHashChange = true;
+			}
 			return;
 		}
 
-		//if to is defined, use it
+		//if to is defined, load it
 		if ( to ){
 			$.mobile.changePage( to, transition, undefined, false, true );
 		}
-		//there's no hash, the active page is not the start page, and it's not manually triggered hashchange
-		//we probably backed out to the first page visited
-		else if( $.mobile.activePage.length && $.mobile.startPage[0] !== $.mobile.activePage[0] && !triggered ) {
-			$.mobile.changePage( $.mobile.startPage, transition, true, false, true );
-		}
-		//probably the first page - show it
-		else{
-			urlHistory.addNew( "" );
-			$.mobile.startPage.trigger("pagebeforeshow", {prevPage: $('')});
-			$.mobile.startPage.addClass( $.mobile.activePageClass );
-			$.mobile.pageLoading( true );
-
-			if( $.mobile.startPage.trigger("pageshow", {prevPage: $('')}) !== false ){
-				reFocus($.mobile.startPage);
-			}
+		//there's no hash, go to the first page in the dom
+		else {
+			$.mobile.changePage( $.mobile.firstPage, transition, true, false, true );
 		}
 	});
 })( jQuery );
@@ -3128,7 +3142,7 @@ $.widget( "mobile.selectmenu", $.mobile.widget, {
 		overlayTheme: 'a',
 		hidePlaceholderMenuItems: true,
 		closeText: 'Close',
-		useNativeMenu: false
+		nativeMenu: false
 	},
 	_create: function(){
 
@@ -3224,9 +3238,6 @@ $.widget( "mobile.selectmenu", $.mobile.widget, {
 
 			menuType;
 
-		// set to native menu
-		o.useNativeMenu = $.mobile.nativeSelectMenus || select.is( "[data-native]" );
-
 		// add counter for multi selects
 		if( isMultiple ){
 			self.buttonCount = $('<span>')
@@ -3270,7 +3281,7 @@ $.widget( "mobile.selectmenu", $.mobile.widget, {
 			});
 
 		//support for using the native select menu with a custom button
-		if( o.useNativeMenu ){
+		if( o.nativeMenu ){
 
 			select
 				.appendTo(button)
@@ -3540,7 +3551,7 @@ $.widget( "mobile.selectmenu", $.mobile.widget, {
 
 			self.menuType = "page";
 			self.menuPageContent.append( self.list );
-			$.mobile.changePage(self.menuPage, 'pop', false, false);
+			$.mobile.changePage(self.menuPage, 'pop', false, true);
 		}
 		else {
 			self.menuType = "overlay";
@@ -4235,6 +4246,8 @@ $.widget( "mobile.listview", $.mobile.widget, {
 				return;
 			}
 
+			var itemTheme = item.data("theme") || o.theme;
+
 			var a = item.find( "a" );
 				
 			if ( a.length ) {	
@@ -4247,7 +4260,7 @@ $.widget( "mobile.listview", $.mobile.widget, {
 						corners: false,
 						iconpos: "right",
 						icon: a.length > 1 || icon === false ? false : icon || "arrow-r",
-						theme: o.theme
+						theme: itemTheme
 					});
 
 				a.first().addClass( "ui-link-inherit" );
@@ -4265,7 +4278,7 @@ $.widget( "mobile.listview", $.mobile.widget, {
 						.buttonMarkup({
 							shadow: false,
 							corners: false,
-							theme: o.theme,
+							theme: itemTheme,
 							icon: false,
 							iconpos: false
 						})
@@ -4289,7 +4302,7 @@ $.widget( "mobile.listview", $.mobile.widget, {
 				}
 
 			} else {
-				itemClass += " ui-li-static ui-btn-up-" + o.theme;
+				itemClass += " ui-li-static ui-btn-up-" + itemTheme;
 			}
 			
 			
@@ -4308,7 +4321,8 @@ $.widget( "mobile.listview", $.mobile.widget, {
 							self._removeCorners( item.next() );		
 						}
 	
-				} else if ( pos === li.length - 1 ) {
+				}
+				if ( pos === li.length - 1 ) {
 						itemClass += " ui-corner-bottom";
 	
 						item
