@@ -34,6 +34,7 @@ ActionView::Helpers::AssetTagHelper.register_javascript_expansion :layout => ['j
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :mousewheel => ['jquery.mousewheel.min']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :offline => ['json.min', 'jquery.offline.min']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :pngFix => ['jquery.pngFix.min']
+ActionView::Helpers::AssetTagHelper.register_javascript_expansion :replaceText => ['jquery.replaceText.min']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :sparklines => ['jquery.sparkline.min']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :themeSwitcher => ['jquery.themeswitchertool.min']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :tmpl => ['jquery.tmpl.min', 'jquery.tmplPlus.min']
