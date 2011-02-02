@@ -741,10 +741,12 @@ button.ui-button::-moz-focus-inner {
 ----------------------------------*/
 .ui-selectmenu {
   display: block;
+  display: inline-block;
   position: relative;
-  height: 2em;
+  height: 2.2em;
   text-decoration: none;
-  overflow: hidden; }
+  overflow: hidden;
+  zoom: 1; }
 
 .ui-selectmenu-icon {
   position: absolute;
@@ -784,7 +786,7 @@ button.ui-button::-moz-focus-inner {
 .ui-selectmenu-menu li a,.ui-selectmenu-status {
   line-height: 1.4em;
   display: block;
-  padding: .3em 1em;
+  padding: .405em 1em;
   outline: none;
   text-decoration: none; }
 
@@ -819,7 +821,7 @@ button.ui-button::-moz-focus-inner {
 .ui-selectmenu-menu li .ui-selectmenu-item-footer {
   opacity: .8; }
 
-/*for optgroups*/
+/* for optgroups */
 .ui-selectmenu-menu .ui-selectmenu-group {
   font-size: 1em; }
 
@@ -832,6 +834,15 @@ button.ui-button::-moz-focus-inner {
 .ui-selectmenu-menu .ui-selectmenu-group ul {
   margin: 0;
   padding: 0; }
+
+/* IE6 workaround (dotted transparent borders) */
+* html .ui-selectmenu-menu li {
+  border-color: pink;
+  filter: chroma(color = pink);
+  width: 100%; }
+
+* html .ui-selectmenu-menu li a {
+  position: relative; }
 
 
 /*

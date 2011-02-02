@@ -266,7 +266,7 @@
 
 /* "page" containers - full-screen views, one should always be in view post-pageload */
 
-.ui-page {
+[data-role=page], [data-role=dialog], .ui-page {
   top: 0;
   left: 0;
   width: 100%;
@@ -492,14 +492,16 @@
     position: absolute;
     left: -9999px;
     top: -9999px; }
-  a select {
+  .ui-btn select {
     cursor: pointer;
     -webkit-appearance: button;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
-    opacity: 0; }
+    opacity: 0.001;
+    &.ui-select-nativeonly {
+      opacity: 1; } }
   .ui-btn-icon-right {
     .ui-btn-inner {
       padding-right: 45px; }
