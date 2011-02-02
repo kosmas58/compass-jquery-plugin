@@ -263,9 +263,8 @@ if ( document.defaultView && document.defaultView.getComputedStyle ) {
 
 if ( document.documentElement.currentStyle ) {
 	currentStyle = function( elem, name ) {
-		var left, 
+		var left, rsLeft,
 			ret = elem.currentStyle && elem.currentStyle[ name ],
-			rsLeft = elem.runtimeStyle && elem.runtimeStyle[ name ],
 			style = elem.style;
 
 		// From the awesome hack by Dean Edwards
@@ -276,19 +275,16 @@ if ( document.documentElement.currentStyle ) {
 		if ( !rnumpx.test( ret ) && rnum.test( ret ) ) {
 			// Remember the original values
 			left = style.left;
+			rsLeft = elem.runtimeStyle.left;
 
 			// Put in the new values to get a computed value out
-			if ( rsLeft ) {
-				elem.runtimeStyle.left = elem.currentStyle.left;
-			}
+			elem.runtimeStyle.left = elem.currentStyle.left;
 			style.left = name === "fontSize" ? "1em" : (ret || 0);
 			ret = style.pixelLeft + "px";
 
 			// Revert the changed values
 			style.left = left;
-			if ( rsLeft ) {
-				elem.runtimeStyle.left = rsLeft;
-			}
+			elem.runtimeStyle.left = rsLeft;
 		}
 
 		return ret === "" ? "auto" : ret;

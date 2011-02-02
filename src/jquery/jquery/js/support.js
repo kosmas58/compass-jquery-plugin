@@ -4,7 +4,10 @@
 
 	jQuery.support = {};
 
-	var div = document.createElement("div");
+	var root = document.documentElement,
+		script = document.createElement("script"),
+		div = document.createElement("div"),
+		id = "script" + jQuery.now();
 
 	div.style.display = "none";
 	div.innerHTML = "   <link/><table></table><a href='/a' style='color:red;float:left;opacity:.55;'>a</a><input type='checkbox'/>";
@@ -61,7 +64,7 @@
 		deleteExpando: true,
 		optDisabled: false,
 		checkClone: false,
-		_scriptEval: null,
+		scriptEval: false,
 		noCloneEvent: true,
 		boxModel: null,
 		inlineBlockNeedsLayout: false,
@@ -74,45 +77,31 @@
 	select.disabled = true;
 	jQuery.support.optDisabled = !opt.disabled;
 
-	jQuery.support.scriptEval = function() {
-		if ( jQuery.support._scriptEval === null ) {
-			var root = document.documentElement,
-				script = document.createElement("script"),
-				id = "script" + jQuery.now();
+	script.type = "text/javascript";
+	try {
+		script.appendChild( document.createTextNode( "window." + id + "=1;" ) );
+	} catch(e) {}
 
-			script.type = "text/javascript";
-			try {
-				script.appendChild( document.createTextNode( "window." + id + "=1;" ) );
-			} catch(e) {}
+	root.insertBefore( script, root.firstChild );
 
-			root.insertBefore( script, root.firstChild );
-
-			// Make sure that the execution of code works by injecting a script
-			// tag with appendChild/createTextNode
-			// (IE doesn't support this, fails, and uses .text instead)
-			if ( window[ id ] ) {
-				jQuery.support._scriptEval = true;
-				delete window[ id ];
-			} else {
-				jQuery.support._scriptEval = false;
-			}
-
-			root.removeChild( script );
-			// release memory in IE
-			root = script = id  = null;
-		}
-
-		return jQuery.support._scriptEval;
-	};
+	// Make sure that the execution of code works by injecting a script
+	// tag with appendChild/createTextNode
+	// (IE doesn't support this, fails, and uses .text instead)
+	if ( window[ id ] ) {
+		jQuery.support.scriptEval = true;
+		delete window[ id ];
+	}
 
 	// Test to see if it's possible to delete an expando from an element
 	// Fails in Internet Explorer
 	try {
-		delete div.test;
+		delete script.test;
 
 	} catch(e) {
 		jQuery.support.deleteExpando = false;
 	}
+
+	root.removeChild( script );
 
 	if ( div.attachEvent && div.fireEvent ) {
 		div.attachEvent("onclick", function click() {
@@ -136,16 +125,10 @@
 	// Figure out if the W3C box model works as expected
 	// document.body must exist before we can do this
 	jQuery(function() {
-		var div = document.createElement("div"),
-			body = document.getElementsByTagName("body")[0];
-
-		// Frameset documents with no body should not run this code
-		if ( !body ) {
-			return;
-		}
-
+		var div = document.createElement("div");
 		div.style.width = div.style.paddingLeft = "1px";
-		body.appendChild( div );
+
+		document.body.appendChild( div );
 		jQuery.boxModel = jQuery.support.boxModel = div.offsetWidth === 2;
 
 		if ( "zoom" in div.style ) {
@@ -164,7 +147,7 @@
 			jQuery.support.shrinkWrapBlocks = div.offsetWidth !== 2;
 		}
 
-		div.innerHTML = "<table><tr><td style='padding:0;border:0;display:none'></td><td>t</td></tr></table>";
+		div.innerHTML = "<table><tr><td style='padding:0;display:none'></td><td>t</td></tr></table>";
 		var tds = div.getElementsByTagName("td");
 
 		// Check if table cells still have offsetWidth/Height when they are set
@@ -184,7 +167,7 @@
 		jQuery.support.reliableHiddenOffsets = jQuery.support.reliableHiddenOffsets && tds[0].offsetHeight === 0;
 		div.innerHTML = "";
 
-		body.removeChild( div ).style.display = "none";
+		document.body.removeChild( div ).style.display = "none";
 		div = tds = null;
 	});
 
@@ -193,14 +176,6 @@
 	var eventSupported = function( eventName ) {
 		var el = document.createElement("div");
 		eventName = "on" + eventName;
-
-		// We only care about the case where non-standard event systems
-		// are used, namely in IE. Short-circuiting here helps us to
-		// avoid an eval call (in setAttribute) which can cause CSP
-		// to go haywire. See: https://developer.mozilla.org/en/Security/CSP
-		if ( !el.attachEvent ) {
-			return true;
-		}
 
 		var isSupported = (eventName in el);
 		if ( !isSupported ) {
@@ -216,6 +191,6 @@
 	jQuery.support.changeBubbles = eventSupported("change");
 
 	// release memory in IE
-	div = all = a = null;
+	root = script = div = all = a = null;
 })();
 })( jQuery );
