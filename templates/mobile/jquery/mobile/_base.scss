@@ -39,7 +39,7 @@
   display: inline-block;
   width: 20px;
   height: 20px;
-  padding: 1px 0px 1px 2px;
+  padding: 2px 1px 2px 3px;
   text-indent: -9999px;
   .ui-btn-inner {
     padding: 0; }
@@ -473,11 +473,10 @@
   &:first-child {
     border-top-width: 0; } }
 
-@media screen and (max-width: 480px) {
-  .ui-field-contain {
-    border-width: 0;
-    padding: 0;
-    margin: 1em 0; } }
+.min-width-480px .ui-field-contain {
+  border-width: 0;
+  padding: 0;
+  margin: 1em 0; }
 
 /*
 * jQuery Mobile Framework
@@ -728,9 +727,9 @@ textarea.ui-input-text {
     outline: 0 !important; }
   .ui-input-clear {
     position: absolute;
-    right: 2px;
+    right: 0;
     top: 50%;
-    margin-top: -12px; }
+    margin-top: -14px; }
   .ui-input-clear-hidden {
     display: none; } }
 
@@ -1283,13 +1282,11 @@ Built by David Kaneda and maintained by Jonathan Stark.
 
 .ui-mobile-viewport-transitioning {
   width: 100%;
-  height: 120%;
-  /* we want to make sure we take up enough to keep the scroll top hidden during transition, but not too much to overflow our buffer */
+  height: 100%;
   overflow: hidden;
   .ui-page {
     width: 100%;
-    height: 120%;
-    /* we want to make sure we take up enough to keep the scroll top hidden during transition, but not too much to overflow our buffer */
+    height: 100%;
     overflow: hidden; } }
 
 .flip {
