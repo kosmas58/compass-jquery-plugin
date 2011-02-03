@@ -1418,8 +1418,6 @@ $.widget( "mobile.page", $.mobile.widget, {
 		//configure meta viewport tag's content attr:
 		metaViewportContent: "width=device-width, minimum-scale=1, maximum-scale=1",
 
-		nativeSelectMenus: false,
-
 		//support conditions that must be met in order to proceed
 		gradeA: function(){
 			return $.support.mediaquery;
@@ -1701,12 +1699,6 @@ $.widget( "mobile.page", $.mobile.widget, {
 			//wipe urls ahead of active index
 			clearForward: function(){
 				urlHistory.stack = urlHistory.stack.slice( 0, urlHistory.activeIndex + 1 );
-			},
-			
-			//wipe all urls
-			clear: function(){
-				urlHistory.stack = [];
-				urlHistory.activeIndex = 0;
 			},
 			
 			//disable hashchange event listener internally to ignore one change
@@ -2148,7 +2140,9 @@ $.widget( "mobile.page", $.mobile.widget, {
 				error: function() {
 					$.mobile.pageLoading( true );
 					removeActiveLinkClass(true);
-					base.set(path.get());
+					if(base){
+						base.set(path.get());
+					}
 					$("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all'><h1>Error Loading Page</h1></div>")
 						.css({ "display": "block", "opacity": 0.96, "top": $(window).scrollTop() + 100 })
 						.appendTo( $.mobile.pageContainer )
@@ -3716,7 +3710,7 @@ $.widget( "mobile.slider", $.mobile.widget, {
 			},
 			min = (cType == 'input') ? parseFloat(control.attr('min')) : 0,
 			max = (cType == 'input') ? parseFloat(control.attr('max')) : control.find('option').length-1,
-			step = window.parseFloat(control.attr('data-step') || 1),
+			step = window.parseFloat(control.attr('step') || 1),
 			slider = $('<div class="ui-slider '+ selectClass +' ui-btn-down-'+ trackTheme+' ui-btn-corner-all" role="application"></div>'),
 			handle = $('<a href="#" class="ui-slider-handle"></a>')
 				.appendTo(slider)
@@ -4312,6 +4306,7 @@ $.widget( "mobile.listview", $.mobile.widget, {
 						splittheme = $list.data( "splittheme" ) || last.data( "theme" ) || o.splitTheme;
 					
 					last
+						.appendTo(item)
 						.attr( "title", last.text() )
 						.addClass( "ui-li-link-alt" )
 						.empty()
