@@ -306,7 +306,7 @@ Copyright &copy; 2009-2011 Kosmas Schuetz. See LICENSE for details.
   [23]: http://jqueryribbon.codeplex.com/
   [24]: http://omnipotent.net/jquery.sparkline/
   [25]: http://www.isocra.com/2008/02/table-drag-and-drop-jquery-plugin/
-  [26]: https://github.com/jquery/jquery-tmpl/
+  [26]: http://github.com/jquery/jquery-tmpl/
   [27]: http://github.com/jquerytools/jquerytools
   [28]: http://quasipartikel.at
   [29]: http://www.ama3.com/anytime/
