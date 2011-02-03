@@ -241,7 +241,7 @@ jQuery Plugins included:
 * Tim Caswell for [jQuery haml Plugin][18]
 * Takayuki Miwa for [jQuery history plugin][19]
 * Ivan Bozhanov for [jQuery jsTree Plugin][20]
-* Fabrizio Balliano and Fabrizio Balliano for [jQuery Layout Plugin][21]
+* Fabrizio Balliano and Kevin Dalman for [jQuery Layout Plugin][21]
 * Brandon Aaron and Fabrizio Balliano for [jQuery Mousewheel Plugin][21]
 * Yehuda Katz for [jQuery Offline Plugin][34]
 * Andreas Eberhard for [jQuery PngFix Plugin][22] (for IE)
@@ -300,7 +300,7 @@ Copyright &copy; 2009-2011 Kosmas Schuetz. See LICENSE for details.
   [19]: http://tkyk.github.com/jquery-history-plugin/
   [20]: http://jstree.com/
   [21]: http://www.fabrizioballiano.net/
-  [22]: :http://jquery.andreaseberhard.de/
+  [22]: http://jquery.andreaseberhard.de/
   [23]: http://jqueryribbon.codeplex.com/
   [24]: http://omnipotent.net/jquery.sparkline/
   [25]: http://www.isocra.com/2008/02/table-drag-and-drop-jquery-plugin/
