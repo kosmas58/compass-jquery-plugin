@@ -235,6 +235,8 @@ jQuery Plugins included:
 
 * Chris Domigan for [jQuery ContextMenu Plugin][13]
 * Kalus Hartl for [jQuery Cookie Plugin][14]
+* "Cowboy" Ben Alman for [jQuery doTimeout Plugin][37]
+* Pete Gamache for [jQuery DSt Plugin][38]
 * Martin Wendt for [jQuery Dynatree Plugin][15]
 * John Reisig et. al. for [jQuery Form Plugin][16]
 * Tony Tomov for [jQuery Grid Plugin][17]
@@ -315,4 +317,6 @@ Copyright &copy; 2009-2011 Kosmas Schuetz. See LICENSE for details.
   [34]: http://github.com/wycats/jquery-offline
   [35]: http://github.com/brandonaaron/jquery-mousewheel
   [36]: http://github.com/cowboy/jquery-replacetext
+  [37]: http://github.com/cowboy/jquery-dotimeout
+  [38]: http://github.com/gamache/DSt
   
