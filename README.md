@@ -246,7 +246,7 @@ jQuery Plugins included:
 * Fabrizio Balliano and Kevin Dalman for [jQuery Layout Plugin][21]
 * Brandon Aaron and Fabrizio Balliano for [jQuery Mousewheel Plugin][21]
 * Yehuda Katz for [jQuery Offline Plugin][34]
-* Andreas Eberhard for [jQuery PngFix Plugin][22] (for IE)
+* Andreas Eberhard for [jQuery PngFix Plugin][22]
 * "Cowboy" Ben Alman for [jQuery replaceText Plugin][36]
 * Mikael Soederstroem for [jQuery Ribbon Plugin][23]
 * Gareth Watts from Splunk Inc for [jQuery Sparklines plugin][24]
