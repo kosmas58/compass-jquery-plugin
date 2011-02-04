@@ -396,14 +396,6 @@ $(document).bind("mobileinit.htmlclass", function(){
 		//add orientation class to HTML element on flip/resize.
 		if(event.orientation){
 			$html.removeClass( "portrait landscape" ).addClass( event.orientation );
-			//Set the min-height to the size of the fullscreen.  This is to fix issue #455
-			if( event.orientation === 'portrait' ) {
-			    $( '.ui-page' ).css( 'minHeight', ( screen.availHeight >= screen.availWidth ) ? screen.availHeight : screen.availWidth);
-			} else {
-			    $( '.ui-page' ).css( 'minHeight', ( screen.availHeight <= screen.availWidth ) ? screen.availHeight : screen.availWidth);
-			}
-            
-            $.mobile.silentScroll();
 		}
 		//add classes to HTML element for min/max breakpoints
 		detectResolutionBreakpoints();
@@ -1191,12 +1183,6 @@ $.widget( "mobile.page", $.mobile.widget, {
 
 		if ( this._trigger( "beforeCreate" ) === false ) {
 			return;
-		}
-		
-		if( $( "html" ).hasClass( 'portrait' ) ) {
-		    $elem.css( 'minHeight', ( screen.availHeight >= screen.availWidth ) ? screen.availHeight : screen.availWidth);
-		} else {
-		    $elem.css( 'minHeight', ( screen.availHeight <= screen.availWidth ) ? screen.availHeight : screen.availWidth);
 		}
 
 		//some of the form elements currently rely on the presence of ui-page and ui-content
@@ -3047,7 +3033,29 @@ $.widget( "mobile.checkboxradio", $.mobile.widget, {
 				if( $(this).parent().is('.ui-disabled') ){ return false; }
 			},
 			
-			"tap": function( event ){
+			"touchmove": function( event ){
+				var oe = event.originalEvent.touches[0];
+				if( label.data("movestart") ){
+					if( Math.abs( label.data("movestart")[0] - oe.pageX ) > 10 ||
+						Math.abs( abel.data("movestart")[1] - oe.pageY ) > 10 ){
+							label.data("moved", true);
+						}
+				}
+				else{
+					label.data("movestart", [ parseFloat( oe.pageX ), parseFloat( oe.pageY ) ]);
+				}
+			},
+			
+			"touchend mouseup": function( event ){
+				label.removeData("movestart");
+				if( label.data("etype") && label.data("etype") !== event.type || label.data("moved") ){
+					label.removeData("etype").removeData("moved");
+					if( label.data("moved") ){
+						label.removeData("moved");
+					}
+					return false;
+				}
+				label.data( "etype", event.type );
 				self._cacheVals();
 				input.attr( "checked", inputtype === "radio" && true || !input.is( ":checked" ) );
 				self._updateAll();
