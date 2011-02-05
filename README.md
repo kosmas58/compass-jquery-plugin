@@ -16,6 +16,9 @@ A Sass-based Meta-Framework for Compass that allows you to mix and match any of 
 * jquery.dynatree.js V1.0.2
 * jquery.ribbon.js
 * jquery.jqGrid.js V3.8.2 (with minor changes to make it RESTful)
+
+and for mobile devices <i>(using pure haml/sass without compass)</i>:
+ 
 * jquery.mobile.js 1.0a3
 * jquery.jqtouch.js V1.0b2
 
@@ -25,7 +28,7 @@ For the moment this plugin supports Rails 2.3.
 
 An upgrade to Rails 3.x is planned, but depends on the upgrade of compass which actually has alpha state.
 
-*Hint: When trying to build the gem under Windows, bundler can't locate the rakfile. Apply the patch from [Arve Knudsen][4] to fix it.*
+*Hint: When trying to build the gem under Windows, bundler can't locate the rakefile. Apply the patch from [Arve Knudsen][4] to fix it.*
 
 jRails, jQuery and jQuery.UI including themes
 ---------------------------------------------
@@ -246,7 +249,7 @@ jQuery Plugins included:
 * Fabrizio Balliano and Kevin Dalman for [jQuery Layout Plugin][21]
 * Brandon Aaron and Fabrizio Balliano for [jQuery Mousewheel Plugin][21]
 * Yehuda Katz for [jQuery Offline Plugin][34]
-* Andreas Eberhard for [jQuery PngFix Plugin][22]
+* Andreas Eberhard for [jQuery PngFix Plugin][22] (for IE)
 * "Cowboy" Ben Alman for [jQuery replaceText Plugin][36]
 * Mikael Soederstroem for [jQuery Ribbon Plugin][23]
 * Gareth Watts from Splunk Inc for [jQuery Sparklines plugin][24]
