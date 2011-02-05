@@ -5,6 +5,8 @@ Get gem from [Gemcutter][1].
 
 Get source from [github][2].
 
+Get example application showing everything live from [github][39].
+
 Description
 -----------
 
@@ -322,4 +324,5 @@ Copyright &copy; 2009-2011 Kosmas Schuetz. See LICENSE for details.
   [36]: http://github.com/cowboy/jquery-replacetext
   [37]: http://github.com/cowboy/jquery-dotimeout
   [38]: http://github.com/gamache/DSt
+  [39]: http://github.com/kosmas58/compass-jquery-plugin-sample
   
