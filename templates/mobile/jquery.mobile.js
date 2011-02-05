@@ -396,14 +396,6 @@ $(document).bind("mobileinit.htmlclass", function(){
 		//add orientation class to HTML element on flip/resize.
 		if(event.orientation){
 			$html.removeClass( "portrait landscape" ).addClass( event.orientation );
-			//Set the min-height to the size of the fullscreen.  This is to fix issue #455
-			if( event.orientation === 'portrait' ) {
-			    $( '.ui-page' ).css( 'minHeight', ( screen.availHeight >= screen.availWidth ) ? screen.availHeight : screen.availWidth);
-			} else {
-			    $( '.ui-page' ).css( 'minHeight', ( screen.availHeight <= screen.availWidth ) ? screen.availHeight : screen.availWidth);
-			}
-            
-            $.mobile.silentScroll();
 		}
 		//add classes to HTML element for min/max breakpoints
 		detectResolutionBreakpoints();
@@ -1192,12 +1184,6 @@ $.widget( "mobile.page", $.mobile.widget, {
 		if ( this._trigger( "beforeCreate" ) === false ) {
 			return;
 		}
-		
-		if( $( "html" ).hasClass( 'portrait' ) ) {
-		    $elem.css( 'minHeight', ( screen.availHeight >= screen.availWidth ) ? screen.availHeight : screen.availWidth);
-		} else {
-		    $elem.css( 'minHeight', ( screen.availHeight <= screen.availWidth ) ? screen.availHeight : screen.availWidth);
-		}
 
 		//some of the form elements currently rely on the presence of ui-page and ui-content
 		// classes so we'll handle page and content roles outside of the main role processing
@@ -1417,8 +1403,6 @@ $.widget( "mobile.page", $.mobile.widget, {
 
 		//configure meta viewport tag's content attr:
 		metaViewportContent: "width=device-width, minimum-scale=1, maximum-scale=1",
-
-		nativeSelectMenus: false,
 
 		//support conditions that must be met in order to proceed
 		gradeA: function(){
@@ -1701,12 +1685,6 @@ $.widget( "mobile.page", $.mobile.widget, {
 			//wipe urls ahead of active index
 			clearForward: function(){
 				urlHistory.stack = urlHistory.stack.slice( 0, urlHistory.activeIndex + 1 );
-			},
-			
-			//wipe all urls
-			clear: function(){
-				urlHistory.stack = [];
-				urlHistory.activeIndex = 0;
 			},
 			
 			//disable hashchange event listener internally to ignore one change
@@ -2148,7 +2126,9 @@ $.widget( "mobile.page", $.mobile.widget, {
 				error: function() {
 					$.mobile.pageLoading( true );
 					removeActiveLinkClass(true);
-					base.set(path.get());
+					if(base){
+						base.set(path.get());
+					}
 					$("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all'><h1>Error Loading Page</h1></div>")
 						.css({ "display": "block", "opacity": 0.96, "top": $(window).scrollTop() + 100 })
 						.appendTo( $.mobile.pageContainer )
@@ -3053,7 +3033,29 @@ $.widget( "mobile.checkboxradio", $.mobile.widget, {
 				if( $(this).parent().is('.ui-disabled') ){ return false; }
 			},
 			
-			"tap": function( event ){
+			"touchmove": function( event ){
+				var oe = event.originalEvent.touches[0];
+				if( label.data("movestart") ){
+					if( Math.abs( label.data("movestart")[0] - oe.pageX ) > 10 ||
+						Math.abs( abel.data("movestart")[1] - oe.pageY ) > 10 ){
+							label.data("moved", true);
+						}
+				}
+				else{
+					label.data("movestart", [ parseFloat( oe.pageX ), parseFloat( oe.pageY ) ]);
+				}
+			},
+			
+			"touchend mouseup": function( event ){
+				label.removeData("movestart");
+				if( label.data("etype") && label.data("etype") !== event.type || label.data("moved") ){
+					label.removeData("etype").removeData("moved");
+					if( label.data("moved") ){
+						label.removeData("moved");
+					}
+					return false;
+				}
+				label.data( "etype", event.type );
 				self._cacheVals();
 				input.attr( "checked", inputtype === "radio" && true || !input.is( ":checked" ) );
 				self._updateAll();
@@ -3716,7 +3718,7 @@ $.widget( "mobile.slider", $.mobile.widget, {
 			},
 			min = (cType == 'input') ? parseFloat(control.attr('min')) : 0,
 			max = (cType == 'input') ? parseFloat(control.attr('max')) : control.find('option').length-1,
-			step = window.parseFloat(control.attr('data-step') || 1),
+			step = window.parseFloat(control.attr('step') || 1),
 			slider = $('<div class="ui-slider '+ selectClass +' ui-btn-down-'+ trackTheme+' ui-btn-corner-all" role="application"></div>'),
 			handle = $('<a href="#" class="ui-slider-handle"></a>')
 				.appendTo(slider)
@@ -3989,7 +3991,7 @@ $.widget( "mobile.textinput", $.mobile.widget, {
 		
 		//"search" input widget
 		if( input.is('[type="search"],[data-type="search"]') ){
-			focusedEl = input.wrap('<div class="ui-input-search ui-shadow-inset ui-btn-corner-all ui-btn-shadow ui-icon-search'+ themeclass +'"></div>').parent();
+			focusedEl = input.wrap('<div class="ui-input-search ui-shadow-inset ui-btn-corner-all ui-btn-shadow ui-icon-searchfield'+ themeclass +'"></div>').parent();
 			var clearbtn = $('<a href="#" class="ui-input-clear" title="clear text">clear text</a>')
 				.tap(function( e ){
 					input.val('').focus();
@@ -4312,6 +4314,7 @@ $.widget( "mobile.listview", $.mobile.widget, {
 						splittheme = $list.data( "splittheme" ) || last.data( "theme" ) || o.splitTheme;
 					
 					last
+						.appendTo(item)
 						.attr( "title", last.text() )
 						.addClass( "ui-li-link-alt" )
 						.empty()

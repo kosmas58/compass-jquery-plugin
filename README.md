@@ -15,8 +15,11 @@ A Sass-based Meta-Framework for Compass that allows you to mix and match any of 
 * jquery.jstree.js V1.0rc3
 * jquery.dynatree.js V1.0.2
 * jquery.ribbon.js
-* jquery.jqGrid.js V3.8.2 (with minor changes to make in RESTful)
-* jquery.mobile.js 1.0a2
+* jquery.jqGrid.js V3.8.2 (with minor changes to make it RESTful)
+
+and for mobile devices <i>(using pure haml/sass without compass)</i>:
+ 
+* jquery.mobile.js 1.0a3
 * jquery.jqtouch.js V1.0b2
 
 This library requires [Compass][3].
@@ -25,7 +28,7 @@ For the moment this plugin supports Rails 2.3.
 
 An upgrade to Rails 3.x is planned, but depends on the upgrade of compass which actually has alpha state.
 
-*Hint: When trying to build the gem under Windows, bundler can't locate the rakfile. Apply the patch from [Arve Knudsen][4] to fix it.*
+*Hint: When trying to build the gem under Windows, bundler can't locate the rakefile. Apply the patch from [Arve Knudsen][4] to fix it.*
 
 jRails, jQuery and jQuery.UI including themes
 ---------------------------------------------
@@ -235,13 +238,15 @@ jQuery Plugins included:
 
 * Chris Domigan for [jQuery ContextMenu Plugin][13]
 * Kalus Hartl for [jQuery Cookie Plugin][14]
+* "Cowboy" Ben Alman for [jQuery doTimeout Plugin][37]
+* Pete Gamache for [jQuery DSt Plugin][38]
 * Martin Wendt for [jQuery Dynatree Plugin][15]
 * John Reisig et. al. for [jQuery Form Plugin][16]
 * Tony Tomov for [jQuery Grid Plugin][17]
 * Tim Caswell for [jQuery haml Plugin][18]
 * Takayuki Miwa for [jQuery history plugin][19]
 * Ivan Bozhanov for [jQuery jsTree Plugin][20]
-* Fabrizio Balliano and Fabrizio Balliano for [jQuery Layout Plugin][21]
+* Fabrizio Balliano and Kevin Dalman for [jQuery Layout Plugin][21]
 * Brandon Aaron and Fabrizio Balliano for [jQuery Mousewheel Plugin][21]
 * Yehuda Katz for [jQuery Offline Plugin][34]
 * Andreas Eberhard for [jQuery PngFix Plugin][22] (for IE)
@@ -300,11 +305,11 @@ Copyright &copy; 2009-2011 Kosmas Schuetz. See LICENSE for details.
   [19]: http://tkyk.github.com/jquery-history-plugin/
   [20]: http://jstree.com/
   [21]: http://www.fabrizioballiano.net/
-  [22]: :http://jquery.andreaseberhard.de/
+  [22]: http://jquery.andreaseberhard.de/
   [23]: http://jqueryribbon.codeplex.com/
   [24]: http://omnipotent.net/jquery.sparkline/
   [25]: http://www.isocra.com/2008/02/table-drag-and-drop-jquery-plugin/
-  [26]: https://github.com/jquery/jquery-tmpl/
+  [26]: http://github.com/jquery/jquery-tmpl/
   [27]: http://github.com/jquerytools/jquerytools
   [28]: http://quasipartikel.at
   [29]: http://www.ama3.com/anytime/
@@ -315,4 +320,6 @@ Copyright &copy; 2009-2011 Kosmas Schuetz. See LICENSE for details.
   [34]: http://github.com/wycats/jquery-offline
   [35]: http://github.com/brandonaaron/jquery-mousewheel
   [36]: http://github.com/cowboy/jquery-replacetext
+  [37]: http://github.com/cowboy/jquery-dotimeout
+  [38]: http://github.com/gamache/DSt
   
