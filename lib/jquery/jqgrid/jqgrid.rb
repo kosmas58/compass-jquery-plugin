@@ -24,11 +24,11 @@ module ActionView
         :add                 => 'false',
         :delete              => 'false',
         :search              => 'true',
-        :edit                => 'false',          
+        :edit                => 'false',
         :inline_edit         => 'false',
         :autowidth           => 'false',
         :hidegrid            => 'false',
-        :rownumbers          => 'false'                    
+        :rownumbers          => 'false'
       }.merge(options)
       
       # Stringify options values

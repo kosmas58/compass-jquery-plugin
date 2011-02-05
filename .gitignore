@@ -15,6 +15,7 @@ tmtags
 
 ## PROJECT::GENERAL
 coverage
+.idea
 rdoc
 pkg
 
