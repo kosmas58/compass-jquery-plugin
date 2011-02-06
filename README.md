@@ -12,7 +12,7 @@ Description
 
 A Sass-based Meta-Framework for Compass that allows you to mix and match any of the following:
 
-* jRails with jQuery 1.4.4 and jQuery.UI 1.8.9 including themes
+* jRails with jQuery 1.5.0 and jQuery.UI 1.8.9 including themes
 * jQuery Tools 1.2.5
 * jquery.jstree.js V1.0rc3
 * jquery.dynatree.js V1.0.2
@@ -288,7 +288,7 @@ Copyright &copy; 2009-2011 Kosmas Schuetz. See LICENSE for details.
 
   [1]: http://gemcutter.org/gems/compass-jquery-plugin
   [2]: http://github.com/kosmas58/compass-jquery-plugin
-  [3]: http://wiki.github.com/chriseppstein/compass
+  [3]: http://compass-style.org/docs/
   [4]: http://groups.google.com/group/ruby-bundler/msg/e375ee77b225609f
   [5]: http://code.google.com/p/ennerchi/
   [6]: http://github.com/dturnbull/compass-jquery/tree/master
