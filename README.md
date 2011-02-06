@@ -288,7 +288,7 @@ Copyright &copy; 2009-2011 Kosmas Schuetz. See LICENSE for details.
 
   [1]: http://gemcutter.org/gems/compass-jquery-plugin
   [2]: http://github.com/kosmas58/compass-jquery-plugin
-  [3]: http://wiki.github.com/chriseppstein/compass
+  [3]: http://compass-style.org/docs/
   [4]: http://groups.google.com/group/ruby-bundler/msg/e375ee77b225609f
   [5]: http://code.google.com/p/ennerchi/
   [6]: http://github.com/dturnbull/compass-jquery/tree/master
