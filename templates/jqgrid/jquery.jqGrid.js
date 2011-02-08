@@ -1554,7 +1554,7 @@ $.fn.jqGrid = function( pin ) {
         }
         $(this).empty();
         this.p = p ;
-        var i, dir,ts, clm;
+        var i, dir,ts;
         if(this.p.colNames.length === 0) {
             for (i=0;i<this.p.colModel.length;i++){
                 this.p.colNames[i] = this.p.colModel[i].label || this.p.colModel[i].name;
@@ -2595,8 +2595,7 @@ $.fn.jqGrid = function( pin ) {
         if ($.inArray(ts.p.multikey,sortkeys) == -1 ) {ts.p.multikey = false;}
         ts.p.keyIndex=false;
         for (i=0; i<ts.p.colModel.length;i++) {
-            clm = ts.p.colModel[i];
-            clm = $.extend(clm, ts.p.cmTemplate, clm.template || {});
+            ts.p.colModel[i] = $.extend({}, ts.p.cmTemplate, ts.p.colModel[i].template || {}, ts.p.colModel[i]);
             if (ts.p.keyIndex === false && ts.p.colModel[i].key===true) {
                 ts.p.keyIndex = i;
             }
@@ -4570,8 +4569,14 @@ $.jgrid.extend({
                     sdata[p.sField] = filters.rules[0].field;
                     sdata[p.sValue] = filters.rules[0].data;
                     sdata[p.sOper] = filters.rules[0].op;
+                    if(sdata.hasOwnProperty(p.sFilter) ) {
+                        delete sdata[p.sFilter];
+                    }
                 } else {
                     sdata[p.sFilter] = filters;
+                    $.each([p.sField, p.sValue, p.sOper], function(i, n){
+                        if(sdata.hasOwnProperty(n)) { delete sdata[n];}
+                    });
                 }
                 grid[0].p.search = hasFilters;
                 $.extend(grid[0].p.postData,sdata);
@@ -8743,6 +8748,9 @@ $.jgrid.extend({
                     });
                     ruleGroup += "]}";
                     $.extend($t.p.postData,{filters:ruleGroup});
+                    $.each(['searchField', 'searchString', 'searchOper'], function(i, n){
+                        if($t.p.postData.hasOwnProperty(n)) { delete $t.p.postData[n];}
+                    });
                 } else {
                     $.extend($t.p.postData,sdata);
                 }
@@ -8811,6 +8819,9 @@ $.jgrid.extend({
                     });
                     ruleGroup += "]}";
                     $.extend($t.p.postData,{filters:ruleGroup});
+                    $.each(['searchField', 'searchString', 'searchOper'], function(i, n){
+                        if($t.p.postData.hasOwnProperty(n)) { delete $t.p.postData[n];}
+                    });
                 } else {
                     $.extend($t.p.postData,sdata);
                 }
@@ -11495,7 +11506,6 @@ jQuery.fn.searchFilter = function(fields, options) {
                     var tOp = jQuery(this).find("select[name='op'] :selected").val();
                     var tData = jQuery(this).find("input.vdata,select.vdata :selected").val();
                     tData += "";
-                    tData = tData.replace(/\\/g,'\\\\').replace(/\"/g,'\\"');
                     if (!opts.stringResult) {
                         ruleGroup.rules.push({
                             field: tField,
@@ -11503,6 +11513,7 @@ jQuery.fn.searchFilter = function(fields, options) {
                             data: tData
                         });
                     } else {
+                        tData = tData.replace(/\\/g,'\\\\').replace(/\"/g,'\\"');
                         if (i > 0) ruleGroup += ",";
                         ruleGroup += "{\"field\":\"" + tField + "\",";
                         ruleGroup += "\"op\":\"" + tOp + "\",";
