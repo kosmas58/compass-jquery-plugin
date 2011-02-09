@@ -1,5 +1,22 @@
 (function( jQuery ) {
 
+var // #5280: next active xhr id and list of active xhrs' callbacks
+	xhrId = jQuery.now(),
+	xhrCallbacks,
+
+	// XHR used to determine supports properties
+	testXHR;
+
+// #5280: Internet Explorer will keep connections alive if we don't abort on unload
+function xhrOnUnloadAbort() {
+	jQuery( window ).unload(function() {
+		// Abort all pending requests
+		for ( var key in xhrCallbacks ) {
+			xhrCallbacks[ key ]( 0, 1 );
+		}
+	});
+}
+
 // Functions to create xhrs
 function createStandardXHR() {
 	try {
@@ -12,18 +29,6 @@ function createActiveXHR() {
 		return new window.ActiveXObject("Microsoft.XMLHTTP");
 	} catch( e ) {}
 }
-
-var // Next active xhr id
-	xhrId = jQuery.now(),
-
-	// active xhrs
-	xhrs = {},
-
-	// #5280: see below
-	xhrUnloadAbortInstalled,
-
-	// XHR used to determine supports properties
-	testXHR;
 
 // Create the request object
 // (This is still attached to ajaxSettings for backward compatibility)
@@ -62,23 +67,6 @@ if ( jQuery.support.ajax ) {
 			return {
 				send: function( headers, complete ) {
 
-					// #5280: we need to abort on unload or IE will keep connections alive
-					if ( !xhrUnloadAbortInstalled ) {
-
-						xhrUnloadAbortInstalled = 1;
-
-						jQuery(window).bind( "unload", function() {
-
-							// Abort all pending requests
-							jQuery.each( xhrs, function( _, xhr ) {
-								if ( xhr.onreadystatechange ) {
-									xhr.onreadystatechange( 1 );
-								}
-							} );
-
-						} );
-					}
-
 					// Get a new xhr
 					var xhr = s.xhr(),
 						handle,
@@ -99,6 +87,11 @@ if ( jQuery.support.ajax ) {
 						}
 					}
 
+					// Override mime type if needed
+					if ( s.mimeType && xhr.overrideMimeType ) {
+						xhr.overrideMimeType( s.mimeType );
+					}
+
 					// Requested-With header
 					// Not set for crossDomain requests with no content
 					// (see why at http://trac.dojotoolkit.org/ticket/9486)
@@ -109,9 +102,9 @@ if ( jQuery.support.ajax ) {
 
 					// Need an extra try/catch for cross domain requests in Firefox 3
 					try {
-						jQuery.each( headers, function( key, value ) {
-							xhr.setRequestHeader( key, value );
-						} );
+						for ( i in headers ) {
+							xhr.setRequestHeader( i, headers[ i ] );
+						}
 					} catch( _ ) {}
 
 					// Do send the request
@@ -142,7 +135,7 @@ if ( jQuery.support.ajax ) {
 								// Do not keep as active anymore
 								if ( handle ) {
 									xhr.onreadystatechange = jQuery.noop;
-									delete xhrs[ handle ];
+									delete xhrCallbacks[ handle ];
 								}
 
 								// If it's an abort
@@ -152,7 +145,6 @@ if ( jQuery.support.ajax ) {
 										xhr.abort();
 									}
 								} else {
-									// Get info
 									status = xhr.status;
 									responseHeaders = xhr.getAllResponseHeaders();
 									responses = {};
@@ -223,10 +215,15 @@ if ( jQuery.support.ajax ) {
 					if ( !s.async || xhr.readyState === 4 ) {
 						callback();
 					} else {
-						// Add to list of active xhrs
+						// Create the active xhrs callbacks list if needed
+						// and attach the unload handler
+						if ( !xhrCallbacks ) {
+							xhrCallbacks = {};
+							xhrOnUnloadAbort();
+						}
+						// Add to list of active xhrs callbacks
 						handle = xhrId++;
-						xhrs[ handle ] = xhr;
-						xhr.onreadystatechange = callback;
+						xhr.onreadystatechange = xhrCallbacks[ handle ] = callback;
 					}
 				},
 

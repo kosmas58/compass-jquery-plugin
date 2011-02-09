@@ -1218,7 +1218,7 @@ return (window.jQuery = window.$ = jQuery);
 		jQuery.support.deleteExpando = false;
 	}
 
-	if ( div.attachEvent && div.fireEvent ) {
+	if ( !div.addEventListener && div.attachEvent && div.fireEvent ) {
 		div.attachEvent("onclick", function click() {
 			// Cloning a node shouldn't copy over any
 			// bound event handlers (IE does this)
@@ -1395,7 +1395,7 @@ jQuery.extend({
 
 		// An object can be passed to jQuery.data instead of a key/value pair; this gets
 		// shallow copied over onto the existing cache
-		if ( typeof name === "object" ) {
+		if ( typeof name === "object" || typeof name === "function" ) {
 			if ( pvt ) {
 				cache[ id ][ internalKey ] = jQuery.extend(cache[ id ][ internalKey ], name);
 			} else {
@@ -2117,8 +2117,7 @@ var rnamespaces = /\.(.*)$/,
 	rescape = /[^\w\s.|`]/g,
 	fcleanup = function( nm ) {
 		return nm.replace(rescape, "\\$&");
-	},
-	eventKey = "events";
+	};
 
 /*
  * A number of helper functions used for managing events.
@@ -2168,23 +2167,10 @@ jQuery.event = {
 			return;
 		}
 
-		var events = elemData[ eventKey ],
+		var events = elemData.events,
 			eventHandle = elemData.handle;
 
-		if ( typeof events === "function" ) {
-			// On plain objects events is a fn that holds the the data
-			// which prevents this data from being JSON serialized
-			// the function does not need to be called, it just contains the data
-			eventHandle = events.handle;
-			events = events.events;
-
-		} else if ( !events ) {
-			if ( !elem.nodeType ) {
-				// On plain objects, create a fn that acts as the holder
-				// of the values to avoid JSON serialization of event data
-				elemData[ eventKey ] = elemData = function(){};
-			}
-
+		if ( !events ) {
 			elemData.events = events = {};
 		}
 
@@ -2285,15 +2271,10 @@ jQuery.event = {
 
 		var ret, type, fn, j, i = 0, all, namespaces, namespace, special, eventType, handleObj, origType,
 			elemData = jQuery.hasData( elem ) && jQuery._data( elem ),
-			events = elemData && elemData[ eventKey ];
+			events = elemData && elemData.events;
 
 		if ( !elemData || !events ) {
 			return;
-		}
-
-		if ( typeof events === "function" ) {
-			elemData = events;
-			events = events.events;
 		}
 
 		// types is actually an event object here
@@ -2395,10 +2376,7 @@ jQuery.event = {
 			delete elemData.events;
 			delete elemData.handle;
 
-			if ( typeof elemData === "function" ) {
-				jQuery.removeData( elem, eventKey, true );
-
-			} else if ( jQuery.isEmptyObject( elemData ) ) {
+			if ( jQuery.isEmptyObject( elemData ) ) {
 				jQuery.removeData( elem, undefined, true );
 			}
 		}
@@ -2439,7 +2417,7 @@ jQuery.event = {
 						// points to jQuery.expando
 						var internalKey = jQuery.expando,
 							internalCache = this[ internalKey ];
-						if ( internalCache && internalCache.events && internalCache.events[type] ) {
+						if ( internalCache && internalCache.events && internalCache.events[ type ] ) {
 							jQuery.event.trigger( event, data, internalCache.handle.elem );
 						}
 					});
@@ -2465,9 +2443,7 @@ jQuery.event = {
 		event.currentTarget = elem;
 
 		// Trigger the event, it is assumed that "handle" is a function
-		var handle = elem.nodeType ?
-			jQuery._data( elem, "handle" ) :
-			(jQuery._data( elem, eventKey ) || {}).handle;
+		var handle = jQuery._data( elem, "handle" );
 
 		if ( handle ) {
 			handle.apply( elem, data );
@@ -2545,11 +2521,7 @@ jQuery.event = {
 
 		event.namespace = event.namespace || namespace_sort.join(".");
 
-		events = jQuery._data(this, eventKey);
-
-		if ( typeof events === "function" ) {
-			events = events.events;
-		}
+		events = jQuery._data(this, "events");
 
 		handlers = (events || {})[ event.type ];
 
@@ -2716,7 +2688,7 @@ jQuery.Event = function( src ) {
 
 		// Events bubbling up the document may have been marked as prevented
 		// by a handler lower down the tree; reflect the correct value.
-		this.isDefaultPrevented = (src.defaultPrevented || src.returnValue === false || 
+		this.isDefaultPrevented = (src.defaultPrevented || src.returnValue === false ||
 			src.getPreventDefault && src.getPreventDefault()) ? returnTrue : returnFalse;
 
 	// Event type
@@ -2791,6 +2763,12 @@ var withinElement = function( event ) {
 	// Firefox sometimes assigns relatedTarget a XUL element
 	// which we cannot access the parentNode property of
 	try {
+
+		// Chrome does something similar, the parentNode property
+		// can be accessed but is null.
+		if ( parent !== document && !parent.parentNode ) {
+			return;
+		}
 		// Traverse up the tree
 		while ( parent && parent !== this ) {
 			parent = parent.parentNode;
@@ -2990,8 +2968,8 @@ if ( document.addEventListener ) {
 		jQuery.event.special[ fix ] = {
 			setup: function() {
 				this.addEventListener( orig, handler, true );
-			}, 
-			teardown: function() { 
+			},
+			teardown: function() {
 				this.removeEventListener( orig, handler, true );
 			}
 		};
@@ -3184,11 +3162,7 @@ function liveHandler( event ) {
 	var stop, maxLevel, related, match, handleObj, elem, j, i, l, data, close, namespace, ret,
 		elems = [],
 		selectors = [],
-		events = jQuery._data( this, eventKey );
-
-	if ( typeof events === "function" ) {
-		events = events.events;
-	}
+		events = jQuery._data( this, "events" );
 
 	// Make sure we avoid non-left-click bubbling in Firefox (#3861) and disabled elements in IE (#6911)
 	if ( event.liveFired === this || !events || !events.live || event.target.disabled || event.button && event.type === "click" ) {
@@ -6395,9 +6369,10 @@ jQuery.extend({
 				( s.context = ( "context" in options ? options : jQuery.ajaxSettings ).context ) || s,
 			// Context for global events
 			// It's the callbackContext if one was provided in the options
-			// and if it's a DOM node
-			globalEventContext = callbackContext !== s && callbackContext.nodeType ?
-				jQuery( callbackContext ) : jQuery.event,
+			// and if it's a DOM node or a jQuery collection
+			globalEventContext = callbackContext !== s &&
+				( callbackContext.nodeType || callbackContext instanceof jQuery ) ?
+						jQuery( callbackContext ) : jQuery.event,
 			// Deferreds
 			deferred = jQuery.Deferred(),
 			completeDeferred = jQuery._Deferred(),
@@ -6453,6 +6428,14 @@ jQuery.extend({
 						match = responseHeaders[ key.toLowerCase() ];
 					}
 					return match || null;
+				},
+
+				// Overrides response content-type header
+				overrideMimeType: function( type ) {
+					if ( state === 0 ) {
+						s.mimeType = type;
+					}
+					return this;
 				},
 
 				// Cancel the request
@@ -6538,7 +6521,7 @@ jQuery.extend({
 				// We extract error from statusText
 				// then normalize statusText and status for non-aborts
 				error = statusText;
-				if( status ) {
+				if( !statusText || status ) {
 					statusText = "error";
 					if ( status < 0 ) {
 						status = 0;
@@ -6714,8 +6697,7 @@ jQuery.extend({
 		if ( !transport ) {
 			done( -1, "No Transport" );
 		} else {
-			// Set state as sending
-			state = jqXHR.readyState = 1;
+			jqXHR.readyState = 1;
 			// Send global event
 			if ( fireGlobals ) {
 				globalEventContext.trigger( "ajaxSend", [ jqXHR, s ] );
@@ -6728,6 +6710,7 @@ jQuery.extend({
 			}
 
 			try {
+				state = 1;
 				transport.send( requestHeaders, done );
 			} catch (e) {
 				// Propagate exception as error if not done
@@ -6856,7 +6839,7 @@ function ajaxHandleResponses( s, jqXHR, responses ) {
 	while( dataTypes[ 0 ] === "*" ) {
 		dataTypes.shift();
 		if ( ct === undefined ) {
-			ct = jqXHR.getResponseHeader( "content-type" );
+			ct = s.mimeType || jqXHR.getResponseHeader( "content-type" );
 		}
 	}
 
@@ -7163,6 +7146,23 @@ jQuery.ajaxTransport( "script", function(s) {
 
 (function( jQuery ) {
 
+var // #5280: next active xhr id and list of active xhrs' callbacks
+	xhrId = jQuery.now(),
+	xhrCallbacks,
+
+	// XHR used to determine supports properties
+	testXHR;
+
+// #5280: Internet Explorer will keep connections alive if we don't abort on unload
+function xhrOnUnloadAbort() {
+	jQuery( window ).unload(function() {
+		// Abort all pending requests
+		for ( var key in xhrCallbacks ) {
+			xhrCallbacks[ key ]( 0, 1 );
+		}
+	});
+}
+
 // Functions to create xhrs
 function createStandardXHR() {
 	try {
@@ -7175,18 +7175,6 @@ function createActiveXHR() {
 		return new window.ActiveXObject("Microsoft.XMLHTTP");
 	} catch( e ) {}
 }
-
-var // Next active xhr id
-	xhrId = jQuery.now(),
-
-	// active xhrs
-	xhrs = {},
-
-	// #5280: see below
-	xhrUnloadAbortInstalled,
-
-	// XHR used to determine supports properties
-	testXHR;
 
 // Create the request object
 // (This is still attached to ajaxSettings for backward compatibility)
@@ -7225,23 +7213,6 @@ if ( jQuery.support.ajax ) {
 			return {
 				send: function( headers, complete ) {
 
-					// #5280: we need to abort on unload or IE will keep connections alive
-					if ( !xhrUnloadAbortInstalled ) {
-
-						xhrUnloadAbortInstalled = 1;
-
-						jQuery(window).bind( "unload", function() {
-
-							// Abort all pending requests
-							jQuery.each( xhrs, function( _, xhr ) {
-								if ( xhr.onreadystatechange ) {
-									xhr.onreadystatechange( 1 );
-								}
-							} );
-
-						} );
-					}
-
 					// Get a new xhr
 					var xhr = s.xhr(),
 						handle,
@@ -7262,6 +7233,11 @@ if ( jQuery.support.ajax ) {
 						}
 					}
 
+					// Override mime type if needed
+					if ( s.mimeType && xhr.overrideMimeType ) {
+						xhr.overrideMimeType( s.mimeType );
+					}
+
 					// Requested-With header
 					// Not set for crossDomain requests with no content
 					// (see why at http://trac.dojotoolkit.org/ticket/9486)
@@ -7272,9 +7248,9 @@ if ( jQuery.support.ajax ) {
 
 					// Need an extra try/catch for cross domain requests in Firefox 3
 					try {
-						jQuery.each( headers, function( key, value ) {
-							xhr.setRequestHeader( key, value );
-						} );
+						for ( i in headers ) {
+							xhr.setRequestHeader( i, headers[ i ] );
+						}
 					} catch( _ ) {}
 
 					// Do send the request
@@ -7305,7 +7281,7 @@ if ( jQuery.support.ajax ) {
 								// Do not keep as active anymore
 								if ( handle ) {
 									xhr.onreadystatechange = jQuery.noop;
-									delete xhrs[ handle ];
+									delete xhrCallbacks[ handle ];
 								}
 
 								// If it's an abort
@@ -7315,7 +7291,6 @@ if ( jQuery.support.ajax ) {
 										xhr.abort();
 									}
 								} else {
-									// Get info
 									status = xhr.status;
 									responseHeaders = xhr.getAllResponseHeaders();
 									responses = {};
@@ -7386,10 +7361,15 @@ if ( jQuery.support.ajax ) {
 					if ( !s.async || xhr.readyState === 4 ) {
 						callback();
 					} else {
-						// Add to list of active xhrs
+						// Create the active xhrs callbacks list if needed
+						// and attach the unload handler
+						if ( !xhrCallbacks ) {
+							xhrCallbacks = {};
+							xhrOnUnloadAbort();
+						}
+						// Add to list of active xhrs callbacks
 						handle = xhrId++;
-						xhrs[ handle ] = xhr;
-						xhr.onreadystatechange = callback;
+						xhr.onreadystatechange = xhrCallbacks[ handle ] = callback;
 					}
 				},
 
