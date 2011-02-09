@@ -1579,7 +1579,7 @@ $.widget( "mobile.page", $.mobile.widget, {
 
 			//get path from current hash, or from a file path
 			get: function( newPath ){
-				if( newPath == undefined ){
+				if( newPath === undefined ){
 					newPath = location.hash;
 				}
 				return path.stripHash( newPath ).replace(/[^\/]*\.[^\/*]+$/, '');
@@ -1625,16 +1625,16 @@ $.widget( "mobile.page", $.mobile.widget, {
 			},
 
 			hasProtocol: function( url ){
-				return /^(:?\w+:)/.test( url );
+				return (/^(:?\w+:)/).test( url );
 			},
 
 			//check if the url is relative
 			isRelative: function( url ){
-				return  /^[^\/|#]/.test( url ) && !path.hasProtocol( url );
+				return  (/^[^\/|#]/).test( url ) && !path.hasProtocol( url );
 			},
 
 			isEmbeddedPage: function( url ){
-				return /^#/.test( url );
+				return (/^#/).test( url );
 			}
 		},
 
@@ -1709,11 +1709,11 @@ $.widget( "mobile.page", $.mobile.widget, {
 		if ($base.length){
 			var href = $base.attr("href");
 			if (href){
-				if (href.search(/^[^:\/]+:\/\/[^\/]+\/?/) == -1){
+				if (href.search(/^[^:\/]+:\/\/[^\/]+\/?/) === -1){
 					//the href is not absolute, we need to turn it into one
 					//so that we can turn paths stored in our location hash into
 					//relative paths.
-					if (href.charAt(0) == '/'){
+					if (href.charAt(0) === '/'){
 						//site relative url
 						docBase = hostURL + href;
 					}
@@ -1730,7 +1730,7 @@ $.widget( "mobile.page", $.mobile.widget, {
 				}
 			}
 			//make sure docBase ends with a slash
-			docBase = docBase  + (docBase.charAt(docBase.length - 1) == '/' ? ' ' : '/');
+			docBase = docBase  + (docBase.charAt(docBase.length - 1) === '/' ? ' ' : '/');
 		}
 
 		//base element management, defined depending on dynamic base tag support
@@ -1770,7 +1770,7 @@ $.widget( "mobile.page", $.mobile.widget, {
 		else{
 			page.find( focusable ).eq(0).focus();
 		}
-	};
+	}
 
 	//remove active classes after page transition or error
 	function removeActiveLinkClass( forceRemoval ){
@@ -1778,7 +1778,7 @@ $.widget( "mobile.page", $.mobile.widget, {
 			$activeClickedLink.removeClass( $.mobile.activeBtnClass );
 		}
 		$activeClickedLink = null;
-	};
+	}
 
 	//animation complete callback
 	$.fn.animationComplete = function( callback ){
@@ -1818,10 +1818,13 @@ $.widget( "mobile.page", $.mobile.widget, {
 		//from is always the currently viewed page
 		var toIsArray = $.type(to) === "array",
 			toIsObject = $.type(to) === "object",
-			from = toIsArray ? to[0] : $.mobile.activePage,
-			to = toIsArray ? to[1] : to,
-			url = fileUrl = $.type(to) === "string" ? path.stripHash( to ) : "",
-			data = undefined,
+			from = toIsArray ? to[0] : $.mobile.activePage;
+
+			to = toIsArray ? to[1] : to;
+			
+		var url = $.type(to) === "string" ? path.stripHash( to ) : "",
+			fileUrl = url,
+			data,
 			type = 'get',
 			isFormRequest = false,
 			duplicateCachedPage = null,
@@ -1850,7 +1853,7 @@ $.widget( "mobile.page", $.mobile.widget, {
 			// check if url is in history and if it's ahead or behind current page
 			$.each( urlHistory.stack, function( i ){
 				//if the url is in the stack, it's a forward or a back
-				if( this.url == url ){
+				if( this.url === url ){
 					urlIndex = i;
 					//define back and forward by whether url is older or newer than current page
 					back = i < urlHistory.activeIndex;
@@ -1873,13 +1876,13 @@ $.widget( "mobile.page", $.mobile.widget, {
 
 
 		if( toIsObject && to.url ){
-			url = to.url,
-			data = to.data,
-			type = to.type,
+			url = to.url;
+			data = to.data;
+			type = to.type;
 			isFormRequest = true;
 			//make get requests bookmarkable
-			if( data && type == 'get' ){
-				if($.type( data ) == "object" ){
+			if( data && type === 'get' ){
+				if($.type( data ) === "object" ){
 					data = $.param(data);
 				}
 
@@ -1961,7 +1964,7 @@ $.widget( "mobile.page", $.mobile.widget, {
 				$.mobile.activePage = to;
 
 				//if there's a duplicateCachedPage, remove it from the DOM now that it's hidden
-				if (duplicateCachedPage != null) {
+				if (duplicateCachedPage !== null) {
 				    duplicateCachedPage.remove();
 				}
 				
@@ -1969,12 +1972,12 @@ $.widget( "mobile.page", $.mobile.widget, {
 				$html.removeClass( "ui-mobile-rendering" );
 
 				releasePageTransitionLock();
-			};
+			}
 
 			function addContainerClass(className){
 				$.mobile.pageContainer.addClass(className);
 				pageContainerClasses.push(className);
-			};
+			}
 
 			function removeContainerClasses(){
 				$.mobile
@@ -1982,7 +1985,7 @@ $.widget( "mobile.page", $.mobile.widget, {
 					.removeClass(pageContainerClasses.join(" "));
 
 				pageContainerClasses = [];
-			};
+			}
 
 
 
@@ -2018,13 +2021,13 @@ $.widget( "mobile.page", $.mobile.widget, {
 				to.addClass( $.mobile.activePageClass );
 				loadComplete();
 			}
-		};
+		}
 
 		//shared page enhancements
 		function enhancePage(){
 
 			//set next page role, if defined
-			if ( nextPageRole || to.data('role') == 'dialog' ) {
+			if ( nextPageRole || to.data('role') === 'dialog' ) {
 				url = urlHistory.getActive().url + dialogHashKey;
 				if(nextPageRole){
 					to.attr( "data-role", nextPageRole );
@@ -2034,7 +2037,7 @@ $.widget( "mobile.page", $.mobile.widget, {
 
 			//run page plugin
 			to.page();
-		};
+		}
 
 		//if url is a string
 		if( url ){
@@ -2045,7 +2048,7 @@ $.widget( "mobile.page", $.mobile.widget, {
 			var toID = to.attr('data-url'),
 				toIDfileurl = path.getFilePath(toID);
 
-			if(toID != toIDfileurl){
+			if(toID !== toIDfileurl){
 				fileUrl = toIDfileurl;
 			}
 		}
@@ -2118,7 +2121,7 @@ $.widget( "mobile.page", $.mobile.widget, {
 						.appendTo( $.mobile.pageContainer );
 
 					enhancePage();
-					setTimeout(function() { transitionPages() }, 0);
+					setTimeout(function() { transitionPages(); }, 0);
 				},
 				error: function() {
 					$.mobile.pageLoading( true );
@@ -2195,7 +2198,7 @@ $.widget( "mobile.page", $.mobile.widget, {
 			//check for protocol or rel and its not an embedded page
 			//TODO overlap in logic from isExternal, rel=external check should be
 			//     moved into more comprehensive isExternalLink
-			isExternal = path.isExternal( url ) || isRelExternal && !isEmbeddedPage,
+			isExternal = path.isExternal( url ) || (isRelExternal && !isEmbeddedPage),
 
 			//if target attr is specified we mimic _blank... for now
 			hasTarget = $this.is( "[target]" ),
@@ -2237,7 +2240,7 @@ $.widget( "mobile.page", $.mobile.widget, {
 			//use ajax
 			var transition = $this.data( "transition" ),
 				direction = $this.data("direction"),
-				reverse = direction && direction == "reverse" ||
+				reverse = (direction && direction === "reverse") ||
 				// deprecated - remove by 1.0
 				$this.data( "back" );
 
@@ -2266,7 +2269,7 @@ $.widget( "mobile.page", $.mobile.widget, {
 			
 		//if listening is disabled (either globally or temporarily), or it's a dialog hash
 		if( !$.mobile.hashListeningEnabled || !urlHistory.ignoreNextHashChange ||
-				urlHistory.stack.length > 1 && to.indexOf( dialogHashKey ) > -1 && !$.mobile.activePage.is( ".ui-dialog" )
+				(urlHistory.stack.length > 1 && to.indexOf( dialogHashKey ) > -1 && !$.mobile.activePage.is( ".ui-dialog" ))
 		){
 			if( !urlHistory.ignoreNextHashChange ){
 				urlHistory.ignoreNextHashChange = true;
