@@ -1,17 +1,19 @@
 .iphone .emulator {
-	margin-top: 56px;
-  background: image_url("emulators/iphone.portrait.png") no-repeat;
-  width: 390px;
-  height: 740px;
+    margin-top: 56px;
+    background: image_url("emulators/iphone.portrait.png") no-repeat;
+    width: 390px;
+    height: 740px;
 }
+
 .iphone .emulator .display-area {
-  position: relative;
-  top: 138px;
-  width: 320px;
-  height: 460px;
-  max-height: 460px;
-  color: #ffffff;
+    position: relative;
+    top: 138px;
+    width: 320px;
+    height: 460px;
+    max-height: 460px;
+    color: #ffffff;
 }
+
 .iphone .emulator .display-area a {
-  color: #ff5500;
+    color: #ff5500;
 }

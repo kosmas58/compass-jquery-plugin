@@ -30,9 +30,9 @@ ul {
       background-image: image_url("jquery/dynatree/xp/vline.png");
       background-position: 0 0;
       /*
-      background-image: url("icons_96x256.gif");
-      background-position: -80px -64px;
-      */
+       background-image: url("icons_96x256.gif");
+       background-position: -80px -64px;
+       */
       margin: 0;
       padding: 1px 0 0 0;
       &.dynatree-lastsib {
@@ -92,8 +92,8 @@ ul.dynatree-container img {
   border-style: none; }
 
 /*******************************************************************************
- * Lines and connectors
- */
+* Lines and connectors
+*/
 
 span {
   &.dynatree-connector {
@@ -133,8 +133,8 @@ span {
   background-image: image_url("jquery/dynatree/xp/loading.gif"); }
 
 /*******************************************************************************
- * Checkbox icon
- */
+* Checkbox icon
+*/
 
 span.dynatree-checkbox {
   margin-left: 3px;
@@ -275,14 +275,14 @@ div.dynatree-drag-helper a {
 
 span.dynatree-drag-helper-img {
   /*
-  position: relative;
-  left: -16px;
-  */ }
+   position: relative;
+   left: -16px;
+   */ }
 
 div {
   &.dynatree-drag-helper {
     /*    border-color: green;
-    	background-color: red;*/ }
+     background-color: red;*/ }
   &.dynatree-drop-accept span.dynatree-drag-helper-img {
     background-position: -32px -112px; }
   &.dynatree-drag-helper.dynatree-drop-reject {
@@ -316,8 +316,8 @@ span {
     /*border: 1px solid gray;*/
     a {
       /*background-repeat: no-repeat;
-      background-position: right;
-      background-image: url("drop_child.gif");*/ }
+       background-position: right;
+       background-image: url("drop_child.gif");*/ }
     &.dynatree-drop-accept a {
       /*border: 1px solid green;*/
       background-color: #3169C6 !important;
@@ -328,8 +328,8 @@ span {
       /*border: 1px solid red;*/ }
     &.dynatree-drop-after a {
       /*background-repeat: repeat-x;
-      background-position: bottom;
-      background-image: url("drop_append.gif");*/ } }
+       background-position: bottom;
+       background-image: url("drop_append.gif");*/ } }
   &.custom1 a {
     background-color: maroon;
     color: yellow; } }
@@ -337,5 +337,5 @@ span {
 /*** Target node while dragging cursor is over it *****************************/
 
 /*******************************************************************************
- * Custom node classes (sample)
- */
+* Custom node classes (sample)
+*/

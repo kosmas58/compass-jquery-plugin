@@ -1,65 +1,54 @@
-﻿body
-{
-	padding-top: 120px;	
+﻿body {
+    padding-top: 120px;
 }
 
-.clear
-{
+.clear {
     clear: both;
     font-size: 1px;
     line-height: 1px;
 }
 
-.mainContainer
-{	
+.mainContainer {
     position: fixed;
     top: 0px;
     left: 0px;
 }
 
-ul.ribbon
-{
+ul.ribbon {
     margin: 0px;
     padding: 0px;
     font-size: 0.8em;
 }
 
-ul.ribbon *
-{
+ul.ribbon * {
     margin: 0px;
     padding: 0px;
     list-style-type: none;
 }
 
-ul.ribbon ul
-{
+ul.ribbon ul {
 }
 
-ul.ribbon ul ul
-{
-    /*display: none;*/
+ul.ribbon ul ul {
+/*display: none;*/
 }
 
-ul.ribbon ul ul ul
-{
+ul.ribbon ul ul ul {
     display: block;
 }
 
-ul.ribbon ul ul ul li
-{
+ul.ribbon ul ul ul li {
     display: block;
     float: none;
 }
 
-ul.ribbon
-{
+ul.ribbon {
     float: left;
     position: relative;
     width: 100%;
 }
 
-ul.ribbon .orb
-{
+ul.ribbon .orb {
     display: block;
     width: 56px;
     height: 22px;
@@ -74,31 +63,26 @@ ul.ribbon .orb
     top: 1px;
 }
 
-ul.ribbon .orb li ul
-{
+ul.ribbon .orb li ul {
     background-image: image_url("jquery/ribbon/simple/menu_middle.png");
     background-repeat: repeat-y;
     background-position: right;
 }
 
-ul.ribbon .orb:hover
-{
+ul.ribbon .orb:hover {
     background-image: image_url("jquery/ribbon/simple/orb_hover.png");
 }
 
-ul.ribbon .orb span
-{
+ul.ribbon .orb span {
     display: none;
 }
 
-ul.ribbon .orb li
-{
+ul.ribbon .orb li {
     margin-top: 10px;
     margin-left: 10px;
 }
 
-ul.ribbon .orb ul
-{
+ul.ribbon .orb ul {
     background-color: #fff;
     width: 499px;
     padding: 10px;
@@ -110,35 +94,30 @@ ul.ribbon .orb ul
     left: 11px;
 }
 
-ul.ribbon .orb li ul li
-{
+ul.ribbon .orb li ul li {
     margin-top: 0px;
     margin-left: -9px;
     padding-left: 9px;
     width: 205px;
 }
 
-ul.ribbon .orb li ul li a
-{
+ul.ribbon .orb li ul li a {
     width: 190px;
 }
 
-ul.ribbon .orb li ul li a.arrow
-{
+ul.ribbon .orb li ul li a.arrow {
     background-image: image_url("jquery/ribbon/simple/arrow.png");
     background-repeat: no-repeat;
     background-position: center right;
 }
 
-li.arrow
-{
+li.arrow {
     background-image: image_url("jquery/ribbon/simple/arrow_down.png");
     background-repeat: no-repeat;
     background-position: center right;
 }
 
-ul.ribbon .orb li ul li ul
-{
+ul.ribbon .orb li ul li ul {
     position: absolute;
     top: 13px;
     left: 230px;
@@ -150,16 +129,14 @@ ul.ribbon .orb li ul li ul
     margin-top: 0px;
 }
 
-ul.ribbon .orb li ul li ul li
-{
+ul.ribbon .orb li ul li ul li {
     width: 100%;
     margin: 0px;
     height: 53px;
     line-height: 53px;
 }
 
-ul.ribbon .orb li ul li ul li a
-{
+ul.ribbon .orb li ul li ul li a {
     width: 100%;
     margin: 0px;
     height: 53px;
@@ -167,8 +144,7 @@ ul.ribbon .orb li ul li ul li a
     font-weight: bold;
 }
 
-ul.ribbon .orb li ul li ul li:hover
-{
+ul.ribbon .orb li ul li ul li:hover {
     background-image: image_url("jquery/ribbon/simple/orb_submenu_item_hover.png");
     background-repeat: repeat-x;
     height: 51px;
@@ -176,14 +152,12 @@ ul.ribbon .orb li ul li ul li:hover
     line-height: 51px;
 }
 
-ul.ribbon .orb li ul li ul li:hover a
-{
+ul.ribbon .orb li ul li ul li:hover a {
     height: 51px;
     line-height: 51px;
 }
 
-ul.ribbon .orb li ul li:hover
-{
+ul.ribbon .orb li ul li:hover {
     background-image: image_url("jquery/ribbon/simple/menu_item_hover.png");
     background-repeat: no-repeat;
     padding-left: 8px;
@@ -192,8 +166,7 @@ ul.ribbon .orb li ul li:hover
     line-height: 38px;
 }
 
-ul.ribbon .orb ul a
-{
+ul.ribbon .orb ul a {
     clear: both;
     display: block;
     vertical-align: middle;
@@ -204,51 +177,43 @@ ul.ribbon .orb ul a
     line-height: 42px;
 }
 
-ul.ribbon .orb ul a:hover
-{
+ul.ribbon .orb ul a:hover {
     height: 40px;
     line-height: 40px;
 }
 
-ul.ribbon .orb ul a img
-{
+ul.ribbon .orb ul a img {
     position: absolute;
     bottom: 7px;
 }
 
-ul.ribbon .orb ul a:hover img
-{
+ul.ribbon .orb ul a:hover img {
     position: absolute;
     bottom: 6px;
 }
 
-ul.ribbon .orb li ul li ul li a img
-{
+ul.ribbon .orb li ul li ul li a img {
     position: absolute;
     bottom: 13px;
 }
 
-ul.ribbon .orb li ul li ul li:hover a img
-{
+ul.ribbon .orb li ul li ul li:hover a img {
     position: absolute;
     bottom: 12px;
 }
 
-ul.ribbon .orb ul a span
-{
+ul.ribbon .orb ul a span {
     display: inline;
     left: 40px;
     top: 0px;
     position: absolute;
 }
 
-ul.ribbon a
-{
+ul.ribbon a {
     outline: none;
 }
 
-ul.menu
-{
+ul.menu {
     clear: both;
     padding-left: 60px;
     margin-top: -32px;
@@ -256,13 +221,11 @@ ul.menu
     width: 1000px;
 }
 
-ul.menu li
-{
+ul.menu li {
     float: left;
 }
 
-ul.menu li a
-{
+ul.menu li a {
     display: block;
     padding-top: 3px;
     text-decoration: none;
@@ -273,15 +236,13 @@ ul.menu li a
     text-align: center;
 }
 
-ul.menu li a.active
-{
+ul.menu li a.active {
     background-color: #d9e3f3;
     background-image: image_url("jquery/ribbon/simple/menuitem_background.png");
     background-repeat: no-repeat;
 }
 
-ul.menu .submenu
-{
+ul.menu .submenu {
     display: block;
     position: absolute;
     left: 0px;
@@ -298,29 +259,27 @@ ul.menu .submenu
     border-top: 1px solid #8db2e3;
 }
 
-ul.menu .submenu li
-{
+ul.menu .submenu li {
     height: 80px;
     cursor: pointer;
     margin-top: 5px;
-	position: relative;
-	padding: 0px 5px 0px 5px;
+    position: relative;
+    padding: 0px 5px 0px 5px;
 }
 
-.submenu h2
-{
-	font-family: Calibri;
-	font-size: 11px;
-	font-weight: normal;
-	margin: 0px auto;
-	top: 65px;
-	left: 0;
-	right: 0;
-	text-align: center;
-	position: absolute;
+.submenu h2 {
+    font-family: Calibri;
+    font-size: 11px;
+    font-weight: normal;
+    margin: 0px auto;
+    top: 65px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    position: absolute;
 }
-ul.menu li ul li div
-{
+
+ul.menu li ul li div {
     padding: 5px;
     padding-top: 1px;
     text-align: center;
@@ -329,8 +288,7 @@ ul.menu li ul li div
     float: left;
 }
 
-ul.menu li ul li div:hover
-{
+ul.menu li ul li div:hover {
     padding: 4px;
     padding-top: 0px;
     background-image: image_url("jquery/ribbon/simple/item_background.png");
@@ -339,20 +297,17 @@ ul.menu li ul li div:hover
     border: 1px solid #FFB700;
 }
 
-ul.menu li ul div.ribbon-list
-{
-	padding: 0px 5px 0px 5px;
+ul.menu li ul div.ribbon-list {
+    padding: 0px 5px 0px 5px;
 }
 
-ul.menu li ul div.ribbon-list:hover
-{
-	background-image: none;
-	border: 0px;
-	padding: 0px 5px 0px 5px;
+ul.menu li ul div.ribbon-list:hover {
+    background-image: none;
+    border: 0px;
+    padding: 0px 5px 0px 5px;
 }
 
-ul.menu li ul div.ribbon-list div
-{
+ul.menu li ul div.ribbon-list div {
     padding: 1px;
     text-align: left;
     margin: 1px;
@@ -361,21 +316,18 @@ ul.menu li ul div.ribbon-list div
     float: none;
 }
 
-ul.menu li ul div.ribbon-list input
-{
-	margin-top: 3px;
+ul.menu li ul div.ribbon-list input {
+    margin-top: 3px;
     margin-right: 3px;
 }
 
-ul.menu li ul div.ribbon-list div img
-{
+ul.menu li ul div.ribbon-list div img {
     float: left;
     padding: 2px;
     padding-right: 3px;
 }
 
-ul.menu li ul div.ribbon-list div:hover
-{
+ul.menu li ul div.ribbon-list div:hover {
     padding: 0px;
     background-image: image_url("jquery/ribbon/simple/item_small_background.png");
     background-repeat: repeat-x;
@@ -383,42 +335,37 @@ ul.menu li ul div.ribbon-list div:hover
     border: 1px solid #FFB700;
 }
 
-ul.menu li ul div.ribbon-list ul
-{
-	background-color: #fff;
-	position: absolute;
-	margin-left: -1px;
-	border: 1px solid #8492A6;
+ul.menu li ul div.ribbon-list ul {
+    background-color: #fff;
+    position: absolute;
+    margin-left: -1px;
+    border: 1px solid #8492A6;
 }
 
-ul.menu li ul div.ribbon-list ul li
-{
-	background-image: image_url("jquery/ribbon/simple/menu_dropdownitembg.png");
-	background-repeat: repeat-y;
-	margin: 0px;
-	border: 0px;
-	height: auto;
-	padding: 1px;
-	padding-left: 30px;
+ul.menu li ul div.ribbon-list ul li {
+    background-image: image_url("jquery/ribbon/simple/menu_dropdownitembg.png");
+    background-repeat: repeat-y;
+    margin: 0px;
+    border: 0px;
+    height: auto;
+    padding: 1px;
+    padding-left: 30px;
 }
 
-ul.menu li ul div.ribbon-list ul li:hover
-{
-	background-image: image_url("jquery/ribbon/simple/menu_dropdownitembghover.png");
-	background-repeat: repeat-x;
-	border: 1px solid #FFB700;
-	padding: 0px;
-	padding-left: 29px;
+ul.menu li ul div.ribbon-list ul li:hover {
+    background-image: image_url("jquery/ribbon/simple/menu_dropdownitembghover.png");
+    background-repeat: repeat-x;
+    border: 1px solid #FFB700;
+    padding: 0px;
+    padding-left: 29px;
 }
 
-ul.menu li ul li div img
-{
+ul.menu li ul li div img {
     padding-top: 5px;
     display: block;
     margin: 0px auto;
 }
 
-ul.menu li li
-{
+ul.menu li li {
     border-right: 1px solid #abc;
 }

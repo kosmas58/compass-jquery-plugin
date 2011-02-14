@@ -2,12 +2,13 @@
     margin: 0;
     padding: 0;
 }
+
 a {
-    -webkit-tap-highlight-color: rgba(0,0,0,0);
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
 body {
-    -webkit-tap-highlight-color: rgba(0,0,0,0);
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     -webkit-touch-callout: none;
 }
 
@@ -64,15 +65,8 @@ body {
 }
 
 #jqt.supports3d > * {
-    -webkit-transform: translate3d(0,0,0) rotate(0) scale(1);
+    -webkit-transform: translate3d(0, 0, 0) rotate(0) scale(1);
 }
-
-
-
-
-
-
-
 
 /* Fade */
 
@@ -101,8 +95,6 @@ body {
         opacity: 0;
     }
 }
-
-
 
 /* Pop */
 
@@ -136,8 +128,6 @@ body {
     }
 }
 
-
-
 /* Slide Left */
 
 #jqt .slideleft.in {
@@ -165,8 +155,6 @@ body {
         -webkit-transform: translateX(-100%);
     }
 }
-
-
 
 /* Slide Right */
 
@@ -196,14 +184,13 @@ body {
     }
 }
 
-
-
 /* Slide Up */
 
 #jqt .slideup.in {
     z-index: 10;
     -webkit-animation-name: slideUpIn;
 }
+
 #jqt .slideup.out {
     z-index: 0;
     -webkit-animation-name: slideUpOut;
@@ -227,14 +214,13 @@ body {
     }
 }
 
-
-
 /* Slide Down */
 
 #jqt .slidedown.in {
     z-index: 0;
     -webkit-animation-name: slideDownIn;
 }
+
 #jqt .slidedown.out {
     z-index: 10;
     -webkit-animation-name: slideDownOut;
@@ -257,9 +243,6 @@ body {
         -webkit-transform: translateY(100%);
     }
 }
-
-
-
 
 /* Flip Left */
 
@@ -293,8 +276,6 @@ body {
     }
 }
 
-
-
 /* Flip Right */
 
 #jqt .flipright {
@@ -327,8 +308,6 @@ body {
     }
 }
 
-
-
 /* Swap Right */
 
 #jqt .swapright {
@@ -336,9 +315,11 @@ body {
     -webkit-transform: perspective(800);
     -webkit-animation-timing-function: ease-out;
 }
+
 #jqt .swapright.in {
     -webkit-animation-name: swapRightIn;
 }
+
 #jqt .swapright.out {
     -webkit-animation-name: swapRightOut;
 }
@@ -373,8 +354,6 @@ body {
     }
 }
 
-
-
 /* Swap Left */
 
 #jqt .swapleft {
@@ -382,9 +361,11 @@ body {
     -webkit-transform: perspective(800);
     -webkit-animation-timing-function: ease-out;
 }
+
 #jqt .swapleft.in {
     -webkit-animation-name: swapLeftIn;
 }
+
 #jqt .swapleft.out {
     -webkit-animation-name: swapLeftOut;
 }
@@ -419,8 +400,6 @@ body {
     }
 }
 
-
-
 /* Cube Left */
 
 #jqt .cubeleft {
@@ -434,7 +413,7 @@ body {
 
 #jqt .cubeleft.out {
     -webkit-transform-origin: 0% 50%;
-    -webkit-animation-name: cubeLeftOut;    
+    -webkit-animation-name: cubeLeftOut;
 }
 
 @-webkit-keyframes cubeLeftIn {
@@ -459,8 +438,6 @@ body {
     }
 }
 
-
-
 /* Cube Right */
 
 #jqt .cuberight {
@@ -474,7 +451,7 @@ body {
 
 #jqt .cuberight.out {
     -webkit-transform-origin: 100% 50%;
-    -webkit-animation-name: cubeRightOut;    
+    -webkit-animation-name: cubeRightOut;
 }
 
 @-webkit-keyframes cubeRightIn {

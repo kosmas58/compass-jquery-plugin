@@ -1,11 +1,12 @@
-;(function ($) {
-/**
- * jqGrid Persian Translation
- * Dual licensed under the MIT and GPL licenses:
- * http://www.opensource.org/licenses/mit-license.php
- * http://www.gnu.org/licenses/gpl.html
-**/
-	$.jgrid = {
+;
+(function ($) {
+    /**
+     * jqGrid Persian Translation
+     * Dual licensed under the MIT and GPL licenses:
+     * http://www.opensource.org/licenses/mit-license.php
+     * http://www.gnu.org/licenses/gpl.html
+     **/
+    $.jgrid = {
         defaults: {
             recordtext: "نمابش {0} - {1} از {2}",
             emptyrecords: "رکوردی یافت نشد",
@@ -17,14 +18,16 @@
             Find: "يافته ها",
             Reset: "از نو",
             odata: ['برابر', 'نا برابر', 'به', 'کوچکتر', 'از', 'بزرگتر', 'شروع با', 'شروع نشود با', 'نباشد', 'عضو این نباشد', 'اتمام با', 'تمام نشود با', 'حاوی', 'نباشد حاوی'],
-            groupOps: [{
-                op: "AND",
-                text: "کل"
-            },
-            {
-                op: "OR",
-                text: "مجموع"
-            }],
+            groupOps: [
+                {
+                    op: "AND",
+                    text: "کل"
+                },
+                {
+                    op: "OR",
+                    text: "مجموع"
+                }
+            ],
             matchText: " حاوی",
             rulesText: " اطلاعات"
         },

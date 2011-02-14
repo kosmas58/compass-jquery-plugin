@@ -49,8 +49,8 @@ ul {
   background-color: silver; }
 
 /*******************************************************************************
- * Common icon definitions
- */
+* Common icon definitions
+*/
 
 span {
   &.dynatree-empty, &.dynatree-vline, &.dynatree-connector, &.dynatree-expander, &.dynatree-icon, &.dynatree-checkbox, &.dynatree-radio, &.dynatree-drag-helper-img {
@@ -89,8 +89,8 @@ ul.dynatree-container img {
   border-style: none; }
 
 /*******************************************************************************
- * Lines and connectors
- */
+* Lines and connectors
+*/
 
 /*
 span.dynatree-empty
@@ -139,8 +139,8 @@ span {
   background-image: image_url("jquery/dynatree/crystal/loading.gif"); }
 
 /*******************************************************************************
- * Checkbox icon
- */
+* Checkbox icon
+*/
 
 span.dynatree-checkbox {
   margin-left: 3px;
@@ -234,8 +234,8 @@ ul.dynatree-container a {
   margin-left: 3px;
   /*	outline: 0; /* @ Firefox, prevent dotted border after click */
   /* Set transparent border to prevent jumping when active node gets a border
-     (we can do this, because this theme doesn't use vertical lines)
-     */
+      (we can do this, because this theme doesn't use vertical lines)
+      */
   border: 1px solid white;
   /* Note: 'transparent' would not work in IE6 */
   &:hover {
@@ -291,14 +291,14 @@ div.dynatree-drag-helper a {
 
 span.dynatree-drag-helper-img {
   /*
-  position: relative;
-  left: -16px;
-  */ }
+   position: relative;
+   left: -16px;
+   */ }
 
 div {
   &.dynatree-drag-helper {
     /*    border-color: green;
-    	background-color: red;*/ }
+     background-color: red;*/ }
   &.dynatree-drop-accept span.dynatree-drag-helper-img {
     background-position: -32px -112px; }
   &.dynatree-drag-helper.dynatree-drop-reject {
@@ -332,8 +332,8 @@ span {
     /*border: 1px solid gray;*/
     a {
       /*background-repeat: no-repeat;
-      background-position: right;
-      background-image: url("drop_child.gif");*/ }
+       background-position: right;
+       background-image: url("drop_child.gif");*/ }
     &.dynatree-drop-accept a {
       /*border: 1px solid green;*/
       background-color: #3169C6 !important;
@@ -344,7 +344,7 @@ span {
       /*border: 1px solid red;*/ }
     &.dynatree-drop-after a {
       /*background-repeat: repeat-x;
-      background-position: bottom;
-      background-image: url("drop_append.gif");*/ } } }
+       background-position: bottom;
+       background-image: url("drop_append.gif");*/ } } }
 
 /*** Target node while dragging cursor is over it *****************************/
