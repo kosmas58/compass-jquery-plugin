@@ -92,12 +92,12 @@
         var cur = hash[index];
         content = $('#' + cur.id).find('ul:first').clone(true);
         content.css(cur.menuStyle).find('li').css(cur.itemStyle).hover(
-                                                                      function() {
-                                                                          $(this).css(cur.itemHoverStyle);
-                                                                      },
-                                                                      function() {
-                                                                          $(this).css(cur.itemStyle);
-                                                                      }
+                function() {
+                    $(this).css(cur.itemHoverStyle);
+                },
+                function() {
+                    $(this).css(cur.itemStyle);
+                }
                 ).find('img').css({verticalAlign:'middle',paddingRight:'2px'});
 
         // Send the content to the menu

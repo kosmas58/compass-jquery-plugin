@@ -64,9 +64,9 @@
                     .hover(function() {
                 ahr.addClass('ui-state-hover');
             },
-                          function() {
-                              ahr.removeClass('ui-state-hover');
-                          })
+                    function() {
+                        ahr.removeClass('ui-state-hover');
+                    })
                     .append("<span class='ui-icon ui-icon-closethick'></span>");
             $(mh).append(ahr);
             if (rtlsup) {
@@ -282,12 +282,12 @@
                 return false;
             });
             $(".fm-button", "#info_dialog").hover(
-                                                 function() {
-                                                     $(this).addClass('ui-state-hover');
-                                                 },
-                                                 function() {
-                                                     $(this).removeClass('ui-state-hover');
-                                                 }
+                    function() {
+                        $(this).addClass('ui-state-hover');
+                    },
+                    function() {
+                        $(this).removeClass('ui-state-hover');
+                    }
                     );
             if ($.isFunction(mopt.beforeOpen)) {
                 mopt.beforeOpen();
@@ -322,7 +322,7 @@
                     el.id = opt.id;
                     opt.dataInit(el);
                     delete opt.id;
-                    delete opt.dataInit;
+                    //delete opt.dataInit;
                 }
                 if (opt.dataEvents) {
                     $.each(opt.dataEvents, function() {
@@ -332,7 +332,7 @@
                             $(el).bind(this.type, this.fn);
                         }
                     });
-                    delete opt.dataEvents;
+                    //delete opt.dataEvents;
                 }
                 return opt;
             }
@@ -471,11 +471,11 @@
                                 sv = so[i].split(":");
                                 if (sv.length > 2) {
                                     sv[1] = $.map(sv,
-                                                 function(n, i) {
-                                                     if (i > 0) {
-                                                         return n;
-                                                     }
-                                                 }).join(":");
+                                            function(n, i) {
+                                                if (i > 0) {
+                                                    return n;
+                                                }
+                                            }).join(":");
                                 }
                                 ov = document.createElement("option");
                                 ov.setAttribute("role", "option");
@@ -697,22 +697,27 @@
             }
             return true;
         },
-        checkValues : function(val, valref, g) {
+        checkValues : function(val, valref, g, customobject, nam) {
             var edtrul,i, nm, dft, len;
-            if (typeof(valref) == 'string') {
-                for (i = 0,len = g.p.colModel.length; i < len; i++) {
-                    if (g.p.colModel[i].name == valref) {
-                        edtrul = g.p.colModel[i].editrules;
-                        valref = i;
-                        try {
-                            nm = g.p.colModel[i].formoptions.label;
-                        } catch (e) {
+            if (typeof(customobject) === "undefined") {
+                if (typeof(valref) == 'string') {
+                    for (i = 0,len = g.p.colModel.length; i < len; i++) {
+                        if (g.p.colModel[i].name == valref) {
+                            edtrul = g.p.colModel[i].editrules;
+                            valref = i;
+                            try {
+                                nm = g.p.colModel[i].formoptions.label;
+                            } catch (e) {
+                            }
+                            break;
                         }
-                        break;
                     }
+                } else if (valref >= 0) {
+                    edtrul = g.p.colModel[valref].editrules;
                 }
-            } else if (valref >= 0) {
-                edtrul = g.p.colModel[valref].editrules;
+            } else {
+                edtrul = customobject;
+                nm = nam === undefined ? "_" : nam;
             }
             if (edtrul) {
                 if (!nm) {

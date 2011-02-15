@@ -145,18 +145,18 @@ jQuery.tableDnD = {
                 var row = jQuery(this);
                 if (! row.hasClass("nodrag")) {
                     row.mousedown(
-                                 function(ev) {
-                                     if (ev.target.tagName == "TD") {
-                                         jQuery.tableDnD.dragObject = this;
-                                         jQuery.tableDnD.currentTable = table;
-                                         jQuery.tableDnD.mouseOffset = jQuery.tableDnD.getMouseOffset(this, ev);
-                                         if (config.onDragStart) {
-                                             // Call the onDrop method if there is one
-                                             config.onDragStart(table, this);
-                                         }
-                                         return false;
-                                     }
-                                 }).css("cursor", "move"); // Store the tableDnD object
+                            function(ev) {
+                                if (ev.target.tagName == "TD") {
+                                    jQuery.tableDnD.dragObject = this;
+                                    jQuery.tableDnD.currentTable = table;
+                                    jQuery.tableDnD.mouseOffset = jQuery.tableDnD.getMouseOffset(this, ev);
+                                    if (config.onDragStart) {
+                                        // Call the onDrop method if there is one
+                                        config.onDragStart(table, this);
+                                    }
+                                    return false;
+                                }
+                            }).css("cursor", "move"); // Store the tableDnD object
                 }
             });
         }

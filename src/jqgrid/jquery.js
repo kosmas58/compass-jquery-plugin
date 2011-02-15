@@ -1100,9 +1100,9 @@
                 va = function(a) {
                     var b = a.type,d = a.value;
                     if (b === "radio" || b === "checkbox")d = a.checked; else if (b === "select-multiple")d = a.selectedIndex > -1 ? c.map(a.options,
-                                                                                                                                          function(e) {
-                                                                                                                                              return e.selected
-                                                                                                                                          }).join("-") : ""; else if (a.nodeName.toLowerCase() === "select")d = a.selectedIndex;
+                            function(e) {
+                                return e.selected
+                            }).join("-") : ""; else if (a.nodeName.toLowerCase() === "select")d = a.selectedIndex;
                     return d
                 },Z = function(a, b) {
             var d = a.target,e,f;
@@ -1727,30 +1727,30 @@
             g = null
         })();
         u.querySelectorAll &&
-        function() {
-            var g = l,j = u.createElement("div");
-            j.innerHTML = "<p class='TEST'></p>";
-            if (!(j.querySelectorAll && j.querySelectorAll(".TEST").length === 0)) {
-                l = function(m, p, q, t) {
-                    p = p || u;
-                    if (!t && !l.isXML(p))if (p.nodeType === 9)try {
-                        return D(p.querySelectorAll(m), q)
-                    } catch(x) {
-                    } else if (p.nodeType === 1 && p.nodeName.toLowerCase() !== "object") {
-                        var C = p.id,P = p.id = "__sizzle__";
-                        try {
-                            return D(p.querySelectorAll("#" + P + " " + m), q)
-                        } catch(N) {
-                        } finally {
-                            if (C)p.id = C; else p.removeAttribute("id")
-                        }
+                function() {
+                    var g = l,j = u.createElement("div");
+                    j.innerHTML = "<p class='TEST'></p>";
+                    if (!(j.querySelectorAll && j.querySelectorAll(".TEST").length === 0)) {
+                        l = function(m, p, q, t) {
+                            p = p || u;
+                            if (!t && !l.isXML(p))if (p.nodeType === 9)try {
+                                return D(p.querySelectorAll(m), q)
+                            } catch(x) {
+                            } else if (p.nodeType === 1 && p.nodeName.toLowerCase() !== "object") {
+                                var C = p.id,P = p.id = "__sizzle__";
+                                try {
+                                    return D(p.querySelectorAll("#" + P + " " + m), q)
+                                } catch(N) {
+                                } finally {
+                                    if (C)p.id = C; else p.removeAttribute("id")
+                                }
+                            }
+                            return g(m, p, q, t)
+                        };
+                        for (var o in g)l[o] = g[o];
+                        j = null
                     }
-                    return g(m, p, q, t)
-                };
-                for (var o in g)l[o] = g[o];
-                j = null
-            }
-        }();
+                }();
         (function() {
             var g = u.documentElement,j = g.matchesSelector || g.mozMatchesSelector || g.webkitMatchesSelector || g.msMatchesSelector,o = false;
             try {
@@ -1948,10 +1948,10 @@
             var b = c(a, this[0].ownerDocument).eq(0).clone(true);
             this[0].parentNode && b.insertBefore(this[0]);
             b.map(
-                 function() {
-                     for (var d = this; d.firstChild && d.firstChild.nodeType === 1;)d = d.firstChild;
-                     return d
-                 }).append(this)
+                    function() {
+                        for (var d = this; d.firstChild && d.firstChild.nodeType === 1;)d = d.firstChild;
+                        return d
+                    }).append(this)
         }
         return this
     },wrapInner:function(a) {
@@ -1969,9 +1969,9 @@
     },
         unwrap:function() {
             return this.parent().each(
-                                     function() {
-                                         c.nodeName(this, "body") || c(this).replaceWith(this.childNodes)
-                                     }).end()
+                    function() {
+                        c.nodeName(this, "body") || c(this).replaceWith(this.childNodes)
+                    }).end()
         },append:function() {
             return this.domManip(arguments, true, function(a) {
                 this.nodeType === 1 && this.appendChild(a)
@@ -2290,19 +2290,19 @@
         return c.param(this.serializeArray())
     },serializeArray:function() {
         return this.map(
-                       function() {
-                           return this.elements ? c.makeArray(this.elements) : this
-                       }).filter(
-                                function() {
-                                    return this.name &&
-                                            !this.disabled && (this.checked || mb.test(this.nodeName) || nb.test(this.type))
-                                }).map(
-                                      function(a, b) {
-                                          var d = c(this).val();
-                                          return d == null ? null : c.isArray(d) ? c.map(d, function(e) {
-                                              return{name:b.name,value:e}
-                                          }) : {name:b.name,value:d}
-                                      }).get()
+                function() {
+                    return this.elements ? c.makeArray(this.elements) : this
+                }).filter(
+                function() {
+                    return this.name &&
+                            !this.disabled && (this.checked || mb.test(this.nodeName) || nb.test(this.type))
+                }).map(
+                function(a, b) {
+                    var d = c(this).val();
+                    return d == null ? null : c.isArray(d) ? c.map(d, function(e) {
+                        return{name:b.name,value:e}
+                    }) : {name:b.name,value:d}
+                }).get()
     }});
     c.each("ajaxStart ajaxStop ajaxComplete ajaxError ajaxSuccess ajaxSend".split(" "), function(a, b) {
         c.fn[b] = function(d) {
@@ -2500,16 +2500,16 @@
         return a
     }});
     if (E.ActiveXObject)c.ajaxSettings.xhr =
-                        function() {
-                            if (E.location.protocol !== "file:")try {
-                                return new E.XMLHttpRequest
-                            } catch(a) {
-                            }
-                            try {
-                                return new E.ActiveXObject("Microsoft.XMLHTTP")
-                            } catch(b) {
-                            }
-                        };
+            function() {
+                if (E.location.protocol !== "file:")try {
+                    return new E.XMLHttpRequest
+                } catch(a) {
+                }
+                try {
+                    return new E.ActiveXObject("Microsoft.XMLHTTP")
+                } catch(b) {
+                }
+            };
     c.support.ajax = !!c.ajaxSettings.xhr();
     var da = {},tb = /^(?:toggle|show|hide)$/,ub = /^([+\-]=)?([\d+.\-]+)(.*)$/,aa,na = [
         ["height","marginTop","marginBottom","paddingTop","paddingBottom"],
@@ -2707,10 +2707,10 @@
     }}});
     if (c.expr && c.expr.filters)c.expr.filters.animated = function(a) {
         return c.grep(c.timers,
-                     function(b) {
-                         return a ===
-                                 b.elem
-                     }).length
+                function(b) {
+                    return a ===
+                            b.elem
+                }).length
     };
     var vb = /^t(?:able|d|h)$/i,Fa = /^(?:body|html)$/i;
     c.fn.offset = "getBoundingClientRect"in u.documentElement ? function(a) {

@@ -144,9 +144,9 @@
                                             tmp[nm] = "";
                                         }
                                         $("select > option:selected", this).each(
-                                                                                function(i, selected) {
-                                                                                    selectedText[i] = $(selected).text();
-                                                                                }
+                                                function(i, selected) {
+                                                    selectedText[i] = $(selected).text();
+                                                }
                                                 );
                                         tmp2[nm] = selectedText.join(",");
                                     }

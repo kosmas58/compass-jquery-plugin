@@ -2,53 +2,55 @@ div.success,
 div.notice,
 div.warning,
 div.error {
-  font-size: 18px;
-  padding: 15px 10px;
-  margin-bottom: 10px;
+    font-size: 18px;
+    padding: 15px 10px;
+    margin-bottom: 10px;
 }
 
 div.success .icon,
 div.notice .icon,
 div.warning .icon,
 div.error .icon {
-  float: left;
-  width: 42px;
-  height: 32px;
-  margin-top: -5px;
+    float: left;
+    width: 42px;
+    height: 32px;
+    margin-top: -5px;
 }
 
 div.success {
-  background: image_url("jquery/ui/flash_messages/flash-notice-bg.png") repeat-x left top;
-  color: #41612f; 
+    background: image_url("jquery/ui/flash_messages/flash-notice-bg.png") repeat-x left top;
+    color: #41612f;
 }
 
 div.success .icon {
-  background: image_url("jquery/ui/flash_messages/flash-check.png") no-repeat left top;
+    background: image_url("jquery/ui/flash_messages/flash-check.png") no-repeat left top;
 }
 
 div.notice {
-  background: image_url("jquery/ui/flash_messages/flash-notice-bg.png") repeat-x left top;
-  color: #41612f; 
+    background: image_url("jquery/ui/flash_messages/flash-notice-bg.png") repeat-x left top;
+    color: #41612f;
 }
 
 div.notice .icon {
-  background: image_url("jquery/ui/flash_messages/flash-check.png") no-repeat left top;
+    background: image_url("jquery/ui/flash_messages/flash-check.png") no-repeat left top;
 }
 
 div.warning {
-  background: image_url("jquery/ui/flash_messages/flash-warning-bg.png") repeat-x left -10px;
-  color: #a26a1a;
+    background: image_url("jquery/ui/flash_messages/flash-warning-bg.png") repeat-x left -10px;
+    color: #a26a1a;
 }
+
 div.warning .icon {
-  margin-top: -6px;
-  background: image_url("jquery/ui/flash_messages/flash-warning.png") no-repeat left top;
+    margin-top: -6px;
+    background: image_url("jquery/ui/flash_messages/flash-warning.png") no-repeat left top;
 }
 
 div.error {
-  background: image_url("jquery/ui/flash_messages/flash-error-bg.png") repeat-x left -10px;
-  color: #af0100;
+    background: image_url("jquery/ui/flash_messages/flash-error-bg.png") repeat-x left -10px;
+    color: #af0100;
 }
+
 div.error .icon {
-  margin-top: -6px;
-  background: image_url("jquery/ui/flash_messages/flash-error.png") no-repeat left top;
+    margin-top: -6px;
+    background: image_url("jquery/ui/flash_messages/flash-error.png") no-repeat left top;
 }

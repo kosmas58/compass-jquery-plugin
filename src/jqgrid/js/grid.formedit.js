@@ -464,9 +464,9 @@
                                     }
                                     var selectedText = [];
                                     $("option:selected", this).each(
-                                                                   function(i, selected) {
-                                                                       selectedText[i] = $(selected).text();
-                                                                   }
+                                            function(i, selected) {
+                                                selectedText[i] = $(selected).text();
+                                            }
                                             );
                                     extpost[this.name] = selectedText.join(",");
                                     break;
@@ -1216,12 +1216,12 @@
                         onAfterShow($("#" + frmgr));
                     }
                     $(".fm-button", "#" + IDs.themodal).hover(
-                                                             function() {
-                                                                 $(this).addClass('ui-state-hover');
-                                                             },
-                                                             function() {
-                                                                 $(this).removeClass('ui-state-hover');
-                                                             }
+                            function() {
+                                $(this).addClass('ui-state-hover');
+                            },
+                            function() {
+                                $(this).removeClass('ui-state-hover');
+                            }
                             );
                     $("#sData", "#" + frmtb + "_2").click(function(e) {
                         postdata = {};
@@ -1589,12 +1589,12 @@
                     }
                     $.jgrid.viewModal("#" + IDs.themodal, {gbox:"#gbox_" + gID,jqm:p.jqModal, modal:p.modal});
                     $(".fm-button:not(.ui-state-disabled)", "#" + frmtb + "_2").hover(
-                                                                                     function() {
-                                                                                         $(this).addClass('ui-state-hover');
-                                                                                     },
-                                                                                     function() {
-                                                                                         $(this).removeClass('ui-state-hover');
-                                                                                     }
+                            function() {
+                                $(this).addClass('ui-state-hover');
+                            },
+                            function() {
+                                $(this).removeClass('ui-state-hover');
+                            }
                             );
                     focusaref();
                     $("#cData", "#" + frmtb + "_2").click(function(e) {
@@ -1761,12 +1761,12 @@
                     }
 
                     $(".fm-button", "#" + dtbl + "_2").hover(
-                                                            function() {
-                                                                $(this).addClass('ui-state-hover');
-                                                            },
-                                                            function() {
-                                                                $(this).removeClass('ui-state-hover');
-                                                            }
+                            function() {
+                                $(this).addClass('ui-state-hover');
+                            },
+                            function() {
+                                $(this).removeClass('ui-state-hover');
+                            }
                             );
                     p.delicon = $.extend([true,"left","ui-icon-scissors"], p.delicon);
                     p.cancelicon = $.extend([true,"left","ui-icon-cancel"], p.cancelicon);
@@ -1982,24 +1982,24 @@
                         $(tbd, navtbl)
                                 .attr({"title":o.addtitle || "",id : pAdd.id || "add_" + elemids})
                                 .click(
-                                      function() {
-                                          if (!$(this).hasClass('ui-state-disabled')) {
-                                              if (typeof o.addfunc == 'function') {
-                                                  o.addfunc();
-                                              } else {
-                                                  $($t).jqGrid("editGridRow", "new", pAdd);
-                                              }
-                                          }
-                                          return false;
-                                      }).hover(
-                                              function () {
-                                                  if (!$(this).hasClass('ui-state-disabled')) {
-                                                      $(this).addClass("ui-state-hover");
-                                                  }
-                                              },
-                                              function () {
-                                                  $(this).removeClass("ui-state-hover");
-                                              }
+                                function() {
+                                    if (!$(this).hasClass('ui-state-disabled')) {
+                                        if (typeof o.addfunc == 'function') {
+                                            o.addfunc();
+                                        } else {
+                                            $($t).jqGrid("editGridRow", "new", pAdd);
+                                        }
+                                    }
+                                    return false;
+                                }).hover(
+                                function () {
+                                    if (!$(this).hasClass('ui-state-disabled')) {
+                                        $(this).addClass("ui-state-hover");
+                                    }
+                                },
+                                function () {
+                                    $(this).removeClass("ui-state-hover");
+                                }
                                 );
                         tbd = null;
                     }
@@ -2011,30 +2011,30 @@
                         $(tbd, navtbl)
                                 .attr({"title":o.edittitle || "",id: pEdit.id || "edit_" + elemids})
                                 .click(
-                                      function() {
-                                          if (!$(this).hasClass('ui-state-disabled')) {
-                                              var sr = $t.p.selrow;
-                                              if (sr) {
-                                                  if (typeof o.editfunc == 'function') {
-                                                      o.editfunc(sr);
-                                                  } else {
-                                                      $($t).jqGrid("editGridRow", sr, pEdit);
-                                                  }
-                                              } else {
-                                                  $.jgrid.viewModal("#" + alertIDs.themodal, {gbox:"#gbox_" + $t.p.id,jqm:true});
-                                                  $("#jqg_alrt").focus();
-                                              }
-                                          }
-                                          return false;
-                                      }).hover(
-                                              function () {
-                                                  if (!$(this).hasClass('ui-state-disabled')) {
-                                                      $(this).addClass("ui-state-hover");
-                                                  }
-                                              },
-                                              function () {
-                                                  $(this).removeClass("ui-state-hover");
-                                              }
+                                function() {
+                                    if (!$(this).hasClass('ui-state-disabled')) {
+                                        var sr = $t.p.selrow;
+                                        if (sr) {
+                                            if (typeof o.editfunc == 'function') {
+                                                o.editfunc(sr);
+                                            } else {
+                                                $($t).jqGrid("editGridRow", sr, pEdit);
+                                            }
+                                        } else {
+                                            $.jgrid.viewModal("#" + alertIDs.themodal, {gbox:"#gbox_" + $t.p.id,jqm:true});
+                                            $("#jqg_alrt").focus();
+                                        }
+                                    }
+                                    return false;
+                                }).hover(
+                                function () {
+                                    if (!$(this).hasClass('ui-state-disabled')) {
+                                        $(this).addClass("ui-state-hover");
+                                    }
+                                },
+                                function () {
+                                    $(this).removeClass("ui-state-hover");
+                                }
                                 );
                         tbd = null;
                     }
@@ -2046,26 +2046,26 @@
                         $(tbd, navtbl)
                                 .attr({"title":o.viewtitle || "",id: pView.id || "view_" + elemids})
                                 .click(
-                                      function() {
-                                          if (!$(this).hasClass('ui-state-disabled')) {
-                                              var sr = $t.p.selrow;
-                                              if (sr) {
-                                                  $($t).jqGrid("viewGridRow", sr, pView);
-                                              } else {
-                                                  $.jgrid.viewModal("#" + alertIDs.themodal, {gbox:"#gbox_" + $t.p.id,jqm:true});
-                                                  $("#jqg_alrt").focus();
-                                              }
-                                          }
-                                          return false;
-                                      }).hover(
-                                              function () {
-                                                  if (!$(this).hasClass('ui-state-disabled')) {
-                                                      $(this).addClass("ui-state-hover");
-                                                  }
-                                              },
-                                              function () {
-                                                  $(this).removeClass("ui-state-hover");
-                                              }
+                                function() {
+                                    if (!$(this).hasClass('ui-state-disabled')) {
+                                        var sr = $t.p.selrow;
+                                        if (sr) {
+                                            $($t).jqGrid("viewGridRow", sr, pView);
+                                        } else {
+                                            $.jgrid.viewModal("#" + alertIDs.themodal, {gbox:"#gbox_" + $t.p.id,jqm:true});
+                                            $("#jqg_alrt").focus();
+                                        }
+                                    }
+                                    return false;
+                                }).hover(
+                                function () {
+                                    if (!$(this).hasClass('ui-state-disabled')) {
+                                        $(this).addClass("ui-state-hover");
+                                    }
+                                },
+                                function () {
+                                    $(this).removeClass("ui-state-hover");
+                                }
                                 );
                         tbd = null;
                     }
@@ -2077,38 +2077,38 @@
                         $(tbd, navtbl)
                                 .attr({"title":o.deltitle || "",id: pDel.id || "del_" + elemids})
                                 .click(
-                                      function() {
-                                          if (!$(this).hasClass('ui-state-disabled')) {
-                                              var dr;
-                                              if ($t.p.multiselect) {
-                                                  dr = $t.p.selarrrow;
-                                                  if (dr.length === 0) {
-                                                      dr = null;
-                                                  }
-                                              } else {
-                                                  dr = $t.p.selrow;
-                                              }
-                                              if (dr) {
-                                                  if ("function" == typeof o.delfunc) {
-                                                      o.delfunc(dr);
-                                                  } else {
-                                                      $($t).jqGrid("delGridRow", dr, pDel);
-                                                  }
-                                              } else {
-                                                  $.jgrid.viewModal("#" + alertIDs.themodal, {gbox:"#gbox_" + $t.p.id,jqm:true});
-                                                  $("#jqg_alrt").focus();
-                                              }
-                                          }
-                                          return false;
-                                      }).hover(
-                                              function () {
-                                                  if (!$(this).hasClass('ui-state-disabled')) {
-                                                      $(this).addClass("ui-state-hover");
-                                                  }
-                                              },
-                                              function () {
-                                                  $(this).removeClass("ui-state-hover");
-                                              }
+                                function() {
+                                    if (!$(this).hasClass('ui-state-disabled')) {
+                                        var dr;
+                                        if ($t.p.multiselect) {
+                                            dr = $t.p.selarrrow;
+                                            if (dr.length === 0) {
+                                                dr = null;
+                                            }
+                                        } else {
+                                            dr = $t.p.selrow;
+                                        }
+                                        if (dr) {
+                                            if ("function" == typeof o.delfunc) {
+                                                o.delfunc(dr);
+                                            } else {
+                                                $($t).jqGrid("delGridRow", dr, pDel);
+                                            }
+                                        } else {
+                                            $.jgrid.viewModal("#" + alertIDs.themodal, {gbox:"#gbox_" + $t.p.id,jqm:true});
+                                            $("#jqg_alrt").focus();
+                                        }
+                                    }
+                                    return false;
+                                }).hover(
+                                function () {
+                                    if (!$(this).hasClass('ui-state-disabled')) {
+                                        $(this).addClass("ui-state-hover");
+                                    }
+                                },
+                                function () {
+                                    $(this).removeClass("ui-state-hover");
+                                }
                                 );
                         tbd = null;
                     }
@@ -2123,20 +2123,20 @@
                         $(tbd, navtbl)
                                 .attr({"title":o.searchtitle || "",id:pSearch.id || "search_" + elemids})
                                 .click(
-                                      function() {
-                                          if (!$(this).hasClass('ui-state-disabled')) {
-                                              $($t).jqGrid("searchGrid", pSearch);
-                                          }
-                                          return false;
-                                      }).hover(
-                                              function () {
-                                                  if (!$(this).hasClass('ui-state-disabled')) {
-                                                      $(this).addClass("ui-state-hover");
-                                                  }
-                                              },
-                                              function () {
-                                                  $(this).removeClass("ui-state-hover");
-                                              }
+                                function() {
+                                    if (!$(this).hasClass('ui-state-disabled')) {
+                                        $($t).jqGrid("searchGrid", pSearch);
+                                    }
+                                    return false;
+                                }).hover(
+                                function () {
+                                    if (!$(this).hasClass('ui-state-disabled')) {
+                                        $(this).addClass("ui-state-hover");
+                                    }
+                                },
+                                function () {
+                                    $(this).removeClass("ui-state-hover");
+                                }
                                 );
                         tbd = null;
                     }
@@ -2147,46 +2147,46 @@
                         $(tbd, navtbl)
                                 .attr({"title":o.refreshtitle || "",id: "refresh_" + elemids})
                                 .click(
-                                      function() {
-                                          if (!$(this).hasClass('ui-state-disabled')) {
-                                              if ($.isFunction(o.beforeRefresh)) {
-                                                  o.beforeRefresh();
-                                              }
-                                              $t.p.search = false;
-                                              try {
-                                                  var gID = $t.p.id;
-                                                  $("#fbox_" + gID).searchFilter().reset({"reload":false});
-                                                  if ($.isFunction($t.clearToolbar)) {
-                                                      $t.clearToolbar(false);
-                                                  }
-                                              } catch (e) {
-                                              }
-                                              switch (o.refreshstate) {
-                                                  case 'firstpage':
-                                                      $($t).trigger("reloadGrid", [
-                                                          {page:1}
-                                                      ]);
-                                                      break;
-                                                  case 'current':
-                                                      $($t).trigger("reloadGrid", [
-                                                          {current:true}
-                                                      ]);
-                                                      break;
-                                              }
-                                              if ($.isFunction(o.afterRefresh)) {
-                                                  o.afterRefresh();
-                                              }
-                                          }
-                                          return false;
-                                      }).hover(
-                                              function () {
-                                                  if (!$(this).hasClass('ui-state-disabled')) {
-                                                      $(this).addClass("ui-state-hover");
-                                                  }
-                                              },
-                                              function () {
-                                                  $(this).removeClass("ui-state-hover");
-                                              }
+                                function() {
+                                    if (!$(this).hasClass('ui-state-disabled')) {
+                                        if ($.isFunction(o.beforeRefresh)) {
+                                            o.beforeRefresh();
+                                        }
+                                        $t.p.search = false;
+                                        try {
+                                            var gID = $t.p.id;
+                                            $("#fbox_" + gID).searchFilter().reset({"reload":false});
+                                            if ($.isFunction($t.clearToolbar)) {
+                                                $t.clearToolbar(false);
+                                            }
+                                        } catch (e) {
+                                        }
+                                        switch (o.refreshstate) {
+                                            case 'firstpage':
+                                                $($t).trigger("reloadGrid", [
+                                                    {page:1}
+                                                ]);
+                                                break;
+                                            case 'current':
+                                                $($t).trigger("reloadGrid", [
+                                                    {current:true}
+                                                ]);
+                                                break;
+                                        }
+                                        if ($.isFunction(o.afterRefresh)) {
+                                            o.afterRefresh();
+                                        }
+                                    }
+                                    return false;
+                                }).hover(
+                                function () {
+                                    if (!$(this).hasClass('ui-state-disabled')) {
+                                        $(this).addClass("ui-state-hover");
+                                    }
+                                },
+                                function () {
+                                    $(this).removeClass("ui-state-hover");
+                                }
                                 );
                         tbd = null;
                     }
@@ -2259,14 +2259,14 @@
                         return false;
                     })
                             .hover(
-                                  function () {
-                                      if (!$(this).hasClass('ui-state-disabled')) {
-                                          $(this).addClass('ui-state-hover');
-                                      }
-                                  },
-                                  function () {
-                                      $(this).removeClass("ui-state-hover");
-                                  }
+                            function () {
+                                if (!$(this).hasClass('ui-state-disabled')) {
+                                    $(this).addClass('ui-state-hover');
+                                }
+                            },
+                            function () {
+                                $(this).removeClass("ui-state-hover");
+                            }
                             );
                 }
             });

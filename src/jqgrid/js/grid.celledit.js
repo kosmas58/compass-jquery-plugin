@@ -172,9 +172,9 @@
                                     v = "";
                                 }
                                 $("option:selected", sel).each(
-                                                              function(i, selected) {
-                                                                  selectedText[i] = $(selected).text();
-                                                              }
+                                        function(i, selected) {
+                                            selectedText[i] = $(selected).text();
+                                        }
                                         );
                                 v2 = selectedText.join(",");
                             }

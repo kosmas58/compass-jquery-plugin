@@ -122,12 +122,12 @@
                         return false;
                     });
                     $("#dData, #eData", "#" + dtbl + "_2").hover(
-                                                                function() {
-                                                                    $(this).addClass('ui-state-hover');
-                                                                },
-                                                                function() {
-                                                                    $(this).removeClass('ui-state-hover');
-                                                                }
+                            function() {
+                                $(this).addClass('ui-state-hover');
+                            },
+                            function() {
+                                $(this).removeClass('ui-state-hover');
+                            }
                             );
                     if (onBeforeShow) {
                         p.beforeShowForm($("#" + dtbl));

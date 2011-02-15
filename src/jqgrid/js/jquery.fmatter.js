@@ -397,11 +397,11 @@
                     sv = so[i].split(":");
                     if (sv.length > 2) {
                         sv[1] = jQuery.map(sv,
-                                          function(n, i) {
-                                              if (i > 0) {
-                                                  return n;
-                                              }
-                                          }).join(":");
+                                function(n, i) {
+                                    if (i > 0) {
+                                        return n;
+                                    }
+                                }).join(":");
                     }
                     if (msl) {
                         if (jQuery.inArray(sv[0], scell) > -1) {
@@ -569,11 +569,11 @@
                     sv = so[i].split(":");
                     if (sv.length > 2) {
                         sv[1] = jQuery.map(sv,
-                                          function(n, i) {
-                                              if (i > 0) {
-                                                  return n;
-                                              }
-                                          }).join(":");
+                                function(n, i) {
+                                    if (i > 0) {
+                                        return n;
+                                    }
+                                }).join(":");
                     }
                     if (msl) {
                         if (jQuery.inArray(sv[1], scell) > -1) {
