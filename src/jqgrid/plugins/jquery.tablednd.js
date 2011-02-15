@@ -206,15 +206,16 @@ jQuery.tableDnD = {
              solution may need to take that into account, for now this seems to work in firefox, safari, ie */
             e = e.firstChild; // a table cell
         }
+        if (e && e.offsetParent) {
+            while (e.offsetParent) {
+                left += e.offsetLeft;
+                top += e.offsetTop;
+                e = e.offsetParent;
+            }
 
-        while (e.offsetParent) {
             left += e.offsetLeft;
             top += e.offsetTop;
-            e = e.offsetParent;
         }
-
-        left += e.offsetLeft;
-        top += e.offsetTop;
 
         return {x:left, y:top};
     },

@@ -206,15 +206,16 @@ jQuery.tableDnD = {
              solution may need to take that into account, for now this seems to work in firefox, safari, ie */
             e = e.firstChild; // a table cell
         }
+        if (e && e.offsetParent) {
+            while (e.offsetParent) {
+                left += e.offsetLeft;
+                top += e.offsetTop;
+                e = e.offsetParent;
+            }
 
-        while (e.offsetParent) {
             left += e.offsetLeft;
             top += e.offsetTop;
-            e = e.offsetParent;
         }
-
-        left += e.offsetLeft;
-        top += e.offsetTop;
 
         return {x:left, y:top};
     },
@@ -414,20 +415,7 @@ jQuery.fn.extend(
 (function($) {
 
     $.widget("ui.multiselect", {
-        options: {
-            sortable: true,
-            searchable: true,
-            animated: 'fast',
-            show: 'slideDown',
-            hide: 'slideUp',
-            dividerLocation: 0.6,
-            nodeComparator: function(node1, node2) {
-                var text1 = node1.text(),
-                        text2 = node2.text();
-                return text1 == text2 ? 0 : (text1 < text2 ? -1 : 1);
-            }
-        },
-        _create: function() {
+        _init: function() {
             this.element.hide();
             this.id = this.element.attr("id");
             this.container = $('<div class="ui-multiselect ui-helper-clearfix ui-widget"></div>').insertAfter(this.element);
@@ -466,7 +454,7 @@ jQuery.fn.extend(
 
             // make selection sortable
             if (this.options.sortable) {
-                this.selectedList.sortable({
+                $("ul.selected").sortable({
                     placeholder: 'ui-state-highlight',
                     axis: 'y',
                     update: function(event, ui) {
@@ -506,12 +494,11 @@ jQuery.fn.extend(
             }
 
             // batch actions
-            this.container.find(".remove-all").click(function() {
+            $(".remove-all").click(function() {
                 that._populateLists(that.element.find('option').removeAttr('selected'));
                 return false;
             });
-
-            this.container.find(".add-all").click(function() {
+            $(".add-all").click(function() {
                 that._populateLists(that.element.find('option').attr('selected', 'selected'));
                 return false;
             });
@@ -520,7 +507,7 @@ jQuery.fn.extend(
             this.element.show();
             this.container.remove();
 
-            $.Widget.prototype.destroy.apply(this, arguments);
+            $.widget.prototype.destroy.apply(this, arguments);
         },
         _populateLists: function(options) {
             this.selectedList.children('.ui-element').remove();
@@ -660,24 +647,21 @@ jQuery.fn.extend(
                 that.count += 1;
                 that._updateCount();
                 return false;
-            });
-
-            // make draggable
-            if (this.options.sortable) {
-                elements.each(function() {
-                    $(this).parent().draggable({
-                        connectToSortable: that.selectedList,
-                        helper: function() {
-                            var selectedItem = that._cloneWithData($(this)).width($(this).width() - 50);
-                            selectedItem.width($(this).width());
-                            return selectedItem;
-                        },
-                        appendTo: that.container,
-                        containment: that.container,
-                        revert: 'invalid'
-                    });
+            })
+                // make draggable
+                    .each(function() {
+                $(this).parent().draggable({
+                    connectToSortable: 'ul.selected',
+                    helper: function() {
+                        var selectedItem = that._cloneWithData($(this)).width($(this).width() - 50);
+                        selectedItem.width($(this).width());
+                        return selectedItem;
+                    },
+                    appendTo: '.ui-multiselect',
+                    containment: '.ui-multiselect',
+                    revert: 'invalid'
                 });
-            }
+            });
         },
         _registerRemoveEvents: function(elements) {
             var that = this;
@@ -708,13 +692,25 @@ jQuery.fn.extend(
     });
 
     $.extend($.ui.multiselect, {
+        defaults: {
+            sortable: true,
+            searchable: true,
+            animated: 'fast',
+            show: 'slideDown',
+            hide: 'slideUp',
+            dividerLocation: 0.6,
+            nodeComparator: function(node1, node2) {
+                var text1 = node1.text(),
+                        text2 = node2.text();
+                return text1 == text2 ? 0 : (text1 < text2 ? -1 : 1);
+            }
+        },
         locale: {
             addAll:'Add all',
             removeAll:'Remove all',
             itemsCount:'items selected'
         }
     });
-
 
 })(jQuery);
 
