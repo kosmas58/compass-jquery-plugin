@@ -30,9 +30,6 @@ JQUERY_DEST_TRANSLATIONS = File.join(JQUERY_DEST_TEMPLATES, 'i18n', 'jquery.ui')
 JQUERY_DEST_THEMES = File.join(JQUERY_DEST_TEMPLATES, 'jquery', 'ui')
 JQUERY_DEST_IMAGES = File.join(JQUERY_DEST_TEMPLATES, 'jquery', 'ui')
 
-FLASH_DEST_STYLESHEETS = File.join(JQUERY_DEST_TEMPLATES, 'partials')
-FLASH_DEST_IMAGES = File.join(JQUERY_DEST_IMAGES, 'flash_messages')
-
 namespace :build do
   desc 'Build the stylesheets and templates for jQuery.'
   task :jquery do    
@@ -323,29 +320,29 @@ namespace :build do
       manifest.print "javascript 'haml.min.js'\n"
       
       #Flash Messages  
-      open File.join(JQUERY_DEST_TEMPLATES, 'jquery.flash_messages.js'), 'w' do |f|
+      open File.join(JQUERY_DEST_TEMPLATES, 'jquery.flashMessages.js'), 'w' do |f|
         f.print concat_files(all_files(FLASH_SRC_JS_SCRIPTS))
       end
-      manifest.print "javascript 'jquery.flash_messages.js'\n" 
+      manifest.print "javascript 'jquery.flashMessages.js'\n"
     
-      open File.join(JQUERY_DEST_TEMPLATES, 'jquery.flash_messages.min.js'), 'w' do |f|
+      open File.join(JQUERY_DEST_TEMPLATES, 'jquery.flashMessages.min.js'), 'w' do |f|
         f.print compress_js(all_files(FLASH_SRC_JS_SCRIPTS), "google")
       end
-      manifest.print "javascript 'jquery.flash_messages.min.js'\n"
+      manifest.print "javascript 'jquery.flashMessages.min.js'\n"
       
-      FileUtils.mkdir_p(File.join(FLASH_DEST_STYLESHEETS))
+      FileUtils.mkdir_p(File.join(JQUERY_DEST_THEMES))
       css = File.read File.join(FLASH_SRC, 'flash_messages.css')
       sass = ''
       IO.popen("sass-convert -F css -T scss", 'r+') { |f| f.print(css); f.close_write; sass = f.read }
-      open File.join(FLASH_DEST_STYLESHEETS, '_flash_messages.scss'), 'w' do |f|
+      open File.join(JQUERY_DEST_THEMES, '_flash_messages.scss'), 'w' do |f|
         f.write sass
       end
-      manifest.print "stylesheet 'partials/_flash_messages.scss'\n"
+      manifest.print "stylesheet 'jquery/ui/_flash_messages.scss'\n"
       
       # Copy the images directory
-      FileUtils.mkdir_p File.join(FLASH_DEST_IMAGES)
+      FileUtils.mkdir_p File.join(JQUERY_DEST_IMAGES)
       src_dir = FLASH_SRC_IMAGES
-      dest_dir = FLASH_DEST_IMAGES   
+      dest_dir = JQUERY_DEST_IMAGES
       
       Dir.foreach(src_dir) do |image|
         next unless /\.png$/ =~ image

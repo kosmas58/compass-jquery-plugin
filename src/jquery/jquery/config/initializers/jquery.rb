@@ -18,7 +18,7 @@ ActionView::Helpers::PrototypeHelper::JQUERY_VAR = 'jQuery'
 #ActionView::Helpers::AssetTagHelper::reset_javascript_include_default
 
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :jquery => ['jquery.min']
-ActionView::Helpers::AssetTagHelper.register_javascript_expansion :jquery_ui => ['jquery.min', 'jquery.cookie.min', 'jquery.form.min', 'jquery.layout.min', 'jquery-ui.min']
+ActionView::Helpers::AssetTagHelper.register_javascript_expansion :jquery_ui => ['jquery.min', 'jquery.cookie.min', 'jquery.form.min', 'jquery.layout.min', 'jquery-ui.min', 'jquery.flashMessages.min']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :jrails => ['jrails.min']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :jhaml => ['jquery.haml.min']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :haml_js => ['haml-js.min']
