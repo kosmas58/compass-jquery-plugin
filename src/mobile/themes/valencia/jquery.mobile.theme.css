@@ -702,25 +702,23 @@ a.ui-link-inherit {
 (
 -webkit-min-device-pixel-ratio:
 
-2
+    2
 )
-,
-screen and
+, screen and
 
 (
 max--moz-device-pixel-ratio:
 
-2
-)
-{
-.ui-icon {
-    background-size: 558px 18px;
-    background-image: url(images/icons-36-white.png);
-}
+    2
+) {
+    .ui-icon {
+        background-size: 558px 18px;
+        background-image: url(images/icons-36-white.png);
+    }
 
-.ui-icon-black {
-    background-image: url(images/icons-36-black.png);
-}
+    .ui-icon-black {
+        background-image: url(images/icons-36-black.png);
+    }
 
 }
 

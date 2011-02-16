@@ -360,9 +360,9 @@
 
                 // return an array of all selected index's
                     indicies = selected.map(
-                                           function() {
-                                               return options.index(this);
-                                           }).get();
+                            function() {
+                                return options.index(this);
+                            }).get();
 
             if (!self.options.nativeMenu && ( forceRebuild || select[0].options.length > self.list.find('li').length )) {
                 self._buildList();
@@ -377,9 +377,9 @@
 
                 return selected.length ?
                         selected.map(
-                                    function() {
-                                        return $(this).text();
-                                    }).get().join(', ') :
+                                function() {
+                                    return $(this).text();
+                                }).get().join(', ') :
                         self.placeholder;
             });
 

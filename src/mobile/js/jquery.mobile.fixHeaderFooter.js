@@ -214,9 +214,9 @@
 
                     if (!alreadyVisible && !immediately) {
                         el.animationComplete(
-                                            function() {
-                                                el.removeClass('in');
-                                            }).addClass('in');
+                                function() {
+                                    el.removeClass('in');
+                                }).addClass('in');
                     }
                     setTop(el);
                 });
@@ -241,10 +241,10 @@
                             if (el.css('top') !== 'auto' && parseFloat(el.css('top')) !== 0) {
                                 var classes = 'out reverse';
                                 el.animationComplete(
-                                                    function() {
-                                                        el.removeClass(classes);
-                                                        el.css('top', 0);
-                                                    }).addClass(classes);
+                                        function() {
+                                            el.removeClass(classes);
+                                            el.css('top', 0);
+                                        }).addClass(classes);
                             }
                         }
                     }

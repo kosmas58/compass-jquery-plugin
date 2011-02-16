@@ -551,21 +551,21 @@ a.ui-link-inherit {
 (
 -webkit-min-device-pixel-ratio:
 
-2
+    2
 )
-,
-screen and
+, screen and
 
 (
 max--moz-device-pixel-ratio:
 
-2
+    2
 ) {
   .ui-icon {
     background-image: image_url("jquery/mobile/default/icons-36-white.png");
     background-size: 630px 18px; }
   .ui-icon-black {
     background-image: image_url("jquery/mobile/default/icons-36-black.png"); } }
+
 
 /* plus minus */
 

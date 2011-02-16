@@ -27,9 +27,9 @@
                     list.children().show();
                     if (val) {
                         list.children().filter(
-                                              function() {
-                                                  return $(this).text().toLowerCase().indexOf(val) === -1;
-                                              }).hide();
+                                function() {
+                                    return $(this).text().toLowerCase().indexOf(val) === -1;
+                                }).hide();
                     }
 
                     //listview._numberItems();

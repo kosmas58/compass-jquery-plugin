@@ -302,33 +302,33 @@
                     persistentFooterID = parentPage.find("[data-role='footer']").data("id");
 
             $(parentList.find("ul, ol").toArray().reverse()).each(
-                                                                 function(i) {
-                                                                     var list = $(this),
-                                                                             parent = list.parent(),
-                                                                             title = $.trim(parent.contents()[ 0 ].nodeValue) || parent.find('a:first').text(),
-                                                                             id = parentId + "&" + $.mobile.subPageUrlKey + "=" + self._idStringEscape(title + " " + i),
-                                                                             theme = list.data("theme") || o.theme,
-                                                                             countTheme = list.data("counttheme") || parentList.data("counttheme") || o.countTheme,
-                                                                             newPage = list.wrap("<div data-role='page'><div data-role='content'></div></div>")
-                                                                                     .parent()
-                                                                                     .before("<div data-role='header' data-theme='" + o.headerTheme + "'><div class='ui-title'>" + title + "</div></div>")
-                                                                                     .after(persistentFooterID ? $("<div>", { "data-role": "footer", "data-id": persistentFooterID, "class": "ui-footer-duplicate" }) : "")
-                                                                                     .parent()
-                                                                                     .attr({
-                                                                                               "data-url": id,
-                                                                                               "data-theme": theme,
-                                                                                               "data-count-theme": countTheme
-                                                                                           })
-                                                                                     .appendTo($.mobile.pageContainer);
+                    function(i) {
+                        var list = $(this),
+                                parent = list.parent(),
+                                title = $.trim(parent.contents()[ 0 ].nodeValue) || parent.find('a:first').text(),
+                                id = parentId + "&" + $.mobile.subPageUrlKey + "=" + self._idStringEscape(title + " " + i),
+                                theme = list.data("theme") || o.theme,
+                                countTheme = list.data("counttheme") || parentList.data("counttheme") || o.countTheme,
+                                newPage = list.wrap("<div data-role='page'><div data-role='content'></div></div>")
+                                        .parent()
+                                        .before("<div data-role='header' data-theme='" + o.headerTheme + "'><div class='ui-title'>" + title + "</div></div>")
+                                        .after(persistentFooterID ? $("<div>", { "data-role": "footer", "data-id": persistentFooterID, "class": "ui-footer-duplicate" }) : "")
+                                        .parent()
+                                        .attr({
+                                                  "data-url": id,
+                                                  "data-theme": theme,
+                                                  "data-count-theme": countTheme
+                                              })
+                                        .appendTo($.mobile.pageContainer);
 
 
-                                                                     newPage.page();
-                                                                     var anchor = parent.find('a:first');
-                                                                     if (!anchor.length) {
-                                                                         anchor = $("<a></a>").html(title).prependTo(parent.empty());
-                                                                     }
-                                                                     anchor.attr('href', '#' + id);
-                                                                 }).listview();
+                        newPage.page();
+                        var anchor = parent.find('a:first');
+                        if (!anchor.length) {
+                            anchor = $("<a></a>").html(title).prependTo(parent.empty());
+                        }
+                        anchor.attr('href', '#' + id);
+                    }).listview();
         }
     });
 
