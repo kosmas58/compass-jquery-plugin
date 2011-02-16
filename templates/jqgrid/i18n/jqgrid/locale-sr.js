@@ -1,4 +1,4 @@
-;
+﻿;
 (function($) {
     /**
      * jqGrid Serbian Translation

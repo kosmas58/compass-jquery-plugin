@@ -63,10 +63,12 @@
                 {"name": "cn", "description": "contains", "operator":"LIKE"},
                 {"name": "nc", "description": "does not contain", "operator":"NOT LIKE"},
                 {"name": "nu", "description": "is null", "operator":"IS NULL"},
-                {"name": "nn", "description": "is not null", "operator":"IS NOT NULL"}
+                {"name": "nn", "description": "is not null", "operator":"IS NOT NULL"},
+                {"name": "in", "description": "in", "operator":"IN"},
+                {"name": "ni", "description": "not in", "operator":"NOT IN"}
             ],
-            numopts : ['eq','ne', 'lt', 'le', 'gt', 'ge', 'nu', 'nn'],
-            stropts : ['eq', 'ne', 'bw', 'bn', 'ew', 'en', 'cn', 'nc', 'nu', 'nn'],
+            numopts : ['eq','ne', 'lt', 'le', 'gt', 'ge', 'nu', 'nn', 'in', 'ni'],
+            stropts : ['eq', 'ne', 'bw', 'bn', 'ew', 'en', 'cn', 'nc', 'nu', 'nn', 'in', 'ni'],
             groupOps : ["AND", "OR"]
         }, arg || {});
         return this.each(function() {
@@ -80,8 +82,10 @@
                     groupOp: this.p.groupOps[0],
                     rules: [],
                     groups: []
-                }
+                };
             }
+            this.p.initFilter = $.extend(true, {}, this.p.filter);
+
             // set default values for the columns if they are not set
             var i, len = this.p.columns.length, cl;
             if (!len) {
@@ -117,7 +121,7 @@
 
             }
             if (this.p.showQuery) {
-                $(this).append("<table class='queryresult ui-widget ui-widget-content' style='display:block;max-width:440px;border:0px none;'><tbody><tr><td class='query'></td></tr></tbody></table>")
+                $(this).append("<table class='queryresult ui-widget ui-widget-content' style='display:block;max-width:440px;border:0px none;'><tbody><tr><td class='query'></td></tr></tbody></table>");
             }
             /*
              *Perform checking.
@@ -144,451 +148,502 @@
                 this.p.error = false;
                 this.p.errmsg = "";
                 return $.isFunction(this.p.onChange) ? this.p.onChange.call(this, this.p) : false;
-            },
-                /*
-                 * Redrow the filter every time when new field is added/deleted
-                 * and field is  changed
-                 */
-                    this.reDraw = function() {
-                        $("table.group:first", this).remove();
-                        var t = this.createTableForGroup(p.filter, null);
-                        $(this).append(t);
-                    },
-                /*
-                 * Creates a grouping data for the filter
-                 * @param group - object
-                 * @param parentgroup - object
-                 */
-                    this.createTableForGroup = function(group, parentgroup) {
-                        var that = this,  i;
+            };
+            /*
+             * Redrow the filter every time when new field is added/deleted
+             * and field is  changed
+             */
+            this.reDraw = function() {
+                $("table.group:first", this).remove();
+                var t = this.createTableForGroup(p.filter, null);
+                $(this).append(t);
+            };
+            /*
+             * Creates a grouping data for the filter
+             * @param group - object
+             * @param parentgroup - object
+             */
+            this.createTableForGroup = function(group, parentgroup) {
+                var that = this,  i;
 
-                        // this table will hold all the group (tables) and rules (rows)
-                        var table = $("<table class='group ui-widget ui-widget-content' style='border:0px none'><tbody>")
-                        // create error message row
-                        if (parentgroup == null) {
-                            $(table).append("<tr class='error' style='display:none;'><th colspan='5' class='ui-state-error'></th><tr>");
+                // this table will hold all the group (tables) and rules (rows)
+                var table = $("<table class='group ui-widget ui-widget-content' style='border:0px none;'><tbody>");
+                // create error message row
+                if (parentgroup == null) {
+                    $(table).append("<tr class='error' style='display:none;'><th colspan='5' class='ui-state-error' align='left'></th></tr>");
+                }
+
+                var tr = $("<tr></tr>");
+                $(table).append(tr);
+                // this header will hold the group operator type and group action buttons for
+                // creating subgroup "+ {}", creating rule "+" or deleting the group "-"
+                var th = $("<th colspan='5' align='left'></th>");
+                tr.append(th);
+
+                // dropdown for: choosing group operator type
+                var groupOpSelect = $("<select class='opsel'></select>");
+                th.append(groupOpSelect);
+                // populate dropdown with all posible group operators: or, and
+                var str = "", selected;
+                for (i = 0; i < p.groupOps.length; i++) {
+                    selected = group.groupOp == p.groupOps[i] ? "selected='selected'" : "";
+                    str += "<option value='" + p.groupOps[i] + "'" + selected + ">" + p.groupOps[i] + "</option>";
+                }
+
+                groupOpSelect
+                        .append(str)
+                        .bind('change', function() {
+                    group.groupOp = $(groupOpSelect).val();
+                    that.onchange(); // signals that the filter has changed
+                });
+
+                // button for adding a new subgroup
+                var inputAddSubgroup = $("<input type='button' value='+ {}' title='Add subgroup' class='add-group'/>");
+                inputAddSubgroup.bind('click', function() {
+                    if (group.groups == undefined) {
+                        group.groups = [];
+                    }
+
+                    group.groups.push({
+                        groupOp: p.groupOps[0],
+                        rules: [],
+                        groups: []
+                    }); // adding a new group
+
+                    that.reDraw(); // the html has changed, force reDraw
+
+                    that.onchange(); // signals that the filter has changed
+                    return false;
+                });
+                th.append(inputAddSubgroup);
+
+                // button for adding a new rule
+                var inputAddRule = $("<input type='button' value='+' title='Add rule' class='add-rule'/>"), cm;
+                inputAddRule.bind('click', function() {
+                    //if(!group) { group = {};}
+                    if (group.rules == undefined) {
+                        group.rules = [];
+                    }
+                    for (i = 0; i < that.p.columns.length; i++) {
+                        // but show only serchable and serchhidden = true fields
+                        var searchable = (typeof that.p.columns[i].search === 'undefined') ? true : that.p.columns[i].search ,
+                                hidden = (that.p.columns[i].hidden === true),
+                                ignoreHiding = (that.p.columns[i].searchoptions.searchhidden === true);
+                        if ((ignoreHiding && searchable) || (searchable && !hidden)) {
+                            cm = that.p.columns[i];
+                            break;
                         }
+                    }
+                    var opr;
+                    if (cm.opts) {
+                        opr = cm.opts;
+                    }
+                    else if (cm.searchtype == 'string') {
+                        opr = that.p.stropts;
+                    }
+                    else {
+                        opr = that.p.numopts;
+                    }
 
-                        var tr = $("<tr></tr>");
-                        $(table).append(tr);
-                        // this header will hold the group operator type and group action buttons for
-                        // creating subgroup "+ {}", creating rule "+" or deleting the group "-"
-                        var th = $("<th colspan='5' align='left'></th>");
-                        tr.append(th);
+                    group.rules.push({
+                        field: cm.name,
+                        op: opr[0],
+                        data: ""
+                    }); // adding a new rule
 
-                        // dropdown for: choosing group operator type
-                        var groupOpSelect = $("<select class='opsel'></select>");
-                        th.append(groupOpSelect);
-                        // populate dropdown with all posible group operators: or, and
-                        var str = "", selected;
-                        for (i = 0; i < p.groupOps.length; i++) {
-                            selected = group.groupOp == p.groupOps[i] ? "selected='selected'" : "";
-                            str += "<option value='" + p.groupOps[i] + "'" + selected + ">" + p.groupOps[i] + "</option>"
-                        }
+                    that.reDraw(); // the html has changed, force reDraw
+                    // for the moment no change have been made to the rule, so
+                    // this will not trigger onchange event
+                    return false;
+                });
+                th.append(inputAddRule);
 
-                        groupOpSelect
-                                .append(str)
-                                .bind('change', function() {
-                            group.groupOp = $(groupOpSelect).val();
-                            that.onchange(); // signals that the filter has changed
-                        });
-
-                        // button for adding a new subgroup
-                        var inputAddSubgroup = $("<input type='button' value='+ {}' title='Add subgroup' class='add-group/>");
-                        inputAddSubgroup.bind('click', function() {
-                            if (group.groups == undefined) {
-                                group.groups = [];
-                            }
-
-                            group.groups.push({
-                                groupOp: p.groupOps[0],
-                                rules: [],
-                                groups: []
-                            }); // adding a new group
-
-                            that.reDraw(); // the html has changed, force reDraw
-
-                            that.onchange(); // signals that the filter has changed
-                            return false;
-                        });
-                        th.append(inputAddSubgroup);
-
-                        // button for adding a new rule
-                        var inputAddRule = $("<input type='button' value='+' title='Add rule' class='add-rule/>");
-                        inputAddRule.bind('click', function() {
-                            //if(!group) { group = {};}
-                            if (group.rules == undefined)
-                                group.rules = [];
-
-                            group.rules.push({
-                                field: that.p.columns[0].name,
-                                op: that.p.ops[0].name,
-                                data: ""
-                            }); // adding a new rule
-
-                            that.reDraw(); // the html has changed, force reDraw
-                            // for the moment no change have been made to the rule, so
-                            // this will not trigger onchange event
-                            return false;
-                        });
-                        th.append(inputAddRule);
-
-                        // button for delete the group
-                        if (parentgroup != null) { // ignore the first group
-                            var inputDeleteGroup = $("<input type='button' value='-' title='Delete group' class='delete-group/>");
-                            th.append(inputDeleteGroup);
-                            inputDeleteGroup.bind('click', function() {
-                                // remove group from parent
-                                for (i = 0; i < parentgroup.groups.length; i++) {
-                                    if (parentgroup.groups[i] == group) {
-                                        parentgroup.groups.splice(i, 1);
-                                        break;
-                                    }
-                                }
-
-                                that.reDraw(); // the html has changed, force reDraw
-
-                                that.onchange(); // signals that the filter has changed
-                                return false;
-                            });
-                        }
-
-                        // append subgroup rows
-                        if (group.groups != undefined) {
-                            for (i = 0; i < group.groups.length; i++) {
-                                var trHolderForSubgroup = $("<tr></tr>");
-                                table.append(trHolderForSubgroup);
-
-                                var tdFirstHolderForSubgroup = $("<td class='first'></td>");
-                                trHolderForSubgroup.append(tdFirstHolderForSubgroup);
-
-                                var tdMainHolderForSubgroup = $("<td colspan='4'></td>");
-                                tdMainHolderForSubgroup.append(this.createTableForGroup(group.groups[i], group));
-                                trHolderForSubgroup.append(tdMainHolderForSubgroup);
-                            }
-                        }
-                        if (group.groupOp == undefined) {
-                            group.groupOp = that.p.groupOps[0];
-                        }
-
-                        // append rules rows
-                        if (group.rules != undefined) {
-                            for (i = 0; i < group.rules.length; i++) {
-                                table.append(
-                                        this.createTableRowForRule(group.rules[i], group)
-                                        );
-                            }
-                        }
-
-                        return table;
-                    },
-                /*
-                 * Create the rule data for the filter
-                 */
-                    this.createTableRowForRule = function(rule, group) {
-                        // save current entity in a variable so that it could
-                        // be referenced in anonimous method calls
-
-                        var that = this, tr = $("<tr></tr>"),
-                            //document.createElement("tr"),
-
-                            // first column used for padding
-                            //tdFirstHolderForRule = document.createElement("td"),
-                                i, o, df, op, trpar, cm, str = "", selected;
-                        //tdFirstHolderForRule.setAttribute("class", "first");
-                        tr.append("<td class='first'></td>");
-
-
-                        // create field container
-                        var ruleFieldTd = $("<td class='columns'></td>");
-                        tr.append(ruleFieldTd);
-
-
-                        // dropdown for: choosing field
-                        var ruleFieldSelect = $("<select></select>");
-                        ruleFieldTd.append(ruleFieldSelect);
-                        ruleFieldSelect.bind('change', function() {
-                            rule.field = $(ruleFieldSelect).val();
-
-                            trpar = $(this).parents("tr:first");
-                            for (i = 0; i < that.p.columns.length; i++) {
-                                if (that.p.columns[i].name == rule.field) {
-                                    cm = that.p.columns[i];
-                                    break;
-                                }
-                            }
-                            if (!cm) {
-                                return false;
-                            }
-                            var elm = $.jgrid.createEl(cm.inputtype, cm.searchoptions, "", true, that.p.ajaxSelectOptions);
-                            $(elm).addClass("input-elm");
-                            //that.createElement(rule, "");
-
-                            if (cm.opts) {
-                                op = cm.opts;
-                            }
-                            else if (cm.searchtype == 'string') {
-                                op = p.stropts;
-                            }
-                            else {
-                                op = that.p.numopts;
-                            }
-                            // operators
-                            var s = "",so = "";
-                            for (i = 0; i < that.p.ops.length; i++) {
-                                if ($.inArray(that.p.ops[i].name, op) !== -1) {
-                                    so = rule.op == that.p.ops[i].name ? "selected=selected" : "";
-                                    s += "<option value='" + that.p.ops[i].name + "' " + so + ">" + that.p.ops[i].description + "</option>";
-                                }
-                            }
-                            $(".selectopts", trpar).empty().append(s);
-
-                            // data
-                            $(".data", trpar).empty().append(elm);
-                            $(".input-elm", trpar).bind('change', function() {
-                                rule.data = this.value;
-                                that.onchange(); // signals that the filter has changed
-                            });
-                            rule.data = $(elm).val();
-                            that.onchange();  // signals that the filter has changed
-                        });
-
-                        // populate drop down with user provided column definitions
-                        var j = 0;
-                        for (i = 0; i < that.p.columns.length; i++) {
-                            // but show only serchable and serchhidden = true fields
-                            var searchable = (typeof that.p.columns[i].search === 'undefined') ? true : that.p.columns[i].search ,
-                                    hidden = (that.p.columns[i].hidden === true),
-                                    ignoreHiding = (that.p.columns[i].searchoptions.searchhidden === true);
-                            if ((ignoreHiding && searchable) || (searchable && !hidden)) {
-                                selected = "";
-                                if (rule.field == that.p.columns[i].name) {
-                                    selected = "selected='selected'";
-                                    j = i;
-                                }
-                                str += "<option value='" + that.p.columns[i].name + "'" + selected + ">" + that.p.columns[i].label + "</option>";
-                            }
-                        }
-                        ruleFieldSelect.append(str)
-
-
-                        // create operator container
-                        var ruleOperatorTd = $("<td class='operators'></td>");
-                        tr.append(ruleOperatorTd);
-                        cm = p.columns[j];
-                        // create it here so it can be referentiated in the onchange event
-                        //var RD = that.createElement(rule, rule.data);
-                        var ruleDataInput = $.jgrid.createEl(cm.inputtype, cm.searchoptions, rule.data, true, that.p.ajaxSelectOptions);
-
-                        // dropdown for: choosing operator
-                        var ruleOperatorSelect = $("<select class='selectopts'></select>");
-                        ruleOperatorTd.append(ruleOperatorSelect);
-                        ruleOperatorSelect.bind('change', function() {
-                            rule.op = $(ruleOperatorSelect).val();
-                            trpar = $(this).parents("tr:first");
-                            var rd = $(".input-elm", trpar)[0];
-                            if (rule.op == "nu" || rule.op == "nn") { // disable for operator "is null" and "is not null"
-                                rule.data = "";
-                                rd.value = "";
-                                rd.setAttribute("readonly", "true");
-                                rd.setAttribute("disabled", "true");
-                            } else {
-                                rd.removeAttribute("readonly");
-                                rd.removeAttribute("disabled");
-                            }
-
-                            that.onchange();  // signals that the filter has changed
-                        });
-
-                        // populate drop down with all available operators
-                        if (cm.opts) {
-                            op = cm.opts;
-                        }
-                        else if (cm.searchtype == 'string') {
-                            op = p.stropts;
-                        }
-                        else {
-                            op = that.p.numopts;
-                        }
-                        str = "";
-                        for (i = 0; i < that.p.ops.length; i++) {
-                            if ($.inArray(that.p.ops[i].name, op) !== -1) {
-                                selected = rule.op == that.p.ops[i].name ? "selected='selected'" : "";
-                                str += "<option value='" + that.p.ops[i].name + "'>" + that.p.ops[i].description + "</option>";
-                            }
-                        }
-                        ruleOperatorSelect.append(str);
-                        // create data container
-                        var ruleDataTd = $("<td class='data'></td>");
-                        tr.append(ruleDataTd);
-
-                        // textbox for: data
-                        // is created previously
-                        //ruleDataInput.setAttribute("type", "text");
-                        ruleDataTd.append(ruleDataInput);
-
-                        $(ruleDataInput)
-                                .addClass("input-elm")
-                                .bind('change', function() {
-                            rule.data = $(this).val();
-
-                            that.onchange(); // signals that the filter has changed
-                        });
-
-                        // create action container
-                        var ruleDeleteTd = $("<td></td>");
-                        tr.append(ruleDeleteTd);
-
-                        // create button for: delete rule
-                        var ruleDeleteInput = $("<input type='button' value='-' title='Delete rule' class='delete-rule'/>");
-                        ruleDeleteTd.append(ruleDeleteInput);
-                        //$(ruleDeleteInput).html("").height(20).width(30).button({icons: {  primary: "ui-icon-minus", text:false}});
-                        ruleDeleteInput.bind('click', function() {
-                            // remove rule from group
-                            for (i = 0; i < group.rules.length; i++) {
-                                if (group.rules[i] == rule) {
-                                    group.rules.splice(i, 1);
-                                    break;
-                                }
-                            }
-
-                            that.reDraw(); // the html has changed, force reDraw
-
-                            that.onchange(); // signals that the filter has changed
-                            return false;
-                        });
-
-                        return tr;
-                    },
-
-                    this.getStringForGroup = function(group) {
-                        var s = "(", index;
-                        if (group.groups != undefined) {
-                            for (index = 0; index < group.groups.length; index++) {
-                                if (s.length > 1)
-                                    s += " " + group.groupOp + " ";
-
-                                try {
-                                    s += this.getStringForGroup(group.groups[index]);
-                                } catch (e) {
-                                    alert(e);
-                                }
-                            }
-                        }
-
-                        if (group.rules != undefined) {
-                            try {
-                                for (index = 0; index < group.rules.length; index++) {
-                                    if (s.length > 1)
-                                        s += " " + group.groupOp + " ";
-                                    s += this.getStringForRule(group.rules[index]);
-                                }
-                            } catch (e) {
-                                alert(e);
-                            }
-                        }
-
-                        s += ")";
-
-                        if (s == "()")
-                            return ""; // ignore groups that don't have rules
-                        else
-                            return s;
-                    },
-                    this.getStringForRule = function(rule) {
-                        var opUF = "",opC = "", i, cm, ret, val,
-                                numtypes = ['int', 'integer', 'float', 'number', 'currency']; // jqGrid
-                        for (i = 0; i < this.p.ops.length; i++) {
-                            if (this.p.ops[i].name == rule.op) {
-                                opUF = this.p.ops[i].operator;
-                                opC = this.p.ops[i].name;
+                // button for delete the group
+                if (parentgroup != null) { // ignore the first group
+                    var inputDeleteGroup = $("<input type='button' value='-' title='Delete group' class='delete-group'/>");
+                    th.append(inputDeleteGroup);
+                    inputDeleteGroup.bind('click', function() {
+                        // remove group from parent
+                        for (i = 0; i < parentgroup.groups.length; i++) {
+                            if (parentgroup.groups[i] == group) {
+                                parentgroup.groups.splice(i, 1);
                                 break;
                             }
                         }
-                        for (i = 0; i < this.p.columns.length; i++) {
-                            if (this.p.columns[i].name == rule.field) {
-                                cm = this.p.columns[i];
+
+                        that.reDraw(); // the html has changed, force reDraw
+
+                        that.onchange(); // signals that the filter has changed
+                        return false;
+                    });
+                }
+
+                // append subgroup rows
+                if (group.groups != undefined) {
+                    for (i = 0; i < group.groups.length; i++) {
+                        var trHolderForSubgroup = $("<tr></tr>");
+                        table.append(trHolderForSubgroup);
+
+                        var tdFirstHolderForSubgroup = $("<td class='first'></td>");
+                        trHolderForSubgroup.append(tdFirstHolderForSubgroup);
+
+                        var tdMainHolderForSubgroup = $("<td colspan='4'></td>");
+                        tdMainHolderForSubgroup.append(this.createTableForGroup(group.groups[i], group));
+                        trHolderForSubgroup.append(tdMainHolderForSubgroup);
+                    }
+                }
+                if (group.groupOp == undefined) {
+                    group.groupOp = that.p.groupOps[0];
+                }
+
+                // append rules rows
+                if (group.rules != undefined) {
+                    for (i = 0; i < group.rules.length; i++) {
+                        table.append(
+                                this.createTableRowForRule(group.rules[i], group)
+                                );
+                    }
+                }
+
+                return table;
+            };
+            /*
+             * Create the rule data for the filter
+             */
+            this.createTableRowForRule = function(rule, group) {
+                // save current entity in a variable so that it could
+                // be referenced in anonimous method calls
+
+                var that = this, tr = $("<tr></tr>"),
+                    //document.createElement("tr"),
+
+                    // first column used for padding
+                    //tdFirstHolderForRule = document.createElement("td"),
+                        i, op, trpar, cm, str = "", selected;
+                //tdFirstHolderForRule.setAttribute("class", "first");
+                tr.append("<td class='first'></td>");
+
+
+                // create field container
+                var ruleFieldTd = $("<td class='columns'></td>");
+                tr.append(ruleFieldTd);
+
+
+                // dropdown for: choosing field
+                var ruleFieldSelect = $("<select></select>");
+                ruleFieldTd.append(ruleFieldSelect);
+                ruleFieldSelect.bind('change', function() {
+                    rule.field = $(ruleFieldSelect).val();
+
+                    trpar = $(this).parents("tr:first");
+                    for (i = 0; i < that.p.columns.length; i++) {
+                        if (that.p.columns[i].name == rule.field) {
+                            cm = that.p.columns[i];
+                            break;
+                        }
+                    }
+                    if (!cm) {
+                        return false;
+                    }
+                    var elm = $.jgrid.createEl(cm.inputtype, cm.searchoptions, "", true, that.p.ajaxSelectOptions);
+                    $(elm).addClass("input-elm");
+                    //that.createElement(rule, "");
+
+                    if (cm.opts) {
+                        op = cm.opts;
+                    }
+                    else if (cm.searchtype == 'string') {
+                        op = that.p.stropts;
+                    }
+                    else {
+                        op = that.p.numopts;
+                    }
+                    // operators
+                    var s = "",so = "";
+                    for (i = 0; i < that.p.ops.length; i++) {
+                        if ($.inArray(that.p.ops[i].name, op) !== -1) {
+                            so = rule.op == that.p.ops[i].name ? "selected=selected" : "";
+                            s += "<option value='" + that.p.ops[i].name + "' " + so + ">" + that.p.ops[i].description + "</option>";
+                        }
+                    }
+                    $(".selectopts", trpar).empty().append(s);
+
+                    // data
+                    $(".data", trpar).empty().append(elm);
+                    $(".input-elm", trpar).bind('change', function() {
+                        rule.data = $(this).val();
+                        if ($.isArray(rule.data)) {
+                            rule.data = rule.data.join(",");
+                        }
+                        that.onchange(); // signals that the filter has changed
+                    });
+                    rule.data = $(elm).val();
+                    that.onchange();  // signals that the filter has changed
+                });
+
+                // populate drop down with user provided column definitions
+                var j = 0;
+                for (i = 0; i < that.p.columns.length; i++) {
+                    // but show only serchable and serchhidden = true fields
+                    var searchable = (typeof that.p.columns[i].search === 'undefined') ? true : that.p.columns[i].search ,
+                            hidden = (that.p.columns[i].hidden === true),
+                            ignoreHiding = (that.p.columns[i].searchoptions.searchhidden === true);
+                    if ((ignoreHiding && searchable) || (searchable && !hidden)) {
+                        selected = "";
+                        if (rule.field == that.p.columns[i].name) {
+                            selected = "selected='selected'";
+                            j = i;
+                        }
+                        str += "<option value='" + that.p.columns[i].name + "'" + selected + ">" + that.p.columns[i].label + "</option>";
+                    }
+                }
+                ruleFieldSelect.append(str);
+
+
+                // create operator container
+                var ruleOperatorTd = $("<td class='operators'></td>");
+                tr.append(ruleOperatorTd);
+                cm = p.columns[j];
+                // create it here so it can be referentiated in the onchange event
+                //var RD = that.createElement(rule, rule.data);
+                var ruleDataInput = $.jgrid.createEl(cm.inputtype, cm.searchoptions, rule.data, true, that.p.ajaxSelectOptions);
+
+                // dropdown for: choosing operator
+                var ruleOperatorSelect = $("<select class='selectopts'></select>");
+                ruleOperatorTd.append(ruleOperatorSelect);
+                ruleOperatorSelect.bind('change', function() {
+                    rule.op = $(ruleOperatorSelect).val();
+                    trpar = $(this).parents("tr:first");
+                    var rd = $(".input-elm", trpar)[0];
+                    if (rule.op == "nu" || rule.op == "nn") { // disable for operator "is null" and "is not null"
+                        rule.data = "";
+                        rd.value = "";
+                        rd.setAttribute("readonly", "true");
+                        rd.setAttribute("disabled", "true");
+                    } else {
+                        rd.removeAttribute("readonly");
+                        rd.removeAttribute("disabled");
+                    }
+
+                    that.onchange();  // signals that the filter has changed
+                });
+
+                // populate drop down with all available operators
+                if (cm.opts) {
+                    op = cm.opts;
+                }
+                else if (cm.searchtype == 'string') {
+                    op = p.stropts;
+                }
+                else {
+                    op = that.p.numopts;
+                }
+                str = "";
+                for (i = 0; i < that.p.ops.length; i++) {
+                    if ($.inArray(that.p.ops[i].name, op) !== -1) {
+                        selected = rule.op == that.p.ops[i].name ? "selected='selected'" : "";
+                        str += "<option value='" + that.p.ops[i].name + "'>" + that.p.ops[i].description + "</option>";
+                    }
+                }
+                ruleOperatorSelect.append(str);
+                // create data container
+                var ruleDataTd = $("<td class='data'></td>");
+                tr.append(ruleDataTd);
+
+                // textbox for: data
+                // is created previously
+                //ruleDataInput.setAttribute("type", "text");
+                ruleDataTd.append(ruleDataInput);
+
+                $(ruleDataInput)
+                        .addClass("input-elm")
+                        .bind('change', function() {
+                    rule.data = $(this).val();
+                    if ($.isArray(rule.data)) {
+                        rule.data = rule.data.join(",");
+                    }
+
+                    that.onchange(); // signals that the filter has changed
+                });
+
+                // create action container
+                var ruleDeleteTd = $("<td></td>");
+                tr.append(ruleDeleteTd);
+
+                // create button for: delete rule
+                var ruleDeleteInput = $("<input type='button' value='-' title='Delete rule' class='delete-rule'/>");
+                ruleDeleteTd.append(ruleDeleteInput);
+                //$(ruleDeleteInput).html("").height(20).width(30).button({icons: {  primary: "ui-icon-minus", text:false}});
+                ruleDeleteInput.bind('click', function() {
+                    // remove rule from group
+                    for (i = 0; i < group.rules.length; i++) {
+                        if (group.rules[i] == rule) {
+                            group.rules.splice(i, 1);
+                            break;
+                        }
+                    }
+
+                    that.reDraw(); // the html has changed, force reDraw
+
+                    that.onchange(); // signals that the filter has changed
+                    return false;
+                });
+
+                return tr;
+            };
+
+            this.getStringForGroup = function(group) {
+                var s = "(", index;
+                if (group.groups != undefined) {
+                    for (index = 0; index < group.groups.length; index++) {
+                        if (s.length > 1) {
+                            s += " " + group.groupOp + " ";
+                        }
+                        try {
+                            s += this.getStringForGroup(group.groups[index]);
+                        } catch (e) {
+                            alert(e);
+                        }
+                    }
+                }
+
+                if (group.rules != undefined) {
+                    try {
+                        for (index = 0; index < group.rules.length; index++) {
+                            if (s.length > 1) {
+                                s += " " + group.groupOp + " ";
+                            }
+                            s += this.getStringForRule(group.rules[index]);
+                        }
+                    } catch (e) {
+                        alert(e);
+                    }
+                }
+
+                s += ")";
+
+                if (s == "()") {
+                    return ""; // ignore groups that don't have rules
+                } else {
+                    return s;
+                }
+            };
+            this.getStringForRule = function(rule) {
+                var opUF = "",opC = "", i, cm, ret, val,
+                        numtypes = ['int', 'integer', 'float', 'number', 'currency']; // jqGrid
+                for (i = 0; i < this.p.ops.length; i++) {
+                    if (this.p.ops[i].name == rule.op) {
+                        opUF = this.p.ops[i].operator;
+                        opC = this.p.ops[i].name;
+                        break;
+                    }
+                }
+                for (i = 0; i < this.p.columns.length; i++) {
+                    if (this.p.columns[i].name == rule.field) {
+                        cm = this.p.columns[i];
+                        break;
+                    }
+                }
+                val = rule.data;
+                if (opC == 'bw' || opC == 'bn') {
+                    val = val + "%";
+                }
+                if (opC == 'ew' || opC == 'en') {
+                    val = "%" + val;
+                }
+                if (opC == 'cn' || opC == 'nc') {
+                    val = "%" + val + "%";
+                }
+                if (opC == 'in' || opC == 'ni') {
+                    val = " (" + val + ")";
+                }
+                if (p.errorcheck) {
+                    checkData(rule.data, cm);
+                }
+                if ($.inArray(cm.searchtype, numtypes) !== -1 || opC == 'nn' || opC == 'nu') {
+                    ret = rule.field + " " + opUF + " " + val;
+                }
+                else {
+                    ret = rule.field + " " + opUF + " \"" + val + "\"";
+                }
+                return ret;
+            };
+            this.resetFilter = function () {
+                this.p.filter = $.extend(true, {}, this.p.initFilter);
+                this.reDraw();
+            };
+            this.hideError = function() {
+                $("th.ui-state-error", this).html("");
+                $("tr.error", this).hide();
+            };
+            this.showError = function() {
+                $("th.ui-state-error", this).html(this.p.errmsg);
+                $("tr.error", this).show();
+            };
+            this.toUserFriendlyString = function() {
+                return this.getStringForGroup(p.filter);
+            };
+            this.toString = function() {
+                // this will obtain a string that can be used to match an item.
+
+                function getStringForGroup(group) {
+                    var s = "(", index;
+
+                    if (group.groups != undefined) {
+                        for (index = 0; index < group.groups.length; index++) {
+                            if (s.length > 1) {
+                                if (group.groupOp == "OR") {
+                                    s += " || ";
+                                }
+                                else {
+                                    s += " && ";
+                                }
+                            }
+                            s += getStringForGroup(group.groups[index]);
+                        }
+                    }
+
+                    if (group.rules != undefined) {
+                        for (index = 0; index < group.rules.length; index++) {
+                            if (s.length > 1) {
+                                if (group.groupOp == "OR") {
+                                    s += " || ";
+                                }
+                                else {
+                                    s += " && ";
+                                }
+                            }
+                            s += getStringForRule(group.rules[index]);
+                        }
+                    }
+
+                    s += ")";
+
+                    if (s == "()") {
+                        return ""; // ignore groups that don't have rules
+                    } else {
+                        return s;
+                    }
+                }
+
+                function getStringForRule(rule) {
+                    if (p.errorcheck) {
+                        var i, cm;
+                        for (i = 0; i < p.columns.length; i++) {
+                            if (p.columns[i].name == rule.field) {
+                                cm = p.columns[i];
                                 break;
                             }
                         }
-                        val = rule.data;
-                        if (opC == 'bw' || opC == 'bn') val = val + "%";
-                        if (opC == 'ew' || opC == 'en') val = "%" + val;
-                        if (opC == 'cn' || opC == 'nc') val = "%" + val + "%";
-                        if (p.errorcheck) {
+                        if (cm) {
                             checkData(rule.data, cm);
                         }
-                        if ($.inArray(cm.searchtype, numtypes) !== -1 || opC == 'nn' || opC == 'nu') ret = rule.field + " " + opUF + " " + val + "";
-                        else ret = rule.field + " " + opUF + " \"" + val + "\"";
-                        return ret;
-                    },
-                    this.hideError = function() {
-                        $("th.ui-state-error", this).html("");
-                        $("tr.error", this).hide();
-                    },
-                    this.showError = function() {
-                        $("th.ui-state-error", this).html(this.p.errmsg);
-                        $("tr.error", this).show();
-                    },
-                    this.toUserFriendlyString = function() {
-                        return this.getStringForGroup(p.filter);
-                    },
-                    this.toString = function() {
-                        // this will obtain a string that can be used to match an item.
+                    }
+                    return rule.op + "(item." + rule.field + ",'" + rule.data + "')";
+                }
 
-                        function getStringForGroup(group) {
-                            var s = "(", index;
-
-                            if (group.groups != undefined) {
-                                for (index = 0; index < group.groups.length; index++) {
-                                    if (s.length > 1) {
-                                        if (group.groupOp == "OR")
-                                            s += " || ";
-                                        else
-                                            s += " && ";
-                                    }
-                                    s += getStringForGroup(group.groups[index]);
-                                }
-                            }
-
-                            if (group.rules != undefined) {
-                                for (index = 0; index < group.rules.length; index++) {
-                                    if (s.length > 1) {
-                                        if (group.groupOp == "OR")
-                                            s += " || ";
-                                        else
-                                            s += " && ";
-                                    }
-                                    s += getStringForRule(group.rules[index]);
-                                }
-                            }
-
-                            s += ")";
-
-                            if (s == "()")
-                                return ""; // ignore groups that don't have rules
-                            else
-                                return s;
-                        }
-
-                        function getStringForRule(rule) {
-                            if (p.errorcheck) {
-                                var i, cm;
-                                for (i = 0; i < p.columns.length; i++) {
-                                    if (p.columns[i].name == rule.field) {
-                                        cm = p.columns[i];
-                                        break;
-                                    }
-                                }
-                                if (cm) {
-                                    checkData(rule.data, cm);
-                                }
-                            }
-                            return rule.op + "(item." + rule.field + ",'" + rule.data + "')";
-                        }
-
-                        return getStringForGroup(this.p.filter);
-                    };
+                return getStringForGroup(this.p.filter);
+            };
 
             // Here we init the filter
             this.reDraw();
@@ -624,10 +679,16 @@
         },
         getParameter : function (param) {
             if (param !== undefined) {
-                if (this.p.hasOwnProperty(param))
+                if (this.p.hasOwnProperty(param)) {
                     return this.p[param];
+                }
             }
             return this.p;
+        },
+        resetFilter: function() {
+            return this.each(function() {
+                this.resetFilter();
+            });
         }
 
     });
