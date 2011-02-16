@@ -35,17 +35,23 @@
       background-color: transparent; }
     &.separator {
       border-top: solid 1px #CCC; }
-    &.new A {
-      background-image: image_url("jquery/ui/contextMenu/page_white_new.png"); }
-    &.edit A {
-      background-image: image_url("jquery/ui/contextMenu/page_white_edit.png"); }
+    &.copy A {
+      background-image: image_url("jquery/ui/contextMenu/copy.png"); }
     &.cut A {
       background-image: image_url("jquery/ui/contextMenu/cut.png"); }
-    &.copy A {
-      background-image: image_url("jquery/ui/contextMenu/page_white_copy.png"); }
-    &.paste A {
-      background-image: image_url("jquery/ui/contextMenu/page_white_paste.png"); }
     &.delete A {
-      background-image: image_url("jquery/ui/contextMenu/page_white_delete.png"); }
+      background-image: image_url("jquery/ui/contextMenu/delete.png"); }
+    &.edit A {
+      background-image: image_url("jquery/ui/contextMenu/edit.png"); }
+    &.new A {
+      background-image: image_url("jquery/ui/contextMenu/new.png"); }
+    &.paste A {
+      background-image: image_url("jquery/ui/contextMenu/paste.png"); }
     &.quit A {
-      background-image: image_url("jquery/ui/contextMenu/door.png"); } } }
+      background-image: image_url("jquery/ui/contextMenu/exit.png"); }
+    &.rename A {
+      background-image: image_url("jquery/ui/contextMenu/rename.png"); }
+    &.show A {
+      background-image: image_url("jquery/ui/contextMenu/show.png"); }
+    &.trash A {
+      background-image: image_url("jquery/ui/contextMenu/trash.png"); } } }

@@ -47,10 +47,13 @@
 	border-top: solid 1px #CCC;
 }
 
-.contextMenu LI.new A { background-image: image_url("jquery/ui/contextMenu/page_white_new.png"); }
-.contextMenu LI.edit A { background-image: image_url("jquery/ui/contextMenu/page_white_edit.png"); }
+.contextMenu LI.copy A { background-image: image_url("jquery/ui/contextMenu/copy.png"); }
 .contextMenu LI.cut A { background-image: image_url("jquery/ui/contextMenu/cut.png"); }
-.contextMenu LI.copy A { background-image: image_url("jquery/ui/contextMenu/page_white_copy.png"); }
-.contextMenu LI.paste A { background-image: image_url("jquery/ui/contextMenu/page_white_paste.png"); }
-.contextMenu LI.delete A { background-image: image_url("jquery/ui/contextMenu/page_white_delete.png"); }
-.contextMenu LI.quit A { background-image: image_url("jquery/ui/contextMenu/door.png"); }
+.contextMenu LI.delete A { background-image: image_url("jquery/ui/contextMenu/delete.png"); }
+.contextMenu LI.edit A { background-image: image_url("jquery/ui/contextMenu/edit.png"); }
+.contextMenu LI.new A { background-image: image_url("jquery/ui/contextMenu/new.png"); }
+.contextMenu LI.paste A { background-image: image_url("jquery/ui/contextMenu/paste.png"); }
+.contextMenu LI.quit A { background-image: image_url("jquery/ui/contextMenu/exit.png"); }
+.contextMenu LI.rename A { background-image: image_url("jquery/ui/contextMenu/rename.png"); }
+.contextMenu LI.show A { background-image: image_url("jquery/ui/contextMenu/show.png"); }
+.contextMenu LI.trash A { background-image: image_url("jquery/ui/contextMenu/trash.png"); }
