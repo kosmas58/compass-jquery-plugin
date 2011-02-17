@@ -313,14 +313,10 @@
 // Form Functions
         createEl : function(eltype, options, vl, autowidth, ajaxso) {
             var elem = "";
-            //if(options.defaultValue) { delete options.defaultValue; }
+
             function bindEv(el, opt) {
                 if ($.isFunction(opt.dataInit)) {
-                    // datepicker fix
-                    el.id = opt.id;
                     opt.dataInit(el);
-                    delete opt.id;
-                    //delete opt.dataInit;
                 }
                 if (opt.dataEvents) {
                     $.each(opt.dataEvents, function() {
@@ -330,7 +326,6 @@
                             $(el).bind(this.type, this.fn);
                         }
                     });
-                    //delete opt.dataEvents;
                 }
                 return opt;
             }
@@ -361,8 +356,8 @@
                         vl = "";
                     }
                     elem.value = vl;
-                    options = bindEv(elem, options);
                     setAttributes(elem, options);
+                    options = bindEv(elem, options);
                     $(elem).attr({"role":"textbox","multiline":"true"});
                     break;
                 case "checkbox" : //what code for simple checkbox
@@ -386,10 +381,9 @@
                         }
                         elem.value = cbval[0];
                         $(elem).attr("offval", cbval[1]);
-                        //try {delete options.value;} catch (e){}
                     }
-                    options = bindEv(elem, options);
                     setAttributes(elem, options);
+                    options = bindEv(elem, options);
                     $(elem).attr("role", "checkbox");
                     break;
                 case "select" :
@@ -409,17 +403,16 @@
                             type : "GET",
                             dataType: "html",
                             success: function(data, status) {
-                                //try {delete options.dataUrl; delete options.value;} catch (e){}
                                 var a;
                                 if (typeof(options.buildSelect) != "undefined") {
                                     var b = options.buildSelect(data);
                                     a = $(b).html();
-                                    //delete options.buildSelect;
                                 } else {
                                     a = $(data).html();
                                 }
                                 if (a) {
                                     $(elem).append(a);
+                                    setAttributes(elem, options);
                                     options = bindEv(elem, options);
                                     if (typeof options.size === 'undefined') {
                                         options.size = msl ? 3 : 1;
@@ -433,7 +426,6 @@
                                         ovm[0] = $.trim(vl);
                                     }
                                     //$(elem).attr(options);
-                                    setAttributes(elem, options);
                                     setTimeout(function() {
                                         $("option", elem).each(function(i) {
                                             if (i === 0) {
@@ -510,10 +502,8 @@
                                 }
                             }
                         }
-                        options = bindEv(elem, options);
-                        //try {delete options.value;} catch (e){}
-                        //$(elem).attr(options);
                         setAttributes(elem, options);
+                        options = bindEv(elem, options);
                     }
                     break;
                 case "text" :
@@ -529,6 +519,7 @@
                     elem = document.createElement("input");
                     elem.type = eltype;
                     elem.value = vl;
+                    setAttributes(elem, options);
                     options = bindEv(elem, options);
                     if (eltype != "button") {
                         if (autowidth) {
@@ -539,15 +530,14 @@
                             options.size = 20;
                         }
                     }
-                    setAttributes(elem, options);
                     $(elem).attr("role", role);
                     break;
                 case "image" :
                 case "file" :
                     elem = document.createElement("input");
                     elem.type = eltype;
-                    options = bindEv(elem, options);
                     setAttributes(elem, options);
+                    options = bindEv(elem, options);
                     break;
                 case "custom" :
                     elem = document.createElement("span");

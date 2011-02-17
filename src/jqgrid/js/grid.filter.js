@@ -30,7 +30,7 @@
 (function ($) {
 
     $.fn.jqFilter = function(arg) {
-        if (typeof arg == 'string') {
+        if (typeof arg === 'string') {
 
             var fn = $.fn.jqFilter[arg];
             if (!fn) {
@@ -49,26 +49,28 @@
             errmsg : "",
             errorcheck : true,
             showQuery : true,
+            sopt : null,
             ops : [
                 {"name": "eq", "description": "equal", "operator":"="},
                 {"name": "ne", "description": "not equal", "operator":"<>"},
-                {"name": "bw", "description": "begins with", "operator":"LIKE"},
-                {"name": "bn", "description": "does not begin with", "operator":"NOT LIKE"},
                 {"name": "lt", "description": "less", "operator":"<"},
                 {"name": "le", "description": "less or equal","operator":"<="},
                 {"name": "gt", "description": "greater", "operator":">"},
                 {"name": "ge", "description": "greater or equal", "operator":">="},
+                {"name": "bw", "description": "begins with", "operator":"LIKE"},
+                {"name": "bn", "description": "does not begin with", "operator":"NOT LIKE"},
+                {"name": "in", "description": "in", "operator":"IN"},
+                {"name": "ni", "description": "not in", "operator":"NOT IN"},
                 {"name": "ew", "description": "ends with", "operator":"LIKE"},
                 {"name": "en", "description": "does not end with", "operator":"NOT LIKE"},
                 {"name": "cn", "description": "contains", "operator":"LIKE"},
                 {"name": "nc", "description": "does not contain", "operator":"NOT LIKE"},
                 {"name": "nu", "description": "is null", "operator":"IS NULL"},
-                {"name": "nn", "description": "is not null", "operator":"IS NOT NULL"},
-                {"name": "in", "description": "in", "operator":"IN"},
-                {"name": "ni", "description": "not in", "operator":"NOT IN"}
+                {"name": "nn", "description": "is not null", "operator":"IS NOT NULL"}
             ],
             numopts : ['eq','ne', 'lt', 'le', 'gt', 'ge', 'nu', 'nn', 'in', 'ni'],
             stropts : ['eq', 'ne', 'bw', 'bn', 'ew', 'en', 'cn', 'nc', 'nu', 'nn', 'in', 'ni'],
+            _gridsopt : [], // grid translated strings, do not tuch
             groupOps : ["AND", "OR"]
         }, arg || {});
         return this.each(function() {
@@ -84,10 +86,18 @@
                     groups: []
                 };
             }
+            var i, len = this.p.columns.length, cl;
+
+            // translating the options
+            if (this.p._gridsopt.length) {
+                // ['eq','ne','lt','le','gt','ge','bw','bn','in','ni','ew','en','cn','nc']
+                for (i = 0; i < this.p._gridsopt.length; i++) {
+                    this.p.ops[i].description = this.p._gridsopt[i];
+                }
+            }
             this.p.initFilter = $.extend(true, {}, this.p.filter);
 
             // set default values for the columns if they are not set
-            var i, len = this.p.columns.length, cl;
             if (!len) {
                 return;
             }
@@ -141,7 +151,10 @@
                     p.error = !ret[0];
                     p.errmsg = ret[1];
                 }
-            };
+            },
+                    randId = function() {
+                        return Math.floor(Math.random() * 10000).toString();
+                    };
 
             this.onchange = function () {
                 // clear any error
@@ -169,7 +182,7 @@
                 // this table will hold all the group (tables) and rules (rows)
                 var table = $("<table class='group ui-widget ui-widget-content' style='border:0px none;'><tbody>");
                 // create error message row
-                if (parentgroup == null) {
+                if (parentgroup === null) {
                     $(table).append("<tr class='error' style='display:none;'><th colspan='5' class='ui-state-error' align='left'></th></tr>");
                 }
 
@@ -186,7 +199,7 @@
                 // populate dropdown with all posible group operators: or, and
                 var str = "", selected;
                 for (i = 0; i < p.groupOps.length; i++) {
-                    selected = group.groupOp == p.groupOps[i] ? "selected='selected'" : "";
+                    selected = group.groupOp === p.groupOps[i] ? "selected='selected'" : "";
                     str += "<option value='" + p.groupOps[i] + "'" + selected + ">" + p.groupOps[i] + "</option>";
                 }
 
@@ -200,7 +213,7 @@
                 // button for adding a new subgroup
                 var inputAddSubgroup = $("<input type='button' value='+ {}' title='Add subgroup' class='add-group'/>");
                 inputAddSubgroup.bind('click', function() {
-                    if (group.groups == undefined) {
+                    if (group.groups === undefined) {
                         group.groups = [];
                     }
 
@@ -221,7 +234,7 @@
                 var inputAddRule = $("<input type='button' value='+' title='Add rule' class='add-rule'/>"), cm;
                 inputAddRule.bind('click', function() {
                     //if(!group) { group = {};}
-                    if (group.rules == undefined) {
+                    if (group.rules === undefined) {
                         group.rules = [];
                     }
                     for (i = 0; i < that.p.columns.length; i++) {
@@ -238,7 +251,10 @@
                     if (cm.opts) {
                         opr = cm.opts;
                     }
-                    else if (cm.searchtype == 'string') {
+                    else if (that.p.sopt) {
+                        opr = that.p.sopt;
+                    }
+                    else if (cm.searchtype === 'string') {
                         opr = that.p.stropts;
                     }
                     else {
@@ -259,13 +275,13 @@
                 th.append(inputAddRule);
 
                 // button for delete the group
-                if (parentgroup != null) { // ignore the first group
+                if (parentgroup !== null) { // ignore the first group
                     var inputDeleteGroup = $("<input type='button' value='-' title='Delete group' class='delete-group'/>");
                     th.append(inputDeleteGroup);
                     inputDeleteGroup.bind('click', function() {
                         // remove group from parent
                         for (i = 0; i < parentgroup.groups.length; i++) {
-                            if (parentgroup.groups[i] == group) {
+                            if (parentgroup.groups[i] === group) {
                                 parentgroup.groups.splice(i, 1);
                                 break;
                             }
@@ -279,7 +295,7 @@
                 }
 
                 // append subgroup rows
-                if (group.groups != undefined) {
+                if (group.groups !== undefined) {
                     for (i = 0; i < group.groups.length; i++) {
                         var trHolderForSubgroup = $("<tr></tr>");
                         table.append(trHolderForSubgroup);
@@ -292,12 +308,12 @@
                         trHolderForSubgroup.append(tdMainHolderForSubgroup);
                     }
                 }
-                if (group.groupOp == undefined) {
+                if (group.groupOp === undefined) {
                     group.groupOp = that.p.groupOps[0];
                 }
 
                 // append rules rows
-                if (group.rules != undefined) {
+                if (group.rules !== undefined) {
                     for (i = 0; i < group.rules.length; i++) {
                         table.append(
                                 this.createTableRowForRule(group.rules[i], group)
@@ -337,7 +353,7 @@
 
                     trpar = $(this).parents("tr:first");
                     for (i = 0; i < that.p.columns.length; i++) {
-                        if (that.p.columns[i].name == rule.field) {
+                        if (that.p.columns[i].name === rule.field) {
                             cm = that.p.columns[i];
                             break;
                         }
@@ -345,14 +361,18 @@
                     if (!cm) {
                         return false;
                     }
-                    var elm = $.jgrid.createEl(cm.inputtype, cm.searchoptions, "", true, that.p.ajaxSelectOptions);
+                    cm.searchoptions.id = randId();
+                    var elm = $.jgrid.createEl(cm.inputtype, cm.searchoptions, "", true, that.p.ajaxSelectOptions, true);
                     $(elm).addClass("input-elm");
                     //that.createElement(rule, "");
 
                     if (cm.opts) {
                         op = cm.opts;
                     }
-                    else if (cm.searchtype == 'string') {
+                    else if (that.p.sopt) {
+                        op = that.p.sopt;
+                    }
+                    else if (cm.searchtype === 'string') {
                         op = that.p.stropts;
                     }
                     else {
@@ -362,7 +382,7 @@
                     var s = "",so = "";
                     for (i = 0; i < that.p.ops.length; i++) {
                         if ($.inArray(that.p.ops[i].name, op) !== -1) {
-                            so = rule.op == that.p.ops[i].name ? "selected=selected" : "";
+                            so = rule.op === that.p.ops[i].name ? "selected=selected" : "";
                             s += "<option value='" + that.p.ops[i].name + "' " + so + ">" + that.p.ops[i].description + "</option>";
                         }
                     }
@@ -390,7 +410,7 @@
                             ignoreHiding = (that.p.columns[i].searchoptions.searchhidden === true);
                     if ((ignoreHiding && searchable) || (searchable && !hidden)) {
                         selected = "";
-                        if (rule.field == that.p.columns[i].name) {
+                        if (rule.field === that.p.columns[i].name) {
                             selected = "selected='selected'";
                             j = i;
                         }
@@ -406,7 +426,8 @@
                 cm = p.columns[j];
                 // create it here so it can be referentiated in the onchange event
                 //var RD = that.createElement(rule, rule.data);
-                var ruleDataInput = $.jgrid.createEl(cm.inputtype, cm.searchoptions, rule.data, true, that.p.ajaxSelectOptions);
+                cm.searchoptions.id = randId();
+                var ruleDataInput = $.jgrid.createEl(cm.inputtype, cm.searchoptions, rule.data, true, that.p.ajaxSelectOptions, true);
 
                 // dropdown for: choosing operator
                 var ruleOperatorSelect = $("<select class='selectopts'></select>");
@@ -415,7 +436,7 @@
                     rule.op = $(ruleOperatorSelect).val();
                     trpar = $(this).parents("tr:first");
                     var rd = $(".input-elm", trpar)[0];
-                    if (rule.op == "nu" || rule.op == "nn") { // disable for operator "is null" and "is not null"
+                    if (rule.op === "nu" || rule.op === "nn") { // disable for operator "is null" and "is not null"
                         rule.data = "";
                         rd.value = "";
                         rd.setAttribute("readonly", "true");
@@ -432,7 +453,10 @@
                 if (cm.opts) {
                     op = cm.opts;
                 }
-                else if (cm.searchtype == 'string') {
+                else if (that.p.sopt) {
+                    op = that.p.sopt;
+                }
+                else if (cm.searchtype === 'string') {
                     op = p.stropts;
                 }
                 else {
@@ -441,7 +465,7 @@
                 str = "";
                 for (i = 0; i < that.p.ops.length; i++) {
                     if ($.inArray(that.p.ops[i].name, op) !== -1) {
-                        selected = rule.op == that.p.ops[i].name ? "selected='selected'" : "";
+                        selected = rule.op === that.p.ops[i].name ? "selected='selected'" : "";
                         str += "<option value='" + that.p.ops[i].name + "'>" + that.p.ops[i].description + "</option>";
                     }
                 }
@@ -477,7 +501,7 @@
                 ruleDeleteInput.bind('click', function() {
                     // remove rule from group
                     for (i = 0; i < group.rules.length; i++) {
-                        if (group.rules[i] == rule) {
+                        if (group.rules[i] === rule) {
                             group.rules.splice(i, 1);
                             break;
                         }
@@ -494,20 +518,20 @@
 
             this.getStringForGroup = function(group) {
                 var s = "(", index;
-                if (group.groups != undefined) {
+                if (group.groups !== undefined) {
                     for (index = 0; index < group.groups.length; index++) {
                         if (s.length > 1) {
                             s += " " + group.groupOp + " ";
                         }
                         try {
                             s += this.getStringForGroup(group.groups[index]);
-                        } catch (e) {
-                            alert(e);
+                        } catch (eg) {
+                            alert(eg);
                         }
                     }
                 }
 
-                if (group.rules != undefined) {
+                if (group.rules !== undefined) {
                     try {
                         for (index = 0; index < group.rules.length; index++) {
                             if (s.length > 1) {
@@ -522,7 +546,7 @@
 
                 s += ")";
 
-                if (s == "()") {
+                if (s === "()") {
                     return ""; // ignore groups that don't have rules
                 } else {
                     return s;
@@ -532,35 +556,35 @@
                 var opUF = "",opC = "", i, cm, ret, val,
                         numtypes = ['int', 'integer', 'float', 'number', 'currency']; // jqGrid
                 for (i = 0; i < this.p.ops.length; i++) {
-                    if (this.p.ops[i].name == rule.op) {
+                    if (this.p.ops[i].name === rule.op) {
                         opUF = this.p.ops[i].operator;
                         opC = this.p.ops[i].name;
                         break;
                     }
                 }
                 for (i = 0; i < this.p.columns.length; i++) {
-                    if (this.p.columns[i].name == rule.field) {
+                    if (this.p.columns[i].name === rule.field) {
                         cm = this.p.columns[i];
                         break;
                     }
                 }
                 val = rule.data;
-                if (opC == 'bw' || opC == 'bn') {
+                if (opC === 'bw' || opC === 'bn') {
                     val = val + "%";
                 }
-                if (opC == 'ew' || opC == 'en') {
+                if (opC === 'ew' || opC === 'en') {
                     val = "%" + val;
                 }
-                if (opC == 'cn' || opC == 'nc') {
+                if (opC === 'cn' || opC === 'nc') {
                     val = "%" + val + "%";
                 }
-                if (opC == 'in' || opC == 'ni') {
+                if (opC === 'in' || opC === 'ni') {
                     val = " (" + val + ")";
                 }
                 if (p.errorcheck) {
                     checkData(rule.data, cm);
                 }
-                if ($.inArray(cm.searchtype, numtypes) !== -1 || opC == 'nn' || opC == 'nu') {
+                if ($.inArray(cm.searchtype, numtypes) !== -1 || opC === 'nn' || opC === 'nu') {
                     ret = rule.field + " " + opUF + " " + val;
                 }
                 else {
@@ -585,14 +609,31 @@
             };
             this.toString = function() {
                 // this will obtain a string that can be used to match an item.
+                var that = this;
+
+                function getStringRule(rule) {
+                    if (that.p.errorcheck) {
+                        var i, cm;
+                        for (i = 0; i < that.p.columns.length; i++) {
+                            if (that.p.columns[i].name === rule.field) {
+                                cm = that.p.columns[i];
+                                break;
+                            }
+                        }
+                        if (cm) {
+                            checkData(rule.data, cm);
+                        }
+                    }
+                    return rule.op + "(item." + rule.field + ",'" + rule.data + "')";
+                }
 
                 function getStringForGroup(group) {
                     var s = "(", index;
 
-                    if (group.groups != undefined) {
+                    if (group.groups !== undefined) {
                         for (index = 0; index < group.groups.length; index++) {
                             if (s.length > 1) {
-                                if (group.groupOp == "OR") {
+                                if (group.groupOp === "OR") {
                                     s += " || ";
                                 }
                                 else {
@@ -603,43 +644,27 @@
                         }
                     }
 
-                    if (group.rules != undefined) {
+                    if (group.rules !== undefined) {
                         for (index = 0; index < group.rules.length; index++) {
                             if (s.length > 1) {
-                                if (group.groupOp == "OR") {
+                                if (group.groupOp === "OR") {
                                     s += " || ";
                                 }
                                 else {
                                     s += " && ";
                                 }
                             }
-                            s += getStringForRule(group.rules[index]);
+                            s += getStringRule(group.rules[index]);
                         }
                     }
 
                     s += ")";
 
-                    if (s == "()") {
+                    if (s === "()") {
                         return ""; // ignore groups that don't have rules
                     } else {
                         return s;
                     }
-                }
-
-                function getStringForRule(rule) {
-                    if (p.errorcheck) {
-                        var i, cm;
-                        for (i = 0; i < p.columns.length; i++) {
-                            if (p.columns[i].name == rule.field) {
-                                cm = p.columns[i];
-                                break;
-                            }
-                        }
-                        if (cm) {
-                            checkData(rule.data, cm);
-                        }
-                    }
-                    return rule.op + "(item." + rule.field + ",'" + rule.data + "')";
                 }
 
                 return getStringForGroup(this.p.filter);
