@@ -265,10 +265,10 @@
         // trigger icon
         if (conf.trigger) {
             trigger = $("<a/>").attr("href", "#").addClass(css.trigger).click(
-                                                                             function(e) {
-                                                                                 self.show();
-                                                                                 return e.preventDefault();
-                                                                             }).insertAfter(input);
+                    function(e) {
+                        self.show();
+                        return e.preventDefault();
+                    }).insertAfter(input);
         }
 
 

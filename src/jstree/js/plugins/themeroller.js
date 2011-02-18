@@ -38,11 +38,11 @@
                         .children("ins.jstree-icon").removeClass(s.opened + " " + s.closed + " ui-icon").end()
                         .find("> a > ins.ui-icon")
                         .filter(
-                               function() {
-                                   return this.className.toString()
-                                           .replace(s.item_clsd, "").replace(s.item_open, "").replace(s.item_leaf, "")
-                                           .indexOf("ui-icon-") === -1;
-                               }).removeClass(s.item_open + " " + s.item_clsd).addClass(s.item_leaf || "jstree-no-icon");
+                        function() {
+                            return this.className.toString()
+                                    .replace(s.item_clsd, "").replace(s.item_open, "").replace(s.item_leaf, "")
+                                    .indexOf("ui-icon-") === -1;
+                        }).removeClass(s.item_open + " " + s.item_clsd).addClass(s.item_leaf || "jstree-no-icon");
             }, this))
                     .bind("select_node.jstree", $.proxy(function (e, data) {
                 data.rslt.obj.children("a").addClass(s.item_a);
@@ -88,11 +88,11 @@
                         .children("a").addClass(s.item)
                         .children("ins.jstree-icon").addClass("ui-icon")
                         .filter(
-                               function() {
-                                   return this.className.toString()
-                                           .replace(s.item_clsd, "").replace(s.item_open, "").replace(s.item_leaf, "")
-                                           .indexOf("ui-icon-") === -1;
-                               }).removeClass(s.item_leaf + " " + s.item_open).addClass(s.item_clsd || "jstree-no-icon")
+                        function() {
+                            return this.className.toString()
+                                    .replace(s.item_clsd, "").replace(s.item_open, "").replace(s.item_leaf, "")
+                                    .indexOf("ui-icon-") === -1;
+                        }).removeClass(s.item_leaf + " " + s.item_open).addClass(s.item_clsd || "jstree-no-icon")
                         .end()
                         .end()
                         .end()
@@ -102,11 +102,11 @@
                         .children("a").addClass(s.item)
                         .children("ins.jstree-icon").addClass("ui-icon")
                         .filter(
-                               function() {
-                                   return this.className.toString()
-                                           .replace(s.item_clsd, "").replace(s.item_open, "").replace(s.item_leaf, "")
-                                           .indexOf("ui-icon-") === -1;
-                               }).removeClass(s.item_leaf + " " + s.item_clsd).addClass(s.item_open || "jstree-no-icon")
+                        function() {
+                            return this.className.toString()
+                                    .replace(s.item_clsd, "").replace(s.item_open, "").replace(s.item_leaf, "")
+                                    .indexOf("ui-icon-") === -1;
+                        }).removeClass(s.item_leaf + " " + s.item_clsd).addClass(s.item_open || "jstree-no-icon")
                         .end()
                         .end()
                         .end()
@@ -116,11 +116,11 @@
                         .children("a").addClass(s.item)
                         .children("ins.jstree-icon").addClass("ui-icon")
                         .filter(
-                               function() {
-                                   return this.className.toString()
-                                           .replace(s.item_clsd, "").replace(s.item_open, "").replace(s.item_leaf, "")
-                                           .indexOf("ui-icon-") === -1;
-                               }).removeClass(s.item_clsd + " " + s.item_open).addClass(s.item_leaf || "jstree-no-icon");
+                        function() {
+                            return this.className.toString()
+                                    .replace(s.item_clsd, "").replace(s.item_open, "").replace(s.item_leaf, "")
+                                    .indexOf("ui-icon-") === -1;
+                        }).removeClass(s.item_clsd + " " + s.item_open).addClass(s.item_leaf || "jstree-no-icon");
             }
         },
         defaults : {

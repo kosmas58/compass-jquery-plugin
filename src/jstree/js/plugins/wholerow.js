@@ -106,9 +106,9 @@
                                     .width(o.parent()[0].scrollWidth)
                                     .css("top", (o.height() + ( is_ie7 ? 5 : 0)) * -1)
                                     .find("li[id]").each(
-                                                        function () {
-                                                            this.removeAttribute("id");
-                                                        }).end()
+                                    function () {
+                                        this.removeAttribute("id");
+                                    }).end()
                             );
                 }
             }

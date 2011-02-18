@@ -39,8 +39,8 @@
                 errorcheck : true,
                 // translation
                 // if you want to change or remove the order change it in sopt
-                // ['bw','eq','ne','lt','le','gt','ge','ew','cn']
-                sopt: [],
+                // ['eq','ne','lt','le','gt','ge','bw','bn','in','ni','ew','en','cn','nc'],
+                sopt: null,
                 stringResult: undefined,
                 onClose : null,
                 overlay : 10
@@ -55,7 +55,7 @@
                         IDs = {themodal:'editmod' + fid,modalhead:'edithd' + fid,modalcontent:'editcnt' + fid, scrollelm : fid},
                         defaultFilters = $t.p.postData[p.sFilter],
                         fil = $("<div><div id='" + fid + "' class='searchFilter' style='overflow:auto'></div></div>").insertBefore("#gview_" + $t.p.id);
-                if (typeof(defaultFilters) == "string") {
+                if (typeof(defaultFilters) === "string") {
                     defaultFilters = $.jgrid.parse(defaultFilters);
                 }
                 if (p.recreateFilter === true) {
@@ -64,7 +64,7 @@
                 function showFilter() {
                     if ($.isFunction(p.beforeShowSearch)) {
                         showFrm = p.beforeShowSearch($("#" + fid));
-                        if (typeof(showFrm) == "undefined") {
+                        if (typeof(showFrm) === "undefined") {
                             showFrm = true;
                         }
                     }
@@ -76,9 +76,12 @@
                     }
                 }
 
-                if ($("#" + IDs.themodal).html() != null) {
+                if ($("#" + IDs.themodal).html() !== null) {
                     showFilter();
                 } else {
+                    if ($.isFunction(p.onInitializeSearch)) {
+                        p.onInitializeSearch($("#" + fid));
+                    }
                     var columns = $.extend([], $t.p.colModel),
                             bS = "<a href='javascript:void(0)' id='" + fid + "_search' class='fm-button ui-state-default ui-corner-all fm-button-icon-left'><span class='ui-icon ui-icon-search'></span>" + p.Find + "</a>",
                             bC = "<a href='javascript:void(0)' id='" + fid + "_reset' class='fm-button ui-state-default ui-corner-all fm-button-icon-left'><span class='ui-icon ui-icon-arrowreturnthick-1-w'></span>" + p.Reset + "</a>",
@@ -88,9 +91,6 @@
                     }
                     var bt = "<table border='0' cellspacing='0' cellpadding='0' class='EditTable ui-widget content' style='border:0px none;margin-top:5px' id='" + fid + "_2'><tbody><tr><td colspan='2'><hr class='ui-widget-content' style='margin:1px'/></td></tr><tr><td class='EditButton' style='text-align:left'>" + bC + "</td><td class='EditButton'>" + bQ + bS + "</td></tr></tbody></table>",
                             colnm, found = false;
-                    if ($.isFunction(p.onInitializeSearch)) {
-                        p.onInitializeSearch($("#" + fid));
-                    }
 
                     $.each(columns, function(i, n) {
                         if (!n.label) {
@@ -109,7 +109,7 @@
                     });
                     // old behaviour
                     if (!defaultFilters && colnm) {
-                        defaultFilters = {"groupOp": "and",rules:[
+                        defaultFilters = {"groupOp": "AND",rules:[
                             {"field":colnm,"op":"eq","data":""}
                         ]};
                     }
@@ -118,7 +118,8 @@
                         filter: p.loadDefaults ? defaultFilters : null,
                         showQuery: p.showQuery,
                         errorcheck : p.errorcheck,
-                        ops: p.sopt,
+                        sopt: p.sopt,
+                        _gridsopt : $.jgrid.search.odata,
                         onChange : function(sp) {
                             if (this.p.showQuery) {
                                 $('.query', this).html(this.toUserFriendlyString());
@@ -154,26 +155,34 @@
                                 return false;
                             }
                         }
-                        if (p.stringResult) {
+
+                        if (p.stringResult && $t.p.datatype !== "local") {
                             try {
                                 // xmlJsonClass or JSON.stringify
-                                res = xmlJsonClass.toJson(filters, '', '');
+                                res = xmlJsonClass.toJson(filters, '', '', false);
                             } catch (e) {
                                 try {
-                                    res = JSON.stringify(filters)
+                                    res = JSON.stringify(filters);
                                 } catch (e2) {
                                 }
                             }
-                            if (typeof(res) == "string") {
+                            if (typeof(res) === "string") {
                                 sdata[p.sFilter] = res;
+                                $.each([p.sField,p.sValue, p.sOper], function() {
+                                    sdata[this] = "";
+                                });
                             }
                         } else {
                             if (p.multipleSearch) {
                                 sdata[p.sFilter] = filters;
+                                $.each([p.sField,p.sValue, p.sOper], function() {
+                                    sdata[this] = "";
+                                });
                             } else {
                                 sdata[p.sField] = filters.rules[0].field;
                                 sdata[p.sValue] = filters.rules[0].data;
                                 sdata[p.sOper] = filters.rules[0].op;
+                                sdata[p.sFilter] = "";
                             }
                         }
                         $t.p.search = true;
@@ -276,13 +285,13 @@
                         copydata = null,
                         showFrm = true,
                         maxCols = 1, maxRows = 0,    postdata, extpost, newData, diff;
-                if (rowid == "new") {
+                if (rowid === "new") {
                     rowid = "_empty";
                     p.caption = rp_ge.addCaption;
                 } else {
                     p.caption = rp_ge.editCaption;
                 }
-                if (p.recreateForm === true && $("#" + IDs.themodal).html() != null) {
+                if (p.recreateForm === true && $("#" + IDs.themodal).html() !== null) {
                     $("#" + IDs.themodal).remove();
                 }
                 var closeovrl = true;
@@ -295,14 +304,14 @@
                         if (celm.length) {
                             var elem = celm[0], nm = $(elem).attr('name');
                             $.each($t.p.colModel, function(i, n) {
-                                if (this.name == nm && this.editoptions && $.isFunction(this.editoptions.custom_value)) {
+                                if (this.name === nm && this.editoptions && $.isFunction(this.editoptions.custom_value)) {
                                     try {
                                         postdata[nm] = this.editoptions.custom_value($("#" + $.jgrid.jqID(nm), "#" + frmtb), 'get');
                                         if (postdata[nm] === undefined) {
                                             throw "e1";
                                         }
                                     } catch (e) {
-                                        if (e == "e1") {
+                                        if (e === "e1") {
                                             $.jgrid.info_dialog(jQuery.jgrid.errors.errcap, "function 'custom_value' " + $.jgrid.edit.msg.novalue, jQuery.jgrid.edit.bClose);
                                         }
                                         else {
@@ -360,8 +369,8 @@
 
                 function createData(rowid, obj, tb, maxcols) {
                     var nm, hc,trdata, cnt = 0,tmp, dc,elc, retpos = [], ind = false,
-                            tdtmpl = "<td class='CaptionTD'>&#160;</td><td class='DataTD'>&#160;</td>", tmpl = ""; //*2
-                    for (var i = 1; i <= maxcols; i++) {
+                            tdtmpl = "<td class='CaptionTD'>&#160;</td><td class='DataTD'>&#160;</td>", tmpl = "", i; //*2
+                    for (i = 1; i <= maxcols; i++) {
                         tmpl += tdtmpl;
                     }
                     if (rowid != '_empty') {
@@ -597,14 +606,14 @@
                 }
 
                 function postIt() {
-                    var copydata, ret = [true,"",""], onCS = {}, opers = $t.p.prmNames, idname, oper;
+                    var copydata, ret = [true,"",""], onCS = {}, opers = $t.p.prmNames, idname, oper, key;
                     if ($.isFunction(rp_ge.beforeCheckValues)) {
                         var retvals = rp_ge.beforeCheckValues(postdata, $("#" + frmgr), postdata[$t.p.id + "_id"] == "_empty" ? opers.addoper : opers.editoper);
                         if (retvals && typeof(retvals) === 'object') {
                             postdata = retvals;
                         }
                     }
-                    for (var key in postdata) {
+                    for (key in postdata) {
                         if (postdata.hasOwnProperty(key)) {
                             ret = $.jgrid.checkValues(postdata[key], key, $t);
                             if (ret[0] === false) {
@@ -2027,7 +2036,7 @@
                                         $t.p.search = false;
                                         try {
                                             var gID = $t.p.id;
-                                            $("#fbox_" + gID).searchFilter().reset({"reload":false});
+                                            $("#fbox_" + gID).jqFilter('resetFilter');
                                             if ($.isFunction($t.clearToolbar)) {
                                                 $t.clearToolbar(false);
                                             }

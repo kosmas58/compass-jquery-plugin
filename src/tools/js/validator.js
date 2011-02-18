@@ -155,58 +155,58 @@
         'default' : [
 
             // show errors function
-                    function(errs) {
+                function(errs) {
 
-                        var conf = this.getConf();
+                    var conf = this.getConf();
 
-                        // loop errors
-                        $.each(errs, function(i, err) {
+                    // loop errors
+                    $.each(errs, function(i, err) {
 
-                            // add error class
-                            var input = err.input;
-                            input.addClass(conf.errorClass);
+                        // add error class
+                        var input = err.input;
+                        input.addClass(conf.errorClass);
 
-                            // get handle to the error container
-                            var msg = input.data("msg.el");
+                        // get handle to the error container
+                        var msg = input.data("msg.el");
 
-                            // create it if not present
-                            if (!msg) {
-                                msg = $(conf.message).addClass(conf.messageClass).appendTo(document.body);
-                                input.data("msg.el", msg);
-                            }
+                        // create it if not present
+                        if (!msg) {
+                            msg = $(conf.message).addClass(conf.messageClass).appendTo(document.body);
+                            input.data("msg.el", msg);
+                        }
 
-                            // clear the container
-                            msg.css({visibility: 'hidden'}).find("p").remove();
+                        // clear the container
+                        msg.css({visibility: 'hidden'}).find("p").remove();
 
-                            // populate messages
-                            $.each(err.messages, function(i, m) {
-                                $("<p/>").html(m).appendTo(msg);
-                            });
-
-                            // make sure the width is not full body width so it can be positioned correctly
-                            if (msg.outerWidth() == msg.parent().width()) {
-                                msg.add(msg.find("p")).css({display: 'inline'});
-                            }
-
-                            // insert into correct position (relative to the field)
-                            var pos = getPosition(input, msg, conf);
-
-                            msg.css({ visibility: 'visible', position: 'absolute', top: pos.top, left: pos.left })
-                                    .fadeIn(conf.speed);
+                        // populate messages
+                        $.each(err.messages, function(i, m) {
+                            $("<p/>").html(m).appendTo(msg);
                         });
 
+                        // make sure the width is not full body width so it can be positioned correctly
+                        if (msg.outerWidth() == msg.parent().width()) {
+                            msg.add(msg.find("p")).css({display: 'inline'});
+                        }
 
-                        // hide errors function
-                    }, function(inputs) {
+                        // insert into correct position (relative to the field)
+                        var pos = getPosition(input, msg, conf);
 
-            var conf = this.getConf();
-            inputs.removeClass(conf.errorClass).each(function() {
-                var msg = $(this).data("msg.el");
-                if (msg) {
-                    msg.css({visibility: 'hidden'});
+                        msg.css({ visibility: 'visible', position: 'absolute', top: pos.top, left: pos.left })
+                                .fadeIn(conf.speed);
+                    });
+
+
+                    // hide errors function
+                }, function(inputs) {
+
+                    var conf = this.getConf();
+                    inputs.removeClass(conf.errorClass).each(function() {
+                        var msg = $(this).data("msg.el");
+                        if (msg) {
+                            msg.css({visibility: 'hidden'});
+                        }
+                    });
                 }
-            });
-        }
         ]
     };
 
@@ -384,13 +384,13 @@
             reset: function(els) {
                 els = els || inputs;
                 els.removeClass(conf.errorClass).each(
-                                                     function() {
-                                                         var msg = $(this).data("msg.el");
-                                                         if (msg) {
-                                                             msg.remove();
-                                                             $(this).data("msg.el", null);
-                                                         }
-                                                     }).unbind(conf.errorInputEvent || '');
+                        function() {
+                            var msg = $(this).data("msg.el");
+                            if (msg) {
+                                msg.remove();
+                                $(this).data("msg.el", null);
+                            }
+                        }).unbind(conf.errorInputEvent || '');
                 return self;
             },
 

@@ -16,9 +16,9 @@ class JqueryUiTheme
     @theme_filename = "#{@prefix}.theme.css"
     @base_theme_directory = base_theme_directory
     @base_theme = File.read(File.join(@base_theme_directory, @theme_filename))
-    
+
     # Fix opacity issue
-    print "Fixing overlays\n"  
+    print "Fixing overlays\n"
     @base_theme.sub!(/\/\*\{bgOverlayRepeat\}\*\/\; opacity: (\.\d+)\;filter:/, "/*{bgOverlayRepeat}*/; opacity: \\1/*{bgOverlayOpacity}*/; filter: ")
     @base_theme.sub!(/\{opacityOverlay\}/, '{bgOverlayFilter}')
     @base_theme.sub!(/\/\*\{bgShadowRepeat\}\*\/\; opacity: (\.\d+)\;filter:/, "/*{bgShadowRepeat}*/; opacity: \\1/*{bgShadowOpacity}*/; filter: ")
@@ -37,7 +37,7 @@ class JqueryUiTheme
     placeholder = '___PLACEHOLDER___'
     @regexp = @base_theme.dup
     # Install placeholders for the variable data
-    @regexp.gsub!(VARIABLE_MATCHER) {placeholder}
+    @regexp.gsub!(VARIABLE_MATCHER) { placeholder }
     # Strip the header comments
     @regexp.gsub! /.*^\*\/\s*/m, ''
     # Collapse all whitespace
@@ -56,7 +56,7 @@ class JqueryUiTheme
   def regexp_variables
     return @regexp_variables if @regexp_variables
     @regexp_variables = Array.new
-    @base_theme.scan(VARIABLE_MATCHER) {@regexp_variables << $2}
+    @base_theme.scan(VARIABLE_MATCHER) { @regexp_variables << $2 }
     @regexp_variables
   end
 
@@ -67,16 +67,16 @@ class JqueryUiTheme
       next unless /^#{@prefix}\..*\.css$/ =~ file
       next if ["{#{@prefix}.all.css", "#{@prefix}.base.css"].include? file
       css = File.read(File.join(@base_theme_directory, file))
-      
+
       if "{#{@prefix}.autocomplete.css".include? file
         # Removing autocomplete image to add it later by script
         if css[112..135] == ".ui-autocomplete-loading"
-          css[220,0] = "*/"
-          css[112,0] = "/*"
+          css[220, 0] = "*/"
+          css[112, 0] = "/*"
         end
       end
-      
-      open File.join(stylesheets, '_' + file.gsub(/\.css$/,'.scss').gsub(/^#{@prefix}\./,'')), 'w' do |f|
+
+      open File.join(stylesheets, '_' + file.gsub(/\.css$/, '.scss').gsub(/^#{@prefix}\./, '')), 'w' do |f|
         if file == @theme_filename
           f.print(self.class.theme_css2sass(@base_theme))
         else
@@ -93,7 +93,7 @@ class JqueryUiTheme
       theme = @base_theme
     else
       theme = File.read(File.join(dir, @theme_filename))
-      
+
       # Fix Overlay stuff
       theme.gsub!(/\;filter:Alpha/, "; filter: Alpha")
       theme += WIDGET_BORDER
@@ -125,9 +125,9 @@ class JqueryUiTheme
   # Converter for ui.theme.css which has the variable names
   def self.theme_css2sass(theme_css)
     # Install variable names and convert to sass
-    sass = css2sass(theme_css.gsub(VARIABLE_MATCHER){"$#{VARIABLE_NAME_BASE}#{$2}"})
+    sass = css2sass(theme_css.gsub(VARIABLE_MATCHER) { "$#{VARIABLE_NAME_BASE}#{$2}" })
     # Convert select lines from literal to programatic syntax
-    sass.gsub!(/.*/){|x| /\!/=~x ? x.gsub(/:/,'=').gsub(/ solid /, ' "solid" ') : x}
+    sass.gsub!(/.*/) { |x| /\!/=~x ? x.gsub(/:/, '=').gsub(/ solid /, ' "solid" ') : x }
     sass
   end
 

@@ -51,26 +51,26 @@
      */
     var undefined,
 
-        /**
-         *    keep track of the registered galleries for updates on resize
-         *
-         *    @var Array<Element>
-         */
-            galleries = [],
+            /**
+             *    keep track of the registered galleries for updates on resize
+             *
+             *    @var Array<Element>
+             */
+                    galleries = [],
 
-        /**
-         *    Does the browser support Touch
-         *
-         *    @var Boolean
-         */
-            supportsTouch = "Touch" in this,
+            /**
+             *    Does the browser support Touch
+             *
+             *    @var Boolean
+             */
+                    supportsTouch = "Touch" in this,
 
-        /**
-         *    event types
-         *
-         *    @var Object
-         */
-            events = supportsTouch ? {
+            /**
+             *    event types
+             *
+             *    @var Object
+             */
+                    events = supportsTouch ? {
                 start: "touchstart",
                 move: "touchmove",
                 end: "touchend"
@@ -82,86 +82,86 @@
 
             controlPoints,
 
-        /**
-         *    keep track of whether or not the parsed class rule has been inserted
-         *
-         *    @var Boolean
-         */
-            parseRuleSet = false,
+            /**
+             *    keep track of whether or not the parsed class rule has been inserted
+             *
+             *    @var Boolean
+             */
+                    parseRuleSet = false,
 
         //bring into context
 
-        /**
-         *
-         *
-         *    @var Window
-         */
-            window = this,
+            /**
+             *
+             *
+             *    @var Window
+             */
+                    window = this,
 
-        /**
-         *
-         *
-         *    @var Document
-         */
-            document = window.document,
+            /**
+             *
+             *
+             *    @var Document
+             */
+                    document = window.document,
 
-        /**
-         *
-         *
-         *    @var Object
-         */
-            Math = window.Math,
+            /**
+             *
+             *
+             *    @var Object
+             */
+                    Math = window.Math,
 
         //simplify access to these functions
 
-        /**
-         *
-         *
-         *    @var Function
-         */
-            min = Math.min,
+            /**
+             *
+             *
+             *    @var Function
+             */
+                    min = Math.min,
 
-        /**
-         *
-         *
-         *    @var Function
-         */
-            floor = Math.floor,
+            /**
+             *
+             *
+             *    @var Function
+             */
+                    floor = Math.floor,
 
-        /**
-         *
-         *
-         *    @var Function
-         */
-            sqrt = Math.sqrt,
+            /**
+             *
+             *
+             *    @var Function
+             */
+                    sqrt = Math.sqrt,
 
-        /**
-         *
-         *
-         *    @var Function
-         */
-            pow = Math.pow,
+            /**
+             *
+             *
+             *    @var Function
+             */
+                    pow = Math.pow,
 
-        /**
-         *
-         *
-         *    @var Function
-         */
-            abs = Math.abs,
+            /**
+             *
+             *
+             *    @var Function
+             */
+                    abs = Math.abs,
 
-        /**
-         *    current orientation
-         *
-         *    @var String
-         */
-            orientation = abs(window.orientation) == 90 ? "landscape" : "portrait",
+            /**
+             *    current orientation
+             *
+             *    @var String
+             */
+                    orientation = abs(window.orientation) == 90 ? "landscape" : "portrait",
 
-        /**
-         *    The default options
-         *
-         *    @var Object
-         */
-            defaults = {
+            /**
+             *    The default options
+             *
+             *    @var Object
+             */
+                    defaults = {
                 /**
                  *    A list of the images to be displayed in the gallery
                  *
@@ -629,48 +629,48 @@
                 gallerySelector: ".jqt-photo"
             },
 
-        /**
-         *    Calculate the desired position of the caption elements within the galleries
-         *
-         *    @var Function
-         */
-            caption = function(vars) {
+            /**
+             *    Calculate the desired position of the caption elements within the galleries
+             *
+             *    @var Function
+             */
+                    caption = function(vars) {
                 return (window.innerHeight - vars.caption) + "px";
             },
 
-        /**
-         *    Calculate the desired height of the galleries and the slides
-         *
-         *    @var Function
-         */
-            height = function() {
+            /**
+             *    Calculate the desired height of the galleries and the slides
+             *
+             *    @var Function
+             */
+                    height = function() {
                 return window.innerHeight + "px";
             },
 
-        /**
-         *    Calculate the desired width of the galleries and the slides
-         *
-         *    @var Function
-         */
-            width = function() {
+            /**
+             *    Calculate the desired width of the galleries and the slides
+             *
+             *    @var Function
+             */
+                    width = function() {
                 return window.innerWidth + "px"
             },
 
-        /**
-         *    Calculate the desired position of the bottom toolbar elements within the galleries
-         *
-         *    @var Function
-         */
-            toolbar = function(vars) {
+            /**
+             *    Calculate the desired position of the bottom toolbar elements within the galleries
+             *
+             *    @var Function
+             */
+                    toolbar = function(vars) {
                 return (window.innerHeight - vars.toolbar) + "px";
             },
 
-        /**
-         *    The default CSS rules for dynamic insertion
-         *
-         *    @var Object
-         */
-            cssRules = {
+            /**
+             *    The default CSS rules for dynamic insertion
+             *
+             *    @var Object
+             */
+                    cssRules = {
 
                 /**
                  *    Variables used by the CSS "macros" for dynamically calculating positions and dimensions

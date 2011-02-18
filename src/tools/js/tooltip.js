@@ -68,13 +68,13 @@
         ],
 
         fade: [
-              function(done) {
-                  var conf = this.getConf();
-                  this.getTip().fadeTo(conf.fadeInSpeed, conf.opacity, done);
-              },
-              function(done) {
-                  this.getTip().fadeOut(this.getConf().fadeOutSpeed, done);
-              }
+                function(done) {
+                    var conf = this.getConf();
+                    this.getTip().fadeTo(conf.fadeInSpeed, conf.opacity, done);
+                },
+                function(done) {
+                    this.getTip().fadeOut(this.getConf().fadeOutSpeed, done);
+                }
         ]
     };
 
@@ -152,20 +152,20 @@
 
         // trigger --> show
         trigger.bind(evt[0],
-                    function(e) {
+                function(e) {
 
-                        clearTimeout(timer);
-                        if (conf.predelay) {
-                            pretimer = setTimeout(function() {
-                                self.show(e);
-                            }, conf.predelay);
-
-                        } else {
+                    clearTimeout(timer);
+                    if (conf.predelay) {
+                        pretimer = setTimeout(function() {
                             self.show(e);
-                        }
+                        }, conf.predelay);
 
-                        // trigger --> hide
-                    }).bind(evt[1], function(e) {
+                    } else {
+                        self.show(e);
+                    }
+
+                    // trigger --> hide
+                }).bind(evt[1], function(e) {
             clearTimeout(pretimer);
             if (conf.delay) {
                 timer = setTimeout(function() {

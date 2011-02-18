@@ -9,9 +9,9 @@
             this.data.html_data.original_container_html = this.get_container().find(" > ul > li").clone(true);
             // remove white space from LI node - otherwise nodes appear a bit to the right
             this.data.html_data.original_container_html.find("li").andSelf().contents().filter(
-                                                                                              function() {
-                                                                                                  return this.nodeType == 3;
-                                                                                              }).remove();
+                    function() {
+                        return this.nodeType == 3;
+                    }).remove();
         },
         defaults : {
             data : false,
@@ -56,16 +56,16 @@
                                 }
                                 if (obj == -1 || !obj) {
                                     this.get_container().children("ul").empty().append(d.children()).find("li, a").filter(
-                                                                                                                         function () {
-                                                                                                                             return !this.firstChild || !this.firstChild.tagName || this.firstChild.tagName !== "INS";
-                                                                                                                         }).prepend("<ins class='jstree-icon'>&#160;</ins>").end().filter("a").children("ins:first-child").not(".jstree-icon").addClass("jstree-icon");
+                                            function () {
+                                                return !this.firstChild || !this.firstChild.tagName || this.firstChild.tagName !== "INS";
+                                            }).prepend("<ins class='jstree-icon'>&#160;</ins>").end().filter("a").children("ins:first-child").not(".jstree-icon").addClass("jstree-icon");
                                 }
                                 else {
                                     obj.children("a.jstree-loading").removeClass("jstree-loading");
                                     obj.append(d).children("ul").find("li, a").filter(
-                                                                                     function () {
-                                                                                         return !this.firstChild || !this.firstChild.tagName || this.firstChild.tagName !== "INS";
-                                                                                     }).prepend("<ins class='jstree-icon'>&#160;</ins>").end().filter("a").children("ins:first-child").not(".jstree-icon").addClass("jstree-icon");
+                                            function () {
+                                                return !this.firstChild || !this.firstChild.tagName || this.firstChild.tagName !== "INS";
+                                            }).prepend("<ins class='jstree-icon'>&#160;</ins>").end().filter("a").children("ins:first-child").not(".jstree-icon").addClass("jstree-icon");
                                     obj.removeData("jstree-is-loading");
                                 }
                                 this.clean_node(obj);
@@ -101,9 +101,9 @@
                                     .children("ul").empty()
                                     .append(this.data.html_data.original_container_html)
                                     .find("li, a").filter(
-                                                         function () {
-                                                             return !this.firstChild || !this.firstChild.tagName || this.firstChild.tagName !== "INS";
-                                                         }).prepend("<ins class='jstree-icon'>&#160;</ins>").end()
+                                    function () {
+                                        return !this.firstChild || !this.firstChild.tagName || this.firstChild.tagName !== "INS";
+                                    }).prepend("<ins class='jstree-icon'>&#160;</ins>").end()
                                     .filter("a").children("ins:first-child").not(".jstree-icon").addClass("jstree-icon");
                             this.clean_node();
                         }
@@ -120,9 +120,9 @@
                             this.get_container()
                                     .children("ul").empty().append(d.children())
                                     .find("li, a").filter(
-                                                         function () {
-                                                             return !this.firstChild || !this.firstChild.tagName || this.firstChild.tagName !== "INS";
-                                                         }).prepend("<ins class='jstree-icon'>&#160;</ins>").end()
+                                    function () {
+                                        return !this.firstChild || !this.firstChild.tagName || this.firstChild.tagName !== "INS";
+                                    }).prepend("<ins class='jstree-icon'>&#160;</ins>").end()
                                     .filter("a").children("ins:first-child").not(".jstree-icon").addClass("jstree-icon");
                             this.clean_node();
                         }
@@ -168,16 +168,16 @@
                                 }
                                 if (obj == -1 || !obj) {
                                     this.get_container().children("ul").empty().append(d.children()).find("li, a").filter(
-                                                                                                                         function () {
-                                                                                                                             return !this.firstChild || !this.firstChild.tagName || this.firstChild.tagName !== "INS";
-                                                                                                                         }).prepend("<ins class='jstree-icon'>&#160;</ins>").end().filter("a").children("ins:first-child").not(".jstree-icon").addClass("jstree-icon");
+                                            function () {
+                                                return !this.firstChild || !this.firstChild.tagName || this.firstChild.tagName !== "INS";
+                                            }).prepend("<ins class='jstree-icon'>&#160;</ins>").end().filter("a").children("ins:first-child").not(".jstree-icon").addClass("jstree-icon");
                                 }
                                 else {
                                     obj.children("a.jstree-loading").removeClass("jstree-loading");
                                     obj.append(d).children("ul").find("li, a").filter(
-                                                                                     function () {
-                                                                                         return !this.firstChild || !this.firstChild.tagName || this.firstChild.tagName !== "INS";
-                                                                                     }).prepend("<ins class='jstree-icon'>&#160;</ins>").end().filter("a").children("ins:first-child").not(".jstree-icon").addClass("jstree-icon");
+                                            function () {
+                                                return !this.firstChild || !this.firstChild.tagName || this.firstChild.tagName !== "INS";
+                                            }).prepend("<ins class='jstree-icon'>&#160;</ins>").end().filter("a").children("ins:first-child").not(".jstree-icon").addClass("jstree-icon");
                                     obj.removeData("jstree-is-loading");
                                 }
                                 this.clean_node(obj);

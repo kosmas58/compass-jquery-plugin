@@ -433,16 +433,6 @@
                     _trim = false;
                     return self;
                 };
-                /*
-                 this.combine=function(f){
-                 var q=$.jgrid.from(_data);
-                 if(!_usecase){ q.ignoreCase(); }
-                 if(_trim){ q.trim(); }
-                 var result=f(q).showQuery();
-                 self._append(result);
-                 return self;
-                 };
-                 */
                 this.execute = function() {
                     var match = _query, results = [];
                     if (match === null) {
@@ -481,16 +471,6 @@
                     self.execute();
                     return _data.length > 0;
                 };
-                /*
-                 this.showQuery=function(cmd){
-                 var queryString=_query;
-                 if(queryString === null) { queryString="no query found"; }
-                 if($.isFunction(cmd)){
-                 cmd(queryString);return self;
-                 }
-                 return queryString;
-                 };
-                 */
                 this.andNot = function(f, v, x) {
                     _negate = !_negate;
                     return self.and(f, v, x);
@@ -2782,18 +2762,22 @@
                     return false;
                 });
             }
-//		if ($.isFunction(this.p.onRightClickRow)) {
-//			$(this).bind('contextmenu', function(e) {
-//				td = e.target;
-//				ptr = $(td,ts.rows).closest("tr.jqgrow");
-//				if($(ptr).length === 0 ){return false;}
-//				if(!ts.p.multiselect) {	$(ts).jqGrid("setSelection",ptr[0].id,true);	}
-//				ri = ptr[0].rowIndex;
-//				ci = $.jgrid.getCellIndex(td);
-//				ts.p.onRightClickRow.call(ts,$(ptr).attr("id"),ri,ci, e);
-//				return false;
-//			});
-//		}
+            if ($.isFunction(this.p.onRightClickRow)) {
+                $(this).bind('contextmenu', function(e) {
+                    td = e.target;
+                    ptr = $(td, ts.rows).closest("tr.jqgrow");
+                    if ($(ptr).length === 0) {
+                        return false;
+                    }
+                    if (!ts.p.multiselect) {
+                        $(ts).jqGrid("setSelection", ptr[0].id, true);
+                    }
+                    ri = ptr[0].rowIndex;
+                    ci = $.jgrid.getCellIndex(td);
+                    ts.p.onRightClickRow.call(ts, $(ptr).attr("id"), ri, ci, e);
+                    return false;
+                });
+            }
             grid.bDiv = document.createElement("div");
             $(grid.bDiv)
                     .append($('<div style="position:relative;' + (isMSIE && $.browser.version < 8 ? "height:0.01%;" : "") + '"></div>').append('<div></div>').append(this))

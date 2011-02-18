@@ -24,48 +24,48 @@
 
     var undefined,
 
-        /**
-         *    The global object
-         *
-         *    @var Object
-         */
-            window = this,
+            /**
+             *    The global object
+             *
+             *    @var Object
+             */
+                    window = this,
 
-        /**
-         *    Just to speed up access
-         *
-         *    @var DOMDocument
-         */
-            document = window.document,
+            /**
+             *    Just to speed up access
+             *
+             *    @var DOMDocument
+             */
+                    document = window.document,
 
-        /**
-         *    Just to speed up access
-         *
-         *    @var Function
-         */
-            Number = window.Number,
+            /**
+             *    Just to speed up access
+             *
+             *    @var Function
+             */
+                    Number = window.Number,
 
-        /**
-         *    Just to speed up access
-         *
-         *    @var Object
-         */
-            Math = window.Math,
+            /**
+             *    Just to speed up access
+             *
+             *    @var Object
+             */
+                    Math = window.Math,
 
-        /**
-         *    Determine 3d translate support
-         *
-         *    @var Boolean
-         */
-            supports3d = ('m11' in new WebKitCSSMatrix()),
+            /**
+             *    Determine 3d translate support
+             *
+             *    @var Boolean
+             */
+                    supports3d = ('m11' in new WebKitCSSMatrix()),
 
-        /**
-         *    Single Object for base options
-         *    that is used to extend the defaults
-         *
-         *    @var Object
-         */
-            base = {
+            /**
+             *    Single Object for base options
+             *    that is used to extend the defaults
+             *
+             *    @var Object
+             */
+                    base = {
 
                 /**
                  *    A function for converting attributes into options @see attributes
@@ -293,12 +293,12 @@
                 momentum: momentum
             },
 
-        /**
-         *
-         *
-         *    @var Object
-         */
-            defaults = {
+            /**
+             *
+             *
+             *    @var Object
+             */
+                    defaults = {
                 /**
                  *    Vertical default settings
                  *
@@ -440,41 +440,41 @@
                 })
             },
 
-        /**
-         *    Dynamically determine the window height minus twice the toolbar height
-         *    for the CSS rule(s) that require specified heights
-         *
-         *    @var Function
-         */
-            bottomToolbar = function(vars) {
+            /**
+             *    Dynamically determine the window height minus twice the toolbar height
+             *    for the CSS rule(s) that require specified heights
+             *
+             *    @var Function
+             */
+                    bottomToolbar = function(vars) {
                 return (window.innerHeight - (vars.toolbarHeight * 2)) + "px !important"
             },
 
-        /**
-         *    Dynamically determine the window height minus the toolbar height
-         *    for the CSS rule(s) that require specified heights
-         *
-         *    @var Function
-         */
-            height = function(vars) {
+            /**
+             *    Dynamically determine the window height minus the toolbar height
+             *    for the CSS rule(s) that require specified heights
+             *
+             *    @var Function
+             */
+                    height = function(vars) {
                 return (window.innerHeight - vars.toolbarHeight) + "px"
             },
 
-        /**
-         *    Dynamically determine the window width for the CSS rule(s) that require specified widths
-         *
-         *    @var Function
-         */
-            width = function () {
+            /**
+             *    Dynamically determine the window width for the CSS rule(s) that require specified widths
+             *
+             *    @var Function
+             */
+                    width = function () {
                 return window.innerWidth + "px";
             },
 
-        /**
-         *
-         *
-         *    @var Object
-         */
-            cssRules = {
+            /**
+             *
+             *
+             *    @var Object
+             */
+                    cssRules = {
                 /**
                  *
                  *

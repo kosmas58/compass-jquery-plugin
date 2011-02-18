@@ -79,10 +79,10 @@
             function addItem(i) {
 
                 var item = $("<" + (conf.naviItem || 'a') + "/>").click(
-                                                                       function(e) {
-                                                                           doClick($(this), i, e);
+                        function(e) {
+                            doClick($(this), i, e);
 
-                                                                       }).attr("href", "#" + i);
+                        }).attr("href", "#" + i);
 
                 // index number / id attribute
                 if (i === 0) {

@@ -870,9 +870,9 @@
             f = "array"
         }
         switch (f) {case"string":l = l.replace(new RegExp('(["\\\\])', "g"), "\\$1");l = l.replace(/^\s?(\d+\.?\d+)%/, "$1pct");return'"' + l + '"';case"array":return"[" + a(l,
-                                                                                                                                                                             function(o) {
-                                                                                                                                                                                 return g.asString(o)
-                                                                                                                                                                             }).join(",") + "]";case"function":return'"function()"';case"object":var m = [];for (var n in l) {
+                function(o) {
+                    return g.asString(o)
+                }).join(",") + "]";case"function":return'"function()"';case"object":var m = [];for (var n in l) {
             if (l.hasOwnProperty(n)) {
                 m.push('"' + n + '":' + g.asString(l[n]))
             }

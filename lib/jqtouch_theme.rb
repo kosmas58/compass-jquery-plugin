@@ -11,11 +11,11 @@ class JqTouchTheme
   # Create a sass file of variables names and copy the images
   def convert_theme(name, dir, stylesheets)
     theme = File.read(File.join(dir, @theme_filename))
-    
+
     # Fix stuff
     theme.gsub!(/\;filter:Alpha/, "; filter: Alpha")
     theme.gsub! /url\(img(.+?)\)/, "image_url(\"jquery/touch/#{name}\\1\")"
-    
+
     # Convert the stylesheet
     open File.join(JQTOUCH_DEST_THEMES, "#{name}.scss"), 'w' do |f|
       sass = JQTOUCH_MESSAGE2

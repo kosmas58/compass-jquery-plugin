@@ -50,22 +50,22 @@
          onLoad/onClose functions must be called otherwise none of the
          user supplied callback methods won't be called
          */
-                             function(pos, onLoad) {
+            function(pos, onLoad) {
 
-                                 var conf = this.getConf(),
-                                         w = $(window);
+                var conf = this.getConf(),
+                        w = $(window);
 
-                                 if (!conf.fixed) {
-                                     pos.top += w.scrollTop();
-                                     pos.left += w.scrollLeft();
-                                 }
+                if (!conf.fixed) {
+                    pos.top += w.scrollTop();
+                    pos.left += w.scrollLeft();
+                }
 
-                                 pos.position = conf.fixed ? 'fixed' : 'absolute';
-                                 this.getOverlay().css(pos).fadeIn(conf.speed, onLoad);
+                pos.position = conf.fixed ? 'fixed' : 'absolute';
+                this.getOverlay().css(pos).fadeIn(conf.speed, onLoad);
 
-                             }, function(onClose) {
-        this.getOverlay().fadeOut(this.getConf().closeSpeed, onClose);
-    }
+            }, function(onClose) {
+                this.getOverlay().fadeOut(this.getConf().closeSpeed, onClose);
+            }
             );
 
 

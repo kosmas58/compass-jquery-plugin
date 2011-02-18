@@ -136,9 +136,9 @@
 
                 case 'array':
                     return '[' + map(obj,
-                                    function(el) {
-                                        return f.asString(el);
-                                    }).join(',') + ']';
+                            function(el) {
+                                return f.asString(el);
+                            }).join(',') + ']';
 
                 case 'function':
                     return '"function()"';

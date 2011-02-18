@@ -359,31 +359,31 @@
 
         // dragging
         handle.drag({drag: false}).bind("dragStart",
-                                       function() {
+                function() {
 
-                                           /* do some pre- calculations for seek() function. improves performance */
-                                           init();
+                    /* do some pre- calculations for seek() function. improves performance */
+                    init();
 
-                                           // avoid redundant event triggering (= heavy stuff)
-                                           fireOnSlide = hasEvent($(self)) || hasEvent(input);
+                    // avoid redundant event triggering (= heavy stuff)
+                    fireOnSlide = hasEvent($(self)) || hasEvent(input);
 
 
-                                       }).bind("drag",
-                                              function(e, y, x) {
+                }).bind("drag",
+                function(e, y, x) {
 
-                                                  if (input.is(":disabled")) {
-                                                      return false;
-                                                  }
-                                                  slide(e, vertical ? y : x);
+                    if (input.is(":disabled")) {
+                        return false;
+                    }
+                    slide(e, vertical ? y : x);
 
-                                              }).bind("dragEnd",
-                                                     function(e) {
-                                                         if (!e.isDefaultPrevented()) {
-                                                             e.type = "change";
-                                                             fire.trigger(e, [value]);
-                                                         }
+                }).bind("dragEnd",
+                function(e) {
+                    if (!e.isDefaultPrevented()) {
+                        e.type = "change";
+                        fire.trigger(e, [value]);
+                    }
 
-                                                     }).click(function(e) {
+                }).click(function(e) {
             return e.preventDefault();
         });
 

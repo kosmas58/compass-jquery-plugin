@@ -45,12 +45,12 @@
     var iframeWrapper = {
         id: "__jQuery_history",
         init: function() {
-            var html = '<iframe id="'+ this.id +'" style="display:none" src="javascript:false;" />';
+            var html = '<iframe id="' + this.id + '" style="display:none" src="javascript:false;" />';
             $("body").prepend(html);
             return this;
         },
         _document: function() {
-            return $("#"+ this.id)[0].contentWindow.document;
+            return $("#" + this.id)[0].contentWindow.document;
         },
         put: function(hash) {
             var doc = this._document();
@@ -65,26 +65,32 @@
 
     function initObjects(options) {
         options = $.extend({
-                unescape: false
-            }, options || {});
+            unescape: false
+        }, options || {});
 
         locationWrapper.encoder = encoder(options.unescape);
 
         function encoder(unescape_) {
-            if(unescape_ === true) {
-                return function(hash){ return hash; };
+            if (unescape_ === true) {
+                return function(hash) {
+                    return hash;
+                };
             }
-            if(typeof unescape_ == "string" &&
-               (unescape_ = partialDecoder(unescape_.split("")))
-               || typeof unescape_ == "function") {
-                return function(hash) { return unescape_(encodeURIComponent(hash)); };
+            if (typeof unescape_ == "string" &&
+                    (unescape_ = partialDecoder(unescape_.split("")))
+                    || typeof unescape_ == "function") {
+                return function(hash) {
+                    return unescape_(encodeURIComponent(hash));
+                };
             }
             return encodeURIComponent;
         }
 
         function partialDecoder(chars) {
             var re = new RegExp($.map(chars, encodeURIComponent).join("|"), "ig");
-            return function(enc) { return enc.replace(re, decodeURIComponent); };
+            return function(enc) {
+                return enc.replace(re, decodeURIComponent);
+            };
         }
     }
 
@@ -94,8 +100,10 @@
         callback: undefined,
         type: undefined,
 
-        check: function() {},
-        load:  function(hash) {},
+        check: function() {
+        },
+        load:  function(hash) {
+        },
         init:  function(callback, options) {
             initObjects(options);
             self.callback = callback;
@@ -103,7 +111,8 @@
             self._init();
         },
 
-        _init: function() {},
+        _init: function() {
+        },
         _options: {}
     };
 
@@ -117,13 +126,13 @@
         },
         check: function() {
             var current_hash = locationWrapper.get();
-            if(current_hash != self._appState) {
+            if (current_hash != self._appState) {
                 self._appState = current_hash;
                 self.callback(current_hash);
             }
         },
         load: function(hash) {
-            if(hash != self._appState) {
+            if (hash != self._appState) {
                 locationWrapper.put(hash);
                 self._appState = hash;
                 self.callback(hash);
@@ -142,22 +151,22 @@
         },
         check: function() {
             var iframe_hash = iframeWrapper.get(),
-                location_hash = locationWrapper.get();
+                    location_hash = locationWrapper.get();
 
             if (location_hash != iframe_hash) {
                 if (location_hash == self._appState) {    // user used Back or Forward button
                     self._appState = iframe_hash;
                     locationWrapper.put(iframe_hash);
-                    self.callback(iframe_hash); 
+                    self.callback(iframe_hash);
                 } else {                              // user loaded new bookmark
-                    self._appState = location_hash;  
+                    self._appState = location_hash;
                     iframeWrapper.put(location_hash);
                     self.callback(location_hash);
                 }
             }
         },
         load: function(hash) {
-            if(hash != self._appState) {
+            if (hash != self._appState) {
                 locationWrapper.put(hash);
                 iframeWrapper.put(hash);
                 self._appState = hash;
@@ -181,9 +190,9 @@
 
     var self = $.extend({}, implementations.base);
 
-    if($.browser.msie && ($.browser.version < 8 || document.documentMode < 8)) {
+    if ($.browser.msie && ($.browser.version < 8 || document.documentMode < 8)) {
         self.type = 'iframeTimer';
-    } else if("onhashchange" in window) {
+    } else if ("onhashchange" in window) {
         self.type = 'hashchangeEvent';
     } else {
         self.type = 'timer';

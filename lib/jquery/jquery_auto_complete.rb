@@ -1,5 +1,5 @@
-module JqueryAutoComplete 
-  
+module JqueryAutoComplete
+
   def self.included(base)
     base.extend(ClassMethods)
   end
@@ -8,16 +8,16 @@ module JqueryAutoComplete
     def auto_complete_for(object, method, options = {})
       define_method("auto_complete_for_#{object}_#{method}") do
         object_constant = object.to_s.camelize.constantize
-        
-        find_options = { 
-          :conditions => [ "LOWER(#{method}) LIKE ?", '%' + params[:term].downcase + '%' ], 
-          :order => "#{method} ASC",
-          :limit => 10 }.merge!(options)
-        
+
+        find_options = {
+            :conditions => ["LOWER(#{method}) LIKE ?", '%' + params[:term].downcase + '%'],
+            :order => "#{method} ASC",
+            :limit => 10}.merge!(options)
+
         render :json => object_constant.to_auto_complete(:json, find_options)
       end
     end
-  end  
+  end
 end
 
 module JqueryAutoCompleteJson

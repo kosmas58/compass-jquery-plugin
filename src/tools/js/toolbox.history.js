@@ -87,10 +87,10 @@
     $(window).bind("hash", function(e, h) {
         if (h) {
             links.filter(
-                        function() {
-                            var href = $(this).attr("href");
-                            return href == h || href == h.replace("#", "");
-                        }).trigger("history", [h]);
+                    function() {
+                        var href = $(this).attr("href");
+                        return href == h || href == h.replace("#", "");
+                    }).trigger("history", [h]);
         } else {
             links.eq(0).trigger("history", [h]);
         }

@@ -1,3 +1,3 @@
-module Mobile#:nodoc:  
+module Mobile #:nodoc:
 end
 

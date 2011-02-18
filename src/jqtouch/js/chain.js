@@ -1852,9 +1852,9 @@
             this.isActive = true;
             if ($.Chain.jobject(items)) {
                 this[buffer] = this[buffer].concat(items.map(
-                                                            function() {
-                                                                return $(this);
-                                                            }).get());
+                        function() {
+                            return $(this);
+                        }).get());
             }
             else if (items instanceof Array) {
                 this[buffer] = this[buffer].concat(items);
@@ -1890,9 +1890,9 @@
 
             if ($.Chain.jobject(items)) {
                 this[buffer] = items.map(
-                                        function() {
-                                            return $(this);
-                                        }).get();
+                        function() {
+                            return $(this);
+                        }).get();
             }
             else if (items instanceof Array) {
                 this[buffer] = items;
@@ -1980,9 +1980,9 @@
          */
         $data: function(x) {
             return this.handler(x).map(
-                                      function() {
-                                          return $(this).item();
-                                      }).get();
+                    function() {
+                        return $(this).item();
+                    }).get();
         },
 
         /**

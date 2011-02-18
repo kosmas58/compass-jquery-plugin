@@ -22,26 +22,26 @@
 
     var undefined,
 
-        /**
-         *
-         *
-         *
-         */
-            window = this,
+            /**
+             *
+             *
+             *
+             */
+                    window = this,
 
-        /**
-         *
-         *
-         *
-         */
-            document = window.document,
+            /**
+             *
+             *
+             *
+             */
+                    document = window.document,
 
-        /**
-         *
-         *
-         *
-         */
-            defaults = {
+            /**
+             *
+             *
+             *
+             */
+                    defaults = {
                 /**
                  *
                  *
@@ -220,30 +220,30 @@
                 momentum: momentum
             },
 
-        /**
-         *
-         *
-         *
-         */
-            bottomToolbar = function(vars) {
+            /**
+             *
+             *
+             *
+             */
+                    bottomToolbar = function(vars) {
                 return (window.innerHeight - (vars.toolbarHeight * 2)) + "px !important"
             },
 
-        /**
-         *
-         *
-         *
-         */
-            height = function(vars) {
+            /**
+             *
+             *
+             *
+             */
+                    height = function(vars) {
                 return (window.innerHeight - vars.toolbarHeight) + "px"
             },
 
-        /**
-         *
-         *
-         *
-         */
-            cssRules = {
+            /**
+             *
+             *
+             *
+             */
+                    cssRules = {
                 variables : {
                     toolbarHeight: 45
                 },

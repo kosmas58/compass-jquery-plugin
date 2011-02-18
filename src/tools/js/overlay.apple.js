@@ -102,19 +102,19 @@
             top: overlay.css("top"),
             left: overlay.css("left"),
             width: oWidth}, conf.speed,
-                   function() {
+                function() {
 
-                       // set close button and content over the image
-                       overlay.css("zIndex", conf.zIndex + 1).fadeIn(conf.fadeInSpeed, function() {
+                    // set close button and content over the image
+                    overlay.css("zIndex", conf.zIndex + 1).fadeIn(conf.fadeInSpeed, function() {
 
-                           if (self.isOpened() && !$(this).index(overlay)) {
-                               onLoad.call();
-                           } else {
-                               overlay.hide();
-                           }
-                       });
+                        if (self.isOpened() && !$(this).index(overlay)) {
+                            onLoad.call();
+                        } else {
+                            overlay.hide();
+                        }
+                    });
 
-                   }).css("position", position);
+                }).css("position", position);
 
     };
 //}}}
