@@ -38,15 +38,16 @@
  *  list-style-type, margin and padding.
  */
 
-.AnyTime-pkr * {
-    border: 0;
+.AnyTime-pkr *
+{
+    border:0;
     font: inherit;
-    font-size: x-small;
-    font-style: normal;
-    font-weight: normal;
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
+    font-size: x-small; 
+    font-style:normal;
+    font-weight:normal;
+    list-style-type:none;
+    margin:0;
+    padding:0;
     white-space: nowrap;
 }
 
@@ -57,13 +58,14 @@
  *  should NOT be specified.
  */
 
-div.AnyTime-win {
-    background-color: #F0F0F1;
-    border: 3px solid #C0C0C0;
-    font: normal normal normal xx-small/normal sans-serif;
-    padding-bottom: 0.2em;
-    -moz-border-radius: 6px;
-    -webkit-border-radius: 6px;
+div.AnyTime-win
+{
+  background-color:#F0F0F1;
+  border:3px solid #C0C0C0;
+  font:normal normal normal xx-small/normal sans-serif;
+  padding-bottom:0.2em;
+  -moz-border-radius:6px;
+  -webkit-border-radius:6px;
 }
 
 /*
@@ -74,7 +76,8 @@ div.AnyTime-win {
  *  because .AnyTime-win styles provide consistent window appearance.
  */
 
-.AnyTime-pkr {
+.AnyTime-pkr
+{
 }
 
 /*
@@ -84,10 +87,11 @@ div.AnyTime-win {
  *  includes a background-color and opacity (and filter for MSIE opacity).
  */
 
-.AnyTime-pkr .AnyTime-cloak {
-    background-color: #D7D7D7;
-    opacity: 0.7;
-    filter: alpha(opacity = 70);
+.AnyTime-pkr .AnyTime-cloak
+{
+  background-color:#D7D7D7;
+  opacity:0.7;
+  filter:alpha(opacity=70);
 }
 
 /*
@@ -96,18 +100,19 @@ div.AnyTime-win {
  *  contains .AnyTime-x-btn.
  */
 
-.AnyTime-pkr .AnyTime-hdr {
-    background-color: #D0D0D1;
-    color: #606062;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: medium;
-    font-weight: normal;
-    height: 1em;
-    margin: 0;
-    padding: 0 0 0.4em 0;
-    text-align: center;
-    -moz-border-radius: 2px;
-    -webkit-border-radius: 2px;
+.AnyTime-pkr .AnyTime-hdr
+{
+  background-color:#D0D0D1;
+  color:#606062;
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:medium;
+  font-weight:normal;
+  height:1em;
+  margin:0;
+  padding:0 0 0.4em 0;
+  text-align:center;
+  -moz-border-radius:2px;
+  -webkit-border-radius:2px;
 }
 
 /*
@@ -117,17 +122,18 @@ div.AnyTime-win {
  *  at minumum, a border and float:right.
  */
 
-.AnyTime-pkr .AnyTime-x-btn {
-    background-color: #FCFCFF;
-    border: 1px solid #F99;
-    color: #FF9F9F;
-    cursor: default;
-    float: right;
-    margin: 0.3em;
-    text-align: center;
-    width: 1.5em;
-    -moz-border-radius: 0.4em;
-    -webkit-border-radius: 0.4em;
+.AnyTime-pkr .AnyTime-x-btn
+{
+  background-color:#FCFCFF;
+  border:1px solid #F99;
+  color:#FF9F9F;
+  cursor:default;
+  float:right;
+  margin:0.3em;
+  text-align:center;
+  width:1.5em;
+  -moz-border-radius:0.4em;
+  -webkit-border-radius:0.4em;
 }
 
 /*
@@ -136,19 +142,20 @@ div.AnyTime-win {
  *  left for different variations to specify (see classes .AnyTime-***-btn).
  */
 
-.AnyTime-pkr .AnyTime-btn {
-    background-color: #FCFCFE;
-    border: 1px solid #999;
-    color: #606062;
-    cursor: default;
-    float: left;
-    font-family: Arial, Helvetica, sans-serif;
-    height: 1.5em;
-    margin-bottom: 1px;
-    margin-right: 1px;
-    padding-top: 0.1em;
-    -moz-border-radius: 0.4em;
-    -webkit-border-radius: 0.4em;
+.AnyTime-pkr .AnyTime-btn
+{
+  background-color:#FCFCFE;
+  border:1px solid #999;
+  color:#606062;
+  cursor:default;
+  float:left;
+  font-family:Arial,Helvetica,sans-serif;
+  height:1.5em;
+  margin-bottom:1px;
+  margin-right:1px;
+  padding-top:0.1em;
+  -moz-border-radius:0.4em;
+  -webkit-border-radius:0.4em;
 }
 
 /*
@@ -157,8 +164,9 @@ div.AnyTime-win {
  *  its format fields, do not width or height.
  */
 
-.AnyTime-pkr .AnyTime-body {
-    padding: 0.5em;
+.AnyTime-pkr .AnyTime-body
+{
+  padding:0.5em;
 }
 
 /*
@@ -167,9 +175,10 @@ div.AnyTime-win {
  *  have a small amount of paddding.
  */
 
-.AnyTime-pkr .AnyTime-date {
-    float: left;
-    padding: 0 0.5em;
+.AnyTime-pkr .AnyTime-date
+{
+  float:left;
+  padding:0 0.5em;
 }
 
 /*
@@ -178,17 +187,18 @@ div.AnyTime-win {
  *  Styles clear:left and height should be specified here.
  */
 
-.AnyTime-pkr .AnyTime-lbl {
-    clear: left;
-    color: #606063;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 100%;
-    font-weight: normal;
-    font-style: normal;
-    height: 1.3em;
-    margin: 0;
-    padding: 0;
-    text-align: center;
+.AnyTime-pkr .AnyTime-lbl
+{
+  clear:left;
+  color:#606063;
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:100%;
+  font-weight:normal;
+  font-style:normal;
+  height:1.3em;
+  margin:0;
+  padding:0;
+  text-align:center;
 }
 
 .AnyTime-pkr .AnyTime-lbl-yr,
@@ -196,7 +206,8 @@ div.AnyTime-win {
 .AnyTime-pkr .AnyTime-lbl-dom,
 .AnyTime-pkr .AnyTime-lbl-hr,
 .AnyTime-pkr .AnyTime-lbl-min,
-.AnyTime-pkr .AnyTime-lbl-sec {
+.AnyTime-pkr .AnyTime-lbl-sec
+{
 }
 
 /*
@@ -204,10 +215,11 @@ div.AnyTime-win {
  *  A height and width should be specified.
  */
 
-.AnyTime-pkr .AnyTime-yrs {
-    height: 2.6em;
-    text-align: center;
-    width: 18.6em;
+.AnyTime-pkr .AnyTime-yrs
+{
+  height:2.6em;
+  text-align:center;
+  width:18.6em;
 }
 
 /*
@@ -215,18 +227,21 @@ div.AnyTime-win {
  *  A width should be specified for each.
  */
 
-.AnyTime-pkr .AnyTime-yrs-past-btn {
-    width: 2.7em;
+.AnyTime-pkr .AnyTime-yrs-past-btn
+{
+  width:2.7em;
 }
 
 .AnyTime-pkr .AnyTime-yr-prior-btn,
 .AnyTime-pkr .AnyTime-yr-cur-btn,
-.AnyTime-pkr .AnyTime-yr-next-btn {
-    width: 3.75em;
+.AnyTime-pkr .AnyTime-yr-next-btn
+{
+  width:3.75em;
 }
 
-.AnyTime-pkr .AnyTime-yrs-ahead-btn {
-    width: 2.7em;
+.AnyTime-pkr .AnyTime-yrs-ahead-btn
+{
+  width:2.7em;
 }
 
 /*
@@ -235,10 +250,11 @@ div.AnyTime-win {
  *  A height and width should be specified.
  */
 
-.AnyTime-pkr .AnyTime-mons {
-    height: 4.8em;
-    text-align: center;
-    width: 18.8em;
+.AnyTime-pkr .AnyTime-mons
+{
+  height:4.8em;
+  text-align:center;
+  width:18.8em;
 }
 
 /*
@@ -247,8 +263,9 @@ div.AnyTime-win {
  *  Each pseudo-button also has a class of its own.
  */
 
-.AnyTime-pkr .AnyTime-mon-btn {
-    width: 2.75em;
+.AnyTime-pkr .AnyTime-mon-btn
+{
+  width:2.75em;
 }
 
 .AnyTime-pkr .AnyTime-mon1-btn,
@@ -261,43 +278,50 @@ div.AnyTime-win {
 .AnyTime-pkr .AnyTime-mon9-btn,
 .AnyTime-pkr .AnyTime-mon10-btn,
 .AnyTime-pkr .AnyTime-mon11-btn,
-.AnyTime-pkr .AnyTime-mon12-btn {
+.AnyTime-pkr .AnyTime-mon12-btn
+{
 }
 
-.AnyTime-pkr .AnyTime-mon7-btn {
-    clear: left;
+.AnyTime-pkr .AnyTime-mon7-btn
+{
+  clear:left;
 }
+
 
 /*
-*  .AnyTime-dom-table is the table containing days-of-the-month.
-*  .AnyTime-dom-head is the table heading, containing days-of-the-week labels.
-*  tr.AnyTime-dow is the row in the heading.
-*  td.AnyTime-dow is a column heading; each heading has its own class, also.
-*  .AnyTime-dom-body is the table heading, containing days-of-the-week labels.
-*  .AnyTime-wk is a table row, containing pseudo-buttons for days.
-*  Each week has its own class (.AnyTime-wk***), also.
-*/
+ *  .AnyTime-dom-table is the table containing days-of-the-month.
+ *  .AnyTime-dom-head is the table heading, containing days-of-the-week labels.
+ *  tr.AnyTime-dow is the row in the heading.
+ *  td.AnyTime-dow is a column heading; each heading has its own class, also.
+ *  .AnyTime-dom-body is the table heading, containing days-of-the-week labels.
+ *  .AnyTime-wk is a table row, containing pseudo-buttons for days.
+ *  Each week has its own class (.AnyTime-wk***), also.
+ */
 
-.AnyTime-pkr .AnyTime-dom-table {
-    background-color: #F0F0F1;
-    border: 1px solid #E3E3E4;
-    border-spacing: 1px;
-    width: 18.6em;
+.AnyTime-pkr .AnyTime-dom-table
+{
+  background-color:#F0F0F1;
+  border:1px solid #E3E3E4;
+  border-spacing:1px;
+  width:18.6em;
 }
 
-.AnyTime-pkr .AnyTime-dom-head {
+.AnyTime-pkr .AnyTime-dom-head
+{
 }
 
-.AnyTime-pkr tr.AnyTime-dow {
+.AnyTime-pkr tr.AnyTime-dow
+{
 }
 
-.AnyTime-pkr th.AnyTime-dow {
-    background-color: #C0C0C1;
-    color: white;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 95%;
-    font-weight: normal;
-    font-style: normal;
+.AnyTime-pkr th.AnyTime-dow
+{
+  background-color:#C0C0C1;
+  color:white;
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:95%;
+  font-weight:normal;
+  font-style:normal;
 }
 
 .AnyTime-pkr .AnyTime-dow1,
@@ -306,13 +330,16 @@ div.AnyTime-win {
 .AnyTime-pkr .AnyTime-dow4,
 .AnyTime-pkr .AnyTime-dow5,
 .AnyTime-pkr .AnyTime-dow6,
-.AnyTime-pkr .AnyTime-dow7 {
+.AnyTime-pkr .AnyTime-dow7
+{
 }
 
-.AnyTime-pkr .AnyTime-dom-body {
+.AnyTime-pkr .AnyTime-dom-body
+{
 }
 
-.AnyTime-pkr .AnyTime-wk {
+.AnyTime-pkr .AnyTime-wk
+{
 }
 
 .AnyTime-pkr .AnyTime-wk1,
@@ -320,7 +347,8 @@ div.AnyTime-win {
 .AnyTime-pkr .AnyTime-wk3,
 .AnyTime-pkr .AnyTime-wk4,
 .AnyTime-pkr .AnyTime-wk5,
-.AnyTime-pkr .AnyTime-wk6 {
+.AnyTime-pkr .AnyTime-wk6
+{
 }
 
 /*
@@ -334,25 +362,29 @@ div.AnyTime-win {
  *  .AnyTime-dom-btn-empty-below-filled is empty, below a filled button.
  */
 
-.AnyTime-pkr .AnyTime-dom-btn {
-    float: none;
-    height: 1.7em;
-    text-align: right;
-    padding: 0 0.5em 0 0;
+.AnyTime-pkr .AnyTime-dom-btn
+{
+  float:none;
+  height:1.7em;
+  text-align:right;
+  padding:0 0.5em 0 0;
 }
 
-.AnyTime-pkr .AnyTime-dom-btn-filled {
+.AnyTime-pkr .AnyTime-dom-btn-filled
+{
 }
 
-.AnyTime-pkr .AnyTime-dom-btn-empty {
-    background-color: #F3F3F4;
-    border: 1px solid #C0C0c1;
+.AnyTime-pkr .AnyTime-dom-btn-empty
+{
+    background-color:#F3F3F4;
+    border:1px solid #C0C0c1;
 }
 
 .AnyTime-pkr .AnyTime-dom-btn-empty-above-filled,
 .AnyTime-pkr .AnyTime-dom-btn-empty-before-filled,
 .AnyTime-pkr .AnyTime-dom-btn-empty-after-filled,
-.AnyTime-pkr .AnyTime-dom-btn-empty-below-filled {
+.AnyTime-pkr .AnyTime-dom-btn-empty-below-filled
+{
 }
 
 /*
@@ -361,10 +393,11 @@ div.AnyTime-win {
  *  have a small amount of paddding.
  */
 
-.AnyTime-pkr .AnyTime-time {
-    float: left;
-    padding: 0 0 0 1em;
-    text-align: center;
+.AnyTime-pkr .AnyTime-time
+{
+  float:left;
+  padding:0 0 0 1em;
+  text-align:center;
 }
 
 /*
@@ -373,18 +406,20 @@ div.AnyTime-win {
  *  a width and padding.  The columns should each have width and float:left.
  */
 
-.AnyTime-pkr .AnyTime-hrs {
-    float: left;
-    padding-left: 0.5em;
-    padding-right: 0.5em;
-    text-align: center;
-    width: 7.2em;
+.AnyTime-pkr .AnyTime-hrs
+{
+  float:left;
+  padding-left:0.5em;
+  padding-right:0.5em;
+  text-align:center;
+  width:7.2em;
 }
 
 .AnyTime-pkr .AnyTime-hrs-am,
-.AnyTime-pkr .AnyTime-hrs-pm {
-    float: left;
-    width: 3.6em;
+.AnyTime-pkr .AnyTime-hrs-pm
+{
+  float:left;
+  width:3.6em;
 }
 
 /*
@@ -393,10 +428,11 @@ div.AnyTime-win {
  *  Each button also has a style of its own. 
  */
 
-.AnyTime-pkr .AnyTime-hr-btn {
-    text-align: right;
-    padding-right: 0.25em;
-    width: 3em;
+.AnyTime-pkr .AnyTime-hr-btn
+{
+  text-align:right;
+  padding-right:0.25em;
+  width:3em;  
 }
 
 .AnyTime-pkr .AnyTime-hr0-btn,
@@ -422,7 +458,8 @@ div.AnyTime-win {
 .AnyTime-pkr .AnyTime-hr20-btn,
 .AnyTime-pkr .AnyTime-hr21-btn,
 .AnyTime-pkr .AnyTime-hr22-btn,
-.AnyTime-pkr .AnyTime-hr23-btn {
+.AnyTime-pkr .AnyTime-hr23-btn
+{
 }
 
 /*
@@ -432,18 +469,20 @@ div.AnyTime-win {
  *  The columns should each have width and float:left.
  */
 
-.AnyTime-pkr .AnyTime-mins {
-    float: left;
-    padding-left: 0.5em;
-    padding-right: 0.5em;
-    text-align: center;
-    width: 4.7em;
+.AnyTime-pkr .AnyTime-mins
+{
+  float:left;
+  padding-left:0.5em;
+  padding-right:0.5em;
+  text-align:center;
+  width:4.7em;
 }
 
 .AnyTime-pkr .AnyTime-mins-tens,
-.AnyTime-pkr .AnyTime-mins-ones {
-    float: left;
-    width: 2.3em;
+.AnyTime-pkr .AnyTime-mins-ones
+{
+  float:left;
+  width:2.3em;
 }
 
 /*
@@ -452,18 +491,20 @@ div.AnyTime-win {
  *  A width should be specified.
  *  Each button also has its own style.
  */
-
+ 
 .AnyTime-pkr .AnyTime-min-ten-btn,
-.AnyTime-pkr .AnyTime-min-one-btn {
-    float: left;
-    text-align: center;
-    width: 2em;
+.AnyTime-pkr .AnyTime-min-one-btn
+{
+  float:left;
+  text-align:center;
+  width:2em;
 }
 
 .AnyTime-pkr .AnyTime-min-ten-btn-empty,
-.AnyTime-pkr .AnyTime-min-one-btn-empty {
-    background-color: #F3F3F4;
-    border: 1px solid #C0C0c1;
+.AnyTime-pkr .AnyTime-min-one-btn-empty
+{
+    background-color:#F3F3F4;
+    border:1px solid #C0C0c1;
 }
 
 .AnyTime-pkr .AnyTime-min00-btn,
@@ -480,18 +521,20 @@ div.AnyTime-win {
  *  The columns should each have width and float:left.
  */
 
-.AnyTime-pkr .AnyTime-secs {
-    float: left;
-    padding-left: 0.5em;
-    padding-right: 0.5em;
-    text-align: center;
-    width: 4.7em;
+.AnyTime-pkr .AnyTime-secs
+{
+  float:left;
+  padding-left:0.5em;
+  padding-right:0.5em;
+  text-align:center;
+  width:4.7em;
 }
 
 .AnyTime-pkr .AnyTime-secs-tens,
-.AnyTime-pkr .AnyTime-secs-ones {
-    float: left;
-    width: 2.3em;
+.AnyTime-pkr .AnyTime-secs-ones
+{
+  float:left;
+  width:2.3em;
 }
 
 /*
@@ -502,16 +545,18 @@ div.AnyTime-win {
  */
 
 .AnyTime-pkr .AnyTime-sec-ten-btn,
-.AnyTime-pkr .AnyTime-sec-one-btn {
-    float: left;
-    text-align: center;
-    width: 2em;
+.AnyTime-pkr .AnyTime-sec-one-btn
+{
+  float:left;
+  text-align:center;
+  width:2em;
 }
 
 .AnyTime-pkr .AnyTime-sec-ten-btn-empty,
-.AnyTime-pkr .AnyTime-sec-one-btn-empty {
-    background-color: #F3F3F4;
-    border: 1px solid #C0C0c1;
+.AnyTime-pkr .AnyTime-sec-one-btn-empty
+{
+    background-color:#F3F3F4;
+    border:1px solid #C0C0c1;
 }
 
 .AnyTime-pkr .AnyTime-sec00-btn,
@@ -521,30 +566,35 @@ div.AnyTime-win {
 {
 }
 
-/*
-*  .AnyTime-offs contains the UTC offset (timezone) selection pseudo-buttons.
-*  The container is designed to have clear:left, float:left and padding.
-*  The two buttons have their own styles, and .AnyTime-off-select-btn should
-*  include a width.
-*  The width of the container and the .AnyTime-off-cur-btn should not be
-*  specified, as they are computed based on the width of the
-*  .AnyTime-off-select-btn and the .AnyTime-time container.
-*/
 
-.AnyTime-pkr .AnyTime-offs {
-    clear: left;
-    float: left;
-    padding-left: 0.5em;
-    padding-top: 0.5em;
-    text-align: center;
+
+/*
+ *  .AnyTime-offs contains the UTC offset (timezone) selection pseudo-buttons.
+ *  The container is designed to have clear:left, float:left and padding. 
+ *  The two buttons have their own styles, and .AnyTime-off-select-btn should
+ *  include a width.
+ *  The width of the container and the .AnyTime-off-cur-btn should not be
+ *  specified, as they are computed based on the width of the
+ *  .AnyTime-off-select-btn and the .AnyTime-time container.
+ */
+ 
+.AnyTime-pkr .AnyTime-offs
+{
+  clear:left;
+  float:left;
+  padding-left:0.5em;
+  padding-top:0.5em;
+  text-align:center;
 }
 
 .AnyTime-pkr .AnyTime-off-btn,
-.AnyTime-pkr .AnyTime-off-cur-btn {
+.AnyTime-pkr .AnyTime-off-cur-btn
+{
 }
 
-.AnyTime-pkr .AnyTime-off-select-btn {
-    width: 1.5em;
+.AnyTime-pkr .AnyTime-off-select-btn
+{
+  width:1.5em;
 }
 
 /*
@@ -555,14 +605,17 @@ div.AnyTime-win {
  *  AnyTime-body-yr-selector is its body.
  */
 
-.AnyTime-pkr .AnyTime-yr-selector {
+.AnyTime-pkr .AnyTime-yr-selector
+{
 }
 
-.AnyTime-pkr .AnyTime-hdr-yr-selector {
+.AnyTime-pkr .AnyTime-hdr-yr-selector
+{
 }
 
-.AnyTime-pkr .AnyTime-body-yr-selector {
-    padding: 1em;
+.AnyTime-pkr .AnyTime-body-yr-selector
+{
+  padding:1em;  
 }
 
 /*
@@ -582,18 +635,20 @@ div.AnyTime-win {
 .AnyTime-pkr .AnyTime-yr-mil,
 .AnyTime-pkr .AnyTime-yr-cent,
 .AnyTime-pkr .AnyTime-yr-dec,
-.AnyTime-pkr .AnyTime-yr-yr {
-    float: left;
-    width: 2.5em;
+.AnyTime-pkr .AnyTime-yr-yr
+{
+  float:left;
+  width:2.5em;
 }
 
 .AnyTime-pkr .AnyTime-mil-btn,
 .AnyTime-pkr .AnyTime-cent-btn,
 .AnyTime-pkr .AnyTime-dec-btn,
-.AnyTime-pkr .AnyTime-yr-btn {
-    float: left;
-    text-align: center;
-    width: 2em;
+.AnyTime-pkr .AnyTime-yr-btn
+{
+  float:left;
+  text-align:center;
+  width:2em;
 }
 
 .AnyTime-pkr .AnyTime-mil0-btn,
@@ -614,53 +669,62 @@ div.AnyTime-win {
  *  its own class.
  */
 
-.AnyTime-pkr .AnyTime-yr-era {
-    float: left;
-    padding-left: 1em;
-    width: 4.1em;
+.AnyTime-pkr .AnyTime-yr-era
+{
+  float:left;
+  padding-left:1em;
+  width:4.1em;
 }
 
-.AnyTime-pkr .AnyTime-era-btn {
-    text-align: center;
-    width: 3em;
+.AnyTime-pkr .AnyTime-era-btn
+{
+  text-align:center;
+  width:3em;
 }
 
 .AnyTime-pkr .AnyTime-bce-btn,
-.AnyTime-pkr .AnyTime-ce-btn {
+.AnyTime-pkr .AnyTime-ce-btn
+{
 }
+
 
 /*
-*  .AnyTime-off-selector is an overlay (popup) for selecting a specific year.
-*  The picker attempts to size the overlay automatically, based on
-*  its contents; therefore, do not set width.
-*  .AnyTime-hdr-off-selector is its title bar.
-*  .AnyTime-body-off-selector is its body.
-*  .AnyTime-off-off is the column of offset-selector pseudo-buttons.
-*  .AnyTime-off-off-btn is an offset-selector pseudo-button.
-*  .AnyTime-off-off-last-btn is the last offset-selector pseudo-button.
-*/
+ *  .AnyTime-off-selector is an overlay (popup) for selecting a specific year.
+ *  The picker attempts to size the overlay automatically, based on
+ *  its contents; therefore, do not set width.
+ *  .AnyTime-hdr-off-selector is its title bar. 
+ *  .AnyTime-body-off-selector is its body.
+ *  .AnyTime-off-off is the column of offset-selector pseudo-buttons.
+ *  .AnyTime-off-off-btn is an offset-selector pseudo-button.
+ *  .AnyTime-off-off-last-btn is the last offset-selector pseudo-button.
+ */
 
-.AnyTime-pkr .AnyTime-off-selector {
+.AnyTime-pkr .AnyTime-off-selector
+{
 }
 
-.AnyTime-pkr .AnyTime-hdr-off-selector {
+.AnyTime-pkr .AnyTime-hdr-off-selector
+{
 }
 
-.AnyTime-pkr .AnyTime-body-off-selector {
-    margin: 0.5em;
+.AnyTime-pkr .AnyTime-body-off-selector
+{
+  margin:0.5em;  
+}
+.AnyTime-pkr .AnyTime-off-off
+{
 }
 
-.AnyTime-pkr .AnyTime-off-off {
+.AnyTime-pkr .AnyTime-off-off-btn
+{
+  clear:left;
+  padding-left:1em;
+  padding-right:1em;
+  text-align:left;
 }
 
-.AnyTime-pkr .AnyTime-off-off-btn {
-    clear: left;
-    padding-left: 1em;
-    padding-right: 1em;
-    text-align: left;
-}
-
-.AnyTime-pkr .AnyTime-off-off-last-btn {
+.AnyTime-pkr .AnyTime-off-off-last-btn
+{
 }
 
 /*
@@ -671,11 +735,12 @@ div.AnyTime-win {
  *  sufficient for color-blind users to differentiate the buttons.
  */
 
-.AnyTime-pkr .AnyTime-cur-btn {
-    border: 1px solid #333334;
-    background-color: #C0C0C1;
-    color: #FCFCFE;
-    font-weight: bold;
+.AnyTime-pkr .AnyTime-cur-btn
+{
+  border:1px solid #333334;
+  background-color:#C0C0C1;
+  color:#FCFCFE;
+  font-weight:bold;
 }
 
 /*
@@ -687,9 +752,10 @@ div.AnyTime-win {
  *  buttons, it's probably no big deal.  
  */
 
-.AnyTime-pkr .AnyTime-out-btn {
-    background-color: #F0F0F1;
-    border: 1px solid #C0C0c1;
+.AnyTime-pkr .AnyTime-out-btn
+{
+    background-color:#F0F0F1;
+    border:1px solid #C0C0c1;
 }
 
 /*
@@ -701,8 +767,9 @@ div.AnyTime-win {
  *  represent focus using a dashed or dotted border, this is recommended.
  */
 
-.AnyTime-pkr .AnyTime-focus-btn {
-    border: 1px dashed black;
+.AnyTime-pkr .AnyTime-focus-btn
+{
+  border:1px dashed black;
 }
 
 /*

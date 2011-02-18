@@ -5204,9 +5204,9 @@
             this.data.html_data.original_container_html = this.get_container().find(" > ul > li").clone(true);
             // remove white space from LI node - otherwise nodes appear a bit to the right
             this.data.html_data.original_container_html.find("li").andSelf().contents().filter(
-                                                                                              function() {
-                                                                                                  return this.nodeType == 3;
-                                                                                              }).remove();
+                    function() {
+                        return this.nodeType == 3;
+                    }).remove();
         },
         defaults : {
             data : false,
@@ -5251,16 +5251,16 @@
                                 }
                                 if (obj == -1 || !obj) {
                                     this.get_container().children("ul").empty().append(d.children()).find("li, a").filter(
-                                                                                                                         function () {
-                                                                                                                             return !this.firstChild || !this.firstChild.tagName || this.firstChild.tagName !== "INS";
-                                                                                                                         }).prepend("<ins class='jstree-icon'>&#160;</ins>").end().filter("a").children("ins:first-child").not(".jstree-icon").addClass("jstree-icon");
+                                            function () {
+                                                return !this.firstChild || !this.firstChild.tagName || this.firstChild.tagName !== "INS";
+                                            }).prepend("<ins class='jstree-icon'>&#160;</ins>").end().filter("a").children("ins:first-child").not(".jstree-icon").addClass("jstree-icon");
                                 }
                                 else {
                                     obj.children("a.jstree-loading").removeClass("jstree-loading");
                                     obj.append(d).children("ul").find("li, a").filter(
-                                                                                     function () {
-                                                                                         return !this.firstChild || !this.firstChild.tagName || this.firstChild.tagName !== "INS";
-                                                                                     }).prepend("<ins class='jstree-icon'>&#160;</ins>").end().filter("a").children("ins:first-child").not(".jstree-icon").addClass("jstree-icon");
+                                            function () {
+                                                return !this.firstChild || !this.firstChild.tagName || this.firstChild.tagName !== "INS";
+                                            }).prepend("<ins class='jstree-icon'>&#160;</ins>").end().filter("a").children("ins:first-child").not(".jstree-icon").addClass("jstree-icon");
                                     obj.removeData("jstree-is-loading");
                                 }
                                 this.clean_node(obj);
@@ -5296,9 +5296,9 @@
                                     .children("ul").empty()
                                     .append(this.data.html_data.original_container_html)
                                     .find("li, a").filter(
-                                                         function () {
-                                                             return !this.firstChild || !this.firstChild.tagName || this.firstChild.tagName !== "INS";
-                                                         }).prepend("<ins class='jstree-icon'>&#160;</ins>").end()
+                                    function () {
+                                        return !this.firstChild || !this.firstChild.tagName || this.firstChild.tagName !== "INS";
+                                    }).prepend("<ins class='jstree-icon'>&#160;</ins>").end()
                                     .filter("a").children("ins:first-child").not(".jstree-icon").addClass("jstree-icon");
                             this.clean_node();
                         }
@@ -5315,9 +5315,9 @@
                             this.get_container()
                                     .children("ul").empty().append(d.children())
                                     .find("li, a").filter(
-                                                         function () {
-                                                             return !this.firstChild || !this.firstChild.tagName || this.firstChild.tagName !== "INS";
-                                                         }).prepend("<ins class='jstree-icon'>&#160;</ins>").end()
+                                    function () {
+                                        return !this.firstChild || !this.firstChild.tagName || this.firstChild.tagName !== "INS";
+                                    }).prepend("<ins class='jstree-icon'>&#160;</ins>").end()
                                     .filter("a").children("ins:first-child").not(".jstree-icon").addClass("jstree-icon");
                             this.clean_node();
                         }
@@ -5363,16 +5363,16 @@
                                 }
                                 if (obj == -1 || !obj) {
                                     this.get_container().children("ul").empty().append(d.children()).find("li, a").filter(
-                                                                                                                         function () {
-                                                                                                                             return !this.firstChild || !this.firstChild.tagName || this.firstChild.tagName !== "INS";
-                                                                                                                         }).prepend("<ins class='jstree-icon'>&#160;</ins>").end().filter("a").children("ins:first-child").not(".jstree-icon").addClass("jstree-icon");
+                                            function () {
+                                                return !this.firstChild || !this.firstChild.tagName || this.firstChild.tagName !== "INS";
+                                            }).prepend("<ins class='jstree-icon'>&#160;</ins>").end().filter("a").children("ins:first-child").not(".jstree-icon").addClass("jstree-icon");
                                 }
                                 else {
                                     obj.children("a.jstree-loading").removeClass("jstree-loading");
                                     obj.append(d).children("ul").find("li, a").filter(
-                                                                                     function () {
-                                                                                         return !this.firstChild || !this.firstChild.tagName || this.firstChild.tagName !== "INS";
-                                                                                     }).prepend("<ins class='jstree-icon'>&#160;</ins>").end().filter("a").children("ins:first-child").not(".jstree-icon").addClass("jstree-icon");
+                                            function () {
+                                                return !this.firstChild || !this.firstChild.tagName || this.firstChild.tagName !== "INS";
+                                            }).prepend("<ins class='jstree-icon'>&#160;</ins>").end().filter("a").children("ins:first-child").not(".jstree-icon").addClass("jstree-icon");
                                     obj.removeData("jstree-is-loading");
                                 }
                                 this.clean_node(obj);
@@ -5465,11 +5465,11 @@
                         .children("ins.jstree-icon").removeClass(s.opened + " " + s.closed + " ui-icon").end()
                         .find("> a > ins.ui-icon")
                         .filter(
-                               function() {
-                                   return this.className.toString()
-                                           .replace(s.item_clsd, "").replace(s.item_open, "").replace(s.item_leaf, "")
-                                           .indexOf("ui-icon-") === -1;
-                               }).removeClass(s.item_open + " " + s.item_clsd).addClass(s.item_leaf || "jstree-no-icon");
+                        function() {
+                            return this.className.toString()
+                                    .replace(s.item_clsd, "").replace(s.item_open, "").replace(s.item_leaf, "")
+                                    .indexOf("ui-icon-") === -1;
+                        }).removeClass(s.item_open + " " + s.item_clsd).addClass(s.item_leaf || "jstree-no-icon");
             }, this))
                     .bind("select_node.jstree", $.proxy(function (e, data) {
                 data.rslt.obj.children("a").addClass(s.item_a);
@@ -5515,11 +5515,11 @@
                         .children("a").addClass(s.item)
                         .children("ins.jstree-icon").addClass("ui-icon")
                         .filter(
-                               function() {
-                                   return this.className.toString()
-                                           .replace(s.item_clsd, "").replace(s.item_open, "").replace(s.item_leaf, "")
-                                           .indexOf("ui-icon-") === -1;
-                               }).removeClass(s.item_leaf + " " + s.item_open).addClass(s.item_clsd || "jstree-no-icon")
+                        function() {
+                            return this.className.toString()
+                                    .replace(s.item_clsd, "").replace(s.item_open, "").replace(s.item_leaf, "")
+                                    .indexOf("ui-icon-") === -1;
+                        }).removeClass(s.item_leaf + " " + s.item_open).addClass(s.item_clsd || "jstree-no-icon")
                         .end()
                         .end()
                         .end()
@@ -5529,11 +5529,11 @@
                         .children("a").addClass(s.item)
                         .children("ins.jstree-icon").addClass("ui-icon")
                         .filter(
-                               function() {
-                                   return this.className.toString()
-                                           .replace(s.item_clsd, "").replace(s.item_open, "").replace(s.item_leaf, "")
-                                           .indexOf("ui-icon-") === -1;
-                               }).removeClass(s.item_leaf + " " + s.item_clsd).addClass(s.item_open || "jstree-no-icon")
+                        function() {
+                            return this.className.toString()
+                                    .replace(s.item_clsd, "").replace(s.item_open, "").replace(s.item_leaf, "")
+                                    .indexOf("ui-icon-") === -1;
+                        }).removeClass(s.item_leaf + " " + s.item_clsd).addClass(s.item_open || "jstree-no-icon")
                         .end()
                         .end()
                         .end()
@@ -5543,11 +5543,11 @@
                         .children("a").addClass(s.item)
                         .children("ins.jstree-icon").addClass("ui-icon")
                         .filter(
-                               function() {
-                                   return this.className.toString()
-                                           .replace(s.item_clsd, "").replace(s.item_open, "").replace(s.item_leaf, "")
-                                           .indexOf("ui-icon-") === -1;
-                               }).removeClass(s.item_clsd + " " + s.item_open).addClass(s.item_leaf || "jstree-no-icon");
+                        function() {
+                            return this.className.toString()
+                                    .replace(s.item_clsd, "").replace(s.item_open, "").replace(s.item_leaf, "")
+                                    .indexOf("ui-icon-") === -1;
+                        }).removeClass(s.item_clsd + " " + s.item_open).addClass(s.item_leaf || "jstree-no-icon");
             }
         },
         defaults : {
@@ -6091,9 +6091,9 @@
                                     .width(o.parent()[0].scrollWidth)
                                     .css("top", (o.height() + ( is_ie7 ? 5 : 0)) * -1)
                                     .find("li[id]").each(
-                                                        function () {
-                                                            this.removeAttribute("id");
-                                                        }).end()
+                                    function () {
+                                        this.removeAttribute("id");
+                                    }).end()
                             );
                 }
             }

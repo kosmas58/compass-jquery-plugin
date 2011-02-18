@@ -265,10 +265,10 @@
         // trigger icon
         if (conf.trigger) {
             trigger = $("<a/>").attr("href", "#").addClass(css.trigger).click(
-                                                                             function(e) {
-                                                                                 self.show();
-                                                                                 return e.preventDefault();
-                                                                             }).insertAfter(input);
+                    function(e) {
+                        self.show();
+                        return e.preventDefault();
+                    }).insertAfter(input);
         }
 
 
@@ -853,22 +853,22 @@
          onLoad/onClose functions must be called otherwise none of the
          user supplied callback methods won't be called
          */
-                             function(pos, onLoad) {
+            function(pos, onLoad) {
 
-                                 var conf = this.getConf(),
-                                         w = $(window);
+                var conf = this.getConf(),
+                        w = $(window);
 
-                                 if (!conf.fixed) {
-                                     pos.top += w.scrollTop();
-                                     pos.left += w.scrollLeft();
-                                 }
+                if (!conf.fixed) {
+                    pos.top += w.scrollTop();
+                    pos.left += w.scrollLeft();
+                }
 
-                                 pos.position = conf.fixed ? 'fixed' : 'absolute';
-                                 this.getOverlay().css(pos).fadeIn(conf.speed, onLoad);
+                pos.position = conf.fixed ? 'fixed' : 'absolute';
+                this.getOverlay().css(pos).fadeIn(conf.speed, onLoad);
 
-                             }, function(onClose) {
-        this.getOverlay().fadeOut(this.getConf().closeSpeed, onClose);
-    }
+            }, function(onClose) {
+                this.getOverlay().fadeOut(this.getConf().closeSpeed, onClose);
+            }
             );
 
 
@@ -1224,19 +1224,19 @@
             top: overlay.css("top"),
             left: overlay.css("left"),
             width: oWidth}, conf.speed,
-                   function() {
+                function() {
 
-                       // set close button and content over the image
-                       overlay.css("zIndex", conf.zIndex + 1).fadeIn(conf.fadeInSpeed, function() {
+                    // set close button and content over the image
+                    overlay.css("zIndex", conf.zIndex + 1).fadeIn(conf.fadeInSpeed, function() {
 
-                           if (self.isOpened() && !$(this).index(overlay)) {
-                               onLoad.call();
-                           } else {
-                               overlay.hide();
-                           }
-                       });
+                        if (self.isOpened() && !$(this).index(overlay)) {
+                            onLoad.call();
+                        } else {
+                            overlay.hide();
+                        }
+                    });
 
-                   }).css("position", position);
+                }).css("position", position);
 
     };
 //}}}
@@ -1641,31 +1641,31 @@
 
         // dragging
         handle.drag({drag: false}).bind("dragStart",
-                                       function() {
+                function() {
 
-                                           /* do some pre- calculations for seek() function. improves performance */
-                                           init();
+                    /* do some pre- calculations for seek() function. improves performance */
+                    init();
 
-                                           // avoid redundant event triggering (= heavy stuff)
-                                           fireOnSlide = hasEvent($(self)) || hasEvent(input);
+                    // avoid redundant event triggering (= heavy stuff)
+                    fireOnSlide = hasEvent($(self)) || hasEvent(input);
 
 
-                                       }).bind("drag",
-                                              function(e, y, x) {
+                }).bind("drag",
+                function(e, y, x) {
 
-                                                  if (input.is(":disabled")) {
-                                                      return false;
-                                                  }
-                                                  slide(e, vertical ? y : x);
+                    if (input.is(":disabled")) {
+                        return false;
+                    }
+                    slide(e, vertical ? y : x);
 
-                                              }).bind("dragEnd",
-                                                     function(e) {
-                                                         if (!e.isDefaultPrevented()) {
-                                                             e.type = "change";
-                                                             fire.trigger(e, [value]);
-                                                         }
+                }).bind("dragEnd",
+                function(e) {
+                    if (!e.isDefaultPrevented()) {
+                        e.type = "change";
+                        fire.trigger(e, [value]);
+                    }
 
-                                                     }).click(function(e) {
+                }).click(function(e) {
             return e.preventDefault();
         });
 
@@ -2316,10 +2316,10 @@
             function addItem(i) {
 
                 var item = $("<" + (conf.naviItem || 'a') + "/>").click(
-                                                                       function(e) {
-                                                                           doClick($(this), i, e);
+                        function(e) {
+                            doClick($(this), i, e);
 
-                                                                       }).attr("href", "#" + i);
+                        }).attr("href", "#" + i);
 
                 // index number / id attribute
                 if (i === 0) {
@@ -3260,9 +3260,9 @@
 
                 case 'array':
                     return '[' + map(obj,
-                                    function(el) {
-                                        return f.asString(el);
-                                    }).join(',') + ']';
+                            function(el) {
+                                return f.asString(el);
+                            }).join(',') + ']';
 
                 case 'function':
                     return '"function()"';
@@ -3526,10 +3526,10 @@
     $(window).bind("hash", function(e, h) {
         if (h) {
             links.filter(
-                        function() {
-                            var href = $(this).attr("href");
-                            return href == h || href == h.replace("#", "");
-                        }).trigger("history", [h]);
+                    function() {
+                        var href = $(this).attr("href");
+                        return href == h || href == h.replace("#", "");
+                    }).trigger("history", [h]);
         } else {
             links.eq(0).trigger("history", [h]);
         }
@@ -3689,13 +3689,13 @@
         ],
 
         fade: [
-              function(done) {
-                  var conf = this.getConf();
-                  this.getTip().fadeTo(conf.fadeInSpeed, conf.opacity, done);
-              },
-              function(done) {
-                  this.getTip().fadeOut(this.getConf().fadeOutSpeed, done);
-              }
+                function(done) {
+                    var conf = this.getConf();
+                    this.getTip().fadeTo(conf.fadeInSpeed, conf.opacity, done);
+                },
+                function(done) {
+                    this.getTip().fadeOut(this.getConf().fadeOutSpeed, done);
+                }
         ]
     };
 
@@ -3773,20 +3773,20 @@
 
         // trigger --> show
         trigger.bind(evt[0],
-                    function(e) {
+                function(e) {
 
-                        clearTimeout(timer);
-                        if (conf.predelay) {
-                            pretimer = setTimeout(function() {
-                                self.show(e);
-                            }, conf.predelay);
-
-                        } else {
+                    clearTimeout(timer);
+                    if (conf.predelay) {
+                        pretimer = setTimeout(function() {
                             self.show(e);
-                        }
+                        }, conf.predelay);
 
-                        // trigger --> hide
-                    }).bind(evt[1], function(e) {
+                    } else {
+                        self.show(e);
+                    }
+
+                    // trigger --> hide
+                }).bind(evt[1], function(e) {
             clearTimeout(pretimer);
             if (conf.delay) {
                 timer = setTimeout(function() {
@@ -4212,46 +4212,46 @@
     t.addEffect("slide",
 
         // show effect
-               function(done) {
+            function(done) {
 
-                   // variables
-                   var conf = this.getConf(),
-                           tip = this.getTip(),
-                           params = conf.slideFade ? {opacity: conf.opacity} : {},
-                           dir = dirs[conf.direction] || dirs.up;
+                // variables
+                var conf = this.getConf(),
+                        tip = this.getTip(),
+                        params = conf.slideFade ? {opacity: conf.opacity} : {},
+                        dir = dirs[conf.direction] || dirs.up;
 
-                   // direction
-                   params[dir[1]] = dir[0] + '=' + conf.slideOffset;
+                // direction
+                params[dir[1]] = dir[0] + '=' + conf.slideOffset;
 
-                   // perform animation
-                   if (conf.slideFade) {
-                       tip.css({opacity:0});
-                   }
-                   tip.show().animate(params, conf.slideInSpeed, done);
-               },
+                // perform animation
+                if (conf.slideFade) {
+                    tip.css({opacity:0});
+                }
+                tip.show().animate(params, conf.slideInSpeed, done);
+            },
 
         // hide effect
-               function(done) {
+            function(done) {
 
-                   // variables
-                   var conf = this.getConf(),
-                           offset = conf.slideOffset,
-                           params = conf.slideFade ? {opacity: 0} : {},
-                           dir = dirs[conf.direction] || dirs.up;
+                // variables
+                var conf = this.getConf(),
+                        offset = conf.slideOffset,
+                        params = conf.slideFade ? {opacity: 0} : {},
+                        dir = dirs[conf.direction] || dirs.up;
 
-                   // direction
-                   var sign = "" + dir[0];
-                   if (conf.bounce) {
-                       sign = sign == '+' ? '-' : '+';
-                   }
-                   params[dir[1]] = sign + '=' + offset;
+                // direction
+                var sign = "" + dir[0];
+                if (conf.bounce) {
+                    sign = sign == '+' ? '-' : '+';
+                }
+                params[dir[1]] = sign + '=' + offset;
 
-                   // perform animation
-                   this.getTip().animate(params, conf.slideOutSpeed, function() {
-                       $(this).hide();
-                       done.call();
-                   });
-               }
+                // perform animation
+                this.getTip().animate(params, conf.slideOutSpeed, function() {
+                    $(this).hide();
+                    done.call();
+                });
+            }
             );
 
 })(jQuery);	
@@ -4415,58 +4415,58 @@
         'default' : [
 
             // show errors function
-                    function(errs) {
+                function(errs) {
 
-                        var conf = this.getConf();
+                    var conf = this.getConf();
 
-                        // loop errors
-                        $.each(errs, function(i, err) {
+                    // loop errors
+                    $.each(errs, function(i, err) {
 
-                            // add error class
-                            var input = err.input;
-                            input.addClass(conf.errorClass);
+                        // add error class
+                        var input = err.input;
+                        input.addClass(conf.errorClass);
 
-                            // get handle to the error container
-                            var msg = input.data("msg.el");
+                        // get handle to the error container
+                        var msg = input.data("msg.el");
 
-                            // create it if not present
-                            if (!msg) {
-                                msg = $(conf.message).addClass(conf.messageClass).appendTo(document.body);
-                                input.data("msg.el", msg);
-                            }
+                        // create it if not present
+                        if (!msg) {
+                            msg = $(conf.message).addClass(conf.messageClass).appendTo(document.body);
+                            input.data("msg.el", msg);
+                        }
 
-                            // clear the container
-                            msg.css({visibility: 'hidden'}).find("p").remove();
+                        // clear the container
+                        msg.css({visibility: 'hidden'}).find("p").remove();
 
-                            // populate messages
-                            $.each(err.messages, function(i, m) {
-                                $("<p/>").html(m).appendTo(msg);
-                            });
-
-                            // make sure the width is not full body width so it can be positioned correctly
-                            if (msg.outerWidth() == msg.parent().width()) {
-                                msg.add(msg.find("p")).css({display: 'inline'});
-                            }
-
-                            // insert into correct position (relative to the field)
-                            var pos = getPosition(input, msg, conf);
-
-                            msg.css({ visibility: 'visible', position: 'absolute', top: pos.top, left: pos.left })
-                                    .fadeIn(conf.speed);
+                        // populate messages
+                        $.each(err.messages, function(i, m) {
+                            $("<p/>").html(m).appendTo(msg);
                         });
 
+                        // make sure the width is not full body width so it can be positioned correctly
+                        if (msg.outerWidth() == msg.parent().width()) {
+                            msg.add(msg.find("p")).css({display: 'inline'});
+                        }
 
-                        // hide errors function
-                    }, function(inputs) {
+                        // insert into correct position (relative to the field)
+                        var pos = getPosition(input, msg, conf);
 
-            var conf = this.getConf();
-            inputs.removeClass(conf.errorClass).each(function() {
-                var msg = $(this).data("msg.el");
-                if (msg) {
-                    msg.css({visibility: 'hidden'});
+                        msg.css({ visibility: 'visible', position: 'absolute', top: pos.top, left: pos.left })
+                                .fadeIn(conf.speed);
+                    });
+
+
+                    // hide errors function
+                }, function(inputs) {
+
+                    var conf = this.getConf();
+                    inputs.removeClass(conf.errorClass).each(function() {
+                        var msg = $(this).data("msg.el");
+                        if (msg) {
+                            msg.css({visibility: 'hidden'});
+                        }
+                    });
                 }
-            });
-        }
         ]
     };
 
@@ -4644,13 +4644,13 @@
             reset: function(els) {
                 els = els || inputs;
                 els.removeClass(conf.errorClass).each(
-                                                     function() {
-                                                         var msg = $(this).data("msg.el");
-                                                         if (msg) {
-                                                             msg.remove();
-                                                             $(this).data("msg.el", null);
-                                                         }
-                                                     }).unbind(conf.errorInputEvent || '');
+                        function() {
+                            var msg = $(this).data("msg.el");
+                            if (msg) {
+                                msg.remove();
+                                $(this).data("msg.el", null);
+                            }
+                        }).unbind(conf.errorInputEvent || '');
                 return self;
             },
 

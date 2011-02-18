@@ -4596,9 +4596,9 @@ function changeBack(target) {
             this.isActive = true;
             if ($.Chain.jobject(items)) {
                 this[buffer] = this[buffer].concat(items.map(
-                                                            function() {
-                                                                return $(this);
-                                                            }).get());
+                        function() {
+                            return $(this);
+                        }).get());
             }
             else if (items instanceof Array) {
                 this[buffer] = this[buffer].concat(items);
@@ -4634,9 +4634,9 @@ function changeBack(target) {
 
             if ($.Chain.jobject(items)) {
                 this[buffer] = items.map(
-                                        function() {
-                                            return $(this);
-                                        }).get();
+                        function() {
+                            return $(this);
+                        }).get();
             }
             else if (items instanceof Array) {
                 this[buffer] = items;
@@ -4724,9 +4724,9 @@ function changeBack(target) {
          */
         $data: function(x) {
             return this.handler(x).map(
-                                      function() {
-                                          return $(this).item();
-                                      }).get();
+                    function() {
+                        return $(this).item();
+                    }).get();
         },
 
         /**
@@ -6259,26 +6259,26 @@ function changeBack(target) {
      */
     var undefined,
 
-        /**
-         *    keep track of the registered galleries for updates on resize
-         *
-         *    @var Array<Element>
-         */
-            galleries = [],
+            /**
+             *    keep track of the registered galleries for updates on resize
+             *
+             *    @var Array<Element>
+             */
+                    galleries = [],
 
-        /**
-         *    Does the browser support Touch
-         *
-         *    @var Boolean
-         */
-            supportsTouch = "Touch" in this,
+            /**
+             *    Does the browser support Touch
+             *
+             *    @var Boolean
+             */
+                    supportsTouch = "Touch" in this,
 
-        /**
-         *    event types
-         *
-         *    @var Object
-         */
-            events = supportsTouch ? {
+            /**
+             *    event types
+             *
+             *    @var Object
+             */
+                    events = supportsTouch ? {
                 start: "touchstart",
                 move: "touchmove",
                 end: "touchend"
@@ -6290,86 +6290,86 @@ function changeBack(target) {
 
             controlPoints,
 
-        /**
-         *    keep track of whether or not the parsed class rule has been inserted
-         *
-         *    @var Boolean
-         */
-            parseRuleSet = false,
+            /**
+             *    keep track of whether or not the parsed class rule has been inserted
+             *
+             *    @var Boolean
+             */
+                    parseRuleSet = false,
 
         //bring into context
 
-        /**
-         *
-         *
-         *    @var Window
-         */
-            window = this,
+            /**
+             *
+             *
+             *    @var Window
+             */
+                    window = this,
 
-        /**
-         *
-         *
-         *    @var Document
-         */
-            document = window.document,
+            /**
+             *
+             *
+             *    @var Document
+             */
+                    document = window.document,
 
-        /**
-         *
-         *
-         *    @var Object
-         */
-            Math = window.Math,
+            /**
+             *
+             *
+             *    @var Object
+             */
+                    Math = window.Math,
 
         //simplify access to these functions
 
-        /**
-         *
-         *
-         *    @var Function
-         */
-            min = Math.min,
+            /**
+             *
+             *
+             *    @var Function
+             */
+                    min = Math.min,
 
-        /**
-         *
-         *
-         *    @var Function
-         */
-            floor = Math.floor,
+            /**
+             *
+             *
+             *    @var Function
+             */
+                    floor = Math.floor,
 
-        /**
-         *
-         *
-         *    @var Function
-         */
-            sqrt = Math.sqrt,
+            /**
+             *
+             *
+             *    @var Function
+             */
+                    sqrt = Math.sqrt,
 
-        /**
-         *
-         *
-         *    @var Function
-         */
-            pow = Math.pow,
+            /**
+             *
+             *
+             *    @var Function
+             */
+                    pow = Math.pow,
 
-        /**
-         *
-         *
-         *    @var Function
-         */
-            abs = Math.abs,
+            /**
+             *
+             *
+             *    @var Function
+             */
+                    abs = Math.abs,
 
-        /**
-         *    current orientation
-         *
-         *    @var String
-         */
-            orientation = abs(window.orientation) == 90 ? "landscape" : "portrait",
+            /**
+             *    current orientation
+             *
+             *    @var String
+             */
+                    orientation = abs(window.orientation) == 90 ? "landscape" : "portrait",
 
-        /**
-         *    The default options
-         *
-         *    @var Object
-         */
-            defaults = {
+            /**
+             *    The default options
+             *
+             *    @var Object
+             */
+                    defaults = {
                 /**
                  *    A list of the images to be displayed in the gallery
                  *
@@ -6837,48 +6837,48 @@ function changeBack(target) {
                 gallerySelector: ".jqt-photo"
             },
 
-        /**
-         *    Calculate the desired position of the caption elements within the galleries
-         *
-         *    @var Function
-         */
-            caption = function(vars) {
+            /**
+             *    Calculate the desired position of the caption elements within the galleries
+             *
+             *    @var Function
+             */
+                    caption = function(vars) {
                 return (window.innerHeight - vars.caption) + "px";
             },
 
-        /**
-         *    Calculate the desired height of the galleries and the slides
-         *
-         *    @var Function
-         */
-            height = function() {
+            /**
+             *    Calculate the desired height of the galleries and the slides
+             *
+             *    @var Function
+             */
+                    height = function() {
                 return window.innerHeight + "px";
             },
 
-        /**
-         *    Calculate the desired width of the galleries and the slides
-         *
-         *    @var Function
-         */
-            width = function() {
+            /**
+             *    Calculate the desired width of the galleries and the slides
+             *
+             *    @var Function
+             */
+                    width = function() {
                 return window.innerWidth + "px"
             },
 
-        /**
-         *    Calculate the desired position of the bottom toolbar elements within the galleries
-         *
-         *    @var Function
-         */
-            toolbar = function(vars) {
+            /**
+             *    Calculate the desired position of the bottom toolbar elements within the galleries
+             *
+             *    @var Function
+             */
+                    toolbar = function(vars) {
                 return (window.innerHeight - vars.toolbar) + "px";
             },
 
-        /**
-         *    The default CSS rules for dynamic insertion
-         *
-         *    @var Object
-         */
-            cssRules = {
+            /**
+             *    The default CSS rules for dynamic insertion
+             *
+             *    @var Object
+             */
+                    cssRules = {
 
                 /**
                  *    Variables used by the CSS "macros" for dynamically calculating positions and dimensions
@@ -8624,48 +8624,48 @@ function changeBack(target) {
 
     var undefined,
 
-        /**
-         *    The global object
-         *
-         *    @var Object
-         */
-            window = this,
+            /**
+             *    The global object
+             *
+             *    @var Object
+             */
+                    window = this,
 
-        /**
-         *    Just to speed up access
-         *
-         *    @var DOMDocument
-         */
-            document = window.document,
+            /**
+             *    Just to speed up access
+             *
+             *    @var DOMDocument
+             */
+                    document = window.document,
 
-        /**
-         *    Just to speed up access
-         *
-         *    @var Function
-         */
-            Number = window.Number,
+            /**
+             *    Just to speed up access
+             *
+             *    @var Function
+             */
+                    Number = window.Number,
 
-        /**
-         *    Just to speed up access
-         *
-         *    @var Object
-         */
-            Math = window.Math,
+            /**
+             *    Just to speed up access
+             *
+             *    @var Object
+             */
+                    Math = window.Math,
 
-        /**
-         *    Determine 3d translate support
-         *
-         *    @var Boolean
-         */
-            supports3d = ('m11' in new WebKitCSSMatrix()),
+            /**
+             *    Determine 3d translate support
+             *
+             *    @var Boolean
+             */
+                    supports3d = ('m11' in new WebKitCSSMatrix()),
 
-        /**
-         *    Single Object for base options
-         *    that is used to extend the defaults
-         *
-         *    @var Object
-         */
-            base = {
+            /**
+             *    Single Object for base options
+             *    that is used to extend the defaults
+             *
+             *    @var Object
+             */
+                    base = {
 
                 /**
                  *    A function for converting attributes into options @see attributes
@@ -8893,12 +8893,12 @@ function changeBack(target) {
                 momentum: momentum
             },
 
-        /**
-         *
-         *
-         *    @var Object
-         */
-            defaults = {
+            /**
+             *
+             *
+             *    @var Object
+             */
+                    defaults = {
                 /**
                  *    Vertical default settings
                  *
@@ -9040,41 +9040,41 @@ function changeBack(target) {
                 })
             },
 
-        /**
-         *    Dynamically determine the window height minus twice the toolbar height
-         *    for the CSS rule(s) that require specified heights
-         *
-         *    @var Function
-         */
-            bottomToolbar = function(vars) {
+            /**
+             *    Dynamically determine the window height minus twice the toolbar height
+             *    for the CSS rule(s) that require specified heights
+             *
+             *    @var Function
+             */
+                    bottomToolbar = function(vars) {
                 return (window.innerHeight - (vars.toolbarHeight * 2)) + "px !important"
             },
 
-        /**
-         *    Dynamically determine the window height minus the toolbar height
-         *    for the CSS rule(s) that require specified heights
-         *
-         *    @var Function
-         */
-            height = function(vars) {
+            /**
+             *    Dynamically determine the window height minus the toolbar height
+             *    for the CSS rule(s) that require specified heights
+             *
+             *    @var Function
+             */
+                    height = function(vars) {
                 return (window.innerHeight - vars.toolbarHeight) + "px"
             },
 
-        /**
-         *    Dynamically determine the window width for the CSS rule(s) that require specified widths
-         *
-         *    @var Function
-         */
-            width = function () {
+            /**
+             *    Dynamically determine the window width for the CSS rule(s) that require specified widths
+             *
+             *    @var Function
+             */
+                    width = function () {
                 return window.innerWidth + "px";
             },
 
-        /**
-         *
-         *
-         *    @var Object
-         */
-            cssRules = {
+            /**
+             *
+             *
+             *    @var Object
+             */
+                    cssRules = {
                 /**
                  *
                  *
@@ -10873,26 +10873,26 @@ function changeBack(target) {
 
     var undefined,
 
-        /**
-         *
-         *
-         *
-         */
-            window = this,
+            /**
+             *
+             *
+             *
+             */
+                    window = this,
 
-        /**
-         *
-         *
-         *
-         */
-            document = window.document,
+            /**
+             *
+             *
+             *
+             */
+                    document = window.document,
 
-        /**
-         *
-         *
-         *
-         */
-            defaults = {
+            /**
+             *
+             *
+             *
+             */
+                    defaults = {
                 /**
                  *
                  *
@@ -11071,30 +11071,30 @@ function changeBack(target) {
                 momentum: momentum
             },
 
-        /**
-         *
-         *
-         *
-         */
-            bottomToolbar = function(vars) {
+            /**
+             *
+             *
+             *
+             */
+                    bottomToolbar = function(vars) {
                 return (window.innerHeight - (vars.toolbarHeight * 2)) + "px !important"
             },
 
-        /**
-         *
-         *
-         *
-         */
-            height = function(vars) {
+            /**
+             *
+             *
+             *
+             */
+                    height = function(vars) {
                 return (window.innerHeight - vars.toolbarHeight) + "px"
             },
 
-        /**
-         *
-         *
-         *
-         */
-            cssRules = {
+            /**
+             *
+             *
+             *
+             */
+                    cssRules = {
                 variables : {
                     toolbarHeight: 45
                 },
