@@ -3479,22 +3479,22 @@ jQuery.fn.extend(
                     return false;
                 });
             }
-            if ($.isFunction(this.p.onRightClickRow)) {
-                $(this).bind('contextmenu', function(e) {
-                    td = e.target;
-                    ptr = $(td, ts.rows).closest("tr.jqgrow");
-                    if ($(ptr).length === 0) {
-                        return false;
-                    }
-                    if (!ts.p.multiselect) {
-                        $(ts).jqGrid("setSelection", ptr[0].id, true);
-                    }
-                    ri = ptr[0].rowIndex;
-                    ci = $.jgrid.getCellIndex(td);
-                    ts.p.onRightClickRow.call(ts, $(ptr).attr("id"), ri, ci, e);
-                    return false;
-                });
-            }
+//            if ($.isFunction(this.p.onRightClickRow)) {
+//                $(this).bind('contextmenu', function(e) {
+//                    td = e.target;
+//                    ptr = $(td, ts.rows).closest("tr.jqgrow");
+//                    if ($(ptr).length === 0) {
+//                        return false;
+//                    }
+//                    if (!ts.p.multiselect) {
+//                        $(ts).jqGrid("setSelection", ptr[0].id, true);
+//                    }
+//                    ri = ptr[0].rowIndex;
+//                    ci = $.jgrid.getCellIndex(td);
+//                    ts.p.onRightClickRow.call(ts, $(ptr).attr("id"), ri, ci, e);
+//                    return false;
+//                });
+//            }
             grid.bDiv = document.createElement("div");
             $(grid.bDiv)
                     .append($('<div style="position:relative;' + (isMSIE && $.browser.version < 8 ? "height:0.01%;" : "") + '"></div>').append('<div></div>').append(this))
@@ -12267,10 +12267,10 @@ var xmlJsonClass = {
     },
     toJson: function(o, name, ind, wellform) {
         if (wellform === undefined) wellform = true;
-        var json = name ? ("\"" + name + "\"") : "", T = "\t", N = "\n";
+        var json = name ? ("\"" + name + "\"") : "", tab = "\t", newline = "\n";
         if (!wellform) {
-            T = "";
-            N = "";
+            tab = "";
+            newline = "";
         }
 
         if (o === "[]") {
@@ -12279,32 +12279,35 @@ var xmlJsonClass = {
         else if (o instanceof Array) {
             var n, i, ar = [];
             for (i = 0,n = o.length; i < n; i += 1) {
-                ar[i] = this.toJson(o[i], "", ind + T, wellform);
+                ar[i] = this.toJson(o[i], "", ind + tab, wellform);
             }
-            json += (name ? ":[" : "[") + (ar.length > 1 ? (N + ind + T + ar.join("," + N + ind + T) + N + ind) : ar.join("")) + "]";
+            json += (name ? ":[" : "[") + (ar.length > 1 ? (newline + ind + tab + ar.join("," + newline + ind + tab) + newline + ind) : ar.join("")) + "]";
         }
         else if (o === null) {
             json += (name && ":") + "null";
         }
         else if (typeof(o) === "object") {
-            var arr = [];
-            var m;
-            for (m in o) if (o.hasOwnProperty(m)) {
-                arr[arr.length] = this.toJson(o[m], m, ind + T, wellform);
+            var arr = [], m;
+            for (m in o) {
+                if (o.hasOwnProperty(m)) {
+                    arr[arr.length] = this.toJson(o[m], m, ind + tab, wellform);
+                }
             }
-            json += (name ? ":{" : "{") + (arr.length > 1 ? (N + ind + T + arr.join("," + N + ind + T) + N + ind) : arr.join("")) + "}";
+            json += (name ? ":{" : "{") + (arr.length > 1 ? (newline + ind + tab + arr.join("," + newline + ind + tab) + newline + ind) : arr.join("")) + "}";
         }
         else if (typeof(o) === "string") {
-            var objRegExp = /(^-?\d+\.?\d*$)/;
-            var FuncTest = /function/i;
-            var os = o.toString();
-            if (objRegExp.test(os) || FuncTest.test(os) || os === "false" || os === "true") {
-                // int or float
-                json += (name && ":") + "\"" + os + "\"";
-            }
-            else {
-                json += (name && ":") + "\"" + o.replace(/\\/g, '\\\\').replace(/\"/g, '\\"') + "\"";
-            }
+            /*
+             var objRegExp  = /(^-?\d+\.?\d*$)/;
+             var FuncTest = /function/i;
+             var os = o.toString();
+             if (objRegExp.test(os) || FuncTest.test(os) || os==="false" || os==="true") {
+             // int or float
+             json += (name && ":")  + "\"" +os + "\"";
+             }
+             else {
+             */
+            json += (name && ":") + "\"" + o.replace(/\\/g, '\\\\').replace(/\"/g, '\\"') + "\"";
+            //}
         }
         else {
             json += (name && ":") + "\"" + o.toString() + "\"";

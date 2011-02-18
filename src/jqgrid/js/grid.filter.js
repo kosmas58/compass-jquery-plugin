@@ -248,8 +248,8 @@
                         }
                     }
                     var opr;
-                    if (cm.opts) {
-                        opr = cm.opts;
+                    if (cm.searchoptions.sopt) {
+                        opr = cm.searchoptions.sopt;
                     }
                     else if (that.p.sopt) {
                         opr = that.p.sopt;
@@ -366,8 +366,8 @@
                     $(elm).addClass("input-elm");
                     //that.createElement(rule, "");
 
-                    if (cm.opts) {
-                        op = cm.opts;
+                    if (cm.searchoptions.sopt) {
+                        opr = cm.searchoptions.sopt;
                     }
                     else if (that.p.sopt) {
                         op = that.p.sopt;
