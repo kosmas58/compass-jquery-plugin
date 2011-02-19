@@ -77,16 +77,8 @@ var jQuery = (function() {
         // The deferred used on DOM ready
             readyList,
 
-        // Promise methods (with equivalent for invert)
-            promiseMethods = {
-                then: 0, // will be overwritten for invert
-                done: "fail",
-                fail: "done",
-                isResolved: "isRejected",
-                isRejected: "isResolved",
-                promise: "invert",
-                invert: "promise"
-            },
+        // Promise methods
+            promiseMethods = "then done fail isResolved isRejected promise".split(" "),
 
         // The ready event handler
             DOMContentLoaded,
@@ -910,9 +902,8 @@ var jQuery = (function() {
         Deferred: function(func) {
             var deferred = jQuery._Deferred(),
                     failDeferred = jQuery._Deferred(),
-                    promise,
-                    invert;
-            // Add errorDeferred methods, then, promise and invert
+                    promise;
+            // Add errorDeferred methods, then and promise
             jQuery.extend(deferred, {
                 then: function(doneCallbacks, failCallbacks) {
                     deferred.done(doneCallbacks).fail(failCallbacks);
@@ -924,34 +915,17 @@ var jQuery = (function() {
                 isRejected: failDeferred.isResolved,
                 // Get a promise for this deferred
                 // If obj is provided, the promise aspect is added to the object
-                promise: function(obj) {
+                promise: function(obj, i /* internal */) {
                     if (obj == null) {
                         if (promise) {
                             return promise;
                         }
                         promise = obj = {};
                     }
-                    for (var methodName in promiseMethods) {
-                        obj[ methodName ] = deferred[ methodName ];
+                    i = promiseMethods.length;
+                    while (i--) {
+                        obj[ promiseMethods[ i ] ] = deferred[ promiseMethods[ i ] ];
                     }
-                    return obj;
-                },
-                // Get the invert promise for this deferred
-                // If obj is provided, the invert promise aspect is added to the object
-                invert: function(obj) {
-                    if (obj == null) {
-                        if (invert) {
-                            return invert;
-                        }
-                        invert = obj = {};
-                    }
-                    for (var methodName in promiseMethods) {
-                        obj[ methodName ] = promiseMethods[ methodName ] && deferred[ promiseMethods[methodName] ];
-                    }
-                    obj.then = invert.then || function(doneCallbacks, failCallbacks) {
-                        deferred.done(failCallbacks).fail(doneCallbacks);
-                        return this;
-                    };
                     return obj;
                 }
             });
@@ -1102,7 +1076,7 @@ var jQuery = (function() {
     }
 
 // Expose jQuery to the global object
-    return (window.jQuery = window.$ = jQuery);
+    return jQuery;
 
 })();
 
@@ -1170,7 +1144,6 @@ var jQuery = (function() {
             deleteExpando: true,
             optDisabled: false,
             checkClone: false,
-            _scriptEval: null,
             noCloneEvent: true,
             boxModel: null,
             inlineBlockNeedsLayout: false,
@@ -1183,13 +1156,13 @@ var jQuery = (function() {
         select.disabled = true;
         jQuery.support.optDisabled = !opt.disabled;
 
+        var _scriptEval = null;
         jQuery.support.scriptEval = function() {
-            if (jQuery.support._scriptEval === null) {
+            if (_scriptEval === null) {
                 var root = document.documentElement,
                         script = document.createElement("script"),
                         id = "script" + jQuery.now();
 
-                script.type = "text/javascript";
                 try {
                     script.appendChild(document.createTextNode("window." + id + "=1;"));
                 } catch(e) {
@@ -1201,10 +1174,10 @@ var jQuery = (function() {
                 // tag with appendChild/createTextNode
                 // (IE doesn't support this, fails, and uses .text instead)
                 if (window[ id ]) {
-                    jQuery.support._scriptEval = true;
+                    _scriptEval = true;
                     delete window[ id ];
                 } else {
-                    jQuery.support._scriptEval = false;
+                    _scriptEval = false;
                 }
 
                 root.removeChild(script);
@@ -1212,7 +1185,7 @@ var jQuery = (function() {
                 root = script = id = null;
             }
 
-            return jQuery.support._scriptEval;
+            return _scriptEval;
         };
 
         // Test to see if it's possible to delete an expando from an element
@@ -1357,7 +1330,7 @@ var jQuery = (function() {
         hasData: function(elem) {
             elem = elem.nodeType ? jQuery.cache[ elem[jQuery.expando] ] : elem[ jQuery.expando ];
 
-            return !!elem && !jQuery.isEmptyObject(elem);
+            return !!elem && !isEmptyDataObject(elem);
         },
 
         data: function(elem, name, data, pvt /* Internal Use Only */) {
@@ -1397,6 +1370,13 @@ var jQuery = (function() {
 
             if (!cache[ id ]) {
                 cache[ id ] = {};
+
+                // TODO: This is a hack for 1.5 ONLY. Avoids exposing jQuery
+                // metadata on plain JS objects when the object is serialized using
+                // JSON.stringify
+                if (!isNode) {
+                    cache[ id ].toJSON = jQuery.noop;
+                }
             }
 
             // An object can be passed to jQuery.data instead of a key/value pair; this gets
@@ -1463,7 +1443,7 @@ var jQuery = (function() {
 
                     // If there is no data left in the cache, we want to continue
                     // and let the cache object itself get destroyed
-                    if (!jQuery.isEmptyObject(thisCache)) {
+                    if (!isEmptyDataObject(thisCache)) {
                         return;
                     }
                 }
@@ -1475,7 +1455,7 @@ var jQuery = (function() {
 
                 // Don't destroy the parent cache unless the internal data object
                 // had been the only thing left in it
-                if (!jQuery.isEmptyObject(cache[ id ])) {
+                if (!isEmptyDataObject(cache[ id ])) {
                     return;
                 }
             }
@@ -1496,6 +1476,13 @@ var jQuery = (function() {
             // data if it existed
             if (internalCache) {
                 cache[ id ] = {};
+                // TODO: This is a hack for 1.5 ONLY. Avoids exposing jQuery
+                // metadata on plain JS objects when the object is serialized using
+                // JSON.stringify
+                if (!isNode) {
+                    cache[ id ].toJSON = jQuery.noop;
+                }
+
                 cache[ id ][ internalKey ] = internalCache;
 
                 // Otherwise, we need to eliminate the expando on the node to avoid
@@ -1623,6 +1610,19 @@ var jQuery = (function() {
         }
 
         return data;
+    }
+
+// TODO: This is a hack for 1.5 ONLY to allow objects with a single toJSON
+// property to be considered empty objects; this property always exists in
+// order to make sure JSON.stringify does not expose internal metadata
+    function isEmptyDataObject(obj) {
+        for (var name in obj) {
+            if (name !== "toJSON") {
+                return false;
+            }
+        }
+
+        return true;
     }
 
 })(jQuery);
@@ -1929,6 +1929,11 @@ var jQuery = (function() {
                             }
                         }
 
+                        // Fixes Bug #2551 -- select.val() broken in IE after form.reset()
+                        if (one && !values.length && options.length) {
+                            return jQuery(options[ index ]).val();
+                        }
+
                         return values;
                     }
 
@@ -2140,10 +2145,16 @@ var jQuery = (function() {
                 return;
             }
 
-            // For whatever reason, IE has trouble passing the window object
-            // around, causing it to be cloned in the process
-            if (jQuery.isWindow(elem) && ( elem !== window && !elem.frameElement )) {
-                elem = window;
+            // TODO :: Use a try/catch until it's safe to pull this out (likely 1.6)
+            // Minor release fix for bug #8018
+            try {
+                // For whatever reason, IE has trouble passing the window object
+                // around, causing it to be cloned in the process
+                if (jQuery.isWindow(elem) && ( elem !== window && !elem.frameElement )) {
+                    elem = window;
+                }
+            }
+            catch (e) {
             }
 
             if (handler === false) {
@@ -2830,8 +2841,7 @@ var jQuery = (function() {
                                 type = elem.type;
 
                         if ((type === "submit" || type === "image") && jQuery(elem).closest("form").length) {
-                            e.liveFired = undefined;
-                            return trigger("submit", this, arguments);
+                            trigger("submit", this, arguments);
                         }
                     });
 
@@ -2840,8 +2850,7 @@ var jQuery = (function() {
                                 type = elem.type;
 
                         if ((type === "text" || type === "password") && jQuery(elem).closest("form").length && e.keyCode === 13) {
-                            e.liveFired = undefined;
-                            return trigger("submit", this, arguments);
+                            trigger("submit", this, arguments);
                         }
                     });
 
@@ -2905,7 +2914,7 @@ var jQuery = (function() {
                     if (data != null || val) {
                         e.type = "change";
                         e.liveFired = undefined;
-                        return jQuery.event.trigger(e, arguments[1], elem);
+                        jQuery.event.trigger(e, arguments[1], elem);
                     }
                 };
 
@@ -2919,7 +2928,7 @@ var jQuery = (function() {
                     var elem = e.target, type = elem.type;
 
                     if (type === "radio" || type === "checkbox" || elem.nodeName.toLowerCase() === "select") {
-                        return testChange.call(this, e);
+                        testChange.call(this, e);
                     }
                 },
 
@@ -2931,7 +2940,7 @@ var jQuery = (function() {
                     if ((e.keyCode === 13 && elem.nodeName.toLowerCase() !== "textarea") ||
                             (e.keyCode === 32 && (type === "checkbox" || type === "radio")) ||
                             type === "select-multiple") {
-                        return testChange.call(this, e);
+                        testChange.call(this, e);
                     }
                 },
 
@@ -2970,8 +2979,18 @@ var jQuery = (function() {
     }
 
     function trigger(type, elem, args) {
-        args[0].type = type;
-        return jQuery.event.handle.apply(elem, args);
+        // Piggyback on a donor event to simulate a different one.
+        // Fake originalEvent to avoid donor's stopPropagation, but if the
+        // simulated event prevents default then we do the same on the donor.
+        // Don't pass args or remember liveFired; they apply to the donor event.
+        var event = jQuery.extend({}, args[ 0 ]);
+        event.type = type;
+        event.originalEvent = {};
+        event.liveFired = undefined;
+        jQuery.event.handle.call(elem, event);
+        if (event.isDefaultPrevented()) {
+            args[ 0 ].preventDefault();
+        }
     }
 
 // Create "bubbling" focus and blur events
@@ -3208,7 +3227,7 @@ var jQuery = (function() {
             for (j = 0; j < live.length; j++) {
                 handleObj = live[j];
 
-                if (close.selector === handleObj.selector && (!namespace || namespace.test(handleObj.namespace))) {
+                if (close.selector === handleObj.selector && (!namespace || namespace.test(handleObj.namespace)) && !close.elem.disabled) {
                     elem = close.elem;
                     related = null;
 
@@ -3633,6 +3652,9 @@ var jQuery = (function() {
         attrHandle: {
             href: function(elem) {
                 return elem.getAttribute("href");
+            },
+            type: function(elem) {
+                return elem.getAttribute("type");
             }
         },
 
@@ -3879,7 +3901,9 @@ var jQuery = (function() {
             selected: function(elem) {
                 // Accessing this property makes selected-by-default
                 // options in Safari work properly
-                elem.parentNode.selectedIndex;
+                if (elem.parentNode) {
+                    elem.parentNode.selectedIndex;
+                }
 
                 return elem.selected === true;
             },
@@ -3901,7 +3925,9 @@ var jQuery = (function() {
             },
 
             text: function(elem) {
-                return "text" === elem.type;
+                // IE6 and 7 will map elem.type to 'text' for new HTML5 types (search, etc)
+                // use getAttribute instead to test this case
+                return "text" === elem.getAttribute('type');
             },
             radio: function(elem) {
                 return "radio" === elem.type;
@@ -4435,7 +4461,8 @@ var jQuery = (function() {
                         // and working up from there (Thanks to Andrew Dupont for the technique)
                         // IE 8 doesn't work on object elements
                     } else if (context.nodeType === 1 && context.nodeName.toLowerCase() !== "object") {
-                        var old = context.getAttribute("id"),
+                        var oldContext = context,
+                                old = context.getAttribute("id"),
                                 nid = old || id,
                                 hasParent = context.parentNode,
                                 relativeHierarchySelector = /^\s*[+~]/.test(query);
@@ -4457,7 +4484,7 @@ var jQuery = (function() {
                         } catch(pseudoError) {
                         } finally {
                             if (!old) {
-                                context.removeAttribute("id");
+                                oldContext.removeAttribute("id");
                             }
                         }
                     }
@@ -6028,7 +6055,7 @@ var jQuery = (function() {
             rbracket = /\[\]$/,
             rCRLF = /\r?\n/g,
             rhash = /#.*$/,
-            rheaders = /^(.*?):\s*(.*?)\r?$/mg, // IE leaves an \r character at EOL
+            rheaders = /^(.*?):[ \t]*([^\r\n]*)\r?$/mg, // IE leaves an \r character at EOL
             rinput = /^(?:color|date|datetime|email|hidden|month|number|password|range|search|tel|text|time|url|week)$/i,
         // #7653, #8125, #8152: local protocol detection
             rlocalProtocol = /(?:^file|^widget|\-extension):$/,
@@ -6039,6 +6066,10 @@ var jQuery = (function() {
             rselectTextarea = /^(?:select|textarea)/i,
             rspacesAjax = /\s+/,
             rts = /([?&])_=[^&]*/,
+            rucHeaders = /(^|\-)([a-z])/g,
+            rucHeadersFunc = function(_, $1, $2) {
+                return $1 + $2.toUpperCase();
+            },
             rurl = /^([\w\+\.\-]+:)\/\/([^\/?#:]*)(?::(\d+))?/,
 
         // Keep a copy of the old load method
@@ -6183,7 +6214,7 @@ var jQuery = (function() {
                 if (jQuery.isFunction(params)) {
                     // We assume that it's the callback
                     callback = params;
-                    params = null;
+                    params = undefined;
 
                     // Otherwise, build a param string
                 } else if (typeof params === "object") {
@@ -6276,7 +6307,7 @@ var jQuery = (function() {
             if (jQuery.isFunction(data)) {
                 type = type || callback;
                 callback = data;
-                data = null;
+                data = undefined;
             }
 
             return jQuery.ajax({
@@ -6292,18 +6323,34 @@ var jQuery = (function() {
     jQuery.extend({
 
         getScript: function(url, callback) {
-            return jQuery.get(url, null, callback, "script");
+            return jQuery.get(url, undefined, callback, "script");
         },
 
         getJSON: function(url, data, callback) {
             return jQuery.get(url, data, callback, "json");
         },
 
-        ajaxSetup: function(settings) {
-            jQuery.extend(true, jQuery.ajaxSettings, settings);
-            if (settings.context) {
-                jQuery.ajaxSettings.context = settings.context;
+        // Creates a full fledged settings object into target
+        // with both ajaxSettings and settings fields.
+        // If target is omitted, writes into ajaxSettings.
+        ajaxSetup: function (target, settings) {
+            if (!settings) {
+                // Only one parameter, we extend ajaxSettings
+                settings = target;
+                target = jQuery.extend(true, jQuery.ajaxSettings, settings);
+            } else {
+                // target was provided, we extend into it
+                jQuery.extend(true, target, jQuery.ajaxSettings, settings);
             }
+            // Flatten fields we don't want deep extended
+            for (var field in { context: 1, url: 1 }) {
+                if (field in settings) {
+                    target[ field ] = settings[ field ];
+                } else if (field in jQuery.ajaxSettings) {
+                    target[ field ] = jQuery.ajaxSettings[ field ];
+                }
+            }
+            return target;
         },
 
         ajaxSettings: {
@@ -6380,13 +6427,9 @@ var jQuery = (function() {
             options = options || {};
 
             var // Create the final options object
-                    s = jQuery.extend(true, {}, jQuery.ajaxSettings, options),
+                    s = jQuery.ajaxSetup({}, options),
                 // Callbacks context
-                // We force the original context if it exists
-                // or take it from jQuery.ajaxSettings otherwise
-                // (plain objects used as context get extended)
-                    callbackContext =
-                            ( s.context = ( "context" in options ? options : jQuery.ajaxSettings ).context ) || s,
+                    callbackContext = s.context || s,
                 // Context for global events
                 // It's the callbackContext if one was provided in the options
                 // and if it's a DOM node or a jQuery collection
@@ -6424,8 +6467,8 @@ var jQuery = (function() {
 
                         // Caches the header
                         setRequestHeader: function(name, value) {
-                            if (state === 0) {
-                                requestHeaders[ name.toLowerCase() ] = value;
+                            if (!state) {
+                                requestHeaders[ name.toLowerCase().replace(rucHeaders, rucHeadersFunc) ] = value;
                             }
                             return this;
                         },
@@ -6447,12 +6490,12 @@ var jQuery = (function() {
                                 }
                                 match = responseHeaders[ key.toLowerCase() ];
                             }
-                            return match || null;
+                            return match === undefined ? null : match;
                         },
 
                         // Overrides response content-type header
                         overrideMimeType: function(type) {
-                            if (state === 0) {
+                            if (!state) {
                                 s.mimeType = type;
                             }
                             return this;
@@ -6606,7 +6649,7 @@ var jQuery = (function() {
             // Remove hash character (#7531: and string promotion)
             // Add protocol if not provided (#5866: IE7 issue with protocol-less urls)
             // We also use the url parameter if available
-            s.url = ( "" + ( url || s.url ) ).replace(rhash, "").replace(rprotocol, ajaxLocParts[ 1 ] + "//");
+            s.url = ( ( url || s.url ) + "" ).replace(rhash, "").replace(rprotocol, ajaxLocParts[ 1 ] + "//");
 
             // Extract dataTypes list
             s.dataTypes = jQuery.trim(s.dataType || "*").toLowerCase().split(rspacesAjax);
@@ -6673,28 +6716,28 @@ var jQuery = (function() {
 
             // Set the correct header, if data is being sent
             if (s.data && s.hasContent && s.contentType !== false || options.contentType) {
-                requestHeaders[ "content-type" ] = s.contentType;
+                requestHeaders[ "Content-Type" ] = s.contentType;
             }
 
             // Set the If-Modified-Since and/or If-None-Match header, if in ifModified mode.
             if (s.ifModified) {
                 ifModifiedKey = ifModifiedKey || s.url;
                 if (jQuery.lastModified[ ifModifiedKey ]) {
-                    requestHeaders[ "if-modified-since" ] = jQuery.lastModified[ ifModifiedKey ];
+                    requestHeaders[ "If-Modified-Since" ] = jQuery.lastModified[ ifModifiedKey ];
                 }
                 if (jQuery.etag[ ifModifiedKey ]) {
-                    requestHeaders[ "if-none-match" ] = jQuery.etag[ ifModifiedKey ];
+                    requestHeaders[ "If-None-Match" ] = jQuery.etag[ ifModifiedKey ];
                 }
             }
 
             // Set the Accepts header for the server, depending on the dataType
-            requestHeaders.accept = s.dataTypes[ 0 ] && s.accepts[ s.dataTypes[0] ] ?
+            requestHeaders.Accept = s.dataTypes[ 0 ] && s.accepts[ s.dataTypes[0] ] ?
                     s.accepts[ s.dataTypes[0] ] + ( s.dataTypes[ 0 ] !== "*" ? ", */*; q=0.01" : "" ) :
                     s.accepts[ "*" ];
 
             // Check for headers option
             for (i in s.headers) {
-                requestHeaders[ i.toLowerCase() ] = s.headers[ i ];
+                jqXHR.setRequestHeader(i, s.headers[ i ]);
             }
 
             // Allow custom headers/mimetypes and early abort
@@ -7264,8 +7307,8 @@ var jQuery = (function() {
                         // Not set for crossDomain requests with no content
                         // (see why at http://trac.dojotoolkit.org/ticket/9486)
                         // Won't change header if already provided
-                        if (!( s.crossDomain && !s.hasContent ) && !headers["x-requested-with"]) {
-                            headers[ "x-requested-with" ] = "XMLHttpRequest";
+                        if (!( s.crossDomain && !s.hasContent ) && !headers["X-Requested-With"]) {
+                            headers[ "X-Requested-With" ] = "XMLHttpRequest";
                         }
 
                         // Need an extra try/catch for cross domain requests in Firefox 3
@@ -7336,33 +7379,14 @@ var jQuery = (function() {
 
                                         // Filter status for non standard behaviors
 
-                                        // IE - #1450: sometimes returns 1223 when it should be 204
-                                        if (status === 1223) {
+                                        // If the request is local and we have data: assume a success
+                                        // (success with no data won't get notified, that's the best we
+                                        // can do given current implementations)
+                                        if (!status && s.isLocal && !s.crossDomain) {
+                                            status = responses.text ? 200 : 404;
+                                            // IE - #1450: sometimes returns 1223 when it should be 204
+                                        } else if (status === 1223) {
                                             status = 204;
-                                            // Various - #8177: a Not Modified response was received
-                                            // yet no conditional request headers was provided
-                                        } else if (status === 304 &&
-                                                !headers[ "if-modified-since" ] &&
-                                                !headers[ "if-none-match" ]) {
-                                            status = 200;
-                                            // Status 0 encompasses several cases
-                                        } else if (!status) {
-                                            // Cross-domain
-                                            if (s.crossDomain) {
-                                                if (!s.statusText) {
-                                                    // FF, Webkit (other?): There is no status text for errors
-                                                    // 302 is the most generic cross-domain status code
-                                                    // for errors, could be anything really (even a real 0)
-                                                    status = 302;
-                                                }
-                                                // All same-domain: for local files, 0 is a success
-                                            } else if (s.isLocal) {
-                                                status = 200;
-                                                // Opera: this notifies success for all requests
-                                                // (verified in 11.01). Patch welcome.
-                                            }
-                                            // Opera - #6060: sets status as 0 for 304
-                                            // Patch welcome.
                                         }
                                     }
                                 }
@@ -7596,11 +7620,11 @@ var jQuery = (function() {
 
                     } else {
                         var parts = rfxnum.exec(val),
-                                start = e.cur() || 0;
+                                start = e.cur();
 
                         if (parts) {
                             var end = parseFloat(parts[2]),
-                                    unit = parts[3] || "px";
+                                    unit = parts[3] || ( jQuery.cssNumber[ name ] ? "" : "px" );
 
                             // We need to compute starting value
                             if (unit !== "px") {
@@ -7747,8 +7771,12 @@ var jQuery = (function() {
                 return this.elem[ this.prop ];
             }
 
-            var r = parseFloat(jQuery.css(this.elem, this.prop));
-            return r || 0;
+            var parsed,
+                    r = jQuery.css(this.elem, this.prop);
+            // Empty strings, null, undefined and "auto" are converted to 0,
+            // complex values such as "rotate(1rad)" are returned as is,
+            // simple values such as "10px" are parsed to Float.
+            return isNaN(parsed = parseFloat(r)) ? !r || r === "auto" ? 0 : r : parsed;
         },
 
         // Start an animation from one number to another
@@ -7759,7 +7787,7 @@ var jQuery = (function() {
             this.startTime = jQuery.now();
             this.start = from;
             this.end = to;
-            this.unit = unit || this.unit || "px";
+            this.unit = unit || this.unit || ( jQuery.cssNumber[ this.prop ] ? "" : "px" );
             this.now = this.start;
             this.pos = this.state = 0;
 
@@ -8313,5 +8341,6 @@ var jQuery = (function() {
 })(jQuery);
 
 
+window.jQuery = window.$ = jQuery;
 })
 (window);

@@ -2257,7 +2257,8 @@
 
         if (url === "#") {
             //for links created purely for interaction - ignore
-            return false;
+            event.preventDefault();
+            return;
         }
 
         $activeClickedLink = $this.closest(".ui-btn").addClass($.mobile.activeBtnClass);
@@ -2575,16 +2576,19 @@
                 set.last().data('collapsible-last', true)
             }
 
-            collapsibleHeading.bind($.support.touch ? "touchstart" : "click", function() {
-                if (collapsibleHeading.is('.ui-collapsible-heading-collapsed')) {
-                    collapsibleContain.trigger('expand');
-                }
-                else {
-                    collapsibleContain.trigger('collapse');
-                }
-                return false;
-            });
-
+            collapsibleHeading
+                    .bind({
+                              "tap": function() {
+                                  if (collapsibleHeading.is('.ui-collapsible-heading-collapsed')) {
+                                      collapsibleContain.trigger('expand');
+                                  }
+                                  else {
+                                      collapsibleContain.trigger('collapse');
+                                  }
+                                  return false;
+                              },
+                              "click": false
+                          });
         }
     });
 })(jQuery);

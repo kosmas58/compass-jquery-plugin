@@ -350,6 +350,9 @@
         attrHandle: {
             href: function(elem) {
                 return elem.getAttribute("href");
+            },
+            type: function(elem) {
+                return elem.getAttribute("type");
             }
         },
 
@@ -596,7 +599,9 @@
             selected: function(elem) {
                 // Accessing this property makes selected-by-default
                 // options in Safari work properly
-                elem.parentNode.selectedIndex;
+                if (elem.parentNode) {
+                    elem.parentNode.selectedIndex;
+                }
 
                 return elem.selected === true;
             },
@@ -618,7 +623,9 @@
             },
 
             text: function(elem) {
-                return "text" === elem.type;
+                // IE6 and 7 will map elem.type to 'text' for new HTML5 types (search, etc)
+                // use getAttribute instead to test this case
+                return "text" === elem.getAttribute('type');
             },
             radio: function(elem) {
                 return "radio" === elem.type;
@@ -1152,7 +1159,8 @@
                         // and working up from there (Thanks to Andrew Dupont for the technique)
                         // IE 8 doesn't work on object elements
                     } else if (context.nodeType === 1 && context.nodeName.toLowerCase() !== "object") {
-                        var old = context.getAttribute("id"),
+                        var oldContext = context,
+                                old = context.getAttribute("id"),
                                 nid = old || id,
                                 hasParent = context.parentNode,
                                 relativeHierarchySelector = /^\s*[+~]/.test(query);
@@ -1174,7 +1182,7 @@
                         } catch(pseudoError) {
                         } finally {
                             if (!old) {
-                                context.removeAttribute("id");
+                                oldContext.removeAttribute("id");
                             }
                         }
                     }
