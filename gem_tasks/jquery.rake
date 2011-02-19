@@ -340,10 +340,10 @@ namespace :build do
       manifest.print "stylesheet 'jquery/ui/_flash_messages.scss'\n"
       
       # Copy the images directory
-      FileUtils.mkdir_p File.join(JQUERY_DEST_IMAGES)
+      FileUtils.mkdir_p File.join(JQUERY_DEST_IMAGES, 'flash_messages')
       src_dir = FLASH_SRC_IMAGES
-      dest_dir = JQUERY_DEST_IMAGES
-      
+      dest_dir = File.join(JQUERY_DEST_IMAGES, 'flash_messages')
+
       Dir.foreach(src_dir) do |image|
         next unless /\.png$/ =~ image
         FileUtils.cp(File.join(src_dir, image), dest_dir)    
