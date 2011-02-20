@@ -1,4 +1,3 @@
-;
 (function($) {
     /**
      * jqGrid extension for form editing Grid Data
@@ -8,6 +7,7 @@
      * http://www.opensource.org/licenses/mit-license.php
      * http://www.gnu.org/licenses/gpl-2.0.html
      **/
+    /*global xmlJsonClass, jQuery, $,  */
     var rp_ge = null;
     $.jgrid.extend({
         searchGrid : function (p) {
@@ -26,6 +26,7 @@
                 closeAfterReset: false,
                 closeOnEscape : false,
                 multipleSearch : false,
+                multipleGroup : false,
                 //cloneSearchRowOnAdd: true,
                 top : 0,
                 left: 0,
@@ -108,7 +109,7 @@
                         }
                     });
                     // old behaviour
-                    if (!defaultFilters && colnm) {
+                    if ((!defaultFilters && colnm) || p.multipleSearch === false) {
                         defaultFilters = {"groupOp": "AND",rules:[
                             {"field":colnm,"op":"eq","data":""}
                         ]};
@@ -119,6 +120,7 @@
                         showQuery: p.showQuery,
                         errorcheck : p.errorcheck,
                         sopt: p.sopt,
+                        groupButton : p.multipleGroup,
                         _gridsopt : $.jgrid.search.odata,
                         onChange : function(sp) {
                             if (this.p.showQuery) {
@@ -127,6 +129,10 @@
                         }
                     });
                     fil.append(bt);
+                    if (p.multipleSearch === false) {
+                        $(".add-rule", "#" + fid).hide();
+                        $(".delete-rule", "#" + fid).hide();
+                    }
                     if ($.isFunction(p.onInitializeSearch)) {
                         p.onInitializeSearch($("#" + fid));
                     }
@@ -467,7 +473,7 @@
                             nm = this.name;
                             opt = $.extend({}, this.editoptions || {});
                             fld = $("#" + $.jgrid.jqID(nm), "#" + fmid);
-                            if (fld[0] != null) {
+                            if (fld[0] !== null) {
                                 vl = "";
                                 if (opt.defaultValue) {
                                     vl = $.isFunction(opt.defaultValue) ? opt.defaultValue() : opt.defaultValue;
@@ -832,7 +838,7 @@
                 }
 
                 function restoreInline() {
-                    if (rowid !== "_empty" && typeof($t.p.savedRow) !== "undefined" && $t.p.savedRow.length > 0 && $.isFunction($.fn.jqGrid['restoreRow'])) {
+                    if (rowid !== "_empty" && typeof($t.p.savedRow) !== "undefined" && $t.p.savedRow.length > 0 && $.isFunction($.fn.jqGrid.restoreRow)) {
                         for (var i = 0; i < $t.p.savedRow.length; i++) {
                             if ($t.p.savedRow[i].id == rowid) {
                                 $($t).jqGrid('restoreRow', rowid);
@@ -842,7 +848,27 @@
                     }
                 }
 
-                if ($("#" + IDs.themodal).html() != null) {
+                function updateNav(cr, totr) {
+                    if (cr === 0) {
+                        $("#pData", "#" + frmtb + "_2").addClass('ui-state-disabled');
+                    } else {
+                        $("#pData", "#" + frmtb + "_2").removeClass('ui-state-disabled');
+                    }
+                    if (cr == totr) {
+                        $("#nData", "#" + frmtb + "_2").addClass('ui-state-disabled');
+                    } else {
+                        $("#nData", "#" + frmtb + "_2").removeClass('ui-state-disabled');
+                    }
+                }
+
+                function getCurrPos() {
+                    var rowsInGrid = $($t).jqGrid("getDataIDs"),
+                            selrow = $("#id_g", "#" + frmtb).val(),
+                            pos = $.inArray(selrow, rowsInGrid);
+                    return [pos,rowsInGrid];
+                }
+
+                if ($("#" + IDs.themodal).html() !== null) {
                     if (onBeforeInit) {
                         showFrm = onBeforeInit($("#" + frmgr));
                         if (typeof(showFrm) == "undefined") {
@@ -1176,26 +1202,6 @@
                         return false;
                     });
                 }
-                function updateNav(cr, totr, rid) {
-                    if (cr === 0) {
-                        $("#pData", "#" + frmtb + "_2").addClass('ui-state-disabled');
-                    } else {
-                        $("#pData", "#" + frmtb + "_2").removeClass('ui-state-disabled');
-                    }
-                    if (cr == totr) {
-                        $("#nData", "#" + frmtb + "_2").addClass('ui-state-disabled');
-                    } else {
-                        $("#nData", "#" + frmtb + "_2").removeClass('ui-state-disabled');
-                    }
-                }
-
-                function getCurrPos() {
-                    var rowsInGrid = $($t).jqGrid("getDataIDs"),
-                            selrow = $("#id_g", "#" + frmtb).val(),
-                            pos = $.inArray(selrow, rowsInGrid);
-                    return [pos,rowsInGrid];
-                }
-
                 var posInit = getCurrPos();
                 updateNav(posInit[0], posInit[1].length - 1);
 
@@ -1360,7 +1366,27 @@
                     }
                 }
 
-                if ($("#" + IDs.themodal).html() != null) {
+                function updateNav(cr, totr) {
+                    if (cr === 0) {
+                        $("#pData", "#" + frmtb + "_2").addClass('ui-state-disabled');
+                    } else {
+                        $("#pData", "#" + frmtb + "_2").removeClass('ui-state-disabled');
+                    }
+                    if (cr == totr) {
+                        $("#nData", "#" + frmtb + "_2").addClass('ui-state-disabled');
+                    } else {
+                        $("#nData", "#" + frmtb + "_2").removeClass('ui-state-disabled');
+                    }
+                }
+
+                function getCurrPos() {
+                    var rowsInGrid = $($t).jqGrid("getDataIDs"),
+                            selrow = $("#id_g", "#" + frmtb).val(),
+                            pos = $.inArray(selrow, rowsInGrid);
+                    return [pos,rowsInGrid];
+                }
+
+                if ($("#" + IDs.themodal).html() !== null) {
                     if (onBeforeInit) {
                         showFrm = onBeforeInit($("#" + frmgr));
                         if (typeof(showFrm) == "undefined") {
@@ -1517,26 +1543,6 @@
                         return false;
                     });
                 }
-                function updateNav(cr, totr, rid) {
-                    if (cr === 0) {
-                        $("#pData", "#" + frmtb + "_2").addClass('ui-state-disabled');
-                    } else {
-                        $("#pData", "#" + frmtb + "_2").removeClass('ui-state-disabled');
-                    }
-                    if (cr == totr) {
-                        $("#nData", "#" + frmtb + "_2").addClass('ui-state-disabled');
-                    } else {
-                        $("#nData", "#" + frmtb + "_2").removeClass('ui-state-disabled');
-                    }
-                }
-
-                function getCurrPos() {
-                    var rowsInGrid = $($t).jqGrid("getDataIDs"),
-                            selrow = $("#id_g", "#" + frmtb).val(),
-                            pos = $.inArray(selrow, rowsInGrid);
-                    return [pos,rowsInGrid];
-                }
-
                 var posInit = getCurrPos();
                 updateNav(posInit[0], posInit[1].length - 1);
             });
@@ -1591,7 +1597,7 @@
                 if (jQuery.isArray(rowids)) {
                     rowids = rowids.join();
                 }
-                if ($("#" + IDs.themodal).html() != null) {
+                if ($("#" + IDs.themodal).html() !== null) {
                     if (onBeforeInit) {
                         showFrm = onBeforeInit($("#" + dtbl));
                         if (typeof(showFrm) == "undefined") {
@@ -2107,7 +2113,7 @@
                 }
                 var findnav = $(".navtable", elem)[0], $t = this;
                 if (findnav) {
-                    if (p.id && $("#" + p.id, findnav).html() != null) {
+                    if (p.id && $("#" + p.id, findnav).html() !== null) {
                         return;
                     }
                     var tbd = $("<td></td>");

@@ -8,6 +8,8 @@
      * http://www.opensource.org/licenses/mit-license.php
      * http://www.gnu.org/licenses/gpl-2.0.html
      */
+    /*global jQuery, $ */
+
     $.extend($.jgrid, {
 // Modal functions
         showModal : function(h) {
@@ -119,11 +121,12 @@
                 p.height = 200;
             }
             if (!p.zIndex) {
-                var parentZ = $(insertSelector).parents("*[role=dialog]").first().css("z-index")
-                if (parentZ)
-                    p.zIndex = parseInt(parentZ) + 1
-                else
+                var parentZ = $(insertSelector).parents("*[role=dialog]").first().css("z-index");
+                if (parentZ) {
+                    p.zIndex = parseInt(parentZ, 10) + 1;
+                } else {
                     p.zIndex = 950;
+                }
             }
             var rtlt = 0;
             if (rtlsup && coord.left && !appendsel) {
@@ -165,7 +168,7 @@
                 } else {
                     try {
                         $(mw).resizable({handles: 'se, sw',alsoResize: aIDs.scrollelm ? "#" + aIDs.scrollelm : false});
-                    } catch (e) {
+                    } catch (r) {
                     }
                 }
             }
@@ -307,7 +310,7 @@
             }
             try {
                 $("#info_dialog").focus();
-            } catch (e) {
+            } catch (m) {
             }
         },
 // Form Functions

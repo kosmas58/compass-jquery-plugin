@@ -25,8 +25,8 @@
  ]
  }
  */
+/*global jQuery, $ */
 
-;
 (function ($) {
 
     $.fn.jqFilter = function(arg) {
@@ -71,7 +71,8 @@
             numopts : ['eq','ne', 'lt', 'le', 'gt', 'ge', 'nu', 'nn', 'in', 'ni'],
             stropts : ['eq', 'ne', 'bw', 'bn', 'ew', 'en', 'cn', 'nc', 'nu', 'nn', 'in', 'ni'],
             _gridsopt : [], // grid translated strings, do not tuch
-            groupOps : ["AND", "OR"]
+            groupOps : ["AND", "OR"],
+            groupButton : true
         }, arg || {});
         return this.each(function() {
             if (this.filter) {
@@ -211,23 +212,28 @@
                 });
 
                 // button for adding a new subgroup
-                var inputAddSubgroup = $("<input type='button' value='+ {}' title='Add subgroup' class='add-group'/>");
-                inputAddSubgroup.bind('click', function() {
-                    if (group.groups === undefined) {
-                        group.groups = [];
-                    }
+                var inputAddSubgroup;
+                if (this.p.groupButton) {
+                    inputAddSubgroup = $("<input type='button' value='+ {}' title='Add subgroup' class='add-group'/>");
+                    inputAddSubgroup.bind('click', function() {
+                        if (group.groups === undefined) {
+                            group.groups = [];
+                        }
 
-                    group.groups.push({
-                        groupOp: p.groupOps[0],
-                        rules: [],
-                        groups: []
-                    }); // adding a new group
+                        group.groups.push({
+                            groupOp: p.groupOps[0],
+                            rules: [],
+                            groups: []
+                        }); // adding a new group
 
-                    that.reDraw(); // the html has changed, force reDraw
+                        that.reDraw(); // the html has changed, force reDraw
 
-                    that.onchange(); // signals that the filter has changed
-                    return false;
-                });
+                        that.onchange(); // signals that the filter has changed
+                        return false;
+                    });
+                } else {
+                    inputAddSubgroup = "<span></span>";
+                }
                 th.append(inputAddSubgroup);
 
                 // button for adding a new rule
@@ -367,7 +373,7 @@
                     //that.createElement(rule, "");
 
                     if (cm.searchoptions.sopt) {
-                        opr = cm.searchoptions.sopt;
+                        op = cm.searchoptions.sopt;
                     }
                     else if (that.p.sopt) {
                         op = that.p.sopt;
@@ -397,7 +403,7 @@
                         }
                         that.onchange(); // signals that the filter has changed
                     });
-                    setTimeout(function() {
+                    setTimeout(function() { //IE, Opera, Chrome
                         rule.data = $(elm).val();
                         that.onchange();  // signals that the filter has changed
                     }, 0);
@@ -597,6 +603,7 @@
             this.resetFilter = function () {
                 this.p.filter = $.extend(true, {}, this.p.initFilter);
                 this.reDraw();
+                this.onchange();
             };
             this.hideError = function() {
                 $("th.ui-state-error", this).html("");
