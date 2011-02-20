@@ -11,32 +11,32 @@ MOBILE_DEST_THEMES = File.join(MOBILE_DEST_TEMPLATES, 'jquery', 'mobile')
 MOBILE_DEST_IMAGES = File.join(MOBILE_DEST_THEMES)
 
 all_scripts = [
-  'js/jquery.ui.widget.js',
-  'js/jquery.mobile.widget.js',
-  'js/jquery.mobile.media.js',
-  'js/jquery.mobile.support.js',
-  'js/jquery.mobile.event.js',
-  'js/jquery.mobile.hashchange.js',
-  'js/jquery.mobile.page.js',
-  'js/jquery.mobile.core.js',
-  'js/jquery.mobile.navigation.js',
-  'js/jquery.mobile.buttonMarkup.js',
-  'js/jquery.mobile.collapsible.js',
-  'js/jquery.mobile.controlGroup.js',
-  'js/jquery.mobile.dialog.js',
-  'js/jquery.mobile.fieldContain.js',  
-  'js/jquery.mobile.fixHeaderFooter.js',
-  'js/jquery.mobile.forms.button.js',
-  'js/jquery.mobile.forms.checkboxradio.js',
-  'js/jquery.mobile.forms.select.js',
-  'js/jquery.mobile.forms.slider.js',  
-  'js/jquery.mobile.forms.textinput.js',
-  'js/jquery.mobile.grid.js',
-  'js/jquery.mobile.listview.js',
-  'js/jquery.mobile.listview.filter.js',
-  'js/jquery.mobile.navbar.js',
-  'js/jquery.mobile.themeswitcher.js'
-].collect {|filename| File.read(File.join(MOBILE_SRC, filename))}.join "\n\n"
+    'js/jquery.ui.widget.js',
+    'js/jquery.mobile.widget.js',
+    'js/jquery.mobile.media.js',
+    'js/jquery.mobile.support.js',
+    'js/jquery.mobile.event.js',
+    'js/jquery.mobile.hashchange.js',
+    'js/jquery.mobile.page.js',
+    'js/jquery.mobile.core.js',
+    'js/jquery.mobile.navigation.js',
+    'js/jquery.mobile.buttonMarkup.js',
+    'js/jquery.mobile.collapsible.js',
+    'js/jquery.mobile.controlGroup.js',
+    'js/jquery.mobile.dialog.js',
+    'js/jquery.mobile.fieldContain.js',
+    'js/jquery.mobile.fixHeaderFooter.js',
+    'js/jquery.mobile.forms.button.js',
+    'js/jquery.mobile.forms.checkboxradio.js',
+    'js/jquery.mobile.forms.select.js',
+    'js/jquery.mobile.forms.slider.js',
+    'js/jquery.mobile.forms.textinput.js',
+    'js/jquery.mobile.grid.js',
+    'js/jquery.mobile.listview.js',
+    'js/jquery.mobile.listview.filter.js',
+    'js/jquery.mobile.navbar.js',
+    'js/jquery.mobile.themeswitcher.js'
+].collect { |filename| File.read(File.join(MOBILE_SRC, filename)) }.join "\n\n"
 
 namespace :build do
   desc 'Build the stylesheets and templates for jquery.mobile.'
@@ -53,7 +53,7 @@ namespace :build do
         f.print(File.read(File.join(MOBILE_SRC, 'config', 'initializers', 'mobile.rb')))
       end
       manifest.print "file 'config/initializers/mobile.rb'\n"
-      
+
       open File.join(MOBILE_DEST_TEMPLATES, 'lib', 'tasks', 'jquery.mobile.rake'), 'w' do |f|
         f.print(File.read(File.join(MOBILE_SRC, 'lib', 'tasks', 'jquery.mobile.rake')))
       end
@@ -72,25 +72,25 @@ namespace :build do
       manifest.print "javascript 'jquery.mobile.min.js'\n"
 
       # jQuery Mobile Themes      
-      mobile = JqueryMobileTheme.new(File.join(MOBILE_SRC_THEMES, 'default')) 
+      mobile = JqueryMobileTheme.new(File.join(MOBILE_SRC_THEMES, 'default'))
 
       base_stylesheets = [
-        'jquery.mobile.button.css',
-        'jquery.mobile.collapsible.css',
-        'jquery.mobile.controlgroup.css',
-        'jquery.mobile.core.css',
-        'jquery.mobile.dialog.css',
-        'jquery.mobile.forms.checkboxradio.css',
-        'jquery.mobile.forms.fieldcontain.css',
-        'jquery.mobile.forms.select.css',
-        'jquery.mobile.forms.slider.css',
-        'jquery.mobile.forms.textinput.css',
-        'jquery.mobile.grids.css',
-        'jquery.mobile.headerfooter.css',
-        'jquery.mobile.listview.css',
-        'jquery.mobile.navbar.css',	
-        'jquery.mobile.transitions.css'
-        ].collect {|filename| File.read(File.join(MOBILE_SRC_THEMES, 'default', filename))}.join "\n\n"
+          'jquery.mobile.button.css',
+          'jquery.mobile.collapsible.css',
+          'jquery.mobile.controlgroup.css',
+          'jquery.mobile.core.css',
+          'jquery.mobile.dialog.css',
+          'jquery.mobile.forms.checkboxradio.css',
+          'jquery.mobile.forms.fieldcontain.css',
+          'jquery.mobile.forms.select.css',
+          'jquery.mobile.forms.slider.css',
+          'jquery.mobile.forms.textinput.css',
+          'jquery.mobile.grids.css',
+          'jquery.mobile.headerfooter.css',
+          'jquery.mobile.listview.css',
+          'jquery.mobile.navbar.css',
+          'jquery.mobile.transitions.css'
+      ].collect { |filename| File.read(File.join(MOBILE_SRC_THEMES, 'default', filename)) }.join "\n\n"
 
       FileUtils.mkdir_p(MOBILE_DEST_THEMES)
       open File.join(MOBILE_DEST_THEMES, '_base.scss'), 'w' do |f|
@@ -104,7 +104,7 @@ namespace :build do
         next if /^\./ =~ theme
         mobile.convert_theme(theme, File.join(MOBILE_SRC_THEMES, theme), File.join(MOBILE_DEST_THEMES))
         manifest.print "stylesheet 'jquery/mobile/#{theme}.scss'\n"
-        
+
         # Copy the theme images directory
         src_dir = File.join(MOBILE_SRC_THEMES, theme, 'images')
         dest_dir = File.join(MOBILE_DEST_IMAGES, theme)
@@ -116,7 +116,7 @@ namespace :build do
           manifest.print "image 'jquery/mobile/#{theme}/#{image}'\n"
         end
       end
-      
+
       # glyphish Images
       FileUtils.mkdir_p(File.join(MOBILE_DEST_TEMPLATES, 'glyphish', 'icons-black'))
       src_dir = File.join(MOBILE_SRC_IMAGES, 'glyphish', 'icons-black')
@@ -126,7 +126,7 @@ namespace :build do
         FileUtils.cp(File.join(src_dir, image), dest_dir)
         manifest.print "image 'glyphish/icons-black/#{image}'\n"
       end
-      
+
       FileUtils.mkdir_p(File.join(MOBILE_DEST_TEMPLATES, 'glyphish', 'icons-white'))
       src_dir = File.join(MOBILE_SRC_IMAGES, 'glyphish', 'icons-white')
       dest_dir = File.join(MOBILE_DEST_TEMPLATES, 'glyphish', 'icons-white')
@@ -135,7 +135,7 @@ namespace :build do
         FileUtils.cp(File.join(src_dir, image), dest_dir)
         manifest.print "image 'glyphish/icons-white/#{image}'\n"
       end
-      
+
       FileUtils.mkdir_p(File.join(MOBILE_DEST_TEMPLATES, 'glyphish', 'mini-icons-black'))
       src_dir = File.join(MOBILE_SRC_IMAGES, 'glyphish', 'mini-icons-black')
       dest_dir = File.join(MOBILE_DEST_TEMPLATES, 'glyphish', 'mini-icons-black')
@@ -143,8 +143,8 @@ namespace :build do
         next if /^\./ =~ image
         FileUtils.cp(File.join(src_dir, image), dest_dir)
         manifest.print "image 'glyphish/mini-icons-black/#{image}'\n"
-      end 
-      
+      end
+
       open File.join(MOBILE_DEST_TEMPLATES, 'glyphish', 'License.txt'), 'w' do |f|
         f.print(File.read(File.join(MOBILE_SRC_IMAGES, 'glyphish', 'Read me first - license.txt')))
       end
