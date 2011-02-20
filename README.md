@@ -42,7 +42,7 @@ For jQuery:
 
 You will find all the stylesheets in easy-to-read Sass format at:
 
-<pre>stylesheets/jquery.ui</pre>
+<pre>stylesheets/jquery/ui</pre>
 
 To use the localized stylesheets and javacripts for jQuery include (using the rails_xss plugin):
 

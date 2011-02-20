@@ -55,10 +55,10 @@ namespace :build do
       css = File.read File.join(GANTTVIEW_SRC, 'jquery.ganttView.css')
       sass = ''
       IO.popen("sass-convert -F css -T scss", 'r+') { |f| f.print(css); f.close_write; sass = f.read }
-      open File.join(GRAPHICS_DEST_THEMES, 'gantt_view.scss'), 'w' do |f|
+      open File.join(GRAPHICS_DEST_THEMES, 'ganttView.scss'), 'w' do |f|
         f.write sass
       end
-      manifest.print "stylesheet 'jquery/gantt_view.scss'\n"
+      manifest.print "stylesheet 'jquery/ganttView.scss'\n"
     end
   end
 end
