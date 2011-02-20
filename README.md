@@ -168,6 +168,23 @@ To use the (localized) stylesheets and javacripts include:
   = stylesheet_link_tag 'compiled/jquery/ical.css', :media => 'screen, projection'
   = javascript_include_tag :ical</pre>
 
+Graphics
+--------
+
+Use compass to install the jquery.sparklines and jquery.ganttView javascript libraries into your project.
+
+<pre>compass install [-r jquery] jquery/graphics <project name></pre>
+
+You will find all the stylesheets in easy-to-read Sass format.
+
+<pre>stylesheets/jquery.ui</pre>
+
+To use the (localized) stylesheets and javacripts include:
+
+<pre>
+  = stylesheet_link_tag 'compiled/jquery/ical.css', :media => 'screen, projection'
+  = javascript_include_tag :ical</pre>
+
 Emulators
 ---------
 

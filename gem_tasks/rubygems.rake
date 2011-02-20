@@ -10,6 +10,7 @@ namespace :build do
     "build:secret_sauce",
     "build:ribbon",
     "build:ical",
+    "build:graphics",
     "build:mobile",
     "build:jqtouch",
     "build:emulators"
