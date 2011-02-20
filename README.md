@@ -75,12 +75,12 @@ Use compass to install the jQuery Dynatree javascript library into your project.
 
 You will find all the stylesheets in easy-to-read Sass format at:
 
-<pre>stylesheets/jquery.ui</pre>
+<pre>stylesheets/jquery/ui</pre>
 
 To use the localized stylesheets and javacripts include:
 
 <pre>
-= stylesheet_link_tag 'compiled/jquery/dynatree/[skin].css', :media => 'screen, projection'
+= stylesheet_link_tag :dynatree_[skin], :media => 'screen, projection'
 = javascript_include_tag :dynatree</pre>
 
 jQuery jsTree Plugin
@@ -92,12 +92,12 @@ Use compass to install the jQuery jsTree javascript library into your project.
 
 You will find all the stylesheets in easy-to-read Sass format at:
 
-<pre>stylesheets/jquery.ui</pre>
+<pre>stylesheets/jquery/ui</pre>
 
 To use the localized stylesheets and javacripts include:
 
 <pre>
-= stylesheet_link_tag 'compiled/jquery/jstree/[theme].css', :media => 'screen, projection'
+= stylesheet_link_tag :jstree_[theme], :media => 'screen, projection'
 = javascript_include_tag :jstree</pre>
 
 jQuery Ribbon Plugin
@@ -109,12 +109,12 @@ Use compass to install the jQuery Ribbon javascript library into your project.
 
 You will find all the stylesheets in easy-to-read Sass format at:
 
-<pre>stylesheets/jquery.ui</pre>
+<pre>stylesheets/jquery/ui</pre>
 
 To use the localized stylesheets and javacripts include:
 
 <pre>
-= stylesheet_link_tag 'compiled/jquery/ribbon/[theme].css', :media => 'screen, projection'
+= stylesheet_link_tag :ribbon_[theme], :media => 'screen, projection'
 = javascript_include_tag :ribbon</pre>
 
 jqGrid
@@ -126,12 +126,12 @@ Use compass to install the jqGrid javascript library into your project.
 
 You will find the jqGrid stylesheet in easy-to-read Sass format at:
 
-<pre>stylesheets/jquery.ui</pre>
+<pre>stylesheets/jquery/ui</pre>
 
 To use the localized stylesheets and javacripts include:
 
 <pre>
-= stylesheet_link_tag 'compiled/jquery/jqGrid.css', :media => 'screen, projection'
+= stylesheet_link_tag :jqGrid, :media => 'screen, projection'
 = raw jqgrid_javascripts(I18n.locale)</pre>
 
 Secret Sauce
@@ -143,12 +143,12 @@ Use compass to install the Secret Sauce for jqGrid javascript library into your 
 
 You will find all the stylesheets in easy-to-read Sass format.
 
-<pre>stylesheets/jquery.ui</pre>
+<pre>stylesheets/jquery/ui</pre>
 
 To use the localized stylesheets and javacripts include:
 
 <pre>
-= stylesheet_link_tag 'compiled/jquery/secret_sauce.css', :media => 'screen, projection'
+= stylesheet_link_tag :secret_sauce, :media => 'screen, projection'
 = javascript_include_tag :secret_sauce</pre>
 
 jquery.ical
@@ -160,12 +160,12 @@ Use compass to install the jquery.ical javascript library into your project.
 
 You will find all the stylesheets in easy-to-read Sass format.
 
-<pre>stylesheets/jquery.ui</pre>
+<pre>stylesheets/jquery/ui</pre>
 
 To use the (localized) stylesheets and javacripts include:
 
 <pre>
-  = stylesheet_link_tag 'compiled/jquery/ical.css', :media => 'screen, projection'
+  = stylesheet_link_tag :ical, :media => 'screen, projection'
   = javascript_include_tag :ical</pre>
 
 Graphics
@@ -177,13 +177,14 @@ Use compass to install the jquery.sparklines and jquery.ganttView javascript lib
 
 You will find all the stylesheets in easy-to-read Sass format.
 
-<pre>stylesheets/jquery.ui</pre>
+<pre>stylesheets/jquery/ui</pre>
 
 To use the (localized) stylesheets and javacripts include:
 
 <pre>
-  = stylesheet_link_tag 'compiled/jquery/ical.css', :media => 'screen, projection'
-  = javascript_include_tag :ical</pre>
+  = stylesheet_link_tag :ganttView', :media => 'screen, projection'
+  = javascript_include_tag :sparkline
+  = javascript_include_tag :ganttView</pre>
 
 Emulators
 ---------
@@ -199,8 +200,8 @@ You will find all the stylesheets in easy-to-read Sass format at:
 To use the localized stylesheets and javacripts include:
 
 <pre>
-= stylesheet_link_tag 'compiled/emulators/ipad.landscape.css', :media => 'screen, projection'
-= stylesheet_link_tag 'compiled/emulators/iphone.portrait.css', :media => 'screen, projection'</pre>
+= stylesheet_link_tag :ipad_landscape, :media => 'screen, projection'
+= stylesheet_link_tag :iphone_portrait, :media => 'screen, projection'</pre>
 
 jQuery mobile
 -------------
@@ -216,7 +217,7 @@ You will find all the stylesheets in easy-to-read Sass format at:
 To use the localized stylesheets and javacripts include:
 
 <pre>
-= stylesheet_link_tag "compiled/jquery/mobile/[theme].css", :media => 'screen, projection'
+= stylesheet_link_tag :mobile_[theme], :media => 'screen, projection'
 = javascript_include_tag :mobile'</pre>
 
 
@@ -234,7 +235,7 @@ You will find all the stylesheets in easy-to-read Sass format at:
 To use the localized stylesheets and javacripts include:
 
 <pre>
-= stylesheet_link_tag 'compiled/jquery/touch/[theme].css', :media => 'screen, projection'
+= stylesheet_link_tag :jqt_[theme], :media => 'screen, projection'
 = javascript_include_tag :jqtouch'</pre>
 
 
