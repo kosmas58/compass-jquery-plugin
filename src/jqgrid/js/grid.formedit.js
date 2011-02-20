@@ -647,7 +647,6 @@
                         }
                         delete postdata[$t.p.id + "_id"];
                         postdata = $.extend(postdata, rp_ge.editData, onCS);
-
                         if ($t.p.restful) {
                             rp_ge.mtype = postdata.id == "_empty" ? "POST" : "PUT";
                             rp_ge.url = postdata.id == "_empty" ? $t.p.url : $t.p.url + "/" + postdata.id;
@@ -1678,7 +1677,6 @@
                             postd[oper] = opers.deloper;
                             idname = opers.id;
                             postd[idname] = postdata;
-
                             if ($t.p.restful) {
                                 p.mtype = "DELETE";
                                 rp_ge.url = $t.p.url + "/" + postdata;
@@ -2036,6 +2034,7 @@
                                         $t.p.search = false;
                                         try {
                                             var gID = $t.p.id;
+                                            $t.p.postData.filters = "";
                                             $("#fbox_" + gID).jqFilter('resetFilter');
                                             if ($.isFunction($t.clearToolbar)) {
                                                 $t.clearToolbar(false);

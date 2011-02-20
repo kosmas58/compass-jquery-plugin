@@ -397,8 +397,10 @@
                         }
                         that.onchange(); // signals that the filter has changed
                     });
-                    rule.data = $(elm).val();
-                    that.onchange();  // signals that the filter has changed
+                    setTimeout(function() {
+                        rule.data = $(elm).val();
+                        that.onchange();  // signals that the filter has changed
+                    }, 0);
                 });
 
                 // populate drop down with user provided column definitions
