@@ -18,8 +18,6 @@ SPARKLINES_SRC_SCRIPTS = File.join(SRC, 'sparklines') + "/*.js"
 
 JHAML_SRC_SCRIPTS = File.join(SRC, 'jquery-haml') + "/*.js"
 
-HAML_SRC_JS_SCRIPTS = File.join(SRC, 'haml-js') + "/*.js"
-
 FLASH_SRC = File.join(SRC, 'flash_messages')
 FLASH_SRC_JS_SCRIPTS = FLASH_SRC + "/*.js"
 FLASH_SRC_IMAGES = File.join(FLASH_SRC, 'images')
@@ -306,18 +304,7 @@ namespace :build do
       open File.join(JQUERY_DEST_TEMPLATES, 'jquery.haml.min.js'), 'w' do |f|
         f.print compress_js(all_files(JHAML_SRC_SCRIPTS), "google")
       end
-      manifest.print "javascript 'jquery.haml.min.js'\n" 
-      
-      # HAML Js     
-      open File.join(JQUERY_DEST_TEMPLATES, 'haml.js'), 'w' do |f|
-        f.print concat_files(all_files(HAML_SRC_JS_SCRIPTS))
-      end
-      manifest.print "javascript 'haml.js'\n" 
-    
-      open File.join(JQUERY_DEST_TEMPLATES, 'haml.min.js'), 'w' do |f|
-        f.print compress_js(all_files(JHAML_SRC_SCRIPTS), "google")
-      end
-      manifest.print "javascript 'haml.min.js'\n"
+      manifest.print "javascript 'jquery.haml.min.js'\n"
       
       #Flash Messages  
       open File.join(JQUERY_DEST_TEMPLATES, 'jquery.flashMessages.js'), 'w' do |f|

@@ -5,7 +5,7 @@ Get gem from [Gemcutter][1].
 
 Get source from [github][2].
 
-Get example application showing everything live from [github][39].
+Get example application showing everything live from [github][32].
 
 Description
 -----------
@@ -266,7 +266,6 @@ jQuery Plugins included:
 Other stuff included:
 ---------------------
 
-* Tim Caswell for [halm-js][32]. Server side templating language for JavaScript.
 * Rick DeNatale for [ri_cal][33]
 
 Note on Patches/Pull Requests
@@ -317,12 +316,11 @@ Copyright &copy; 2009-2011 Kosmas Schuetz. See LICENSE for details.
   [29]: http://www.ama3.com/anytime/
   [30]: http://acko.net/dev/farbtastic
   [31]: http://arshaw.com/fullcalendar/
-  [32]: http://github.com/creationix/haml-js
+  [32]: http://github.com/kosmas58/compass-jquery-plugin-sample
   [33]: http://github.com/rubyredrick/ri_cal/
   [34]: http://github.com/wycats/jquery-offline
   [35]: http://github.com/brandonaaron/jquery-mousewheel
   [36]: http://github.com/cowboy/jquery-replacetext
   [37]: http://github.com/cowboy/jquery-dotimeout
   [38]: http://github.com/gamache/DSt
-  [39]: http://github.com/kosmas58/compass-jquery-plugin-sample
   
