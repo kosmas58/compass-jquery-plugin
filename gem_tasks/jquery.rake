@@ -16,6 +16,9 @@ JQUERY_UI_SRC_TRANSLATIONS = File.join(JQUERY_UI_SRC, 'js', 'i18n') #+ "/*.js"
 
 SPARKLINES_SRC_SCRIPTS = File.join(SRC, 'sparklines') + "/*.js"
 
+GANTTVIEW_SRC = File.join(SRC, 'ganttView')
+GANTTVIEW_SRC_SCRIPTS = GANTTVIEW_SRC + "/*.js"
+
 JHAML_SRC_SCRIPTS = File.join(SRC, 'jquery-haml') + "/*.js"
 
 FLASH_SRC = File.join(SRC, 'flash_messages')
@@ -27,6 +30,7 @@ JQUERY_DEST_SIZZLE = File.join(JQUERY_DEST_TEMPLATES, 'sizzle')
 JQUERY_DEST_TRANSLATIONS = File.join(JQUERY_DEST_TEMPLATES, 'i18n', 'jquery.ui')
 JQUERY_DEST_THEMES = File.join(JQUERY_DEST_TEMPLATES, 'jquery', 'ui')
 JQUERY_DEST_IMAGES = File.join(JQUERY_DEST_TEMPLATES, 'jquery', 'ui')
+GANTTVIEW_DEST_THEMES = File.join(JQUERY_DEST_TEMPLATES, 'jquery')
 
 namespace :build do
   desc 'Build the stylesheets and templates for jQuery.'
@@ -293,6 +297,27 @@ namespace :build do
         f.print compress_js(all_files(SPARKLINES_SRC_SCRIPTS), "google")
       end
       manifest.print "javascript 'jquery.sparkline.min.js'\n"
+
+      # jQuery GanttView
+
+      open File.join(JQUERY_DEST_TEMPLATES, 'jquery.ganttView.js'), 'w' do |f|
+        f.print concat_files(all_files(GANTTVIEW_SRC_SCRIPTS))
+      end
+      manifest.print "javascript 'jquery.ganttView.js'\n"
+
+      open File.join(JQUERY_DEST_TEMPLATES, 'jquery.ganttView.min.js'), 'w' do |f|
+        f.print compress_js(all_files(GANTTVIEW_SRC_SCRIPTS), "google")
+      end
+      manifest.print "javascript 'jquery.ganttView.min.js'\n"
+
+      FileUtils.mkdir_p(File.join(JQUERY_DEST_THEMES))
+      css = File.read File.join(GANTTVIEW_SRC, 'jquery.ganttView.css')
+      sass = ''
+      IO.popen("sass-convert -F css -T scss", 'r+') { |f| f.print(css); f.close_write; sass = f.read }
+      open File.join(GANTTVIEW_DEST_THEMES, '_gantt_view.scss'), 'w' do |f|
+        f.write sass
+      end
+      manifest.print "stylesheet 'jquery/_gantt_view.scss'\n"
       
       # jQuery haml
      
