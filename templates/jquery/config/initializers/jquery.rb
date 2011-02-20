@@ -28,8 +28,6 @@ ActionView::Helpers::AssetTagHelper.register_javascript_expansion :doTimeout => 
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :dst => ['jquery.dst.min']
 ActionView::Helpers::AssetTagHelper.register_stylesheet_expansion :farbtastic => ['compiled/jquery/ui/farbtastic.css']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :farbtastic => ['jquery.farbtastic.min']
-ActionView::Helpers::AssetTagHelper.register_stylesheet_expansion :ganttView => ['compiled/jquery/gantt_view.css']
-ActionView::Helpers::AssetTagHelper.register_javascript_expansion :ganttView => ['jquery.ganttView.min']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :form => ['jquery.form.min']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :history => ['jquery.history.min']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :hotkeys => ['jquery.hotkeys.min']
@@ -38,7 +36,6 @@ ActionView::Helpers::AssetTagHelper.register_javascript_expansion :mousewheel =>
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :offline => ['json.min', 'jquery.offline.min']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :pngFix => ['jquery.pngFix.min']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :replaceText => ['jquery.replaceText.min']
-ActionView::Helpers::AssetTagHelper.register_javascript_expansion :sparklines => ['jquery.sparkline.min']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :themeSwitcher => ['jquery.themeswitchertool.min']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :tmpl => ['jquery.tmpl.min', 'jquery.tmplPlus.min']
 
