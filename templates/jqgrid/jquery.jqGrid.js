@@ -4937,7 +4937,7 @@ $.jgrid.extend({
 					$.extend($t.p.postData,sdata);
 					$($t).trigger("reloadGrid",[{page:1}]);
 					if($.isFunction(p.onReset) ) {
-						p.onSearch();
+						p.onReset();
 					}
 					return false;
 				});
@@ -5309,10 +5309,10 @@ $.jgrid.extend({
 					}
 					delete postdata[$t.p.id+"_id"];
 					postdata = $.extend(postdata,rp_ge.editData,onCS);
-                        if ($t.p.restful) {
-                            rp_ge.mtype = postdata.id == "_empty" ? "POST" : "PUT";
-                            rp_ge.url = postdata.id == "_empty" ? $t.p.url : $t.p.url + "/" + postdata.id;
-                        }
+                    if ($t.p.restful) {
+                        rp_ge.mtype = postdata.id == "_empty" ? "POST" : "PUT";
+                        rp_ge.url = postdata.id == "_empty" ? $t.p.url : $t.p.url + "/" + postdata.id;
+                    }
 
 					var ajaxOptions = $.extend({
 						url: rp_ge.url ? rp_ge.url : $($t).jqGrid('getGridParam','editurl'),
@@ -6167,12 +6167,12 @@ $.jgrid.extend({
 						postd[oper] = opers.deloper;
 						idname = opers.id;
 						postd[idname] = postdata;
-                            if ($t.p.restful) {
-                                p.mtype = "DELETE";
-                                rp_ge.url = $t.p.url + "/" + postdata;
-                            }
+                        if ($t.p.restful) {
+                            p.mtype = "DELETE";
+                            rp_ge.url = $t.p.url + "/" + postdata;
+                        }
 
-						var ajaxOptions = $.extend({
+                        var ajaxOptions = $.extend({
 							url: rp_ge.url ? rp_ge.url : $($t).jqGrid('getGridParam','editurl'),
 							type: p.mtype,
 							data: $.isFunction(p.serializeDelData) ? p.serializeDelData(postd) : postd,
