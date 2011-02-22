@@ -61,7 +61,7 @@ namespace :build do
       end
       manifest.print "javascript 'jrails.min.js'\n"
 
-      # jQuery 1.4
+      # jQuery 1.5.1rc1
 
       all_jquery_scripts = [
           'intro.js',
@@ -95,25 +95,7 @@ namespace :build do
       end
       manifest.print "javascript 'jquery.min.js'\n"
 
-      # jQuery 1.4 Compat 1.3
-
-      ['compat-1.3'].each do |path|
-        Dir.foreach File.join(JQUERY_SRC, path) do |file|
-          next unless /\.js$/ =~ file
-          js = File.read File.join(JQUERY_SRC, path, file)
-          manifest.print "javascript '#{file}'\n"
-          open File.join(JQUERY_DEST_TEMPLATES, file), 'w' do |f|
-            f.write js
-          end
-          file.gsub!(/\.js$/, '.min.js')
-          manifest.print "javascript '#{file}'\n"
-          open File.join(JQUERY_DEST_TEMPLATES, file), 'w' do |f|
-            f.write compress_js(js, "google")
-          end
-        end
-      end
-
-      # jQuery 1.4 Plugins
+      # jQuery 1.5 Plugins
 
       ['plugins'].each do |path|
         Dir.foreach File.join(JQUERY_SRC, path) do |file|
@@ -158,35 +140,21 @@ namespace :build do
         end
       end
 
-      # jQuery.UI 1.8.9
+      # jQuery.UI 1.8.10
 
       # Scripts
 
       all_jquery_ui_scripts = [
-          'jquery-ui.js',
-          'jquery.effects.blind.js',
-          'jquery.effects.bounce.js',
-          'jquery.effects.clip.js',
-          'jquery.effects.core.js',
-          'jquery.effects.drop.js',
-          'jquery.effects.explode.js',
-          'jquery.effects.fade.js',
-          'jquery.effects.fold.js',
-          'jquery.effects.highlight.js',
-          'jquery.effects.pulsate.js',
-          'jquery.effects.scale.js',
-          'jquery.effects.shake.js',
-          'jquery.effects.slide.js',
-          'jquery.effects.transfer.js',
+          'jquery.ui.core.js',
+          'jquery.ui.widget.js',
+          'jquery.ui.mouse.js',
           'jquery.ui.accordion.js',
           'jquery.ui.autocomplete.js',
           'jquery.ui.button.js',
-          'jquery.ui.core.js',
           'jquery.ui.datepicker.js',
           'jquery.ui.dialog.js',
           'jquery.ui.draggable.js',
           'jquery.ui.droppable.js',
-          'jquery.ui.mouse.js',
           'jquery.ui.panel.js',
           'jquery.ui.position.js',
           'jquery.ui.progressbar.js',
@@ -196,7 +164,20 @@ namespace :build do
           'jquery.ui.slider.js',
           'jquery.ui.sortable.js',
           'jquery.ui.tabs.js',
-          'jquery.ui.widget.js'
+          'jquery.effects.core.js',
+          'jquery.effects.blind.js',
+          'jquery.effects.bounce.js',
+          'jquery.effects.clip.js',
+          'jquery.effects.drop.js',
+          'jquery.effects.explode.js',
+          'jquery.effects.fade.js',
+          'jquery.effects.fold.js',
+          'jquery.effects.highlight.js',
+          'jquery.effects.pulsate.js',
+          'jquery.effects.scale.js',
+          'jquery.effects.shake.js',
+          'jquery.effects.slide.js',
+          'jquery.effects.transfer.js'      
       ].collect { |filename| File.read(File.join(JQUERY_UI_SRC, 'js', filename)) }.join "\n\n"
 
       open File.join(JQUERY_DEST_TEMPLATES, 'jquery-ui.js'), 'w' do |f|
