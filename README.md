@@ -20,7 +20,7 @@ A Sass-based Meta-Framework for Compass that allows you to mix and match any of 
 * jquery.jqGrid.js V3.8.2 (with minor changes to make it RESTful)
 
 and for mobile devices <i>(using pure haml/sass without compass)</i>:
- 
+
 * jquery.mobile.js 1.0a3
 * jquery.jqtouch.js V1.0b2
 
@@ -61,7 +61,7 @@ Use compass to install the jQuery TOOLS javascript library into your project.
 
 <pre>compass install [-r jquery] jquery/tools <project name></pre>
 
-To use the javacripts include:
+To use the javascripts include:
 
 <pre>
 = javascript_include_tag :tools</pre>
@@ -77,7 +77,7 @@ You will find all the stylesheets in easy-to-read Sass format at:
 
 <pre>stylesheets/jquery/ui</pre>
 
-To use the localized stylesheets and javacripts include:
+To use the stylesheets and javascripts include:
 
 <pre>
 = stylesheet_link_tag :dynatree_[skin], :media => 'screen, projection'
@@ -94,7 +94,7 @@ You will find all the stylesheets in easy-to-read Sass format at:
 
 <pre>stylesheets/jquery/ui</pre>
 
-To use the localized stylesheets and javacripts include:
+To use the stylesheets and javascripts include:
 
 <pre>
 = stylesheet_link_tag :jstree_[theme], :media => 'screen, projection'
@@ -111,7 +111,7 @@ You will find all the stylesheets in easy-to-read Sass format at:
 
 <pre>stylesheets/jquery/ui</pre>
 
-To use the localized stylesheets and javacripts include:
+To use the stylesheets and javascripts include:
 
 <pre>
 = stylesheet_link_tag :ribbon_[theme], :media => 'screen, projection'
@@ -128,7 +128,7 @@ You will find the jqGrid stylesheet in easy-to-read Sass format at:
 
 <pre>stylesheets/jquery/ui</pre>
 
-To use the localized stylesheets and javacripts include:
+To use the stylesheets and javascripts include:
 
 <pre>
 = stylesheet_link_tag :jqGrid, :media => 'screen, projection'
@@ -145,7 +145,7 @@ You will find all the stylesheets in easy-to-read Sass format.
 
 <pre>stylesheets/jquery/ui</pre>
 
-To use the localized stylesheets and javacripts include:
+To use the stylesheets and javascripts include:
 
 <pre>
 = stylesheet_link_tag :secret_sauce, :media => 'screen, projection'
@@ -162,7 +162,7 @@ You will find all the stylesheets in easy-to-read Sass format.
 
 <pre>stylesheets/jquery/ui</pre>
 
-To use the (localized) stylesheets and javacripts include:
+To use the stylesheets and javacripts include:
 
 <pre>
   = stylesheet_link_tag :ical, :media => 'screen, projection'
@@ -179,7 +179,7 @@ You will find all the stylesheets in easy-to-read Sass format.
 
 <pre>stylesheets/jquery/ui</pre>
 
-To use the (localized) stylesheets and javacripts include:
+To use the stylesheets and javascripts include:
 
 <pre>
   = stylesheet_link_tag :ganttView', :media => 'screen, projection'
@@ -197,7 +197,7 @@ You will find all the stylesheets in easy-to-read Sass format at:
 
 <pre>stylesheets/emulators</pre>
 
-To use the localized stylesheets and javacripts include:
+To use the stylesheets and javacripts include:
 
 <pre>
 = stylesheet_link_tag :ipad_landscape, :media => 'screen, projection'
@@ -214,7 +214,7 @@ You will find all the stylesheets in easy-to-read Sass format at:
 
 <pre>stylesheets/mobile</pre>
 
-To use the localized stylesheets and javacripts include:
+To use the stylesheets and javascripts include:
 
 <pre>
 = stylesheet_link_tag :mobile_[theme], :media => 'screen, projection'
@@ -232,7 +232,7 @@ You will find all the stylesheets in easy-to-read Sass format at:
 
 <pre>stylesheets/jqtouch</pre>
 
-To use the localized stylesheets and javacripts include:
+To use the stylesheets and javascripts include:
 
 <pre>
 = stylesheet_link_tag :jqt_[theme], :media => 'screen, projection'
@@ -265,7 +265,6 @@ jQuery Plugins included:
 * Tony Tomov for [jQuery Grid Plugin][17]
 * Tim Caswell for [jQuery haml Plugin][18]
 * John Reisig et. al. for [jQuery Form Plugin][16]
-* Takayuki Miwa for [jQuery history plugin][19]
 * Ivan Bozhanov for [jQuery jsTree Plugin][20]
 * Fabrizio Balliano and Kevin Dalman for [jQuery Layout Plugin][21]
 * Brandon Aaron and Fabrizio Balliano for [jQuery Mousewheel Plugin][21]
@@ -285,6 +284,7 @@ jQuery Plugins included:
 Other stuff included:
 ---------------------
 
+* Benjamin Lupton for [History.js][19]
 * Rick DeNatale for [ri_cal][33]
 
 Note on Patches/Pull Requests
@@ -322,7 +322,7 @@ Copyright &copy; 2009-2011 Kosmas Schuetz. See LICENSE for details.
   [16]: http://malsup.com/jquery/form/
   [17]: http://www.trirand.com/blog/
   [18]: http://github.com/creationix/jquery-haml
-  [19]: http://tkyk.github.com/jquery-history-plugin/
+  [19]: http://github.com/balupton/History.js/
   [20]: http://jstree.com/
   [21]: http://www.fabrizioballiano.net/
   [22]: http://jquery.andreaseberhard.de/
@@ -343,4 +343,3 @@ Copyright &copy; 2009-2011 Kosmas Schuetz. See LICENSE for details.
   [37]: http://github.com/cowboy/jquery-dotimeout
   [38]: http://github.com/gamache/DSt
   [39]: http://github.com/thegrubbsian/jquery.ganttView
-  
