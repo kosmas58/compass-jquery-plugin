@@ -1,4 +1,4 @@
-module JqGrid#:nodoc:  
+module JqGrid #:nodoc:
 end
 
 require 'jquery/jqgrid/jqgrid'

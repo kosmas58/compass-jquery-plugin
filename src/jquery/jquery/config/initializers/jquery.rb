@@ -18,10 +18,9 @@ ActionView::Helpers::PrototypeHelper::JQUERY_VAR = 'jQuery'
 #ActionView::Helpers::AssetTagHelper::reset_javascript_include_default
 
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :jquery => ['jquery.min']
-ActionView::Helpers::AssetTagHelper.register_javascript_expansion :jquery_ui => ['jquery.min', 'jquery.cookie.min', 'jquery.form.min', 'jquery.layout.min', 'jquery-ui.min']
+ActionView::Helpers::AssetTagHelper.register_javascript_expansion :jquery_ui => ['jquery.min', 'jquery.cookie.min', 'jquery.form.min', 'jquery.layout.min', 'jquery-ui.min', 'jquery.flashMessages.min']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :jrails => ['jrails.min']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :jhaml => ['jquery.haml.min']
-ActionView::Helpers::AssetTagHelper.register_javascript_expansion :haml_js => ['haml-js.min']
 ActionView::Helpers::AssetTagHelper.register_stylesheet_expansion :contextMenu => ['compiled/jquery/ui/contextMenu.css']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :contextMenu => ['jquery.contextMenu.min']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :cookie => ['jquery.cookie.min']
@@ -30,14 +29,13 @@ ActionView::Helpers::AssetTagHelper.register_javascript_expansion :dst => ['jque
 ActionView::Helpers::AssetTagHelper.register_stylesheet_expansion :farbtastic => ['compiled/jquery/ui/farbtastic.css']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :farbtastic => ['jquery.farbtastic.min']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :form => ['jquery.form.min']
-ActionView::Helpers::AssetTagHelper.register_javascript_expansion :history => ['jquery.history.min']
+ActionView::Helpers::AssetTagHelper.register_javascript_expansion :history => ['history.adapter.jquery.min', 'history.min', 'history.html4.min']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :hotkeys => ['jquery.hotkeys.min']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :layout => ['jquery.layout.min']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :mousewheel => ['jquery.mousewheel.min']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :offline => ['json.min', 'jquery.offline.min']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :pngFix => ['jquery.pngFix.min']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :replaceText => ['jquery.replaceText.min']
-ActionView::Helpers::AssetTagHelper.register_javascript_expansion :sparklines => ['jquery.sparkline.min']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :themeSwitcher => ['jquery.themeswitchertool.min']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :tmpl => ['jquery.tmpl.min', 'jquery.tmplPlus.min']
 

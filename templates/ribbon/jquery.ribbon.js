@@ -1,9 +1,9 @@
 ﻿/*
-Copyright (c) 2009 Mikael Söderström.
-Contact: vimpyboy@msn.com
+ Copyright (c) 2009 Mikael Söderström.
+ Contact: vimpyboy@msn.com
 
-Feel free to use this script as long as you don't remove this comment.
-*/
+ Feel free to use this script as long as you don't remove this comment.
+ */
 
 (function($) {
     var isLoaded;
@@ -24,22 +24,38 @@ Feel free to use this script as long as you don't remove this comment.
             SetupMenu(settings);
         }
 
-        $(document).keydown(function(e) { ShowAccessKeys(e); });
-        $(document).keyup(function(e) { HideAccessKeys(e); });
+        $(document).keydown(function(e) {
+            ShowAccessKeys(e);
+        });
+        $(document).keyup(function(e) {
+            HideAccessKeys(e);
+        });
 
         function SetupMenu(settings) {
             $('.menu li a:first').addClass('active');
             $('.menu li ul').hide();
             $('.menu li a:first').parent().children('ul:first').show();
             $('.menu li a:first').parent().children('ul:first').addClass('submenu');
-            $('.menu li > a').click(function() { ShowSubMenu(this); });
-            $('.orbButton').click(function() { ShowMenu(settings.backStage); });
+            $('.menu li > a').click(function() {
+                ShowSubMenu(this);
+            });
+            $('.orbButton').click(function() {
+                ShowMenu(settings.backStage);
+            });
             $('.orb ul').hide();
             $('.orb ul ul').hide();
             $('.orb li ul li ul').show();
-            $('.orb li li ul').each(function() { $(this).prepend('<div style="background-color: #EBF2F7; height: 25px; line-height: 25px; width: 292px; padding-left: 9px; border-bottom: 1px solid #CFDBEB;">' + $(this).parent().children('a:first').text() + '</div>'); });
-            $('.orb li li a').each(function() { if ($(this).parent().children('ul').length > 0) { $(this).addClass('arrow'); }});
-            $('.orb .ribbon-backstage a').live('click', function() { $('.orb ul').fadeOut('fast'); });
+            $('.orb li li ul').each(function() {
+                $(this).prepend('<div style="background-color: #EBF2F7; height: 25px; line-height: 25px; width: 292px; padding-left: 9px; border-bottom: 1px solid #CFDBEB;">' + $(this).parent().children('a:first').text() + '</div>');
+            });
+            $('.orb li li a').each(function() {
+                if ($(this).parent().children('ul').length > 0) {
+                    $(this).addClass('arrow');
+                }
+            });
+            $('.orb .ribbon-backstage a').live('click', function() {
+                $('.orb ul').fadeOut('fast');
+            });
 
             //$('.ribbon-list div').each(function() { $(this).parent().width($(this).parent().width()); });
 
@@ -61,19 +77,21 @@ Feel free to use this script as long as you don't remove this comment.
             });
 
             $('.ribbon-list div').parents().click(function(e) {
-            	$('.ribbon-list div ul:visible').each(function() {
-            		var outsideX = e.pageX < $('.ribbon-list div ul:visible').parent().offset().left || e.pageX > $('.ribbon-list div ul:visible').parent().offset().left + $('.ribbon-list div ul:visible').parent().width();
-            		var outsideY = e.pageY < $('.ribbon-list div ul:visible').parent().offset().top || e.pageY > $('.ribbon-list div ul:visible').parent().offset().top + $('.ribbon-list div ul:visible').parent().height();
-	                if (outsideX || outsideY) {
-	                    $('.ribbon-list div ul:visible').each(function() {
-	                        $(this).fadeOut('fast');
-	                    });
-	                    $('.ribbon-list div').css('background-image', '');
-	                }
-               	});
-           	});
-			
-            $('.orb li li a').mouseover(function() { ShowOrbChildren(this); });
+                $('.ribbon-list div ul:visible').each(function() {
+                    var outsideX = e.pageX < $('.ribbon-list div ul:visible').parent().offset().left || e.pageX > $('.ribbon-list div ul:visible').parent().offset().left + $('.ribbon-list div ul:visible').parent().width();
+                    var outsideY = e.pageY < $('.ribbon-list div ul:visible').parent().offset().top || e.pageY > $('.ribbon-list div ul:visible').parent().offset().top + $('.ribbon-list div ul:visible').parent().height();
+                    if (outsideX || outsideY) {
+                        $('.ribbon-list div ul:visible').each(function() {
+                            $(this).fadeOut('fast');
+                        });
+                        $('.ribbon-list div').css('background-image', '');
+                    }
+                });
+            });
+
+            $('.orb li li a').mouseover(function() {
+                ShowOrbChildren(this);
+            });
 
             $('.menu li > a').dblclick(function() {
                 $('ul .submenu').animate({ height: "hide" });
@@ -103,10 +121,10 @@ Feel free to use this script as long as you don't remove this comment.
         }
 
         $('.ribbon-list div').each(function() {
-			if ($(this).children('ul').length > 0) { 
-				$(this).append('<img src="/images/jquery/ribbon/' + settings.theme + '/arrow_down.png" style="float: right; margin-top: 5px;" />')
-			}
-		});
+            if ($(this).children('ul').length > 0) {
+                $(this).append('<img src="/images/jquery/ribbon/' + settings.theme + '/arrow_down.png" style="float: right; margin-top: 5px;" />')
+            }
+        });
 
         //Hack for IE 7.
         if (navigator.appVersion.indexOf('MSIE 6.0') > -1 || navigator.appVersion.indexOf('MSIE 7.0') > -1) {
@@ -215,7 +233,10 @@ Feel free to use this script as long as you don't remove this comment.
 
         function ShowAccessKeys(e) {
             if (e.altKey) {
-                $('div[rel="accesskeyhelper"]').each(function() { $(this).css('top', $(this).parent().offset().top).css('left', $(this).parent().offset().left - 20 + $(this).parent().width()); $(this).show(); });
+                $('div[rel="accesskeyhelper"]').each(function() {
+                    $(this).css('top', $(this).parent().offset().top).css('left', $(this).parent().offset().left - 20 + $(this).parent().width());
+                    $(this).show();
+                });
             }
         }
 

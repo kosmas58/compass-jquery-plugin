@@ -14,8 +14,8 @@ tmtags
 *.swp
 
 ## PROJECT::GENERAL
-coverage
 .idea
+coverage
 rdoc
 pkg
 

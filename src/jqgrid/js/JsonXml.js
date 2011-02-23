@@ -1,24 +1,24 @@
 /*
-    The below work is licensed under Creative Commons GNU LGPL License.
+ The below work is licensed under Creative Commons GNU LGPL License.
 
-    Original work:
+ Original work:
 
-    License:     http://creativecommons.org/licenses/LGPL/2.1/
-    Author:      Stefan Goessner/2006
-    Web:         http://goessner.net/ 
+ License:     http://creativecommons.org/licenses/LGPL/2.1/
+ Author:      Stefan Goessner/2006
+ Web:         http://goessner.net/
 
-    Modifications made:
+ Modifications made:
 
-    Version:     0.9-p5
-    Description: Restructured code, JSLint validated (no strict whitespaces),
-                 added handling of empty arrays, empty strings, and int/floats values.
-    Author:      Michael Schøler/2008-01-29
-    Web:         http://michael.hinnerup.net/blog/2008/01/26/converting-json-to-xml-and-xml-to-json/
-    
-    Description: json2xml added support to convert functions as CDATA
-                 so it will be easy to write characters that cause some problems when convert
-    Author:      Tony Tomov
-*/
+ Version:     0.9-p5
+ Description: Restructured code, JSLint validated (no strict whitespaces),
+ added handling of empty arrays, empty strings, and int/floats values.
+ Author:      Michael Schøler/2008-01-29
+ Web:         http://michael.hinnerup.net/blog/2008/01/26/converting-json-to-xml-and-xml-to-json/
+
+ Description: json2xml added support to convert functions as CDATA
+ so it will be easy to write characters that cause some problems when convert
+ Author:      Tony Tomov
+ */
 
 /*global alert */
 var xmlJsonClass = {
@@ -45,11 +45,11 @@ var xmlJsonClass = {
             var i, n;
             if (v instanceof Array) {
                 if (v.length === 0) {
-                    xml += ind + "<"+name+">__EMPTY_ARRAY_</"+name+">\n";
+                    xml += ind + "<" + name + ">__EMPTY_ARRAY_</" + name + ">\n";
                 }
                 else {
-                    for (i = 0, n = v.length; i < n; i += 1) {
-                        var sXml = ind + toXml(v[i], name, ind+"\t") + "\n";
+                    for (i = 0,n = v.length; i < n; i += 1) {
+                        var sXml = ind + toXml(v[i], name, ind + "\t") + "\n";
                         xml += sXml;
                     }
                 }
@@ -76,7 +76,7 @@ var xmlJsonClass = {
                             xml += "<![CDATA[" + v[m] + "]]>";
                         }
                         else if (m.charAt(0) !== "@") {
-                            xml += toXml(v[m], m, ind+"\t");
+                            xml += toXml(v[m], m, ind + "\t");
                         }
                     }
                     xml += (xml.charAt(xml.length - 1) === "\n" ? ind : "") + "</" + name + ">";
@@ -88,7 +88,7 @@ var xmlJsonClass = {
             else {
                 if (v.toString() === "\"\"" || v.toString().length === 0) {
                     xml += ind + "<" + name + ">__EMPTY_STRING_</" + name + ">";
-                } 
+                }
                 else {
                     xml += ind + "<" + name + ">" + v.toString() + "</" + name + ">";
                 }
@@ -195,7 +195,7 @@ var xmlJsonClass = {
                     }
                     else {
                         for (n = xml.firstChild; n; n = n.nextSibling) {
-                            if(FuncTest.test(xml.firstChild.nodeValue)) {
+                            if (FuncTest.test(xml.firstChild.nodeValue)) {
                                 o = xml.firstChild.nodeValue;
                                 break;
                             } else {
@@ -218,43 +218,52 @@ var xmlJsonClass = {
         }
         return o;
     },
-    toJson: function(o, name, ind) {
-        var json = name ? ("\"" + name + "\"") : "";
+    toJson: function(o, name, ind, wellform) {
+        if (wellform === undefined) wellform = true;
+        var json = name ? ("\"" + name + "\"") : "", tab = "\t", newline = "\n";
+        if (!wellform) {
+            tab = "";
+            newline = "";
+        }
+
         if (o === "[]") {
             json += (name ? ":[]" : "[]");
         }
         else if (o instanceof Array) {
-            var n, i, ar=[];
-            for (i = 0, n = o.length; i < n; i += 1) {
-                ar[i] = this.toJson(o[i], "", ind + "\t");
+            var n, i, ar = [];
+            for (i = 0,n = o.length; i < n; i += 1) {
+                ar[i] = this.toJson(o[i], "", ind + tab, wellform);
             }
-            json += (name ? ":[" : "[") + (ar.length > 1 ? ("\n" + ind + "\t" + ar.join(",\n" + ind + "\t") + "\n" + ind) : ar.join("")) + "]";
+            json += (name ? ":[" : "[") + (ar.length > 1 ? (newline + ind + tab + ar.join("," + newline + ind + tab) + newline + ind) : ar.join("")) + "]";
         }
         else if (o === null) {
             json += (name && ":") + "null";
         }
         else if (typeof(o) === "object") {
-            var arr = [];
-            var m;
-            for (m in o) if (o.hasOwnProperty(m)) {
-                arr[arr.length] = this.toJson(o[m], m, ind + "\t");
+            var arr = [], m;
+            for (m in o) {
+                if (o.hasOwnProperty(m)) {
+                    arr[arr.length] = this.toJson(o[m], m, ind + tab, wellform);
+                }
             }
-            json += (name ? ":{" : "{") + (arr.length > 1 ? ("\n" + ind + "\t" + arr.join(",\n" + ind + "\t") + "\n" + ind) : arr.join("")) + "}";
+            json += (name ? ":{" : "{") + (arr.length > 1 ? (newline + ind + tab + arr.join("," + newline + ind + tab) + newline + ind) : arr.join("")) + "}";
         }
         else if (typeof(o) === "string") {
-            var objRegExp  = /(^-?\d+\.?\d*$)/;
-            var FuncTest = /function/i;
-            var os = o.toString();
-            if (objRegExp.test(os) || FuncTest.test(os) || os==="false" || os==="true") {
-                // int or float
-                json += (name && ":") + os;
-            } 
-            else {
-                json += (name && ":") + "\"" + o + "\"";
-            }
+            /*
+             var objRegExp  = /(^-?\d+\.?\d*$)/;
+             var FuncTest = /function/i;
+             var os = o.toString();
+             if (objRegExp.test(os) || FuncTest.test(os) || os==="false" || os==="true") {
+             // int or float
+             json += (name && ":")  + "\"" +os + "\"";
+             }
+             else {
+             */
+            json += (name && ":") + "\"" + o.replace(/\\/g, '\\\\').replace(/\"/g, '\\"') + "\"";
+            //}
         }
         else {
-            json += (name && ":") + o.toString();
+            json += (name && ":") + "\"" + o.toString() + "\"";
         }
         return json;
     },
@@ -302,7 +311,7 @@ var xmlJsonClass = {
     removeWhite: function(e) {
         e.normalize();
         var n;
-        for (n = e.firstChild; n; ) {
+        for (n = e.firstChild; n;) {
             if (n.nodeType === 3) {
                 // text node
                 if (!n.nodeValue.match(/[^ \f\n\r\t\v]/)) {

@@ -1,4 +1,4 @@
-module SecretSauce#:nodoc:  
+module SecretSauce #:nodoc:
 end
 
 require 'jquery/secret_sauce/controller/ui_dialog_controls'

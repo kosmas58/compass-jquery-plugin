@@ -10,8 +10,8 @@
  * http://github.com/idlesign/ist-ui-panel
  *
  * Depends:
- *	jquery.ui.core.js
- *	jquery.ui.widget.js
+ *    jquery.ui.core.js
+ *    jquery.ui.widget.js
  */
 (function($) {
 
@@ -28,12 +28,12 @@
 
             // ----------
             // options for 'slide-left' & 'slide-right' collapseType panels only
-                // true vertical text with svg or filter rendering
-                trueVerticalText: true,
-                // collapsed panel height, neccessary for true vertical text
-                vHeight: '220px',
-                // automatically create special stack area (navigation window emulation)
-                stackable: true,
+            // true vertical text with svg or filter rendering
+            trueVerticalText: true,
+            // collapsed panel height, neccessary for true vertical text
+            vHeight: '220px',
+            // automatically create special stack area (navigation window emulation)
+            stackable: true,
             // ----------
             // panel width
             width: 'auto',
@@ -71,11 +71,11 @@
         _panelize: function() {
             if (this.element.is('div')) {
                 var self = this,
-                    o = this.options;
+                        o = this.options;
 
                 this.panelBox = this.element;
                 // if width option is omitted, get width from css
-                if (o.width=='auto')
+                if (o.width == 'auto')
                     o.width = this.panelBox.css('width');
                 else
                     this.panelBox.css('width', o.width);
@@ -96,7 +96,7 @@
                 this.headerBox.prepend('<span/>');
                 this.rightBox = this.headerBox.children(':first').addClass(o.rightboxClass);
                 // setting up controls
-                if (o.controls!=false){
+                if (o.controls != false) {
                     // suppose 'o.controls' should be a ui.toolbar control
                     this.rightBox.append('<span/>');
                     this.controlsBox = this.rightBox.children(':first').addClass(o.controlsClass).html(o.controls);
@@ -112,17 +112,17 @@
                 this.contentBox.addClass(o.contentClass);
 
                 // collapsibility
-                if (o.collapsible){
+                if (o.collapsible) {
                     switch (o.collapseType) {
                         case 'slide-right':
                             var childIndex = 0;
                             // there is a shift of child element index if controls are enabled
                             if (o.controls)
                                 childIndex = 1;
-                            
+
                             this.rightBox.append('<span><span/></span>');
                             this.collapsePanel = this.rightBox.children().eq(childIndex).addClass(o.collapsePnlClass);
-                            this.collapseButton =  this.collapsePanel.children(':first').addClass(o.slideRIcon);
+                            this.collapseButton = this.collapsePanel.children(':first').addClass(o.slideRIcon);
                             this.iconBtnClpsd = o.slideRIconClpsd;
                             this.iconBtn = o.slideRIcon;
                             this.ctrlBox = this.controlsBox;
@@ -130,7 +130,7 @@
                         case 'slide-left':
                             this.headerBox.prepend('<span><span/></span>');
                             this.collapsePanel = this.headerBox.children(':first').addClass(o.collapsePnlClass);
-                            this.collapseButton =  this.collapsePanel.children(':first').addClass(o.slideLIcon);
+                            this.collapseButton = this.collapsePanel.children(':first').addClass(o.slideLIcon);
                             this.iconBtnClpsd = o.slideLIconClpsd;
                             this.iconBtn = o.slideLIcon;
                             this.ctrlBox = this.rightBox;
@@ -147,37 +147,41 @@
                     this._buttonHover(this.collapseButton);
                     this.collapseButton.addClass(o.iconClass);
                     if (o.event) {
-                        this.collapseButton.bind((o.event) + ".panel", function(event) {return self._clickHandler.call(self, event, this);});
-                        this.titleTextBox.bind((o.event) + ".panel", function(event) {return self._clickHandler.call(self, event, this);});
+                        this.collapseButton.bind((o.event) + ".panel", function(event) {
+                            return self._clickHandler.call(self, event, this);
+                        });
+                        this.titleTextBox.bind((o.event) + ".panel", function(event) {
+                            return self._clickHandler.call(self, event, this);
+                        });
                     }
                     // collapse panel if 'accordion' option is set, switch off vertical text
-                    if (o.accordion){
+                    if (o.accordion) {
                         o.collapsed = true;
                         o.trueVerticalText = false;
                     }
-                    
+
                     // restore state from cookie
-                    if (o.cookie){
-                        if (self._cookie()==0)
+                    if (o.cookie) {
+                        if (self._cookie() == 0)
                             o.collapsed = false;
                         else
                             o.collapsed = true;
                     }
-                    
+
                     // store state as data
                     this.panelBox.data('collapsed', o.collapsed);
 
                     // stackability (navigation panel emulation) for sliding panels
-                    if (o.stackable && $.inArray(o.collapseType, ['slide-right', 'slide-left'])>-1){
+                    if (o.stackable && $.inArray(o.collapseType, ['slide-right', 'slide-left']) > -1) {
 
                         this.panelDock = this.panelBox.siblings('div[role=panelDock]:first');
                         this.panelFrame = this.panelBox.siblings('div[role=panelFrame]:first');
 
-                        if (this.panelDock.length==0){
+                        if (this.panelDock.length == 0) {
                             this.panelDock = this.panelBox.parent(0).prepend('<div>').children(':first');
                             this.panelFrame = this.panelDock.after('<div>').next(':first');
-                            this.panelDock.attr('role', 'panelDock').css('float', o.collapseType=='slide-left'?'left':'right');
-                            this.panelFrame.attr('role', 'panelFrame').css({'float':o.collapseType=='slide-left'?'left':'right', 'overflow':'hidden'});
+                            this.panelDock.attr('role', 'panelDock').css('float', o.collapseType == 'slide-left' ? 'left' : 'right');
+                            this.panelFrame.attr('role', 'panelFrame').css({'float':o.collapseType == 'slide-left' ? 'left' : 'right', 'overflow':'hidden'});
                         }
 
                         if (o.collapsed)
@@ -192,7 +196,7 @@
                         self.toggle(0, true);
 
                 } else {
-                    this.titleTextBox.css('cursor','default');
+                    this.titleTextBox.css('cursor', 'default');
                 }
                 // making panel draggable if not accordion-like
                 if (!o.accordion && o.draggable && $.fn.draggable)
@@ -205,7 +209,7 @@
         },
 
         _cookie: function() {
-            var cookie = this.cookie || (this.cookie = this.options.cookie.name || 'ui-panel-'+this.options.id);
+            var cookie = this.cookie || (this.cookie = this.options.cookie.name || 'ui-panel-' + this.options.id);
             return $.cookie.apply(null, [cookie].concat($.makeArray(arguments)));
         },
 
@@ -217,38 +221,38 @@
                 cancel: '.ui-panel-content',
                 cursor: 'move'
             });
-            this.contentBox.css('position','absolute');
+            this.contentBox.css('position', 'absolute');
         },
 
-        _clickHandler: function(event, target){
+        _clickHandler: function(event, target) {
             var o = this.options;
 
             if (o.disabled)
                 return false;
-            
+
             this.toggle(o.collapseSpeed);
             return false;
         },
 
         // toggle panel state (fold/unfold)
-        toggle: function (collapseSpeed, innerCall){
+        toggle: function (collapseSpeed, innerCall) {
             var self = this,
-                o = this.options,
-                panelBox = this.panelBox,
-                contentBox = this.contentBox,
-                headerBox = this.headerBox,
-                titleTextBox = this.titleTextBox,
-                titleText = this.titleText,
-                ctrlBox = this.ctrlBox,
-                panelDock = this.panelDock,
-                ie = '';
+                    o = this.options,
+                    panelBox = this.panelBox,
+                    contentBox = this.contentBox,
+                    headerBox = this.headerBox,
+                    titleTextBox = this.titleTextBox,
+                    titleText = this.titleText,
+                    ctrlBox = this.ctrlBox,
+                    panelDock = this.panelDock,
+                    ie = '';
 
             // that's IE 6-8 for sure, use appropriate style for vertical text
             if (!jQuery.support.leadingWhitespace)
-                ie="-ie";
+                ie = "-ie";
 
             // split toggle into 'fold' and 'unfold' actions and handle callbacks
-            if (contentBox.css('display')=='none')
+            if (contentBox.css('display') == 'none')
                 this._trigger("unfold");
             else
                 this._trigger("fold");
@@ -257,8 +261,8 @@
                 ctrlBox.toggle(0);
 
             // various content sliding animations
-            if (o.collapseType=='default'){
-                if (collapseSpeed==0) {
+            if (o.collapseType == 'default') {
+                if (collapseSpeed == 0) {
 
                     if (ctrlBox)
                         ctrlBox.hide();
@@ -268,9 +272,9 @@
                     contentBox.slideToggle(collapseSpeed);
                 }
             } else {
-                if (collapseSpeed==0){
+                if (collapseSpeed == 0) {
                     // reverse collapsed option for immediate folding
-                    o.collapsed=false;
+                    o.collapsed = false;
 
                     if (ctrlBox)
                         ctrlBox.hide();
@@ -280,35 +284,35 @@
                     contentBox.toggle();
                 }
 
-                if (o.collapsed==false){
+                if (o.collapsed == false) {
 
-                    if (o.trueVerticalText){
+                    if (o.trueVerticalText) {
                         // true vertical text - svg or filter
                         headerBox.toggleClass('ui-panel-vtitle').css('height', o.vHeight);
-                        if (ie==''){
+                        if (ie == '') {
                             // fix title text positioning
-                            var boxStyle = 'height:'+(parseInt(o.vHeight)-50)+'px;width:100%;position:absolute;bottom:0;left:0;';
+                            var boxStyle = 'height:' + (parseInt(o.vHeight) - 50) + 'px;width:100%;position:absolute;bottom:0;left:0;';
                             titleTextBox
-                                .empty()
+                                    .empty()
                                 // put transparent div over svg object for object onClick simulation
-                                .append('<div style="'+boxStyle+'z-index:3;"></div><object style="'+boxStyle+'z-index:2;" type="image/svg+xml" data="data:image/svg+xml;charset=utf-8,<svg xmlns=\'http://www.w3.org/2000/svg\'><text x=\'-'+(parseInt(o.vHeight)-60)+'px\' y=\'16px\' style=\'font-weight:'+titleTextBox.css('font-weight')+';font-family:'+titleTextBox.css('font-family').replace(/"/g, '')+';font-size:'+titleTextBox.css('font-size')+';fill:'+titleTextBox.css('color')+';\' transform=\'rotate(-90)\' text-rendering=\'optimizeSpeed\'>'+titleText+'</text></svg>"></object>')
-                                .css('height', o.vHeight);
+                                    .append('<div style="' + boxStyle + 'z-index:3;"></div><object style="' + boxStyle + 'z-index:2;" type="image/svg+xml" data="data:image/svg+xml;charset=utf-8,<svg xmlns=\'http://www.w3.org/2000/svg\'><text x=\'-' + (parseInt(o.vHeight) - 60) + 'px\' y=\'16px\' style=\'font-weight:' + titleTextBox.css('font-weight') + ';font-family:' + titleTextBox.css('font-family').replace(/"/g, '') + ';font-size:' + titleTextBox.css('font-size') + ';fill:' + titleTextBox.css('color') + ';\' transform=\'rotate(-90)\' text-rendering=\'optimizeSpeed\'>' + titleText + '</text></svg>"></object>')
+                                    .css('height', o.vHeight);
                         }
 
-                        titleTextBox.toggleClass('ui-panel-vtext'+ie);
+                        titleTextBox.toggleClass('ui-panel-vtext' + ie);
                     } else {
                         // vertical text workaround
-                        headerBox.attr('align','center');
+                        headerBox.attr('align', 'center');
                         titleTextBox.html(titleTextBox.text().replace(/(.)/g, '$1<BR>'));
                     }
-                    panelBox.animate( {width: '2.4em'}, collapseSpeed );
+                    panelBox.animate({width: '2.4em'}, collapseSpeed);
 
-                    if (o.stackable){
+                    if (o.stackable) {
                         if (innerCall)
-                            // preserve html defined panel order
+                        // preserve html defined panel order
                             panelDock.append(panelBox);
                         else
-                            // last folded on the top of stack
+                        // last folded on the top of stack
                             panelDock.prepend(panelBox);
                     }
 
@@ -317,32 +321,32 @@
                     if (o.stackable)
                         this.panelFrame.append(panelBox);
 
-                    if (o.trueVerticalText){
+                    if (o.trueVerticalText) {
                         headerBox.toggleClass('ui-panel-vtitle').css('height', 'auto');
                         titleTextBox.empty().append(titleText);
-                        titleTextBox.toggleClass('ui-panel-vtext'+ie);
+                        titleTextBox.toggleClass('ui-panel-vtext' + ie);
                     } else {
-                        headerBox.attr('align','left');
+                        headerBox.attr('align', 'left');
                         titleTextBox.html(titleTextBox.text().replace(/<BR>/g, ' '));
                     }
-                    panelBox.animate( {width: o.width}, collapseSpeed );
+                    panelBox.animate({width: o.width}, collapseSpeed);
                 }
             }
 
             // only if not initially folded
-            if ( ((collapseSpeed!=0 || o.trueVerticalText) && o.cookie==null) || (!innerCall && o.cookie!=null) )
+            if (((collapseSpeed != 0 || o.trueVerticalText) && o.cookie == null) || (!innerCall && o.cookie != null))
                 o.collapsed = !o.collapsed;
 
             this.panelBox.data('collapsed', o.collapsed);
 
-            if (!innerCall){
+            if (!innerCall) {
                 // save state in cookie if allowed
                 if (o.cookie)
                     self._cookie(Number(o.collapsed), o.cookie);
 
                 // inner toggle call to show only one unfolded panel if 'accordion' option is set
                 if (o.accordion)
-                    $("."+o.accordion+"[role='panel'][id!='"+(o.id)+"']:not(:data(collapsed))").panel('toggle', collapseSpeed, true);
+                    $("." + o.accordion + "[role='panel'][id!='" + (o.id) + "']:not(:data(collapsed))").panel('toggle', collapseSpeed, true);
             }
 
             // css animation for header and button
@@ -351,36 +355,36 @@
         },
 
         // sets panel's content
-        content: function(content){
+        content: function(content) {
             this.contentTextBox.html(content);
         },
 
         // destroys panel
-        destroy: function(){
+        destroy: function() {
             var o = this.options;
 
             this.headerBox
-                .html(this.titleText)
-                .removeAttr('align')
-                .removeAttr('style')
-                .removeClass('ui-panel-vtitle ui-corner-all '+o.headerClass);
+                    .html(this.titleText)
+                    .removeAttr('align')
+                    .removeAttr('style')
+                    .removeClass('ui-panel-vtitle ui-corner-all ' + o.headerClass);
             this.contentBox
-                .removeClass(o.contentClass)
-                .removeAttr('style')
-                .html(o.content);
+                    .removeClass(o.contentClass)
+                    .removeAttr('style')
+                    .html(o.content);
             this.panelBox
-                .removeAttr('role')
-                .removeAttr('style')
-                .removeData('collapsed')
-                .unbind('.panel')
-                .removeClass(o.widgetClass);
+                    .removeAttr('role')
+                    .removeAttr('style')
+                    .removeData('collapsed')
+                    .unbind('.panel')
+                    .removeClass(o.widgetClass);
 
             // handle stacked panels
-            if (o.stackable && $.inArray(o.collapseType, ['slide-right', 'slide-left'])>-1){
+            if (o.stackable && $.inArray(o.collapseType, ['slide-right', 'slide-left']) > -1) {
                 this.panelDock.before(this.panelBox);
                 // with last stacked panel we destroy Dock and Frame stack components
-                if (this.panelDock.children('div[role=panel]').length==0
-                    && this.panelFrame.children('div[role=panel]').length==0){
+                if (this.panelDock.children('div[role=panel]').length == 0
+                        && this.panelFrame.children('div[role=panel]').length == 0) {
                     this.panelDock.remove();
                     this.panelFrame.remove();
                 }
@@ -392,13 +396,17 @@
             return this;
         },
 
-        _buttonHover: function(el){
+        _buttonHover: function(el) {
             var o = this.options;
 
             el.bind({
-                'mouseover': function(){$(this).addClass(o.hoverClass);},
-                'mouseout': function(){$(this).removeClass(o.hoverClass);}
-                });
+                'mouseover': function() {
+                    $(this).addClass(o.hoverClass);
+                },
+                'mouseout': function() {
+                    $(this).removeClass(o.hoverClass);
+                }
+            });
         }
 
     });

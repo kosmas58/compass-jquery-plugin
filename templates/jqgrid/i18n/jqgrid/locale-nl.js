@@ -14,7 +14,10 @@
             Find: "Zoek",
             Reset: "Herstellen",
             odata: ["gelijk aan", "niet gelijk aan", "kleiner dan", "kleiner dan of gelijk aan", "groter dan", "groter dan of gelijk aan", "begint met", "begint niet met", "is in", "is niet in", "eindigd met", "eindigd niet met", "bevat", "bevat niet"],
-            groupOps: [{ op: "AND", text: "alle" }, { op: "OR", text: "een van de"}],
+            groupOps: [
+                { op: "AND", text: "alle" },
+                { op: "OR", text: "een van de"}
+            ],
             matchText: " match",
             rulesText: " regels"
         },

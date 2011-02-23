@@ -19,7 +19,7 @@ namespace :haml do
     end
     puts ".erb to .haml finished"
   end
-  
+
   desc "Convert .html views to haml and stylesheets to sass"
   task :from_html do
     puts ".html to .haml started"
@@ -35,7 +35,7 @@ namespace :haml do
     end
     puts ".html to .haml finished"
   end
-  
+
   desc "Convert .html views to .html.haml and .js.haml and stylesheets to sass"
   task :from_demo do
     puts "Demo to .haml started"

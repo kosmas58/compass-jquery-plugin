@@ -1,42 +1,42 @@
 module ActionView
   module Helpers
-    
+
     def jqgrid_javascripts(locale)
-      js = capture { javascript_include_tag "i18n/jqgrid/locale-#{locale}.min" } 
-      js << capture {javascript_tag "jQuery.jgrid.no_legacy_api = true;" }
+      js = capture { javascript_include_tag "i18n/jqgrid/locale-#{locale}.min" }
+      js << capture { javascript_tag "jQuery.jgrid.no_legacy_api = true;" }
       js << capture { javascript_include_tag 'jquery.jqGrid.min' }
     end
 
-    def jqgrid(title, id, action, columns = {}, 
-               options = {}, edit_options = "", add_options = "", del_options = "", search_options = "",
-               custom1_button = nil, custom2_button = nil, custom3_button = nil, custom4_button = nil, custom5_button = nil )
-               
+    def jqgrid(title, id, action, columns = {},
+        options = {}, edit_options = "", add_options = "", del_options = "", search_options = "",
+        custom1_button = nil, custom2_button = nil, custom3_button = nil, custom4_button = nil, custom5_button = nil)
+
       # Default options
-      options = 
-      { 
-        :rows_per_page       => '10',
-        :sort_column         => '',
-        :sort_order          => '',
-        :height              => '150',
-        :gridview            => 'false',
-        :error_handler       => 'null',
-        :inline_edit_handler => 'null',
-        :add                 => 'false',
-        :delete              => 'false',
-        :search              => 'true',
-        :edit                => 'false',
-        :inline_edit         => 'false',
-        :autowidth           => 'false',
-        :hidegrid            => 'false',
-        :rownumbers          => 'false'
-      }.merge(options)
-      
+      options =
+          {
+              :rows_per_page => '10',
+              :sort_column => '',
+              :sort_order => '',
+              :height => '150',
+              :gridview => 'false',
+              :error_handler => 'null',
+              :inline_edit_handler => 'null',
+              :add => 'false',
+              :delete => 'false',
+              :search => 'true',
+              :edit => 'false',
+              :inline_edit => 'false',
+              :autowidth => 'false',
+              :hidegrid => 'false',
+              :rownumbers => 'false'
+          }.merge(options)
+
       # Stringify options values
       options.inject({}) do |options, (key, value)|
         options[key] = (key != :subgrid) ? value.to_s : value
         options
       end
-      
+
       options[:error_handler_return_value] = (options[:error_handler] == 'null') ? 'true;' : options[:error_handler]
       edit_button = (options[:edit] == 'true' && options[:inline_edit] == 'false').to_s
 
@@ -130,32 +130,32 @@ module ActionView
           } 
         },/
       end
-      
+
       # Enable subgrids
       subgrid = ""
       subgrid_enabled = "subGrid:false,"
 
       if options[:subgrid].present?
-        
+
         subgrid_enabled = "subGrid:true,"
-        
-        options[:subgrid] = 
-          {
-            :rows_per_page => '10',
-            :sort_column   => 'id',
-            :sort_order    => 'asc',
-            :add           => 'false',
-            :edit          => 'false',
-            :delete        => 'false',
-            :search        => 'false'
-          }.merge(options[:subgrid])
+
+        options[:subgrid] =
+            {
+                :rows_per_page => '10',
+                :sort_column => 'id',
+                :sort_order => 'asc',
+                :add => 'false',
+                :edit => 'false',
+                :delete => 'false',
+                :search => 'false'
+            }.merge(options[:subgrid])
 
         # Stringify options values
         options[:subgrid].inject({}) do |suboptions, (key, value)|
           suboptions[key] = value.to_s
           suboptions
         end
-        
+
         subgrid_inline_edit = ""
         if options[:subgrid][:inline_edit] == true
           options[:subgrid][:edit] = 'false'
@@ -169,7 +169,7 @@ module ActionView
           },
           /
         end
-          
+
         if options[:subgrid][:direct_selection] && options[:subgrid][:selection_handler].present?
           subgrid_direct_link = %Q/
           onSelectRow: function(id){ 
@@ -178,10 +178,10 @@ module ActionView
             } 
           },
           /
-        end     
-        
+        end
+
         sub_col_names, sub_col_model = gen_columns(options[:subgrid][:columns])
-        
+
         subgrid = %Q(
         subGridRowExpanded: function(subgrid_id, row_id) {
             var subgrid_table_id, pager_id;
@@ -201,7 +201,7 @@ module ActionView
               viewrecords: true,
               //toolbar : [true,"top"], 
               #{subgrid_inline_edit}
-              #{subgrid_direct_link}
+        #{subgrid_direct_link}
               height: '100%'
             });
             jQuery("#"+subgrid_table_id).jqGrid('navGrid', "#"+pager_id,{edit:#{options[:subgrid][:edit]},add:#{options[:subgrid][:add]},del:#{options[:subgrid][:delete]},search:false})
@@ -319,12 +319,12 @@ module ActionView
               // ajaxGridOptions :{},
               // direction : "ltr",
               #{multiselect}
-              #{masterdetails}
-              #{grid_loaded}
-              #{direct_link}
-              #{editable}
-              #{subgrid_enabled}
-              #{subgrid}
+      #{masterdetails}
+      #{grid_loaded}
+      #{direct_link}
+      #{editable}
+      #{subgrid_enabled}
+      #{subgrid}
               // toppager: false,
               // headertitles: false,
               // scrollTimeout: 40,
@@ -343,14 +343,14 @@ module ActionView
               {#{search_options}}
             );
             #{multihandler}
-            #{selection_link}
+      #{selection_link}
           });
         </script>
       )
-    end     
+    end
 
     private
-    
+
     def gen_columns(columns)
       # Generate columns data
       col_names = "[" # Labels
@@ -362,8 +362,8 @@ module ActionView
       col_names.chop! << "]"
       col_model.chop! << "]"
       [col_names, col_model]
-    end    
-    
+    end
+
     # Generate a list of attributes for related column (align:'right', sortable:true, resizable:false, ...)
     def get_attributes(column)
       options = ","
@@ -407,7 +407,7 @@ module ActionView
           if couple[1].instance_of?(Fixnum) || couple[1] == 'true' || couple[1] == 'false' || couple[1] == true || couple[1] == false
             options << %Q/#{couple[0]}:#{couple[1]},/
           else
-            options << %Q/#{couple[0]}:"#{couple[1]}",/            
+            options << %Q/#{couple[0]}:"#{couple[1]}",/
           end
         end
       end

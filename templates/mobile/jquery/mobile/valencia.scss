@@ -14,7 +14,7 @@
 
 .ui-bar-a {
   font-weight: bold;
-  border: 1px solid       #be7800;
+  border: 1px solid #be7800;
   background: #e99515;
   color: #fff;
   text-shadow: 0 -1px 0px #94440f;
@@ -23,7 +23,7 @@
   -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#e9a015', EndColorStr='#e98a15')"; }
 
 .ui-btn-up-a {
-  border: 1px solid       #BD610D;
+  border: 1px solid #BD610D;
   background: #e68510;
   color: #fff;
   background-image: -moz-linear-gradient(top, #ea9e0c, #e68510);
@@ -33,7 +33,7 @@
     color: #fff; } }
 
 .ui-btn-hover-a {
-  border: 1px solid       #b77504;
+  border: 1px solid #b77504;
   background: #ed9730;
   color: #fff;
   background-image: -moz-linear-gradient(top, #edab30, #ed9730);
@@ -43,7 +43,7 @@
     color: #fff; } }
 
 .ui-btn-down-a {
-  border: 1px solid       #BD610D;
+  border: 1px solid #BD610D;
   background: #BA6E11;
   color: #fff;
   background-image: -moz-linear-gradient(top, #ba8011, #ba6e11);
@@ -69,7 +69,7 @@
 
 .ui-body-a {
   font-weight: normal;
-  border: 1px solid       #222;
+  border: 1px solid #222;
   background: #444;
   color: #ddd;
   text-shadow: 0 -1px 0px black;
@@ -93,7 +93,7 @@
 
 .ui-bar-b {
   font-weight: bold;
-  border: 1px solid       #222;
+  border: 1px solid #222;
   background: #333333;
   color: #fff;
   text-shadow: 0 -1px 0px #111111;
@@ -102,7 +102,7 @@
   -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#555555', EndColorStr='#333333')"; }
 
 .ui-btn-up-b {
-  border: 1px solid       #232323;
+  border: 1px solid #232323;
   background: #393939;
   color: #eee;
   background-image: -moz-linear-gradient(top, #5e5e5e, #393939);
@@ -112,7 +112,7 @@
     color: #eee; } }
 
 .ui-btn-hover-b {
-  border: 1px solid       #232323;
+  border: 1px solid #232323;
   background: #494949;
   color: #fff;
   background-image: -moz-linear-gradient(top, #6e6e6e, #494949);
@@ -122,7 +122,7 @@
     color: #fff; } }
 
 .ui-btn-down-b {
-  border: 1px solid       #232323;
+  border: 1px solid #232323;
   background: #292929;
   color: #fff;
   background-image: -moz-linear-gradient(top, #4e4e4e, #292929);
@@ -150,10 +150,10 @@
 
 .ui-body-b {
   font-weight: normal;
-  border: 1px solid       #999;
+  border: 1px solid #999;
   background-color: #e5e5e5;
   color: #666;
-  text-shadow: 0 1px 0px  #fff;
+  text-shadow: 0 1px 0px #fff;
   background-image: image_url("jquery/mobile/valencia/texture_075.png");
   font-family: Helvetica, Arial, sans-serif;
   input, select, textarea, button {
@@ -172,10 +172,10 @@
 
 .ui-bar-c {
   font-weight: bold;
-  border: 1px solid       #ccc;
+  border: 1px solid #ccc;
   background: #e5e5e5;
   color: #111;
-  text-shadow: 0 1px 0px  #fff;
+  text-shadow: 0 1px 0px #fff;
   background-image: -moz-linear-gradient(top, #eeeeee, #e5e5e5);
   background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #eeeeee), color-stop(1, #e5e5e5));
   -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#eeeeee', EndColorStr='#e5e5e5')";
@@ -188,10 +188,10 @@
   cursor: pointer;
   font-weight: bold;
   text-decoration: none;
-  text-shadow: 0 1px 0px  #fff; }
+  text-shadow: 0 1px 0px #fff; }
 
 .ui-btn-up-c {
-  border: 1px solid       #ccc;
+  border: 1px solid #ccc;
   background: #e5e5e5;
   color: #444;
   background-image: -moz-linear-gradient(top, #eeeeee, #e5e5e5);
@@ -201,7 +201,7 @@
     color: #444; } }
 
 .ui-btn-hover-c {
-  border: 1px solid       #ccc;
+  border: 1px solid #ccc;
   background: #f5f5f5;
   color: #222;
   background-image: -moz-linear-gradient(top, white, #f5f5f5);
@@ -211,7 +211,7 @@
     color: #222; } }
 
 .ui-btn-down-c {
-  border: 1px solid       #ccc;
+  border: 1px solid #ccc;
   background: #d5d5d5;
   color: #111;
   background-image: -moz-linear-gradient(top, #dddddd, #d5d5d5);
@@ -221,9 +221,9 @@
     color: #111; } }
 
 .ui-body-c {
-  border: 1px solid       #ddd;
+  border: 1px solid #ddd;
   color: #333333;
-  text-shadow: 0 1px 0px  #fff;
+  text-shadow: 0 1px 0px #fff;
   background: #fff;
   background-image: image_url("jquery/mobile/valencia/texture_075.png");
   font-family: Helvetica, Arial, sans-serif;
@@ -243,10 +243,10 @@
 
 .ui-bar-d {
   font-weight: bold;
-  border: 1px solid       #ccc;
+  border: 1px solid #ccc;
   background: #cbcbcb;
   color: #666;
-  text-shadow: 0 1px 0px  #fff;
+  text-shadow: 0 1px 0px #fff;
   background-image: -moz-linear-gradient(top, #dddddd 0%, #cccccc 5%, #bbbbbb 15%, #dddddd 95%, #cccccc 100%);
   background-image: -webkit-gradient(linear, center top, center bottom, color-stop(0, #dddddd), color-stop(5%, #cccccc), color-stop(15%, #bbbbbb), color-stop(95%, #dddddd), color-stop(1, #cccccc));
   -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#aaaaaa', EndColorStr='#e5e5e5')";
@@ -260,7 +260,7 @@
     color: #2489CE; } }
 
 .ui-btn-up-d {
-  border: 1px solid       #c5c5c5;
+  border: 1px solid #c5c5c5;
   background: #ddd;
   color: #666;
   background-image: -moz-linear-gradient(top, #d5d5d5, #dddddd);
@@ -270,7 +270,7 @@
     color: #666; } }
 
 .ui-btn-hover-d {
-  border: 1px solid       #aaa;
+  border: 1px solid #aaa;
   background: #c5c5c5;
   color: #666;
   background-image: -moz-linear-gradient(top, #c5c5c5, #cccccc);
@@ -280,7 +280,7 @@
     color: #666; } }
 
 .ui-btn-down-d {
-  border: 1px solid       #999;
+  border: 1px solid #999;
   background: #b5b5b5;
   color: #444;
   background-image: -moz-linear-gradient(top, #b5b5b5, #bbbbbb);
@@ -294,14 +294,14 @@
   cursor: pointer;
   font-weight: bold;
   text-decoration: none;
-  text-shadow: 0 1px 0px  #fff; }
+  text-shadow: 0 1px 0px #fff; }
 
 .ui-btn-hover-d, .ui-btn-down-d {
   font-family: Helvetica, Arial, sans-serif;
   cursor: pointer;
   font-weight: bold;
   text-decoration: none;
-  text-shadow: 0 1px 0px  #fff; }
+  text-shadow: 0 1px 0px #fff; }
 
 .ui-body-d {
   font-family: Helvetica, Arial, sans-serif;
@@ -309,9 +309,9 @@
     font-family: Helvetica, Arial, sans-serif; }
   .ui-link-inherit {
     color: #333333; }
-  border: 1px solid       #aaa;
+  border: 1px solid #aaa;
   color: #666;
-  text-shadow: 0 1px 0px  #fff;
+  text-shadow: 0 1px 0px #fff;
   background: #eee;
   background-image: -moz-linear-gradient(top, white 0%, #f5f5f5 15%, #eeeeee 100%);
   background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, white), color-stop(15%, #f5f5f5), color-stop(1, #eeeeee));
@@ -335,10 +335,10 @@
 
 .ui-bar-e {
   font-weight: bold;
-  border: 1px solid       #999;
+  border: 1px solid #999;
   background: #dedede;
   color: #000;
-  text-shadow: 0 1px 0px  #fff;
+  text-shadow: 0 1px 0px #fff;
   background-image: -moz-linear-gradient(top, white 0%, #cccccc 50%, #b5b5b5 50%, #eeeeee 100%);
   background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, white), color-stop(0.5, #cccccc), color-stop(0.5, #b5b5b5), color-stop(1, #eeeeee));
   -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#ffffff',EndColorStr='#b5b5b5')";
@@ -357,10 +357,10 @@
     font-weight: bold; } }
 
 .ui-btn-up-e {
-  border: 1px solid       #999;
+  border: 1px solid #999;
   background: #dfdfdf;
   color: #333;
-  text-shadow: 0 1px 0px  #fff;
+  text-shadow: 0 1px 0px #fff;
   background-image: -moz-linear-gradient(top, #f5f5f5 0%, #cccccc 50%, #b5b5b5 50%, #f5f5f5 100%);
   background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #f5f5f5), color-stop(0.5, #cccccc), color-stop(0.5, #b5b5b5), color-stop(1, #f5f5f5));
   -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#f5f5f5', EndColorStr='#b5b5b5')";
@@ -368,10 +368,10 @@
     color: #333; } }
 
 .ui-btn-hover-e {
-  border: 1px solid       #777;
+  border: 1px solid #777;
   background: #e5e5e5;
   color: #333;
-  text-shadow: 0 1px 0px  #fff;
+  text-shadow: 0 1px 0px #fff;
   background-image: -moz-linear-gradient(top, white 0%, #dddddd 50%, #cccccc 50%, white 100%);
   background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, white), color-stop(0.5, #dddddd), color-stop(0.5, #cccccc), color-stop(1, white));
   -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#ffffff', EndColorStr='#cccccc')";
@@ -379,7 +379,7 @@
     color: #333; } }
 
 .ui-btn-down-e {
-  border: 1px solid       #888;
+  border: 1px solid #888;
   background: #ccc;
   color: #333;
   background-image: -moz-linear-gradient(top, #dddddd 0%, #cccccc 50%, #bbbbbb 50%, #dddddd 100%);
@@ -393,14 +393,14 @@
   cursor: pointer;
   font-weight: bold;
   text-decoration: none;
-  text-shadow: 0 1px 0px  #fff; }
+  text-shadow: 0 1px 0px #fff; }
 
 .ui-body-e {
   font-weight: normal;
-  border: 1px solid       #aaa;
+  border: 1px solid #aaa;
   background: #ccc;
   color: #111;
-  text-shadow: 0 1px 0px  #fff;
+  text-shadow: 0 1px 0px #fff;
   background-image: image_url("jquery/mobile/valencia/texture_075.png");
   font-family: Helvetica, Arial, sans-serif;
   input, select, textarea, button {
@@ -426,10 +426,10 @@ a.ui-link-inherit {
   font-weight: bold;
   cursor: pointer;
   text-decoration: none;
-  border: 1px solid       #FFBC19;
+  border: 1px solid #FFBC19;
   background: #4596ce;
   color: #222;
-  text-shadow: 0 1px 0px  #eee;
+  text-shadow: 0 1px 0px #eee;
   background-image: -moz-linear-gradient(top, #ffdc52, #ffbc19);
   background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #ffdc52), color-stop(1, #ffbc19));
   -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#FFDC52', EndColorStr='#FFBC19')";
@@ -439,7 +439,7 @@ a.ui-link-inherit {
 /* button Inner Highlight */
 
 .ui-btn-inner {
-  border-top: 1px solid   #fff;
+  border-top: 1px solid #fff;
   border-color: rgba(255, 255, 255, 0.25); }
 
 /* Container Corner radius */
@@ -543,7 +543,21 @@ a.ui-link-inherit {
   border-radius: 9px; }
 
 /* retina */
-@media screen and (-webkit-min-device-pixel-ratio: 2), screen and (max--moz-device-pixel-ratio: 2) {
+
+@media screen and
+
+(
+-webkit-min-device-pixel-ratio:
+
+    2
+)
+, screen and
+
+(
+max--moz-device-pixel-ratio:
+
+    2
+) {
   .ui-icon {
     background-size: 558px 18px;
     background-image: image_url("jquery/mobile/valencia/icons-36-white.png"); }

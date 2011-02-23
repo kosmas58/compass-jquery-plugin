@@ -1,5 +1,5 @@
 module Ical
-  module Calendar    
-   
+  module Calendar
+
   end
 end
