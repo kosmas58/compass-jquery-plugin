@@ -458,8 +458,8 @@
                 });
 
                 // populate drop down with all available operators
-                if (cm.opts) {
-                    op = cm.opts;
+                if (cm.searchoptions.sopt) {
+                    op = cm.searchoptions.sopt;
                 }
                 else if (that.p.sopt) {
                     op = that.p.sopt;
