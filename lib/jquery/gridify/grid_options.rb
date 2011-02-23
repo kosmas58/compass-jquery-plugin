@@ -13,8 +13,8 @@ module Gridify
                   # { :body => { "title" => {"width" => 98} }}
                   :colNames, # Column names
                   :colInclude, # included submodels
-                  :rowActions, # column for in row actions
-                  #:widths,               # hash of column width (key = data type)
+                  :rowActions, # column for in row actions - values: :client or :server default: :client
+                  #:widths,    # hash of column width (key = data type)
                   :searchable, # default: true (used in generating columns, changing has no effect on existing cols)
                   :sortable, # default: true (used in generating columns, changing has no effect on existing cols)
                   :editable, # default: false (used in generating columns, changing has no effect on existing cols)
