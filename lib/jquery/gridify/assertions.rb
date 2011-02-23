@@ -17,7 +17,7 @@ module Gridify
       invalid_keys = hash.keys - valid_keys
       raise ArgumentError, "Invalid key(s): #{invalid_keys.join(', ')}" unless invalid_keys.empty?
     end
-    
+
     # Validates that the given hash only includes at *most* one of a set of
     # exclusive keys.  If more than one key is found, an ArgumentError will be
     # raised.

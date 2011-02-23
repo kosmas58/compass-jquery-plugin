@@ -8,59 +8,54 @@
     See the README for documentation and license.
 */
 
-.zflow
-{
+.zflow {
     -webkit-touch-callout: none;
     -webkit-text-size-adjust: none;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
-.gallery div.centering
-{
-/*
-    position: absolute;
-*/
+.gallery div.centering {
+    /*
+        position: absolute;
+    */
     -webkit-perspective: 600;
     -webkit-transform-style: preserve-3d;
     -webkit-transform: translate3d(0, 0, 0);
 }
 
-.zflow div.tray
-{
+.zflow div.tray {
     position: absolute;
     left: 50%;
     top: 50%;
-    
-    -webkit-transform-style: preserve-3d;
-/*    -webkit-transform: translate3d(0, 0, 0); */
-	-webkit-transform: translateX(0px);
+
+    -webkit-transform-style: preserve-3d; /*    -webkit-transform: translate3d(0, 0, 0); */
+    -webkit-transform: translateX(0px);
 
     -webkit-transition-property: -webkit-transform;
     -webkit-transition-duration: 0.4s;
     -webkit-transition-timing-function: ease-out;
 }
 
-.zflow div.cell
-{
+.zflow div.cell {
     position: absolute;
-    -webkit-transform-style: preserve-3d;
-/*    -webkit-transform: translate3d(0, 0, 0); */
-	-webkit-transform: translateX(0px);
+    -webkit-transform-style: preserve-3d; /*    -webkit-transform: translate3d(0, 0, 0); */
+    -webkit-transform: translateX(0px);
 
     -webkit-transition-property: -webkit-transform opacity;
     -webkit-transition-duration: 0.4s;
     -webkit-transition-timing-function: ease-out;
 }
 
-.zflow div.cell img
-{
+.zflow div.cell img {
     position: absolute;
 }
 
-.zflow div.cell canvas
-{
+.zflow div.cell canvas {
     position: absolute;
 }
 
 /*  Added the caption style */
-.zflow div.cell caption { position: absolute; text-align: left; }
+.zflow div.cell caption {
+    position: absolute;
+    text-align: left;
+}

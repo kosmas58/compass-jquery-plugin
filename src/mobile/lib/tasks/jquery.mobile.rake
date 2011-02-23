@@ -27,26 +27,26 @@ end
 
 namespace :jquery do
   namespace :mobile do
-    
+
     namespace :haml do
       desc 'Cleanup directory'
-      task :cleanup, :dir do | t, args |
+      task :cleanup, :dir do |t, args|
         cleanup(args[:dir])
       end
     end
-    
+
     namespace :convert do
       desc 'Convert API-Viewer files to haml'
       task :api do
         puts "Haml conversion started for API-Viewer:"
-        
+
         path = File.join(JQ_MOBILE_SRC, 'experiments/api-viewer')
         cleanup("#{path}/*.html.haml")
         Dir["#{path}/*.html"].each do |src|
           dest = src.gsub(/\.html$/, '.html.haml')
           convert2haml(src, dest)
         end
-        
+
         path = File.join(path, 'docs')
         cleanup("#{path}/*.html.haml")
         Dir["#{path}/**/*.html"].each do |src|
@@ -55,18 +55,18 @@ namespace :jquery do
         end
         puts "Haml conversion finished for API-Viewer."
       end
-      
+
       desc 'Convert /docs files to haml'
       task :docs do
         puts "Haml conversion started for /docs files:"
-        
+
         path = File.join(JQ_MOBILE_SRC, 'docs')
         cleanup("#{path}/*.html.haml")
         Dir["#{path}/*.html"].each do |src|
           dest = src.gsub(/\.html$/, '.html.haml')
           convert2haml(src, dest)
         end
-        
+
         cleanup("#{path}/**/*.html.haml")
         Dir["#{path}/**/*.html"].each do |src|
           dest = src.gsub(/\.html$/, '.html.haml')
@@ -74,11 +74,11 @@ namespace :jquery do
         end
         puts "Haml conversion finished for /docs files."
       end
-      
+
       desc 'Convert /experiments files to haml'
       task :experiments do
         puts "Haml conversion started for /experiments files:"
-        
+
         path = File.join(JQ_MOBILE_SRC, 'experiments')
         cleanup("#{path}/**/*.html.haml")
         Dir["#{path}/**/*.html"].each do |src|
@@ -88,11 +88,11 @@ namespace :jquery do
         end
         puts "Haml conversion finished  for /experiments files."
       end
-      
+
       desc 'Convert /speed files to haml'
       task :speed do
         puts "Haml conversion started for /speed files:"
-        
+
         path = File.join(JQ_MOBILE_SRC, 'speed')
         cleanup("#{path}/*.html.haml")
         Dir["#{path}/*.html"].each do |src|

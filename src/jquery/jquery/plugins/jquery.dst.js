@@ -1,154 +1,157 @@
 /* DSt: 
-   a simple, agnostic DOM Storage library.
-   http://github.com/gamache/DSt
-    
-   AUTHORSHIP:
-   copyright 2010  pete gamache  gamache!@#$!@#gmail.com
-   licensed under the MIT License and/or the GPL version 2
+ a simple, agnostic DOM Storage library.
+ http://github.com/gamache/DSt
 
-   SYNOPSIS:
-   DSt uses the localStorage mechanism to provide per-site, persistent
-   storage of JSON-encodable data.
+ AUTHORSHIP:
+ copyright 2010  pete gamache  gamache!@#$!@#gmail.com
+ licensed under the MIT License and/or the GPL version 2
 
-   USAGE:
+ SYNOPSIS:
+ DSt uses the localStorage mechanism to provide per-site, persistent
+ storage of JSON-encodable data.
 
-    DSt.set(key, value);         // sets stored value for given key
-    var value = DSt.get(key);    // returns stored value for given key
+ USAGE:
 
-    DSt.store(input_elt);        // stores value of a form input element
-    DSt.recall(input_elt);       // recalls stored value of a form input elt
+ DSt.set(key, value);         // sets stored value for given key
+ var value = DSt.get(key);    // returns stored value for given key
 
-    DSt.store_form(form_elt);    // runs DSt.store(elt) on each form input
-    DSt.populate_form(form_elt); // runs DSt.recall(elt) on each form input
+ DSt.store(input_elt);        // stores value of a form input element
+ DSt.recall(input_elt);       // recalls stored value of a form input elt
 
-    Element IDs may always be given in place of the elements themselves.
-    Values handled by DSt.get/DSt.set can be anything JSON-encodable.
+ DSt.store_form(form_elt);    // runs DSt.store(elt) on each form input
+ DSt.populate_form(form_elt); // runs DSt.recall(elt) on each form input
 
-    You may use jQuery.DSt or $.DSt instead of DST if you're using 
-      jquery.dst.js.
-*/
+ Element IDs may always be given in place of the elements themselves.
+ Values handled by DSt.get/DSt.set can be anything JSON-encodable.
 
-jQuery.DSt = (function(){var a = {
-  
-  version: 0.002005,
+ You may use jQuery.DSt or $.DSt instead of DST if you're using
+ jquery.dst.js.
+ */
 
-  get: function (key) { 
-    var value = localStorage.getItem(key);
-    if (value === undefined || value === null) 
-      value = 'null';
-    else 
-      value = value.toString();
-    return JSON.parse(value);
-  },
- 
-  set: function (key, value) { 
-    return localStorage.setItem(key, JSON.stringify(value)); 
-  },
+jQuery.DSt = (function() {
+    var a = {
 
+        version: 0.002005,
 
-  store: function (elt) {
-    if (typeof(elt) == 'string') elt = document.getElementById(elt);
-    if (!elt || elt.name == '') return this; // bail on nameless/missing elt
+        get: function (key) {
+            var value = localStorage.getItem(key);
+            if (value === undefined || value === null)
+                value = 'null';
+            else
+                value = value.toString();
+            return JSON.parse(value);
+        },
 
-    var key = a._form_elt_key(elt);
-
-    if (elt.type == 'checkbox') {
-      a.set(key, elt.checked ? 1 : 0);
-    }
-    else if (elt.type == 'radio') {
-      a.set(key, a._radio_value(elt));
-    }
-    else {
-      a.set(key, elt.value || '');
-    }
-
-    return this;
-  },
-
-  recall: function (elt) {
-    if (typeof(elt) == 'string') elt = document.getElementById(elt);
-    if (!elt || elt.name == '') return this; // bail on nameless/missing elt
-    
-    var key = a._form_elt_key(elt);
-    var stored_value = a.get(key);
-
-    if (elt.type == 'checkbox') {
-      elt.checked = !!stored_value;
-    }
-    else if (elt.type == 'radio') {
-      if (elt.value == stored_value) elt.checked = true;
-    }
-    else {
-      elt.value = stored_value || '';
-    }
-
-    return this;
-  },
-
-  // returns a key string, based on form name and form element name
-  _form_elt_key: function (form_elt) {
-    return  '_form_' + form_elt.form.name + '_field_' + form_elt.name;
-  },
-
-  // returns the selected value of a group of radio buttons, or null
-  // if none are selected
-  _radio_value: function (radio_elt) {
-    if (typeof(radio_elt)=='string') 
-      radio_elt=document.getElementById(radio_elt);
-
-    var radios = radio_elt.form.elements[radio_elt.name];
-    var nradios = radios.length;
-    var value = null;
-    for (var i=0; i<nradios; i++) {
-      if (radios[i].checked) value = radios[i].value;
-    }
-    return value;
-  },
+        set: function (key, value) {
+            return localStorage.setItem(key, JSON.stringify(value));
+        },
 
 
+        store: function (elt) {
+            if (typeof(elt) == 'string') elt = document.getElementById(elt);
+            if (!elt || elt.name == '') return this; // bail on nameless/missing elt
 
-  recall_form: function (form) {
-    return a._apply_fn_to_form_inputs(form, a.recall);
-  },
+            var key = a._form_elt_key(elt);
 
-  store_form: function (form) {
-    return a._apply_fn_to_form_inputs(form, a.store);
-  },
+            if (elt.type == 'checkbox') {
+                a.set(key, elt.checked ? 1 : 0);
+            }
+            else if (elt.type == 'radio') {
+                a.set(key, a._radio_value(elt));
+            }
+            else {
+                a.set(key, elt.value || '');
+            }
 
-  _apply_fn_to_form_inputs: function (form, fn) {
-    if (typeof(form)=='string') form=document.getElementById(form);
-    var nelts = form.elements.length;
-    for (var i=0; i<nelts; i++) {
-      var node = form.elements[i];
-      if (node.tagName == 'TEXTAREA' ||
-          node.tagName == 'INPUT'    && 
-             node.type != 'file'     &&
-             node.type != 'button'   &&
-             node.type != 'image'    &&
-             node.type != 'password' && 
-             node.type != 'submit'   &&
-             node.type != 'reset'       ) { fn(node); }
-    }
-    return this;
-  },
-  
+            return this;
+        },
+
+        recall: function (elt) {
+            if (typeof(elt) == 'string') elt = document.getElementById(elt);
+            if (!elt || elt.name == '') return this; // bail on nameless/missing elt
+
+            var key = a._form_elt_key(elt);
+            var stored_value = a.get(key);
+
+            if (elt.type == 'checkbox') {
+                elt.checked = !!stored_value;
+            }
+            else if (elt.type == 'radio') {
+                if (elt.value == stored_value) elt.checked = true;
+            }
+            else {
+                elt.value = stored_value || '';
+            }
+
+            return this;
+        },
+
+        // returns a key string, based on form name and form element name
+        _form_elt_key: function (form_elt) {
+            return  '_form_' + form_elt.form.name + '_field_' + form_elt.name;
+        },
+
+        // returns the selected value of a group of radio buttons, or null
+        // if none are selected
+        _radio_value: function (radio_elt) {
+            if (typeof(radio_elt) == 'string')
+                radio_elt = document.getElementById(radio_elt);
+
+            var radios = radio_elt.form.elements[radio_elt.name];
+            var nradios = radios.length;
+            var value = null;
+            for (var i = 0; i < nradios; i++) {
+                if (radios[i].checked) value = radios[i].value;
+            }
+            return value;
+        },
 
 
-  // _storage_types() returns a string containing every supported
-  // storage mechanism
-  _storage_types: function () {
-    var st = '';
-    for (var i in window) {
-      if (i=='sessionStorage' || i=='globalStorage' ||
-          i=='localStorage'   || i=='openDatabase'     )  {
-        st += st ? (' '+i) : i; 
-      }
-    }
-    return st;
-  },
 
-  javascript_accepts_trailing_comma: false
-};
-return a;
+        recall_form: function (form) {
+            return a._apply_fn_to_form_inputs(form, a.recall);
+        },
+
+        store_form: function (form) {
+            return a._apply_fn_to_form_inputs(form, a.store);
+        },
+
+        _apply_fn_to_form_inputs: function (form, fn) {
+            if (typeof(form) == 'string') form = document.getElementById(form);
+            var nelts = form.elements.length;
+            for (var i = 0; i < nelts; i++) {
+                var node = form.elements[i];
+                if (node.tagName == 'TEXTAREA' ||
+                        node.tagName == 'INPUT' &&
+                                node.type != 'file' &&
+                                node.type != 'button' &&
+                                node.type != 'image' &&
+                                node.type != 'password' &&
+                                node.type != 'submit' &&
+                                node.type != 'reset') {
+                    fn(node);
+                }
+            }
+            return this;
+        },
+
+
+
+        // _storage_types() returns a string containing every supported
+        // storage mechanism
+        _storage_types: function () {
+            var st = '';
+            for (var i in window) {
+                if (i == 'sessionStorage' || i == 'globalStorage' ||
+                        i == 'localStorage' || i == 'openDatabase') {
+                    st += st ? (' ' + i) : i;
+                }
+            }
+            return st;
+        },
+
+        javascript_accepts_trailing_comma: false
+    };
+    return a;
 })();
 

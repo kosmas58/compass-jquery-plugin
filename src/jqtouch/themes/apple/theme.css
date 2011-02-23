@@ -1,14 +1,14 @@
 body {
-    background: rgb(0,0,0);
+    background: rgb(0, 0, 0);
 }
 
 #jqt > * {
-    background: rgb(197,204,211) url(img/pinstripes.png);
+    background: rgb(197, 204, 211) url(img/pinstripes.png);
 }
 
 #jqt h1, #jqt h2 {
     font: bold 18px "Helvetica Neue", Helvetica;
-    text-shadow: rgba(255,255,255,.2) 0 1px 1px;
+    text-shadow: rgba(255, 255, 255, .2) 0 1px 1px;
     color: rgb(76, 86, 108);
     margin: 10px 20px 6px;
 }
@@ -25,7 +25,7 @@ body {
 }
 
 #jqt .black-translucent .toolbar {
-	margin-top: 20px;
+    margin-top: 20px;
 }
 
 #jqt .toolbar > h1 {
@@ -75,7 +75,7 @@ body {
 }
 
 #jqt .button.active, #jqt .cancel.active, #jqt .add.active {
-    -webkit-border-image: url(img/toolButton.png) 0 5 0 5;	
+    -webkit-border-image: url(img/toolButton.png) 0 5 0 5;
 }
 
 #jqt .blueButton {
@@ -190,8 +190,8 @@ body {
     background-repeat: no-repeat;
 }
 
-#jqt ul li.arrow a { 
-	padding: 12px 22px 12px 10px;
+#jqt ul li.arrow a {
+    padding: 12px 22px 12px 10px;
 }
 
 #jqt ul.plastic li.arrow, #jqt ul.metal li.arrow {
@@ -211,13 +211,14 @@ body {
     display: block;
     padding: 12px 10px 12px 10px;
     margin: -10px;
-    -webkit-tap-highlight-color: rgba(0,0,0,0);
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
 #jqt ul li a.active {
     background-color: #194fdb;
     color: #fff;
 }
+
 #jqt ul li.arrow a.active {
     background-image: url(img/listArrowSel.png);
     background-position: right center;
@@ -339,7 +340,7 @@ body {
 
 #jqt ul li input[type="checkbox"], #jqt ul li input[type="radio"] {
     margin: 0;
-    color: rgb(50,79,133);
+    color: rgb(50, 79, 133);
     padding: 10px 10px;
 }
 
@@ -357,7 +358,7 @@ body {
 #jqt ul.edgetoedge, #jqt ul.edgetoedge * {
     -webkit-border-radius: 0 !important;
 }
-	
+
 #jqt ul.edgetoedge li.sep {
     background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(139, 159, 171, 1)), to(rgba(181, 193, 201, 1.0)));
     border-bottom: 1px solid #b5c1c9;
@@ -371,8 +372,8 @@ body {
 
 #jqt ul.edgetoedge h4 {
     color: #fff;
-    background: rgb(154,159,170) url(img/listGroup.png) top left repeat-x;
-    border-top: 1px solid rgb(165,177,186);
+    background: rgb(154, 159, 170) url(img/listGroup.png) top left repeat-x;
+    border-top: 1px solid rgb(165, 177, 186);
     text-shadow: #666 0 1px 0;
     margin: 0;
     padding: 2px 10px;
@@ -381,7 +382,7 @@ body {
 #jqt .edgetoedge, #jqt .metal {
     margin: 0;
     padding: 0;
-    background-color: rgb(255,255,255);
+    background-color: rgb(255, 255, 255);
 }
 
 #jqt ul.edgetoedge, #jqt ul.metal, #jqt ul.plastic {
@@ -395,7 +396,7 @@ body {
 #jqt ul.metal {
     border-top: 0;
     border-bottom: 0;
-    background: rgb(180,180,180);
+    background: rgb(180, 180, 180);
 }
 
 #jqt ul.edgetoedge li:first-child,
@@ -422,8 +423,8 @@ body {
 }
 
 #jqt ul.edgetoedge h4 + ul {
-    border-top: 1px solid rgb(152,158,164);
-    border-bottom: 1px solid rgb(113,125,133);
+    border-top: 1px solid rgb(152, 158, 164);
+    border-bottom: 1px solid rgb(113, 125, 133);
 }
 
 /* @end */
@@ -451,7 +452,7 @@ body {
     font-size: 17px !important;
     line-height: 13px !important;
     font-weight: bold;
-    background: rgb(154,159,170);
+    background: rgb(154, 159, 170);
     color: #fff;
     -webkit-border-radius: 11px;
     padding: 4px 10px 5px 10px;
@@ -483,8 +484,8 @@ body {
 }
 
 #jqt ul.metal li {
-    border-top: 1px solid rgb(238,238,238);
-    border-bottom: 1px solid rgb(156,158,165);
+    border-top: 1px solid rgb(238, 238, 238);
+    border-bottom: 1px solid rgb(156, 158, 165);
     font-size: 26px;
     text-shadow: #fff 0 1px 0;
 }
@@ -496,7 +497,7 @@ body {
 }
 
 #jqt ul.metal li a:hover {
-    color: rgb(0,0,0);
+    color: rgb(0, 0, 0);
 }
 
 #jqt ul.metal li:hover small {
@@ -525,13 +526,13 @@ body {
 }
 
 #jqt ul.metal li.arrow {
-    background:  url(img/chevron.png) right center no-repeat;
+    background: url(img/chevron.png) right center no-repeat;
 }
 
 #jqt .plastic {
     margin: 0;
     padding: 0;
-    background: rgb(173,173,173);
+    background: rgb(173, 173, 173);
 }
 
 #jqt ul.plastic {
@@ -540,19 +541,19 @@ body {
     border-left: 0;
     border-right: 0;
     border-top: 0;
-    background-color: rgb(173,173,173);
+    background-color: rgb(173, 173, 173);
 }
 
 #jqt ul.plastic li {
     -webkit-border-radius: 0;
-    border-top: 1px solid rgb(191,191,191);
-    border-bottom: 1px solid rgb(157,157,157);
+    border-top: 1px solid rgb(191, 191, 191);
+    border-bottom: 1px solid rgb(157, 157, 157);
 }
 
 #jqt ul.plastic li:nth-child(odd) {
-    background-color: rgb(152,152,152);
-    border-top: 1px solid rgb(181,181,181);
-    border-bottom: 1px solid rgb(138,138,138);
+    background-color: rgb(152, 152, 152);
+    border-top: 1px solid rgb(181, 181, 181);
+    border-bottom: 1px solid rgb(138, 138, 138);
 }
 
 #jqt ul.plastic + p {
@@ -569,16 +570,16 @@ body {
 }
 
 #jqt ul.plastic li a {
-    text-shadow: rgb(211,211,211) 0 1px 0;
+    text-shadow: rgb(211, 211, 211) 0 1px 0;
 }
 
 #jqt ul.plastic li:nth-child(odd) a {
-    text-shadow: rgb(191,191,191) 0 1px 0;
+    text-shadow: rgb(191, 191, 191) 0 1px 0;
 }
 
 #jqt ul.plastic li small {
     color: #3C3C3C;
-    text-shadow: rgb(211,211,211) 0 1px 0;
+    text-shadow: rgb(211, 211, 211) 0 1px 0;
     font-size: 13px;
     font-weight: bold;
     text-transform: uppercase;
@@ -597,8 +598,8 @@ body {
 }
 
 #jqt #plastic ul.minibanner li {
-    border: 1px solid rgb(138,138,138);
-    background-color: rgb(152,152,152);
+    border: 1px solid rgb(138, 138, 138);
+    background-color: rgb(152, 152, 152);
     width: 145px;
     height: 81px;
     float: left;
@@ -607,8 +608,8 @@ body {
 }
 
 #jqt #plastic ul.bigbanner li {
-    border: 1px solid rgb(138,138,138);
-    background-color: rgb(152,152,152);
+    border: 1px solid rgb(138, 138, 138);
+    background-color: rgb(152, 152, 152);
     width: 296px;
     height: 140px;
     float: left;
@@ -649,9 +650,9 @@ body {
 }
 
 #jqt ul.individual li {
-    color: rgb(183,190,205);
+    color: rgb(183, 190, 205);
     background: white;
-    border: 1px solid rgb(180,180,180);
+    border: 1px solid rgb(180, 180, 180);
     font-size: 14px;
     text-align: center;
     -webkit-border-radius: 8px;
@@ -667,7 +668,7 @@ body {
 }
 
 #jqt ul.individual li a {
-    color: rgb(50,79,133);
+    color: rgb(50, 79, 133);
     line-height: 16px;
     margin: -11px -10px -14px -10px;
     padding: 11px 10px 14px 10px;
@@ -683,7 +684,6 @@ body {
 
 /* @group Toggle */
 
-
 #jqt .toggle {
     width: 94px;
     position: relative;
@@ -698,7 +698,7 @@ body {
 }
 
 #jqt .toggle input[type="checkbox"] {
-    -webkit-tap-highlight-color: rgba(0,0,0,0);
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     margin: 0;
     -webkit-border-radius: 5px;
     background: #fff url(img/on_off.png) 0 0 no-repeat;
@@ -713,24 +713,24 @@ body {
     top: 0;
     left: -55px;
 }
+
 /* @end */
-
-
 
 #jqt .info {
     background: #dce1eb;
     font-size: 12px;
     line-height: 16px;
     text-align: center;
-    text-shadow: rgba(255,255,255,.8) 0 1px 0;
+    text-shadow: rgba(255, 255, 255, .8) 0 1px 0;
     color: rgb(76, 86, 108);
     padding: 15px;
     border-top: 1px solid rgba(76, 86, 108, .3);
     font-weight: bold;
 }
+
 input[type='submit'] {
     -webkit-border-radius: 4px;
-    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(238,238,238,1)), to(rgba(156,158,160,1)));
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(238, 238, 238, 1)), to(rgba(156, 158, 160, 1)));
     border: 1px outset #aaa;
     display: block;
     font-size: inherit;

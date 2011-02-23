@@ -17,19 +17,19 @@ end
 
 namespace :jquery do
   namespace :tools do
-    
+
     namespace :haml do
       desc 'Cleanup directory'
-      task :cleanup, :dir do | t, args |
+      task :cleanup, :dir do |t, args|
         cleanup(args[:dir])
       end
     end
-    
+
     namespace :convert do
       desc 'Convert /test files to haml'
       task :test do
         puts "Haml conversion started for /test files:"
-        
+
         path = File.join(JQ_TOOLS_SRC, 'test')
         cleanup("#{path}/**/*.html.haml")
         Dir["#{path}/**/*.htm"].each do |src|

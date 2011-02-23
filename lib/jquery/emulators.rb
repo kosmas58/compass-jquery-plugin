@@ -1,3 +1,3 @@
-module Emulators#:nodoc:  
+module Emulators #:nodoc:
 end
 

@@ -1,31 +1,30 @@
 /*
 
-            _/    _/_/    _/_/_/_/_/                              _/       
-               _/    _/      _/      _/_/    _/    _/    _/_/_/  _/_/_/    
-          _/  _/  _/_/      _/    _/    _/  _/    _/  _/        _/    _/   
-         _/  _/    _/      _/    _/    _/  _/    _/  _/        _/    _/    
-        _/    _/_/  _/    _/      _/_/      _/_/_/    _/_/_/  _/    _/     
-       _/                                                                  
-    _/
+ _/    _/_/    _/_/_/_/_/                              _/
+ _/    _/      _/      _/_/    _/    _/    _/_/_/  _/_/_/
+ _/  _/  _/_/      _/    _/    _/  _/    _/  _/        _/    _/
+ _/  _/    _/      _/    _/    _/  _/    _/  _/        _/    _/
+ _/    _/_/  _/    _/      _/_/      _/_/_/    _/_/_/  _/    _/
+ _/
+ _/
 
-    Created by David Kaneda <http://www.davidkaneda.com>
-    Documentation and issue tracking on Google Code <http://code.google.com/p/jqtouch/>
-    
-    Special thanks to Jonathan Stark <http://jonathanstark.com/>
+ Created by David Kaneda <http://www.davidkaneda.com>
+ Documentation and issue tracking on Google Code <http://code.google.com/p/jqtouch/>
 
-    Lots of this code is specifically derived from Jonathan's book,
-    "Building iPhone Apps with HTML, CSS, and JavaScript"
-    
-    (c) 2009 by jQTouch project members.
-    See LICENSE.txt for license.
+ Special thanks to Jonathan Stark <http://jonathanstark.com/>
 
-*/
+ Lots of this code is specifically derived from Jonathan's book,
+ "Building iPhone Apps with HTML, CSS, and JavaScript"
+
+ (c) 2009 by jQTouch project members.
+ See LICENSE.txt for license.
+
+ */
 
 (function($) {
-    if ($.jQTouch)
-    {
-        $.jQTouch.addExtension(function Offline(){
-            
+    if ($.jQTouch) {
+        $.jQTouch.addExtension(function Offline() {
+
             // Convenience array of status values
             var cacheStatusValues = [];
             cacheStatusValues[0] = 'uncached';
@@ -61,38 +60,41 @@
                 status = cacheStatusValues[cache.status];
                 type = e.type;
                 message = 'online: ' + online;
-                message+= ', event: ' + type;
-                message+= ', status: ' + status;
+                message += ', event: ' + type;
+                message += ', status: ' + status;
                 if (type == 'error' && navigator.onLine) {
-                    message+= ' There was an unknown error, check your Cache Manifest.';
+                    message += ' There was an unknown error, check your Cache Manifest.';
                 }
                 console.log(message);
             }
-            
+
             function isOnline() {
                 return navigator.onLine;
             }
-            
+
             if (!$('html').attr('manifest')) {
                 console.log('No Cache Manifest listed on the <html> tag.')
             }
 
             // Swap in newly download files when update is ready
-            cache.addEventListener('updateready', function(e){
-                    // Don't perform "swap" if this is the first cache
-                    if (cacheStatusValues[cache.status] != 'idle') {
-                        cache.swapCache();
-                        console.log('Swapped/updated the Cache Manifest.');
-                    }
+            cache.addEventListener('updateready', function(e) {
+                // Don't perform "swap" if this is the first cache
+                if (cacheStatusValues[cache.status] != 'idle') {
+                    cache.swapCache();
+                    console.log('Swapped/updated the Cache Manifest.');
                 }
-            , false);
+            }
+                    , false);
 
             // These two functions check for updates to the manifest file
-            function checkForUpdates(){
+            function checkForUpdates() {
                 cache.update();
             }
-            function autoCheckForUpdates(){
-                setInterval(function(){cache.update()}, 10000);
+
+            function autoCheckForUpdates() {
+                setInterval(function() {
+                    cache.update()
+                }, 10000);
             }
 
             return {

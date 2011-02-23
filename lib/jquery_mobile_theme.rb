@@ -12,11 +12,11 @@ class JqueryMobileTheme
   # Create a sass file of variables names and copy the images
   def convert_theme(name, dir, stylesheets)
     theme = File.read(File.join(dir, @theme_filename))
-    
+
     # Fix stuff
     theme.gsub!(/\;filter:Alpha/, "; filter: Alpha")
     theme.gsub! /url\(images(.+?)\)/, "image_url(\"jquery/mobile/#{name}\\1\")"
-    
+
     # Convert the stylesheet
     open File.join(MOBILE_DEST_THEMES, "#{name}.scss"), 'w' do |f|
       sass = MOBILE_MESSAGE2

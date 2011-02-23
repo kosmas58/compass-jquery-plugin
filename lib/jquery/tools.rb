@@ -1,2 +1,2 @@
-module Tools#:nodoc:  
+module Tools #:nodoc:
 end
