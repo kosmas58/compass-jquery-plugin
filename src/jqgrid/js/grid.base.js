@@ -1,3 +1,6 @@
+// ==ClosureCompiler==
+// @compilation_level SIMPLE_OPTIMIZATIONS
+
 /*
  * jqGrid  3.8.2  - jQuery Grid
  * Copyright (c) 2008, Tony Tomov, tony@trirand.com
@@ -942,7 +945,7 @@
                 alert("Element is not a table");
                 return;
             }
-            $(this).empty();
+            $(this).empty().attr("tabindex", "1");
             this.p = p;
             var i, dir,ts;
             if (this.p.colNames.length === 0) {
@@ -1124,12 +1127,12 @@
                     addXmlData = function (xml, t, rcnt, more, adjust) {
                         var startReq = new Date(),
                                 locdata = (ts.p.datatype != "local" && ts.p.loadonce) || ts.p.datatype == "xmlstring",
-                                xmlid,
+                                xmlid = "_id_",
                                 frd = ts.p.datatype == "local" ? "local" : "xml";
                         if (locdata) {
                             ts.p.data = [];
                             ts.p._index = {};
-                            ts.p.localReader.id = xmlid = "_id_";
+                            ts.p.localReader.id = xmlid;
                         }
                         ts.p.reccount = 0;
                         if ($.isXMLDoc(xml)) {
@@ -1209,7 +1212,7 @@
                                 rid = getId(xmlr, br + j);
                                 altr = rcnt === 0 ? 0 : rcnt + 1;
                                 cn1 = (altr + j) % 2 == 1 ? cn : '';
-                                rowData.push("<tr" + hiderow + " id=\"" + rid + "\" role=\"row\" class =\"ui-widget-content jqgrow ui-row-" + ts.p.direction + "" + cn1 + "\">");
+                                rowData.push("<tr" + hiderow + " id=\"" + rid + "\" tabindex=\"-1\" role=\"row\" class =\"ui-widget-content jqgrow ui-row-" + ts.p.direction + "" + cn1 + "\">");
                                 if (ts.p.rownumbers === true) {
                                     rowData.push(addRowNum(0, j, ts.p.page, ts.p.rowNum));
                                     ni = 1;
@@ -1252,22 +1255,13 @@
                                     grpdata = $(ts).jqGrid('groupingPrepare', rowData, grpitem, grpdata, rd);
                                     rowData = [];
                                 }
-                                if (locdata) {
+                                if (locdata || ts.p.treeGrid === true) {
                                     rd[xmlid] = rid;
                                     ts.p.data.push(rd);
+                                    ts.p._index[rid] = ts.p.data.length - 1;
                                 }
                                 if (ts.p.gridview === false) {
-                                    if (ts.p.treeGrid === true) {
-                                        fpos = ts.p.treeANode > -1 ? ts.p.treeANode : 0;
-                                        row = $(rowData.join(''))[0]; // speed overhead
-                                        $(ts.rows[j + fpos]).after(row);
-                                        try {
-                                            $(ts).jqGrid("setTreeNode", rd, row);
-                                        } catch (e) {
-                                        }
-                                    } else {
-                                        $("tbody:first", t).append(rowData.join(''));
-                                    }
+                                    $("tbody:first", t).append(rowData.join(''));
                                     if (ts.p.subGrid === true) {
                                         try {
                                             $(ts).jqGrid("addSubGrid", ts.rows[ts.rows.length - 1], gi + ni);
@@ -1288,9 +1282,12 @@
                             }
                         }
                         if (ts.p.gridview === true) {
+                            fpos = ts.p.treeANode > -1 ? ts.p.treeANode : 0;
                             if (ts.p.grouping) {
                                 $(ts).jqGrid('groupingRender', grpdata, ts.p.colModel.length);
                                 grpdata = null;
+                            } else if (ts.p.treeGrid === true && fpos > 0) {
+                                $(ts.rows[fpos]).after(rowData.join(''));
                             } else {
                                 $("tbody:first", t).append(rowData.join(''));
                             }
@@ -1302,6 +1299,12 @@
                             }
                         }
                         rowData = null;
+                        if (ts.p.treeGrid === true) {
+                            try {
+                                $(ts).jqGrid("setTreeNode", fpos + 1, ir + fpos + 1);
+                            } catch (e) {
+                            }
+                        }
                         if (!ts.p.treeGrid && !ts.p.scroll) {
                             ts.grid.bDiv.scrollTop = 0;
                         }
@@ -1342,10 +1345,10 @@
                                 }
                                 rd[xmlid] = rid;
                                 ts.p.data.push(rd);
+                                ts.p._index[rid] = ts.p.data.length - 1;
                                 rd = {};
                                 ir++;
                             }
-                            refreshIndex();
                         }
                     },
                     addJSONData = function(data, t, rcnt, more, adjust) {
@@ -1361,12 +1364,12 @@
                             return;
                         }
 
-                        var dReader, locid, frd,
+                        var dReader, locid = "_id_", frd,
                                 locdata = (ts.p.datatype != "local" && ts.p.loadonce) || ts.p.datatype == "jsonstring";
                         if (locdata) {
                             ts.p.data = [];
                             ts.p._index = {};
-                            locid = ts.p.localReader.id = "_id_";
+                            ts.p.localReader.id = locid;
                         }
                         ts.p.reccount = 0;
                         if (ts.p.datatype == "local") {
@@ -1425,7 +1428,7 @@
                             }
                             altr = rcnt === 1 ? 0 : rcnt;
                             cn1 = (altr + i) % 2 == 1 ? cn : '';
-                            rowData.push("<tr" + hiderow + " id=\"" + idr + "\" role=\"row\" class= \"ui-widget-content jqgrow ui-row-" + ts.p.direction + "" + cn1 + "\">");
+                            rowData.push("<tr" + hiderow + " id=\"" + idr + "\" tabindex=\"-1\" role=\"row\" class= \"ui-widget-content jqgrow ui-row-" + ts.p.direction + "" + cn1 + "\">");
                             if (ts.p.rownumbers === true) {
                                 rowData.push(addRowNum(0, i, ts.p.page, ts.p.rowNum));
                                 ni = 1;
@@ -1460,22 +1463,13 @@
                                 grpdata = $(ts).jqGrid('groupingPrepare', rowData, grpitem, grpdata, rd);
                                 rowData = [];
                             }
-                            if (locdata) {
+                            if (locdata || ts.p.treeGrid === true) {
                                 rd[locid] = idr;
                                 ts.p.data.push(rd);
+                                ts.p._index[idr] = ts.p.data.length - 1;
                             }
                             if (ts.p.gridview === false) {
-                                if (ts.p.treeGrid === true) {
-                                    fpos = ts.p.treeANode > -1 ? ts.p.treeANode : 0;
-                                    row = $(rowData.join(''))[0];
-                                    $(ts.rows[i + fpos]).after(row);
-                                    try {
-                                        $(ts).jqGrid("setTreeNode", rd, row);
-                                    } catch (e) {
-                                    }
-                                } else {
-                                    $("#" + $.jgrid.jqID(ts.p.id) + " tbody:first").append(rowData.join(''));
-                                }
+                                $("#" + $.jgrid.jqID(ts.p.id) + " tbody:first").append(rowData.join(''));
                                 if (ts.p.subGrid === true) {
                                     try {
                                         $(ts).jqGrid("addSubGrid", ts.rows[ts.rows.length - 1], gi + ni);
@@ -1495,9 +1489,12 @@
                             }
                         }
                         if (ts.p.gridview === true) {
+                            fpos = ts.p.treeANode > -1 ? ts.p.treeANode : 0;
                             if (ts.p.grouping) {
                                 $(ts).jqGrid('groupingRender', grpdata, ts.p.colModel.length);
                                 grpdata = null;
+                            } else if (ts.p.treeGrid === true && fpos > 0) {
+                                $(ts.rows[fpos]).after(rowData.join(''));
                             } else {
                                 $("#" + $.jgrid.jqID(ts.p.id) + " tbody:first").append(rowData.join(''));
                             }
@@ -1509,6 +1506,12 @@
                             }
                         }
                         rowData = null;
+                        if (ts.p.treeGrid === true) {
+                            try {
+                                $(ts).jqGrid("setTreeNode", fpos + 1, ir + fpos + 1);
+                            } catch (e) {
+                            }
+                        }
                         if (!ts.p.treeGrid && !ts.p.scroll) {
                             ts.grid.bDiv.scrollTop = 0;
                         }
@@ -1554,11 +1557,11 @@
                                     }
                                     rd[locid] = idr;
                                     ts.p.data.push(rd);
+                                    ts.p._index[idr] = ts.p.data.length - 1;
                                     rd = {};
                                 }
                                 ir++;
                             }
-                            refreshIndex();
                         }
                     },
                     addLocalData = function() {
@@ -3076,17 +3079,14 @@
                 }
                 if (!$t.p.multiselect) {
                     if (pt.className !== "ui-subgrid") {
-                        if ($t.p.selrow) {
-                            $($t.rows.namedItem($t.p.selrow)).removeClass("ui-state-highlight").attr("aria-selected", "false");
-                        }
                         if ($t.p.selrow != pt.id) {
-                            $t.p.selrow = pt.id;
-                            $(pt).addClass("ui-state-highlight").attr("aria-selected", "true");
+                            $($t.rows.namedItem($t.p.selrow)).removeClass("ui-state-highlight").attr({"aria-selected":"false", "tabindex" : "-1"});
+                            $(pt).addClass("ui-state-highlight").attr({"aria-selected":true, "tabindex" : "0"});//.focus();
                             stat = true;
                         } else {
                             stat = false;
-                            $t.p.selrow = null;
                         }
+                        $t.p.selrow = pt.id;
                         if ($t.p.onSelectRow && onsr) {
                             $t.p.onSelectRow.call($t, pt.id, stat);
                         }
@@ -3255,6 +3255,14 @@
                         });
                         if (t.p.datatype == 'local') {
                             var pos = t.p._index[rowid];
+                            if (t.p.treeGrid) {
+                                for (var key in t.p.treeReader) {
+                                    if (lcdata.hasOwnProperty(t.p.treeReader[key])) {
+                                        delete lcdata[t.p.treeReader[key]];
+                                    }
+                                }
+                                ;
+                            }
                             if (typeof(pos) != 'undefined') {
                                 t.p.data[pos] = $.extend(true, t.p.data[pos], lcdata);
                             }
@@ -3342,7 +3350,7 @@
                             prp = t.formatCol(i, 1, v, rowid, data, true);
                             row += "<td role=\"gridcell\" aria-describedby=\"" + t.p.id + "_" + nm + "\" " + prp + ">" + v + "</td>";
                         }
-                        row = "<tr id=\"" + rowid + "\" role=\"row\" class=\"ui-widget-content jqgrow ui-row-" + t.p.direction + " " + cna + "\">" + row + "</tr>";
+                        row = "<tr id=\"" + rowid + "\" role=\"row\" tabindex=\"-1\" class=\"ui-widget-content jqgrow ui-row-" + t.p.direction + " " + cna + "\">" + row + "</tr>";
                         if (t.p.subGrid === true) {
                             row = $(row)[0];
                             $(t).jqGrid("addSubGrid", row, gi + ni);
@@ -3384,6 +3392,7 @@
                         }
                         k++;
                         if (t.p.datatype == 'local') {
+                            lcdata[t.p.localReader.id] = rowid;
                             t.p._index[rowid] = t.p.data.length;
                             t.p.data.push(lcdata);
                             lcdata = {};
@@ -3912,6 +3921,90 @@
                 }
             });
             return ret;
+        },
+        bindKeys : function(settings) {
+            var o = $.extend({
+                onEnter: null,
+                onSpace: null
+            }, settings || {});
+            return this.each(function() {
+                var $t = this;
+                if (!$('body').is('[role]')) {
+                    $('body').attr('role', 'application');
+                }
+                $($t).keydown(function(event) {
+                    var target = $($t).find('tr[tabindex=0]')[0], id, r, mind,
+                            expanded = $t.p.treeReader.expanded_field;
+                    //check for arrow keys
+                    if (target) {
+                        mind = $t.p._index[target.id];
+                        if (event.keyCode === 37 || event.keyCode === 38 || event.keyCode === 39 || event.keyCode === 40) {
+                            // up key
+                            if (event.keyCode == 38) {
+                                r = target.previousSibling;
+                                id = "";
+                                if (r) {
+                                    if ($(r).is(":hidden")) {
+                                        while (r) {
+                                            r = r.previousSibling;							//id = $(target).next().attr("id");
+
+                                            if (!$(r).is(":hidden") && $(r).hasClass('jqgrow')) {
+                                                id = r.id;
+                                                break;
+                                            }
+                                        }
+                                    } else {
+                                        id = r.id;
+                                    }
+                                }
+                                $($t).jqGrid('setSelection', id);
+                            }
+                            //if key is down arrow
+                            if (event.keyCode == 40) {
+                                r = target.nextSibling;
+                                id = "";
+                                if (r) {
+                                    if ($(r).is(":hidden")) {
+                                        while (r) {
+                                            r = r.nextSibling;
+                                            if (!$(r).is(":hidden") && $(r).hasClass('jqgrow')) {
+                                                id = r.id;
+                                                break;
+                                            }
+                                        }
+                                    } else {
+                                        id = r.id;
+                                    }
+                                }
+                                $($t).jqGrid('setSelection', id);
+                            }
+                            // left
+                            if (event.keyCode == 37) {
+                                if ($t.p.treeGrid && $t.p.data[mind][expanded]) {
+                                    $(target).find("div.treeclick").trigger('click');
+                                }
+                            }
+                            // right
+                            if (event.keyCode == 39) {
+                                if ($t.p.treeGrid && !$t.p.data[mind][expanded]) {
+                                    $(target).find("div.treeclick").trigger('click');
+                                }
+                            }
+                            return false;
+                        }
+                        //check if enter or space was pressed on a tree node
+                        else if ((event.keyCode == 13 || event.keyCode == 32)) {
+                            return false;
+                        }
+                    }
+                });
+            });
+        },
+        unbindKeys : function() {
+            return this.each(function() {
+                var $t = this;
+                $($t).unbind('keydown');
+            });
         }
     });
 })(jQuery);

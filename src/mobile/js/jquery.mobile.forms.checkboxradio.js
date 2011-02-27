@@ -49,7 +49,7 @@
                     var oe = event.originalEvent.touches[0];
                     if (label.data("movestart")) {
                         if (Math.abs(label.data("movestart")[0] - oe.pageX) > 10 ||
-                                Math.abs(abel.data("movestart")[1] - oe.pageY) > 10) {
+                                Math.abs(label.data("movestart")[1] - oe.pageY) > 10) {
                             label.data("moved", true);
                         }
                     }
@@ -59,6 +59,11 @@
                 },
 
                 "touchend mouseup": function(event) {
+                    if (input.is(":disabled")) {
+                        event.preventDefault();
+                        return;
+                    }
+
                     label.removeData("movestart");
                     if (label.data("etype") && label.data("etype") !== event.type || label.data("moved")) {
                         label.removeData("etype").removeData("moved");

@@ -1821,19 +1821,24 @@
         // guess if it came from the history menu
         if (fromHashChange) {
 
+            // determine new page index
+            var newActiveIndex;
+
             // check if url is in history and if it's ahead or behind current page
             $.each(urlHistory.stack, function(i) {
                 //if the url is in the stack, it's a forward or a back
                 if (this.url === url) {
-                    urlIndex = i;
                     //define back and forward by whether url is older or newer than current page
                     back = i < urlHistory.activeIndex;
                     //forward set to opposite of back
                     forward = !back;
                     //reset activeIndex to this one
-                    urlHistory.activeIndex = i;
+                    newActiveIndex = i;
                 }
             });
+
+            // save new page index
+            urlHistory.activeIndex = newActiveIndex ? newActiveIndex : urlHistory.activeIndex;
 
             //if it's a back, use reverse animation
             if (back) {
@@ -2048,6 +2053,7 @@
                 url: fileUrl,
                 type: type,
                 data: data,
+                dataType: "html",
                 success: function(html) {
                     //pre-parse html to check for a data-url,
                     //use it as the new fileUrl, base path, etc
@@ -2605,7 +2611,7 @@
                     var oe = event.originalEvent.touches[0];
                     if (label.data("movestart")) {
                         if (Math.abs(label.data("movestart")[0] - oe.pageX) > 10 ||
-                                Math.abs(abel.data("movestart")[1] - oe.pageY) > 10) {
+                                Math.abs(label.data("movestart")[1] - oe.pageY) > 10) {
                             label.data("moved", true);
                         }
                     }
@@ -2615,6 +2621,11 @@
                 },
 
                 "touchend mouseup": function(event) {
+                    if (input.is(":disabled")) {
+                        event.preventDefault();
+                        return;
+                    }
+
                     label.removeData("movestart");
                     if (label.data("etype") && label.data("etype") !== event.type || label.data("moved")) {
                         label.removeData("etype").removeData("moved");
@@ -4395,17 +4406,31 @@
                     "data-type": "search"
                 })
                         .bind("keyup change", function() {
-                    var val = this.value.toLowerCase();
-                    ;
-                    list.children().show();
+                    var val = this.value.toLowerCase(),
+                            listItems = list.children();
+                    listItems.show();
                     if (val) {
-                        list.children().filter(
-                                function() {
-                                    return $(this).text().toLowerCase().indexOf(val) === -1;
-                                }).hide();
-                    }
+                        // This handles hiding regular rows without the text we search for
+                        // and any list dividers without regular rows shown under it
+                        var childItems = false,
+                                item;
 
-                    //listview._numberItems();
+                        for (var i = listItems.length; i >= 0; i--) {
+                            item = $(listItems[i]);
+                            if (item.is("li[data-role=list-divider]")) {
+                                if (!childItems) {
+                                    item.hide();
+                                }
+                                // New bucket!
+                                childItems = false;
+                            } else if (item.text().toLowerCase().indexOf(val) === -1) {
+                                item.hide();
+                            } else {
+                                // There's a shown item in the bucket
+                                childItems = true;
+                            }
+                        }
+                    }
                 })
                         .appendTo(wrapper)
                         .textinput();
@@ -4594,7 +4619,12 @@
 
             //add dialogs, set data-url attrs
             $pages.add("[data-role='dialog']").each(function() {
-                $(this).attr("data-url", $(this).attr("id"));
+                var $this = $(this);
+
+                // unless the data url is already set set it to the id
+                if (!$this.data('url')) {
+                    $this.attr("data-url", $this.attr("id"));
+                }
             });
 
             //define first page in dom case one backs out to the directory root (not always the first page visited, but defined as fallback)
