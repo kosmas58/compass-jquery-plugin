@@ -150,9 +150,11 @@ body {
 @-webkit-keyframes slideLeftOut {
     0% {
         -webkit-transform: translateX(0px);
+        opacity: 1;
     } 
     100% {
         -webkit-transform: translateX(-100%);
+        opacity: 0;
     }
 }
 
@@ -178,9 +180,11 @@ body {
 @-webkit-keyframes slideRightOut {
     0% {
         -webkit-transform: translateX(0);
+        opacity: 1;
     } 
     100% {
         -webkit-transform: translateX(100%);
+        opacity: 0;
     }
 }
 
