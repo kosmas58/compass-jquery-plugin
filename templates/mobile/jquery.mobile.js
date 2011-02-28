@@ -1760,6 +1760,7 @@
         else {
             // defer execution for consistency between webkit/non webkit
             setTimeout(callback, 0);
+            return $(this);
         }
     };
 
