@@ -3261,7 +3261,6 @@
                                         delete lcdata[t.p.treeReader[key]];
                                     }
                                 }
-                                ;
                             }
                             if (typeof(pos) != 'undefined') {
                                 t.p.data[pos] = $.extend(true, t.p.data[pos], lcdata);
@@ -3925,13 +3924,17 @@
         bindKeys : function(settings) {
             var o = $.extend({
                 onEnter: null,
-                onSpace: null
+                onSpace: null,
+                onLeftKey: null,
+                onRightKey: null,
+                scrollingRows : true
             }, settings || {});
             return this.each(function() {
                 var $t = this;
                 if (!$('body').is('[role]')) {
                     $('body').attr('role', 'application');
                 }
+                $t.p.scrollrows = o.scrollingRows;
                 $($t).keydown(function(event) {
                     var target = $($t).find('tr[tabindex=0]')[0], id, r, mind,
                             expanded = $t.p.treeReader.expanded_field;
@@ -3940,14 +3943,13 @@
                         mind = $t.p._index[target.id];
                         if (event.keyCode === 37 || event.keyCode === 38 || event.keyCode === 39 || event.keyCode === 40) {
                             // up key
-                            if (event.keyCode == 38) {
+                            if (event.keyCode === 38) {
                                 r = target.previousSibling;
                                 id = "";
                                 if (r) {
                                     if ($(r).is(":hidden")) {
                                         while (r) {
-                                            r = r.previousSibling;							//id = $(target).next().attr("id");
-
+                                            r = r.previousSibling;
                                             if (!$(r).is(":hidden") && $(r).hasClass('jqgrow')) {
                                                 id = r.id;
                                                 break;
@@ -3960,7 +3962,7 @@
                                 $($t).jqGrid('setSelection', id);
                             }
                             //if key is down arrow
-                            if (event.keyCode == 40) {
+                            if (event.keyCode === 40) {
                                 r = target.nextSibling;
                                 id = "";
                                 if (r) {
@@ -3979,21 +3981,35 @@
                                 $($t).jqGrid('setSelection', id);
                             }
                             // left
-                            if (event.keyCode == 37) {
+                            if (event.keyCode === 37) {
                                 if ($t.p.treeGrid && $t.p.data[mind][expanded]) {
                                     $(target).find("div.treeclick").trigger('click');
                                 }
+                                if ($.isFunction(o.onLeftKey)) {
+                                    o.onLeftKey.call($t, $t.p.selrow);
+                                }
                             }
                             // right
-                            if (event.keyCode == 39) {
+                            if (event.keyCode === 39) {
                                 if ($t.p.treeGrid && !$t.p.data[mind][expanded]) {
                                     $(target).find("div.treeclick").trigger('click');
+                                }
+                                if ($.isFunction(o.onRightKey)) {
+                                    o.onRightKey.call($t, $t.p.selrow);
                                 }
                             }
                             return false;
                         }
-                        //check if enter or space was pressed on a tree node
-                        else if ((event.keyCode == 13 || event.keyCode == 32)) {
+                        //check if enter was pressed on a grid or treegrid node
+                        else if (event.keyCode === 13) {
+                            if ($.isFunction(o.onEnter)) {
+                                o.onEnter.call($t, $t.p.selrow);
+                            }
+                            return false;
+                        } else if (event.keyCode === 32) {
+                            if ($.isFunction(o.onSpace)) {
+                                o.onSpace.call($t, $t.p.selrow);
+                            }
                             return false;
                         }
                     }
@@ -7926,7 +7942,7 @@ var xmlJsonClass = {
                 }
 
                 function postIt() {
-                    var copydata, ret = [true,"",""], onCS = {}, opers = $t.p.prmNames, idname, oper, key;
+                    var copydata, ret = [true,"",""], onCS = {}, opers = $t.p.prmNames, idname, oper, key, selr;
                     if ($.isFunction(rp_ge.beforeCheckValues)) {
                         var retvals = rp_ge.beforeCheckValues(postdata, $("#" + frmgr), postdata[$t.p.id + "_id"] == "_empty" ? opers.addoper : opers.editoper);
                         if (retvals && typeof(retvals) === 'object') {
@@ -7967,6 +7983,15 @@ var xmlJsonClass = {
                         }
                         delete postdata[$t.p.id + "_id"];
                         postdata = $.extend(postdata, rp_ge.editData, onCS);
+                        if ($t.p.treeGrid === true && postdata[oper] == opers.addoper) {
+                            selr = $($t).jqGrid("getGridParam", 'selrow');
+                            postdata[$t.p.treeReader.parent_id_field] = selr;
+                        } else {
+                            //
+                            if (postdata.hasOwnProperty($t.p.treeReader.parent_id_field)) {
+                                delete postdata[$t.p.treeReader.parent_id_field];
+                            }
+                        }
                         if ($t.p.restful) {
                             rp_ge.mtype = postdata.id == "_empty" ? "POST" : "PUT";
                             rp_ge.url = postdata.id == "_empty" ? $t.p.url : $t.p.url + "/" + postdata.id;
@@ -8033,7 +8058,11 @@ var xmlJsonClass = {
                                                 $($t).trigger("reloadGrid");
                                             }
                                             else {
-                                                $($t).jqGrid("addRowData", ret[2], postdata, p.addedrow);
+                                                if ($t.p.treeGrid === true) {
+                                                    $($t).jqGrid("addChildNode", ret[2], selr, postdata);
+                                                } else {
+                                                    $($t).jqGrid("addRowData", ret[2], postdata, p.addedrow);
+                                                }
                                             }
                                             fillData("_empty", $t, frmgr);
                                         } else {
@@ -9047,12 +9076,6 @@ var xmlJsonClass = {
                                     if (ret[0]) {
                                         $.jgrid.hideModal("#" + IDs.themodal, {gb:"#gbox_" + gID,jqm:p.jqModal, onClose: rp_ge.onClose});
                                     }
-                                },
-                                error:function(xhr, st, err) {
-                                    $("#DelError>td", "#" + dtbl).html(st + " : " + err);
-                                    $("#DelError", "#" + dtbl).show();
-                                    rp_ge.processing = false;
-                                    $("#dData", "#" + dtbl + "_2").removeClass('ui-state-active');
                                 }
                             }, $.jgrid.ajaxOptions, p.ajaxDelOptions);
 
@@ -9772,7 +9795,6 @@ var xmlJsonClass = {
                             aftersavefunc.call($t, rowid, resp);
                         }
                     } else {
-                        $("#lui_" + $t.p.id).show();
                         $("#lui_" + $t.p.id).show();
                         if ($t.p.restful) {
                             mtype = "PUT";
@@ -11306,13 +11328,10 @@ var xmlJsonClass = {
                 }
             });
         },
-        addChildNode : function(nodeid, parentid, data, leaf) {
+        addChildNode : function(nodeid, parentid, data) {
             //return this.each(function(){
             var $t = this[0];
             if (data) {
-                if (typeof(leaf) !== "boolean") {
-                    leaf = true;
-                }
                 // we suppose tha the id is autoincremet and
                 var expanded = $t.p.treeReader.expanded_field,
                         isLeaf = $t.p.treeReader.leaf_field,
@@ -11320,7 +11339,7 @@ var xmlJsonClass = {
                         icon = $t.p.treeReader.icon_field,
                         parent = $t.p.treeReader.parent_id_field,
                         loaded = $t.p.treeReader.loaded,
-                        method, parentindex, parentdata, parentlevel, i, len, max = 0, rowind = parentid;
+                        method, parentindex, parentdata, parentlevel, i, len, max = 0, rowind = parentid, leaf;
 
                 if (!nodeid) {
                     i = $t.p.data.length - 1;
@@ -11334,6 +11353,7 @@ var xmlJsonClass = {
                 }
                 var prow = $($t).jqGrid('getInd', parentid);
                 if ($t.p.treeGridModel === "adjacency") {
+                    leaf = false;
                     // if not a parent we assume root
                     if (parentid === undefined || parentid === null || parentid === "") {
                         parentid = null;
@@ -11361,6 +11381,7 @@ var xmlJsonClass = {
                         }
                         // if the node is leaf
                         if (parentdata[isLeaf]) {
+                            leaf = true;
                             parentdata[expanded] = true;
                             //var prow = $($t).jqGrid('getInd', parentid);
                             $($t.rows[prow])
@@ -11368,6 +11389,7 @@ var xmlJsonClass = {
                                     .end()
                                     .find("div.tree-leaf").removeClass($t.p.treeIcons.leaf + " tree-leaf").addClass($t.p.treeIcons.minus + " tree-minus");
                             $t.p.data[parentindex][isLeaf] = false;
+                            parentdata[loaded] = true;
                         }
                     }
                     len = i + 1;
@@ -11375,9 +11397,9 @@ var xmlJsonClass = {
                 data[expanded] = false;
                 data[loaded] = true;
                 data[level] = parentlevel;
-                data[isLeaf] = leaf;
+                data[isLeaf] = true;
                 data[parent] = parentid;
-                if (parentid === null || $($t).jqGrid("isNodeLoaded", parentdata)) {
+                if (parentid === null || $($t).jqGrid("isNodeLoaded", parentdata) || leaf) {
                     $($t).jqGrid('addRowData', nodeid, data, method, rowind);
                     $($t).jqGrid('setTreeNode', i, len);
                 }

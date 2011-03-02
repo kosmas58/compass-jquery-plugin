@@ -624,7 +624,7 @@
                 }
 
                 function postIt() {
-                    var copydata, ret = [true,"",""], onCS = {}, opers = $t.p.prmNames, idname, oper, key;
+                    var copydata, ret = [true,"",""], onCS = {}, opers = $t.p.prmNames, idname, oper, key, selr;
                     if ($.isFunction(rp_ge.beforeCheckValues)) {
                         var retvals = rp_ge.beforeCheckValues(postdata, $("#" + frmgr), postdata[$t.p.id + "_id"] == "_empty" ? opers.addoper : opers.editoper);
                         if (retvals && typeof(retvals) === 'object') {
@@ -665,6 +665,15 @@
                         }
                         delete postdata[$t.p.id + "_id"];
                         postdata = $.extend(postdata, rp_ge.editData, onCS);
+                        if ($t.p.treeGrid === true && postdata[oper] == opers.addoper) {
+                            selr = $($t).jqGrid("getGridParam", 'selrow');
+                            postdata[$t.p.treeReader.parent_id_field] = selr;
+                        } else {
+                            //
+                            if (postdata.hasOwnProperty($t.p.treeReader.parent_id_field)) {
+                                delete postdata[$t.p.treeReader.parent_id_field];
+                            }
+                        }
                         if ($t.p.restful) {
                             rp_ge.mtype = postdata.id == "_empty" ? "POST" : "PUT";
                             rp_ge.url = postdata.id == "_empty" ? $t.p.url : $t.p.url + "/" + postdata.id;
@@ -731,7 +740,11 @@
                                                 $($t).trigger("reloadGrid");
                                             }
                                             else {
-                                                $($t).jqGrid("addRowData", ret[2], postdata, p.addedrow);
+                                                if ($t.p.treeGrid === true) {
+                                                    $($t).jqGrid("addChildNode", ret[2], selr, postdata);
+                                                } else {
+                                                    $($t).jqGrid("addRowData", ret[2], postdata, p.addedrow);
+                                                }
                                             }
                                             fillData("_empty", $t, frmgr);
                                         } else {
@@ -1745,12 +1758,6 @@
                                     if (ret[0]) {
                                         $.jgrid.hideModal("#" + IDs.themodal, {gb:"#gbox_" + gID,jqm:p.jqModal, onClose: rp_ge.onClose});
                                     }
-                                },
-                                error:function(xhr, st, err) {
-                                    $("#DelError>td", "#" + dtbl).html(st + " : " + err);
-                                    $("#DelError", "#" + dtbl).show();
-                                    rp_ge.processing = false;
-                                    $("#dData", "#" + dtbl + "_2").removeClass('ui-state-active');
                                 }
                             }, $.jgrid.ajaxOptions, p.ajaxDelOptions);
 

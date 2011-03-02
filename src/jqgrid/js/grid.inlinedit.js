@@ -234,7 +234,6 @@
                         }
                     } else {
                         $("#lui_" + $t.p.id).show();
-                        $("#lui_" + $t.p.id).show();
                         if ($t.p.restful) {
                             mtype = "PUT";
                             url = url + "/" + rowid;
