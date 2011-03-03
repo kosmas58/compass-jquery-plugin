@@ -107,7 +107,7 @@
                                         ignoreHiding = (n.searchoptions && n.searchoptions.searchhidden === true);
                                 if ((ignoreHiding && searchable) || (searchable && !hidden)) {
                                     found = true;
-                                    colnm = n.name;
+                                    colnm = n.index || n.name;
                                 }
                             }
                         });
@@ -2197,8 +2197,8 @@
                 var rowdata = $($t).jqGrid("getRowData", rowid);
                 if (rowdata) {
                     for (var i in rowdata) {
-                        if ($("[name=" + i + "]", formid).is("input:radio") || $("[name=" + i + "]", formid).is("input:checkbox")) {
-                            $("[name=" + i + "]", formid).each(function() {
+                        if ($("[name=" + $.jgrid.jqID(i) + "]", formid).is("input:radio") || $("[name=" + $.jgrid.jqID(i) + "]", formid).is("input:checkbox")) {
+                            $("[name=" + $.jgrid.jqID(i) + "]", formid).each(function() {
                                 if ($(this).val() == rowdata[i]) {
                                     $(this).attr("checked", "checked");
                                 } else {
@@ -2207,7 +2207,7 @@
                             });
                         } else {
                             // this is very slow on big table and form.
-                            $("[name=" + i + "]", formid).val(rowdata[i]);
+                            $("[name=" + $.jgrid.jqID(i) + "]", formid).val(rowdata[i]);
                         }
                     }
                 }

@@ -125,7 +125,7 @@
         },
         setTreeGrid : function() {
             return this.each(function () {
-                var $t = this, i = 0, pico;
+                var $t = this, i = 0, pico, ecol = false, nm, key, dupcols = [];
                 if (!$t.p.treeGrid) {
                     return;
                 }
@@ -138,6 +138,7 @@
                 $t.p.pginput = false;
                 $t.p.multiselect = false;
                 $t.p.rowList = [];
+                $t.p.expColInd = 0;
                 pico = 'ui-icon-triangle-1-' + ($t.p.direction == "rtl" ? 'w' : 'e');
                 $t.p.treeIcons = $.extend({plus:pico,minus:'ui-icon-triangle-1-s',leaf:'ui-icon-radio-off'}, $t.p.treeIcons || {});
                 if ($t.p.treeGridModel == 'nested') {
@@ -150,8 +151,7 @@
                         loaded: "loaded",
                         icon_field: "icon"
                     }, $t.p.treeReader);
-                } else
-                if ($t.p.treeGridModel == 'adjacency') {
+                } else if ($t.p.treeGridModel == 'adjacency') {
                     $t.p.treeReader = $.extend({
                         level_field: "level",
                         parent_id_field: "parent",
@@ -161,20 +161,25 @@
                         icon_field: "icon"
                     }, $t.p.treeReader);
                 }
-                for (var key in $t.p.colModel) {
+                for (key in $t.p.colModel) {
                     if ($t.p.colModel.hasOwnProperty(key)) {
-                        if ($t.p.colModel[key].name == $t.p.ExpandColumn) {
+                        nm = $t.p.colModel[key].name;
+                        if (nm == $t.p.ExpandColumn && !ecol) {
+                            ecol = true;
                             $t.p.expColInd = i;
-                            break;
                         }
                         i++;
+                        //
+
+                        for (var tkey in $t.p.treeReader) {
+                            if ($t.p.treeReader[tkey] == nm)
+                                dupcols.push(nm);
+                        }
+
                     }
                 }
-                if (!$t.p.expColInd) {
-                    $t.p.expColInd = 0;
-                }
                 $.each($t.p.treeReader, function(i, n) {
-                    if (n) {
+                    if (n && $.inArray(n, dupcols) === -1) {
                         $t.p.colNames.push(n);
                         $t.p.colModel.push({name:n,width:1,hidden:true,sortable:false,resizable:false,hidedlg:true,editable:true,search:false});
                     }

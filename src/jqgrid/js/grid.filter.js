@@ -123,6 +123,9 @@
                 if (!cl.label) {
                     cl.label = cl.name;
                 }
+                if (cl.index) {
+                    cl.name = cl.index;
+                }
                 if (!cl.hasOwnProperty('searchoptions')) {
                     cl.searchoptions = {};
                 }
@@ -212,7 +215,7 @@
                 });
 
                 // button for adding a new subgroup
-                var inputAddSubgroup;
+                var inputAddSubgroup = "<span></span>";
                 if (this.p.groupButton) {
                     inputAddSubgroup = $("<input type='button' value='+ {}' title='Add subgroup' class='add-group'/>");
                     inputAddSubgroup.bind('click', function() {
@@ -231,8 +234,6 @@
                         that.onchange(); // signals that the filter has changed
                         return false;
                     });
-                } else {
-                    inputAddSubgroup = "<span></span>";
                 }
                 th.append(inputAddSubgroup);
 
