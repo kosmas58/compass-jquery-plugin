@@ -135,7 +135,7 @@
 
             }
             if (this.p.showQuery) {
-                $(this).append("<table class='queryresult ui-widget ui-widget-content' style='display:block;max-width:440px;border:0px none;'><tbody><tr><td class='query'></td></tr></tbody></table>");
+                $(this).append("<table class='queryresult ui-widget ui-widget-content ui-corner-all' style='display:block;max-width:440px;'><tbody><tr><td class='query'></td></tr></tbody></table>");
             }
             /*
              *Perform checking.
@@ -184,7 +184,7 @@
                 var that = this,  i;
 
                 // this table will hold all the group (tables) and rules (rows)
-                var table = $("<table class='group ui-widget ui-widget-content' style='border:0px none;'><tbody>");
+                var table = $("<table class='group ui-widget ui-widget-content ui-corner-all' style='background:#eeeeee;'><tbody>");
                 // create error message row
                 if (parentgroup === null) {
                     $(table).append("<tr class='error' style='display:none;'><th colspan='5' class='ui-state-error' align='left'></th></tr>");
