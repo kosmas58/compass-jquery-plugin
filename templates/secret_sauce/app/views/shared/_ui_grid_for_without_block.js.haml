@@ -46,7 +46,7 @@
               alert("You must first select a row.");
             } else {
               $.ajax({method: "GET", url: "#{url}#{actions[:update]}/"+rowId,
-                complete: function(data, status) {
+                success: function(data, status) {
                   var dWidth = $(data).css("width");
                   var dHeight = $(data).css("height");
                   $("##{name}_update_dialog").append(data)
