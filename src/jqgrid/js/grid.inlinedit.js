@@ -270,15 +270,16 @@
                     success = true;
                 } else {
                     $("#lui_" + $t.p.id).show();
+
                     if ($t.p.restful) {
                         mtype = "PUT";
-                        url = url + "/" + rowid;
+                        o.url = o.url + "/" + rowid;
                     }
                     else {
                         mtype = "POST";
                     }
                     $.ajax($.extend({
-                        url:url,
+                        url:o.url,
                         data: $.isFunction($t.p.serializeRowData) ? $t.p.serializeRowData.call($t, tmp) : tmp,
                         type: mtype,
                         async : false, //?!?
