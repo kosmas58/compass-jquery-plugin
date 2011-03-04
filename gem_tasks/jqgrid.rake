@@ -33,7 +33,6 @@ all_scripts = [
     'js/grid.import.js',
     'js/grid.jqueryui.js',
     'js/grid.tbltogrid.js',
-    #'plugins/grid.addons.js',
     'plugins/jquery.tablednd.js',
     'plugins/ui.multiselect.js',
     'plugins/grid.postext.js',

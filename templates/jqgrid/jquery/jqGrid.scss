@@ -126,17 +126,15 @@ tr.ui-search-toolbar {
     table-layout: fixed;
     margin: 0em; }
   tr {
-    &.jqgrow {
-      outline-style: none;
-      td {
-        font-weight: normal;
-        overflow: hidden;
-        white-space: pre;
-        height: 22px;
-        padding: 0 2px 0 2px;
-        border-bottom-width: 1px;
-        border-bottom-color: inherit;
-        border-bottom-style: solid; } }
+    &.jqgrow td {
+      font-weight: normal;
+      overflow: hidden;
+      white-space: pre;
+      height: 22px;
+      padding: 0 2px 0 2px;
+      border-bottom-width: 1px;
+      border-bottom-color: inherit;
+      border-bottom-style: solid; }
     &.jqgfirstrow td {
       padding: 0 2px 0 2px;
       border-right-width: 1px;

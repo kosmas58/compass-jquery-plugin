@@ -1,6 +1,6 @@
 //This file should be used if you want to debug and develop
 function jqGridInclude() {
-    var pathtojsfiles = "js/"; // need to be ajusted
+    var pathtojsfiles = "/jqgrid/js/"; // need to be ajusted
     // set include to false if you do not want some modules to be included
     var modules = [
         { include: true, incfile:'i18n/grid.locale-en.js'},
@@ -23,8 +23,12 @@ function jqGridInclude() {
         //jqGrid grouping
         { include: true, incfile:'grid.custom.js'},
         //jqGrid custom
+        { include: true, incfile:'grid.postext.js'},
+        //jqGrid postext
         { include: true, incfile:'grid.tbltogrid.js'},
         //jqGrid table to grid
+        { include: true, incfile:'grid.setcolumns.js'},
+        //jqGrid setcolumns
         { include: true, incfile:'grid.import.js'},
         //jqGrid import
         { include: true, incfile:'jquery.fmatter.js'},
@@ -33,7 +37,7 @@ function jqGridInclude() {
         //xmljson utils
         { include: true, incfile:'grid.jqueryui.js'},
         //jQuery UI utils
-        { include: true, incfile:'grid.filter.js'} // filter Plugin
+        { include: true, incfile:'jquery.searchFilter.js'} // search Plugin
     ];
     var filename;
     for (var i = 0; i < modules.length; i++) {

@@ -8,8 +8,6 @@
      * http://www.opensource.org/licenses/mit-license.php
      * http://www.gnu.org/licenses/gpl-2.0.html
      */
-    /*global jQuery, $ */
-
     $.extend($.jgrid, {
 // Modal functions
         showModal : function(h) {
@@ -121,12 +119,11 @@
                 p.height = 200;
             }
             if (!p.zIndex) {
-                var parentZ = $(insertSelector).parents("*[role=dialog]").first().css("z-index");
-                if (parentZ) {
-                    p.zIndex = parseInt(parentZ, 10) + 1;
-                } else {
+                var parentZ = $(insertSelector).parents("*[role=dialog]").first().css("z-index")
+                if (parentZ)
+                    p.zIndex = parseInt(parentZ) + 1
+                else
                     p.zIndex = 950;
-                }
             }
             var rtlt = 0;
             if (rtlsup && coord.left && !appendsel) {
@@ -168,7 +165,7 @@
                 } else {
                     try {
                         $(mw).resizable({handles: 'se, sw',alsoResize: aIDs.scrollelm ? "#" + aIDs.scrollelm : false});
-                    } catch (r) {
+                    } catch (e) {
                     }
                 }
             }
@@ -310,16 +307,22 @@
             }
             try {
                 $("#info_dialog").focus();
-            } catch (m) {
+            } catch (e) {
             }
         },
 // Form Functions
         createEl : function(eltype, options, vl, autowidth, ajaxso) {
             var elem = "";
-
+            if (options.defaultValue) {
+                delete options.defaultValue;
+            }
             function bindEv(el, opt) {
                 if ($.isFunction(opt.dataInit)) {
+                    // datepicker fix
+                    el.id = opt.id;
                     opt.dataInit(el);
+                    delete opt.id;
+                    //delete opt.dataInit;
                 }
                 if (opt.dataEvents) {
                     $.each(opt.dataEvents, function() {
@@ -329,17 +332,9 @@
                             $(el).bind(this.type, this.fn);
                         }
                     });
+                    //delete opt.dataEvents;
                 }
                 return opt;
-            }
-
-            function setAttributes(elm, atr) {
-                var exclude = ['dataInit','dataEvents', 'value','dataUrl', 'buildSelect'];
-                $.each(atr, function(key, value) {
-                    if ($.inArray(key, exclude) === -1) {
-                        $(elem).attr(key, value);
-                    }
-                });
             }
 
             switch (eltype) {
@@ -359,9 +354,8 @@
                         vl = "";
                     }
                     elem.value = vl;
-                    setAttributes(elem, options);
                     options = bindEv(elem, options);
-                    $(elem).attr({"role":"textbox","multiline":"true"});
+                    $(elem).attr(options).attr({"role":"textbox","multiline":"true"});
                     break;
                 case "checkbox" : //what code for simple checkbox
                     elem = document.createElement("input");
@@ -384,10 +378,13 @@
                         }
                         elem.value = cbval[0];
                         $(elem).attr("offval", cbval[1]);
+                        try {
+                            delete options.value;
+                        } catch (e) {
+                        }
                     }
-                    setAttributes(elem, options);
                     options = bindEv(elem, options);
-                    $(elem).attr("role", "checkbox");
+                    $(elem).attr(options).attr("role", "checkbox");
                     break;
                 case "select" :
                     elem = document.createElement("select");
@@ -406,16 +403,21 @@
                             type : "GET",
                             dataType: "html",
                             success: function(data, status) {
+                                try {
+                                    delete options.dataUrl;
+                                    delete options.value;
+                                } catch (e) {
+                                }
                                 var a;
                                 if (typeof(options.buildSelect) != "undefined") {
                                     var b = options.buildSelect(data);
                                     a = $(b).html();
+                                    delete options.buildSelect;
                                 } else {
                                     a = $(data).html();
                                 }
                                 if (a) {
                                     $(elem).append(a);
-                                    setAttributes(elem, options);
                                     options = bindEv(elem, options);
                                     if (typeof options.size === 'undefined') {
                                         options.size = msl ? 3 : 1;
@@ -428,10 +430,12 @@
                                     } else {
                                         ovm[0] = $.trim(vl);
                                     }
-                                    //$(elem).attr(options);
+                                    $(elem).attr(options);
                                     setTimeout(function() {
                                         $("option", elem).each(function(i) {
-                                            //if(i===0) { this.selected = ""; }
+                                            if (i === 0) {
+                                                this.selected = "";
+                                            }
                                             $(this).attr("role", "option");
                                             if ($.inArray($.trim($(this).text()), ovm) > -1 || $.inArray($.trim($(this).val()), ovm) > -1) {
                                                 this.selected = "selected";
@@ -503,8 +507,12 @@
                                 }
                             }
                         }
-                        setAttributes(elem, options);
                         options = bindEv(elem, options);
+                        try {
+                            delete options.value;
+                        } catch (e) {
+                        }
+                        $(elem).attr(options);
                     }
                     break;
                 case "text" :
@@ -520,7 +528,6 @@
                     elem = document.createElement("input");
                     elem.type = eltype;
                     elem.value = vl;
-                    setAttributes(elem, options);
                     options = bindEv(elem, options);
                     if (eltype != "button") {
                         if (autowidth) {
@@ -531,14 +538,14 @@
                             options.size = 20;
                         }
                     }
-                    $(elem).attr("role", role);
+                    $(elem).attr(options).attr("role", role);
                     break;
                 case "image" :
                 case "file" :
                     elem = document.createElement("input");
                     elem.type = eltype;
-                    setAttributes(elem, options);
                     options = bindEv(elem, options);
+                    $(elem).attr(options);
                     break;
                 case "custom" :
                     elem = document.createElement("span");
