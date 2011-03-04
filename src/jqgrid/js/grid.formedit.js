@@ -199,12 +199,12 @@
                         }
                         $t.p.search = true;
                         $.extend($t.p.postData, sdata);
-                        $($t).trigger("reloadGrid", [
-                            {page:1}
-                        ]);
                         if ($.isFunction(p.onSearch)) {
                             p.onSearch();
                         }
+                        $($t).trigger("reloadGrid", [
+                            {page:1}
+                        ]);
                         if (p.closeAfterSearch) {
                             $.jgrid.hideModal("#" + IDs.themodal, {gb:"#gbox_" + $t.p.id,jqm:p.jqModal,onClose: p.onClose});
                         }
@@ -221,12 +221,12 @@
                         }
                         fl[0].resetFilter();
                         $.extend($t.p.postData, sdata);
-                        $($t).trigger("reloadGrid", [
-                            {page:1}
-                        ]);
                         if ($.isFunction(p.onReset)) {
                             p.onReset();
                         }
+                        $($t).trigger("reloadGrid", [
+                            {page:1}
+                        ]);
                         return false;
                     });
                     showFilter();
