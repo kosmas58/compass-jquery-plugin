@@ -1474,17 +1474,8 @@
             TAB: 9,
             UP: 38,
             WINDOWS: 91 // COMMAND
-        }
-    });
+        },
 
-    //define vars for interal use
-    var $window = $(window),
-            $html = $("html"),
-            $head = $("head");
-
-    //expose some core utilities
-    $.extend($.mobile, {
-        //scroll page vertically: scroll to 0 to hide iOS address bar, or pass a Y value
         silentScroll: function(ypos) {
             ypos = ypos || 0;
             // prevent scrollstart and scrollstop events
@@ -2168,7 +2159,20 @@
 
         //if there's a data-rel=back attr, go back in history
         if ($this.is("[data-rel='back']")) {
-            window.history.back();
+            var currentIndex = $.mobile.urlHistory.activeIndex, backToIndex;
+
+            // for each history entry that is not the current page (currentIndex - 1)
+            for (var i = currentIndex - 1; i >= 0; i--) {
+                backToIndex = i;
+
+                // break when we've found the first page that isn't a dialog
+                if ($.mobile.urlHistory.stack[i].url.indexOf(dialogHashKey) < 0) {
+                    break;
+                }
+            }
+
+            //use the difference between closest non dialog index and the current index
+            window.history.go(backToIndex - currentIndex);
             return false;
         }
 

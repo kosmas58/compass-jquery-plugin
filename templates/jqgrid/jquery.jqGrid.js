@@ -11567,7 +11567,7 @@ var xmlJsonClass = {
                         plus = grp.plusicon,
                         tar = $("#" + hid),
                         r = tar[0].nextSibling,
-                        tarspan = $("#" + hid + " span"),
+                        tarspan = $("#" + hid + " span." + "tree-wrap-" + $t.p.direction),
                         collapsed = false;
                 if (tarspan.hasClass(minus)) {
                     if (grp.showSummaryOnHide && grp.groupSummary[0]) {
