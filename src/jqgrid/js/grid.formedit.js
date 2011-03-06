@@ -485,7 +485,7 @@
                             nm = this.name;
                             opt = $.extend({}, this.editoptions || {});
                             fld = $("#" + $.jgrid.jqID(nm), "#" + fmid);
-                            if (fld[0] !== null) {
+                            if (fld && fld[0] !== null) {
                                 vl = "";
                                 if (opt.defaultValue) {
                                     vl = $.isFunction(opt.defaultValue) ? opt.defaultValue() : opt.defaultValue;
@@ -665,14 +665,17 @@
                         }
                         delete postdata[$t.p.id + "_id"];
                         postdata = $.extend(postdata, rp_ge.editData, onCS);
-                        if ($t.p.treeGrid === true && postdata[oper] == opers.addoper) {
-                            selr = $($t).jqGrid("getGridParam", 'selrow');
-                            postdata[$t.p.treeReader.parent_id_field] = selr;
-                        } else {
-                            //
-                            if (postdata.hasOwnProperty($t.p.treeReader.parent_id_field)) {
-                                delete postdata[$t.p.treeReader.parent_id_field];
+                        if ($t.p.treeGrid === true) {
+                            if (postdata[oper] == opers.addoper) {
+                                selr = $($t).jqGrid("getGridParam", 'selrow');
+                                var tr_par_id = $t.p.treeGridModel == 'adjacency' ? $t.p.treeReader.parent_id_field : 'parent_id';
+                                postdata[tr_par_id] = selr;
                             }
+                            $.each($t.p.treeReader, function (i) {
+                                if (postdata.hasOwnProperty(this)) {
+                                    delete postdata[this];
+                                }
+                            });
                         }
                         if ($t.p.restful) {
                             rp_ge.mtype = postdata.id == "_empty" ? "POST" : "PUT";

@@ -270,7 +270,6 @@
                     success = true;
                 } else {
                     $("#lui_" + $t.p.id).show();
-
                     if ($t.p.restful) {
                         mtype = "PUT";
                         o.url = o.url + "/" + rowid;

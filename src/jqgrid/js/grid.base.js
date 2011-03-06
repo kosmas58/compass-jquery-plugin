@@ -3830,7 +3830,7 @@
             return ret;
         },
         getCol : function (col, obj, mathopr) {
-            var ret = [], val, sum = 0;
+            var ret = [], val, sum = 0, min = 0, max = 0, v;
             obj = typeof (obj) != 'boolean' ? false : obj;
             if (typeof mathopr == 'undefined') {
                 mathopr = false;
@@ -3861,7 +3861,10 @@
                                     val = $.jgrid.htmlDecode($t.rows[i].cells[pos].innerHTML);
                                 }
                                 if (mathopr) {
-                                    sum += parseFloat(val);
+                                    v = parseFloat(val);
+                                    sum += v;
+                                    min = Math.min(min, v);
+                                    max = Math.max(min, v);
                                 }
                                 else if (obj) {
                                     ret.push({id:$t.rows[i].id,value:val});
@@ -3877,6 +3880,8 @@
                                 case 'sum': ret = sum; break;
                                 case 'avg': ret = sum / ln; break;
                                 case 'count': ret = ln; break;
+                                case 'min': ret = min; break;
+                                case 'max': ret = max; break;
                             }
                         }
                     }
