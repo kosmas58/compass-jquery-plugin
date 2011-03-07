@@ -1266,12 +1266,6 @@
                                 }
                                 if (ts.p.gridview === false) {
                                     $("tbody:first", t).append(rowData.join(''));
-                                    if (ts.p.subGrid === true) {
-                                        try {
-                                            $(ts).jqGrid("addSubGrid", ts.rows[ts.rows.length - 1], gi + ni);
-                                        } catch (_) {
-                                        }
-                                    }
                                     if (afterInsRow) {
                                         ts.p.afterInsertRow.call(ts, rid, rd, xmlr);
                                     }
@@ -1294,6 +1288,12 @@
                                 $(ts.rows[fpos]).after(rowData.join(''));
                             } else {
                                 $("tbody:first", t).append(rowData.join(''));
+                            }
+                        }
+                        if (ts.p.subGrid === true) {
+                            try {
+                                $(ts).jqGrid("addSubGrid", gi + ni);
+                            } catch (_) {
                             }
                         }
                         ts.p.totaltime = new Date() - startReq;
@@ -1474,12 +1474,6 @@
                             }
                             if (ts.p.gridview === false) {
                                 $("#" + $.jgrid.jqID(ts.p.id) + " tbody:first").append(rowData.join(''));
-                                if (ts.p.subGrid === true) {
-                                    try {
-                                        $(ts).jqGrid("addSubGrid", ts.rows[ts.rows.length - 1], gi + ni);
-                                    } catch (_) {
-                                    }
-                                }
                                 if (afterInsRow) {
                                     ts.p.afterInsertRow.call(ts, idr, rd, cur);
                                 }
@@ -1501,6 +1495,12 @@
                                 $(ts.rows[fpos]).after(rowData.join(''));
                             } else {
                                 $("#" + $.jgrid.jqID(ts.p.id) + " tbody:first").append(rowData.join(''));
+                            }
+                        }
+                        if (ts.p.subGrid === true) {
+                            try {
+                                $(ts).jqGrid("addSubGrid", gi + ni);
+                            } catch (_) {
                             }
                         }
                         ts.p.totaltime = new Date() - startReq;

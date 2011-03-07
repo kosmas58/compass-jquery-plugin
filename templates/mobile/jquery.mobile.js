@@ -2389,7 +2389,7 @@
                     stickyFooter.addClass('ui-sticky-footer').before(footer);
                 }
                 footer.addClass('ui-footer-duplicate');
-                stickyFooter.appendTo($.pageContainer).css('top', 0);
+                stickyFooter.appendTo($.mobile.pageContainer).css('top', 0);
                 setTop(stickyFooter);
             }
         });
@@ -2533,6 +2533,7 @@
     })();
 
 })(jQuery);
+
 
 /*
  * jQuery Mobile Framework : "checkboxradio" plugin
