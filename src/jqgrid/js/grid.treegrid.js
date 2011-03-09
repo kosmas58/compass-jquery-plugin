@@ -136,6 +136,7 @@
                 $t.p.altRows = false;
                 $t.p.pgbuttons = false;
                 $t.p.pginput = false;
+                $t.p.gridview = true;
                 $t.p.multiselect = false;
                 $t.p.rowList = [];
                 $t.p.expColInd = 0;

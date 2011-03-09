@@ -36,7 +36,7 @@
                 width: 450,
                 height: 'auto',
                 dataheight: 'auto',
-                showQuery: true,
+                showQuery: false,
                 errorcheck : true,
                 // translation
                 // if you want to change or remove the order change it in sopt
@@ -671,11 +671,15 @@
                                 var tr_par_id = $t.p.treeGridModel == 'adjacency' ? $t.p.treeReader.parent_id_field : 'parent_id';
                                 postdata[tr_par_id] = selr;
                             }
-                            $.each($t.p.treeReader, function (i) {
-                                if (postdata.hasOwnProperty(this)) {
-                                    delete postdata[this];
+                            for (i in $t.p.treeReader) {
+                                var itm = $t.p.treeReader[i];
+                                if (postdata.hasOwnProperty(itm)) {
+                                    if (postdata[oper] == opers.addoper && i === 'parent_id_field') {
+                                        continue;
+                                    }
+                                    delete postdata[itm];
                                 }
-                            });
+                            }
                         }
                         if ($t.p.restful) {
                             rp_ge.mtype = postdata.id == "_empty" ? "POST" : "PUT";
@@ -734,8 +738,12 @@
                                                 $($t).trigger("reloadGrid");
                                             }
                                             else {
-                                                $($t).jqGrid("addRowData", ret[2], postdata, p.addedrow);
-                                                $($t).jqGrid("setSelection", ret[2]);
+                                                if ($t.p.treeGrid === true) {
+                                                    $($t).jqGrid("addChildNode", ret[2], selr, postdata);
+                                                } else {
+                                                    $($t).jqGrid("addRowData", ret[2], postdata, p.addedrow);
+                                                    $($t).jqGrid("setSelection", ret[2]);
+                                                }
                                             }
                                             $.jgrid.hideModal("#" + IDs.themodal, {gb:"#gbox_" + gID,jqm:p.jqModal,onClose: rp_ge.onClose});
                                         } else if (rp_ge.clearAfterAdd) {
@@ -755,7 +763,11 @@
                                                 $($t).trigger("reloadGrid");
                                             }
                                             else {
-                                                $($t).jqGrid("addRowData", ret[2], postdata, p.addedrow);
+                                                if ($t.p.treeGrid === true) {
+                                                    $($t).jqGrid("addChildNode", ret[2], selr, postdata);
+                                                } else {
+                                                    $($t).jqGrid("addRowData", ret[2], postdata, p.addedrow);
+                                                }
                                             }
                                         }
                                     } else {
