@@ -1,3 +1,6 @@
+require 'fileutils'
+require 'find'
+
 GEM_ROOT = File.expand_path(File.join(File.dirname(__FILE__), '..'))
 GOOGLE_JS_COMPRESSOR = File.join(GEM_ROOT, 'lib', 'google-compiler-20100917.jar')
 YUI_JS_COMPRESSOR = File.join(GEM_ROOT, 'lib', 'yuicompressor-2.4.4.jar')
@@ -25,3 +28,21 @@ def all_files(pattern)
   FileList[pattern].collect { |filename| File.read(filename) }.join "\n\n"
 end
 
+def handleRecursiveDir(manifest, srcDir, destDir)
+  len = srcDir.length
+  actualDir = destDir
+  FileUtils.mkdir_p(actualDir)
+  Find.find(srcDir) do |entry|
+    if File.file?(entry)
+      a = entry[len, entry[len, 255].rindex('/')]
+      puts a
+      #dir = File.absolute_path(entry)
+      #if (dir != actualDir)
+      #  actualDir = dir
+      #  FileUtils.mkdir_p(actualDir)
+      #end
+      FileUtils.cp(entry, actualDir)
+      manifest.print "javascript 'tiny_mce/#{entry[len, 255]}'\n"
+    end
+  end
+end

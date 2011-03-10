@@ -11495,7 +11495,7 @@ var xmlJsonClass = {
                     parentdata = $t.p.data[parentindex];
                     parentid = parentdata[$t.p.localReader.id];
                     parentlevel = parseInt(parentdata[level], 10) + 1;
-                    var childs = $($t).jqGrid('getNodeChildren', parentdata);
+                    var childs = $($t).jqGrid('getFullTreeNode', parentdata);
                     // if there are child nodes get the last index of it
                     if (childs.length) {
                         i = childs[childs.length - 1][$t.p.localReader.id];
