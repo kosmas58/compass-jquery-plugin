@@ -299,9 +299,7 @@ div {
   &.dynatree-drop-after, &.dynatree-drop-before {
     width: 64px;
     background-position: 0 -144px; }
-  &.dynatree-drop-copy {
-    background-position: -64px -128px; }
-  &.dynatree-drop-move {
+  &.dynatree-drop-copy, &.dynatree-drop-move {
     background-position: -64px -128px; } }
 
 /*** Source node while dragging ***********************************************/

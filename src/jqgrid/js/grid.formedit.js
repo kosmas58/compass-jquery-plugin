@@ -31,7 +31,7 @@
                 top : 0,
                 left: 0,
                 jqModal : true,
-                modal: true,
+                modal: false,
                 resize : false,
                 width: 450,
                 height: 'auto',
@@ -46,6 +46,7 @@
                 onClose : null,
                 onSearch : null,
                 onReset : null,
+                toTop : true,
                 overlay : 10,
                 columns : []
             }, $.jgrid.search, p || {});
@@ -72,7 +73,7 @@
                         }
                     }
                     if (showFrm) {
-                        $.jgrid.viewModal("#" + IDs.themodal, {gbox:"#gbox_" + fid,jqm:p.jqModal, modal:p.modal, overlay: p.overlay});
+                        $.jgrid.viewModal("#" + IDs.themodal, {gbox:"#gbox_" + fid,jqm:p.jqModal, modal:p.modal, overlay: p.overlay, toTop: p.toTop});
                         if ($.isFunction(p.afterShowSearch)) {
                             p.afterShowSearch($("#" + fid));
                         }
@@ -87,8 +88,8 @@
                         p.onInitializeSearch($("#" + fid));
                     }
                     var columns = $.extend([], $t.p.colModel),
-                            bS = "<a href='javascript:void(0)' id='" + fid + "_search' class='fm-button ui-state-default ui-corner-all fm-button-icon-left'><span class='ui-icon ui-icon-search'></span>" + p.Find + "</a>",
-                            bC = "<a href='javascript:void(0)' id='" + fid + "_reset' class='fm-button ui-state-default ui-corner-all fm-button-icon-left'><span class='ui-icon ui-icon-arrowreturnthick-1-w'></span>" + p.Reset + "</a>",
+                            bS = "<a href='javascript:void(0)' id='" + fid + "_search' class='fm-button ui-state-default ui-corner-all fm-button-icon-left ui-reset'><span class='ui-icon ui-icon-search'></span>" + p.Find + "</a>",
+                            bC = "<a href='javascript:void(0)' id='" + fid + "_reset' class='fm-button ui-state-default ui-corner-all fm-button-icon-left ui-search'><span class='ui-icon ui-icon-arrowreturnthick-1-w'></span>" + p.Reset + "</a>",
                             bQ = "";
                     if (p.showQuery) {
                         bQ = "<a href='javascript:void(0)' id='" + fid + "_query' class='fm-button ui-state-default ui-corner-all fm-button-icon-left'><span class='ui-icon ui-icon-comment'></span>Query</a>";

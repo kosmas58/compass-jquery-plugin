@@ -87,7 +87,8 @@
                     groups: []
                 };
             }
-            var i, len = this.p.columns.length, cl;
+            var i, len = this.p.columns.length, cl,
+                    isIE = /msie/i.test(navigator.userAgent) && !win.opera;
 
             // translating the options
             if (this.p._gridsopt.length) {
@@ -135,7 +136,7 @@
 
             }
             if (this.p.showQuery) {
-                $(this).append("<table class='queryresult ui-widget ui-widget-content ui-corner-all' style='display:block;max-width:440px;'><tbody><tr><td class='query'></td></tr></tbody></table>");
+                $(this).append("<table class='queryresult ui-widget ui-widget-content' style='display:block;max-width:440px;border:0px none;'><tbody><tr><td class='query'></td></tr></tbody></table>");
             }
             /*
              *Perform checking.
@@ -184,7 +185,7 @@
                 var that = this,  i;
 
                 // this table will hold all the group (tables) and rules (rows)
-                var table = $("<table class='group ui-widget ui-widget-content ui-corner-all' style='background:#eeeeee;'><tbody>");
+                var table = $("<table class='group ui-widget ui-widget-content' style='border:0px none;'><tbody>");
                 // create error message row
                 if (parentgroup === null) {
                     $(table).append("<tr class='error' style='display:none;'><th colspan='5' class='ui-state-error' align='left'></th></tr>");
@@ -238,7 +239,7 @@
                 th.append(inputAddSubgroup);
 
                 // button for adding a new rule
-                var inputAddRule = $("<input type='button' value='+' title='Add rule' class='add-rule'/>"), cm;
+                var inputAddRule = $("<input type='button' value='+' title='Add rule' class='add-rule ui-add'/>"), cm;
                 inputAddRule.bind('click', function() {
                     //if(!group) { group = {};}
                     if (group.rules === undefined) {
@@ -369,6 +370,11 @@
                         return;
                     }
                     cm.searchoptions.id = randId();
+                    if (isIE) {
+                        if (!cm.searchoptions.size) {
+                            cm.searchoptions.size = 10;
+                        }
+                    }
                     var elm = $.jgrid.createEl(cm.inputtype, cm.searchoptions, "", true, that.p.ajaxSelectOptions, true);
                     $(elm).addClass("input-elm");
                     //that.createElement(rule, "");
@@ -436,6 +442,11 @@
                 // create it here so it can be referentiated in the onchange event
                 //var RD = that.createElement(rule, rule.data);
                 cm.searchoptions.id = randId();
+                if (isIE) {
+                    if (!cm.searchoptions.size) {
+                        cm.searchoptions.size = 10;
+                    }
+                }
                 var ruleDataInput = $.jgrid.createEl(cm.inputtype, cm.searchoptions, rule.data, true, that.p.ajaxSelectOptions, true);
 
                 // dropdown for: choosing operator
@@ -504,7 +515,7 @@
                 tr.append(ruleDeleteTd);
 
                 // create button for: delete rule
-                var ruleDeleteInput = $("<input type='button' value='-' title='Delete rule' class='delete-rule'/>");
+                var ruleDeleteInput = $("<input type='button' value='-' title='Delete rule' class='delete-rule ui-del'/>");
                 ruleDeleteTd.append(ruleDeleteInput);
                 //$(ruleDeleteInput).html("").height(20).width(30).button({icons: {  primary: "ui-icon-minus", text:false}});
                 ruleDeleteInput.bind('click', function() {
@@ -723,6 +734,16 @@
         resetFilter: function() {
             return this.each(function() {
                 this.resetFilter();
+            });
+        },
+        addFilter: function (pfilter) {
+            if (typeof pfilter === "string") {
+                pfilter = jQuery.jgrid.parse(pfilter);
+            }
+            this.each(function() {
+                this.p.filter = pfilter;
+                this.reDraw();
+                this.onchange();
             });
         }
 
