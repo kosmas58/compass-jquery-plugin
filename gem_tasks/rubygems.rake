@@ -13,7 +13,8 @@ namespace :build do
       "build:graphics",
       "build:mobile",
       "build:jqtouch",
-      "build:emulators"
+      "build:emulators",
+      "build:tiny_mce"
   ] do
   end
 end

@@ -87,7 +87,8 @@
                     groups: []
                 };
             }
-            var i, len = this.p.columns.length, cl;
+            var i, len = this.p.columns.length, cl,
+                    isIE = /msie/i.test(navigator.userAgent) && !win.opera;
 
             // translating the options
             if (this.p._gridsopt.length) {
@@ -122,6 +123,9 @@
                 }
                 if (!cl.label) {
                     cl.label = cl.name;
+                }
+                if (cl.index) {
+                    cl.name = cl.index;
                 }
                 if (!cl.hasOwnProperty('searchoptions')) {
                     cl.searchoptions = {};
@@ -212,7 +216,7 @@
                 });
 
                 // button for adding a new subgroup
-                var inputAddSubgroup;
+                var inputAddSubgroup = "<span></span>";
                 if (this.p.groupButton) {
                     inputAddSubgroup = $("<input type='button' value='+ {}' title='Add subgroup' class='add-group'/>");
                     inputAddSubgroup.bind('click', function() {
@@ -231,13 +235,11 @@
                         that.onchange(); // signals that the filter has changed
                         return false;
                     });
-                } else {
-                    inputAddSubgroup = "<span></span>";
                 }
                 th.append(inputAddSubgroup);
 
                 // button for adding a new rule
-                var inputAddRule = $("<input type='button' value='+' title='Add rule' class='add-rule'/>"), cm;
+                var inputAddRule = $("<input type='button' value='+' title='Add rule' class='add-rule ui-add'/>"), cm;
                 inputAddRule.bind('click', function() {
                     //if(!group) { group = {};}
                     if (group.rules === undefined) {
@@ -368,6 +370,11 @@
                         return;
                     }
                     cm.searchoptions.id = randId();
+                    if (isIE) {
+                        if (!cm.searchoptions.size) {
+                            cm.searchoptions.size = 10;
+                        }
+                    }
                     var elm = $.jgrid.createEl(cm.inputtype, cm.searchoptions, "", true, that.p.ajaxSelectOptions, true);
                     $(elm).addClass("input-elm");
                     //that.createElement(rule, "");
@@ -435,6 +442,11 @@
                 // create it here so it can be referentiated in the onchange event
                 //var RD = that.createElement(rule, rule.data);
                 cm.searchoptions.id = randId();
+                if (isIE) {
+                    if (!cm.searchoptions.size) {
+                        cm.searchoptions.size = 10;
+                    }
+                }
                 var ruleDataInput = $.jgrid.createEl(cm.inputtype, cm.searchoptions, rule.data, true, that.p.ajaxSelectOptions, true);
 
                 // dropdown for: choosing operator
@@ -503,7 +515,7 @@
                 tr.append(ruleDeleteTd);
 
                 // create button for: delete rule
-                var ruleDeleteInput = $("<input type='button' value='-' title='Delete rule' class='delete-rule'/>");
+                var ruleDeleteInput = $("<input type='button' value='-' title='Delete rule' class='delete-rule ui-del'/>");
                 ruleDeleteTd.append(ruleDeleteInput);
                 //$(ruleDeleteInput).html("").height(20).width(30).button({icons: {  primary: "ui-icon-minus", text:false}});
                 ruleDeleteInput.bind('click', function() {
@@ -722,6 +734,16 @@
         resetFilter: function() {
             return this.each(function() {
                 this.resetFilter();
+            });
+        },
+        addFilter: function (pfilter) {
+            if (typeof pfilter === "string") {
+                pfilter = jQuery.jgrid.parse(pfilter);
+            }
+            this.each(function() {
+                this.p.filter = pfilter;
+                this.reDraw();
+                this.onchange();
             });
         }
 

@@ -1474,48 +1474,8 @@
             TAB: 9,
             UP: 38,
             WINDOWS: 91 // COMMAND
-        }
-    });
-
-    //define vars for interal use
-    var $window = $(window),
-            $html = $("html"),
-            $head = $("head"),
-
-        //loading div which appears during Ajax requests
-        //will not appear if $.mobile.loadingMessage is false
-            $loader = $.mobile.loadingMessage ?
-                    $("<div class='ui-loader ui-body-a ui-corner-all'>" +
-                            "<span class='ui-icon ui-icon-loading spin'></span>" +
-                            "<h1>" + $.mobile.loadingMessage + "</h1>" +
-                            "</div>")
-                    : undefined;
-
-    //expose some core utilities
-    $.extend($.mobile, {
-
-        // turn on/off page loading message.
-        pageLoading: function (done) {
-            if (done) {
-                $html.removeClass("ui-loading");
-            } else {
-                if ($.mobile.loadingMessage) {
-                    var activeBtn = $("." + $.mobile.activeBtnClass).first();
-
-                    $loader
-                            .appendTo($.mobile.pageContainer)
-                        //position at y center (if scrollTop supported), above the activeBtn (if defined), or just 100px from top
-                            .css({
-                                     top: $.support.scrollTop && $(window).scrollTop() + $(window).height() / 2 ||
-                                             activeBtn.length && activeBtn.offset().top || 100
-                                 });
-                }
-
-                $html.addClass("ui-loading");
-            }
         },
 
-        //scroll page vertically: scroll to 0 to hide iOS address bar, or pass a Y value
         silentScroll: function(ypos) {
             ypos = ypos || 0;
             // prevent scrollstart and scrollstop events
@@ -1653,6 +1613,31 @@
                     urlHistory.stack = urlHistory.stack.slice(0, urlHistory.activeIndex + 1);
                 },
 
+                directHashChange: function(opts) {
+                    var back , forward, newActiveIndex;
+
+                    // check if url isp in history and if it's ahead or behind current page
+                    $.each(urlHistory.stack, function(i, historyEntry) {
+
+                        //if the url is in the stack, it's a forward or a back
+                        if (opts.currentUrl === historyEntry.url) {
+                            //define back and forward by whether url is older or newer than current page
+                            back = i < urlHistory.activeIndex;
+                            forward = !back;
+                            newActiveIndex = i;
+                        }
+                    });
+
+                    // save new page index, null check to prevent falsey 0 result
+                    this.activeIndex = newActiveIndex !== undefined ? newActiveIndex : this.activeIndex;
+
+                    if (back) {
+                        opts.isBack();
+                    } else if (forward) {
+                        opts.isForward();
+                    }
+                },
+
                 //disable hashchange event listener internally to ignore one change
                 //toggled internally when location.hash is updated to match the url of a successful page load
                 ignoreNextHashChange: true
@@ -1714,7 +1699,7 @@
 
         //set the generated BASE element's href attribute to a new page's base path
         set: function(href) {
-            base.element.attr('href', docBase + path.get(href));
+            base.element.attr('href', docBase + path.get(href).replace(/^\//, ""));
         },
 
         //set the generated BASE element's href attribute to a new page's base path
@@ -1760,6 +1745,7 @@
         else {
             // defer execution for consistency between webkit/non webkit
             setTimeout(callback, 0);
+            return $(this);
         }
     };
 
@@ -1817,34 +1803,24 @@
 
         isPageTransitioning = true;
 
-        // if the changePage was sent from a hashChange event
-        // guess if it came from the history menu
+        // if the changePage was sent from a hashChange event guess if it came from the history menu
+        // and match the transition accordingly
         if (fromHashChange) {
-
-            // check if url is in history and if it's ahead or behind current page
-            $.each(urlHistory.stack, function(i) {
-                //if the url is in the stack, it's a forward or a back
-                if (this.url === url) {
-                    urlIndex = i;
-                    //define back and forward by whether url is older or newer than current page
-                    back = i < urlHistory.activeIndex;
-                    //forward set to opposite of back
-                    forward = !back;
-                    //reset activeIndex to this one
-                    urlHistory.activeIndex = i;
+            urlHistory.directHashChange({
+                currentUrl: url,
+                isBack: function() {
+                    forward = !(back = true);
+                    reverse = true;
+                    transition = transition || currPage.transition;
+                },
+                isForward: function() {
+                    forward = !(back = false);
+                    transition = transition || urlHistory.getActive().transition;
                 }
             });
 
-            //if it's a back, use reverse animation
-            if (back) {
-                reverse = true;
-                transition = transition || currPage.transition;
-            }
-            else if (forward) {
-                transition = transition || urlHistory.getActive().transition;
-            }
+            //TODO forward = !back was breaking for some reason
         }
-
 
         if (toIsObject && to.url) {
             url = to.url;
@@ -2048,6 +2024,7 @@
                 url: fileUrl,
                 type: type,
                 data: data,
+                dataType: "html",
                 success: function(html) {
                     //pre-parse html to check for a data-url,
                     //use it as the new fileUrl, base path, etc
@@ -2253,12 +2230,31 @@
                 transition = $.mobile.urlHistory.stack.length === 0 ? false : undefined;
 
         //if listening is disabled (either globally or temporarily), or it's a dialog hash
-        if (!$.mobile.hashListeningEnabled || !urlHistory.ignoreNextHashChange ||
-                (urlHistory.stack.length > 1 && to.indexOf(dialogHashKey) > -1 && !$.mobile.activePage.is(".ui-dialog"))
-                ) {
+        if (!$.mobile.hashListeningEnabled || !urlHistory.ignoreNextHashChange) {
             if (!urlHistory.ignoreNextHashChange) {
                 urlHistory.ignoreNextHashChange = true;
             }
+
+            return;
+        }
+
+        // special case for dialogs requires heading back or forward until we find a non dialog page
+        if (urlHistory.stack.length > 1 &&
+                to.indexOf(dialogHashKey) > -1 &&
+                !$.mobile.activePage.is(".ui-dialog")) {
+
+            //determine if we're heading forward or backward and continue accordingly past
+            //the current dialog
+            urlHistory.directHashChange({
+                currentUrl: to,
+                isBack: function() {
+                    window.history.back();
+                },
+                isForward: function() {
+                    window.history.forward();
+                }
+            });
+
             return;
         }
 
@@ -2409,7 +2405,7 @@
                     stickyFooter.addClass('ui-sticky-footer').before(footer);
                 }
                 footer.addClass('ui-footer-duplicate');
-                stickyFooter.appendTo($.pageContainer).css('top', 0);
+                stickyFooter.appendTo($.mobile.pageContainer).css('top', 0);
                 setTop(stickyFooter);
             }
         });
@@ -2554,6 +2550,7 @@
 
 })(jQuery);
 
+
 /*
  * jQuery Mobile Framework : "checkboxradio" plugin
  * Copyright (c) jQuery Project
@@ -2605,7 +2602,7 @@
                     var oe = event.originalEvent.touches[0];
                     if (label.data("movestart")) {
                         if (Math.abs(label.data("movestart")[0] - oe.pageX) > 10 ||
-                                Math.abs(abel.data("movestart")[1] - oe.pageY) > 10) {
+                                Math.abs(label.data("movestart")[1] - oe.pageY) > 10) {
                             label.data("moved", true);
                         }
                     }
@@ -2615,6 +2612,11 @@
                 },
 
                 "touchend mouseup": function(event) {
+                    if (input.is(":disabled")) {
+                        event.preventDefault();
+                        return;
+                    }
+
                     label.removeData("movestart");
                     if (label.data("etype") && label.data("etype") !== event.type || label.data("moved")) {
                         label.removeData("etype").removeData("moved");
@@ -3509,7 +3511,8 @@
                     .append($el.addClass('ui-btn-hidden'));
 
             //add hidden input during submit
-            if ($el.attr('type') !== 'reset') {
+            var type = $el.attr('type');
+            if (type !== 'button' && type !== 'reset') {
                 $el.click(function() {
                     var $buttonPlaceholder = $("<input>",
                     {type: "hidden", name: $el.attr("name"), value: $el.attr("value")})
@@ -4395,17 +4398,31 @@
                     "data-type": "search"
                 })
                         .bind("keyup change", function() {
-                    var val = this.value.toLowerCase();
-                    ;
-                    list.children().show();
+                    var val = this.value.toLowerCase(),
+                            listItems = list.children();
+                    listItems.show();
                     if (val) {
-                        list.children().filter(
-                                function() {
-                                    return $(this).text().toLowerCase().indexOf(val) === -1;
-                                }).hide();
-                    }
+                        // This handles hiding regular rows without the text we search for
+                        // and any list dividers without regular rows shown under it
+                        var childItems = false,
+                                item;
 
-                    //listview._numberItems();
+                        for (var i = listItems.length; i >= 0; i--) {
+                            item = $(listItems[i]);
+                            if (item.is("li[data-role=list-divider]")) {
+                                if (!childItems) {
+                                    item.hide();
+                                }
+                                // New bucket!
+                                childItems = false;
+                            } else if (item.text().toLowerCase().indexOf(val) === -1) {
+                                item.hide();
+                            } else {
+                                // There's a shown item in the bucket
+                                childItems = true;
+                            }
+                        }
+                    }
                 })
                         .appendTo(wrapper)
                         .textinput();
@@ -4586,7 +4603,54 @@
             $head = $("head"),
             $window = $(window);
 
+    //trigger mobileinit event - useful hook for configuring $.mobile settings before they're used
+    $(window.document).trigger("mobileinit");
+
+    //support conditions
+    //if device support condition(s) aren't met, leave things as they are -> a basic, usable experience,
+    //otherwise, proceed with the enhancements
+    if (!$.mobile.gradeA()) {
+        return;
+    }
+
+    //add mobile, initial load "rendering" classes to docEl
+    $html.addClass("ui-mobile ui-mobile-rendering");
+
+    //define & prepend meta viewport tag, if content is defined
+    $.mobile.metaViewportContent ? $("<meta>", { name: "viewport", content: $.mobile.metaViewportContent}).prependTo($head) : undefined;
+
+    //loading div which appears during Ajax requests
+    //will not appear if $.mobile.loadingMessage is false
+    var $loader = $.mobile.loadingMessage ?
+            $("<div class='ui-loader ui-body-a ui-corner-all'>" +
+                    "<span class='ui-icon ui-icon-loading spin'></span>" +
+                    "<h1>" + $.mobile.loadingMessage + "</h1>" +
+                    "</div>")
+            : undefined;
+
+
     $.extend($.mobile, {
+        // turn on/off page loading message.
+        pageLoading: function (done) {
+            if (done) {
+                $html.removeClass("ui-loading");
+            } else {
+                if ($.mobile.loadingMessage) {
+                    var activeBtn = $("." + $.mobile.activeBtnClass).first();
+
+                    $loader
+                            .appendTo($.mobile.pageContainer)
+                        //position at y center (if scrollTop supported), above the activeBtn (if defined), or just 100px from top
+                            .css({
+                                     top: $.support.scrollTop && $(window).scrollTop() + $(window).height() / 2 ||
+                                             activeBtn.length && activeBtn.offset().top || 100
+                                 });
+                }
+
+                $html.addClass("ui-loading");
+            }
+        },
+
         // find and enhance the pages in the dom and transition to the first page.
         initializePage: function() {
             //find present pages
@@ -4594,7 +4658,12 @@
 
             //add dialogs, set data-url attrs
             $pages.add("[data-role='dialog']").each(function() {
-                $(this).attr("data-url", $(this).attr("id"));
+                var $this = $(this);
+
+                // unless the data url is already set set it to the id
+                if (!$this.data('url')) {
+                    $this.attr("data-url", $this.attr("id"));
+                }
             });
 
             //define first page in dom case one backs out to the directory root (not always the first page visited, but defined as fallback)
@@ -4616,22 +4685,6 @@
             }
         }
     });
-
-    //trigger mobileinit event - useful hook for configuring $.mobile settings before they're used
-    $(window.document).trigger("mobileinit");
-
-    //support conditions
-    //if device support condition(s) aren't met, leave things as they are -> a basic, usable experience,
-    //otherwise, proceed with the enhancements
-    if (!$.mobile.gradeA()) {
-        return;
-    }
-
-    //add mobile, initial load "rendering" classes to docEl
-    $html.addClass("ui-mobile ui-mobile-rendering");
-
-    //define & prepend meta viewport tag, if content is defined
-    $.mobile.metaViewportContent ? $("<meta>", { name: "viewport", content: $.mobile.metaViewportContent}).prependTo($head) : undefined;
 
     //dom-ready inits
     $($.mobile.initializePage);

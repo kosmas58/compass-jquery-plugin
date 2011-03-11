@@ -3914,7 +3914,7 @@ AnyTime.utcLabel[840]=[
 
 /**
  * @preserve
- * FullCalendar v1.4.10
+ * FullCalendar v1.4.11
  * http://arshaw.com/fullcalendar/
  *
  * Use fullcalendar.css for basic styling.
@@ -3925,7 +3925,7 @@ AnyTime.utcLabel[840]=[
  * Dual licensed under the MIT and GPL licenses, located in
  * MIT-LICENSE.txt and GPL-LICENSE.txt respectively.
  *
- * Date: Sat Jan 1 23:46:27 2011 -0800
+ * Date: Tue Feb 22 21:47:22 2011 -0800
  *
  */
  
@@ -4025,7 +4025,7 @@ var rtlDefaults = {
 
 
 
-var fc = $.fullCalendar = { version: "1.4.10" };
+var fc = $.fullCalendar = { version: "1.4.11" };
 var fcViews = fc.views = {};
 
 
@@ -4103,6 +4103,7 @@ function Calendar(element, options, eventSources) {
 	t.refetchEvents = refetchEvents;
 	t.reportEvents = reportEvents;
 	t.reportEventChange = reportEventChange;
+	t.rerenderEvents = rerenderEvents;
 	t.changeView = changeView;
 	t.select = select;
 	t.unselect = unselect;
@@ -6899,6 +6900,7 @@ function AgendaEventRenderer() {
 	function draggableDayEvent(event, eventElement, isStart) {
 		if (!opt('disableDragging') && eventElement.draggable) {
 			var origWidth;
+			var revert;
 			var allDay=true;
 			var dayDelta;
 			var dis = opt('isRTL') ? -1 : 1;
@@ -6915,9 +6917,9 @@ function AgendaEventRenderer() {
 					hideEvents(event, eventElement);
 					origWidth = eventElement.width();
 					hoverListener.start(function(cell, origCell, rowDelta, colDelta) {
-						eventElement.draggable('option', 'revert', !cell || !rowDelta && !colDelta);
 						clearOverlays();
 						if (cell) {
+							revert = false;
 							dayDelta = colDelta * dis;
 							if (!cell.row) {
 								// on full-days
@@ -6928,27 +6930,43 @@ function AgendaEventRenderer() {
 								resetElement();
 							}else{
 								// mouse is over bottom slots
-								if (isStart && allDay) {
-									// convert event to temporary slot-event
-									setOuterHeight(
-										eventElement.width(colWidth - 10), // don't use entire width
-										slotHeight * Math.round(
-											(event.end ? ((event.end - event.start) / MINUTE_MS) : opt('defaultEventMinutes'))
-											/ opt('slotMinutes')
-										)
-									);
-									eventElement.draggable('option', 'grid', [colWidth, 1]);
-									allDay = false;
+								if (isStart) {
+									if (allDay) {
+										// convert event to temporary slot-event
+										eventElement.width(colWidth - 10); // don't use entire width
+										setOuterHeight(
+											eventElement,
+											slotHeight * Math.round(
+												(event.end ? ((event.end - event.start) / MINUTE_MS) : opt('defaultEventMinutes'))
+												/ opt('slotMinutes')
+											)
+										);
+										eventElement.draggable('option', 'grid', [colWidth, 1]);
+										allDay = false;
+									}
+								}else{
+									revert = true;
 								}
 							}
+							revert = revert || (allDay && !dayDelta);
+						}else{
+							revert = true;
 						}
+						eventElement.draggable('option', 'revert', revert);
 					}, ev, 'drag');
 				},
 				stop: function(ev, ui) {
-					var cell = hoverListener.stop();
+					hoverListener.stop();
 					clearOverlays();
 					trigger('eventDragStop', eventElement, event, ev, ui);
-					if (cell && (!allDay || dayDelta)) {
+					if (revert) {
+						// hasn't moved or is out of bounds (draggable has already reverted)
+						resetElement();
+						if ($.browser.msie) {
+							eventElement.css('filter', ''); // clear IE opacity side-effects
+						}
+						showEvents(event, eventElement);
+					}else{
 						// changed!
 						eventElement.find('a').removeAttr('href'); // prevents safari from visiting the link
 						var minuteDelta = 0;
@@ -6959,13 +6977,6 @@ function AgendaEventRenderer() {
 								- (event.start.getHours() * 60 + event.start.getMinutes());
 						}
 						eventDrop(this, event, dayDelta, minuteDelta, allDay, ev, ui);
-					}else{
-						// hasn't moved or is out of bounds (draggable has already reverted)
-						resetElement();
-						if ($.browser.msie) {
-							eventElement.css('filter', ''); // clear IE opacity side-effects
-						}
-						showEvents(event, eventElement);
 					}
 				}
 			});
@@ -8720,5 +8731,76 @@ function enableTextSelection(element) {
 */
 
 
+
+})(jQuery);
+
+/*
+ * FullCalendar v1.4.11 Google Calendar Extension
+ *
+ * Copyright (c) 2010 Adam Shaw
+ * Dual licensed under the MIT and GPL licenses, located in
+ * MIT-LICENSE.txt and GPL-LICENSE.txt respectively.
+ *
+ * Date: Tue Feb 22 21:47:22 2011 -0800
+ *
+ */
+
+(function($) {
+
+	$.fullCalendar.gcalFeed = function(feedUrl, options) {
+		
+		feedUrl = feedUrl.replace(/\/basic$/, '/full');
+		options = options || {};
+		
+		return function(start, end, callback) {
+			var params = {
+				'start-min': $.fullCalendar.formatDate(start, 'u'),
+				'start-max': $.fullCalendar.formatDate(end, 'u'),
+				'singleevents': true,
+				'max-results': 9999
+			};
+			var ctz = options.currentTimezone;
+			if (ctz) {
+				params.ctz = ctz = ctz.replace(' ', '_');
+			}
+			$.getJSON(feedUrl + "?alt=json-in-script&callback=?", params, function(data) {
+				var events = [];
+				if (data.feed.entry) {
+					$.each(data.feed.entry, function(i, entry) {
+						var startStr = entry['gd$when'][0]['startTime'],
+							start = $.fullCalendar.parseISO8601(startStr, true),
+							end = $.fullCalendar.parseISO8601(entry['gd$when'][0]['endTime'], true),
+							allDay = startStr.indexOf('T') == -1,
+							url;
+						$.each(entry.link, function() {
+							if (this.type == 'text/html') {
+								url = this.href;
+								if (ctz) {
+									url += (url.indexOf('?') == -1 ? '?' : '&') + 'ctz=' + ctz;
+								}
+							}
+						});
+						if (allDay) {
+							$.fullCalendar.addDays(end, -1); // make inclusive
+						}
+						events.push({
+							id: entry['gCal$uid']['value'],
+							title: entry['title']['$t'],
+							url: url,
+							start: start,
+							end: end,
+							allDay: allDay,
+							location: entry['gd$where'][0]['valueString'],
+							description: entry['content']['$t'],
+							className: options.className,
+							editable: options.editable || false
+						});
+					});
+				}
+				callback(events);
+			});
+		}
+		
+	}
 
 })(jQuery);

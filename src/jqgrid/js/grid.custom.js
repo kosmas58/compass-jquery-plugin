@@ -179,7 +179,7 @@
                         switch (this.stype) {
                             case 'select' :
                                 so = (this.searchoptions && this.searchoptions.sopt) ? this.searchoptions.sopt[0] : 'eq';
-                                v = $("select[name=" + nm + "]", $t.grid.hDiv).val();
+                                v = $("#gs_" + $.jgrid.jqID(nm), $t.grid.hDiv).val();
                                 if (v) {
                                     sdata[nm] = v;
                                     sopt[nm] = so;
@@ -193,7 +193,7 @@
                                 break;
                             case 'text':
                                 so = (this.searchoptions && this.searchoptions.sopt) ? this.searchoptions.sopt[0] : p.defaultSearch;
-                                v = $("input[name=" + nm + "]", $t.grid.hDiv).val();
+                                v = $("#gs_" + $.jgrid.jqID(nm), $t.grid.hDiv).val();
                                 if (v) {
                                     sdata[nm] = v;
                                     sopt[nm] = so;
@@ -261,7 +261,7 @@
                         switch (this.stype) {
                             case 'select' :
                                 var v1;
-                                $("select[name=" + nm + "] option", $t.grid.hDiv).each(function (i) {
+                                $("#gs_" + $.jgrid.jqID(nm) + " option", $t.grid.hDiv).each(function (i) {
                                     if (i === 0) {
                                         this.selected = true;
                                     }
@@ -283,7 +283,7 @@
                                 }
                                 break;
                             case 'text':
-                                $("input[name=" + nm + "]", $t.grid.hDiv).val(v);
+                                $("#gs_" + $.jgrid.jqID(nm), $t.grid.hDiv).val(v);
                                 if (v) {
                                     sdata[nm] = v;
                                     j++;
