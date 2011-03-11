@@ -255,11 +255,11 @@ var DTNodeStatus_Ok = 0;
             /**
              * Create <li><span>..</span> .. </li> tags for this node.
              *
-             * <li id='key'> // This div contains the node's span and list of child div's.
+             * <li id='KEY' dtnode=NODE> // This div contains the node's span and list of child div's.
              *   <span class='title'>S S S A</span> // Span contains graphic spans and title <a> tag
              *   <ul> // only present, when node has children
-             *       <li>child1</li>
-             *       <li>child2</li>
+             *       <li id='KEY' dtnode=NODE>child1</li>
+             *       <li id='KEY' dtnode=NODE>child2</li>
              *   </ul>
              * </li>
              */
@@ -552,7 +552,7 @@ var DTNodeStatus_Ok = 0;
                     this._setStatusNode(null);
                     $(this.span).removeClass(this.tree.options.classNames.nodeLoading);
                     this.isLoading = false;
-                    this.render();
+//				this.render();
                     if (this.tree.options.autoFocus) {
                         if (this === this.tree.tnRoot && this.childList && this.childList.length > 0) {
                             // special case: using ajaxInit
@@ -1094,7 +1094,7 @@ var DTNodeStatus_Ok = 0;
                 }
             }
             // Make sure that clicks stop, otherwise <a href='#'> jumps to the top
-            return false;
+            event.preventDefault();
         },
 
         _onDblClick: function(event) {
@@ -1189,7 +1189,10 @@ var DTNodeStatus_Ok = 0;
                     handled = false;
             }
             // Return false, if handled, to prevent default processing
-            return !handled;
+//		return !handled;
+            if (handled) {
+                event.preventDefault();
+            }
         },
 
         _onKeypress: function(event) {
@@ -1481,7 +1484,9 @@ var DTNodeStatus_Ok = 0;
                 this.childList = [];
             } else if (! beforeNode) {
                 // Fix 'lastsib'
-                $(this.childList[this.childList.length - 1].span).removeClass(opts.classNames.lastsib);
+                if (this.childList.length > 0) {
+                    $(this.childList[this.childList.length - 1].span).removeClass(opts.classNames.lastsib);
+                }
             }
             if (beforeNode) {
                 var iBefore = $.inArray(beforeNode, this.childList);
@@ -2062,21 +2067,9 @@ var DTNodeStatus_Ok = 0;
             // We don't do this however, if we try to load from an embedded UL element.
             if (opts.children || (opts.initAjax && opts.initAjax.url) || opts.initId) {
                 $(this.divTree).empty();
-            } else if (this.divRoot) {
-                $(this.divRoot).remove();
             }
-            /*
-             // create the root element
-             this.tnRoot = new DynaTreeNode(null, this, {title: opts.title, key: "root"});
-             this.tnRoot.data.isFolder = true;
-             this.tnRoot.render(false, false);
-             this.divRoot = this.tnRoot.div;
-             this.divRoot.className = opts.classNames.container;
+            var $ulInitialize = this.$tree.find(">ul:first").hide();
 
-             // add root to container
-             // TODO: this should be delayed until all children have been created for performance reasons
-             this.divTree.appendChild(this.divRoot);
-             */
             // Create the root element
             this.tnRoot = new DynaTreeNode(null, this, {});
             this.tnRoot.bExpanded = true;
@@ -2107,9 +2100,9 @@ var DTNodeStatus_Ok = 0;
 
             } else {
                 // Init tree from the first UL element inside the container <div>
-                var $ul = this.$tree.find(">ul:first").hide();
-                this._createFromTag(root, $ul);
-                $ul.remove();
+//			var $ul = this.$tree.find(">ul:first").hide();
+                this._createFromTag(root, $ulInitialize);
+                $ulInitialize.remove();
             }
 
             this._checkConsistency();

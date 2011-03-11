@@ -166,6 +166,10 @@ tr.ui-search-toolbar select {
     margin: 0em;
 }
 
+.ui-jqgrid tr.jqgrow {
+    outline-style: none;
+}
+
 .ui-jqgrid tr.jqgrow td {
     font-weight: normal;
     overflow: hidden;

@@ -53,7 +53,7 @@
                   $("#widget_submit").hide(); // HACK: easy way to make submit on enter work
                   $("##{name}_update_dialog").find("form").submit(function() {
                     $(this).ajaxSubmit({
-                      url: "/jqgrid/#{name}/"+rowId,
+                      url: "#{url}/"+rowId,
                       type: "PUT",
                       success: function(response, status) {
                         if(!$(response).is("form")) {

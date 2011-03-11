@@ -203,7 +203,7 @@ module Gridify
 
       if tree_grid
         vals[:treeGrid] = tree_grid
-        vals[:gridview] = false
+        vals[:gridview] = true
         vals[:sortable] = false
       end
 
@@ -212,7 +212,7 @@ module Gridify
         vals[:subGrid] = sub_grid
         vals[:subGridUrl] = sub_grid_url
         vals[:subGridModel] = sub_grid_model
-        vals[:gridview] = false
+        vals[:gridview] = true
       end
 
       #events

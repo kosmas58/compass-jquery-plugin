@@ -12,13 +12,13 @@ Description
 
 A Sass-based Meta-Framework for Compass that allows you to mix and match any of the following:
 
-* jRails with jQuery 1.5.1rc1 and jQuery.UI 1.8.10 including themes
+* jRails with jQuery 1.5.1 and jQuery.UI 1.8.10 including themes
 * jQuery Tools 1.2.5
 * jquery.jstree.js V1.0rc3
 * jquery.dynatree.js V1.0.2
 * jquery.ribbon.js
 * jquery.jqGrid.js V3.8.2 (with minor changes to make it RESTful)
-
+* jquery.tinymce.js V3.4
 and for mobile devices <i>(using pure haml/sass without compass)</i>:
 
 * jquery.mobile.js 1.0a3
@@ -168,6 +168,19 @@ To use the stylesheets and javacripts include:
   = stylesheet_link_tag :ical, :media => 'screen, projection'
   = javascript_include_tag :ical</pre>
 
+
+jQuery TinyMCE Plugin
+--------------------
+
+Use compass to install the jQuery TinyMCE Editor Javascript WYSIWYG Editor into your project.
+
+<pre>compass install [-r jquery] jquery/tiny_mce <project name></pre>
+
+To use the javascripts include:
+
+<pre>
+= javascript_include_tag :tiny_mce</pre>
+
 Graphics
 --------
 
@@ -280,6 +293,7 @@ jQuery Plugins included:
 * Andrew M Andrews III for [Any+Time][29]
 * Steven Wittens for [Farbtastic Colorpicker plugin][30]
 * Adam Shaw for [FullCalendar][31]
+* Moxiecode Systems AB for [TinyMCE][40]
 
 Other stuff included:
 ---------------------
@@ -343,3 +357,4 @@ Copyright &copy; 2009-2011 Kosmas Schuetz. See LICENSE for details.
   [37]: http://github.com/cowboy/jquery-dotimeout
   [38]: http://github.com/gamache/DSt
   [39]: http://github.com/thegrubbsian/jquery.ganttView
+  [40]: http://tinymce.moxiecode.com/

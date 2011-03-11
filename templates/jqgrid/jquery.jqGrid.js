@@ -1,3 +1,6 @@
+// ==ClosureCompiler==
+// @compilation_level SIMPLE_OPTIMIZATIONS
+
 /*
  * jqGrid  3.8.2  - jQuery Grid
  * Copyright (c) 2008, Tony Tomov, tony@trirand.com
@@ -511,7 +514,7 @@
                 this._compareValues = function(func, f, v, how, t) {
                     var fld;
                     if (_useProperties) {
-                        fld = 'this.' + f;
+                        fld = 'jQuery.jgrid.getAccessor(this,\'' + f + '\')';
                     } else {
                         fld = 'this';
                     }
@@ -577,7 +580,7 @@
                     var val = (v === undefined || v === null) ? f : v,
                             length = _trim ? $.trim(val.toString()).length : val.toString().length;
                     if (_useProperties) {
-                        self._append(self._getStr('this.' + f) + '.substr(0,' + length + ') == ' + self._getStr('"' + self._toStr(v) + '"'));
+                        self._append(self._getStr('jQuery.jgrid.getAccessor(this,\'' + f + '\')') + '.substr(0,' + length + ') == ' + self._getStr('"' + self._toStr(v) + '"'));
                     } else {
                         length = _trim ? $.trim(v.toString()).length : v.toString().length;
                         self._append(self._getStr('this') + '.substr(0,' + length + ') == ' + self._getStr('"' + self._toStr(f) + '"'));
@@ -590,7 +593,7 @@
                     var val = (v === undefined || v === null) ? f : v,
                             length = _trim ? $.trim(val.toString()).length : val.toString().length;
                     if (_useProperties) {
-                        self._append(self._getStr('this.' + f) + '.substr(' + self._getStr('this.' + f) + '.length-' + length + ',' + length + ') == "' + self._toStr(v) + '"');
+                        self._append(self._getStr('jQuery.jgrid.getAccessor(this,\'' + f + '\')') + '.substr(' + self._getStr('jQuery.jgrid.getAccessor(this,\'' + f + '\')') + '.length-' + length + ',' + length + ') == "' + self._toStr(v) + '"');
                     } else {
                         self._append(self._getStr('this') + '.substr(' + self._getStr('this') + '.length-"' + self._toStr(f) + '".length,"' + self._toStr(f) + '".length) == "' + self._toStr(f) + '"');
                     }
@@ -600,7 +603,7 @@
                 };
                 this.contains = function(f, v) {
                     if (_useProperties) {
-                        self._append(self._getStr('this.' + f) + '.indexOf("' + self._toStr(v) + '",0) > -1');
+                        self._append(self._getStr('jQuery.jgrid.getAccessor(this,\'' + f + '\')') + '.indexOf("' + self._toStr(v) + '",0) > -1');
                     } else {
                         self._append(self._getStr('this') + '.indexOf("' + self._toStr(f) + '",0) > -1');
                     }
@@ -887,7 +890,7 @@
                             p.page = page;
                             if (empty) {
                                 grid.selectionPreserver(table[0]);
-                                grid.emptyRows(grid.bDiv, false);
+                                grid.emptyRows(grid.bDiv, false, false);
                             }
                             grid.populate(npage);
                         }
@@ -942,7 +945,7 @@
                 alert("Element is not a table");
                 return;
             }
-            $(this).empty();
+            $(this).empty().attr("tabindex", "1");
             this.p = p;
             var i, dir,ts;
             if (this.p.colNames.length === 0) {
@@ -1092,7 +1095,7 @@
                         }
                         return order;
                     },
-                    emptyRows = function (parent, scroll) {
+                    emptyRows = function (parent, scroll, locdata) {
                         if (ts.p.deepempty) {
                             $("#" + $.jgrid.jqID(ts.p.id) + " tbody:first tr:gt(0)").remove();
                         }
@@ -1103,6 +1106,10 @@
                         if (scroll && ts.p.scroll) {
                             $(">div:first", parent).css({height:"auto"}).children("div:first").css({height:0,display:"none"});
                             parent.scrollTop = 0;
+                        }
+                        if (locdata === true) {
+                            ts.p.data = [];
+                            ts.p._index = {};
                         }
                     },
                     refreshIndex = function() {
@@ -1124,17 +1131,17 @@
                     addXmlData = function (xml, t, rcnt, more, adjust) {
                         var startReq = new Date(),
                                 locdata = (ts.p.datatype != "local" && ts.p.loadonce) || ts.p.datatype == "xmlstring",
-                                xmlid,
+                                xmlid = "_id_",
                                 frd = ts.p.datatype == "local" ? "local" : "xml";
                         if (locdata) {
                             ts.p.data = [];
                             ts.p._index = {};
-                            ts.p.localReader.id = xmlid = "_id_";
+                            ts.p.localReader.id = xmlid;
                         }
                         ts.p.reccount = 0;
                         if ($.isXMLDoc(xml)) {
                             if (ts.p.treeANode === -1 && !ts.p.scroll) {
-                                emptyRows(t, false);
+                                emptyRows(t, false, true);
                                 rcnt = 1;
                             } else {
                                 rcnt = rcnt > 1 ? rcnt : 1;
@@ -1209,7 +1216,7 @@
                                 rid = getId(xmlr, br + j);
                                 altr = rcnt === 0 ? 0 : rcnt + 1;
                                 cn1 = (altr + j) % 2 == 1 ? cn : '';
-                                rowData.push("<tr" + hiderow + " id=\"" + rid + "\" role=\"row\" class =\"ui-widget-content jqgrow ui-row-" + ts.p.direction + "" + cn1 + "\">");
+                                rowData.push("<tr" + hiderow + " id=\"" + rid + "\" tabindex=\"-1\" role=\"row\" class =\"ui-widget-content jqgrow ui-row-" + ts.p.direction + "" + cn1 + "\">");
                                 if (ts.p.rownumbers === true) {
                                     rowData.push(addRowNum(0, j, ts.p.page, ts.p.rowNum));
                                     ni = 1;
@@ -1252,28 +1259,13 @@
                                     grpdata = $(ts).jqGrid('groupingPrepare', rowData, grpitem, grpdata, rd);
                                     rowData = [];
                                 }
-                                if (locdata) {
+                                if (locdata || ts.p.treeGrid === true) {
                                     rd[xmlid] = rid;
                                     ts.p.data.push(rd);
+                                    ts.p._index[rid] = ts.p.data.length - 1;
                                 }
                                 if (ts.p.gridview === false) {
-                                    if (ts.p.treeGrid === true) {
-                                        fpos = ts.p.treeANode > -1 ? ts.p.treeANode : 0;
-                                        row = $(rowData.join(''))[0]; // speed overhead
-                                        $(ts.rows[j + fpos]).after(row);
-                                        try {
-                                            $(ts).jqGrid("setTreeNode", rd, row);
-                                        } catch (e) {
-                                        }
-                                    } else {
-                                        $("tbody:first", t).append(rowData.join(''));
-                                    }
-                                    if (ts.p.subGrid === true) {
-                                        try {
-                                            $(ts).jqGrid("addSubGrid", ts.rows[ts.rows.length - 1], gi + ni);
-                                        } catch (_) {
-                                        }
-                                    }
+                                    $("tbody:first", t).append(rowData.join(''));
                                     if (afterInsRow) {
                                         ts.p.afterInsertRow.call(ts, rid, rd, xmlr);
                                     }
@@ -1288,11 +1280,20 @@
                             }
                         }
                         if (ts.p.gridview === true) {
+                            fpos = ts.p.treeANode > -1 ? ts.p.treeANode : 0;
                             if (ts.p.grouping) {
                                 $(ts).jqGrid('groupingRender', grpdata, ts.p.colModel.length);
                                 grpdata = null;
+                            } else if (ts.p.treeGrid === true && fpos > 0) {
+                                $(ts.rows[fpos]).after(rowData.join(''));
                             } else {
                                 $("tbody:first", t).append(rowData.join(''));
+                            }
+                        }
+                        if (ts.p.subGrid === true) {
+                            try {
+                                $(ts).jqGrid("addSubGrid", gi + ni);
+                            } catch (_) {
                             }
                         }
                         ts.p.totaltime = new Date() - startReq;
@@ -1302,6 +1303,12 @@
                             }
                         }
                         rowData = null;
+                        if (ts.p.treeGrid === true) {
+                            try {
+                                $(ts).jqGrid("setTreeNode", fpos + 1, ir + fpos + 1);
+                            } catch (e) {
+                            }
+                        }
                         if (!ts.p.treeGrid && !ts.p.scroll) {
                             ts.grid.bDiv.scrollTop = 0;
                         }
@@ -1342,17 +1349,17 @@
                                 }
                                 rd[xmlid] = rid;
                                 ts.p.data.push(rd);
+                                ts.p._index[rid] = ts.p.data.length - 1;
                                 rd = {};
                                 ir++;
                             }
-                            refreshIndex();
                         }
                     },
                     addJSONData = function(data, t, rcnt, more, adjust) {
                         var startReq = new Date();
                         if (data) {
                             if (ts.p.treeANode === -1 && !ts.p.scroll) {
-                                emptyRows(t, false);
+                                emptyRows(t, false, true);
                                 rcnt = 1;
                             } else {
                                 rcnt = rcnt > 1 ? rcnt : 1;
@@ -1361,12 +1368,12 @@
                             return;
                         }
 
-                        var dReader, locid, frd,
+                        var dReader, locid = "_id_", frd,
                                 locdata = (ts.p.datatype != "local" && ts.p.loadonce) || ts.p.datatype == "jsonstring";
                         if (locdata) {
                             ts.p.data = [];
                             ts.p._index = {};
-                            locid = ts.p.localReader.id = "_id_";
+                            ts.p.localReader.id = locid;
                         }
                         ts.p.reccount = 0;
                         if (ts.p.datatype == "local") {
@@ -1425,7 +1432,7 @@
                             }
                             altr = rcnt === 1 ? 0 : rcnt;
                             cn1 = (altr + i) % 2 == 1 ? cn : '';
-                            rowData.push("<tr" + hiderow + " id=\"" + idr + "\" role=\"row\" class= \"ui-widget-content jqgrow ui-row-" + ts.p.direction + "" + cn1 + "\">");
+                            rowData.push("<tr" + hiderow + " id=\"" + idr + "\" tabindex=\"-1\" role=\"row\" class= \"ui-widget-content jqgrow ui-row-" + ts.p.direction + "" + cn1 + "\">");
                             if (ts.p.rownumbers === true) {
                                 rowData.push(addRowNum(0, i, ts.p.page, ts.p.rowNum));
                                 ni = 1;
@@ -1460,28 +1467,13 @@
                                 grpdata = $(ts).jqGrid('groupingPrepare', rowData, grpitem, grpdata, rd);
                                 rowData = [];
                             }
-                            if (locdata) {
+                            if (locdata || ts.p.treeGrid === true) {
                                 rd[locid] = idr;
                                 ts.p.data.push(rd);
+                                ts.p._index[idr] = ts.p.data.length - 1;
                             }
                             if (ts.p.gridview === false) {
-                                if (ts.p.treeGrid === true) {
-                                    fpos = ts.p.treeANode > -1 ? ts.p.treeANode : 0;
-                                    row = $(rowData.join(''))[0];
-                                    $(ts.rows[i + fpos]).after(row);
-                                    try {
-                                        $(ts).jqGrid("setTreeNode", rd, row);
-                                    } catch (e) {
-                                    }
-                                } else {
-                                    $("#" + $.jgrid.jqID(ts.p.id) + " tbody:first").append(rowData.join(''));
-                                }
-                                if (ts.p.subGrid === true) {
-                                    try {
-                                        $(ts).jqGrid("addSubGrid", ts.rows[ts.rows.length - 1], gi + ni);
-                                    } catch (_) {
-                                    }
-                                }
+                                $("#" + $.jgrid.jqID(ts.p.id) + " tbody:first").append(rowData.join(''));
                                 if (afterInsRow) {
                                     ts.p.afterInsertRow.call(ts, idr, rd, cur);
                                 }
@@ -1495,11 +1487,20 @@
                             }
                         }
                         if (ts.p.gridview === true) {
+                            fpos = ts.p.treeANode > -1 ? ts.p.treeANode : 0;
                             if (ts.p.grouping) {
                                 $(ts).jqGrid('groupingRender', grpdata, ts.p.colModel.length);
                                 grpdata = null;
+                            } else if (ts.p.treeGrid === true && fpos > 0) {
+                                $(ts.rows[fpos]).after(rowData.join(''));
                             } else {
                                 $("#" + $.jgrid.jqID(ts.p.id) + " tbody:first").append(rowData.join(''));
+                            }
+                        }
+                        if (ts.p.subGrid === true) {
+                            try {
+                                $(ts).jqGrid("addSubGrid", gi + ni);
+                            } catch (_) {
                             }
                         }
                         ts.p.totaltime = new Date() - startReq;
@@ -1509,6 +1510,12 @@
                             }
                         }
                         rowData = null;
+                        if (ts.p.treeGrid === true) {
+                            try {
+                                $(ts).jqGrid("setTreeNode", fpos + 1, ir + fpos + 1);
+                            } catch (e) {
+                            }
+                        }
                         if (!ts.p.treeGrid && !ts.p.scroll) {
                             ts.grid.bDiv.scrollTop = 0;
                         }
@@ -1554,11 +1561,11 @@
                                     }
                                     rd[locid] = idr;
                                     ts.p.data.push(rd);
+                                    ts.p._index[idr] = ts.p.data.length - 1;
                                     rd = {};
                                 }
                                 ir++;
                             }
-                            refreshIndex();
                         }
                     },
                     addLocalData = function() {
@@ -2247,7 +2254,7 @@
                         }
                         if (ts.p.scroll) {
                             var sscroll = ts.grid.bDiv.scrollLeft;
-                            emptyRows(ts.grid.bDiv, true);
+                            emptyRows(ts.grid.bDiv, true, false);
                             ts.grid.hDiv.scrollLeft = sscroll;
                         }
                         if (ts.p.subGrid && ts.p.datatype == 'local') {
@@ -2767,7 +2774,7 @@
                     ts.p.savedRow = [];
                 }
                 if (ts.p.scroll) {
-                    emptyRows(ts.grid.bDiv, true);
+                    emptyRows(ts.grid.bDiv, true, false);
                 }
                 if (opts && opts.page) {
                     var page = opts.page;
@@ -2805,22 +2812,22 @@
                     return false;
                 });
             }
-//            if ($.isFunction(this.p.onRightClickRow)) {
-//                $(this).bind('contextmenu', function(e) {
-//                    td = e.target;
-//                    ptr = $(td, ts.rows).closest("tr.jqgrow");
-//                    if ($(ptr).length === 0) {
-//                        return false;
-//                    }
-//                    if (!ts.p.multiselect) {
-//                        $(ts).jqGrid("setSelection", ptr[0].id, true);
-//                    }
-//                    ri = ptr[0].rowIndex;
-//                    ci = $.jgrid.getCellIndex(td);
-//                    ts.p.onRightClickRow.call(ts, $(ptr).attr("id"), ri, ci, e);
-//                    return false;
-//                });
-//            }
+            if ($.isFunction(this.p.onRightClickRow)) {
+                $(this).bind('contextmenu', function(e) {
+                    td = e.target;
+                    ptr = $(td, ts.rows).closest("tr.jqgrow");
+                    if ($(ptr).length === 0) {
+                        return false;
+                    }
+                    if (!ts.p.multiselect) {
+                        $(ts).jqGrid("setSelection", ptr[0].id, true);
+                    }
+                    ri = ptr[0].rowIndex;
+                    ci = $.jgrid.getCellIndex(td);
+                    ts.p.onRightClickRow.call(ts, $(ptr).attr("id"), ri, ci, e);
+                    return false;
+                });
+            }
             grid.bDiv = document.createElement("div");
             $(grid.bDiv)
                     .append($('<div style="position:relative;' + (isMSIE && $.browser.version < 8 ? "height:0.01%;" : "") + '"></div>').append('<div></div>').append(this))
@@ -3076,17 +3083,14 @@
                 }
                 if (!$t.p.multiselect) {
                     if (pt.className !== "ui-subgrid") {
-                        if ($t.p.selrow) {
-                            $($t.rows.namedItem($t.p.selrow)).removeClass("ui-state-highlight").attr("aria-selected", "false");
-                        }
                         if ($t.p.selrow != pt.id) {
-                            $t.p.selrow = pt.id;
-                            $(pt).addClass("ui-state-highlight").attr("aria-selected", "true");
+                            $($t.rows.namedItem($t.p.selrow)).removeClass("ui-state-highlight").attr({"aria-selected":"false", "tabindex" : "-1"});
+                            $(pt).addClass("ui-state-highlight").attr({"aria-selected":true, "tabindex" : "0"});//.focus();
                             stat = true;
                         } else {
                             stat = false;
-                            $t.p.selrow = null;
                         }
+                        $t.p.selrow = pt.id;
                         if ($t.p.onSelectRow && onsr) {
                             $t.p.onSelectRow.call($t, pt.id, stat);
                         }
@@ -3255,6 +3259,13 @@
                         });
                         if (t.p.datatype == 'local') {
                             var pos = t.p._index[rowid];
+                            if (t.p.treeGrid) {
+                                for (var key in t.p.treeReader) {
+                                    if (lcdata.hasOwnProperty(t.p.treeReader[key])) {
+                                        delete lcdata[t.p.treeReader[key]];
+                                    }
+                                }
+                            }
                             if (typeof(pos) != 'undefined') {
                                 t.p.data[pos] = $.extend(true, t.p.data[pos], lcdata);
                             }
@@ -3342,7 +3353,7 @@
                             prp = t.formatCol(i, 1, v, rowid, data, true);
                             row += "<td role=\"gridcell\" aria-describedby=\"" + t.p.id + "_" + nm + "\" " + prp + ">" + v + "</td>";
                         }
-                        row = "<tr id=\"" + rowid + "\" role=\"row\" class=\"ui-widget-content jqgrow ui-row-" + t.p.direction + " " + cna + "\">" + row + "</tr>";
+                        row = "<tr id=\"" + rowid + "\" role=\"row\" tabindex=\"-1\" class=\"ui-widget-content jqgrow ui-row-" + t.p.direction + " " + cna + "\">" + row + "</tr>";
                         if (t.p.subGrid === true) {
                             row = $(row)[0];
                             $(t).jqGrid("addSubGrid", row, gi + ni);
@@ -3384,6 +3395,7 @@
                         }
                         k++;
                         if (t.p.datatype == 'local') {
+                            lcdata[t.p.localReader.id] = rowid;
                             t.p._index[rowid] = t.p.data.length;
                             t.p.data.push(lcdata);
                             lcdata = {};
@@ -3818,7 +3830,7 @@
             return ret;
         },
         getCol : function (col, obj, mathopr) {
-            var ret = [], val, sum = 0;
+            var ret = [], val, sum = 0, min = 0, max = 0, v;
             obj = typeof (obj) != 'boolean' ? false : obj;
             if (typeof mathopr == 'undefined') {
                 mathopr = false;
@@ -3849,7 +3861,10 @@
                                     val = $.jgrid.htmlDecode($t.rows[i].cells[pos].innerHTML);
                                 }
                                 if (mathopr) {
-                                    sum += parseFloat(val);
+                                    v = parseFloat(val);
+                                    sum += v;
+                                    min = Math.min(min, v);
+                                    max = Math.max(min, v);
                                 }
                                 else if (obj) {
                                     ret.push({id:$t.rows[i].id,value:val});
@@ -3865,6 +3880,8 @@
                                 case 'sum': ret = sum; break;
                                 case 'avg': ret = sum / ln; break;
                                 case 'count': ret = ln; break;
+                                case 'min': ret = min; break;
+                                case 'max': ret = max; break;
                             }
                         }
                     }
@@ -3912,6 +3929,107 @@
                 }
             });
             return ret;
+        },
+        bindKeys : function(settings) {
+            var o = $.extend({
+                onEnter: null,
+                onSpace: null,
+                onLeftKey: null,
+                onRightKey: null,
+                scrollingRows : true
+            }, settings || {});
+            return this.each(function() {
+                var $t = this;
+                if (!$('body').is('[role]')) {
+                    $('body').attr('role', 'application');
+                }
+                $t.p.scrollrows = o.scrollingRows;
+                $($t).keydown(function(event) {
+                    var target = $($t).find('tr[tabindex=0]')[0], id, r, mind,
+                            expanded = $t.p.treeReader.expanded_field;
+                    //check for arrow keys
+                    if (target) {
+                        mind = $t.p._index[target.id];
+                        if (event.keyCode === 37 || event.keyCode === 38 || event.keyCode === 39 || event.keyCode === 40) {
+                            // up key
+                            if (event.keyCode === 38) {
+                                r = target.previousSibling;
+                                id = "";
+                                if (r) {
+                                    if ($(r).is(":hidden")) {
+                                        while (r) {
+                                            r = r.previousSibling;
+                                            if (!$(r).is(":hidden") && $(r).hasClass('jqgrow')) {
+                                                id = r.id;
+                                                break;
+                                            }
+                                        }
+                                    } else {
+                                        id = r.id;
+                                    }
+                                }
+                                $($t).jqGrid('setSelection', id);
+                            }
+                            //if key is down arrow
+                            if (event.keyCode === 40) {
+                                r = target.nextSibling;
+                                id = "";
+                                if (r) {
+                                    if ($(r).is(":hidden")) {
+                                        while (r) {
+                                            r = r.nextSibling;
+                                            if (!$(r).is(":hidden") && $(r).hasClass('jqgrow')) {
+                                                id = r.id;
+                                                break;
+                                            }
+                                        }
+                                    } else {
+                                        id = r.id;
+                                    }
+                                }
+                                $($t).jqGrid('setSelection', id);
+                            }
+                            // left
+                            if (event.keyCode === 37) {
+                                if ($t.p.treeGrid && $t.p.data[mind][expanded]) {
+                                    $(target).find("div.treeclick").trigger('click');
+                                }
+                                if ($.isFunction(o.onLeftKey)) {
+                                    o.onLeftKey.call($t, $t.p.selrow);
+                                }
+                            }
+                            // right
+                            if (event.keyCode === 39) {
+                                if ($t.p.treeGrid && !$t.p.data[mind][expanded]) {
+                                    $(target).find("div.treeclick").trigger('click');
+                                }
+                                if ($.isFunction(o.onRightKey)) {
+                                    o.onRightKey.call($t, $t.p.selrow);
+                                }
+                            }
+                            return false;
+                        }
+                        //check if enter was pressed on a grid or treegrid node
+                        else if (event.keyCode === 13) {
+                            if ($.isFunction(o.onEnter)) {
+                                o.onEnter.call($t, $t.p.selrow);
+                            }
+                            return false;
+                        } else if (event.keyCode === 32) {
+                            if ($.isFunction(o.onSpace)) {
+                                o.onSpace.call($t, $t.p.selrow);
+                            }
+                            return false;
+                        }
+                    }
+                });
+            });
+        },
+        unbindKeys : function() {
+            return this.each(function() {
+                var $t = this;
+                $($t).unbind('keydown');
+            });
         }
     });
 })(jQuery);
@@ -4098,7 +4216,7 @@
                         switch (this.stype) {
                             case 'select' :
                                 so = (this.searchoptions && this.searchoptions.sopt) ? this.searchoptions.sopt[0] : 'eq';
-                                v = $("select[name=" + nm + "]", $t.grid.hDiv).val();
+                                v = $("#gs_" + $.jgrid.jqID(nm), $t.grid.hDiv).val();
                                 if (v) {
                                     sdata[nm] = v;
                                     sopt[nm] = so;
@@ -4112,7 +4230,7 @@
                                 break;
                             case 'text':
                                 so = (this.searchoptions && this.searchoptions.sopt) ? this.searchoptions.sopt[0] : p.defaultSearch;
-                                v = $("input[name=" + nm + "]", $t.grid.hDiv).val();
+                                v = $("#gs_" + $.jgrid.jqID(nm), $t.grid.hDiv).val();
                                 if (v) {
                                     sdata[nm] = v;
                                     sopt[nm] = so;
@@ -4180,7 +4298,7 @@
                         switch (this.stype) {
                             case 'select' :
                                 var v1;
-                                $("select[name=" + nm + "] option", $t.grid.hDiv).each(function (i) {
+                                $("#gs_" + $.jgrid.jqID(nm) + " option", $t.grid.hDiv).each(function (i) {
                                     if (i === 0) {
                                         this.selected = true;
                                     }
@@ -4202,7 +4320,7 @@
                                 }
                                 break;
                             case 'text':
-                                $("input[name=" + nm + "]", $t.grid.hDiv).val(v);
+                                $("#gs_" + $.jgrid.jqID(nm), $t.grid.hDiv).val(v);
                                 if (v) {
                                     sdata[nm] = v;
                                     j++;
@@ -5510,9 +5628,10 @@ var xmlJsonClass = {
                 $("tr#" + rid + " div.ui-inline-save, " + "tr#" + rid + " div.ui-inline-cancel", "#" + gid).show();
                 break;
             case 'save':
-                $('#' + gid).jqGrid('saveRow', rid, op.onSuccess, op.url, op.extraparam, saverow, op.onError, restorerow);
-                $("tr#" + rid + " div.ui-inline-edit, " + "tr#" + rid + " div.ui-inline-del", "#" + gid).show();
-                $("tr#" + rid + " div.ui-inline-save, " + "tr#" + rid + " div.ui-inline-cancel", "#" + gid).hide();
+                if ($('#' + gid).jqGrid('saveRow', rid, op.onSuccess, op.url, op.extraparam, saverow, op.onError, restorerow)) {
+                    $("tr#" + rid + " div.ui-inline-edit, " + "tr#" + rid + " div.ui-inline-del", "#" + gid).show();
+                    $("tr#" + rid + " div.ui-inline-save, " + "tr#" + rid + " div.ui-inline-cancel", "#" + gid).hide();
+                }
                 break;
             case 'cancel' :
                 $('#' + gid).jqGrid('restoreRow', rid, restorerow);
@@ -6565,7 +6684,8 @@ var xmlJsonClass = {
                     groups: []
                 };
             }
-            var i, len = this.p.columns.length, cl;
+            var i, len = this.p.columns.length, cl,
+                    isIE = /msie/i.test(navigator.userAgent) && !win.opera;
 
             // translating the options
             if (this.p._gridsopt.length) {
@@ -6600,6 +6720,9 @@ var xmlJsonClass = {
                 }
                 if (!cl.label) {
                     cl.label = cl.name;
+                }
+                if (cl.index) {
+                    cl.name = cl.index;
                 }
                 if (!cl.hasOwnProperty('searchoptions')) {
                     cl.searchoptions = {};
@@ -6690,7 +6813,7 @@ var xmlJsonClass = {
                 });
 
                 // button for adding a new subgroup
-                var inputAddSubgroup;
+                var inputAddSubgroup = "<span></span>";
                 if (this.p.groupButton) {
                     inputAddSubgroup = $("<input type='button' value='+ {}' title='Add subgroup' class='add-group'/>");
                     inputAddSubgroup.bind('click', function() {
@@ -6709,13 +6832,11 @@ var xmlJsonClass = {
                         that.onchange(); // signals that the filter has changed
                         return false;
                     });
-                } else {
-                    inputAddSubgroup = "<span></span>";
                 }
                 th.append(inputAddSubgroup);
 
                 // button for adding a new rule
-                var inputAddRule = $("<input type='button' value='+' title='Add rule' class='add-rule'/>"), cm;
+                var inputAddRule = $("<input type='button' value='+' title='Add rule' class='add-rule ui-add'/>"), cm;
                 inputAddRule.bind('click', function() {
                     //if(!group) { group = {};}
                     if (group.rules === undefined) {
@@ -6846,6 +6967,11 @@ var xmlJsonClass = {
                         return;
                     }
                     cm.searchoptions.id = randId();
+                    if (isIE) {
+                        if (!cm.searchoptions.size) {
+                            cm.searchoptions.size = 10;
+                        }
+                    }
                     var elm = $.jgrid.createEl(cm.inputtype, cm.searchoptions, "", true, that.p.ajaxSelectOptions, true);
                     $(elm).addClass("input-elm");
                     //that.createElement(rule, "");
@@ -6913,6 +7039,11 @@ var xmlJsonClass = {
                 // create it here so it can be referentiated in the onchange event
                 //var RD = that.createElement(rule, rule.data);
                 cm.searchoptions.id = randId();
+                if (isIE) {
+                    if (!cm.searchoptions.size) {
+                        cm.searchoptions.size = 10;
+                    }
+                }
                 var ruleDataInput = $.jgrid.createEl(cm.inputtype, cm.searchoptions, rule.data, true, that.p.ajaxSelectOptions, true);
 
                 // dropdown for: choosing operator
@@ -6981,7 +7112,7 @@ var xmlJsonClass = {
                 tr.append(ruleDeleteTd);
 
                 // create button for: delete rule
-                var ruleDeleteInput = $("<input type='button' value='-' title='Delete rule' class='delete-rule'/>");
+                var ruleDeleteInput = $("<input type='button' value='-' title='Delete rule' class='delete-rule ui-del'/>");
                 ruleDeleteTd.append(ruleDeleteInput);
                 //$(ruleDeleteInput).html("").height(20).width(30).button({icons: {  primary: "ui-icon-minus", text:false}});
                 ruleDeleteInput.bind('click', function() {
@@ -7201,6 +7332,16 @@ var xmlJsonClass = {
             return this.each(function() {
                 this.resetFilter();
             });
+        },
+        addFilter: function (pfilter) {
+            if (typeof pfilter === "string") {
+                pfilter = jQuery.jgrid.parse(pfilter);
+            }
+            this.each(function() {
+                this.p.filter = pfilter;
+                this.reDraw();
+                this.onchange();
+            });
         }
 
     });
@@ -7240,12 +7381,12 @@ var xmlJsonClass = {
                 top : 0,
                 left: 0,
                 jqModal : true,
-                modal: true,
+                modal: false,
                 resize : false,
                 width: 450,
                 height: 'auto',
                 dataheight: 'auto',
-                showQuery: true,
+                showQuery: false,
                 errorcheck : true,
                 // translation
                 // if you want to change or remove the order change it in sopt
@@ -7255,6 +7396,7 @@ var xmlJsonClass = {
                 onClose : null,
                 onSearch : null,
                 onReset : null,
+                toTop : true,
                 overlay : 10,
                 columns : []
             }, $.jgrid.search, p || {});
@@ -7266,8 +7408,7 @@ var xmlJsonClass = {
                 var fid = "fbox_" + $t.p.id,
                         showFrm = true,
                         IDs = {themodal:'editmod' + fid,modalhead:'edithd' + fid,modalcontent:'editcnt' + fid, scrollelm : fid},
-                        defaultFilters = $t.p.postData[p.sFilter],
-                        fil = $("<div><div id='" + fid + "' class='searchFilter' style='overflow:auto'></div></div>").insertBefore("#gview_" + $t.p.id);
+                        defaultFilters = $t.p.postData[p.sFilter];
                 if (typeof(defaultFilters) === "string") {
                     defaultFilters = $.jgrid.parse(defaultFilters);
                 }
@@ -7282,7 +7423,7 @@ var xmlJsonClass = {
                         }
                     }
                     if (showFrm) {
-                        $.jgrid.viewModal("#" + IDs.themodal, {gbox:"#gbox_" + fid,jqm:p.jqModal, modal:p.modal, overlay: p.overlay});
+                        $.jgrid.viewModal("#" + IDs.themodal, {gbox:"#gbox_" + fid,jqm:p.jqModal, modal:p.modal, overlay: p.overlay, toTop: p.toTop});
                         if ($.isFunction(p.afterShowSearch)) {
                             p.afterShowSearch($("#" + fid));
                         }
@@ -7292,17 +7433,18 @@ var xmlJsonClass = {
                 if ($("#" + IDs.themodal).html() !== null) {
                     showFilter();
                 } else {
+                    var fil = $("<span><div id='" + fid + "' class='searchFilter' style='overflow:auto'></div></span>").insertBefore("#gview_" + $t.p.id);
                     if ($.isFunction(p.onInitializeSearch)) {
                         p.onInitializeSearch($("#" + fid));
                     }
                     var columns = $.extend([], $t.p.colModel),
-                            bS = "<a href='javascript:void(0)' id='" + fid + "_search' class='fm-button ui-state-default ui-corner-all fm-button-icon-left'><span class='ui-icon ui-icon-search'></span>" + p.Find + "</a>",
-                            bC = "<a href='javascript:void(0)' id='" + fid + "_reset' class='fm-button ui-state-default ui-corner-all fm-button-icon-left'><span class='ui-icon ui-icon-arrowreturnthick-1-w'></span>" + p.Reset + "</a>",
+                            bS = "<a href='javascript:void(0)' id='" + fid + "_search' class='fm-button ui-state-default ui-corner-all fm-button-icon-left ui-reset'><span class='ui-icon ui-icon-search'></span>" + p.Find + "</a>",
+                            bC = "<a href='javascript:void(0)' id='" + fid + "_reset' class='fm-button ui-state-default ui-corner-all fm-button-icon-left ui-search'><span class='ui-icon ui-icon-arrowreturnthick-1-w'></span>" + p.Reset + "</a>",
                             bQ = "";
                     if (p.showQuery) {
                         bQ = "<a href='javascript:void(0)' id='" + fid + "_query' class='fm-button ui-state-default ui-corner-all fm-button-icon-left'><span class='ui-icon ui-icon-comment'></span>Query</a>";
                     }
-                    var bt = "<table border='0' cellspacing='0' cellpadding='0' class='EditTable ui-widget content' style='border:0px none;margin-top:5px' id='" + fid + "_2'><tbody><tr><td colspan='2'><hr class='ui-widget-content' style='margin:1px'/></td></tr><tr><td class='EditButton' style='text-align:left'>" + bC + "</td><td class='EditButton'>" + bQ + bS + "</td></tr></tbody></table>",
+                    var bt = "<table class='EditTable' style='border:0px none;margin-top:5px' id='" + fid + "_2'><tbody><tr><td colspan='2'><hr class='ui-widget-content' style='margin:1px'/></td></tr><tr><td class='EditButton' style='text-align:left'>" + bC + "</td><td class='EditButton'>" + bQ + bS + "</td></tr></tbody></table>",
                             colnm, found = false;
                     if (!p.columns.length) {
                         $.each(columns, function(i, n) {
@@ -7316,7 +7458,7 @@ var xmlJsonClass = {
                                         ignoreHiding = (n.searchoptions && n.searchoptions.searchhidden === true);
                                 if ((ignoreHiding && searchable) || (searchable && !hidden)) {
                                     found = true;
-                                    colnm = n.name;
+                                    colnm = n.index || n.name;
                                 }
                             }
                         });
@@ -7377,7 +7519,7 @@ var xmlJsonClass = {
                             }
                         }
 
-                        if (p.stringResult && $t.p.datatype !== "local") {
+                        if (p.stringResult) {
                             try {
                                 // xmlJsonClass or JSON.stringify
                                 res = xmlJsonClass.toJson(filters, '', '', false);
@@ -7408,12 +7550,12 @@ var xmlJsonClass = {
                         }
                         $t.p.search = true;
                         $.extend($t.p.postData, sdata);
-                        $($t).trigger("reloadGrid", [
-                            {page:1}
-                        ]);
                         if ($.isFunction(p.onSearch)) {
                             p.onSearch();
                         }
+                        $($t).trigger("reloadGrid", [
+                            {page:1}
+                        ]);
                         if (p.closeAfterSearch) {
                             $.jgrid.hideModal("#" + IDs.themodal, {gb:"#gbox_" + $t.p.id,jqm:p.jqModal,onClose: p.onClose});
                         }
@@ -7430,12 +7572,12 @@ var xmlJsonClass = {
                         }
                         fl[0].resetFilter();
                         $.extend($t.p.postData, sdata);
-                        $($t).trigger("reloadGrid", [
-                            {page:1}
-                        ]);
                         if ($.isFunction(p.onReset)) {
                             p.onReset();
                         }
+                        $($t).trigger("reloadGrid", [
+                            {page:1}
+                        ]);
                         return false;
                     });
                     showFilter();
@@ -7622,7 +7764,7 @@ var xmlJsonClass = {
                                     try {
                                         tmp = $.unformat($("td:eq(" + i + ")", obj.rows[ind]), {rowId:rowid, colModel:this}, i);
                                     } catch (_) {
-                                        tmp = $("td:eq(" + i + ")", obj.rows[ind]).html();
+                                        tmp = $("td:eq(" + i + ")", obj.rows[ind]).text();
                                     }
                                 }
                             }
@@ -7694,7 +7836,7 @@ var xmlJsonClass = {
                             nm = this.name;
                             opt = $.extend({}, this.editoptions || {});
                             fld = $("#" + $.jgrid.jqID(nm), "#" + fmid);
-                            if (fld[0] !== null) {
+                            if (fld && fld[0] !== null) {
                                 vl = "";
                                 if (opt.defaultValue) {
                                     vl = $.isFunction(opt.defaultValue) ? opt.defaultValue() : opt.defaultValue;
@@ -7743,7 +7885,7 @@ var xmlJsonClass = {
                                 try {
                                     tmp = $.unformat($(this), {rowId:rowid, colModel:cm[i]}, i);
                                 } catch (_) {
-                                    tmp = $(this).html();
+                                    tmp = $(this).text();
                                 }
                             }
                             if ($t.p.autoencode) {
@@ -7833,7 +7975,7 @@ var xmlJsonClass = {
                 }
 
                 function postIt() {
-                    var copydata, ret = [true,"",""], onCS = {}, opers = $t.p.prmNames, idname, oper, key;
+                    var copydata, ret = [true,"",""], onCS = {}, opers = $t.p.prmNames, idname, oper, key, selr;
                     if ($.isFunction(rp_ge.beforeCheckValues)) {
                         var retvals = rp_ge.beforeCheckValues(postdata, $("#" + frmgr), postdata[$t.p.id + "_id"] == "_empty" ? opers.addoper : opers.editoper);
                         if (retvals && typeof(retvals) === 'object') {
@@ -7874,6 +8016,22 @@ var xmlJsonClass = {
                         }
                         delete postdata[$t.p.id + "_id"];
                         postdata = $.extend(postdata, rp_ge.editData, onCS);
+                        if ($t.p.treeGrid === true) {
+                            if (postdata[oper] == opers.addoper) {
+                                selr = $($t).jqGrid("getGridParam", 'selrow');
+                                var tr_par_id = $t.p.treeGridModel == 'adjacency' ? $t.p.treeReader.parent_id_field : 'parent_id';
+                                postdata[tr_par_id] = selr;
+                            }
+                            for (i in $t.p.treeReader) {
+                                var itm = $t.p.treeReader[i];
+                                if (postdata.hasOwnProperty(itm)) {
+                                    if (postdata[oper] == opers.addoper && i === 'parent_id_field') {
+                                        continue;
+                                    }
+                                    delete postdata[itm];
+                                }
+                            }
+                        }
                         if ($t.p.restful) {
                             rp_ge.mtype = postdata.id == "_empty" ? "POST" : "PUT";
                             rp_ge.url = postdata.id == "_empty" ? $t.p.url : $t.p.url + "/" + postdata.id;
@@ -7931,8 +8089,12 @@ var xmlJsonClass = {
                                                 $($t).trigger("reloadGrid");
                                             }
                                             else {
-                                                $($t).jqGrid("addRowData", ret[2], postdata, p.addedrow);
-                                                $($t).jqGrid("setSelection", ret[2]);
+                                                if ($t.p.treeGrid === true) {
+                                                    $($t).jqGrid("addChildNode", ret[2], selr, postdata);
+                                                } else {
+                                                    $($t).jqGrid("addRowData", ret[2], postdata, p.addedrow);
+                                                    $($t).jqGrid("setSelection", ret[2]);
+                                                }
                                             }
                                             $.jgrid.hideModal("#" + IDs.themodal, {gb:"#gbox_" + gID,jqm:p.jqModal,onClose: rp_ge.onClose});
                                         } else if (rp_ge.clearAfterAdd) {
@@ -7940,7 +8102,11 @@ var xmlJsonClass = {
                                                 $($t).trigger("reloadGrid");
                                             }
                                             else {
-                                                $($t).jqGrid("addRowData", ret[2], postdata, p.addedrow);
+                                                if ($t.p.treeGrid === true) {
+                                                    $($t).jqGrid("addChildNode", ret[2], selr, postdata);
+                                                } else {
+                                                    $($t).jqGrid("addRowData", ret[2], postdata, p.addedrow);
+                                                }
                                             }
                                             fillData("_empty", $t, frmgr);
                                         } else {
@@ -7948,7 +8114,11 @@ var xmlJsonClass = {
                                                 $($t).trigger("reloadGrid");
                                             }
                                             else {
-                                                $($t).jqGrid("addRowData", ret[2], postdata, p.addedrow);
+                                                if ($t.p.treeGrid === true) {
+                                                    $($t).jqGrid("addChildNode", ret[2], selr, postdata);
+                                                } else {
+                                                    $($t).jqGrid("addRowData", ret[2], postdata, p.addedrow);
+                                                }
                                             }
                                         }
                                     } else {
@@ -7978,30 +8148,23 @@ var xmlJsonClass = {
                                             copydata = null;
                                         }, 500);
                                     }
-                                }
-                                rp_ge.processing = false;
-                                if (rp_ge.checkOnSubmit || rp_ge.checkOnUpdate) {
-                                    $("#" + frmgr).data("disabled", false);
-                                    if (rp_ge._savedData[$t.p.id + "_id"] != "_empty") {
-                                        for (var key in rp_ge._savedData) {
-                                            if (postdata[key]) {
-                                                rp_ge._savedData[key] = postdata[key];
+                                    if (rp_ge.checkOnSubmit || rp_ge.checkOnUpdate) {
+                                        $("#" + frmgr).data("disabled", false);
+                                        if (rp_ge._savedData[$t.p.id + "_id"] != "_empty") {
+                                            for (var key in rp_ge._savedData) {
+                                                if (postdata[key]) {
+                                                    rp_ge._savedData[key] = postdata[key];
+                                                }
                                             }
                                         }
                                     }
                                 }
+                                rp_ge.processing = false;
                                 $("#sData", "#" + frmtb + "_2").removeClass('ui-state-active');
                                 try {
                                     $(':input:visible', "#" + frmgr)[0].focus();
                                 } catch (e) {
                                 }
-                            },
-                            error:function(xhr, st, err) {
-                                $("#FormError>td", "#" + frmtb).html(st + " : " + err);
-                                $("#FormError", "#" + frmtb).show();
-                                rp_ge.processing = false;
-                                $("#" + frmgr).data("disabled", false);
-                                $("#sData", "#" + frmtb + "_2").removeClass('ui-state-active');
                             }
                         }, $.jgrid.ajaxOptions, rp_ge.ajaxEditOptions);
 
@@ -8961,12 +9124,6 @@ var xmlJsonClass = {
                                     if (ret[0]) {
                                         $.jgrid.hideModal("#" + IDs.themodal, {gb:"#gbox_" + gID,jqm:p.jqModal, onClose: rp_ge.onClose});
                                     }
-                                },
-                                error:function(xhr, st, err) {
-                                    $("#DelError>td", "#" + dtbl).html(st + " : " + err);
-                                    $("#DelError", "#" + dtbl).show();
-                                    rp_ge.processing = false;
-                                    $("#dData", "#" + dtbl + "_2").removeClass('ui-state-active');
                                 }
                             }, $.jgrid.ajaxOptions, p.ajaxDelOptions);
 
@@ -9406,8 +9563,8 @@ var xmlJsonClass = {
                 var rowdata = $($t).jqGrid("getRowData", rowid);
                 if (rowdata) {
                     for (var i in rowdata) {
-                        if ($("[name=" + i + "]", formid).is("input:radio") || $("[name=" + i + "]", formid).is("input:checkbox")) {
-                            $("[name=" + i + "]", formid).each(function() {
+                        if ($("[name=" + $.jgrid.jqID(i) + "]", formid).is("input:radio") || $("[name=" + $.jgrid.jqID(i) + "]", formid).is("input:checkbox")) {
+                            $("[name=" + $.jgrid.jqID(i) + "]", formid).each(function() {
                                 if ($(this).val() == rowdata[i]) {
                                     $(this).attr("checked", "checked");
                                 } else {
@@ -9416,7 +9573,7 @@ var xmlJsonClass = {
                             });
                         } else {
                             // this is very slow on big table and form.
-                            $("[name=" + i + "]", formid).val(rowdata[i]);
+                            $("[name=" + $.jgrid.jqID(i) + "]", formid).val(rowdata[i]);
                         }
                     }
                 }
@@ -9464,6 +9621,26 @@ var xmlJsonClass = {
     $.jgrid.extend({
 //Editing
         editRow : function(rowid, keys, oneditfunc, succesfunc, url, extraparam, aftersavefunc, errorfunc, afterrestorefunc) {
+            // Compatible mode old versions
+            var settings = {
+                "keys" : keys || false,
+                "oneditfunc" : oneditfunc || null,
+                "successfunc" : succesfunc || null,
+                "url" : url || null,
+                "extraparam" : extraparam || {},
+                "aftersavefunc" : aftersavefunc || null,
+                "errorfunc": errorfunc || null,
+                "afterrestorefunc" : afterrestorefunc || null,
+                "restoreAfterErorr" : true
+            },
+                    args = $.makeArray(arguments).slice(1), o;
+
+            if (args[0] && typeof(args[0]) == "object" && !$.isFunction(args[0])) {
+                o = $.extend(settings, args[0]);
+            } else {
+                o = settings;
+            }
+            // End compatible
             return this.each(function() {
                 var $t = this, nm, tmp, editable, cnt = 0, focus = null, svr = {}, ind,cm;
                 if (!$t.grid) {
@@ -9529,7 +9706,7 @@ var xmlJsonClass = {
                         $t.p.savedRow.push(svr);
                         $(ind).attr("editable", "1");
                         $("td:eq(" + focus + ") input", ind).focus();
-                        if (keys === true) {
+                        if (o.keys === true) {
                             $(ind).bind("keydown", function(e) {
                                 if (e.keyCode === 27) {
                                     $($t).jqGrid("restoreRow", rowid, afterrestorefunc);
@@ -9539,218 +9716,245 @@ var xmlJsonClass = {
                                     if (ta.tagName == 'TEXTAREA') {
                                         return true;
                                     }
-                                    $($t).jqGrid("saveRow", rowid, succesfunc, url, extraparam, aftersavefunc, errorfunc, afterrestorefunc);
+                                    $($t).jqGrid("saveRow", rowid, o);
                                     return false;
                                 }
                                 e.stopPropagation();
                             });
                         }
-                        if ($.isFunction(oneditfunc)) {
-                            oneditfunc.call($t, rowid);
+                        if ($.isFunction(o.oneditfunc)) {
+                            o.oneditfunc.call($t, rowid);
                         }
                     }
                 }
             });
         },
         saveRow : function(rowid, succesfunc, url, extraparam, aftersavefunc, errorfunc, afterrestorefunc) {
-            return this.each(function() {
-                var $t = this, nm, tmp = {}, tmp2 = {}, editable, fr, cv, ind;
-                if (!$t.grid) {
-                    return;
-                }
-                ind = $($t).jqGrid("getInd", rowid, true);
-                if (ind === false) {
-                    return;
-                }
-                editable = $(ind).attr("editable");
-                url = url ? url : $t.p.editurl;
-                if (editable === "1") {
-                    var cm;
-                    $("td", ind).each(function(i) {
-                        cm = $t.p.colModel[i];
-                        nm = cm.name;
-                        if (nm != 'cb' && nm != 'subgrid' && cm.editable === true && nm != 'rn') {
-                            switch (cm.edittype) {
-                                case "checkbox":
-                                    var cbv = ["Yes","No"];
-                                    if (cm.editoptions) {
-                                        cbv = cm.editoptions.value.split(":");
-                                    }
-                                    tmp[nm] = $("input", this).attr("checked") ? cbv[0] : cbv[1];
-                                    break;
-                                case 'text':
-                                case 'password':
-                                case 'textarea':
-                                case "button" :
-                                    tmp[nm] = $("input, textarea", this).val();
-                                    break;
-                                case 'select':
-                                    if (!cm.editoptions.multiple) {
-                                        tmp[nm] = $("select>option:selected", this).val();
-                                        tmp2[nm] = $("select>option:selected", this).text();
-                                    } else {
-                                        var sel = $("select", this), selectedText = [];
-                                        tmp[nm] = $(sel).val();
-                                        if (tmp[nm]) {
-                                            tmp[nm] = tmp[nm].join(",");
-                                        } else {
-                                            tmp[nm] = "";
-                                        }
-                                        $("select > option:selected", this).each(
-                                                function(i, selected) {
-                                                    selectedText[i] = $(selected).text();
-                                                }
-                                                );
-                                        tmp2[nm] = selectedText.join(",");
-                                    }
-                                    if (cm.formatter && cm.formatter == 'select') {
-                                        tmp2 = {};
-                                    }
-                                    break;
-                                case 'custom' :
-                                    try {
-                                        if (cm.editoptions && $.isFunction(cm.editoptions.custom_value)) {
-                                            tmp[nm] = cm.editoptions.custom_value.call($t, $(".customelement", this), 'get');
-                                            if (tmp[nm] === undefined) {
-                                                throw "e2";
-                                            }
-                                        } else {
-                                            throw "e1";
-                                        }
-                                    } catch (e) {
-                                        if (e == "e1") {
-                                            $.jgrid.info_dialog(jQuery.jgrid.errors.errcap, "function 'custom_value' " + $.jgrid.edit.msg.nodefined, jQuery.jgrid.edit.bClose);
-                                        }
-                                        if (e == "e2") {
-                                            $.jgrid.info_dialog(jQuery.jgrid.errors.errcap, "function 'custom_value' " + $.jgrid.edit.msg.novalue, jQuery.jgrid.edit.bClose);
-                                        }
-                                        else {
-                                            $.jgrid.info_dialog(jQuery.jgrid.errors.errcap, e.message, jQuery.jgrid.edit.bClose);
-                                        }
-                                    }
-                                    break;
-                            }
-                            cv = $.jgrid.checkValues(tmp[nm], i, $t);
-                            if (cv[0] === false) {
-                                cv[1] = tmp[nm] + " " + cv[1];
-                                return false;
-                            }
-                            if ($t.p.autoencode) {
-                                tmp[nm] = $.jgrid.htmlEncode(tmp[nm]);
-                            }
-                        }
-                    });
-                    if (cv[0] === false) {
-                        try {
-                            var positions = $.jgrid.findPos($("#" + $.jgrid.jqID(rowid), $t.grid.bDiv)[0]);
-                            $.jgrid.info_dialog($.jgrid.errors.errcap, cv[1], $.jgrid.edit.bClose, {left:positions[0],top:positions[1]});
-                        } catch (e) {
-                            alert(cv[1]);
-                        }
-                        return;
-                    }
-                    if (tmp) {
-                        var idname, opers, oper;
-                        opers = $t.p.prmNames;
-                        oper = opers.oper;
-                        idname = opers.id;
-                        tmp[oper] = opers.editoper;
-                        tmp[idname] = rowid;
-                        if (typeof($t.p.inlineData) == 'undefined') {
-                            $t.p.inlineData = {};
-                        }
-                        if (typeof(extraparam) == 'undefined') {
-                            extraparam = {};
-                        }
-                        tmp = $.extend({}, tmp, $t.p.inlineData, extraparam);
-                    }
-                    if (url == 'clientArray') {
-                        tmp = $.extend({}, tmp, tmp2);
-                        if ($t.p.autoencode) {
-                            $.each(tmp, function(n, v) {
-                                tmp[n] = $.jgrid.htmlDecode(v);
-                            });
-                        }
-                        var resp = $($t).jqGrid("setRowData", rowid, tmp);
-                        $(ind).attr("editable", "0");
-                        for (var k = 0; k < $t.p.savedRow.length; k++) {
-                            if ($t.p.savedRow[k].id == rowid) {
-                                fr = k;
+            // Compatible mode old versions
+            var settings = {
+                "successfunc" : succesfunc || null,
+                "url" : url || null,
+                "extraparam" : extraparam || {},
+                "aftersavefunc" : aftersavefunc || null,
+                "errorfunc": errorfunc || null,
+                "afterrestorefunc" : afterrestorefunc || null,
+                "restoreAfterErorr" : true
+            },
+                    args = $.makeArray(arguments).slice(1), o;
+
+            if (args[0] && typeof(args[0]) == "object" && !$.isFunction(args[0])) {
+                o = $.extend(settings, args[0]);
+            } else {
+                o = settings;
+            }
+            // End compatible
+            var success = false;
+            var $t = this[0], nm, tmp = {}, tmp2 = {}, editable, fr, cv, ind;
+            if (!$t.grid) {
+                return success;
+            }
+            ind = $($t).jqGrid("getInd", rowid, true);
+            if (ind === false) {
+                return success;
+            }
+            editable = $(ind).attr("editable");
+            o.url = o.url ? o.url : $t.p.editurl;
+            if (editable === "1") {
+                var cm;
+                $("td", ind).each(function(i) {
+                    cm = $t.p.colModel[i];
+                    nm = cm.name;
+                    if (nm != 'cb' && nm != 'subgrid' && cm.editable === true && nm != 'rn' && !$(this).hasClass('not-editable-cell')) {
+                        switch (cm.edittype) {
+                            case "checkbox":
+                                var cbv = ["Yes","No"];
+                                if (cm.editoptions) {
+                                    cbv = cm.editoptions.value.split(":");
+                                }
+                                tmp[nm] = $("input", this).attr("checked") ? cbv[0] : cbv[1];
                                 break;
-                            }
-                        }
-                        if (fr >= 0) {
-                            $t.p.savedRow.splice(fr, 1);
-                        }
-                        if ($.isFunction(aftersavefunc)) {
-                            aftersavefunc.call($t, rowid, resp);
-                        }
-                    } else {
-                        $("#lui_" + $t.p.id).show();
-                        if ($t.p.restful) {
-                            mtype = "PUT";
-                            url = url + "/" + rowid;
-                        }
-                        else {
-                            mtype = "POST";
-                        }
-                        $.ajax($.extend({
-                            url:url,
-                            data: $.isFunction($t.p.serializeRowData) ? $t.p.serializeRowData.call($t, tmp) : tmp,
-                            type: mtype,
-                            complete: function(res, stat) {
-                                $("#lui_" + $t.p.id).hide();
-                                if (stat === "success") {
-                                    var ret;
-                                    if ($.isFunction(succesfunc)) {
-                                        ret = succesfunc.call($t, res);
+                            case 'text':
+                            case 'password':
+                            case 'textarea':
+                            case "button" :
+                                tmp[nm] = $("input, textarea", this).val();
+                                break;
+                            case 'select':
+                                if (!cm.editoptions.multiple) {
+                                    tmp[nm] = $("select>option:selected", this).val();
+                                    tmp2[nm] = $("select>option:selected", this).text();
+                                } else {
+                                    var sel = $("select", this), selectedText = [];
+                                    tmp[nm] = $(sel).val();
+                                    if (tmp[nm]) {
+                                        tmp[nm] = tmp[nm].join(",");
+                                    } else {
+                                        tmp[nm] = "";
+                                    }
+                                    $("select > option:selected", this).each(
+                                            function(i, selected) {
+                                                selectedText[i] = $(selected).text();
+                                            }
+                                            );
+                                    tmp2[nm] = selectedText.join(",");
+                                }
+                                if (cm.formatter && cm.formatter == 'select') {
+                                    tmp2 = {};
+                                }
+                                break;
+                            case 'custom' :
+                                try {
+                                    if (cm.editoptions && $.isFunction(cm.editoptions.custom_value)) {
+                                        tmp[nm] = cm.editoptions.custom_value.call($t, $(".customelement", this), 'get');
+                                        if (tmp[nm] === undefined) {
+                                            throw "e2";
+                                        }
+                                    } else {
+                                        throw "e1";
+                                    }
+                                } catch (e) {
+                                    if (e == "e1") {
+                                        $.jgrid.info_dialog(jQuery.jgrid.errors.errcap, "function 'custom_value' " + $.jgrid.edit.msg.nodefined, jQuery.jgrid.edit.bClose);
+                                    }
+                                    if (e == "e2") {
+                                        $.jgrid.info_dialog(jQuery.jgrid.errors.errcap, "function 'custom_value' " + $.jgrid.edit.msg.novalue, jQuery.jgrid.edit.bClose);
                                     }
                                     else {
-                                        ret = true;
-                                    }
-                                    if (ret === true) {
-                                        if ($t.p.autoencode) {
-                                            $.each(tmp, function(n, v) {
-                                                tmp[n] = $.jgrid.htmlDecode(v);
-                                            });
-                                        }
-                                        tmp = $.extend({}, tmp, tmp2);
-                                        $($t).jqGrid("setRowData", rowid, tmp);
-                                        $(ind).attr("editable", "0");
-                                        for (var k = 0; k < $t.p.savedRow.length; k++) {
-                                            if ($t.p.savedRow[k].id == rowid) {
-                                                fr = k;
-                                                break;
-                                            }
-                                        }
-                                        if (fr >= 0) {
-                                            $t.p.savedRow.splice(fr, 1);
-                                        }
-                                        if ($.isFunction(aftersavefunc)) {
-                                            aftersavefunc.call($t, rowid, res);
-                                        }
-                                    } else {
-                                        if ($.isFunction(errorfunc)) {
-                                            errorfunc.call($t, rowid, res, stat);
-                                        }
-                                        $($t).jqGrid("restoreRow", rowid, afterrestorefunc);
+                                        $.jgrid.info_dialog(jQuery.jgrid.errors.errcap, e.message, jQuery.jgrid.edit.bClose);
                                     }
                                 }
-                            },
-                            error:function(res, stat) {
-                                $("#lui_" + $t.p.id).hide();
-                                if ($.isFunction(errorfunc)) {
-                                    errorfunc.call($t, rowid, res, stat);
-                                } else {
-                                    alert("Error Row: " + rowid + " Result: " + res.status + ":" + res.statusText + " Status: " + stat);
-                                }
-                                $($t).jqGrid("restoreRow", rowid, afterrestorefunc);
-                            }
-                        }, $.jgrid.ajaxOptions, $t.p.ajaxRowOptions || {}));
+                                break;
+                        }
+                        cv = $.jgrid.checkValues(tmp[nm], i, $t);
+                        if (cv[0] === false) {
+                            cv[1] = tmp[nm] + " " + cv[1];
+                            return false;
+                        }
+                        if ($t.p.autoencode) {
+                            tmp[nm] = $.jgrid.htmlEncode(tmp[nm]);
+                        }
                     }
-                    $(ind).unbind("keydown");
+                });
+                if (cv[0] === false) {
+                    try {
+                        var positions = $.jgrid.findPos($("#" + $.jgrid.jqID(rowid), $t.grid.bDiv)[0]);
+                        $.jgrid.info_dialog($.jgrid.errors.errcap, cv[1], $.jgrid.edit.bClose, {left:positions[0],top:positions[1]});
+                    } catch (e) {
+                        alert(cv[1]);
+                    }
+                    return success;
                 }
-            });
+                if (tmp) {
+                    var idname, opers, oper;
+                    opers = $t.p.prmNames;
+                    oper = opers.oper;
+                    idname = opers.id;
+                    tmp[oper] = opers.editoper;
+                    tmp[idname] = rowid;
+                    if (typeof($t.p.inlineData) == 'undefined') {
+                        $t.p.inlineData = {};
+                    }
+                    tmp = $.extend({}, tmp, $t.p.inlineData, o.extraparam);
+                }
+                if (o.url == 'clientArray') {
+                    tmp = $.extend({}, tmp, tmp2);
+                    if ($t.p.autoencode) {
+                        $.each(tmp, function(n, v) {
+                            tmp[n] = $.jgrid.htmlDecode(v);
+                        });
+                    }
+                    var resp = $($t).jqGrid("setRowData", rowid, tmp);
+                    $(ind).attr("editable", "0");
+                    for (var k = 0; k < $t.p.savedRow.length; k++) {
+                        if ($t.p.savedRow[k].id == rowid) {
+                            fr = k;
+                            break;
+                        }
+                    }
+                    if (fr >= 0) {
+                        $t.p.savedRow.splice(fr, 1);
+                    }
+                    if ($.isFunction(o.aftersavefunc)) {
+                        o.aftersavefunc.call($t, rowid, resp);
+                    }
+                    success = true;
+                } else {
+                    $("#lui_" + $t.p.id).show();
+                    if ($t.p.restful) {
+                        mtype = "PUT";
+                        o.url = o.url + "/" + rowid;
+                    }
+                    else {
+                        mtype = "POST";
+                    }
+                    $.ajax($.extend({
+                        url:o.url,
+                        data: $.isFunction($t.p.serializeRowData) ? $t.p.serializeRowData.call($t, tmp) : tmp,
+                        type: mtype,
+                        async : false, //?!?
+                        complete: function(res, stat) {
+                            $("#lui_" + $t.p.id).hide();
+                            if (stat === "success") {
+                                var ret;
+                                if ($.isFunction(o.succesfunc)) {
+                                    ret = o.succesfunc.call($t, res);
+                                }
+                                else {
+                                    ret = true;
+                                }
+                                if (ret === true) {
+                                    if ($t.p.autoencode) {
+                                        $.each(tmp, function(n, v) {
+                                            tmp[n] = $.jgrid.htmlDecode(v);
+                                        });
+                                    }
+                                    tmp = $.extend({}, tmp, tmp2);
+                                    $($t).jqGrid("setRowData", rowid, tmp);
+                                    $(ind).attr("editable", "0");
+                                    for (var k = 0; k < $t.p.savedRow.length; k++) {
+                                        if ($t.p.savedRow[k].id == rowid) {
+                                            fr = k;
+                                            break;
+                                        }
+                                    }
+                                    if (fr >= 0) {
+                                        $t.p.savedRow.splice(fr, 1);
+                                    }
+                                    if ($.isFunction(o.aftersavefunc)) {
+                                        o.aftersavefunc.call($t, rowid, res);
+                                    }
+                                    success = true;
+                                } else {
+                                    if ($.isFunction(o.errorfunc)) {
+                                        o.errorfunc.call($t, rowid, res, stat);
+                                    }
+                                    if (o.restoreAfterError === true) {
+                                        $($t).jqGrid("restoreRow", rowid, o.afterrestorefunc);
+                                    }
+                                }
+                            }
+                        },
+                        error:function(res, stat) {
+                            $("#lui_" + $t.p.id).hide();
+                            if ($.isFunction(o.errorfunc)) {
+                                o.errorfunc.call($t, rowid, res, stat);
+                            } else {
+                                try {
+                                    jQuery.jgrid.info_dialog(jQuery.jgrid.errors.errcap, '<div class="ui-state-error">' + res.responseText + '</div>', jQuery.jgrid.edit.bClose, {buttonalign:'right'});
+                                }
+                                catch(e) {
+                                    alert(res.responseText);
+                                }
+                            }
+                            if (o.restoreAfterError === true) {
+                                $($t).jqGrid("restoreRow", rowid, o.afterrestorefunc);
+                            }
+                        }
+                    }, $.jgrid.ajaxOptions, $t.p.ajaxRowOptions || {}));
+                }
+                $(ind).unbind("keydown");
+            }
+            return success;
         },
         restoreRow : function(rowid, afterrestorefunc) {
             return this.each(function() {
@@ -9776,7 +9980,7 @@ var xmlJsonClass = {
                         }
                     }
                     $.each($t.p.colModel, function(i, n) {
-                        if (this.editable === true && this.name in $t.p.savedRow[fr]) {
+                        if (this.editable === true && this.name in $t.p.savedRow[fr] && !$(this).hasClass('not-editable-cell')) {
                             ares[this.name] = $t.p.savedRow[fr][this.name];
                         }
                     });
@@ -10388,7 +10592,17 @@ var xmlJsonClass = {
     $.jgrid.extend({
         setSubGrid : function () {
             return this.each(function () {
-                var $t = this, cm;
+                var $t = this, cm,
+                        suboptions = {
+                            plusicon : "ui-icon-plus",
+                            minusicon : "ui-icon-minus",
+                            openicon: "ui-icon-carat-1-sw",
+                            expandOnLoad:  false,
+                            delayOnLoad : 50,
+                            selectOnExpand : false,
+                            reloadOnExpand : true
+                        };
+                $t.p.subGridOptions = $.extend(suboptions, $t.p.subGridOptions || {});
                 $t.p.colNames.unshift("");
                 $t.p.colModel.unshift({name:'subgrid',width: $.browser.safari ? $t.p.subGridWidth + $t.p.cellLayout : $t.p.subGridWidth,sortable: false,resizable:false,hidedlg:true,search:false,fixed:true});
                 cm = $t.p.subGridModel;
@@ -10401,19 +10615,15 @@ var xmlJsonClass = {
             });
         },
         addSubGridCell :function (pos, iRow) {
-            var prp = '',gv,sid;
+            var prp = '',ic,sid;
             this.each(function() {
                 prp = this.formatCol(pos, iRow);
-                gv = this.p.gridview;
                 sid = this.p.id;
+                ic = this.p.subGridOptions.plusicon;
             });
-            if (gv === false) {
-                return "<td role=\"grid\" aria-describedby=\"" + sid + "_subgrid\" class=\"ui-sgcollapsed sgcollapsed\" " + prp + "><a href='javascript:void(0);'><span class='ui-icon ui-icon-plus'></span></a></td>";
-            } else {
-                return "<td role=\"grid\" aria-describedby=\"" + sid + "_subgrid\" " + prp + "></td>";
-            }
+            return "<td role=\"grid\" aria-describedby=\"" + sid + "_subgrid\" class=\"ui-sgcollapsed sgcollapsed\" " + prp + "><a href='javascript:void(0);'><span class='ui-icon " + ic + "'></span></a></td>";
         },
-        addSubGrid : function(t, pos) {
+        addSubGrid : function(pos) {
             return this.each(function() {
                 var ts = this;
                 if (!ts.grid) {
@@ -10553,48 +10763,66 @@ var xmlJsonClass = {
                     }
                     return false;
                 };
-                var res,_id, pID,atd, nhc, subdata, bfsc;
-                $("td:eq(" + pos + ")", t).click(function(e) {
-                    if ($(this).hasClass("sgcollapsed")) {
-                        pID = ts.p.id;
-                        res = $(this).parent();
-                        atd = pos >= 1 ? "<td colspan='" + pos + "'>&#160;</td>" : "";
-                        _id = $(res).attr("id");
-                        bfsc = true;
-                        if ($.isFunction(ts.p.subGridBeforeExpand)) {
-                            bfsc = ts.p.subGridBeforeExpand.call(ts, pID + "_" + _id, _id);
-                        }
-                        if (bfsc === false) {
-                            return false;
-                        }
-                        nhc = 0;
-                        $.each(ts.p.colModel, function(i, v) {
-                            if (this.hidden === true || this.name == 'rn' || this.name == 'cb') {
-                                nhc++;
-                            }
-                        });
-                        subdata = "<tr role='row' class='ui-subgrid'>" + atd + "<td class='ui-widget-content subgrid-cell'><span class='ui-icon ui-icon-carat-1-sw'/></td><td colspan='" + parseInt(ts.p.colNames.length - 1 - nhc, 10) + "' class='ui-widget-content subgrid-data'><div id=" + pID + "_" + _id + " class='tablediv'>";
-                        $(this).parent().after(subdata + "</div></td></tr>");
-                        if ($.isFunction(ts.p.subGridRowExpanded)) {
-                            ts.p.subGridRowExpanded.call(ts, pID + "_" + _id, _id);
-                        } else {
-                            populatesubgrid(res);
-                        }
-                        $(this).html("<a href='javascript:void(0);'><span class='ui-icon ui-icon-minus'></span></a>").removeClass("sgcollapsed").addClass("sgexpanded");
-                    } else if ($(this).hasClass("sgexpanded")) {
-                        bfsc = true;
-                        if ($.isFunction(ts.p.subGridRowColapsed)) {
-                            res = $(this).parent();
-                            _id = $(res).attr("id");
-                            bfsc = ts.p.subGridRowColapsed.call(ts, pID + "_" + _id, _id);
-                        }
-                        if (bfsc === false) {
-                            return false;
-                        }
-                        $(this).parent().next().remove(".ui-subgrid");
-                        $(this).html("<a href='javascript:void(0);'><span class='ui-icon ui-icon-plus'></span></a>").removeClass("sgexpanded").addClass("sgcollapsed");
+                var _id, pID,atd, nhc = 0, bfsc, r;
+                $.each(ts.p.colModel, function(i, v) {
+                    if (this.hidden === true || this.name == 'rn' || this.name == 'cb') {
+                        nhc++;
                     }
-                    return false;
+                });
+                $(ts.rows).each(function(i) {
+                    var tr = this;
+                    if ($(tr).hasClass('jqgrow')) {
+                        $(this.cells[pos]).bind('click', function(e) {
+                            r = tr.nextSibling;
+                            if ($(this).hasClass("sgcollapsed")) {
+                                pID = ts.p.id;
+                                _id = tr.id;
+                                if (ts.p.subGridOptions.reloadOnExpand === true || ( ts.p.subGridOptions.reloadOnExpand === false && !$(r).hasClass('ui-subgrid') )) {
+                                    atd = pos >= 1 ? "<td colspan='" + pos + "'>&#160;</td>" : "";
+                                    bfsc = true;
+                                    if ($.isFunction(ts.p.subGridBeforeExpand)) {
+                                        bfsc = ts.p.subGridBeforeExpand.call(ts, pID + "_" + _id, _id);
+                                    }
+                                    if (bfsc === false) {
+                                        return false;
+                                    }
+                                    $(tr).after("<tr role='row' class='ui-subgrid'>" + atd + "<td class='ui-widget-content subgrid-cell'><span class='ui-icon " + ts.p.subGridOptions.openicon + "'></span></td><td colspan='" + parseInt(ts.p.colNames.length - 1 - nhc, 10) + "' class='ui-widget-content subgrid-data'><div id=" + pID + "_" + _id + " class='tablediv'></div></td></tr>");
+                                    if ($.isFunction(ts.p.subGridRowExpanded)) {
+                                        ts.p.subGridRowExpanded.call(ts, pID + "_" + _id, _id);
+                                    } else {
+                                        populatesubgrid(tr);
+                                    }
+                                } else {
+                                    $(r).show();
+                                }
+                                $(this).html("<a href='javascript:void(0);'><span class='ui-icon " + ts.p.subGridOptions.minusicon + "'></span></a>").removeClass("sgcollapsed").addClass("sgexpanded");
+                                if (ts.p.subGridOptions.selectOnExpand) {
+                                    $(ts).jqGrid('setSelection', _id);
+                                }
+                            } else if ($(this).hasClass("sgexpanded")) {
+                                bfsc = true;
+                                if ($.isFunction(ts.p.subGridRowColapsed)) {
+                                    _id = tr.id;
+                                    bfsc = ts.p.subGridRowColapsed.call(ts, pID + "_" + _id, _id);
+                                }
+                                if (bfsc === false) {
+                                    return false;
+                                }
+                                if (ts.p.subGridOptions.reloadOnExpand === true) {
+                                    $(r).remove(".ui-subgrid");
+                                } else if ($(r).hasClass('ui-subgrid')) { // incase of dynamic deleting
+                                    $(r).hide();
+                                }
+                                $(this).html("<a href='javascript:void(0);'><span class='ui-icon " + ts.p.subGridOptions.plusicon + "'></span></a>").removeClass("sgexpanded").addClass("sgcollapsed");
+                            }
+                            return false;
+                        });
+                        if (ts.p.subGridOptions.expandOnLoad === true) {
+                            setTimeout(function() {
+                                $(tr.cells[pos]).trigger('click');
+                            }, i * ts.p.subGridOptions.delayOnLoad);
+                        }
+                    }
                 });
                 ts.subGridXml = function(xml, sid) {
                     subGridXml(xml, sid);
@@ -10664,19 +10892,19 @@ var xmlJsonClass = {
 })(jQuery);
 
 
-;
+/**
+ * jqGrid extension - Tree Grid
+ * Tony Tomov tony@trirand.com
+ * http://trirand.com/blog/
+ * Dual licensed under the MIT and GPL licenses:
+ * http://www.opensource.org/licenses/mit-license.php
+ * http://www.gnu.org/licenses/gpl.html
+ **/
+
+/*global document, jQuery, $ */
 (function($) {
-    /*
-     **
-     * jqGrid extension - Tree Grid
-     * Tony Tomov tony@trirand.com
-     * http://trirand.com/blog/
-     * Dual licensed under the MIT and GPL licenses:
-     * http://www.opensource.org/licenses/mit-license.php
-     * http://www.gnu.org/licenses/gpl.html
-     **/
     $.jgrid.extend({
-        setTreeNode : function(rd, row) {
+        setTreeNode : function(i, len) {
             return this.each(function() {
                 var $t = this;
                 if (!$t.grid || !$t.p.treeGrid) {
@@ -10686,89 +10914,72 @@ var xmlJsonClass = {
                         expanded = $t.p.treeReader.expanded_field,
                         isLeaf = $t.p.treeReader.leaf_field,
                         level = $t.p.treeReader.level_field,
-                        loaded = $t.p.treeReader.loaded;
-
-                row.level = rd[level];
-
-                if ($t.p.treeGridModel == 'nested') {
-                    var lft = rd[$t.p.treeReader.left_field],
-                            rgt = rd[$t.p.treeReader.right_field];
-                    if (!rd[isLeaf]) {
-                        // NS Model
-                        rd[isLeaf] = (parseInt(rgt, 10) === parseInt(lft, 10) + 1) ? 'true' : 'false';
-                    }
-                } else {
-                    //row.parent_id = rd[$t.p.treeReader.parent_id_field];
-                }
-                var curLevel = parseInt(rd[level], 10), ident,lftpos;
-                if ($t.p.tree_root_level === 0) {
-                    ident = curLevel + 1;
-                    lftpos = curLevel;
-                } else {
-                    ident = curLevel;
-                    lftpos = curLevel - 1;
-                }
-                var twrap = "<div class='tree-wrap tree-wrap-" + $t.p.direction + "' style='width:" + (ident * 18) + "px;'>";
-                twrap += "<div style='" + ($t.p.direction == "rtl" ? "right:" : "left:") + (lftpos * 18) + "px;' class='ui-icon ";
-
-                if (rd[loaded] != undefined) {
-                    if (rd[loaded] == "true" || rd[loaded] === true) {
-                        rd[loaded] = true;
+                        icon = $t.p.treeReader.icon_field,
+                        loaded = $t.p.treeReader.loaded,  lft, rgt, curLevel, ident,lftpos, twrap,
+                        ldat, lf;
+                while (i < len) {
+                    var ind = $t.rows[i].id, dind = $t.p._index[ind], expan;
+                    ldat = $t.p.data[dind];
+                    //$t.rows[i].level = ldat[level];
+                    if ($t.p.treeGridModel == 'nested') {
+                        lft = parseInt(ldat[$t.p.treeReader.left_field], 10);
+                        rgt = parseInt(ldat[$t.p.treeReader.right_field], 10);
+                        if (!ldat[isLeaf]) {
+                            // NS Model
+                            ldat[isLeaf] = (rgt === lft + 1) ? 'true' : 'false';
+                        }
                     } else {
-                        rd[loaded] = false;
+                        //row.parent_id = rd[$t.p.treeReader.parent_id_field];
                     }
-                }
-                if (rd[isLeaf] == "true" || rd[isLeaf] === true) {
-                    twrap += $t.p.treeIcons.leaf + " tree-leaf'";
-                    rd[isLeaf] = true;
-                    rd[expanded] = false;
-                } else {
-                    if (rd[expanded] == "true" || rd[expanded] === true) {
-                        twrap += $t.p.treeIcons.minus + " tree-minus treeclick'";
-                        rd[expanded] = true;
+                    curLevel = parseInt(ldat[level], 10);
+                    if ($t.p.tree_root_level === 0) {
+                        ident = curLevel + 1;
+                        lftpos = curLevel;
                     } else {
-                        twrap += $t.p.treeIcons.plus + " tree-plus treeclick'";
-                        rd[expanded] = false;
+                        ident = curLevel;
+                        lftpos = curLevel - 1;
                     }
-                    rd[isLeaf] = false;
-                }
-                twrap += "</div></div>";
-                if (!$t.p.loadonce) {
-                    rd[$t.p.localReader.id] = row.id;
-                    $t.p.data.push(rd);
-                    $t.p._index[row.id] = $t.p.data.length - 1;
-                }
-                if (parseInt(rd[level], 10) !== parseInt($t.p.tree_root_level, 10)) {
-                    if (!$($t).jqGrid("isVisibleNode", rd)) {
-                        $(row).css("display", "none");
-                    }
-                }
+                    twrap = "<div class='tree-wrap tree-wrap-" + $t.p.direction + "' style='width:" + (ident * 18) + "px;'>";
+                    twrap += "<div style='" + ($t.p.direction == "rtl" ? "right:" : "left:") + (lftpos * 18) + "px;' class='ui-icon ";
 
-                $("td:eq(" + expCol + ")", row).wrapInner("<span></span>").prepend(twrap);
-                $(".treeclick", row).bind("click", function(e) {
-                    var target = e.target || e.srcElement,
-                            ind2 = $(target, $t.rows).closest("tr.jqgrow")[0].id,
-                            pos = $t.p._index[ind2],
-                            isLeaf = $t.p.treeReader.leaf_field,
-                            expanded = $t.p.treeReader.expanded_field;
-                    if (!$t.p.data[pos][isLeaf]) {
-                        if ($t.p.data[pos][expanded]) {
-                            $($t).jqGrid("collapseRow", $t.p.data[pos]);
-                            $($t).jqGrid("collapseNode", $t.p.data[pos]);
+
+                    if (ldat[loaded] !== undefined) {
+                        if (ldat[loaded] == "true" || ldat[loaded] === true) {
+                            ldat[loaded] = true;
                         } else {
-                            $($t).jqGrid("expandRow", $t.p.data[pos]);
-                            $($t).jqGrid("expandNode", $t.p.data[pos]);
+                            ldat[loaded] = false;
                         }
                     }
-                    return false;
-                });
-                if ($t.p.ExpandColClick === true) {
-                    $("span", row).css("cursor", "pointer").bind("click", function(e) {
+                    if (ldat[isLeaf] == "true" || ldat[isLeaf] === true) {
+                        twrap += ((ldat[icon] !== undefined && ldat[icon] !== "") ? ldat[icon] : $t.p.treeIcons.leaf) + " tree-leaf treeclick'";
+                        ldat[isLeaf] = true;
+                        lf = "leaf";
+                    } else {
+                        ldat[isLeaf] = false;
+                        lf = "";
+                    }
+                    ldat[expanded] = ((ldat[expanded] == "true" || ldat[expanded] === true) ? true : false) && ldat[loaded];
+                    if (ldat[expanded] === true) {
+                        twrap += $t.p.treeIcons.minus + " tree-minus treeclick'";
+                    } else {
+                        twrap += $t.p.treeIcons.plus + " tree-plus treeclick'";
+                    }
+
+                    twrap += "</div></div>";
+                    $($t.rows[i].cells[expCol]).wrapInner("<span class='cell-wrapper" + lf + "'></span>").prepend(twrap);
+                    if (curLevel !== parseInt($t.p.tree_root_level, 10)) {
+                        var pn = $($t).jqGrid('getNodeParent', ldat);
+                        expan = pn && pn.hasOwnProperty(expanded) ? pn[expanded] : true;
+                        if (!expan) {
+                            $($t.rows[i]).css("display", "none");
+                        }
+                    }
+                    $($t.rows[i].cells[expCol])
+                            .find("div.treeclick")
+                            .bind("click", function(e) {
                         var target = e.target || e.srcElement,
                                 ind2 = $(target, $t.rows).closest("tr.jqgrow")[0].id,
-                                pos = $t.p._index[ind2],
-                                isLeaf = $t.p.treeReader.leaf_field,
-                                expanded = $t.p.treeReader.expanded_field;
+                                pos = $t.p._index[ind2];
                         if (!$t.p.data[pos][isLeaf]) {
                             if ($t.p.data[pos][expanded]) {
                                 $($t).jqGrid("collapseRow", $t.p.data[pos]);
@@ -10778,15 +10989,37 @@ var xmlJsonClass = {
                                 $($t).jqGrid("expandNode", $t.p.data[pos]);
                             }
                         }
-                        $($t).jqGrid("setSelection", ind2);
                         return false;
                     });
+                    if ($t.p.ExpandColClick === true) {
+                        $($t.rows[i].cells[expCol])
+                                .find("span.cell-wrapper")
+                                .css("cursor", "pointer")
+                                .bind("click", function(e) {
+                            var target = e.target || e.srcElement,
+                                    ind2 = $(target, $t.rows).closest("tr.jqgrow")[0].id,
+                                    pos = $t.p._index[ind2];
+                            if (!$t.p.data[pos][isLeaf]) {
+                                if ($t.p.data[pos][expanded]) {
+                                    $($t).jqGrid("collapseRow", $t.p.data[pos]);
+                                    $($t).jqGrid("collapseNode", $t.p.data[pos]);
+                                } else {
+                                    $($t).jqGrid("expandRow", $t.p.data[pos]);
+                                    $($t).jqGrid("expandNode", $t.p.data[pos]);
+                                }
+                            }
+                            $($t).jqGrid("setSelection", ind2);
+                            return false;
+                        });
+                    }
+                    i++;
                 }
+
             });
         },
         setTreeGrid : function() {
             return this.each(function () {
-                var $t = this, i = 0, pico;
+                var $t = this, i = 0, pico, ecol = false, nm, key, dupcols = [];
                 if (!$t.p.treeGrid) {
                     return;
                 }
@@ -10797,8 +11030,10 @@ var xmlJsonClass = {
                 $t.p.altRows = false;
                 $t.p.pgbuttons = false;
                 $t.p.pginput = false;
+                $t.p.gridview = true;
                 $t.p.multiselect = false;
                 $t.p.rowList = [];
+                $t.p.expColInd = 0;
                 pico = 'ui-icon-triangle-1-' + ($t.p.direction == "rtl" ? 'w' : 'e');
                 $t.p.treeIcons = $.extend({plus:pico,minus:'ui-icon-triangle-1-s',leaf:'ui-icon-radio-off'}, $t.p.treeIcons || {});
                 if ($t.p.treeGridModel == 'nested') {
@@ -10808,32 +11043,38 @@ var xmlJsonClass = {
                         right_field: "rgt",
                         leaf_field: "isLeaf",
                         expanded_field: "expanded",
-                        loaded: "loaded"
+                        loaded: "loaded",
+                        icon_field: "icon"
                     }, $t.p.treeReader);
-                } else
-                if ($t.p.treeGridModel == 'adjacency') {
+                } else if ($t.p.treeGridModel == 'adjacency') {
                     $t.p.treeReader = $.extend({
                         level_field: "level",
                         parent_id_field: "parent",
                         leaf_field: "isLeaf",
                         expanded_field: "expanded",
-                        loaded: "loaded"
+                        loaded: "loaded",
+                        icon_field: "icon"
                     }, $t.p.treeReader);
                 }
-                for (var key in $t.p.colModel) {
+                for (key in $t.p.colModel) {
                     if ($t.p.colModel.hasOwnProperty(key)) {
-                        if ($t.p.colModel[key].name == $t.p.ExpandColumn) {
+                        nm = $t.p.colModel[key].name;
+                        if (nm == $t.p.ExpandColumn && !ecol) {
+                            ecol = true;
                             $t.p.expColInd = i;
-                            break;
                         }
                         i++;
+                        //
+
+                        for (var tkey in $t.p.treeReader) {
+                            if ($t.p.treeReader[tkey] == nm)
+                                dupcols.push(nm);
+                        }
+
                     }
                 }
-                if (!$t.p.expColInd) {
-                    $t.p.expColInd = 0;
-                }
                 $.each($t.p.treeReader, function(i, n) {
-                    if (n) {
+                    if (n && $.inArray(n, dupcols) === -1) {
                         $t.p.colNames.push(n);
                         $t.p.colModel.push({name:n,width:1,hidden:true,sortable:false,resizable:false,hidedlg:true,editable:true,search:false});
                     }
@@ -11010,18 +11251,20 @@ var xmlJsonClass = {
                         });
                         break;
                     case 'adjacency' :
-                        result.push(rc);
-                        var parent_id = $t.p.treeReader.parent_id_field,
-                                dtid = $t.p.localReader.id;
-                        $(this.p.data).each(function(i) {
-                            len = result.length;
-                            for (i = 0; i < len; i++) {
-                                if (result[i][dtid] == this[parent_id]) {
-                                    result.push(this);
-                                    break;
+                        if (rc) {
+                            result.push(rc);
+                            var parent_id = $t.p.treeReader.parent_id_field,
+                                    dtid = $t.p.localReader.id;
+                            $(this.p.data).each(function(i) {
+                                len = result.length;
+                                for (i = 0; i < len; i++) {
+                                    if (result[i][dtid] == this[parent_id]) {
+                                        result.push(this);
+                                        break;
+                                    }
                                 }
-                            }
-                        });
+                            });
+                        }
                         break;
                 }
             });
@@ -11068,10 +11311,14 @@ var xmlJsonClass = {
                     return;
                 }
                 var isLeaf = $t.p.treeReader.leaf_field;
-                if (rc.loaded !== undefined) {
-                    result = rc.loaded;
-                } else if (rc[isLeaf] || $($t).jqGrid("getNodeChildren", rc).length > 0) {
-                    result = true;
+                if (rc !== undefined) {
+                    if (rc.loaded !== undefined) {
+                        result = rc.loaded;
+                    } else if (rc[isLeaf] || $($t).jqGrid("getNodeChildren", rc).length > 0) {
+                        result = true;
+                    } else {
+                        result = false;
+                    }
                 } else {
                     result = false;
                 }
@@ -11083,7 +11330,13 @@ var xmlJsonClass = {
                 if (!this.grid || !this.p.treeGrid) {
                     return;
                 }
-                var expanded = this.p.treeReader.expanded_field;
+                var expanded = this.p.treeReader.expanded_field,
+                        parent = this.p.treeReader.parent_id_field,
+                        loaded = this.p.treeReader.loaded,
+                        level = this.p.treeReader.level_field,
+                        lft = this.p.treeReader.left_field,
+                        rgt = this.p.treeReader.right_field;
+
                 if (!rc[expanded]) {
                     var id = $.jgrid.getAccessor(rc, this.p.localReader.id);
                     var rc1 = $("#" + id, this.grid.bDiv)[0];
@@ -11097,11 +11350,12 @@ var xmlJsonClass = {
                         this.p.treeANode = rc1.rowIndex;
                         this.p.datatype = this.p.treedatatype;
                         if (this.p.treeGridModel == 'nested') {
-                            $(this).jqGrid("setGridParam", {postData:{nodeid:id,n_left:rc.lft,n_right:rc.rgt,n_level:rc.level}});
+                            $(this).jqGrid("setGridParam", {postData:{nodeid:id,n_left:rc[lft],n_right:rc[rgt],n_level:rc[level]}});
                         } else {
-                            $(this).jqGrid("setGridParam", {postData:{nodeid:id,parentid:rc.parent_id,n_level:rc.level}});
+                            $(this).jqGrid("setGridParam", {postData:{nodeid:id,parentid:rc[parent],n_level:rc[level]}});
                         }
                         $(this).trigger("reloadGrid");
+                        rc[loaded] = true;
                         if (this.p.treeGridModel == 'nested') {
                             $(this).jqGrid("setGridParam", {postData:{nodeid:'',n_left:'',n_right:'',n_level:''}});
                         } else {
@@ -11184,21 +11438,167 @@ var xmlJsonClass = {
         },
         delTreeNode : function (rowid) {
             return this.each(function () {
-                var $t = this;
+                var $t = this, rid = $t.p.localReader.id,
+                        left = $t.p.treeReader.left_field,
+                        right = $t.p.treeReader.right_field, myright, width, res, key;
                 if (!$t.grid || !$t.p.treeGrid) {
                     return;
                 }
-                var rc = $($t).jqGrid("getInd", rowid, true);
-                if (rc) {
-                    var dr = $($t).jqGrid("getNodeChildren", rc);
+                var rc = $t.p._index[rowid];
+                if (rc !== undefined) {
+                    // nested
+                    myright = parseInt($t.p.data[rc][right], 10);
+                    width = myright - parseInt($t.p.data[rc][left], 10) + 1;
+                    var dr = $($t).jqGrid("getFullTreeNode", $t.p.data[rc]);
                     if (dr.length > 0) {
                         for (var i = 0; i < dr.length; i++) {
-                            $($t).jqGrid("delRowData", dr[i].id);
+                            $($t).jqGrid("delRowData", dr[i][rid]);
                         }
                     }
-                    $($t).jqGrid("delRowData", rc.id);
+                    if ($t.p.treeGridModel === "nested") {
+                        // ToDo - update grid data
+                        res = $.jgrid.from($t.p.data)
+                                .greater(left, myright, {stype:'integer'})
+                                .select();
+                        if (res.length) {
+                            for (key in res) {
+                                res[key][left] = parseInt(res[key][left], 10) - width;
+                            }
+                        }
+                        res = $.jgrid.from($t.p.data)
+                                .greater(right, myright, {stype:'integer'})
+                                .select();
+                        if (res.length) {
+                            for (key in res) {
+                                res[key][right] = parseInt(res[key][right], 10) - width;
+                            }
+                        }
+                    }
                 }
             });
+        },
+        addChildNode : function(nodeid, parentid, data) {
+            //return this.each(function(){
+            var $t = this[0];
+            if (data) {
+                // we suppose tha the id is autoincremet and
+                var expanded = $t.p.treeReader.expanded_field,
+                        isLeaf = $t.p.treeReader.leaf_field,
+                        level = $t.p.treeReader.level_field,
+                        icon = $t.p.treeReader.icon_field,
+                        parent = $t.p.treeReader.parent_id_field,
+                        left = $t.p.treeReader.left_field,
+                        right = $t.p.treeReader.right_field,
+                        loaded = $t.p.treeReader.loaded,
+                        method, parentindex, parentdata, parentlevel, i, len, max = 0, rowind = parentid, leaf, maxright;
+
+                if (!nodeid) {
+                    i = $t.p.data.length - 1;
+                    if (i >= 0) {
+                        while (i >= 0) {
+                            max = Math.max(max, parseInt($t.p.data[i][$t.p.localReader.id], 10));
+                            i--;
+                        }
+                    }
+                    nodeid = max + 1;
+                }
+                var prow = $($t).jqGrid('getInd', parentid);
+                leaf = false;
+                // if not a parent we assume root
+                if (parentid === undefined || parentid === null || parentid === "") {
+                    parentid = null;
+                    rowind = null;
+                    method = 'last';
+                    parentlevel = $t.p.tree_root_level;
+                    i = $t.p.data.length + 1;
+                } else {
+                    method = 'after';
+                    parentindex = $t.p._index[parentid];
+                    parentdata = $t.p.data[parentindex];
+                    parentid = parentdata[$t.p.localReader.id];
+                    parentlevel = parseInt(parentdata[level], 10) + 1;
+                    var childs = $($t).jqGrid('getFullTreeNode', parentdata);
+                    // if there are child nodes get the last index of it
+                    if (childs.length) {
+                        i = childs[childs.length - 1][$t.p.localReader.id];
+                        rowind = i;
+                        i = $($t).jqGrid('getInd', rowind) + 1;
+                    } else {
+                        i = $($t).jqGrid('getInd', parentid) + 1;
+                    }
+                    // if the node is leaf
+                    if (parentdata[isLeaf]) {
+                        leaf = true;
+                        parentdata[expanded] = true;
+                        //var prow = $($t).jqGrid('getInd', parentid);
+                        $($t.rows[prow])
+                                .find("span.cell-wrapperleaf").removeClass("cell-wrapperleaf").addClass("cell-wrapper")
+                                .end()
+                                .find("div.tree-leaf").removeClass($t.p.treeIcons.leaf + " tree-leaf").addClass($t.p.treeIcons.minus + " tree-minus");
+                        $t.p.data[parentindex][isLeaf] = false;
+                        parentdata[loaded] = true;
+                    }
+                }
+                len = i + 1;
+
+                data[expanded] = false;
+                data[loaded] = true;
+                data[level] = parentlevel;
+                data[isLeaf] = true;
+                if ($t.p.treeGridModel === "adjacency") {
+                    data[parent] = parentid;
+                }
+                if ($t.p.treeGridModel === "nested") {
+                    // this method requiere more attention
+                    var query, res, key;
+                    //maxright = parseInt(maxright,10);
+                    // ToDo - update grid data
+                    if (parentid !== null) {
+                        maxright = parseInt(parentdata[right], 10);
+                        query = $.jgrid.from($t.p.data);
+                        query = query.greaterOrEquals(right, maxright, {stype:'integer'});
+                        res = query.select();
+                        if (res.length) {
+                            for (key in res) {
+                                res[key][left] = res[key][left] > maxright ? parseInt(res[key][left], 10) + 2 : res[key][left];
+                                res[key][right] = res[key][right] >= maxright ? parseInt(res[key][right], 10) + 2 : res[key][right];
+                            }
+                        }
+                        data[left] = maxright;
+                        data[right] = maxright + 1;
+                    } else {
+                        maxright = parseInt($($t).jqGrid('getCol', right, false, 'max'), 10);
+                        res = $.jgrid.from($t.p.data)
+                                .greater(left, maxright, {stype:'integer'})
+                                .select();
+                        if (res.length) {
+                            for (key in res) {
+                                res[key][left] = parseInt(res[key][left], 10) + 2;
+                            }
+                        }
+                        res = $.jgrid.from($t.p.data)
+                                .greater(right, maxright, {stype:'integer'})
+                                .select();
+                        if (res.length) {
+                            for (key in res) {
+                                res[key][right] = parseInt(res[key][right], 10) + 2;
+                            }
+                        }
+                        data[left] = maxright + 1;
+                        data[right] = maxright + 2;
+                    }
+                }
+                if (parentid === null || $($t).jqGrid("isNodeLoaded", parentdata) || leaf) {
+                    $($t).jqGrid('addRowData', nodeid, data, method, rowind);
+                    $($t).jqGrid('setTreeNode', i, len);
+                }
+                if (parentdata && !parentdata[expanded]) {
+                    $($t.rows[prow])
+                            .find("div.treeclick")
+                            .click();
+                }
+            }
+            //});
         }
     });
 })(jQuery);
@@ -11295,18 +11695,45 @@ var xmlJsonClass = {
                         num = parseInt(hid.substring(strpos + 1), 10) + 1,
                         minus = grp.minusicon,
                         plus = grp.plusicon,
+                        tar = $("#" + hid),
+                        r = tar[0].nextSibling,
+                        tarspan = $("#" + hid + " span." + "tree-wrap-" + $t.p.direction),
                         collapsed = false;
-                if ($("#" + hid + " span").hasClass(minus)) {
+                if (tarspan.hasClass(minus)) {
                     if (grp.showSummaryOnHide && grp.groupSummary[0]) {
-                        $("#" + hid).nextUntil(".jqfoot").hide();
+                        if (r) {
+                            while (r) {
+                                if ($(r).hasClass('jqfoot')) {
+                                    break;
+                                }
+                                $(r).hide();
+                                r = r.nextSibling;
+                            }
+                        }
                     } else {
-                        $("#" + hid).nextUntil("#" + uid + String(num)).hide();
+                        if (r) {
+                            while (r) {
+                                if ($(r).attr('id') == uid + String(num)) {
+                                    break;
+                                }
+                                $(r).hide();
+                                r = r.nextSibling;
+                            }
+                        }
                     }
-                    $("#" + hid + " span").removeClass(minus).addClass(plus);
+                    tarspan.removeClass(minus).addClass(plus);
                     collapsed = true;
                 } else {
-                    $("#" + hid).nextUntil("#" + uid + String(num)).show();
-                    $("#" + hid + " span").removeClass(plus).addClass(minus);
+                    if (r) {
+                        while (r) {
+                            if ($(r).attr('id') == uid + String(num)) {
+                                break;
+                            }
+                            $(r).show();
+                            r = r.nextSibling;
+                        }
+                    }
+                    tarspan.removeClass(plus).addClass(minus);
                     collapsed = false;
                 }
                 if ($.isFunction($t.p.onClickGroup)) {
@@ -12358,720 +12785,32 @@ function tableToGrid(selector, options) {
 ;
 
 
-/**
- * TableDnD plug-in for JQuery, allows you to drag and drop table rows
- * You can set up various options to control how the system will work
- * Copyright (c) Denis Howlett <denish@isocra.com>
- * Licensed like jQuery, see http://docs.jquery.com/License.
- *
- * Configuration options:
- *
- * onDragStyle
- *     This is the style that is assigned to the row during drag. There are limitations to the styles that can be
- *     associated with a row (such as you can't assign a border--well you can, but it won't be
- *     displayed). (So instead consider using onDragClass.) The CSS style to apply is specified as
- *     a map (as used in the jQuery css(...) function).
- * onDropStyle
- *     This is the style that is assigned to the row when it is dropped. As for onDragStyle, there are limitations
- *     to what you can do. Also this replaces the original style, so again consider using onDragClass which
- *     is simply added and then removed on drop.
- * onDragClass
- *     This class is added for the duration of the drag and then removed when the row is dropped. It is more
- *     flexible than using onDragStyle since it can be inherited by the row cells and other content. The default
- *     is class is tDnD_whileDrag. So to use the default, simply customise this CSS class in your
- *     stylesheet.
- * onDrop
- *     Pass a function that will be called when the row is dropped. The function takes 2 parameters: the table
- *     and the row that was dropped. You can work out the new order of the rows by using
- *     table.rows.
- * onDragStart
- *     Pass a function that will be called when the user starts dragging. The function takes 2 parameters: the
- *     table and the row which the user has started to drag.
- * onAllowDrop
- *     Pass a function that will be called as a row is over another row. If the function returns true, allow
- *     dropping on that row, otherwise not. The function takes 2 parameters: the dragged row and the row under
- *     the cursor. It returns a boolean: true allows the drop, false doesn't allow it.
- * scrollAmount
- *     This is the number of pixels to scroll if the user moves the mouse cursor to the top or bottom of the
- *     window. The page should automatically scroll up or down as appropriate (tested in IE6, IE7, Safari, FF2,
- *     FF3 beta
- * dragHandle
- *     This is the name of a class that you assign to one or more cells in each row that is draggable. If you
- *     specify this class, then you are responsible for setting cursor: move in the CSS and only these cells
- *     will have the drag behaviour. If you do not specify a dragHandle, then you get the old behaviour where
- *     the whole row is draggable.
- *
- * Other ways to control behaviour:
- *
- * Add class="nodrop" to any rows for which you don't want to allow dropping, and class="nodrag" to any rows
- * that you don't want to be draggable.
- *
- * Inside the onDrop method you can also call $.tableDnD.serialize() this returns a string of the form
- * <tableID>[]=<rowID1>&<tableID>[]=<rowID2> so that you can send this back to the server. The table must have
- * an ID as must all the rows.
- *
- * Other methods:
- *
- * $("...").tableDnDUpdate()
- * Will update all the matching tables, that is it will reapply the mousedown method to the rows (or handle cells).
- * This is useful if you have updated the table rows using Ajax and you want to make the table draggable again.
- * The table maintains the original configuration (so you don't have to specify it again).
- *
- * $("...").tableDnDSerialize()
- * Will serialize and return the serialized string as above, but for each of the matching tables--so it can be
- * called from anywhere and isn't dependent on the currentTable being set up correctly before calling
- *
- * Known problems:
- * - Auto-scoll has some problems with IE7  (it scrolls even when it shouldn't), work-around: set scrollAmount to 0
- *
- * Version 0.2: 2008-02-20 First public version
- * Version 0.3: 2008-02-07 Added onDragStart option
- *                         Made the scroll amount configurable (default is 5 as before)
- * Version 0.4: 2008-03-15 Changed the noDrag/noDrop attributes to nodrag/nodrop classes
- *                         Added onAllowDrop to control dropping
- *                         Fixed a bug which meant that you couldn't set the scroll amount in both directions
- *                         Added serialize method
- * Version 0.5: 2008-05-16 Changed so that if you specify a dragHandle class it doesn't make the whole row
- *                         draggable
- *                         Improved the serialize method to use a default (and settable) regular expression.
- *                         Added tableDnDupate() and tableDnDSerialize() to be called when you are outside the table
- */
-jQuery.tableDnD = {
-    /** Keep hold of the current table being dragged */
-    currentTable : null,
-    /** Keep hold of the current drag object if any */
-    dragObject: null,
-    /** The current mouse offset */
-    mouseOffset: null,
-    /** Remember the old value of Y so that we don't do too much processing */
-    oldY: 0,
-
-    /** Actually build the structure */
-    build: function(options) {
-        // Set up the defaults if any
-
-        this.each(function() {
-            // This is bound to each matching table, set up the defaults and override with user options
-            this.tableDnDConfig = jQuery.extend({
-                onDragStyle: null,
-                onDropStyle: null,
-                // Add in the default class for whileDragging
-                onDragClass: "tDnD_whileDrag",
-                onDrop: null,
-                onDragStart: null,
-                scrollAmount: 5,
-                serializeRegexp: /[^\-]*$/, // The regular expression to use to trim row IDs
-                serializeParamName: null, // If you want to specify another parameter name instead of the table ID
-                dragHandle: null // If you give the name of a class here, then only Cells with this class will be draggable
-            }, options || {});
-            // Now make the rows draggable
-            jQuery.tableDnD.makeDraggable(this);
-        });
-
-        // Now we need to capture the mouse up and mouse move event
-        // We can use bind so that we don't interfere with other event handlers
-        jQuery(document)
-                .bind('mousemove', jQuery.tableDnD.mousemove)
-                .bind('mouseup', jQuery.tableDnD.mouseup);
-
-        // Don't break the chain
-        return this;
-    },
-
-    /** This function makes all the rows on the table draggable apart from those marked as "NoDrag" */
-    makeDraggable: function(table) {
-        var config = table.tableDnDConfig;
-        if (table.tableDnDConfig.dragHandle) {
-            // We only need to add the event to the specified cells
-            var cells = jQuery("td." + table.tableDnDConfig.dragHandle, table);
-            cells.each(function() {
-                // The cell is bound to "this"
-                jQuery(this).mousedown(function(ev) {
-                    jQuery.tableDnD.dragObject = this.parentNode;
-                    jQuery.tableDnD.currentTable = table;
-                    jQuery.tableDnD.mouseOffset = jQuery.tableDnD.getMouseOffset(this, ev);
-                    if (config.onDragStart) {
-                        // Call the onDrop method if there is one
-                        config.onDragStart(table, this);
-                    }
-                    return false;
-                });
-            })
-        } else {
-            // For backwards compatibility, we add the event to the whole row
-            var rows = jQuery("tr", table); // get all the rows as a wrapped set
-            rows.each(function() {
-                // Iterate through each row, the row is bound to "this"
-                var row = jQuery(this);
-                if (! row.hasClass("nodrag")) {
-                    row.mousedown(
-                            function(ev) {
-                                if (ev.target.tagName == "TD") {
-                                    jQuery.tableDnD.dragObject = this;
-                                    jQuery.tableDnD.currentTable = table;
-                                    jQuery.tableDnD.mouseOffset = jQuery.tableDnD.getMouseOffset(this, ev);
-                                    if (config.onDragStart) {
-                                        // Call the onDrop method if there is one
-                                        config.onDragStart(table, this);
-                                    }
-                                    return false;
-                                }
-                            }).css("cursor", "move"); // Store the tableDnD object
-                }
-            });
-        }
-    },
-
-    updateTables: function() {
-        this.each(function() {
-            // this is now bound to each matching table
-            if (this.tableDnDConfig) {
-                jQuery.tableDnD.makeDraggable(this);
-            }
-        })
-    },
-
-    /** Get the mouse coordinates from the event (allowing for browser differences) */
-    mouseCoords: function(ev) {
-        if (ev.pageX || ev.pageY) {
-            return {x:ev.pageX, y:ev.pageY};
-        }
-        return {
-            x:ev.clientX + document.body.scrollLeft - document.body.clientLeft,
-            y:ev.clientY + document.body.scrollTop - document.body.clientTop
-        };
-    },
-
-    /** Given a target element and a mouse event, get the mouse offset from that element.
-     To do this we need the element's position and the mouse position */
-    getMouseOffset: function(target, ev) {
-        ev = ev || window.event;
-
-        var docPos = this.getPosition(target);
-        var mousePos = this.mouseCoords(ev);
-        return {x:mousePos.x - docPos.x, y:mousePos.y - docPos.y};
-    },
-
-    /** Get the position of an element by going up the DOM tree and adding up all the offsets */
-    getPosition: function(e) {
-        var left = 0;
-        var top = 0;
-        /** Safari fix -- thanks to Luis Chato for this! */
-        if (e.offsetHeight == 0) {
-            /** Safari 2 doesn't correctly grab the offsetTop of a table row
-             this is detailed here:
-             http://jacob.peargrove.com/blog/2006/technical/table-row-offsettop-bug-in-safari/
-             the solution is likewise noted there, grab the offset of a table cell in the row - the firstChild.
-             note that firefox will return a text node as a first child, so designing a more thorough
-             solution may need to take that into account, for now this seems to work in firefox, safari, ie */
-            e = e.firstChild; // a table cell
-        }
-        if (e && e.offsetParent) {
-            while (e.offsetParent) {
-                left += e.offsetLeft;
-                top += e.offsetTop;
-                e = e.offsetParent;
-            }
-
-            left += e.offsetLeft;
-            top += e.offsetTop;
-        }
-
-        return {x:left, y:top};
-    },
-
-    mousemove: function(ev) {
-        if (jQuery.tableDnD.dragObject == null) {
-            return;
-        }
-
-        var dragObj = jQuery(jQuery.tableDnD.dragObject);
-        var config = jQuery.tableDnD.currentTable.tableDnDConfig;
-        var mousePos = jQuery.tableDnD.mouseCoords(ev);
-        var y = mousePos.y - jQuery.tableDnD.mouseOffset.y;
-        //auto scroll the window
-        var yOffset = window.pageYOffset;
-        if (document.all) {
-            // Windows version
-            //yOffset=document.body.scrollTop;
-            if (typeof document.compatMode != 'undefined' &&
-                    document.compatMode != 'BackCompat') {
-                yOffset = document.documentElement.scrollTop;
-            }
-            else if (typeof document.body != 'undefined') {
-                yOffset = document.body.scrollTop;
-            }
-
-        }
-
-        if (mousePos.y - yOffset < config.scrollAmount) {
-            window.scrollBy(0, -config.scrollAmount);
-        } else {
-            var windowHeight = window.innerHeight ? window.innerHeight
-                    : document.documentElement.clientHeight ? document.documentElement.clientHeight : document.body.clientHeight;
-            if (windowHeight - (mousePos.y - yOffset) < config.scrollAmount) {
-                window.scrollBy(0, config.scrollAmount);
-            }
-        }
-
-
-        if (y != jQuery.tableDnD.oldY) {
-            // work out if we're going up or down...
-            var movingDown = y > jQuery.tableDnD.oldY;
-            // update the old value
-            jQuery.tableDnD.oldY = y;
-            // update the style to show we're dragging
-            if (config.onDragClass) {
-                dragObj.addClass(config.onDragClass);
-            } else {
-                dragObj.css(config.onDragStyle);
-            }
-            // If we're over a row then move the dragged row to there so that the user sees the
-            // effect dynamically
-            var currentRow = jQuery.tableDnD.findDropTargetRow(dragObj, y);
-            if (currentRow) {
-                // TODO worry about what happens when there are multiple TBODIES
-                if (movingDown && jQuery.tableDnD.dragObject != currentRow) {
-                    jQuery.tableDnD.dragObject.parentNode.insertBefore(jQuery.tableDnD.dragObject, currentRow.nextSibling);
-                } else if (! movingDown && jQuery.tableDnD.dragObject != currentRow) {
-                    jQuery.tableDnD.dragObject.parentNode.insertBefore(jQuery.tableDnD.dragObject, currentRow);
-                }
-            }
-        }
-
-        return false;
-    },
-
-    /** We're only worried about the y position really, because we can only move rows up and down */
-    findDropTargetRow: function(draggedRow, y) {
-        var rows = jQuery.tableDnD.currentTable.rows;
-        for (var i = 0; i < rows.length; i++) {
-            var row = rows[i];
-            var rowY = this.getPosition(row).y;
-            var rowHeight = parseInt(row.offsetHeight) / 2;
-            if (row.offsetHeight == 0) {
-                rowY = this.getPosition(row.firstChild).y;
-                rowHeight = parseInt(row.firstChild.offsetHeight) / 2;
-            }
-            // Because we always have to insert before, we need to offset the height a bit
-            if ((y > rowY - rowHeight) && (y < (rowY + rowHeight))) {
-                // that's the row we're over
-                // If it's the same as the current row, ignore it
-                if (row == draggedRow) {
-                    return null;
-                }
-                var config = jQuery.tableDnD.currentTable.tableDnDConfig;
-                if (config.onAllowDrop) {
-                    if (config.onAllowDrop(draggedRow, row)) {
-                        return row;
-                    } else {
-                        return null;
-                    }
-                } else {
-                    // If a row has nodrop class, then don't allow dropping (inspired by John Tarr and Famic)
-                    var nodrop = jQuery(row).hasClass("nodrop");
-                    if (! nodrop) {
-                        return row;
-                    } else {
-                        return null;
-                    }
-                }
-                return row;
-            }
-        }
-        return null;
-    },
-
-    mouseup: function(e) {
-        if (jQuery.tableDnD.currentTable && jQuery.tableDnD.dragObject) {
-            var droppedRow = jQuery.tableDnD.dragObject;
-            var config = jQuery.tableDnD.currentTable.tableDnDConfig;
-            // If we have a dragObject, then we need to release it,
-            // The row will already have been moved to the right place so we just reset stuff
-            if (config.onDragClass) {
-                jQuery(droppedRow).removeClass(config.onDragClass);
-            } else {
-                jQuery(droppedRow).css(config.onDropStyle);
-            }
-            jQuery.tableDnD.dragObject = null;
-            if (config.onDrop) {
-                // Call the onDrop method if there is one
-                config.onDrop(jQuery.tableDnD.currentTable, droppedRow);
-            }
-            jQuery.tableDnD.currentTable = null; // let go of the table too
-        }
-    },
-
-    serialize: function() {
-        if (jQuery.tableDnD.currentTable) {
-            return jQuery.tableDnD.serializeTable(jQuery.tableDnD.currentTable);
-        } else {
-            return "Error: No Table id set, you need to set an id on your table and every row";
-        }
-    },
-
-    serializeTable: function(table) {
-        var result = "";
-        var tableId = table.id;
-        var rows = table.rows;
-        for (var i = 0; i < rows.length; i++) {
-            if (result.length > 0) result += "&";
-            var rowId = rows[i].id;
-            if (rowId && rowId && table.tableDnDConfig && table.tableDnDConfig.serializeRegexp) {
-                rowId = rowId.match(table.tableDnDConfig.serializeRegexp)[0];
-            }
-
-            result += tableId + '[]=' + rowId;
-        }
-        return result;
-    },
-
-    serializeTables: function() {
-        var result = "";
-        this.each(function() {
-            // this is now bound to each matching table
-            result += jQuery.tableDnD.serializeTable(this);
-        });
-        return result;
-    }
-
-}
-
-jQuery.fn.extend(
-{
-    tableDnD : jQuery.tableDnD.build,
-    tableDnDUpdate : jQuery.tableDnD.updateTables,
-    tableDnDSerialize: jQuery.tableDnD.serializeTables
-}
-        );
-
-/*
- * jQuery UI Multiselect
- *
- * Authors:
- *  Michael Aufreiter (quasipartikel.at)
- *  Yanick Rochon (yanick.rochon[at]gmail[dot]com)
- * 
- * Dual licensed under the MIT (MIT-LICENSE.txt)
- * and GPL (GPL-LICENSE.txt) licenses.
- * 
- * http://www.quasipartikel.at/multiselect/
- *
- * 
- * Depends:
- *	ui.core.js
- *	ui.sortable.js
- *
- * Optional:
- * localization (http://plugins.jquery.com/project/localisation)
- * scrollTo (http://plugins.jquery.com/project/ScrollTo)
- * 
- * Todo:
- *  Make batch actions faster
- *  Implement dynamic insertion through remote calls
- */
-
-
+;
 (function($) {
-
-    $.widget("ui.multiselect", {
-        _init: function() {
-            this.element.hide();
-            this.id = this.element.attr("id");
-            this.container = $('<div class="ui-multiselect ui-helper-clearfix ui-widget"></div>').insertAfter(this.element);
-            this.count = 0; // number of currently selected options
-            this.selectedContainer = $('<div class="selected"></div>').appendTo(this.container);
-            this.availableContainer = $('<div class="available"></div>').appendTo(this.container);
-            this.selectedActions = $('<div class="actions ui-widget-header ui-helper-clearfix"><span class="count">0 ' + $.ui.multiselect.locale.itemsCount + '</span><a href="#" class="remove-all">' + $.ui.multiselect.locale.removeAll + '</a></div>').appendTo(this.selectedContainer);
-            this.availableActions = $('<div class="actions ui-widget-header ui-helper-clearfix"><input type="text" class="search empty ui-widget-content ui-corner-all"/><a href="#" class="add-all">' + $.ui.multiselect.locale.addAll + '</a></div>').appendTo(this.availableContainer);
-            this.selectedList = $('<ul class="selected connected-list"><li class="ui-helper-hidden-accessible"></li></ul>').bind('selectstart',
-                    function() {
-                        return false;
-                    }).appendTo(this.selectedContainer);
-            this.availableList = $('<ul class="available connected-list"><li class="ui-helper-hidden-accessible"></li></ul>').bind('selectstart',
-                    function() {
-                        return false;
-                    }).appendTo(this.availableContainer);
-
-            var that = this;
-
-            // set dimensions
-            this.container.width(this.element.width() + 1);
-            this.selectedContainer.width(Math.floor(this.element.width() * this.options.dividerLocation));
-            this.availableContainer.width(Math.floor(this.element.width() * (1 - this.options.dividerLocation)));
-
-            // fix list height to match <option> depending on their individual header's heights
-            this.selectedList.height(Math.max(this.element.height() - this.selectedActions.height(), 1));
-            this.availableList.height(Math.max(this.element.height() - this.availableActions.height(), 1));
-
-            if (!this.options.animated) {
-                this.options.show = 'show';
-                this.options.hide = 'hide';
-            }
-
-            // init lists
-            this._populateLists(this.element.find('option'));
-
-            // make selection sortable
-            if (this.options.sortable) {
-                $("ul.selected").sortable({
-                    placeholder: 'ui-state-highlight',
-                    axis: 'y',
-                    update: function(event, ui) {
-                        // apply the new sort order to the original selectbox
-                        that.selectedList.find('li').each(function() {
-                            if ($(this).data('optionLink'))
-                                $(this).data('optionLink').remove().appendTo(that.element);
-                        });
-                    },
-                    receive: function(event, ui) {
-                        ui.item.data('optionLink').attr('selected', true);
-                        // increment count
-                        that.count += 1;
-                        that._updateCount();
-                        // workaround, because there's no way to reference
-                        // the new element, see http://dev.jqueryui.com/ticket/4303
-                        that.selectedList.children('.ui-draggable').each(function() {
-                            $(this).removeClass('ui-draggable');
-                            $(this).data('optionLink', ui.item.data('optionLink'));
-                            $(this).data('idx', ui.item.data('idx'));
-                            that._applyItemState($(this), true);
-                        });
-
-                        // workaround according to http://dev.jqueryui.com/ticket/4088
-                        setTimeout(function() {
-                            ui.item.remove();
-                        }, 1);
-                    }
-                });
-            }
-
-            // set up livesearch
-            if (this.options.searchable) {
-                this._registerSearchEvents(this.availableContainer.find('input.search'));
-            } else {
-                $('.search').hide();
-            }
-
-            // batch actions
-            $(".remove-all").click(function() {
-                that._populateLists(that.element.find('option').removeAttr('selected'));
-                return false;
-            });
-            $(".add-all").click(function() {
-                that._populateLists(that.element.find('option').attr('selected', 'selected'));
-                return false;
-            });
-        },
-        destroy: function() {
-            this.element.show();
-            this.container.remove();
-
-            $.widget.prototype.destroy.apply(this, arguments);
-        },
-        _populateLists: function(options) {
-            this.selectedList.children('.ui-element').remove();
-            this.availableList.children('.ui-element').remove();
-            this.count = 0;
-
-            var that = this;
-            var items = $(options.map(function(i) {
-                var item = that._getOptionNode(this).appendTo(this.selected ? that.selectedList : that.availableList).show();
-
-                if (this.selected) that.count += 1;
-                that._applyItemState(item, this.selected);
-                item.data('idx', i);
-                return item[0];
-            }));
-
-            // update count
-            this._updateCount();
-        },
-        _updateCount: function() {
-            this.selectedContainer.find('span.count').text(this.count + " " + $.ui.multiselect.locale.itemsCount);
-        },
-        _getOptionNode: function(option) {
-            option = $(option);
-            var node = $('<li class="ui-state-default ui-element" title="' + option.text() + '"><span class="ui-icon"/>' + option.text() + '<a href="#" class="action"><span class="ui-corner-all ui-icon"/></a></li>').hide();
-            node.data('optionLink', option);
-            return node;
-        },
-        // clones an item with associated data
-        // didn't find a smarter away around this
-        _cloneWithData: function(clonee) {
-            var clone = clonee.clone();
-            clone.data('optionLink', clonee.data('optionLink'));
-            clone.data('idx', clonee.data('idx'));
-            return clone;
-        },
-        _setSelected: function(item, selected) {
-            item.data('optionLink').attr('selected', selected);
-
-            if (selected) {
-                var selectedItem = this._cloneWithData(item);
-                item[this.options.hide](this.options.animated, function() {
-                    $(this).remove();
-                });
-                selectedItem.appendTo(this.selectedList).hide()[this.options.show](this.options.animated);
-
-                this._applyItemState(selectedItem, true);
-                return selectedItem;
-            } else {
-
-                // look for successor based on initial option index
-                var items = this.availableList.find('li'), comparator = this.options.nodeComparator;
-                var succ = null, i = item.data('idx'), direction = comparator(item, $(items[i]));
-
-                // TODO: test needed for dynamic list populating
-                if (direction) {
-                    while (i >= 0 && i < items.length) {
-                        direction > 0 ? i++ : i--;
-                        if (direction != comparator(item, $(items[i]))) {
-                            // going up, go back one item down, otherwise leave as is
-                            succ = items[direction > 0 ? i : i + 1];
-                            break;
-                        }
-                    }
-                } else {
-                    succ = items[i];
-                }
-
-                var availableItem = this._cloneWithData(item);
-                succ ? availableItem.insertBefore($(succ)) : availableItem.appendTo(this.availableList);
-                item[this.options.hide](this.options.animated, function() {
-                    $(this).remove();
-                });
-                availableItem.hide()[this.options.show](this.options.animated);
-
-                this._applyItemState(availableItem, false);
-                return availableItem;
-            }
-        },
-        _applyItemState: function(item, selected) {
-            if (selected) {
-                if (this.options.sortable)
-                    item.children('span').addClass('ui-icon-arrowthick-2-n-s').removeClass('ui-helper-hidden').addClass('ui-icon');
-                else
-                    item.children('span').removeClass('ui-icon-arrowthick-2-n-s').addClass('ui-helper-hidden').removeClass('ui-icon');
-                item.find('a.action span').addClass('ui-icon-minus').removeClass('ui-icon-plus');
-                this._registerRemoveEvents(item.find('a.action'));
-
-            } else {
-                item.children('span').removeClass('ui-icon-arrowthick-2-n-s').addClass('ui-helper-hidden').removeClass('ui-icon');
-                item.find('a.action span').addClass('ui-icon-plus').removeClass('ui-icon-minus');
-                this._registerAddEvents(item.find('a.action'));
-            }
-
-            this._registerHoverEvents(item);
-        },
-        // taken from John Resig's liveUpdate script
-        _filter: function(list) {
-            var input = $(this);
-            var rows = list.children('li'),
-                    cache = rows.map(function() {
-
-                        return $(this).text().toLowerCase();
-                    });
-
-            var term = $.trim(input.val().toLowerCase()), scores = [];
-
-            if (!term) {
-                rows.show();
-            } else {
-                rows.hide();
-
-                cache.each(function(i) {
-                    if (this.indexOf(term) > -1) {
-                        scores.push(i);
-                    }
-                });
-
-                $.each(scores, function() {
-                    $(rows[this]).show();
-                });
-            }
-        },
-        _registerHoverEvents: function(elements) {
-            elements.removeClass('ui-state-hover');
-            elements.mouseover(function() {
-                $(this).addClass('ui-state-hover');
-            });
-            elements.mouseout(function() {
-                $(this).removeClass('ui-state-hover');
-            });
-        },
-        _registerAddEvents: function(elements) {
-            var that = this;
-            elements.click(function() {
-                var item = that._setSelected($(this).parent(), true);
-                that.count += 1;
-                that._updateCount();
-                return false;
-            })
-                // make draggable
-                    .each(function() {
-                $(this).parent().draggable({
-                    connectToSortable: 'ul.selected',
-                    helper: function() {
-                        var selectedItem = that._cloneWithData($(this)).width($(this).width() - 50);
-                        selectedItem.width($(this).width());
-                        return selectedItem;
-                    },
-                    appendTo: '.ui-multiselect',
-                    containment: '.ui-multiselect',
-                    revert: 'invalid'
-                });
-            });
-        },
-        _registerRemoveEvents: function(elements) {
-            var that = this;
-            elements.click(function() {
-                that._setSelected($(this).parent(), false);
-                that.count -= 1;
-                that._updateCount();
-                return false;
-            });
-        },
-        _registerSearchEvents: function(input) {
-            var that = this;
-
-            input.focus(function() {
-                $(this).addClass('ui-state-active');
-            })
-                    .blur(function() {
-                $(this).removeClass('ui-state-active');
-            })
-                    .keypress(function(e) {
-                if (e.keyCode == 13)
-                    return false;
-            })
-                    .keyup(function() {
-                that._filter.apply(this, [that.availableList]);
-            });
+    /**
+     * jqGrid extension for jquery.contextmenu plugin
+     * Extracted out of grid.base.js written by Tony Tomov tony@trirand.com
+     * Kosmas Schuetz
+     * http://github.com/kosmas58/compass-jquery-plugin
+     * Dual licensed under the MIT and GPL licenses:
+     * http://www.opensource.org/licenses/mit-license.php
+     * http://www.gnu.org/licenses/gpl-2.0.html
+     **/
+    $.jgrid.extend({
+        contextMenu : function(e) {
+            //    var $t = this[0];
+            //    ptr = $(td,ts.rows).closest("tr.jqgrow");
+            //    if($(ptr).length === 0 ){return false;}
+            //    if(!ts.p.multiselect) { $(ts).jqGrid("setSelection",ptr[0].id,true);  }
+            //    ri = ptr[0].rowIndex;
+            //    ci = $.jgrid.getCellIndex(td);
+            //    ts.p.onRightClickRow.call(ts,$(ptr).attr("id"),ri,ci, e);
+            //    return false;
+            //});
+            alert("ContextMenu extension");
+            return false;
         }
     });
-
-    $.extend($.ui.multiselect, {
-        defaults: {
-            sortable: true,
-            searchable: true,
-            animated: 'fast',
-            show: 'slideDown',
-            hide: 'slideUp',
-            dividerLocation: 0.6,
-            nodeComparator: function(node1, node2) {
-                var text1 = node1.text(),
-                        text2 = node2.text();
-                return text1 == text2 ? 0 : (text1 < text2 ? -1 : 1);
-            }
-        },
-        locale: {
-            addAll:'Add all',
-            removeAll:'Remove all',
-            itemsCount:'items selected'
-        }
-    });
-
 })(jQuery);
 
 
@@ -13300,35 +13039,6 @@ jQuery.fn.extend(
         }
     });
 })(jQuery);
-
-;
-(function($) {
-    /**
-     * jqGrid extension for jquery.contextmenu plugin
-     * Extracted out of grid.base.js written by Tony Tomov tony@trirand.com
-     * Kosmas Schuetz
-     * http://github.com/kosmas58/compass-jquery-plugin
-     * Dual licensed under the MIT and GPL licenses:
-     * http://www.opensource.org/licenses/mit-license.php
-     * http://www.gnu.org/licenses/gpl-2.0.html
-     **/
-    $.jgrid.extend({
-        contextMenu : function(e) {
-            //    var $t = this[0];
-            //    ptr = $(td,ts.rows).closest("tr.jqgrow");
-            //    if($(ptr).length === 0 ){return false;}
-            //    if(!ts.p.multiselect) { $(ts).jqGrid("setSelection",ptr[0].id,true);  }
-            //    ri = ptr[0].rowIndex;
-            //    ci = $.jgrid.getCellIndex(td);
-            //    ts.p.onRightClickRow.call(ts,$(ptr).attr("id"),ri,ci, e);
-            //    return false;
-            //});
-            alert("ContextMenu extension");
-            return false;
-        }
-    });
-})(jQuery);
-
 
 /* Plugin:      searchFilter v1.2.9
  * Author:      Kasey Speakman (kasey@cornerspeed.com)
@@ -14071,3 +13781,719 @@ jQuery.fn.searchFilter.defaults = {
     ajaxSelectOptions : {}
 };
 /* end of searchFilter */
+
+/**
+ * TableDnD plug-in for JQuery, allows you to drag and drop table rows
+ * You can set up various options to control how the system will work
+ * Copyright (c) Denis Howlett <denish@isocra.com>
+ * Licensed like jQuery, see http://docs.jquery.com/License.
+ *
+ * Configuration options:
+ *
+ * onDragStyle
+ *     This is the style that is assigned to the row during drag. There are limitations to the styles that can be
+ *     associated with a row (such as you can't assign a border--well you can, but it won't be
+ *     displayed). (So instead consider using onDragClass.) The CSS style to apply is specified as
+ *     a map (as used in the jQuery css(...) function).
+ * onDropStyle
+ *     This is the style that is assigned to the row when it is dropped. As for onDragStyle, there are limitations
+ *     to what you can do. Also this replaces the original style, so again consider using onDragClass which
+ *     is simply added and then removed on drop.
+ * onDragClass
+ *     This class is added for the duration of the drag and then removed when the row is dropped. It is more
+ *     flexible than using onDragStyle since it can be inherited by the row cells and other content. The default
+ *     is class is tDnD_whileDrag. So to use the default, simply customise this CSS class in your
+ *     stylesheet.
+ * onDrop
+ *     Pass a function that will be called when the row is dropped. The function takes 2 parameters: the table
+ *     and the row that was dropped. You can work out the new order of the rows by using
+ *     table.rows.
+ * onDragStart
+ *     Pass a function that will be called when the user starts dragging. The function takes 2 parameters: the
+ *     table and the row which the user has started to drag.
+ * onAllowDrop
+ *     Pass a function that will be called as a row is over another row. If the function returns true, allow
+ *     dropping on that row, otherwise not. The function takes 2 parameters: the dragged row and the row under
+ *     the cursor. It returns a boolean: true allows the drop, false doesn't allow it.
+ * scrollAmount
+ *     This is the number of pixels to scroll if the user moves the mouse cursor to the top or bottom of the
+ *     window. The page should automatically scroll up or down as appropriate (tested in IE6, IE7, Safari, FF2,
+ *     FF3 beta
+ * dragHandle
+ *     This is the name of a class that you assign to one or more cells in each row that is draggable. If you
+ *     specify this class, then you are responsible for setting cursor: move in the CSS and only these cells
+ *     will have the drag behaviour. If you do not specify a dragHandle, then you get the old behaviour where
+ *     the whole row is draggable.
+ *
+ * Other ways to control behaviour:
+ *
+ * Add class="nodrop" to any rows for which you don't want to allow dropping, and class="nodrag" to any rows
+ * that you don't want to be draggable.
+ *
+ * Inside the onDrop method you can also call $.tableDnD.serialize() this returns a string of the form
+ * <tableID>[]=<rowID1>&<tableID>[]=<rowID2> so that you can send this back to the server. The table must have
+ * an ID as must all the rows.
+ *
+ * Other methods:
+ *
+ * $("...").tableDnDUpdate()
+ * Will update all the matching tables, that is it will reapply the mousedown method to the rows (or handle cells).
+ * This is useful if you have updated the table rows using Ajax and you want to make the table draggable again.
+ * The table maintains the original configuration (so you don't have to specify it again).
+ *
+ * $("...").tableDnDSerialize()
+ * Will serialize and return the serialized string as above, but for each of the matching tables--so it can be
+ * called from anywhere and isn't dependent on the currentTable being set up correctly before calling
+ *
+ * Known problems:
+ * - Auto-scoll has some problems with IE7  (it scrolls even when it shouldn't), work-around: set scrollAmount to 0
+ *
+ * Version 0.2: 2008-02-20 First public version
+ * Version 0.3: 2008-02-07 Added onDragStart option
+ *                         Made the scroll amount configurable (default is 5 as before)
+ * Version 0.4: 2008-03-15 Changed the noDrag/noDrop attributes to nodrag/nodrop classes
+ *                         Added onAllowDrop to control dropping
+ *                         Fixed a bug which meant that you couldn't set the scroll amount in both directions
+ *                         Added serialize method
+ * Version 0.5: 2008-05-16 Changed so that if you specify a dragHandle class it doesn't make the whole row
+ *                         draggable
+ *                         Improved the serialize method to use a default (and settable) regular expression.
+ *                         Added tableDnDupate() and tableDnDSerialize() to be called when you are outside the table
+ */
+jQuery.tableDnD = {
+    /** Keep hold of the current table being dragged */
+    currentTable : null,
+    /** Keep hold of the current drag object if any */
+    dragObject: null,
+    /** The current mouse offset */
+    mouseOffset: null,
+    /** Remember the old value of Y so that we don't do too much processing */
+    oldY: 0,
+
+    /** Actually build the structure */
+    build: function(options) {
+        // Set up the defaults if any
+
+        this.each(function() {
+            // This is bound to each matching table, set up the defaults and override with user options
+            this.tableDnDConfig = jQuery.extend({
+                onDragStyle: null,
+                onDropStyle: null,
+                // Add in the default class for whileDragging
+                onDragClass: "tDnD_whileDrag",
+                onDrop: null,
+                onDragStart: null,
+                scrollAmount: 5,
+                serializeRegexp: /[^\-]*$/, // The regular expression to use to trim row IDs
+                serializeParamName: null, // If you want to specify another parameter name instead of the table ID
+                dragHandle: null // If you give the name of a class here, then only Cells with this class will be draggable
+            }, options || {});
+            // Now make the rows draggable
+            jQuery.tableDnD.makeDraggable(this);
+        });
+
+        // Now we need to capture the mouse up and mouse move event
+        // We can use bind so that we don't interfere with other event handlers
+        jQuery(document)
+                .bind('mousemove', jQuery.tableDnD.mousemove)
+                .bind('mouseup', jQuery.tableDnD.mouseup);
+
+        // Don't break the chain
+        return this;
+    },
+
+    /** This function makes all the rows on the table draggable apart from those marked as "NoDrag" */
+    makeDraggable: function(table) {
+        var config = table.tableDnDConfig;
+        if (table.tableDnDConfig.dragHandle) {
+            // We only need to add the event to the specified cells
+            var cells = jQuery("td." + table.tableDnDConfig.dragHandle, table);
+            cells.each(function() {
+                // The cell is bound to "this"
+                jQuery(this).mousedown(function(ev) {
+                    jQuery.tableDnD.dragObject = this.parentNode;
+                    jQuery.tableDnD.currentTable = table;
+                    jQuery.tableDnD.mouseOffset = jQuery.tableDnD.getMouseOffset(this, ev);
+                    if (config.onDragStart) {
+                        // Call the onDrop method if there is one
+                        config.onDragStart(table, this);
+                    }
+                    return false;
+                });
+            })
+        } else {
+            // For backwards compatibility, we add the event to the whole row
+            var rows = jQuery("tr", table); // get all the rows as a wrapped set
+            rows.each(function() {
+                // Iterate through each row, the row is bound to "this"
+                var row = jQuery(this);
+                if (! row.hasClass("nodrag")) {
+                    row.mousedown(
+                            function(ev) {
+                                if (ev.target.tagName == "TD") {
+                                    jQuery.tableDnD.dragObject = this;
+                                    jQuery.tableDnD.currentTable = table;
+                                    jQuery.tableDnD.mouseOffset = jQuery.tableDnD.getMouseOffset(this, ev);
+                                    if (config.onDragStart) {
+                                        // Call the onDrop method if there is one
+                                        config.onDragStart(table, this);
+                                    }
+                                    return false;
+                                }
+                            }).css("cursor", "move"); // Store the tableDnD object
+                }
+            });
+        }
+    },
+
+    updateTables: function() {
+        this.each(function() {
+            // this is now bound to each matching table
+            if (this.tableDnDConfig) {
+                jQuery.tableDnD.makeDraggable(this);
+            }
+        })
+    },
+
+    /** Get the mouse coordinates from the event (allowing for browser differences) */
+    mouseCoords: function(ev) {
+        if (ev.pageX || ev.pageY) {
+            return {x:ev.pageX, y:ev.pageY};
+        }
+        return {
+            x:ev.clientX + document.body.scrollLeft - document.body.clientLeft,
+            y:ev.clientY + document.body.scrollTop - document.body.clientTop
+        };
+    },
+
+    /** Given a target element and a mouse event, get the mouse offset from that element.
+     To do this we need the element's position and the mouse position */
+    getMouseOffset: function(target, ev) {
+        ev = ev || window.event;
+
+        var docPos = this.getPosition(target);
+        var mousePos = this.mouseCoords(ev);
+        return {x:mousePos.x - docPos.x, y:mousePos.y - docPos.y};
+    },
+
+    /** Get the position of an element by going up the DOM tree and adding up all the offsets */
+    getPosition: function(e) {
+        var left = 0;
+        var top = 0;
+        /** Safari fix -- thanks to Luis Chato for this! */
+        if (e.offsetHeight == 0) {
+            /** Safari 2 doesn't correctly grab the offsetTop of a table row
+             this is detailed here:
+             http://jacob.peargrove.com/blog/2006/technical/table-row-offsettop-bug-in-safari/
+             the solution is likewise noted there, grab the offset of a table cell in the row - the firstChild.
+             note that firefox will return a text node as a first child, so designing a more thorough
+             solution may need to take that into account, for now this seems to work in firefox, safari, ie */
+            e = e.firstChild; // a table cell
+        }
+        if (e && e.offsetParent) {
+            while (e.offsetParent) {
+                left += e.offsetLeft;
+                top += e.offsetTop;
+                e = e.offsetParent;
+            }
+
+            left += e.offsetLeft;
+            top += e.offsetTop;
+        }
+
+        return {x:left, y:top};
+    },
+
+    mousemove: function(ev) {
+        if (jQuery.tableDnD.dragObject == null) {
+            return;
+        }
+
+        var dragObj = jQuery(jQuery.tableDnD.dragObject);
+        var config = jQuery.tableDnD.currentTable.tableDnDConfig;
+        var mousePos = jQuery.tableDnD.mouseCoords(ev);
+        var y = mousePos.y - jQuery.tableDnD.mouseOffset.y;
+        //auto scroll the window
+        var yOffset = window.pageYOffset;
+        if (document.all) {
+            // Windows version
+            //yOffset=document.body.scrollTop;
+            if (typeof document.compatMode != 'undefined' &&
+                    document.compatMode != 'BackCompat') {
+                yOffset = document.documentElement.scrollTop;
+            }
+            else if (typeof document.body != 'undefined') {
+                yOffset = document.body.scrollTop;
+            }
+
+        }
+
+        if (mousePos.y - yOffset < config.scrollAmount) {
+            window.scrollBy(0, -config.scrollAmount);
+        } else {
+            var windowHeight = window.innerHeight ? window.innerHeight
+                    : document.documentElement.clientHeight ? document.documentElement.clientHeight : document.body.clientHeight;
+            if (windowHeight - (mousePos.y - yOffset) < config.scrollAmount) {
+                window.scrollBy(0, config.scrollAmount);
+            }
+        }
+
+
+        if (y != jQuery.tableDnD.oldY) {
+            // work out if we're going up or down...
+            var movingDown = y > jQuery.tableDnD.oldY;
+            // update the old value
+            jQuery.tableDnD.oldY = y;
+            // update the style to show we're dragging
+            if (config.onDragClass) {
+                dragObj.addClass(config.onDragClass);
+            } else {
+                dragObj.css(config.onDragStyle);
+            }
+            // If we're over a row then move the dragged row to there so that the user sees the
+            // effect dynamically
+            var currentRow = jQuery.tableDnD.findDropTargetRow(dragObj, y);
+            if (currentRow) {
+                // TODO worry about what happens when there are multiple TBODIES
+                if (movingDown && jQuery.tableDnD.dragObject != currentRow) {
+                    jQuery.tableDnD.dragObject.parentNode.insertBefore(jQuery.tableDnD.dragObject, currentRow.nextSibling);
+                } else if (! movingDown && jQuery.tableDnD.dragObject != currentRow) {
+                    jQuery.tableDnD.dragObject.parentNode.insertBefore(jQuery.tableDnD.dragObject, currentRow);
+                }
+            }
+        }
+
+        return false;
+    },
+
+    /** We're only worried about the y position really, because we can only move rows up and down */
+    findDropTargetRow: function(draggedRow, y) {
+        var rows = jQuery.tableDnD.currentTable.rows;
+        for (var i = 0; i < rows.length; i++) {
+            var row = rows[i];
+            var rowY = this.getPosition(row).y;
+            var rowHeight = parseInt(row.offsetHeight) / 2;
+            if (row.offsetHeight == 0) {
+                rowY = this.getPosition(row.firstChild).y;
+                rowHeight = parseInt(row.firstChild.offsetHeight) / 2;
+            }
+            // Because we always have to insert before, we need to offset the height a bit
+            if ((y > rowY - rowHeight) && (y < (rowY + rowHeight))) {
+                // that's the row we're over
+                // If it's the same as the current row, ignore it
+                if (row == draggedRow) {
+                    return null;
+                }
+                var config = jQuery.tableDnD.currentTable.tableDnDConfig;
+                if (config.onAllowDrop) {
+                    if (config.onAllowDrop(draggedRow, row)) {
+                        return row;
+                    } else {
+                        return null;
+                    }
+                } else {
+                    // If a row has nodrop class, then don't allow dropping (inspired by John Tarr and Famic)
+                    var nodrop = jQuery(row).hasClass("nodrop");
+                    if (! nodrop) {
+                        return row;
+                    } else {
+                        return null;
+                    }
+                }
+                return row;
+            }
+        }
+        return null;
+    },
+
+    mouseup: function(e) {
+        if (jQuery.tableDnD.currentTable && jQuery.tableDnD.dragObject) {
+            var droppedRow = jQuery.tableDnD.dragObject;
+            var config = jQuery.tableDnD.currentTable.tableDnDConfig;
+            // If we have a dragObject, then we need to release it,
+            // The row will already have been moved to the right place so we just reset stuff
+            if (config.onDragClass) {
+                jQuery(droppedRow).removeClass(config.onDragClass);
+            } else {
+                jQuery(droppedRow).css(config.onDropStyle);
+            }
+            jQuery.tableDnD.dragObject = null;
+            if (config.onDrop) {
+                // Call the onDrop method if there is one
+                config.onDrop(jQuery.tableDnD.currentTable, droppedRow);
+            }
+            jQuery.tableDnD.currentTable = null; // let go of the table too
+        }
+    },
+
+    serialize: function() {
+        if (jQuery.tableDnD.currentTable) {
+            return jQuery.tableDnD.serializeTable(jQuery.tableDnD.currentTable);
+        } else {
+            return "Error: No Table id set, you need to set an id on your table and every row";
+        }
+    },
+
+    serializeTable: function(table) {
+        var result = "";
+        var tableId = table.id;
+        var rows = table.rows;
+        for (var i = 0; i < rows.length; i++) {
+            if (result.length > 0) result += "&";
+            var rowId = rows[i].id;
+            if (rowId && rowId && table.tableDnDConfig && table.tableDnDConfig.serializeRegexp) {
+                rowId = rowId.match(table.tableDnDConfig.serializeRegexp)[0];
+            }
+
+            result += tableId + '[]=' + rowId;
+        }
+        return result;
+    },
+
+    serializeTables: function() {
+        var result = "";
+        this.each(function() {
+            // this is now bound to each matching table
+            result += jQuery.tableDnD.serializeTable(this);
+        });
+        return result;
+    }
+
+}
+
+jQuery.fn.extend(
+{
+    tableDnD : jQuery.tableDnD.build,
+    tableDnDUpdate : jQuery.tableDnD.updateTables,
+    tableDnDSerialize: jQuery.tableDnD.serializeTables
+}
+        );
+
+/*
+ * jQuery UI Multiselect
+ *
+ * Authors:
+ *  Michael Aufreiter (quasipartikel.at)
+ *  Yanick Rochon (yanick.rochon[at]gmail[dot]com)
+ * 
+ * Dual licensed under the MIT (MIT-LICENSE.txt)
+ * and GPL (GPL-LICENSE.txt) licenses.
+ * 
+ * http://www.quasipartikel.at/multiselect/
+ *
+ * 
+ * Depends:
+ *	ui.core.js
+ *	ui.sortable.js
+ *
+ * Optional:
+ * localization (http://plugins.jquery.com/project/localisation)
+ * scrollTo (http://plugins.jquery.com/project/ScrollTo)
+ * 
+ * Todo:
+ *  Make batch actions faster
+ *  Implement dynamic insertion through remote calls
+ */
+
+
+(function($) {
+
+    $.widget("ui.multiselect", {
+        _init: function() {
+            this.element.hide();
+            this.id = this.element.attr("id");
+            this.container = $('<div class="ui-multiselect ui-helper-clearfix ui-widget"></div>').insertAfter(this.element);
+            this.count = 0; // number of currently selected options
+            this.selectedContainer = $('<div class="selected"></div>').appendTo(this.container);
+            this.availableContainer = $('<div class="available"></div>').appendTo(this.container);
+            this.selectedActions = $('<div class="actions ui-widget-header ui-helper-clearfix"><span class="count">0 ' + $.ui.multiselect.locale.itemsCount + '</span><a href="#" class="remove-all">' + $.ui.multiselect.locale.removeAll + '</a></div>').appendTo(this.selectedContainer);
+            this.availableActions = $('<div class="actions ui-widget-header ui-helper-clearfix"><input type="text" class="search empty ui-widget-content ui-corner-all"/><a href="#" class="add-all">' + $.ui.multiselect.locale.addAll + '</a></div>').appendTo(this.availableContainer);
+            this.selectedList = $('<ul class="selected connected-list"><li class="ui-helper-hidden-accessible"></li></ul>').bind('selectstart',
+                    function() {
+                        return false;
+                    }).appendTo(this.selectedContainer);
+            this.availableList = $('<ul class="available connected-list"><li class="ui-helper-hidden-accessible"></li></ul>').bind('selectstart',
+                    function() {
+                        return false;
+                    }).appendTo(this.availableContainer);
+
+            var that = this;
+
+            // set dimensions
+            this.container.width(this.element.width() + 1);
+            this.selectedContainer.width(Math.floor(this.element.width() * this.options.dividerLocation));
+            this.availableContainer.width(Math.floor(this.element.width() * (1 - this.options.dividerLocation)));
+
+            // fix list height to match <option> depending on their individual header's heights
+            this.selectedList.height(Math.max(this.element.height() - this.selectedActions.height(), 1));
+            this.availableList.height(Math.max(this.element.height() - this.availableActions.height(), 1));
+
+            if (!this.options.animated) {
+                this.options.show = 'show';
+                this.options.hide = 'hide';
+            }
+
+            // init lists
+            this._populateLists(this.element.find('option'));
+
+            // make selection sortable
+            if (this.options.sortable) {
+                $("ul.selected").sortable({
+                    placeholder: 'ui-state-highlight',
+                    axis: 'y',
+                    update: function(event, ui) {
+                        // apply the new sort order to the original selectbox
+                        that.selectedList.find('li').each(function() {
+                            if ($(this).data('optionLink'))
+                                $(this).data('optionLink').remove().appendTo(that.element);
+                        });
+                    },
+                    receive: function(event, ui) {
+                        ui.item.data('optionLink').attr('selected', true);
+                        // increment count
+                        that.count += 1;
+                        that._updateCount();
+                        // workaround, because there's no way to reference
+                        // the new element, see http://dev.jqueryui.com/ticket/4303
+                        that.selectedList.children('.ui-draggable').each(function() {
+                            $(this).removeClass('ui-draggable');
+                            $(this).data('optionLink', ui.item.data('optionLink'));
+                            $(this).data('idx', ui.item.data('idx'));
+                            that._applyItemState($(this), true);
+                        });
+
+                        // workaround according to http://dev.jqueryui.com/ticket/4088
+                        setTimeout(function() {
+                            ui.item.remove();
+                        }, 1);
+                    }
+                });
+            }
+
+            // set up livesearch
+            if (this.options.searchable) {
+                this._registerSearchEvents(this.availableContainer.find('input.search'));
+            } else {
+                $('.search').hide();
+            }
+
+            // batch actions
+            $(".remove-all").click(function() {
+                that._populateLists(that.element.find('option').removeAttr('selected'));
+                return false;
+            });
+            $(".add-all").click(function() {
+                that._populateLists(that.element.find('option').attr('selected', 'selected'));
+                return false;
+            });
+        },
+        destroy: function() {
+            this.element.show();
+            this.container.remove();
+
+            $.widget.prototype.destroy.apply(this, arguments);
+        },
+        _populateLists: function(options) {
+            this.selectedList.children('.ui-element').remove();
+            this.availableList.children('.ui-element').remove();
+            this.count = 0;
+
+            var that = this;
+            var items = $(options.map(function(i) {
+                var item = that._getOptionNode(this).appendTo(this.selected ? that.selectedList : that.availableList).show();
+
+                if (this.selected) that.count += 1;
+                that._applyItemState(item, this.selected);
+                item.data('idx', i);
+                return item[0];
+            }));
+
+            // update count
+            this._updateCount();
+        },
+        _updateCount: function() {
+            this.selectedContainer.find('span.count').text(this.count + " " + $.ui.multiselect.locale.itemsCount);
+        },
+        _getOptionNode: function(option) {
+            option = $(option);
+            var node = $('<li class="ui-state-default ui-element" title="' + option.text() + '"><span class="ui-icon"/>' + option.text() + '<a href="#" class="action"><span class="ui-corner-all ui-icon"/></a></li>').hide();
+            node.data('optionLink', option);
+            return node;
+        },
+        // clones an item with associated data
+        // didn't find a smarter away around this
+        _cloneWithData: function(clonee) {
+            var clone = clonee.clone();
+            clone.data('optionLink', clonee.data('optionLink'));
+            clone.data('idx', clonee.data('idx'));
+            return clone;
+        },
+        _setSelected: function(item, selected) {
+            item.data('optionLink').attr('selected', selected);
+
+            if (selected) {
+                var selectedItem = this._cloneWithData(item);
+                item[this.options.hide](this.options.animated, function() {
+                    $(this).remove();
+                });
+                selectedItem.appendTo(this.selectedList).hide()[this.options.show](this.options.animated);
+
+                this._applyItemState(selectedItem, true);
+                return selectedItem;
+            } else {
+
+                // look for successor based on initial option index
+                var items = this.availableList.find('li'), comparator = this.options.nodeComparator;
+                var succ = null, i = item.data('idx'), direction = comparator(item, $(items[i]));
+
+                // TODO: test needed for dynamic list populating
+                if (direction) {
+                    while (i >= 0 && i < items.length) {
+                        direction > 0 ? i++ : i--;
+                        if (direction != comparator(item, $(items[i]))) {
+                            // going up, go back one item down, otherwise leave as is
+                            succ = items[direction > 0 ? i : i + 1];
+                            break;
+                        }
+                    }
+                } else {
+                    succ = items[i];
+                }
+
+                var availableItem = this._cloneWithData(item);
+                succ ? availableItem.insertBefore($(succ)) : availableItem.appendTo(this.availableList);
+                item[this.options.hide](this.options.animated, function() {
+                    $(this).remove();
+                });
+                availableItem.hide()[this.options.show](this.options.animated);
+
+                this._applyItemState(availableItem, false);
+                return availableItem;
+            }
+        },
+        _applyItemState: function(item, selected) {
+            if (selected) {
+                if (this.options.sortable)
+                    item.children('span').addClass('ui-icon-arrowthick-2-n-s').removeClass('ui-helper-hidden').addClass('ui-icon');
+                else
+                    item.children('span').removeClass('ui-icon-arrowthick-2-n-s').addClass('ui-helper-hidden').removeClass('ui-icon');
+                item.find('a.action span').addClass('ui-icon-minus').removeClass('ui-icon-plus');
+                this._registerRemoveEvents(item.find('a.action'));
+
+            } else {
+                item.children('span').removeClass('ui-icon-arrowthick-2-n-s').addClass('ui-helper-hidden').removeClass('ui-icon');
+                item.find('a.action span').addClass('ui-icon-plus').removeClass('ui-icon-minus');
+                this._registerAddEvents(item.find('a.action'));
+            }
+
+            this._registerHoverEvents(item);
+        },
+        // taken from John Resig's liveUpdate script
+        _filter: function(list) {
+            var input = $(this);
+            var rows = list.children('li'),
+                    cache = rows.map(function() {
+
+                        return $(this).text().toLowerCase();
+                    });
+
+            var term = $.trim(input.val().toLowerCase()), scores = [];
+
+            if (!term) {
+                rows.show();
+            } else {
+                rows.hide();
+
+                cache.each(function(i) {
+                    if (this.indexOf(term) > -1) {
+                        scores.push(i);
+                    }
+                });
+
+                $.each(scores, function() {
+                    $(rows[this]).show();
+                });
+            }
+        },
+        _registerHoverEvents: function(elements) {
+            elements.removeClass('ui-state-hover');
+            elements.mouseover(function() {
+                $(this).addClass('ui-state-hover');
+            });
+            elements.mouseout(function() {
+                $(this).removeClass('ui-state-hover');
+            });
+        },
+        _registerAddEvents: function(elements) {
+            var that = this;
+            elements.click(function() {
+                var item = that._setSelected($(this).parent(), true);
+                that.count += 1;
+                that._updateCount();
+                return false;
+            })
+                // make draggable
+                    .each(function() {
+                $(this).parent().draggable({
+                    connectToSortable: 'ul.selected',
+                    helper: function() {
+                        var selectedItem = that._cloneWithData($(this)).width($(this).width() - 50);
+                        selectedItem.width($(this).width());
+                        return selectedItem;
+                    },
+                    appendTo: '.ui-multiselect',
+                    containment: '.ui-multiselect',
+                    revert: 'invalid'
+                });
+            });
+        },
+        _registerRemoveEvents: function(elements) {
+            var that = this;
+            elements.click(function() {
+                that._setSelected($(this).parent(), false);
+                that.count -= 1;
+                that._updateCount();
+                return false;
+            });
+        },
+        _registerSearchEvents: function(input) {
+            var that = this;
+
+            input.focus(function() {
+                $(this).addClass('ui-state-active');
+            })
+                    .blur(function() {
+                $(this).removeClass('ui-state-active');
+            })
+                    .keypress(function(e) {
+                if (e.keyCode == 13)
+                    return false;
+            })
+                    .keyup(function() {
+                that._filter.apply(this, [that.availableList]);
+            });
+        }
+    });
+
+    $.extend($.ui.multiselect, {
+        defaults: {
+            sortable: true,
+            searchable: true,
+            animated: 'fast',
+            show: 'slideDown',
+            hide: 'slideUp',
+            dividerLocation: 0.6,
+            nodeComparator: function(node1, node2) {
+                var text1 = node1.text(),
+                        text2 = node2.text();
+                return text1 == text2 ? 0 : (text1 < text2 ? -1 : 1);
+            }
+        },
+        locale: {
+            addAll:'Add all',
+            removeAll:'Remove all',
+            itemsCount:'items selected'
+        }
+    });
+
+})(jQuery);
