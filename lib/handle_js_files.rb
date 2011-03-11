@@ -31,18 +31,18 @@ end
 def handleRecursiveDir(manifest, srcDir, destDir)
   len = srcDir.length
   actualDir = destDir
-  FileUtils.mkdir_p(actualDir)
+  FileUtils.mkdir_p(destDir)
+  Find.find(srcDir) do |entry|
+    if File.directory?(entry) and entry != srcDir and entry != actualDir
+      actualDir = File.join(destDir, entry[len, 255])
+      FileUtils.mkdir_p(actualDir)
+    end
+  end
   Find.find(srcDir) do |entry|
     if File.file?(entry)
-      a = entry[len, entry[len, 255].rindex('/')]
-      puts a
-      #dir = File.absolute_path(entry)
-      #if (dir != actualDir)
-      #  actualDir = dir
-      #  FileUtils.mkdir_p(actualDir)
-      #end
-      FileUtils.cp(entry, actualDir)
-      manifest.print "javascript 'tiny_mce/#{entry[len, 255]}'\n"
+      ending = entry[len, 255]
+      FileUtils.cp(entry, File.join(destDir, ending))
+      manifest.print "javascript 'tiny_mce/#{ending}'\n"
     end
   end
 end
