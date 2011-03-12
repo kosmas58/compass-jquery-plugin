@@ -96,7 +96,7 @@
             } // internal use
             var coord = {};
             if ($.fn.jqm && p.jqModal === true) {
-                if (p.left === 0 && p.top === 0) {
+                if (p.left === 0 && p.top === 0 && p.overlay) {
                     var pos = [];
                     pos = this.findPos(posSelector);
                     p.left = pos[0] + 4;
