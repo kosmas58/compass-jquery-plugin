@@ -156,10 +156,12 @@
                     p.error = !ret[0];
                     p.errmsg = ret[1];
                 }
-            },
-                    randId = function() {
-                        return Math.floor(Math.random() * 10000).toString();
-                    };
+            };
+            /* moving to common
+             randId = function() {
+             return Math.floor(Math.random()*10000).toString();
+             };
+             */
 
             this.onchange = function () {
                 // clear any error

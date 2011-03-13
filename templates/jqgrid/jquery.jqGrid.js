@@ -153,6 +153,9 @@
             sid = sid + "";
             return sid.replace(/([\.\:\[\]])/g, "\\$1");
         },
+        randId : function() {
+            return new String(new Date().getTime());
+        },
         getAccessor : function(obj, expr) {
             var ret,p,prm = [], i;
             if (typeof expr === 'function') {
@@ -1203,7 +1206,7 @@
                         var gl = gxml.length, j = 0, grpdata = {}, rn;
                         if (gxml && gl) {
                             rn = parseInt(ts.p.rowNum, 10);
-                            var br = ts.p.scroll ? (parseInt(ts.p.page, 10) - 1) * rn + 1 : 1,altr;
+                            var br = ts.p.scroll ? $.jgrid.randId() : 1,altr;
                             if (adjust) {
                                 rn *= adjust + 1;
                             }
@@ -1383,7 +1386,7 @@
                             dReader = ts.p.jsonReader;
                             frd = 'json';
                         }
-                        var ir = 0,v,i,j,row,f = [],F,cur,gi = 0,si = 0,ni = 0,len,drows,idn,rd = {}, fpos, idr,rowData = [],cn = (ts.p.altRows === true) ? " " + ts.p.altclass : "",cn1,lp;
+                        var ir = 0,v,i,j,f = [],F,cur,gi = 0,si = 0,ni = 0,len,drows,idn,rd = {}, fpos, idr,rowData = [],cn = (ts.p.altRows === true) ? " " + ts.p.altclass : "",cn1,lp;
                         ts.p.page = $.jgrid.getAccessor(data, dReader.page) || 0;
                         lp = $.jgrid.getAccessor(data, dReader.total);
                         ts.p.lastpage = lp === undefined ? 1 : lp;
@@ -1409,7 +1412,7 @@
                         }
                         len = drows.length;
                         i = 0;
-                        var rn = parseInt(ts.p.rowNum, 10),br = ts.p.scroll ? (parseInt(ts.p.page, 10) - 1) * rn + 1 : 1, altr;
+                        var rn = parseInt(ts.p.rowNum, 10),br = ts.p.scroll ? $.jgrid.randId() : 1, altr;
                         if (adjust) {
                             rn *= adjust + 1;
                         }
@@ -2812,22 +2815,22 @@
                     return false;
                 });
             }
-            if ($.isFunction(this.p.onRightClickRow)) {
-                $(this).bind('contextmenu', function(e) {
-                    td = e.target;
-                    ptr = $(td, ts.rows).closest("tr.jqgrow");
-                    if ($(ptr).length === 0) {
-                        return false;
-                    }
-                    if (!ts.p.multiselect) {
-                        $(ts).jqGrid("setSelection", ptr[0].id, true);
-                    }
-                    ri = ptr[0].rowIndex;
-                    ci = $.jgrid.getCellIndex(td);
-                    ts.p.onRightClickRow.call(ts, $(ptr).attr("id"), ri, ci, e);
-                    return false;
-                });
-            }
+//            if ($.isFunction(this.p.onRightClickRow)) {
+//                $(this).bind('contextmenu', function(e) {
+//                    td = e.target;
+//                    ptr = $(td, ts.rows).closest("tr.jqgrow");
+//                    if ($(ptr).length === 0) {
+//                        return false;
+//                    }
+//                    if (!ts.p.multiselect) {
+//                        $(ts).jqGrid("setSelection", ptr[0].id, true);
+//                    }
+//                    ri = ptr[0].rowIndex;
+//                    ci = $.jgrid.getCellIndex(td);
+//                    ts.p.onRightClickRow.call(ts, $(ptr).attr("id"), ri, ci, e);
+//                    return false;
+//                });
+//            }
             grid.bDiv = document.createElement("div");
             $(grid.bDiv)
                     .append($('<div style="position:relative;' + (isMSIE && $.browser.version < 8 ? "height:0.01%;" : "") + '"></div>').append('<div></div>').append(this))
@@ -3309,7 +3312,7 @@
                             rowid = rowid + "";
                         }
                         else {
-                            rowid = (t.p.records + 1) + "";
+                            rowid = $.jgrid.randId();
                             if (t.p.keyIndex !== false) {
                                 cnm = t.p.colModel[t.p.keyIndex + gi + si + ni].name;
                                 if (typeof rdata[0][cnm] != "undefined") {
@@ -3329,7 +3332,7 @@
                                 rowid = data[cnm];
                             }
                             catch (e) {
-                                rowid = (t.p.records + 1) + "";
+                                rowid = $.jgrid.randId();
                             }
                             cna = t.p.altRows === true ? (t.rows.length - 1) % 2 === 0 ? cn : "" : "";
                         }
@@ -6753,10 +6756,12 @@ var xmlJsonClass = {
                     p.error = !ret[0];
                     p.errmsg = ret[1];
                 }
-            },
-                    randId = function() {
-                        return Math.floor(Math.random() * 10000).toString();
-                    };
+            };
+            /* moving to common
+             randId = function() {
+             return Math.floor(Math.random()*10000).toString();
+             };
+             */
 
             this.onchange = function () {
                 // clear any error
@@ -7398,7 +7403,11 @@ var xmlJsonClass = {
                 onReset : null,
                 toTop : true,
                 overlay : 10,
-                columns : []
+                columns : [],
+                tmplNames : null,
+                tmplFilters : null,
+                // translations - later in lang file
+                tmplLabel : ' Template: '
             }, $.jgrid.search, p || {});
             return this.each(function() {
                 var $t = this;
@@ -7440,7 +7449,7 @@ var xmlJsonClass = {
                     var columns = $.extend([], $t.p.colModel),
                             bS = "<a href='javascript:void(0)' id='" + fid + "_search' class='fm-button ui-state-default ui-corner-all fm-button-icon-right ui-reset'><span class='ui-icon ui-icon-search'></span>" + p.Find + "</a>",
                             bC = "<a href='javascript:void(0)' id='" + fid + "_reset' class='fm-button ui-state-default ui-corner-all fm-button-icon-left ui-search'><span class='ui-icon ui-icon-arrowreturnthick-1-w'></span>" + p.Reset + "</a>",
-                            bQ = "", tmpl = "", tmplop = "", colnm, found = false, bt;
+                            bQ = "", tmpl = "", colnm, found = false, bt;
                     if (p.showQuery) {
                         bQ = "<a href='javascript:void(0)' id='" + fid + "_query' class='fm-button ui-state-default ui-corner-all fm-button-icon-left'><span class='ui-icon ui-icon-comment'></span>Query</a>";
                     }
@@ -7472,7 +7481,7 @@ var xmlJsonClass = {
                     found = false;
                     if (p.tmplNames && p.tmplNames.length) {
                         found = true;
-                        tmpl = " Templates: ";
+                        tmpl = p.tmplLabel;
                         tmpl += "<select class='ui-template'>";
                         tmpl += "<option value='default'>Default</option>";
                         $.each(p.tmplNames, function(i, n) {
@@ -8107,7 +8116,7 @@ var xmlJsonClass = {
                                         //id processing
                                         // user not set the id ret[2]
                                         if (!ret[2]) {
-                                            ret[2] = (parseInt($t.p.records, 10) + 1) + "";
+                                            ret[2] = $.jgrid.randId();
                                         }
                                         postdata[idname] = ret[2];
                                         if (rp_ge.closeAfterAdd) {

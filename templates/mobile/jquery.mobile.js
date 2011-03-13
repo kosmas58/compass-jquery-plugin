@@ -1543,7 +1543,10 @@
 
                 //return a url path with the window's location protocol/hostname removed
                 clean: function(url) {
-                    return url.replace(location.protocol + "//" + location.host, "");
+                    // Replace the protocol and host only once at the beginning of the url to avoid
+                    // problems when it's included as a part of a param
+                    var leadingUrlRootRegex = new RegExp("^" + location.protocol + "//" + location.host);
+                    return url.replace(leadingUrlRootRegex, "");
                 },
 
                 //just return the url without an initial #
@@ -3235,8 +3238,8 @@
             }
 
             var self = this,
-                    menuHeight = self.list.outerHeight(),
-                    menuWidth = self.list.outerWidth(),
+                    menuHeight = self.list.parent().outerHeight(),
+                    menuWidth = self.list.parent().outerWidth(),
                     scrollTop = $(window).scrollTop(),
                     btnOffset = self.button.offset().top,
                     screenHeight = window.innerHeight,
@@ -3287,7 +3290,8 @@
                 var roomtop = btnOffset - scrollTop,
                         roombot = scrollTop + screenHeight - btnOffset,
                         halfheight = menuHeight / 2,
-                        newtop,newleft;
+                        maxwidth = parseFloat(self.list.parent().css('max-width')),
+                        newtop, newleft;
 
                 if (roomtop > menuHeight / 2 && roombot > menuHeight / 2) {
                     newtop = btnOffset + ( self.button.outerHeight() / 2 ) - halfheight;
@@ -3297,8 +3301,18 @@
                     newtop = roomtop > roombot ? scrollTop + screenHeight - menuHeight - 30 : scrollTop + 30;
                 }
 
-                newleft = self.button.offset().left + self.button.outerWidth() / 2 - menuWidth / 2;
-
+                // if the menuwidth is smaller than the screen center is
+                if (menuWidth < maxwidth) {
+                    newleft = (screenWidth - menuWidth) / 2;
+                } else { //otherwise insure a >= 30px offset from the left
+                    newleft = self.button.offset().left + self.button.outerWidth() / 2 - menuWidth / 2;
+                    // 30px tolerance off the edges
+                    if (newleft < 30) {
+                        newleft = 30;
+                    } else if ((newleft + menuWidth) > screenWidth) {
+                        newleft = screenWidth - menuWidth - 30;
+                    }
+                }
 
                 self.listbox
                         .append(self.list)
