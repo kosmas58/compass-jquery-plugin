@@ -19,14 +19,13 @@
 .ui-listview, .ui-li {
     list-style: none;
     padding: 0;
-    zoom: 1;
 }
 
 .ui-li {
     display: block;
     margin: 0;
     position: relative;
-    overflow: hidden;
+    overflow: visible;
     text-align: left;
     border-width: 0;
     border-top-width: 1px;
@@ -201,24 +200,8 @@ ol.ui-listview .ui-li-jsnumbering:before {
 }
 
 /* Odd iPad positioning issue. */
-@media only screen and
-
-(
-min-device-width:
-
-    768px
-
-)
-and
-
-(
-max-device-width:
-
-    1024px
-
-) {
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
     .ui-li .ui-btn-text {
         overflow: visible;
     }
-
 }

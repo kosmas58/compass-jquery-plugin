@@ -371,7 +371,7 @@
                     if (!cm) {
                         return;
                     }
-                    cm.searchoptions.id = randId();
+                    cm.searchoptions.id = $.jgrid.randId();
                     if (isIE) {
                         if (!cm.searchoptions.size) {
                             cm.searchoptions.size = 10;
@@ -443,7 +443,7 @@
                 cm = p.columns[j];
                 // create it here so it can be referentiated in the onchange event
                 //var RD = that.createElement(rule, rule.data);
-                cm.searchoptions.id = randId();
+                cm.searchoptions.id = $.jgrid.randId();
                 if (isIE) {
                     if (!cm.searchoptions.size) {
                         cm.searchoptions.size = 10;

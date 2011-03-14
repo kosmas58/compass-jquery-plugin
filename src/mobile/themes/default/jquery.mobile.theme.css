@@ -16,7 +16,7 @@
     text-shadow: 0 -1px 1px #000000;
     background-image: -moz-linear-gradient(top, #3c3c3c, #111111);
     background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #3c3c3c), color-stop(1, #111111));
-    -msfilter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#3c3c3c', EndColorStr='#111111')";
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#3c3c3c', EndColorStr='#111111')";
 }
 
 .ui-bar-a,
@@ -65,7 +65,10 @@
 }
 
 .ui-br {
-    border-bottom: 1px solid rgba(130, 130, 130, .3);
+    border-bottom: rgb(130, 130, 130);
+    border-bottom: rgba(130, 130, 130, .3);
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
 }
 
 .ui-btn-up-a {
@@ -325,7 +328,7 @@
     text-shadow: 0 1px 1px #ffffff;
     background-image: -moz-linear-gradient(top, #eeeeee, #fdfdfd);
     background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #eeeeee), color-stop(1, #fdfdfd));
-    -msfilter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#eeeeee', EndColorStr='#fdfdfd')";
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#eeeeee', EndColorStr='#fdfdfd')";
 }
 
 .ui-btn-down-c a.ui-link-inherit {
@@ -415,7 +418,7 @@
     text-decoration: none;
     background-image: -moz-linear-gradient(top, #fdfdfd, #eeeeee);
     background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #fdfdfd), color-stop(1, #eeeeee));
-    -msfilter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#fdfdfd', EndColorStr='#eeeeee')";
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#fdfdfd', EndColorStr='#eeeeee')";
 }
 
 .ui-btn-hover-d a.ui-link-inherit {
@@ -430,7 +433,7 @@
     text-shadow: 0 1px 1px #ffffff;
     background-image: -moz-linear-gradient(top, #eeeeee, #ffffff);
     background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #eeeeee), color-stop(1, #ffffff));
-    -msfilter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#eeeeee', EndColorStr='#ffffff')";
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#eeeeee', EndColorStr='#ffffff')";
 }
 
 .ui-btn-down-d a.ui-link-inherit {
@@ -441,7 +444,7 @@
     text-shadow: none;
     background-image: -moz-linear-gradient(top, #cccccc, #eeeeee);
     background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #cccccc), color-stop(1, #eeeeee));
-    -msfilter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#cccccc', EndColorStr='#eeeeee')";
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#cccccc', EndColorStr='#eeeeee')";
 }
 
 .ui-btn-up-d,
@@ -460,7 +463,7 @@
     text-shadow: 0 1px 0 #fff;
     background-image: -moz-linear-gradient(top, #fceda7, #fadb4e);
     background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #fceda7), color-stop(1, #fadb4e));
-    -msfilter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#fceda7', EndColorStr='#fadb4e')";
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#fceda7', EndColorStr='#fadb4e')";
 }
 
 .ui-bar-e,
@@ -487,7 +490,7 @@
     background: #faeb9e;
     background-image: -moz-linear-gradient(top, #fff, #faeb9e);
     background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #fff), color-stop(1, #faeb9e));
-    -msfilter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#ffffff', EndColorStr='#faeb9e')";
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#ffffff', EndColorStr='#faeb9e')";
 }
 
 .ui-body-e,
@@ -534,7 +537,7 @@
     text-shadow: 0 1px 1px #fff;
     background-image: -moz-linear-gradient(top, #fcf0b5, #fbe26f);
     background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #fcf0b5), color-stop(1, #fbe26f));
-    -msfilter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#fcf0b5', EndColorStr='#fbe26f')";
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#fcf0b5', EndColorStr='#fbe26f')";
 }
 
 .ui-btn-hover-e a.ui-link-inherit {
@@ -582,7 +585,7 @@ a.ui-link-inherit {
     text-decoration: none;
     background-image: -moz-linear-gradient(top, #85bae4, #5393c5);
     background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #85bae4), color-stop(1, #5393c5));
-    -msfilter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#85bae4', EndColorStr='#5393c5')";
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#85bae4', EndColorStr='#5393c5')";
     outline: none;
 }
 
@@ -682,18 +685,10 @@ a.ui-link-inherit {
 -----------------------------------------------------------------------------------------------------------*/
 
 .ui-icon {
+    background: #666;
+    background: rgba(0, 0, 0, .4);
     background-image: url(images/icons-18-white.png);
     background-repeat: no-repeat;
-    background-color: #666;
-    background-color: rgba(0, 0, 0, .4);
-    -moz-border-radius: 9px;
-    -webkit-border-radius: 9px;
-    border-radius: 9px;
-}
-
-.ui-icon-disc {
-    background-color: #666;
-    background-color: rgba(0, 0, 0, .3);
     -moz-border-radius: 9px;
     -webkit-border-radius: 9px;
     border-radius: 9px;
@@ -703,34 +698,16 @@ a.ui-link-inherit {
 -----------------------------------------------------------------------------------------------------------*/
 
 .ui-icon-black {
+    background: #fff;
+    background: rgba(255, 255, 255, .3);
     background-image: url(images/icons-18-black.png);
-}
-
-.ui-icon-black-disc {
-    background-color: #fff;
-    background-color: rgba(255, 255, 255, .3);
-    -moz-border-radius: 9px;
-    -webkit-border-radius: 9px;
-    border-radius: 9px;
+    background-repeat: no-repeat;
 }
 
 /* HD/"retina" sprite
 -----------------------------------------------------------------------------------------------------------*/
 
-@media screen and
-
-(
--webkit-min-device-pixel-ratio:
-
-    2
-)
-, screen and
-
-(
-max--moz-device-pixel-ratio:
-
-    2
-) {
+@media screen and (-webkit-min-device-pixel-ratio: 2), screen and (max--moz-device-pixel-ratio: 2) {
     .ui-icon {
         background-image: url(images/icons-36-white.png);
         background-size: 630px 18px;
@@ -739,7 +716,6 @@ max--moz-device-pixel-ratio:
     .ui-icon-black {
         background-image: url(images/icons-36-black.png);
     }
-
 }
 
 /* plus minus */

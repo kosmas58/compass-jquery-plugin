@@ -150,7 +150,7 @@
                 if (o.degradeInputs[ type ]) {
                     $(this).replaceWith(
                             $("<div>").html($(this).clone()).html()
-                                    .replace(/type="([a-zA-Z]+)"/, "type=" + optType + " data-type='$1'"));
+                                    .replace(/ type="?([a-zA-Z]+)"?/, " type=\"" + optType + "\" data-type=\"" + type + "\" "));
                 }
             });
 

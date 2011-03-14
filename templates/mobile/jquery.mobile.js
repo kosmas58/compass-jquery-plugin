@@ -475,6 +475,16 @@
 
     ;
 
+
+//non-UA-based IE version check by James Padolsey, modified by jdalton - from http://gist.github.com/527683
+//allows for inclusion of IE 6+, including Windows Mobile 7
+    $.mobile.browser = {};
+    $.mobile.browser.ie = (function() {
+        var v = 3, div = document.createElement('div'), a = div.all || [];
+        while (div.innerHTML = '<!--[if gt IE ' + (++v) + ']><br><![endif]-->',a[0]);
+        return v > 4 ? v : !v;
+    }());
+
     $.extend($.support, {
         orientation: "orientation" in window,
         touch: "ontouchend" in document,
@@ -1329,7 +1339,7 @@
                 if (o.degradeInputs[ type ]) {
                     $(this).replaceWith(
                             $("<div>").html($(this).clone()).html()
-                                    .replace(/type="([a-zA-Z]+)"/, "type=" + optType + " data-type='$1'"));
+                                    .replace(/ type="?([a-zA-Z]+)"?/, " type=\"" + optType + "\" data-type=\"" + type + "\" "));
                 }
             });
 
@@ -1433,11 +1443,14 @@
         loadingMessage: "loading",
 
         //configure meta viewport tag's content attr:
+        //note: this feature is deprecated in A4 in favor of adding
+        //the meta viewport element directly in the markup
         metaViewportContent: "width=device-width, minimum-scale=1, maximum-scale=1",
 
         //support conditions that must be met in order to proceed
+        //default enhanced qualifications are media query support OR IE 7+
         gradeA: function() {
-            return $.support.mediaquery;
+            return $.support.mediaquery || $.mobile.browser.ie && $.mobile.browser.ie >= 7;
         },
 
         //TODO might be useful upstream in jquery itself ?
@@ -1541,11 +1554,12 @@
                     return path.get() + url;
                 },
 
-                //return a url path with the window's location protocol/hostname removed
+                //return a url path with the window's location protocol/hostname/pathname removed
                 clean: function(url) {
-                    // Replace the protocol and host only once at the beginning of the url to avoid
+                    // Replace the protocol, host, and pathname only once at the beginning of the url to avoid
                     // problems when it's included as a part of a param
-                    var leadingUrlRootRegex = new RegExp("^" + location.protocol + "//" + location.host);
+                    // Also, since all urls are absolute in IE, we need to remove the pathname as well.
+                    var leadingUrlRootRegex = new RegExp("^" + location.protocol + "//" + location.host + location.pathname);
                     return url.replace(leadingUrlRootRegex, "");
                 },
 
@@ -1773,7 +1787,6 @@
     $.mobile.urlHistory = urlHistory;
 
     // changepage function
-    // TODO : consider moving args to an object hash
     $.mobile.changePage = function(to, transition, reverse, changeHash, fromHashChange) {
         //from is always the currently viewed page
         var toIsArray = $.type(to) === "array",
@@ -2150,6 +2163,12 @@
             //get href, if defined, otherwise fall to null #
                 href = $this.attr("href") || "#",
 
+            //cache a check for whether the link had a protocol
+            //if this is true and the link was same domain, we won't want
+            //to prefix the url with a base (esp helpful in IE, where every
+            //url is absolute
+                hadProtocol = path.hasProtocol(href),
+
             //get href, remove same-domain protocol and host
                 url = path.clean(href),
 
@@ -2176,7 +2195,9 @@
             return false;
         }
 
-        if (url === "#") {
+        //prevent # urls from bubbling
+        //path.get() is replaced to combat abs url prefixing in IE
+        if (url.replace(path.get(), "") == "#") {
             //for links created purely for interaction - ignore
             event.preventDefault();
             return;
@@ -2213,7 +2234,7 @@
             nextPageRole = $this.attr("data-rel");
 
             //if it's a relative href, prefix href with base url
-            if (path.isRelative(url)) {
+            if (path.isRelative(url) && !hadProtocol) {
                 url = path.makeAbsolute(url);
             }
 
@@ -2568,7 +2589,11 @@
         _create: function() {
             var self = this,
                     input = this.element,
-                    label = input.closest("form,fieldset,[data-role='page']").find("label[for='" + input.attr("id") + "']"),
+                    label = input.closest("form,fieldset,[data-role='page']")
+                            .find("label")
+                        //NOTE: Windows Phone could not find the label through a selector
+                        //filter works though.
+                            .filter("[for=" + input[0].id + "]"),
                     inputtype = input.attr("type"),
                     checkedicon = "ui-icon-" + inputtype + "-on",
                     uncheckedicon = "ui-icon-" + inputtype + "-off";
@@ -2576,6 +2601,14 @@
             if (inputtype != "checkbox" && inputtype != "radio") {
                 return;
             }
+
+            //expose for other methods
+            $.extend(this, {
+                label            : label,
+                inputtype        : inputtype,
+                checkedicon        : checkedicon,
+                uncheckedicon    : uncheckedicon
+            });
 
             // If there's no selected theme...
             if (!this.options.theme) {
@@ -2671,13 +2704,13 @@
         //returns either a set of radios with the same name attribute, or a single checkbox
         _getInputSet: function() {
             return this.element.closest("form,fieldset,[data-role='page']")
-                    .find("input[name='" + this.element.attr("name") + "'][type='" + this.element.attr("type") + "']");
+                    .find("input[name='" + this.element.attr("name") + "'][type='" + this.inputtype + "']");
         },
 
         _updateAll: function() {
             this._getInputSet().each(function() {
                 var dVal = $(this).data("cacheVal");
-                if (dVal && dVal !== $(this).is(":checked") || $(this).is("[type='checkbox']")) {
+                if (dVal && dVal !== $(this).is(":checked") || this.inputtype === "checkbox") {
                     $(this).trigger("change");
                 }
             })
@@ -2686,21 +2719,16 @@
 
         refresh: function() {
             var input = this.element,
-                    label = input.closest("form,fieldset,[data-role='page']").find("label[for='" + input.attr("id") + "']"),
-                    inputtype = input.attr("type"),
-                    icon = label.find(".ui-icon"),
-                    checkedicon = "ui-icon-" + inputtype + "-on",
-                    uncheckedicon = "ui-icon-" + inputtype + "-off";
+                    label = this.label,
+                    icon = label.find(".ui-icon");
 
             if (input[0].checked) {
-                label.addClass("ui-btn-active");
-                icon.addClass(checkedicon);
-                icon.removeClass(uncheckedicon);
+                label.addClass($.mobile.activeBtnClass);
+                icon.addClass(this.checkedicon).removeClass(this.uncheckedicon);
 
             } else {
-                label.removeClass("ui-btn-active");
-                icon.removeClass(checkedicon);
-                icon.addClass(uncheckedicon);
+                label.removeClass($.mobile.activeBtnClass);
+                icon.removeClass(this.checkedicon).addClass(this.uncheckedicon);
             }
 
             if (input.is(":disabled")) {
@@ -3014,7 +3042,7 @@
                             .removeClass($.mobile.activeBtnClass);
                 });
 
-                button.attr("tabindex", "-1");
+
             } else {
 
                 //create list from select, update state
@@ -4169,6 +4197,7 @@
                     return false;
                 }
             });
+
         },
 
         _itemApply: function($list, item) {
@@ -4180,7 +4209,7 @@
 
             item.find("p, dl").addClass("ui-li-desc");
 
-            item.find("li").find("img:eq(0)").addClass("ui-li-thumb").each(function() {
+            $list.find("li").find("img:eq(0)").addClass("ui-li-thumb").each(function() {
                 $(this).closest("li")
                         .addClass($(this).is(".ui-li-icon") ? "ui-li-has-icon" : "ui-li-has-thumb");
             });
@@ -4221,6 +4250,16 @@
             li.attr({ "role": "option", "tabindex": "-1" });
 
             li.first().attr("tabindex", "0");
+
+            //workaround for Windows Phone 7 focus/active tap color
+            //without this, delegated events will highlight the whole list, rather than the LI
+            if ($.mobile.browser.ie && $.mobile.browser.ie <= 8) {
+                li
+                        .unbind("mousedown.iefocus")
+                        .bind("mousedown.iefocus", function(e) {
+                    e.preventDefault();
+                });
+            }
 
             li.each(function(pos) {
                 var item = $(this),
@@ -4631,7 +4670,9 @@
     $html.addClass("ui-mobile ui-mobile-rendering");
 
     //define & prepend meta viewport tag, if content is defined
-    $.mobile.metaViewportContent ? $("<meta>", { name: "viewport", content: $.mobile.metaViewportContent}).prependTo($head) : undefined;
+    //NOTE: this is now deprecated. We recommend placing the meta viewport element in
+    //the markup from the start.
+    $.mobile.metaViewportContent && !$head.find("meta[name='viewport']").length ? $("<meta>", { name: "viewport", content: $.mobile.metaViewportContent}).prependTo($head) : undefined;
 
     //loading div which appears during Ajax requests
     //will not appear if $.mobile.loadingMessage is false

@@ -116,6 +116,7 @@
                     return false;
                 }
             });
+
         },
 
         _itemApply: function($list, item) {
@@ -127,7 +128,7 @@
 
             item.find("p, dl").addClass("ui-li-desc");
 
-            item.find("li").find("img:eq(0)").addClass("ui-li-thumb").each(function() {
+            $list.find("li").find("img:eq(0)").addClass("ui-li-thumb").each(function() {
                 $(this).closest("li")
                         .addClass($(this).is(".ui-li-icon") ? "ui-li-has-icon" : "ui-li-has-thumb");
             });
@@ -168,6 +169,16 @@
             li.attr({ "role": "option", "tabindex": "-1" });
 
             li.first().attr("tabindex", "0");
+
+            //workaround for Windows Phone 7 focus/active tap color
+            //without this, delegated events will highlight the whole list, rather than the LI
+            if ($.mobile.browser.ie && $.mobile.browser.ie <= 8) {
+                li
+                        .unbind("mousedown.iefocus")
+                        .bind("mousedown.iefocus", function(e) {
+                    e.preventDefault();
+                });
+            }
 
             li.each(function(pos) {
                 var item = $(this),
