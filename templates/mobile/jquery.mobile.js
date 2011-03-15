@@ -1328,8 +1328,10 @@
             $elem.fixHeaderFooter();
         },
 
+        _typeAttributeRegex: /\s+type=["']?\w+['"]?/,
+
         _enhanceControls: function() {
-            var o = this.options;
+            var o = this.options, self = this;
 
             // degrade inputs to avoid poorly implemented native functionality
             this.element.find("input").not(this.keepNative).each(function() {
@@ -1339,7 +1341,7 @@
                 if (o.degradeInputs[ type ]) {
                     $(this).replaceWith(
                             $("<div>").html($(this).clone()).html()
-                                    .replace(/ type="?([a-zA-Z]+)"?/, " type=\"" + optType + "\" data-type=\"" + type + "\" "));
+                                    .replace(self._typeAttributeRegex, " type=\"" + optType + "\" data-type=\"" + type + "\" "));
                 }
             });
 
@@ -1893,9 +1895,9 @@
                 //set as data for returning to that spot
                 from.data("lastScroll", currScroll);
                 //trigger before show/hide events
-                from.data("page")._trigger("beforehide", { nextPage: to });
+                from.data("page")._trigger("beforehide", null, { nextPage: to });
             }
-            to.data("page")._trigger("beforeshow", { prevPage: from || $("") });
+            to.data("page")._trigger("beforeshow", null, { prevPage: from || $("") });
 
             function loadComplete() {
 
@@ -2144,7 +2146,7 @@
 
         $.mobile.changePage({
             url: url,
-            type: type,
+            type: type || "get",
             data: $(this).serialize()
         },
                 undefined,
@@ -2209,7 +2211,9 @@
             // TODO: deprecated - remove at 1.0
                 !$.mobile.ajaxLinksEnabled) {
             //remove active link class if external (then it won't be there if you come back)
-            removeActiveLinkClass(true);
+            window.setTimeout(function() {
+                removeActiveLinkClass(true);
+            }, 200);
 
             //deliberately redirect, in case click was triggered
             if (hasTarget) {
@@ -3215,7 +3219,7 @@
                                 return options.index(this);
                             }).get();
 
-            if (!self.options.nativeMenu && ( forceRebuild || select[0].options.length > self.list.find('li').length )) {
+            if (!self.options.nativeMenu && ( forceRebuild || select[0].options.length != self.list.find('li').length )) {
                 self._buildList();
             }
 
@@ -4480,6 +4484,10 @@
                         .appendTo(wrapper)
                         .textinput();
 
+        if ($(this).data("inset")) {
+            wrapper.addClass("ui-listview-filter-inset");
+        }
+
         wrapper.insertBefore(list);
     });
 
@@ -4603,7 +4611,7 @@
 
 
             var $kids = $(this).children(),
-                    gridCols = {a: 2, b:3, c:4, d:5},
+                    gridCols = {solo:1, a:2, b:3, c:4, d:5},
                     grid = o.grid,
                     iterator;
 
@@ -4624,8 +4632,9 @@
             $(this).addClass('ui-grid-' + grid);
 
             $kids.filter(':nth-child(' + iterator + 'n+1)').addClass('ui-block-a');
-            $kids.filter(':nth-child(' + iterator + 'n+2)').addClass('ui-block-b');
-
+            if (iterator > 1) {
+                $kids.filter(':nth-child(' + iterator + 'n+2)').addClass('ui-block-b');
+            }
             if (iterator > 2) {
                 $kids.filter(':nth-child(3n+3)').addClass('ui-block-c');
             }
@@ -4639,8 +4648,6 @@
         });
     };
 })(jQuery);
-
-
 
 /*!
  * jQuery Mobile v@VERSION

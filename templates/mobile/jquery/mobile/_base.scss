@@ -460,7 +460,14 @@ Built by David Kaneda and maintained by Jonathan Stark.
   margin: 0;
   padding: 0;
   border: 0;
-  float: left; }
+  float: left;
+  min-height: 1px; }
+
+/* grid solo: 100 - single item fallback */
+
+.ui-grid-solo .ui-block-a {
+  width: 100%;
+  float: none; }
 
 /* grid a: 50/50 */
 
@@ -970,7 +977,7 @@ Built by David Kaneda and maintained by Jonathan Stark.
       top: 0;
       width: 100%;
       height: 100%;
-      opacity: 0.001;
+      opacity: 0;
       -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
       filter: alpha(opacity = 0);
       &.ui-select-nativeonly {
@@ -1117,7 +1124,10 @@ textarea.ui-input-text {
   .ui-input-search {
     width: 60%;
     display: inline-block;
-    width: 50%; } }
+    width: 50%;
+    input.ui-input-text {
+      width: 98%;
+      /*echos rule from above*/ } } }
 
 /*
 * jQuery Mobile Framework
@@ -1292,6 +1302,10 @@ ol.ui-listview .ui-li-jsnumbering:before {
     margin: 5px;
     width: auto;
     display: block; } }
+
+.ui-listview-filter-inset {
+  margin: -15px -5px -15px -5px;
+  background: transparent; }
 
 /* Odd iPad positioning issue. */
 @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {

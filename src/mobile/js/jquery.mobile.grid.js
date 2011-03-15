@@ -13,7 +13,7 @@
 
 
             var $kids = $(this).children(),
-                    gridCols = {a: 2, b:3, c:4, d:5},
+                    gridCols = {solo:1, a:2, b:3, c:4, d:5},
                     grid = o.grid,
                     iterator;
 
@@ -34,8 +34,9 @@
             $(this).addClass('ui-grid-' + grid);
 
             $kids.filter(':nth-child(' + iterator + 'n+1)').addClass('ui-block-a');
-            $kids.filter(':nth-child(' + iterator + 'n+2)').addClass('ui-block-b');
-
+            if (iterator > 1) {
+                $kids.filter(':nth-child(' + iterator + 'n+2)').addClass('ui-block-b');
+            }
             if (iterator > 2) {
                 $kids.filter(':nth-child(3n+3)').addClass('ui-block-c');
             }
@@ -49,4 +50,3 @@
         });
     };
 })(jQuery);
-

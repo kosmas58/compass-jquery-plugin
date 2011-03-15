@@ -364,7 +364,7 @@
                                 return options.index(this);
                             }).get();
 
-            if (!self.options.nativeMenu && ( forceRebuild || select[0].options.length > self.list.find('li').length )) {
+            if (!self.options.nativeMenu && ( forceRebuild || select[0].options.length != self.list.find('li').length )) {
                 self._buildList();
             }
 
