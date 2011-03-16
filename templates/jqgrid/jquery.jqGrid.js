@@ -10957,15 +10957,17 @@ var xmlJsonClass = {
                     ldat = $t.p.data[dind];
                     //$t.rows[i].level = ldat[level];
                     if ($t.p.treeGridModel == 'nested') {
-                        lft = parseInt(ldat[$t.p.treeReader.left_field], 10);
-                        rgt = parseInt(ldat[$t.p.treeReader.right_field], 10);
                         if (!ldat[isLeaf]) {
+                            lft = parseInt(ldat[$t.p.treeReader.left_field], 10);
+                            rgt = parseInt(ldat[$t.p.treeReader.right_field], 10);
                             // NS Model
                             ldat[isLeaf] = (rgt === lft + 1) ? 'true' : 'false';
+                            $t.rows[i].cells[$t.p._treeleafpos].innerHTML = ldat[isLeaf];
                         }
-                    } else {
-                        //row.parent_id = rd[$t.p.treeReader.parent_id_field];
                     }
+                    //else {
+                    //row.parent_id = rd[$t.p.treeReader.parent_id_field];
+                    //}
                     curLevel = parseInt(ldat[level], 10);
                     if ($t.p.tree_root_level === 0) {
                         ident = curLevel + 1;
@@ -11002,6 +11004,7 @@ var xmlJsonClass = {
 
                     twrap += "</div></div>";
                     $($t.rows[i].cells[expCol]).wrapInner("<span class='cell-wrapper" + lf + "'></span>").prepend(twrap);
+
                     if (curLevel !== parseInt($t.p.tree_root_level, 10)) {
                         var pn = $($t).jqGrid('getNodeParent', ldat);
                         expan = pn && pn.hasOwnProperty(expanded) ? pn[expanded] : true;
@@ -11100,7 +11103,6 @@ var xmlJsonClass = {
                         }
                         i++;
                         //
-
                         for (var tkey in $t.p.treeReader) {
                             if ($t.p.treeReader[tkey] == nm)
                                 dupcols.push(nm);
@@ -11108,8 +11110,12 @@ var xmlJsonClass = {
 
                     }
                 }
-                $.each($t.p.treeReader, function(i, n) {
+                $.each($t.p.treeReader, function(j, n) {
                     if (n && $.inArray(n, dupcols) === -1) {
+                        if (j === 'leaf_field') {
+                            $t.p._treeleafpos = i;
+                        }
+                        i++;
                         $t.p.colNames.push(n);
                         $t.p.colModel.push({name:n,width:1,hidden:true,sortable:false,resizable:false,hidedlg:true,editable:true,search:false});
                     }

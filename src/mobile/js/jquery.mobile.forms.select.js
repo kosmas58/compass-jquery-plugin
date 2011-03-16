@@ -268,22 +268,10 @@
                 });
 
                 //events on "screen" overlay + close button
-                screen
-                        .add(headerClose)
-                        .add(menuPageClose)
-                        .bind("click", function(event) {
+                screen.click(function(event) {
                     self.close();
-                    event.preventDefault();
-
-                    // if the dialog's close icon was clicked, prevent the dialog's close
-                    // handler from firing. selectmenu's should take precedence
-                    if ($.contains(menuPageClose[0], event.target)) {
-                        event.stopImmediatePropagation();
-                    }
                 });
             }
-
-
         },
 
         _buildList: function() {
@@ -426,6 +414,11 @@
             //add active class to button
             self.button.addClass($.mobile.activeBtnClass);
 
+            //remove after delay
+            setTimeout(function() {
+                self.button.removeClass($.mobile.activeBtnClass);
+            }, 300);
+
             function focusMenuItem() {
                 self.list.find(".ui-btn-active").focus();
             }
@@ -518,9 +511,6 @@
             function focusButton() {
                 setTimeout(function() {
                     self.button.focus();
-
-                    //remove active class from button
-                    self.button.removeClass($.mobile.activeBtnClass);
                 }, 40);
 
                 self.listbox.removeAttr('style').append(self.list);

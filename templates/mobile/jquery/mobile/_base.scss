@@ -1042,6 +1042,9 @@ label.ui-select {
 .ui-li.ui-selectmenu-placeholder {
   display: none; }
 
+.ui-selectmenu .ui-header .ui-title {
+  margin: 0.6em 46px 0.8em; }
+
 .min-width-480px {
   label.ui-select {
     display: inline-block;
@@ -1311,6 +1314,7 @@ ol.ui-listview .ui-li-jsnumbering:before {
 @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
   .ui-li .ui-btn-text {
     overflow: visible; } }
+
 
 /*
 * jQuery Mobile Framework
