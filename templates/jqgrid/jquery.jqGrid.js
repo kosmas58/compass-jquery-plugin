@@ -6625,7 +6625,7 @@ var xmlJsonClass = {
  ]
  }
  */
-/*global jQuery, $ */
+/*global jQuery, $, window, navigator */
 
 (function ($) {
 
@@ -6688,7 +6688,7 @@ var xmlJsonClass = {
                 };
             }
             var i, len = this.p.columns.length, cl,
-                    isIE = /msie/i.test(navigator.userAgent) && !win.opera;
+                    isIE = /msie/i.test(navigator.userAgent) && !window.opera;
 
             // translating the options
             if (this.p._gridsopt.length) {
