@@ -1,5 +1,5 @@
 /*
- * jQuery UI Autocomplete @VERSION
+ * jQuery UI Autocomplete 1.8.11
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -20,6 +20,7 @@
     $.widget("ui.autocomplete", {
         options: {
             appendTo: "body",
+            autoFocus: false,
             delay: 300,
             minLength: 1,
             position: {
@@ -365,6 +366,10 @@
             ul.position($.extend({
                 of: this.element
             }, this.options.position));
+
+            if (this.options.autoFocus) {
+                this.menu.next(new $.Event("mouseover"));
+            }
         },
 
         _resizeMenu: function() {

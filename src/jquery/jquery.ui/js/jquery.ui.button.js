@@ -1,5 +1,5 @@
 /*
- * jQuery UI Button @VERSION
+ * jQuery UI Button 1.8.11
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -200,8 +200,16 @@
             if (this.type === "checkbox" || this.type === "radio") {
                 // we don't search against the document in case the element
                 // is disconnected from the DOM
-                this.buttonElement = this.element.parents().last()
-                        .find("label[for=" + this.element.attr("id") + "]");
+                var ancestor = this.element.parents().filter(":last"),
+                        labelSelector = "label[for=" + this.element.attr("id") + "]";
+                this.buttonElement = ancestor.find(labelSelector);
+                if (!this.buttonElement.length) {
+                    ancestor = ancestor.length ? ancestor.siblings() : this.element.siblings();
+                    this.buttonElement = ancestor.filter(labelSelector);
+                    if (!this.buttonElement.length) {
+                        this.buttonElement = ancestor.find(labelSelector);
+                    }
+                }
                 this.element.addClass("ui-helper-hidden-accessible");
 
                 var checked = this.element.is(":checked");
@@ -294,7 +302,9 @@
                     buttonClasses = [];
 
             if (icons.primary || icons.secondary) {
-                buttonClasses.push("ui-button-text-icon" + ( multipleIcons ? "s" : ( icons.primary ? "-primary" : "-secondary" ) ));
+                if (this.options.text) {
+                    buttonClasses.push("ui-button-text-icon" + ( multipleIcons ? "s" : ( icons.primary ? "-primary" : "-secondary" ) ));
+                }
 
                 if (icons.primary) {
                     buttonElement.prepend("<span class='ui-button-icon-primary ui-icon " + icons.primary + "'></span>");
@@ -306,7 +316,6 @@
 
                 if (!this.options.text) {
                     buttonClasses.push(multipleIcons ? "ui-button-icons-only" : "ui-button-icon-only");
-                    buttonElement.removeClass("ui-button-text-icons ui-button-text-icon-primary ui-button-text-icon-secondary");
 
                     if (!this.hasTitle) {
                         buttonElement.attr("title", buttonText);
