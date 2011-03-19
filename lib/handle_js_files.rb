@@ -35,7 +35,7 @@ def all_files(pattern)
   FileList[pattern].collect { |filename| File.read(filename) }.join "\n\n"
 end
 
-def handleRecursiveDir(manifest, srcDir, destDir)
+def handleTinyMCEDir(manifest, srcDir, destDir)
   len = srcDir.length
   actualDir = destDir
   FileUtils.mkdir_p(destDir)
@@ -56,7 +56,7 @@ def handleRecursiveDir(manifest, srcDir, destDir)
       elsif /\.js$/ =~ entry
         js = File.read entry
         open File.join(destDir, ending), 'w' do |f|
-          f.write compress_js(js, "google")
+          f.write compress_js(js, "yui")
         end
       else
         FileUtils.cp(entry, File.join(destDir, ending))
