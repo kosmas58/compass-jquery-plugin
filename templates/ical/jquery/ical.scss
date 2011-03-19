@@ -757,17 +757,17 @@ table.fc-header {
 
 .fc-event-hori {
   .ui-resizable-e {
-    top: 0           !important;
+    top: 0 !important;
     /* importants override pre jquery ui 1.7 styles */
     right: -3px !important;
-    width: 7px       !important;
-    height: 100%     !important;
+    width: 7px !important;
+    height: 100% !important;
     cursor: e-resize; }
   .ui-resizable-w {
-    top: 0           !important;
+    top: 0 !important;
     left: -3px !important;
-    width: 7px       !important;
-    height: 100%     !important;
+    width: 7px !important;
+    height: 100% !important;
     cursor: w-resize; }
   .ui-resizable-handle {
     _padding-bottom: 14px;
@@ -937,12 +937,12 @@ table.fc-header {
       filter: alpha(opacity = 30);
       /* for IE */ } }
   .ui-resizable-s {
-    bottom: 0        !important;
+    bottom: 0 !important;
     /* importants override pre jquery ui 1.7 styles */
-    width: 100%      !important;
-    height: 8px      !important;
+    width: 100% !important;
+    height: 8px !important;
     line-height: 8px !important;
-    font-size: 11px  !important;
+    font-size: 11px !important;
     font-family: monospace;
     text-align: center;
     cursor: s-resize; } }
