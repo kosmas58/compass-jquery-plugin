@@ -32,7 +32,6 @@ namespace :build do
 
     FileUtils.remove_dir JQUERY_DEST_TEMPLATES if File.exists? JQUERY_DEST_TEMPLATES
     FileUtils.mkdir_p(File.join(JQUERY_DEST_TEMPLATES, 'config', 'initializers'))
-    FileUtils.mkdir_p(File.join(JQUERY_DEST_TEMPLATES, 'lib', 'tasks'))
     FileUtils.mkdir_p(File.join(JQUERY_DEST_THEMES))
 
     open File.join(JQUERY_DEST_TEMPLATES, 'manifest.rb'), 'w' do |manifest|
@@ -44,12 +43,6 @@ namespace :build do
         f.print(File.read(File.join(JQUERY_SRC, 'config', 'initializers', 'jquery.rb')))
       end
       manifest.print "file 'config/initializers/jquery.rb'\n"
-
-      manifest.print "file 'lib/tasks/haml.rake'\n"
-      open File.join(JQUERY_DEST_TEMPLATES, 'lib', 'tasks', 'haml.rake'), 'w' do |f|
-        f.print(File.read(File.join(SRC, 'lib', 'tasks', 'haml.rake')))
-      end
-      manifest.print "file 'lib/tasks/haml.rake'\n"
 
       open File.join(JQUERY_DEST_TEMPLATES, 'jrails.js'), 'w' do |f|
         f.print concat_files(all_files(JRAILS_SRC_SCRIPTS))

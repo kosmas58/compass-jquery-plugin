@@ -25,7 +25,7 @@ namespace :build do
       end
       manifest.print "file 'config/initializers/tiny_mce.rb'\n"
 
-      handleRecursiveDir(manifest, TINY_MCE_SRC_SCRIPTS, TINY_MCE_DEST_SCRIPTS)
+      handleTinyMCEDir(manifest, TINY_MCE_SRC_SCRIPTS, TINY_MCE_DEST_SCRIPTS)
     end
   end
 end
