@@ -17,8 +17,10 @@ tmtags
 .idea
 coverage
 rdoc
-pkg
 
 ## PROJECT::SPECIFIC
 tmp
+*.gem
+.bundle
 Gemfile.lock
+pkg/*

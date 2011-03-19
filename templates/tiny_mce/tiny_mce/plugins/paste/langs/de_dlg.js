@@ -1,0 +1,1 @@
+tinyMCE.addI18n("de.paste_dlg",{word_title:"Drücken Sie auf Ihrer Tastatur Strg+V, um den Text einzufügen.",text_linebreaks:"Zeilenumbrüche beibehalten",text_title:"Drücken Sie auf Ihrer Tastatur Strg+V, um den Text einzufügen."});
