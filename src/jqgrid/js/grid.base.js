@@ -17,7 +17,7 @@
     $.jgrid = $.jgrid || {};
     $.extend($.jgrid, {
         htmlDecode : function(value) {
-            if (value == '&nbsp;' || value == '&#160;' || (value.length == 1 && value.charCodeAt(0) == 160)) {
+            if (value && (value == '&nbsp;' || value == '&#160;' || (value.length == 1 && value.charCodeAt(0) == 160))) {
                 return "";
             }
             return !value ? value : String(value).replace(/&amp;/g, "&").replace(/&gt;/g, ">").replace(/&lt;/g, "<").replace(/&quot;/g, '"');
@@ -1111,8 +1111,10 @@
                             parent.scrollTop = 0;
                         }
                         if (locdata === true) {
-                            ts.p.data = [];
-                            ts.p._index = {};
+                            if (ts.p.treeGrid === true) {
+                                ts.p.data = [];
+                                ts.p._index = {};
+                            }
                         }
                     },
                     refreshIndex = function() {
@@ -3332,7 +3334,7 @@
                                 rowid = data[cnm];
                             }
                             catch (e) {
-                                rowid = $.jgrid.randId();
+                                rowid = $.jgrid.randId() + k;
                             }
                             cna = t.p.altRows === true ? (t.rows.length - 1) % 2 === 0 ? cn : "" : "";
                         }

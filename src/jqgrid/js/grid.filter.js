@@ -187,7 +187,7 @@
                 var that = this,  i;
 
                 // this table will hold all the group (tables) and rules (rows)
-                var table = $("<table class='group ui-widget ui-widget-content' style='border:0px none;'><tbody>");
+                var table = $("<table class='group ui-widget ui-widget-content' style='border:0px none;'><tbody></tbody></table>");
                 // create error message row
                 if (parentgroup === null) {
                     $(table).append("<tr class='error' style='display:none;'><th colspan='5' class='ui-state-error' align='left'></th></tr>");
@@ -326,7 +326,7 @@
                 if (group.rules !== undefined) {
                     for (i = 0; i < group.rules.length; i++) {
                         table.append(
-                                this.createTableRowForRule(group.rules[i], group)
+                                this.createTableRowForRule(group.rules[i], group, i)
                                 );
                     }
                 }
@@ -336,7 +336,7 @@
             /*
              * Create the rule data for the filter
              */
-            this.createTableRowForRule = function(rule, group) {
+            this.createTableRowForRule = function(rule, group, cnt) {
                 // save current entity in a variable so that it could
                 // be referenced in anonimous method calls
 
@@ -372,7 +372,7 @@
                         return;
                     }
                     cm.searchoptions.id = $.jgrid.randId();
-                    if (isIE) {
+                    if (isIE && cm.inputtype === "text") {
                         if (!cm.searchoptions.size) {
                             cm.searchoptions.size = 10;
                         }
@@ -443,8 +443,8 @@
                 cm = p.columns[j];
                 // create it here so it can be referentiated in the onchange event
                 //var RD = that.createElement(rule, rule.data);
-                cm.searchoptions.id = $.jgrid.randId();
-                if (isIE) {
+                cm.searchoptions.id = $.jgrid.randId() + cnt;
+                if (isIE && cm.inputtype === "text") {
                     if (!cm.searchoptions.size) {
                         cm.searchoptions.size = 10;
                     }

@@ -52,7 +52,9 @@
                 tmplNames : null,
                 tmplFilters : null,
                 // translations - later in lang file
-                tmplLabel : ' Template: '
+                tmplLabel : ' Template: ',
+                showOnLoad: false,
+                layer: null
             }, $.jgrid.search, p || {});
             return this.each(function() {
                 var $t = this;
@@ -61,7 +63,7 @@
                 }
                 var fid = "fbox_" + $t.p.id,
                         showFrm = true,
-                        IDs = {themodal:'editmod' + fid,modalhead:'edithd' + fid,modalcontent:'editcnt' + fid, scrollelm : fid},
+                        IDs = {themodal:'searchmod' + fid,modalhead:'searchhd' + fid,modalcontent:'searchcnt' + fid, scrollelm : fid},
                         defaultFilters = $t.p.postData[p.sFilter];
                 if (typeof(defaultFilters) === "string") {
                     defaultFilters = $.jgrid.parse(defaultFilters);
@@ -170,7 +172,10 @@
                     if ($.isFunction(p.onInitializeSearch)) {
                         p.onInitializeSearch($("#" + fid));
                     }
-                    $.jgrid.createModal(IDs, fil, p, "#gview_" + $t.p.id, $("#gbox_" + $t.p.id)[0]);
+                    if (p.layer)
+                        $.jgrid.createModal(IDs, fil, p, "#gview_" + $t.p.id, $("#gbox_" + $t.p.id)[0], "#" + p.layer, {position: "relative"});
+                    else
+                        $.jgrid.createModal(IDs, fil, p, "#gview_" + $t.p.id, $("#gbox_" + $t.p.id)[0]);
                     if (bQ) {
                         $("#" + fid + "_query").bind('click', function(e) {
                             $(".queryresult", fil).toggle();
@@ -2081,6 +2086,8 @@
                                     $(this).removeClass("ui-state-hover");
                                 }
                                 );
+                        if (pSearch.showOnLoad && pSearch.showOnLoad === true)
+                            $(tbd, navtbl).click();
                         tbd = null;
                     }
                     if (o.refresh) {
