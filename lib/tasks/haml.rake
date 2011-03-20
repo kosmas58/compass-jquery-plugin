@@ -13,7 +13,7 @@ namespace :haml do
     path = File.join(::Rails.root.to_s, 'public', 'stylesheets')
     puts path
     Dir["#{path}/**/*.css"].each do |file|
-      next unless /\/compiled\/$/ =~ file
+      #next unless /\/compiled\/$/ =~ file
       system "css2sass #{file} #{file.gsub(/\.css$/, '.sass')}"
       puts "Converted: #{file}"
     end

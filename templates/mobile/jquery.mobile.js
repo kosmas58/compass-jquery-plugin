@@ -4755,7 +4755,7 @@
             return;
         }
         var
-                themesDir = '/stylesheets/compiled/jquery/mobile/',
+                themesDir = '/stylesheets/jquery/mobile/',
                 themes = ['default','valencia'],
                 currentPage = $.mobile.activePage,
                 menuPage = $('<div data-url="themeswitcher" data-role=\'dialog\' data-theme=\'a\'>' +

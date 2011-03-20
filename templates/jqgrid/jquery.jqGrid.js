@@ -17,7 +17,7 @@
     $.jgrid = $.jgrid || {};
     $.extend($.jgrid, {
         htmlDecode : function(value) {
-            if (value == '&nbsp;' || value == '&#160;' || (value.length == 1 && value.charCodeAt(0) == 160)) {
+            if (value && (value == '&nbsp;' || value == '&#160;' || (value.length == 1 && value.charCodeAt(0) == 160))) {
                 return "";
             }
             return !value ? value : String(value).replace(/&amp;/g, "&").replace(/&gt;/g, ">").replace(/&lt;/g, "<").replace(/&quot;/g, '"');
@@ -1111,8 +1111,10 @@
                             parent.scrollTop = 0;
                         }
                         if (locdata === true) {
-                            ts.p.data = [];
-                            ts.p._index = {};
+                            if (ts.p.treeGrid === true) {
+                                ts.p.data = [];
+                                ts.p._index = {};
+                            }
                         }
                     },
                     refreshIndex = function() {
@@ -3332,7 +3334,7 @@
                                 rowid = data[cnm];
                             }
                             catch (e) {
-                                rowid = $.jgrid.randId();
+                                rowid = $.jgrid.randId() + k;
                             }
                             cna = t.p.altRows === true ? (t.rows.length - 1) % 2 === 0 ? cn : "" : "";
                         }
@@ -5844,8 +5846,9 @@ var xmlJsonClass = {
             }
             return [curleft,curtop];
         },
-        createModal : function(aIDs, content, p, insertSelector, posSelector, appendsel) {
+        createModal : function(aIDs, content, p, insertSelector, posSelector, appendsel, css) {
             var mw = document.createElement('div'), rtlsup, self = this;
+            css = $.extend({}, css || {});
             rtlsup = $(p.gbox).attr("dir") == "rtl" ? true : false;
             mw.className = "ui-widget ui-widget-content ui-corner-all ui-jqdialog";
             mw.id = aIDs.themodal;
@@ -5879,9 +5882,12 @@ var xmlJsonClass = {
             if (appendsel === true) {
                 $('body').append(mw);
             } //append as first child in body -for alert dialog
+            else if (typeof appendsel == "string")
+                $(appendsel).append(mw);
             else {
                 $(mw).insertBefore(insertSelector);
             }
+            $(mw).css(css);
             if (typeof p.jqModal === 'undefined') {
                 p.jqModal = true;
             } // internal use
@@ -5912,7 +5918,7 @@ var xmlJsonClass = {
                 p.height = 200;
             }
             if (!p.zIndex) {
-                var parentZ = $(insertSelector).parents("*[role=dialog]").first().css("z-index");
+                var parentZ = $(insertSelector).parents("*[role=dialog]").filter(':first').css("z-index");
                 if (parentZ) {
                     p.zIndex = parseInt(parentZ, 10) + 1;
                 } else {
@@ -6125,10 +6131,10 @@ var xmlJsonClass = {
             }
 
             function setAttributes(elm, atr) {
-                var exclude = ['dataInit','dataEvents', 'value','dataUrl', 'buildSelect'];
+                var exclude = ['dataInit','dataEvents', 'value','dataUrl', 'buildSelect','sopt', 'searchhidden', 'defaultValue', 'attr'];
                 $.each(atr, function(key, value) {
                     if ($.inArray(key, exclude) === -1) {
-                        $(elem).attr(key, value);
+                        $(elm).attr(key, value);
                     }
                 });
             }
@@ -6226,9 +6232,6 @@ var xmlJsonClass = {
                                             $(this).attr("role", "option");
                                             if ($.inArray($.trim($(this).text()), ovm) > -1 || $.inArray($.trim($(this).val()), ovm) > -1) {
                                                 this.selected = "selected";
-                                                if (!msl) {
-                                                    return false;
-                                                }
                                             }
                                         });
                                     }, 0);
@@ -6787,7 +6790,7 @@ var xmlJsonClass = {
                 var that = this,  i;
 
                 // this table will hold all the group (tables) and rules (rows)
-                var table = $("<table class='group ui-widget ui-widget-content' style='border:0px none;'><tbody>");
+                var table = $("<table class='group ui-widget ui-widget-content' style='border:0px none;'><tbody></tbody></table>");
                 // create error message row
                 if (parentgroup === null) {
                     $(table).append("<tr class='error' style='display:none;'><th colspan='5' class='ui-state-error' align='left'></th></tr>");
@@ -6926,7 +6929,7 @@ var xmlJsonClass = {
                 if (group.rules !== undefined) {
                     for (i = 0; i < group.rules.length; i++) {
                         table.append(
-                                this.createTableRowForRule(group.rules[i], group)
+                                this.createTableRowForRule(group.rules[i], group, i)
                                 );
                     }
                 }
@@ -6936,7 +6939,7 @@ var xmlJsonClass = {
             /*
              * Create the rule data for the filter
              */
-            this.createTableRowForRule = function(rule, group) {
+            this.createTableRowForRule = function(rule, group, cnt) {
                 // save current entity in a variable so that it could
                 // be referenced in anonimous method calls
 
@@ -6972,7 +6975,7 @@ var xmlJsonClass = {
                         return;
                     }
                     cm.searchoptions.id = $.jgrid.randId();
-                    if (isIE) {
+                    if (isIE && cm.inputtype === "text") {
                         if (!cm.searchoptions.size) {
                             cm.searchoptions.size = 10;
                         }
@@ -7043,8 +7046,8 @@ var xmlJsonClass = {
                 cm = p.columns[j];
                 // create it here so it can be referentiated in the onchange event
                 //var RD = that.createElement(rule, rule.data);
-                cm.searchoptions.id = $.jgrid.randId();
-                if (isIE) {
+                cm.searchoptions.id = $.jgrid.randId() + cnt;
+                if (isIE && cm.inputtype === "text") {
                     if (!cm.searchoptions.size) {
                         cm.searchoptions.size = 10;
                     }
@@ -7407,7 +7410,9 @@ var xmlJsonClass = {
                 tmplNames : null,
                 tmplFilters : null,
                 // translations - later in lang file
-                tmplLabel : ' Template: '
+                tmplLabel : ' Template: ',
+                showOnLoad: false,
+                layer: null
             }, $.jgrid.search, p || {});
             return this.each(function() {
                 var $t = this;
@@ -7416,7 +7421,7 @@ var xmlJsonClass = {
                 }
                 var fid = "fbox_" + $t.p.id,
                         showFrm = true,
-                        IDs = {themodal:'editmod' + fid,modalhead:'edithd' + fid,modalcontent:'editcnt' + fid, scrollelm : fid},
+                        IDs = {themodal:'searchmod' + fid,modalhead:'searchhd' + fid,modalcontent:'searchcnt' + fid, scrollelm : fid},
                         defaultFilters = $t.p.postData[p.sFilter];
                 if (typeof(defaultFilters) === "string") {
                     defaultFilters = $.jgrid.parse(defaultFilters);
@@ -7525,7 +7530,10 @@ var xmlJsonClass = {
                     if ($.isFunction(p.onInitializeSearch)) {
                         p.onInitializeSearch($("#" + fid));
                     }
-                    $.jgrid.createModal(IDs, fil, p, "#gview_" + $t.p.id, $("#gbox_" + $t.p.id)[0]);
+                    if (p.layer)
+                        $.jgrid.createModal(IDs, fil, p, "#gview_" + $t.p.id, $("#gbox_" + $t.p.id)[0], "#" + p.layer, {position: "relative"});
+                    else
+                        $.jgrid.createModal(IDs, fil, p, "#gview_" + $t.p.id, $("#gbox_" + $t.p.id)[0]);
                     if (bQ) {
                         $("#" + fid + "_query").bind('click', function(e) {
                             $(".queryresult", fil).toggle();
@@ -9436,6 +9444,8 @@ var xmlJsonClass = {
                                     $(this).removeClass("ui-state-hover");
                                 }
                                 );
+                        if (pSearch.showOnLoad && pSearch.showOnLoad === true)
+                            $(tbd, navtbl).click();
                         tbd = null;
                     }
                     if (o.refresh) {
@@ -11656,6 +11666,9 @@ var xmlJsonClass = {
                     if (!grp.groupField.length) {
                         $t.p.grouping = false;
                     } else {
+                        if (typeof(grp.visibiltyOnNextGrouping) == 'undefined') {
+                            grp.visibiltyOnNextGrouping = [];
+                        }
                         for (var i = 0; i < grp.groupField.length; i++) {
                             if (!grp.groupOrder[i]) {
                                 grp.groupOrder[i] = 'asc';
@@ -11670,8 +11683,10 @@ var xmlJsonClass = {
                                 grp.groupSummary[i] = false;
                             }
                             if (grp.groupColumnShow[i] === true) {
+                                grp.visibiltyOnNextGrouping[i] = true;
                                 $($t).jqGrid('showCol', grp.groupField[i]);
                             } else {
+                                grp.visibiltyOnNextGrouping[i] = $("#" + $t.p.id + "_" + grp.groupField[i]).is(":visible");
                                 $($t).jqGrid('hideCol', grp.groupField[i]);
                             }
                             grp.sortitems[i] = [];
@@ -11875,11 +11890,15 @@ var xmlJsonClass = {
                 }
                 var grp = $t.p.groupingView;
                 $t.p.grouping = true;
-                // show previoous hidden  groups if they are hidden
+                // show previous hidden groups if they are hidden and weren't removed yet
                 for (var i = 0; i < grp.groupField.length; i++) {
-                    if (!grp.groupColumnShow[i]) {
+                    if (!grp.groupColumnShow[i] && grp.visibiltyOnNextGrouping[i]) {
                         $($t).jqGrid('showCol', grp.groupField[i]);
                     }
+                }
+                // set visibility status of current group columns on next grouping
+                for (var i = 0; i < name.length; i++) {
+                    grp.visibiltyOnNextGrouping[i] = $("#" + $t.p.id + "_" + name[i]).is(":visible");
                 }
                 $t.p.groupingView = $.extend($t.p.groupingView, options || {});
                 grp.groupField = name;
@@ -11894,6 +11913,13 @@ var xmlJsonClass = {
                 }
                 $t.p.grouping = false;
                 if (current === true) {
+                    var grp = $t.p.groupingView;
+                    // show previous hidden groups if they are hidden and weren't removed yet
+                    for (var i = 0; i < grp.groupField.length; i++) {
+                        if (!grp.groupColumnShow[i] && grp.visibiltyOnNextGrouping[i]) {
+                            $($t).jqGrid('showCol', grp.groupField);
+                        }
+                    }
                     $("tr.jqgroup, tr.jqfoot", "#" + $t.p.id + " tbody:first").remove();
                     $("tr.jqgrow:hidden", "#" + $t.p.id + " tbody:first").show();
                 } else {
@@ -11934,6 +11960,7 @@ var xmlJsonClass = {
         }
     });
 })(jQuery);
+
 
 ;
 (function($) {
