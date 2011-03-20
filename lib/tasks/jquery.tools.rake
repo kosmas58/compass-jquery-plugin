@@ -1,5 +1,5 @@
 require 'fileutils'
-JQ_TOOLS_SRC = File.join(RAILS_ROOT, 'tmp', 'jquerytools')
+JQ_TOOLS_SRC = File.join(::Rails.root.to_s, 'tmp', 'jquerytools')
 
 def convert2haml(src, dest)
   system "html2haml -x #{src} #{dest}"

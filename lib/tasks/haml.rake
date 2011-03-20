@@ -4,13 +4,13 @@ namespace :haml do
   desc "Convert .erb views to haml and stylesheets to sass"
   task :from_erb do
     puts ".erb to .haml started"
-    path = File.join(RAILS_ROOT, 'app', 'views')
+    path = File.join(::Rails.root.to_s, 'app', 'views')
     puts path
     Dir["#{path}/**/*.erb"].each do |file|
       system "html2haml -x #{file} #{file.gsub(/\.erb$/, '.haml')}"
       puts "Converted: #{file}"
     end
-    path = File.join(RAILS_ROOT, 'public', 'stylesheets')
+    path = File.join(::Rails.root.to_s, 'public', 'stylesheets')
     puts path
     Dir["#{path}/**/*.css"].each do |file|
       next unless /\/compiled\/$/ =~ file
@@ -23,7 +23,7 @@ namespace :haml do
   desc "Convert .html views to haml and stylesheets to sass"
   task :from_html do
     puts ".html to .haml started"
-    path = File.join(RAILS_ROOT, 'app', 'views')
+    path = File.join(::Rails.root.to_s, 'app', 'views')
     puts path
     Dir["#{path}/**/*.html"].each do |file|
       system "html2haml -x #{file} #{file.gsub(/\.html$/, '.html.haml')}"
@@ -39,7 +39,7 @@ namespace :haml do
   desc "Convert .html views to .html.haml and .js.haml and stylesheets to sass"
   task :from_demo do
     puts "Demo to .haml started"
-    path = File.join(RAILS_ROOT, 'app', 'views')
+    path = File.join(::Rails.root.to_s, 'app', 'views')
     puts path
     Dir["#{path}/**/*.html"].each do |file|
       system "html2haml -x #{file} #{file.gsub(/\.html$/, '.html.haml')}"

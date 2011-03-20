@@ -1,5 +1,5 @@
 require 'fileutils'
-JQ_MOBILE_SRC = File.join(RAILS_ROOT, 'tmp', 'jquery-mobile')
+JQ_MOBILE_SRC = File.join(::Rails.root.to_s, 'tmp', 'jquery-mobile')
 
 def convert2haml(src, dest)
   tmp = src.gsub(/\.html$/, '.tmp')
