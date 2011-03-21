@@ -326,7 +326,7 @@
                 if (group.rules !== undefined) {
                     for (i = 0; i < group.rules.length; i++) {
                         table.append(
-                                this.createTableRowForRule(group.rules[i], group, i)
+                                this.createTableRowForRule(group.rules[i], group)
                                 );
                     }
                 }
@@ -336,7 +336,7 @@
             /*
              * Create the rule data for the filter
              */
-            this.createTableRowForRule = function(rule, group, cnt) {
+            this.createTableRowForRule = function(rule, group) {
                 // save current entity in a variable so that it could
                 // be referenced in anonimous method calls
 
@@ -443,7 +443,7 @@
                 cm = p.columns[j];
                 // create it here so it can be referentiated in the onchange event
                 //var RD = that.createElement(rule, rule.data);
-                cm.searchoptions.id = $.jgrid.randId() + cnt;
+                cm.searchoptions.id = $.jgrid.randId();
                 if (isIE && cm.inputtype === "text") {
                     if (!cm.searchoptions.size) {
                         cm.searchoptions.size = 10;

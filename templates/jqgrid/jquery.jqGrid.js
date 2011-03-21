@@ -2,12 +2,12 @@
 // @compilation_level SIMPLE_OPTIMIZATIONS
 
 /*
- * jqGrid  3.8.2  - jQuery Grid
+ * jqGrid  4.0 beta  - jQuery Grid
  * Copyright (c) 2008, Tony Tomov, tony@trirand.com
  * Dual licensed under the MIT and GPL licenses
  * http://www.opensource.org/licenses/mit-license.php
  * http://www.gnu.org/licenses/gpl-2.0.html
- * Date: 2010-12-14
+ * Date: 2011-03-21
  */
 //jsHint options
 /*global document, window, jQuery, DOMParser, ActiveXObject $ */
@@ -153,8 +153,10 @@
             sid = sid + "";
             return sid.replace(/([\.\:\[\]])/g, "\\$1");
         },
-        randId : function() {
-            return new String(new Date().getTime());
+        guid : 1,
+        uidPref: 'jqg',
+        randId : function(prefix) {
+            return (prefix ? prefix : $.jgrid.uidPref) + ($.jgrid.guid++);
         },
         getAccessor : function(obj, expr) {
             var ret,p,prm = [], i;
@@ -3334,7 +3336,7 @@
                                 rowid = data[cnm];
                             }
                             catch (e) {
-                                rowid = $.jgrid.randId() + k;
+                                rowid = $.jgrid.randId();
                             }
                             cna = t.p.altRows === true ? (t.rows.length - 1) % 2 === 0 ? cn : "" : "";
                         }
@@ -4035,6 +4037,18 @@
                 var $t = this;
                 $($t).unbind('keydown');
             });
+        },
+        getLocalRow : function (rowid) {
+            var ret = false, ind;
+            this.each(function() {
+                if (typeof(rowid) !== "undefined") {
+                    ind = this.p._index[rowid];
+                    if (ind >= 0) {
+                        ret = this.p.data[ind];
+                    }
+                }
+            });
+            return ret;
         }
     });
 })(jQuery);
@@ -6131,12 +6145,15 @@ var xmlJsonClass = {
             }
 
             function setAttributes(elm, atr) {
-                var exclude = ['dataInit','dataEvents', 'value','dataUrl', 'buildSelect','sopt', 'searchhidden', 'defaultValue', 'attr'];
+                var exclude = ['dataInit','dataEvents','dataUrl', 'buildSelect','sopt', 'searchhidden', 'defaultValue', 'attr'];
                 $.each(atr, function(key, value) {
                     if ($.inArray(key, exclude) === -1) {
                         $(elm).attr(key, value);
                     }
                 });
+                if (!atr.hasOwnProperty('id')) {
+                    $(elm).attr('id', $.jgrid.randId());
+                }
             }
 
             switch (eltype) {
@@ -6202,8 +6219,11 @@ var xmlJsonClass = {
                             url: options.dataUrl,
                             type : "GET",
                             dataType: "html",
+                            context: {elem:elem, options:options, vl:vl},
                             success: function(data, status) {
-                                var a;
+                                var a,    ovm = [], elem = this.elem, vl = this.vl,
+                                        options = $.extend({}, this.options),
+                                        msl = options.multiple === true;
                                 if (typeof(options.buildSelect) != "undefined") {
                                     var b = options.buildSelect(data);
                                     a = $(b).html();
@@ -6929,7 +6949,7 @@ var xmlJsonClass = {
                 if (group.rules !== undefined) {
                     for (i = 0; i < group.rules.length; i++) {
                         table.append(
-                                this.createTableRowForRule(group.rules[i], group, i)
+                                this.createTableRowForRule(group.rules[i], group)
                                 );
                     }
                 }
@@ -6939,7 +6959,7 @@ var xmlJsonClass = {
             /*
              * Create the rule data for the filter
              */
-            this.createTableRowForRule = function(rule, group, cnt) {
+            this.createTableRowForRule = function(rule, group) {
                 // save current entity in a variable so that it could
                 // be referenced in anonimous method calls
 
@@ -7046,7 +7066,7 @@ var xmlJsonClass = {
                 cm = p.columns[j];
                 // create it here so it can be referentiated in the onchange event
                 //var RD = that.createElement(rule, rule.data);
-                cm.searchoptions.id = $.jgrid.randId() + cnt;
+                cm.searchoptions.id = $.jgrid.randId();
                 if (isIE && cm.inputtype === "text") {
                     if (!cm.searchoptions.size) {
                         cm.searchoptions.size = 10;
