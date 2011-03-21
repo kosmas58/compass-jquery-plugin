@@ -2,12 +2,12 @@
 // @compilation_level SIMPLE_OPTIMIZATIONS
 
 /*
- * jqGrid  3.8.2  - jQuery Grid
+ * jqGrid  4.0 beta  - jQuery Grid
  * Copyright (c) 2008, Tony Tomov, tony@trirand.com
  * Dual licensed under the MIT and GPL licenses
  * http://www.opensource.org/licenses/mit-license.php
  * http://www.gnu.org/licenses/gpl-2.0.html
- * Date: 2010-12-14
+ * Date: 2011-03-21
  */
 //jsHint options
 /*global document, window, jQuery, DOMParser, ActiveXObject $ */
@@ -153,8 +153,10 @@
             sid = sid + "";
             return sid.replace(/([\.\:\[\]])/g, "\\$1");
         },
-        randId : function() {
-            return new String(new Date().getTime());
+        guid : 1,
+        uidPref: 'jqg',
+        randId : function(prefix) {
+            return (prefix ? prefix : $.jgrid.uidPref) + ($.jgrid.guid++);
         },
         getAccessor : function(obj, expr) {
             var ret,p,prm = [], i;
@@ -3334,7 +3336,7 @@
                                 rowid = data[cnm];
                             }
                             catch (e) {
-                                rowid = $.jgrid.randId() + k;
+                                rowid = $.jgrid.randId();
                             }
                             cna = t.p.altRows === true ? (t.rows.length - 1) % 2 === 0 ? cn : "" : "";
                         }
@@ -4035,6 +4037,18 @@
                 var $t = this;
                 $($t).unbind('keydown');
             });
+        },
+        getLocalRow : function (rowid) {
+            var ret = false, ind;
+            this.each(function() {
+                if (typeof(rowid) !== "undefined") {
+                    ind = this.p._index[rowid];
+                    if (ind >= 0) {
+                        ret = this.p.data[ind];
+                    }
+                }
+            });
+            return ret;
         }
     });
 })(jQuery);

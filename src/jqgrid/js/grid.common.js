@@ -338,12 +338,15 @@
             }
 
             function setAttributes(elm, atr) {
-                var exclude = ['dataInit','dataEvents', 'value','dataUrl', 'buildSelect','sopt', 'searchhidden', 'defaultValue', 'attr'];
+                var exclude = ['dataInit','dataEvents','dataUrl', 'buildSelect','sopt', 'searchhidden', 'defaultValue', 'attr'];
                 $.each(atr, function(key, value) {
                     if ($.inArray(key, exclude) === -1) {
                         $(elm).attr(key, value);
                     }
                 });
+                if (!atr.hasOwnProperty('id')) {
+                    $(elm).attr('id', $.jgrid.randId());
+                }
             }
 
             switch (eltype) {
@@ -409,8 +412,11 @@
                             url: options.dataUrl,
                             type : "GET",
                             dataType: "html",
+                            context: {elem:elem, options:options, vl:vl},
                             success: function(data, status) {
-                                var a;
+                                var a,    ovm = [], elem = this.elem, vl = this.vl,
+                                        options = $.extend({}, this.options),
+                                        msl = options.multiple === true;
                                 if (typeof(options.buildSelect) != "undefined") {
                                     var b = options.buildSelect(data);
                                     a = $(b).html();
