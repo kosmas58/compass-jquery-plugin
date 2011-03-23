@@ -4825,9 +4825,11 @@
                             M1 = false;
                         }
                         //E.css({opacity:0.8});
-                        try {
-                            $("input.hasDatepicker", E[0]).datepicker('hide');
-                        } catch (dpe) {
+                        if ($("input.hasDatepicker", E[0])[0]) {
+                            try {
+                                $("input.hasDatepicker", E[0]).datepicker('hide');
+                            } catch (dpe) {
+                            }
                         }
                         $(document).mousemove($.jqDnR.drag).mouseup($.jqDnR.stop);
                         return false;
