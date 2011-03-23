@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.email       = "kosmas.schuetz@gmx.com"
   s.homepage    = "http://github.com/kosmas58/compass-jquery-plugin"
   s.summary     = %q{A compass plugin to integrate jQuery}
-  s.description = %q{This plugin integrates jRails, jQuery, jQuery UI and Themes, jqGrid and more into the Compass Sass framework.}
+  s.description = %q{This plugin integrates jQuery, jQuery UI and Themes, jqGrid and more into the Compass Sass framework.}
   
   s.add_dependency("haml", ["~> 3.1.0.alpha"])
   s.add_dependency("compass", [">= 0.11.beta.3"])

@@ -2,8 +2,6 @@
 # Install with: compass install jquery/jquery . --force
 
 file 'config/initializers/jquery.rb'
-javascript 'jrails.js'
-javascript 'jrails.min.js'
 javascript 'jquery.js'
 javascript 'jquery.min.js'
 javascript 'history.adapter.jquery.js'

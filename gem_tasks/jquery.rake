@@ -2,10 +2,8 @@ require 'fileutils'
 require 'lib/handle_js_files'
 require 'lib/jquery_ui_theme'
 
-# Compass generator for jrails 0.1+
+# Compass generator for jquery
 SRC = File.join(GEM_ROOT, 'src', 'jquery')
-JRAILS_SRC = File.join(SRC, 'jrails')
-JRAILS_SRC_SCRIPTS = JRAILS_SRC + "/*.js"
 
 JQUERY_SRC = File.join(SRC, 'jquery')
 
@@ -36,7 +34,7 @@ namespace :build do
 
     open File.join(JQUERY_DEST_TEMPLATES, 'manifest.rb'), 'w' do |manifest|
 
-      # jRails
+      # jQuery
       manifest.print JQUERY_MESSAGE1
 
       open File.join(JQUERY_DEST_TEMPLATES, 'config', 'initializers', 'jquery.rb'), 'w' do |f|
@@ -44,17 +42,7 @@ namespace :build do
       end
       manifest.print "file 'config/initializers/jquery.rb'\n"
 
-      open File.join(JQUERY_DEST_TEMPLATES, 'jrails.js'), 'w' do |f|
-        f.print concat_files(all_files(JRAILS_SRC_SCRIPTS))
-      end
-      manifest.print "javascript 'jrails.js'\n"
-
-      open File.join(JQUERY_DEST_TEMPLATES, 'jrails.min.js'), 'w' do |f|
-        f.print compress_js(all_files(JRAILS_SRC_SCRIPTS), "google")
-      end
-      manifest.print "javascript 'jrails.min.js'\n"
-
-      # jQuery 1.5.1rc1
+      # jQuery 1.5.1
 
       all_jquery_scripts = [
           'intro.js',

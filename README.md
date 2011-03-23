@@ -12,7 +12,7 @@ Description
 
 A Sass-based Meta-Framework for Compass that allows you to mix and match any of the following:
 
-* jRails with jQuery 1.5.1 and jQuery.UI 1.8.11 including themes
+* jQuery 1.5.1 and jQuery.UI 1.8.11 including themes
 * jQuery Tools 1.2.5
 * jquery.jstree.js V1.0rc3
 * jquery.dynatree.js V1.0.2
@@ -33,10 +33,10 @@ An upgrade to Rails 3.x is planned, but depends on the upgrade of compass which 
 
 *Hint: When trying to build the gem under Windows, bundler can't locate the rakefile. Apply the patch from [Arve Knudsen][4] to fix it.*
 
-jRails, jQuery and jQuery.UI including themes
+jQuery and jQuery.UI including themes
 ---------------------------------------------
 
-Use compass to install the jRails, jQuery and jQuery.UI javascript library including themes into your project.
+Use compass to install the jQuery and jQuery.UI javascript library including themes into your project.
 
 For jQuery:
 <pre>compass install [-r jquery] jquery/jquery <project name></pre>
@@ -50,7 +50,7 @@ To use the localized stylesheets and javacripts for jQuery include (using the ra
 <pre>
 = stylesheet_link_tag "jquery/ui/[theme].css", :media => 'screen, projection'
 = javascript_include_tag :jquery_ui
-= javascript_include_tag :jrails
+= javascript_include_tag :rails
 = raw jquery_javascripts(I18n.locale)</pre>
 
 into your layouts.
@@ -259,7 +259,6 @@ Thanks to the Contributors:
 Rails:
 ------
 
-* aaron for [jRails][5]
 * David Turnbull for [compass-jquery][6]
 * Jonathan Linowes for [gridify][7]
 * ahe for [2dc_jqgrid][8]
