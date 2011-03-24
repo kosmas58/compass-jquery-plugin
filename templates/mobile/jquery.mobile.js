@@ -3578,6 +3578,7 @@
                     });
                 });
             }
+            this.refresh();
 
         },
 
@@ -3591,6 +3592,15 @@
             this.element.attr("disabled", true);
             this.button.addClass("ui-disabled").attr("aria-disabled", true);
             return this._setOption("disabled", true);
+        },
+
+        refresh: function() {
+            if (this.element.attr('disabled')) {
+                this.disable();
+            }
+            else {
+                this.enable();
+            }
         }
     });
 })(jQuery);
@@ -4221,7 +4231,7 @@
 
             item.find("p, dl").addClass("ui-li-desc");
 
-            $list.find("li").find("img:eq(0)").addClass("ui-li-thumb").each(function() {
+            $list.find("li").find(">img:eq(0)").addClass("ui-li-thumb").each(function() {
                 $(this).closest("li")
                         .addClass($(this).is(".ui-li-icon") ? "ui-li-has-icon" : "ui-li-has-thumb");
             });
