@@ -129,6 +129,10 @@
     position: absolute;
     left: 10px;
     top: .4em; }
+  .ui-btn-right {
+    position: absolute;
+    right: 10px;
+    top: .4em; }
   .ui-title {
     text-align: center;
     font-size: 16px;
@@ -150,11 +154,6 @@
   overflow: hidden;
   white-space: nowrap;
   outline: 0 !important; }
-
-.ui-header .ui-btn-right {
-  position: absolute;
-  right: 10px;
-  top: .4em; }
 
 /*content area*/
 

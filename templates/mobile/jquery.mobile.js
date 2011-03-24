@@ -1788,6 +1788,9 @@
     //history stack
     $.mobile.urlHistory = urlHistory;
 
+    //enable cross-domain page support
+    $.mobile.allowCrossDomainPages = false;
+
     // changepage function
     $.mobile.changePage = function(to, transition, reverse, changeHash, fromHashChange) {
         //from is always the currently viewed page
@@ -2133,10 +2136,11 @@
         }
 
         var type = $(this).attr("method"),
-                url = path.clean($(this).attr("action"));
+                url = path.clean($(this).attr("action")),
+                target = $(this).attr("target");
 
         //external submits use regular HTTP
-        if (path.isExternal(url)) {
+        if (path.isExternal(url) || target) {
             return;
         }
 
@@ -2146,12 +2150,12 @@
         }
 
         $.mobile.changePage({
-            url: url,
-            type: type || "get",
+            url: url.length && url || path.get(),
+            type: type.length && type.toLowerCase() || "get",
             data: $(this).serialize()
         },
-                undefined,
-                undefined,
+                $(this).data("transition"),
+                $(this).data("direction"),
                 true
                 );
         event.preventDefault();
@@ -2181,10 +2185,18 @@
             //rel set to external
                 isEmbeddedPage = path.isEmbeddedPage(url),
 
+            // Some embedded browsers, like the web view in Phone Gap, allow cross-domain XHR
+            // requests if the document doing the request was loaded via the file:// protocol.
+            // This is usually to allow the application to "phone home" and fetch app specific
+            // data. We normally let the browser handle external/cross-domain urls, but if the
+            // allowCrossDomainPages option is true, we will allow cross-domain http/https
+            // requests to go through our page loading logic.
+                isCrossDomainPageLoad = ($.mobile.allowCrossDomainPages && location.protocol === "file:" && url.search(/^https?:/) != -1),
+
             //check for protocol or rel and its not an embedded page
             //TODO overlap in logic from isExternal, rel=external check should be
             //     moved into more comprehensive isExternalLink
-                isExternal = path.isExternal(url) || (isRelExternal && !isEmbeddedPage),
+                isExternal = (path.isExternal(url) && !isCrossDomainPageLoad) || (isRelExternal && !isEmbeddedPage),
 
             //if target attr is specified we mimic _blank... for now
                 hasTarget = $this.is("[target]"),
@@ -2890,6 +2902,11 @@
 
                     label = $("label[for=" + selectID + "]").addClass("ui-select"),
 
+                //IE throws an exception at options.item() function when
+                //there is no selected item
+                //select first in this case
+                    selectedIndex = select[0].selectedIndex == -1 ? 0 : select[0].selectedIndex,
+
                     button = ( self.options.nativeMenu ? $("<div/>") : $("<a>", {
                         "href": "#",
                         "role": "button",
@@ -2897,7 +2914,7 @@
                         "aria-haspopup": "true",
                         "aria-owns": menuId
                     }) )
-                            .text($(select[0].options.item(select[0].selectedIndex)).text())
+                            .text($(select[0].options.item(selectedIndex)).text())
                             .insertBefore(select)
                             .buttonMarkup({
                                               theme: o.theme,
@@ -4674,13 +4691,11 @@
 
     //loading div which appears during Ajax requests
     //will not appear if $.mobile.loadingMessage is false
-    var $loader = $.mobile.loadingMessage ?
-            $("<div class='ui-loader ui-body-a ui-corner-all'>" +
-                    "<span class='ui-icon ui-icon-loading spin'></span>" +
-                    "<h1>" + $.mobile.loadingMessage + "</h1>" +
-                    "</div>")
-            : undefined;
+    var $loader = $.mobile.loadingMessage ? $("<div class='ui-loader ui-body-a ui-corner-all'>" + "<span class='ui-icon ui-icon-loading spin'></span>" + "<h1>" + $.mobile.loadingMessage + "</h1>" + "</div>") : undefined;
 
+    if (typeof $loader === "undefined") {
+        alert($.mobile.loadingMessage);
+    }
 
     $.extend($.mobile, {
         // turn on/off page loading message.
@@ -4690,6 +4705,11 @@
             } else {
                 if ($.mobile.loadingMessage) {
                     var activeBtn = $("." + $.mobile.activeBtnClass).first();
+
+
+                    if (typeof $loader === "undefined") {
+                        alert($.mobile.loadingMessage);
+                    }
 
                     $loader
                             .appendTo($.mobile.pageContainer)

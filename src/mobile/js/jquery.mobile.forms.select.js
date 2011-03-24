@@ -34,6 +34,11 @@
 
                     label = $("label[for=" + selectID + "]").addClass("ui-select"),
 
+                //IE throws an exception at options.item() function when
+                //there is no selected item
+                //select first in this case
+                    selectedIndex = select[0].selectedIndex == -1 ? 0 : select[0].selectedIndex,
+
                     button = ( self.options.nativeMenu ? $("<div/>") : $("<a>", {
                         "href": "#",
                         "role": "button",
@@ -41,7 +46,7 @@
                         "aria-haspopup": "true",
                         "aria-owns": menuId
                     }) )
-                            .text($(select[0].options.item(select[0].selectedIndex)).text())
+                            .text($(select[0].options.item(selectedIndex)).text())
                             .insertBefore(select)
                             .buttonMarkup({
                                               theme: o.theme,
