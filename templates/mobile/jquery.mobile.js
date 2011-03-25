@@ -2887,7 +2887,7 @@
             overlayTheme: 'a',
             hidePlaceholderMenuItems: true,
             closeText: 'Close',
-            nativeMenu: false
+            nativeMenu: true
         },
         _create: function() {
 
@@ -4785,7 +4785,7 @@
             return;
         }
         var
-                themesDir = '/stylesheets/compiled/jquery/mobile/',
+                themesDir = '/stylesheets/jquery/mobile/',
                 themes = ['default','valencia'],
                 currentPage = $.mobile.activePage,
                 menuPage = $('<div data-url="themeswitcher" data-role=\'dialog\' data-theme=\'a\'>' +

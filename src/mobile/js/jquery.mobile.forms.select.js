@@ -19,7 +19,7 @@
             overlayTheme: 'a',
             hidePlaceholderMenuItems: true,
             closeText: 'Close',
-            nativeMenu: false
+            nativeMenu: true
         },
         _create: function() {
 
