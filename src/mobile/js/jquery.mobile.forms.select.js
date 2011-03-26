@@ -82,11 +82,11 @@
                     //button theme
                         theme = /ui-btn-up-([a-z])/.exec(button.attr("class"))[1],
 
-                        menuPage = $("<div data-role='dialog' data-theme='" + o.menuPageTheme + "'>" +
-                                "<div data-role='header'>" +
+                        menuPage = $("<div data-" + $.mobile.ns + "role='dialog' data-" + $.mobile.ns + "theme='" + o.menuPageTheme + "'>" +
+                                "<div data-" + $.mobile.ns + "role='header'>" +
                                 "<div class='ui-title'>" + label.text() + "</div>" +
                                 "</div>" +
-                                "<div data-role='content'></div>" +
+                                "<div data-" + $.mobile.ns + "role='content'></div>" +
                                 "</div>")
                                 .appendTo($.mobile.pageContainer)
                                 .page(),
@@ -105,9 +105,9 @@
                             "class": "ui-selectmenu-list",
                             "id": menuId,
                             "role": "listbox",
-                            "aria-labelledby": buttonId,
-                            "data-theme": theme
+                            "aria-labelledby": buttonId
                         })
+                                .attr("data-" + $.mobile.ns + "theme", theme)
                                 .appendTo(listbox),
 
                         header = $("<div>", {
@@ -121,12 +121,12 @@
                                 .appendTo(header),
 
                         headerClose = $("<a>", {
-                            "data-iconpos": "notext",
-                            "data-icon": "delete",
                             "text": o.closeText,
                             "href": "#",
                             "class": "ui-btn-left"
                         })
+                                .attr("data-" + $.mobile.ns + "iconpos", "notext")
+                                .attr("data-" + $.mobile.ns + "icon", "delete")
                                 .appendTo(header)
                                 .buttonMarkup(),
 
@@ -213,11 +213,11 @@
                 button
                         .bind("touchstart", function(event) {
                     //set startTouches to cached copy of
-                    $(this).data("startTouches", $.extend({}, event.originalEvent.touches[ 0 ]));
+                    $(this).jqmData("startTouches", $.extend({}, event.originalEvent.touches[ 0 ]));
                 })
                         .bind($.support.touch ? "touchend" : "mouseup", function(event) {
                     //if it's a scroll, don't open
-                    if ($(this).data("moved")) {
+                    if ($(this).jqmData("moved")) {
                         $(this).removeData("moved");
                     } else {
                         self.open();
@@ -227,12 +227,12 @@
                         .bind("touchmove", function(event) {
                     //if touch moved enough, set data moved and don't open menu
                     var thisTouches = event.originalEvent.touches[ 0 ],
-                            startTouches = $(this).data("startTouches"),
+                            startTouches = $(this).jqmData("startTouches"),
                             deltaX = Math.abs(thisTouches.pageX - startTouches.pageX),
                             deltaY = Math.abs(thisTouches.pageY - startTouches.pageY);
 
                     if (deltaX > 10 || deltaY > 10) {
-                        $(this).data("moved", true);
+                        $(this).jqmData("moved", true);
                     }
                 });
 
@@ -304,13 +304,13 @@
 
                     // has this optgroup already been built yet?
                     if ($.inArray(optLabel, optgroups) === -1) {
-                        lis.push("<li data-role='list-divider'>" + optLabel + "</li>");
+                        lis.push("<li data-" + $.mobile.ns + "role='list-divider'>" + optLabel + "</li>");
                         optgroups.push(optLabel);
                     }
                 }
 
                 //find placeholder text
-                if (!this.getAttribute('value') || text.length == 0 || $this.data('placeholder')) {
+                if (!this.getAttribute('value') || text.length == 0 || $this.jqmData('placeholder')) {
                     if (o.hidePlaceholderMenuItems) {
                         classes.push("ui-selectmenu-placeholder");
                     }
@@ -323,7 +323,7 @@
                     extraAttrs.push("aria-disabled='true'");
                 }
 
-                lis.push("<li data-icon='" + dataIcon + "' class='" + classes.join(" ") + "' " + extraAttrs.join(" ") + ">" + anchor + "</li>")
+                lis.push("<li data-" + $.mobile.ns + "icon='" + dataIcon + "' class='" + classes.join(" ") + "' " + extraAttrs.join(" ") + ">" + anchor + "</li>")
             });
 
             self.list.html(lis.join(" "));
@@ -435,7 +435,7 @@
                 //for webos (set lastscroll using button offset)
                 if (scrollTop == 0 && btnOffset > screenHeight) {
                     self.thisPage.one('pagehide', function() {
-                        $(this).data('lastScroll', btnOffset);
+                        $(this).jqmData('lastScroll', btnOffset);
                     });
                 }
 

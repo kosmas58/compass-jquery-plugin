@@ -12,11 +12,9 @@
         _create: function() {
             var self = this,
                     input = this.element,
-                    label = input.closest("form,fieldset,[data-role='page']")
-                            .find("label")
-                        //NOTE: Windows Phone could not find the label through a selector
-                        //filter works though.
-                            .filter("[for=" + input[0].id + "]"),
+                //NOTE: Windows Phone could not find the label through a selector
+                //filter works though.
+                    label = input.closest("form,fieldset,:jqmData(role='page')").find("label").filter("[for=" + input[0].id + "]"),
                     inputtype = input.attr("type"),
                     checkedicon = "ui-icon-" + inputtype + "-on",
                     uncheckedicon = "ui-icon-" + inputtype + "-off";
@@ -35,13 +33,13 @@
 
             // If there's no selected theme...
             if (!this.options.theme) {
-                this.options.theme = this.element.data("theme");
+                this.options.theme = this.element.jqmData("theme");
             }
 
             label
                     .buttonMarkup({
                                       theme: this.options.theme,
-                                      icon: this.element.parents("[data-type='horizontal']").length ? undefined : uncheckedicon,
+                                      icon: this.element.parents(":jqmData(type='horizontal')").length ? undefined : uncheckedicon,
                                       shadow: false
                                   });
 
@@ -59,14 +57,14 @@
 
                 "touchmove": function(event) {
                     var oe = event.originalEvent.touches[0];
-                    if (label.data("movestart")) {
-                        if (Math.abs(label.data("movestart")[0] - oe.pageX) > 10 ||
-                                Math.abs(label.data("movestart")[1] - oe.pageY) > 10) {
-                            label.data("moved", true);
+                    if (label.jqmData("movestart")) {
+                        if (Math.abs(label.jqmData("movestart")[0] - oe.pageX) > 10 ||
+                                Math.abs(label.jqmData("movestart")[1] - oe.pageY) > 10) {
+                            label.jqmData("moved", true);
                         }
                     }
                     else {
-                        label.data("movestart", [ parseFloat(oe.pageX), parseFloat(oe.pageY) ]);
+                        label.jqmData("movestart", [ parseFloat(oe.pageX), parseFloat(oe.pageY) ]);
                     }
                 },
 
@@ -77,14 +75,14 @@
                     }
 
                     label.removeData("movestart");
-                    if (label.data("etype") && label.data("etype") !== event.type || label.data("moved")) {
+                    if (label.jqmData("etype") && label.jqmData("etype") !== event.type || label.jqmData("moved")) {
                         label.removeData("etype").removeData("moved");
-                        if (label.data("moved")) {
+                        if (label.jqmData("moved")) {
                             label.removeData("moved");
                         }
                         return false;
                     }
-                    label.data("etype", event.type);
+                    label.jqmData("etype", event.type);
                     self._cacheVals();
                     input.attr("checked", inputtype === "radio" && true || !input.is(":checked"));
                     self._updateAll();
@@ -120,19 +118,19 @@
 
         _cacheVals: function() {
             this._getInputSet().each(function() {
-                $(this).data("cacheVal", $(this).is(":checked"));
+                $(this).jqmData("cacheVal", $(this).is(":checked"));
             });
         },
 
         //returns either a set of radios with the same name attribute, or a single checkbox
         _getInputSet: function() {
-            return this.element.closest("form,fieldset,[data-role='page']")
+            return this.element.closest("form,fieldset,:jqmData(role='page')")
                     .find("input[name='" + this.element.attr("name") + "'][type='" + this.inputtype + "']");
         },
 
         _updateAll: function() {
             this._getInputSet().each(function() {
-                var dVal = $(this).data("cacheVal");
+                var dVal = $(this).jqmData("cacheVal");
                 if (dVal && dVal !== $(this).is(":checked") || this.inputtype === "checkbox") {
                     $(this).trigger("change");
                 }

@@ -13,11 +13,11 @@
         return this.each(function() {
             var $this = $(this);
 
-            if ($this.data('fullscreen')) {
+            if ($this.jqmData('fullscreen')) {
                 $this.addClass('ui-page-fullscreen');
             }
-            $this.find('.ui-header[data-position="fixed"]').addClass('ui-header-fixed ui-fixed-inline fade'); //should be slidedown
-            $this.find('.ui-footer[data-position="fixed"]').addClass('ui-footer-fixed ui-fixed-inline fade'); //should be slideup
+            $this.find(".ui-header:jqmData(position='fixed')").addClass('ui-header-fixed ui-fixed-inline fade'); //should be slidedown
+            $this.find(".ui-footer:jqmData(position='fixed')").addClass('ui-footer-fixed ui-fixed-inline fade'); //should be slideup
         });
     };
 
@@ -119,11 +119,11 @@
         //before page is shown, check for duplicate footer
         $('.ui-page').live('pagebeforeshow', function(event, ui) {
             var page = $(event.target),
-                    footer = page.find('[data-role="footer"]:not(.ui-sticky-footer)'),
-                    id = footer.data('id');
+                    footer = page.find(":jqmData(role='footer'):not(.ui-sticky-footer)"),
+                    id = footer.jqmData('id');
             stickyFooter = null;
             if (id) {
-                stickyFooter = $('.ui-footer[data-id="' + id + '"].ui-sticky-footer');
+                stickyFooter = $(".ui-footer:jqmData(id='" + id + "').ui-sticky-footer");
                 if (stickyFooter.length == 0) {
                     // No sticky footer exists for this data-id. We'll use this
                     // footer as the sticky footer for the group and then create

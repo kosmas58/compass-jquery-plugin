@@ -9,7 +9,7 @@
 
         return this.each(function() {
             var o = $.extend({
-                direction: $(this).data("type") || "vertical",
+                direction: $(this).jqmData("type") || "vertical",
                 shadow: false
             }, options);
             var groupheading = $(this).find('>legend'),
