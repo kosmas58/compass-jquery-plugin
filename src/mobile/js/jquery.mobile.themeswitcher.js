@@ -4,7 +4,7 @@
         if ($('[data-' + $.mobile.ns + '-url=themeswitcher]').length) {
             return;
         }
-        var themesDir = '/stylesheets/compiled/jquery/mobile/',
+        var themesDir = '/stylesheets/jquery/mobile/',
                 themes = ['default','valencia'],
                 currentPage = $.mobile.activePage,
                 menuPage = $('<div data-' + $.mobile.ns + 'url="themeswitcher" data-' + $.mobile.ns + 'role=\'dialog\' data-' + $.mobile.ns + 'theme=\'a\'>' +
