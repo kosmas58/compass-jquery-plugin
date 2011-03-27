@@ -2,12 +2,12 @@
 // @compilation_level SIMPLE_OPTIMIZATIONS
 
 /*
- * jqGrid  3.8.2  - jQuery Grid
+ * jqGrid  4.0 beta  - jQuery Grid
  * Copyright (c) 2008, Tony Tomov, tony@trirand.com
  * Dual licensed under the MIT and GPL licenses
  * http://www.opensource.org/licenses/mit-license.php
  * http://www.gnu.org/licenses/gpl-2.0.html
- * Date: 2010-12-14
+ * Date: 2011-03-21
  */
 //jsHint options
 /*global document, window, jQuery, DOMParser, ActiveXObject $ */
@@ -17,7 +17,7 @@
     $.jgrid = $.jgrid || {};
     $.extend($.jgrid, {
         htmlDecode : function(value) {
-            if (value == '&nbsp;' || value == '&#160;' || (value.length == 1 && value.charCodeAt(0) == 160)) {
+            if (value && (value == '&nbsp;' || value == '&#160;' || (value.length == 1 && value.charCodeAt(0) == 160))) {
                 return "";
             }
             return !value ? value : String(value).replace(/&amp;/g, "&").replace(/&gt;/g, ">").replace(/&lt;/g, "<").replace(/&quot;/g, '"');
@@ -152,6 +152,11 @@
         jqID : function(sid) {
             sid = sid + "";
             return sid.replace(/([\.\:\[\]])/g, "\\$1");
+        },
+        guid : 1,
+        uidPref: 'jqg',
+        randId : function(prefix) {
+            return (prefix ? prefix : $.jgrid.uidPref) + ($.jgrid.guid++);
         },
         getAccessor : function(obj, expr) {
             var ret,p,prm = [], i;
@@ -1108,8 +1113,10 @@
                             parent.scrollTop = 0;
                         }
                         if (locdata === true) {
-                            ts.p.data = [];
-                            ts.p._index = {};
+                            if (ts.p.treeGrid === true) {
+                                ts.p.data = [];
+                                ts.p._index = {};
+                            }
                         }
                     },
                     refreshIndex = function() {
@@ -1203,7 +1210,7 @@
                         var gl = gxml.length, j = 0, grpdata = {}, rn;
                         if (gxml && gl) {
                             rn = parseInt(ts.p.rowNum, 10);
-                            var br = ts.p.scroll ? (parseInt(ts.p.page, 10) - 1) * rn + 1 : 1,altr;
+                            var br = ts.p.scroll ? $.jgrid.randId() : 1,altr;
                             if (adjust) {
                                 rn *= adjust + 1;
                             }
@@ -1383,7 +1390,7 @@
                             dReader = ts.p.jsonReader;
                             frd = 'json';
                         }
-                        var ir = 0,v,i,j,row,f = [],F,cur,gi = 0,si = 0,ni = 0,len,drows,idn,rd = {}, fpos, idr,rowData = [],cn = (ts.p.altRows === true) ? " " + ts.p.altclass : "",cn1,lp;
+                        var ir = 0,v,i,j,f = [],F,cur,gi = 0,si = 0,ni = 0,len,drows,idn,rd = {}, fpos, idr,rowData = [],cn = (ts.p.altRows === true) ? " " + ts.p.altclass : "",cn1,lp;
                         ts.p.page = $.jgrid.getAccessor(data, dReader.page) || 0;
                         lp = $.jgrid.getAccessor(data, dReader.total);
                         ts.p.lastpage = lp === undefined ? 1 : lp;
@@ -1409,7 +1416,7 @@
                         }
                         len = drows.length;
                         i = 0;
-                        var rn = parseInt(ts.p.rowNum, 10),br = ts.p.scroll ? (parseInt(ts.p.page, 10) - 1) * rn + 1 : 1, altr;
+                        var rn = parseInt(ts.p.rowNum, 10),br = ts.p.scroll ? $.jgrid.randId() : 1, altr;
                         if (adjust) {
                             rn *= adjust + 1;
                         }
@@ -2812,22 +2819,22 @@
                     return false;
                 });
             }
-            if ($.isFunction(this.p.onRightClickRow)) {
-                $(this).bind('contextmenu', function(e) {
-                    td = e.target;
-                    ptr = $(td, ts.rows).closest("tr.jqgrow");
-                    if ($(ptr).length === 0) {
-                        return false;
-                    }
-                    if (!ts.p.multiselect) {
-                        $(ts).jqGrid("setSelection", ptr[0].id, true);
-                    }
-                    ri = ptr[0].rowIndex;
-                    ci = $.jgrid.getCellIndex(td);
-                    ts.p.onRightClickRow.call(ts, $(ptr).attr("id"), ri, ci, e);
-                    return false;
-                });
-            }
+//            if ($.isFunction(this.p.onRightClickRow)) {
+//                $(this).bind('contextmenu', function(e) {
+//                    td = e.target;
+//                    ptr = $(td, ts.rows).closest("tr.jqgrow");
+//                    if ($(ptr).length === 0) {
+//                        return false;
+//                    }
+//                    if (!ts.p.multiselect) {
+//                        $(ts).jqGrid("setSelection", ptr[0].id, true);
+//                    }
+//                    ri = ptr[0].rowIndex;
+//                    ci = $.jgrid.getCellIndex(td);
+//                    ts.p.onRightClickRow.call(ts, $(ptr).attr("id"), ri, ci, e);
+//                    return false;
+//                });
+//            }
             grid.bDiv = document.createElement("div");
             $(grid.bDiv)
                     .append($('<div style="position:relative;' + (isMSIE && $.browser.version < 8 ? "height:0.01%;" : "") + '"></div>').append('<div></div>').append(this))
@@ -3309,7 +3316,7 @@
                             rowid = rowid + "";
                         }
                         else {
-                            rowid = (t.p.records + 1) + "";
+                            rowid = $.jgrid.randId();
                             if (t.p.keyIndex !== false) {
                                 cnm = t.p.colModel[t.p.keyIndex + gi + si + ni].name;
                                 if (typeof rdata[0][cnm] != "undefined") {
@@ -3329,7 +3336,7 @@
                                 rowid = data[cnm];
                             }
                             catch (e) {
-                                rowid = (t.p.records + 1) + "";
+                                rowid = $.jgrid.randId();
                             }
                             cna = t.p.altRows === true ? (t.rows.length - 1) % 2 === 0 ? cn : "" : "";
                         }
@@ -4030,6 +4037,18 @@
                 var $t = this;
                 $($t).unbind('keydown');
             });
+        },
+        getLocalRow : function (rowid) {
+            var ret = false, ind;
+            this.each(function() {
+                if (typeof(rowid) !== "undefined") {
+                    ind = this.p._index[rowid];
+                    if (ind >= 0) {
+                        ret = this.p.data[ind];
+                    }
+                }
+            });
+            return ret;
         }
     });
 })(jQuery);

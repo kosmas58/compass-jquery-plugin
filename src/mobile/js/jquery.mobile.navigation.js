@@ -45,9 +45,13 @@
                     return path.get() + url;
                 },
 
-                //return a url path with the window's location protocol/hostname removed
+                //return a url path with the window's location protocol/hostname/pathname removed
                 clean: function(url) {
-                    return url.replace(location.protocol + "//" + location.host, "");
+                    // Replace the protocol, host, and pathname only once at the beginning of the url to avoid
+                    // problems when it's included as a part of a param
+                    // Also, since all urls are absolute in IE, we need to remove the pathname as well.
+                    var leadingUrlRootRegex = new RegExp("^" + location.protocol + "//" + location.host + location.pathname);
+                    return url.replace(leadingUrlRootRegex, "");
                 },
 
                 //just return the url without an initial #
@@ -203,7 +207,7 @@
 
         //set the generated BASE element's href attribute to a new page's base path
         set: function(href) {
-            base.element.attr('href', docBase + path.get(href).replace(/^\//, ""));
+            base.element.attr('href', docBase + path.get(href));
         },
 
         //set the generated BASE element's href attribute to a new page's base path
@@ -273,8 +277,10 @@
     //history stack
     $.mobile.urlHistory = urlHistory;
 
+    //enable cross-domain page support
+    $.mobile.allowCrossDomainPages = false;
+
     // changepage function
-    // TODO : consider moving args to an object hash
     $.mobile.changePage = function(to, transition, reverse, changeHash, fromHashChange) {
         //from is always the currently viewed page
         var toIsArray = $.type(to) === "array",
@@ -374,16 +380,16 @@
 
             //support deep-links to generated sub-pages
             if (url.indexOf("&" + $.mobile.subPageUrlKey) > -1) {
-                to = $("[data-url='" + url + "']");
+                to = $(":jqmData(url='" + url + "')");
             }
 
             if (from) {
                 //set as data for returning to that spot
-                from.data("lastScroll", currScroll);
+                from.jqmData("lastScroll", currScroll);
                 //trigger before show/hide events
-                from.data("page")._trigger("beforehide", { nextPage: to });
+                from.data("page")._trigger("beforehide", null, { nextPage: to });
             }
-            to.data("page")._trigger("beforeshow", { prevPage: from || $("") });
+            to.data("page")._trigger("beforeshow", null, { prevPage: from || $("") });
 
             function loadComplete() {
 
@@ -402,7 +408,7 @@
                 removeActiveLinkClass();
 
                 //jump to top or prev scroll, sometimes on iOS the page has not rendered yet.  I could only get by this with a setTimeout, but would like to avoid that.
-                $.mobile.silentScroll(to.data("lastScroll"));
+                $.mobile.silentScroll(to.jqmData("lastScroll"));
 
                 reFocus(to);
 
@@ -479,10 +485,10 @@
         function enhancePage() {
 
             //set next page role, if defined
-            if (nextPageRole || to.data('role') === 'dialog') {
+            if (nextPageRole || to.jqmData('role') === 'dialog') {
                 url = urlHistory.getActive().url + dialogHashKey;
                 if (nextPageRole) {
-                    to.attr("data-role", nextPageRole);
+                    to.attr("data-" + $.mobile.ns + "role", nextPageRole);
                     nextPageRole = null;
                 }
             }
@@ -493,11 +499,11 @@
 
         //if url is a string
         if (url) {
-            to = $("[data-url='" + url + "']");
+            to = $(":jqmData(url='" + url + "')");
             fileUrl = path.getFilePath(url);
         }
         else { //find base url of element, if avail
-            var toID = to.attr('data-url'),
+            var toID = to.attr("data-" + $.mobile.ns + "url"),
                     toIDfileurl = path.getFilePath(toID);
 
             if (toID !== toIDfileurl) {
@@ -528,15 +534,14 @@
                 url: fileUrl,
                 type: type,
                 data: data,
-                dataType: "html",
                 success: function(html) {
                     //pre-parse html to check for a data-url,
                     //use it as the new fileUrl, base path, etc
                     var all = $("<div></div>"),
                             redirectLoc,
                         // TODO handle dialogs again
-                            pageElemRegex = /.*(<[^>]*\bdata-role=["']?page["']?[^>]*>).*/,
-                            dataUrlRegex = /\bdata-url=["']?([^"'>]*)["']?/;
+                            pageElemRegex = new RegExp(".*(<[^>]+\\bdata-" + $.mobile.ns + "role=[\"']?page[\"']?[^>]*>).*"),
+                            dataUrlRegex = new RegExp("\\bdata-" + $.mobile.ns + "url=[\"']?([^\"'>]*)[\"']?");
 
                     // data-url must be provided for the base tag so resource requests can be directed to the
                     // correct url. loading into a temprorary element makes these requests immediately
@@ -558,7 +563,7 @@
 
                     //workaround to allow scripts to execute when included in page divs
                     all.get(0).innerHTML = html;
-                    to = all.find('[data-role="page"], [data-role="dialog"]').first();
+                    to = all.find(":jqmData(role='page'), :jqmData(role='dialog')").first();
 
                     //rewrite src and href attrs to use a base url
                     if (!$.support.dynamicBaseTag) {
@@ -578,7 +583,7 @@
 
                     //append to page and enhance
                     to
-                            .attr("data-url", fileUrl)
+                            .attr("data-" + $.mobile.ns + "url", fileUrl)
                             .appendTo($.mobile.pageContainer);
 
                     enhancePage();
@@ -610,18 +615,20 @@
     /* Event Bindings - hashchange, submit, and click */
 
     //bind to form submit events, handle with Ajax
-    $("form[data-ajax!='false']").live('submit', function(event) {
+    $("form").live('submit', function(event) {
         if (!$.mobile.ajaxEnabled ||
             //TODO: deprecated - remove at 1.0
-                !$.mobile.ajaxFormsEnabled) {
+                !$.mobile.ajaxFormsEnabled ||
+                $(this).is(":jqmData(ajax='false')")) {
             return;
         }
 
         var type = $(this).attr("method"),
-                url = path.clean($(this).attr("action"));
+                url = path.clean($(this).attr("action")),
+                target = $(this).attr("target");
 
         //external submits use regular HTTP
-        if (path.isExternal(url)) {
+        if (path.isExternal(url) || target) {
             return;
         }
 
@@ -631,12 +638,12 @@
         }
 
         $.mobile.changePage({
-            url: url,
-            type: type,
+            url: url.length && url || path.get(),
+            type: type.length && type.toLowerCase() || "get",
             data: $(this).serialize()
         },
-                undefined,
-                undefined,
+                $(this).jqmData("transition"),
+                $(this).jqmData("direction"),
                 true
                 );
         event.preventDefault();
@@ -651,6 +658,12 @@
             //get href, if defined, otherwise fall to null #
                 href = $this.attr("href") || "#",
 
+            //cache a check for whether the link had a protocol
+            //if this is true and the link was same domain, we won't want
+            //to prefix the url with a base (esp helpful in IE, where every
+            //url is absolute
+                hadProtocol = path.hasProtocol(href),
+
             //get href, remove same-domain protocol and host
                 url = path.clean(href),
 
@@ -660,24 +673,34 @@
             //rel set to external
                 isEmbeddedPage = path.isEmbeddedPage(url),
 
+            // Some embedded browsers, like the web view in Phone Gap, allow cross-domain XHR
+            // requests if the document doing the request was loaded via the file:// protocol.
+            // This is usually to allow the application to "phone home" and fetch app specific
+            // data. We normally let the browser handle external/cross-domain urls, but if the
+            // allowCrossDomainPages option is true, we will allow cross-domain http/https
+            // requests to go through our page loading logic.
+                isCrossDomainPageLoad = ($.mobile.allowCrossDomainPages && location.protocol === "file:" && url.search(/^https?:/) != -1),
+
             //check for protocol or rel and its not an embedded page
             //TODO overlap in logic from isExternal, rel=external check should be
             //     moved into more comprehensive isExternalLink
-                isExternal = path.isExternal(url) || (isRelExternal && !isEmbeddedPage),
+                isExternal = (path.isExternal(url) && !isCrossDomainPageLoad) || (isRelExternal && !isEmbeddedPage),
 
             //if target attr is specified we mimic _blank... for now
                 hasTarget = $this.is("[target]"),
 
             //if data-ajax attr is set to false, use the default behavior of a link
-                hasAjaxDisabled = $this.is("[data-ajax='false']");
+                hasAjaxDisabled = $this.is(":jqmData(ajax='false')");
 
         //if there's a data-rel=back attr, go back in history
-        if ($this.is("[data-rel='back']")) {
+        if ($this.is(":jqmData(rel='back')")) {
             window.history.back();
             return false;
         }
 
-        if (url === "#") {
+        //prevent # urls from bubbling
+        //path.get() is replaced to combat abs url prefixing in IE
+        if (url.replace(path.get(), "") == "#") {
             //for links created purely for interaction - ignore
             event.preventDefault();
             return;
@@ -689,32 +712,26 @@
             // TODO: deprecated - remove at 1.0
                 !$.mobile.ajaxLinksEnabled) {
             //remove active link class if external (then it won't be there if you come back)
-            removeActiveLinkClass(true);
+            window.setTimeout(function() {
+                removeActiveLinkClass(true);
+            }, 200);
 
-            //deliberately redirect, in case click was triggered
-            if (hasTarget) {
-                window.open(url);
-            }
-            else if (hasAjaxDisabled) {
-                return;
-            }
-            else {
-                location.href = url;
-            }
+            //use default click handling
+            return;
         }
         else {
             //use ajax
-            var transition = $this.data("transition"),
-                    direction = $this.data("direction"),
+            var transition = $this.jqmData("transition"),
+                    direction = $this.jqmData("direction"),
                     reverse = (direction && direction === "reverse") ||
                         // deprecated - remove by 1.0
-                            $this.data("back");
+                            $this.jqmData("back");
 
             //this may need to be more specific as we use data-rel more
-            nextPageRole = $this.attr("data-rel");
+            nextPageRole = $this.attr("data-" + $.mobile.ns + "rel");
 
             //if it's a relative href, prefix href with base url
-            if (path.isRelative(url)) {
+            if (path.isRelative(url) && !hadProtocol) {
                 url = path.makeAbsolute(url);
             }
 

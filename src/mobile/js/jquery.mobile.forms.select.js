@@ -19,7 +19,7 @@
             overlayTheme: 'a',
             hidePlaceholderMenuItems: true,
             closeText: 'Close',
-            nativeMenu: false
+            nativeMenu: true
         },
         _create: function() {
 
@@ -34,6 +34,11 @@
 
                     label = $("label[for=" + selectID + "]").addClass("ui-select"),
 
+                //IE throws an exception at options.item() function when
+                //there is no selected item
+                //select first in this case
+                    selectedIndex = select[0].selectedIndex == -1 ? 0 : select[0].selectedIndex,
+
                     button = ( self.options.nativeMenu ? $("<div/>") : $("<a>", {
                         "href": "#",
                         "role": "button",
@@ -41,7 +46,7 @@
                         "aria-haspopup": "true",
                         "aria-owns": menuId
                     }) )
-                            .text($(select[0].options.item(select[0].selectedIndex)).text())
+                            .text($(select[0].options.item(selectedIndex)).text())
                             .insertBefore(select)
                             .buttonMarkup({
                                               theme: o.theme,
@@ -77,11 +82,11 @@
                     //button theme
                         theme = /ui-btn-up-([a-z])/.exec(button.attr("class"))[1],
 
-                        menuPage = $("<div data-role='dialog' data-theme='" + o.menuPageTheme + "'>" +
-                                "<div data-role='header'>" +
+                        menuPage = $("<div data-" + $.mobile.ns + "role='dialog' data-" + $.mobile.ns + "theme='" + o.menuPageTheme + "'>" +
+                                "<div data-" + $.mobile.ns + "role='header'>" +
                                 "<div class='ui-title'>" + label.text() + "</div>" +
                                 "</div>" +
-                                "<div data-role='content'></div>" +
+                                "<div data-" + $.mobile.ns + "role='content'></div>" +
                                 "</div>")
                                 .appendTo($.mobile.pageContainer)
                                 .page(),
@@ -100,9 +105,9 @@
                             "class": "ui-selectmenu-list",
                             "id": menuId,
                             "role": "listbox",
-                            "aria-labelledby": buttonId,
-                            "data-theme": theme
+                            "aria-labelledby": buttonId
                         })
+                                .attr("data-" + $.mobile.ns + "theme", theme)
                                 .appendTo(listbox),
 
                         header = $("<div>", {
@@ -116,12 +121,12 @@
                                 .appendTo(header),
 
                         headerClose = $("<a>", {
-                            "data-iconpos": "notext",
-                            "data-icon": "delete",
                             "text": o.closeText,
                             "href": "#",
                             "class": "ui-btn-left"
                         })
+                                .attr("data-" + $.mobile.ns + "iconpos", "notext")
+                                .attr("data-" + $.mobile.ns + "icon", "delete")
                                 .appendTo(header)
                                 .buttonMarkup(),
 
@@ -191,7 +196,7 @@
                             .removeClass($.mobile.activeBtnClass);
                 });
 
-                button.attr("tabindex", "-1");
+
             } else {
 
                 //create list from select, update state
@@ -208,11 +213,11 @@
                 button
                         .bind("touchstart", function(event) {
                     //set startTouches to cached copy of
-                    $(this).data("startTouches", $.extend({}, event.originalEvent.touches[ 0 ]));
+                    $(this).jqmData("startTouches", $.extend({}, event.originalEvent.touches[ 0 ]));
                 })
                         .bind($.support.touch ? "touchend" : "mouseup", function(event) {
                     //if it's a scroll, don't open
-                    if ($(this).data("moved")) {
+                    if ($(this).jqmData("moved")) {
                         $(this).removeData("moved");
                     } else {
                         self.open();
@@ -222,12 +227,12 @@
                         .bind("touchmove", function(event) {
                     //if touch moved enough, set data moved and don't open menu
                     var thisTouches = event.originalEvent.touches[ 0 ],
-                            startTouches = $(this).data("startTouches"),
+                            startTouches = $(this).jqmData("startTouches"),
                             deltaX = Math.abs(thisTouches.pageX - startTouches.pageX),
                             deltaY = Math.abs(thisTouches.pageY - startTouches.pageY);
 
                     if (deltaX > 10 || deltaY > 10) {
-                        $(this).data("moved", true);
+                        $(this).jqmData("moved", true);
                     }
                 });
 
@@ -268,22 +273,10 @@
                 });
 
                 //events on "screen" overlay + close button
-                screen
-                        .add(headerClose)
-                        .add(menuPageClose)
-                        .bind("click", function(event) {
+                screen.click(function(event) {
                     self.close();
-                    event.preventDefault();
-
-                    // if the dialog's close icon was clicked, prevent the dialog's close
-                    // handler from firing. selectmenu's should take precedence
-                    if ($.contains(menuPageClose[0], event.target)) {
-                        event.stopImmediatePropagation();
-                    }
                 });
             }
-
-
         },
 
         _buildList: function() {
@@ -311,13 +304,13 @@
 
                     // has this optgroup already been built yet?
                     if ($.inArray(optLabel, optgroups) === -1) {
-                        lis.push("<li data-role='list-divider'>" + optLabel + "</li>");
+                        lis.push("<li data-" + $.mobile.ns + "role='list-divider'>" + optLabel + "</li>");
                         optgroups.push(optLabel);
                     }
                 }
 
                 //find placeholder text
-                if (!this.getAttribute('value') || text.length == 0 || $this.data('placeholder')) {
+                if (!this.getAttribute('value') || text.length == 0 || $this.jqmData('placeholder')) {
                     if (o.hidePlaceholderMenuItems) {
                         classes.push("ui-selectmenu-placeholder");
                     }
@@ -330,7 +323,7 @@
                     extraAttrs.push("aria-disabled='true'");
                 }
 
-                lis.push("<li data-icon='" + dataIcon + "' class='" + classes.join(" ") + "' " + extraAttrs.join(" ") + ">" + anchor + "</li>")
+                lis.push("<li data-" + $.mobile.ns + "icon='" + dataIcon + "' class='" + classes.join(" ") + "' " + extraAttrs.join(" ") + ">" + anchor + "</li>")
             });
 
             self.list.html(lis.join(" "));
@@ -364,7 +357,7 @@
                                 return options.index(this);
                             }).get();
 
-            if (!self.options.nativeMenu && ( forceRebuild || select[0].options.length > self.list.find('li').length )) {
+            if (!self.options.nativeMenu && ( forceRebuild || select[0].options.length != self.list.find('li').length )) {
                 self._buildList();
             }
 
@@ -415,8 +408,8 @@
             }
 
             var self = this,
-                    menuHeight = self.list.outerHeight(),
-                    menuWidth = self.list.outerWidth(),
+                    menuHeight = self.list.parent().outerHeight(),
+                    menuWidth = self.list.parent().outerWidth(),
                     scrollTop = $(window).scrollTop(),
                     btnOffset = self.button.offset().top,
                     screenHeight = window.innerHeight,
@@ -425,6 +418,11 @@
 
             //add active class to button
             self.button.addClass($.mobile.activeBtnClass);
+
+            //remove after delay
+            setTimeout(function() {
+                self.button.removeClass($.mobile.activeBtnClass);
+            }, 300);
 
             function focusMenuItem() {
                 self.list.find(".ui-btn-active").focus();
@@ -437,7 +435,7 @@
                 //for webos (set lastscroll using button offset)
                 if (scrollTop == 0 && btnOffset > screenHeight) {
                     self.thisPage.one('pagehide', function() {
-                        $(this).data('lastScroll', btnOffset);
+                        $(this).jqmData('lastScroll', btnOffset);
                     });
                 }
 
@@ -467,7 +465,8 @@
                 var roomtop = btnOffset - scrollTop,
                         roombot = scrollTop + screenHeight - btnOffset,
                         halfheight = menuHeight / 2,
-                        newtop,newleft;
+                        maxwidth = parseFloat(self.list.parent().css('max-width')),
+                        newtop, newleft;
 
                 if (roomtop > menuHeight / 2 && roombot > menuHeight / 2) {
                     newtop = btnOffset + ( self.button.outerHeight() / 2 ) - halfheight;
@@ -477,8 +476,18 @@
                     newtop = roomtop > roombot ? scrollTop + screenHeight - menuHeight - 30 : scrollTop + 30;
                 }
 
-                newleft = self.button.offset().left + self.button.outerWidth() / 2 - menuWidth / 2;
-
+                // if the menuwidth is smaller than the screen center is
+                if (menuWidth < maxwidth) {
+                    newleft = (screenWidth - menuWidth) / 2;
+                } else { //otherwise insure a >= 30px offset from the left
+                    newleft = self.button.offset().left + self.button.outerWidth() / 2 - menuWidth / 2;
+                    // 30px tolerance off the edges
+                    if (newleft < 30) {
+                        newleft = 30;
+                    } else if ((newleft + menuWidth) > screenWidth) {
+                        newleft = screenWidth - menuWidth - 30;
+                    }
+                }
 
                 self.listbox
                         .append(self.list)
@@ -507,9 +516,6 @@
             function focusButton() {
                 setTimeout(function() {
                     self.button.focus();
-
-                    //remove active class from button
-                    self.button.removeClass($.mobile.activeBtnClass);
                 }, 40);
 
                 self.listbox.removeAttr('style').append(self.list);

@@ -44,8 +44,12 @@
 
 .ui-controlgroup-horizontal .ui-btn,
 .ui-controlgroup-horizontal .ui-checkbox, .ui-controlgroup-horizontal .ui-radio {
-    margin: 0 -5px 0 0;
     display: inline-block;
+    margin: 0 -5px 0 0;
+}
+
+.ui-controlgroup-horizontal .ui-checkbox, .ui-controlgroup-horizontal .ui-radio {
+    display: inline;
 }
 
 .ui-controlgroup-horizontal .ui-checkbox .ui-btn, .ui-controlgroup-horizontal .ui-radio .ui-btn,

@@ -16,6 +16,13 @@ def compress_js(scripts, compressor)
   min_js
 end
 
+def compress_css(src)
+  min_css = ''
+  cmd = %Q/java -jar "#{YUI_JS_COMPRESSOR}" --type css --charset utf8/
+  IO.popen(cmd, 'r+') { |f| f.print(src); f.close_write; min_css = f.read }
+  min_css
+end
+
 def concat_files(files)
   out = ''
   files.each do |file|
@@ -28,7 +35,7 @@ def all_files(pattern)
   FileList[pattern].collect { |filename| File.read(filename) }.join "\n\n"
 end
 
-def handleRecursiveDir(manifest, srcDir, destDir)
+def handleTinyMCEDir(manifest, srcDir, destDir)
   len = srcDir.length
   actualDir = destDir
   FileUtils.mkdir_p(destDir)
@@ -41,7 +48,19 @@ def handleRecursiveDir(manifest, srcDir, destDir)
   Find.find(srcDir) do |entry|
     if File.file?(entry)
       ending = entry[len, 255]
-      FileUtils.cp(entry, File.join(destDir, ending))
+      if /\.css$/ =~ entry or  /\.htm$/ =~ entry
+        css = File.read entry
+        open File.join(destDir, ending), 'w' do |f|
+          f.write compress_css(css)
+        end
+      elsif /\.js$/ =~ entry
+        js = File.read entry
+        open File.join(destDir, ending), 'w' do |f|
+          f.write compress_js(js, "yui")
+        end
+      else
+        FileUtils.cp(entry, File.join(destDir, ending))
+      end
       manifest.print "javascript 'tiny_mce/#{ending}'\n"
     end
   end

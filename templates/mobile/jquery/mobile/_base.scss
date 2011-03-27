@@ -129,6 +129,10 @@
     position: absolute;
     left: 10px;
     top: .4em; }
+  .ui-btn-right {
+    position: absolute;
+    right: 10px;
+    top: .4em; }
   .ui-title {
     text-align: center;
     font-size: 16px;
@@ -150,11 +154,6 @@
   overflow: hidden;
   white-space: nowrap;
   outline: 0 !important; }
-
-.ui-header .ui-btn-right {
-  position: absolute;
-  right: 10px;
-  top: .4em; }
 
 /*content area*/
 
@@ -460,7 +459,14 @@ Built by David Kaneda and maintained by Jonathan Stark.
   margin: 0;
   padding: 0;
   border: 0;
-  float: left; }
+  float: left;
+  min-height: 1px; }
+
+/* grid solo: 100 - single item fallback */
+
+.ui-grid-solo .ui-block-a {
+  width: 100%;
+  float: none; }
 
 /* grid a: 50/50 */
 
@@ -753,7 +759,9 @@ Built by David Kaneda and maintained by Jonathan Stark.
   height: 100%;
   -webkit-appearance: button;
   opacity: 0;
-  cursor: pointer; }
+  cursor: pointer;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+  filter: alpha(opacity = 0); }
 
 /*
 * jQuery Mobile Framework
@@ -843,8 +851,10 @@ Built by David Kaneda and maintained by Jonathan Stark.
 .ui-controlgroup-horizontal {
   padding: 0;
   .ui-btn, .ui-checkbox, .ui-radio {
-    margin: 0 -5px 0 0;
-    display: inline-block; }
+    display: inline-block;
+    margin: 0 -5px 0 0; }
+  .ui-checkbox, .ui-radio {
+    display: inline; }
   .ui-checkbox .ui-btn, .ui-radio .ui-btn, .ui-checkbox:last-child, .ui-radio:last-child, .ui-controlgroup-last {
     margin-right: 0; } }
 
@@ -957,16 +967,20 @@ Built by David Kaneda and maintained by Jonathan Stark.
     position: absolute;
     left: -9999px;
     top: -9999px; }
-  .ui-btn select {
-    cursor: pointer;
-    -webkit-appearance: button;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0.001;
-    &.ui-select-nativeonly {
-      opacity: 1; } }
+  .ui-btn {
+    overflow: hidden;
+    select {
+      cursor: pointer;
+      -webkit-appearance: button;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+      filter: alpha(opacity = 0);
+      &.ui-select-nativeonly {
+        opacity: 1; } } }
   .ui-btn-icon-right {
     .ui-btn-inner {
       padding-right: 45px; }
@@ -991,7 +1005,7 @@ label.ui-select {
 .ui-select .ui-btn-text {
   text-overflow: ellipsis;
   overflow: hidden;
-  width: 85%; }
+  display: block; }
 
 .ui-selectmenu {
   position: absolute;
@@ -1026,6 +1040,9 @@ label.ui-select {
 
 .ui-li.ui-selectmenu-placeholder {
   display: none; }
+
+.ui-selectmenu .ui-header .ui-title {
+  margin: 0.6em 46px 0.8em; }
 
 .min-width-480px {
   label.ui-select {
@@ -1109,7 +1126,10 @@ textarea.ui-input-text {
   .ui-input-search {
     width: 60%;
     display: inline-block;
-    width: 50%; } }
+    width: 50%;
+    input.ui-input-text {
+      width: 98%;
+      /*echos rule from above*/ } } }
 
 /*
 * jQuery Mobile Framework
@@ -1129,17 +1149,15 @@ textarea.ui-input-text {
 
 .ui-listview {
   list-style: none;
-  padding: 0;
-  zoom: 1; }
+  padding: 0; }
 
 .ui-li {
   list-style: none;
   padding: 0;
-  zoom: 1;
   display: block;
   margin: 0;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   text-align: left;
   border-width: 0;
   border-top-width: 1px;
@@ -1177,13 +1195,16 @@ ol.ui-listview .ui-li-jsnumbering:before {
   .ui-btn-inner {
     display: block;
     position: relative;
-    padding: .7em 75px .7em 15px; } }
+    padding: 0;
+    a {
+      padding: .7em 75px .7em 15px;
+      display: block; } } }
 
-.ui-li-has-thumb .ui-btn-inner {
+.ui-li-has-thumb .ui-btn-inner a {
   min-height: 60px;
   padding-left: 100px; }
 
-.ui-li-has-icon .ui-btn-inner {
+.ui-li-has-icon .ui-btn-inner a {
   min-height: 20px;
   padding-left: 40px; }
 
@@ -1236,7 +1257,10 @@ ol.ui-listview .ui-li-jsnumbering:before {
 .min-width-480px .ui-li-aside {
   width: 45%; }
 
-.ui-li-has-alt .ui-btn-inner {
+.ui-li-divider {
+  cursor: default; }
+
+.ui-li-has-alt .ui-btn-inner a {
   padding-right: 95px; }
 
 .ui-li-count {
@@ -1287,24 +1311,12 @@ ol.ui-listview .ui-li-jsnumbering:before {
     width: auto;
     display: block; } }
 
+.ui-listview-filter-inset {
+  margin: -15px -5px -15px -5px;
+  background: transparent; }
+
 /* Odd iPad positioning issue. */
-
-@media only screen and
-
-(
-min-device-width:
-
-    768px
-
-)
-and
-
-(
-max-device-width:
-
-    1024px
-
-) {
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
   .ui-li .ui-btn-text {
     overflow: visible; } }
 
@@ -1383,10 +1395,10 @@ div {
       right: 0; } } }
 
 .ui-slider-switch-a div.ui-slider-labelbg-a, .ui-slider-switch-b div.ui-slider-labelbg-b {
-  z-index: 1; }
+  z-index: -1; }
 
 .ui-slider-switch-a div.ui-slider-labelbg-b, .ui-slider-switch-b div.ui-slider-labelbg-a {
-  z-index: 10; }
+  z-index: 0; }
 
 div.ui-slider-switch a.ui-slider-handle {
   z-index: 20;

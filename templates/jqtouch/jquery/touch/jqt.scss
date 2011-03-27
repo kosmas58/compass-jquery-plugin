@@ -40,7 +40,7 @@ body {
   &.landscape .toolbar > h1 {
     margin-left: -125px;
     width: 250px; }
-  .button, .back, .cancel, .add, .backRemote {
+  .button, .back, .cancel, .add {
     position: absolute;
     overflow: hidden;
     top: 8px;
@@ -66,15 +66,15 @@ body {
   .blueButton {
     -webkit-border-image: image_url("jquery/touch/jqt/blueButton.png") 0 5 0 5;
     border-width: 0 5px; }
-  .back, .backRemote {
+  .back {
     left: 6px;
     right: auto;
     padding: 0;
     max-width: 55px;
     border-width: 0 8px 0 14px;
-    -webkit-border-image: image_url("jquery/touch/jqt/back_button.png") 0 8 0 14; }
-  .back.active, .backRemote.active {
-    -webkit-border-image: image_url("jquery/touch/jqt/back_button_clicked.png") 0 8 0 14; }
+    -webkit-border-image: image_url("jquery/touch/jqt/back_button.png") 0 8 0 14;
+    &.active {
+      -webkit-border-image: image_url("jquery/touch/jqt/back_button_clicked.png") 0 8 0 14; } }
   .leftButton, .cancel {
     left: 6px;
     right: auto; }
@@ -94,7 +94,7 @@ body {
     text-shadow: rgba(255, 255, 255, 0.7) 0 1px 0; }
   .whiteButton.active, .grayButton.active, .redButton.active, .blueButton.active, .greenButton.active, .whiteButton:active, .grayButton:active, .redButton:active, .blueButton:active, .greenButton:active {
     -webkit-border-image: image_url("jquery/touch/jqt/activeButton.png") 0 12 0 12;
-    color: #000000 !important; }
+    color: black !important; }
   .whiteButton {
     -webkit-border-image: image_url("jquery/touch/jqt/whiteButton.png") 0 12 0 12; }
   .grayButton {
@@ -285,7 +285,12 @@ body {
           display: block;
           width: 246px;
           color: #777;
-          margin: -12px 0 0 17px; } }
+          margin: -12px 0 0 17px; } } } }
+  &.android ul li input {
+    &[type="checkbox"]:after, &[type="radio"]:after {
+      margin: 3px 0 0 24px; } }
+  ul {
+    li {
       small {
         color: #64c114;
         font: 17px "Helvetica Neue", Helvetica;

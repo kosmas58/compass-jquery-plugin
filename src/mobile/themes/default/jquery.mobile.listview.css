@@ -19,14 +19,13 @@
 .ui-listview, .ui-li {
     list-style: none;
     padding: 0;
-    zoom: 1;
 }
 
 .ui-li {
     display: block;
     margin: 0;
     position: relative;
-    overflow: hidden;
+    overflow: visible;
     text-align: left;
     border-width: 0;
     border-top-width: 1px;
@@ -71,15 +70,20 @@ ol.ui-listview .ui-li-jsnumbering:before {
 .ui-li .ui-btn-inner {
     display: block;
     position: relative;
-    padding: .7em 75px .7em 15px;
+    padding: 0;
 }
 
-.ui-li-has-thumb .ui-btn-inner {
+.ui-li .ui-btn-inner a {
+    padding: .7em 75px .7em 15px;
+    display: block;
+}
+
+.ui-li-has-thumb .ui-btn-inner a {
     min-height: 60px;
     padding-left: 100px;
 }
 
-.ui-li-has-icon .ui-btn-inner {
+.ui-li-has-icon .ui-btn-inner a {
     min-height: 20px;
     padding-left: 40px;
 }
@@ -135,7 +139,11 @@ ol.ui-listview .ui-li-jsnumbering:before {
     width: 45%;
 }
 
-.ui-li-has-alt .ui-btn-inner {
+.ui-li-divider {
+    cursor: default;
+}
+
+.ui-li-has-alt .ui-btn-inner a {
     padding-right: 95px;
 }
 
@@ -200,25 +208,14 @@ ol.ui-listview .ui-li-jsnumbering:before {
     display: block;
 }
 
+.ui-listview-filter-inset {
+    margin: -15px -5px -15px -5px;
+    background: transparent;
+}
+
 /* Odd iPad positioning issue. */
-@media only screen and
-
-(
-min-device-width:
-
-    768px
-
-)
-and
-
-(
-max-device-width:
-
-    1024px
-
-) {
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
     .ui-li .ui-btn-text {
         overflow: visible;
     }
-
 }

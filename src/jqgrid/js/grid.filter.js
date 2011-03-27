@@ -25,7 +25,7 @@
  ]
  }
  */
-/*global jQuery, $ */
+/*global jQuery, $, window, navigator */
 
 (function ($) {
 
@@ -88,7 +88,7 @@
                 };
             }
             var i, len = this.p.columns.length, cl,
-                    isIE = /msie/i.test(navigator.userAgent) && !win.opera;
+                    isIE = /msie/i.test(navigator.userAgent) && !window.opera;
 
             // translating the options
             if (this.p._gridsopt.length) {
@@ -156,10 +156,12 @@
                     p.error = !ret[0];
                     p.errmsg = ret[1];
                 }
-            },
-                    randId = function() {
-                        return Math.floor(Math.random() * 10000).toString();
-                    };
+            };
+            /* moving to common
+             randId = function() {
+             return Math.floor(Math.random()*10000).toString();
+             };
+             */
 
             this.onchange = function () {
                 // clear any error
@@ -185,7 +187,7 @@
                 var that = this,  i;
 
                 // this table will hold all the group (tables) and rules (rows)
-                var table = $("<table class='group ui-widget ui-widget-content' style='border:0px none;'><tbody>");
+                var table = $("<table class='group ui-widget ui-widget-content' style='border:0px none;'><tbody></tbody></table>");
                 // create error message row
                 if (parentgroup === null) {
                     $(table).append("<tr class='error' style='display:none;'><th colspan='5' class='ui-state-error' align='left'></th></tr>");
@@ -369,8 +371,8 @@
                     if (!cm) {
                         return;
                     }
-                    cm.searchoptions.id = randId();
-                    if (isIE) {
+                    cm.searchoptions.id = $.jgrid.randId();
+                    if (isIE && cm.inputtype === "text") {
                         if (!cm.searchoptions.size) {
                             cm.searchoptions.size = 10;
                         }
@@ -441,8 +443,8 @@
                 cm = p.columns[j];
                 // create it here so it can be referentiated in the onchange event
                 //var RD = that.createElement(rule, rule.data);
-                cm.searchoptions.id = randId();
-                if (isIE) {
+                cm.searchoptions.id = $.jgrid.randId();
+                if (isIE && cm.inputtype === "text") {
                     if (!cm.searchoptions.size) {
                         cm.searchoptions.size = 10;
                     }

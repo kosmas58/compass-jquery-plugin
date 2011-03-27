@@ -2,12 +2,12 @@
 // @compilation_level SIMPLE_OPTIMIZATIONS
 
 /*
- * jqGrid  3.8.2  - jQuery Grid
+ * jqGrid  4.0 beta  - jQuery Grid
  * Copyright (c) 2008, Tony Tomov, tony@trirand.com
  * Dual licensed under the MIT and GPL licenses
  * http://www.opensource.org/licenses/mit-license.php
  * http://www.gnu.org/licenses/gpl-2.0.html
- * Date: 2010-12-14
+ * Date: 2011-03-21
  */
 //jsHint options
 /*global document, window, jQuery, DOMParser, ActiveXObject $ */
@@ -17,7 +17,7 @@
     $.jgrid = $.jgrid || {};
     $.extend($.jgrid, {
         htmlDecode : function(value) {
-            if (value == '&nbsp;' || value == '&#160;' || (value.length == 1 && value.charCodeAt(0) == 160)) {
+            if (value && (value == '&nbsp;' || value == '&#160;' || (value.length == 1 && value.charCodeAt(0) == 160))) {
                 return "";
             }
             return !value ? value : String(value).replace(/&amp;/g, "&").replace(/&gt;/g, ">").replace(/&lt;/g, "<").replace(/&quot;/g, '"');
@@ -152,6 +152,11 @@
         jqID : function(sid) {
             sid = sid + "";
             return sid.replace(/([\.\:\[\]])/g, "\\$1");
+        },
+        guid : 1,
+        uidPref: 'jqg',
+        randId : function(prefix) {
+            return (prefix ? prefix : $.jgrid.uidPref) + ($.jgrid.guid++);
         },
         getAccessor : function(obj, expr) {
             var ret,p,prm = [], i;
@@ -1108,8 +1113,10 @@
                             parent.scrollTop = 0;
                         }
                         if (locdata === true) {
-                            ts.p.data = [];
-                            ts.p._index = {};
+                            if (ts.p.treeGrid === true) {
+                                ts.p.data = [];
+                                ts.p._index = {};
+                            }
                         }
                     },
                     refreshIndex = function() {
@@ -1203,7 +1210,7 @@
                         var gl = gxml.length, j = 0, grpdata = {}, rn;
                         if (gxml && gl) {
                             rn = parseInt(ts.p.rowNum, 10);
-                            var br = ts.p.scroll ? (parseInt(ts.p.page, 10) - 1) * rn + 1 : 1,altr;
+                            var br = ts.p.scroll ? $.jgrid.randId() : 1,altr;
                             if (adjust) {
                                 rn *= adjust + 1;
                             }
@@ -1383,7 +1390,7 @@
                             dReader = ts.p.jsonReader;
                             frd = 'json';
                         }
-                        var ir = 0,v,i,j,row,f = [],F,cur,gi = 0,si = 0,ni = 0,len,drows,idn,rd = {}, fpos, idr,rowData = [],cn = (ts.p.altRows === true) ? " " + ts.p.altclass : "",cn1,lp;
+                        var ir = 0,v,i,j,f = [],F,cur,gi = 0,si = 0,ni = 0,len,drows,idn,rd = {}, fpos, idr,rowData = [],cn = (ts.p.altRows === true) ? " " + ts.p.altclass : "",cn1,lp;
                         ts.p.page = $.jgrid.getAccessor(data, dReader.page) || 0;
                         lp = $.jgrid.getAccessor(data, dReader.total);
                         ts.p.lastpage = lp === undefined ? 1 : lp;
@@ -1409,7 +1416,7 @@
                         }
                         len = drows.length;
                         i = 0;
-                        var rn = parseInt(ts.p.rowNum, 10),br = ts.p.scroll ? (parseInt(ts.p.page, 10) - 1) * rn + 1 : 1, altr;
+                        var rn = parseInt(ts.p.rowNum, 10),br = ts.p.scroll ? $.jgrid.randId() : 1, altr;
                         if (adjust) {
                             rn *= adjust + 1;
                         }
@@ -2812,22 +2819,22 @@
                     return false;
                 });
             }
-            if ($.isFunction(this.p.onRightClickRow)) {
-                $(this).bind('contextmenu', function(e) {
-                    td = e.target;
-                    ptr = $(td, ts.rows).closest("tr.jqgrow");
-                    if ($(ptr).length === 0) {
-                        return false;
-                    }
-                    if (!ts.p.multiselect) {
-                        $(ts).jqGrid("setSelection", ptr[0].id, true);
-                    }
-                    ri = ptr[0].rowIndex;
-                    ci = $.jgrid.getCellIndex(td);
-                    ts.p.onRightClickRow.call(ts, $(ptr).attr("id"), ri, ci, e);
-                    return false;
-                });
-            }
+//            if ($.isFunction(this.p.onRightClickRow)) {
+//                $(this).bind('contextmenu', function(e) {
+//                    td = e.target;
+//                    ptr = $(td, ts.rows).closest("tr.jqgrow");
+//                    if ($(ptr).length === 0) {
+//                        return false;
+//                    }
+//                    if (!ts.p.multiselect) {
+//                        $(ts).jqGrid("setSelection", ptr[0].id, true);
+//                    }
+//                    ri = ptr[0].rowIndex;
+//                    ci = $.jgrid.getCellIndex(td);
+//                    ts.p.onRightClickRow.call(ts, $(ptr).attr("id"), ri, ci, e);
+//                    return false;
+//                });
+//            }
             grid.bDiv = document.createElement("div");
             $(grid.bDiv)
                     .append($('<div style="position:relative;' + (isMSIE && $.browser.version < 8 ? "height:0.01%;" : "") + '"></div>').append('<div></div>').append(this))
@@ -3309,7 +3316,7 @@
                             rowid = rowid + "";
                         }
                         else {
-                            rowid = (t.p.records + 1) + "";
+                            rowid = $.jgrid.randId();
                             if (t.p.keyIndex !== false) {
                                 cnm = t.p.colModel[t.p.keyIndex + gi + si + ni].name;
                                 if (typeof rdata[0][cnm] != "undefined") {
@@ -3329,7 +3336,7 @@
                                 rowid = data[cnm];
                             }
                             catch (e) {
-                                rowid = (t.p.records + 1) + "";
+                                rowid = $.jgrid.randId();
                             }
                             cna = t.p.altRows === true ? (t.rows.length - 1) % 2 === 0 ? cn : "" : "";
                         }
@@ -4030,6 +4037,18 @@
                 var $t = this;
                 $($t).unbind('keydown');
             });
+        },
+        getLocalRow : function (rowid) {
+            var ret = false, ind;
+            this.each(function() {
+                if (typeof(rowid) !== "undefined") {
+                    ind = this.p._index[rowid];
+                    if (ind >= 0) {
+                        ret = this.p.data[ind];
+                    }
+                }
+            });
+            return ret;
         }
     });
 })(jQuery);
@@ -4806,9 +4825,11 @@
                             M1 = false;
                         }
                         //E.css({opacity:0.8});
-                        try {
-                            $("input.hasDatepicker", E[0]).datepicker('hide');
-                        } catch (dpe) {
+                        if ($("input.hasDatepicker", E[0])[0]) {
+                            try {
+                                $("input.hasDatepicker", E[0]).datepicker('hide');
+                            } catch (dpe) {
+                            }
                         }
                         $(document).mousemove($.jqDnR.drag).mouseup($.jqDnR.stop);
                         return false;
@@ -5841,8 +5862,9 @@ var xmlJsonClass = {
             }
             return [curleft,curtop];
         },
-        createModal : function(aIDs, content, p, insertSelector, posSelector, appendsel) {
+        createModal : function(aIDs, content, p, insertSelector, posSelector, appendsel, css) {
             var mw = document.createElement('div'), rtlsup, self = this;
+            css = $.extend({}, css || {});
             rtlsup = $(p.gbox).attr("dir") == "rtl" ? true : false;
             mw.className = "ui-widget ui-widget-content ui-corner-all ui-jqdialog";
             mw.id = aIDs.themodal;
@@ -5876,15 +5898,18 @@ var xmlJsonClass = {
             if (appendsel === true) {
                 $('body').append(mw);
             } //append as first child in body -for alert dialog
+            else if (typeof appendsel == "string")
+                $(appendsel).append(mw);
             else {
                 $(mw).insertBefore(insertSelector);
             }
+            $(mw).css(css);
             if (typeof p.jqModal === 'undefined') {
                 p.jqModal = true;
             } // internal use
             var coord = {};
             if ($.fn.jqm && p.jqModal === true) {
-                if (p.left === 0 && p.top === 0) {
+                if (p.left === 0 && p.top === 0 && p.overlay) {
                     var pos = [];
                     pos = this.findPos(posSelector);
                     p.left = pos[0] + 4;
@@ -5909,7 +5934,7 @@ var xmlJsonClass = {
                 p.height = 200;
             }
             if (!p.zIndex) {
-                var parentZ = $(insertSelector).parents("*[role=dialog]").first().css("z-index");
+                var parentZ = $(insertSelector).parents("*[role=dialog]").filter(':first').css("z-index");
                 if (parentZ) {
                     p.zIndex = parseInt(parentZ, 10) + 1;
                 } else {
@@ -6122,12 +6147,15 @@ var xmlJsonClass = {
             }
 
             function setAttributes(elm, atr) {
-                var exclude = ['dataInit','dataEvents', 'value','dataUrl', 'buildSelect'];
+                var exclude = ['dataInit','dataEvents','dataUrl', 'buildSelect','sopt', 'searchhidden', 'defaultValue', 'attr'];
                 $.each(atr, function(key, value) {
                     if ($.inArray(key, exclude) === -1) {
-                        $(elem).attr(key, value);
+                        $(elm).attr(key, value);
                     }
                 });
+                if (!atr.hasOwnProperty('id')) {
+                    $(elm).attr('id', $.jgrid.randId());
+                }
             }
 
             switch (eltype) {
@@ -6193,8 +6221,11 @@ var xmlJsonClass = {
                             url: options.dataUrl,
                             type : "GET",
                             dataType: "html",
+                            context: {elem:elem, options:options, vl:vl},
                             success: function(data, status) {
-                                var a;
+                                var a,    ovm = [], elem = this.elem, vl = this.vl,
+                                        options = $.extend({}, this.options),
+                                        msl = options.multiple === true;
                                 if (typeof(options.buildSelect) != "undefined") {
                                     var b = options.buildSelect(data);
                                     a = $(b).html();
@@ -6223,9 +6254,6 @@ var xmlJsonClass = {
                                             $(this).attr("role", "option");
                                             if ($.inArray($.trim($(this).text()), ovm) > -1 || $.inArray($.trim($(this).val()), ovm) > -1) {
                                                 this.selected = "selected";
-                                                if (!msl) {
-                                                    return false;
-                                                }
                                             }
                                         });
                                     }, 0);
@@ -6622,7 +6650,7 @@ var xmlJsonClass = {
  ]
  }
  */
-/*global jQuery, $ */
+/*global jQuery, $, window, navigator */
 
 (function ($) {
 
@@ -6685,7 +6713,7 @@ var xmlJsonClass = {
                 };
             }
             var i, len = this.p.columns.length, cl,
-                    isIE = /msie/i.test(navigator.userAgent) && !win.opera;
+                    isIE = /msie/i.test(navigator.userAgent) && !window.opera;
 
             // translating the options
             if (this.p._gridsopt.length) {
@@ -6753,10 +6781,12 @@ var xmlJsonClass = {
                     p.error = !ret[0];
                     p.errmsg = ret[1];
                 }
-            },
-                    randId = function() {
-                        return Math.floor(Math.random() * 10000).toString();
-                    };
+            };
+            /* moving to common
+             randId = function() {
+             return Math.floor(Math.random()*10000).toString();
+             };
+             */
 
             this.onchange = function () {
                 // clear any error
@@ -6782,7 +6812,7 @@ var xmlJsonClass = {
                 var that = this,  i;
 
                 // this table will hold all the group (tables) and rules (rows)
-                var table = $("<table class='group ui-widget ui-widget-content' style='border:0px none;'><tbody>");
+                var table = $("<table class='group ui-widget ui-widget-content' style='border:0px none;'><tbody></tbody></table>");
                 // create error message row
                 if (parentgroup === null) {
                     $(table).append("<tr class='error' style='display:none;'><th colspan='5' class='ui-state-error' align='left'></th></tr>");
@@ -6966,8 +6996,8 @@ var xmlJsonClass = {
                     if (!cm) {
                         return;
                     }
-                    cm.searchoptions.id = randId();
-                    if (isIE) {
+                    cm.searchoptions.id = $.jgrid.randId();
+                    if (isIE && cm.inputtype === "text") {
                         if (!cm.searchoptions.size) {
                             cm.searchoptions.size = 10;
                         }
@@ -7038,8 +7068,8 @@ var xmlJsonClass = {
                 cm = p.columns[j];
                 // create it here so it can be referentiated in the onchange event
                 //var RD = that.createElement(rule, rule.data);
-                cm.searchoptions.id = randId();
-                if (isIE) {
+                cm.searchoptions.id = $.jgrid.randId();
+                if (isIE && cm.inputtype === "text") {
                     if (!cm.searchoptions.size) {
                         cm.searchoptions.size = 10;
                     }
@@ -7398,7 +7428,13 @@ var xmlJsonClass = {
                 onReset : null,
                 toTop : true,
                 overlay : 10,
-                columns : []
+                columns : [],
+                tmplNames : null,
+                tmplFilters : null,
+                // translations - later in lang file
+                tmplLabel : ' Template: ',
+                showOnLoad: false,
+                layer: null
             }, $.jgrid.search, p || {});
             return this.each(function() {
                 var $t = this;
@@ -7407,7 +7443,7 @@ var xmlJsonClass = {
                 }
                 var fid = "fbox_" + $t.p.id,
                         showFrm = true,
-                        IDs = {themodal:'editmod' + fid,modalhead:'edithd' + fid,modalcontent:'editcnt' + fid, scrollelm : fid},
+                        IDs = {themodal:'searchmod' + fid,modalhead:'searchhd' + fid,modalcontent:'searchcnt' + fid, scrollelm : fid},
                         defaultFilters = $t.p.postData[p.sFilter];
                 if (typeof(defaultFilters) === "string") {
                     defaultFilters = $.jgrid.parse(defaultFilters);
@@ -7438,14 +7474,12 @@ var xmlJsonClass = {
                         p.onInitializeSearch($("#" + fid));
                     }
                     var columns = $.extend([], $t.p.colModel),
-                            bS = "<a href='javascript:void(0)' id='" + fid + "_search' class='fm-button ui-state-default ui-corner-all fm-button-icon-left ui-reset'><span class='ui-icon ui-icon-search'></span>" + p.Find + "</a>",
+                            bS = "<a href='javascript:void(0)' id='" + fid + "_search' class='fm-button ui-state-default ui-corner-all fm-button-icon-right ui-reset'><span class='ui-icon ui-icon-search'></span>" + p.Find + "</a>",
                             bC = "<a href='javascript:void(0)' id='" + fid + "_reset' class='fm-button ui-state-default ui-corner-all fm-button-icon-left ui-search'><span class='ui-icon ui-icon-arrowreturnthick-1-w'></span>" + p.Reset + "</a>",
-                            bQ = "";
+                            bQ = "", tmpl = "", colnm, found = false, bt;
                     if (p.showQuery) {
                         bQ = "<a href='javascript:void(0)' id='" + fid + "_query' class='fm-button ui-state-default ui-corner-all fm-button-icon-left'><span class='ui-icon ui-icon-comment'></span>Query</a>";
                     }
-                    var bt = "<table class='EditTable' style='border:0px none;margin-top:5px' id='" + fid + "_2'><tbody><tr><td colspan='2'><hr class='ui-widget-content' style='margin:1px'/></td></tr><tr><td class='EditButton' style='text-align:left'>" + bC + "</td><td class='EditButton'>" + bQ + bS + "</td></tr></tbody></table>",
-                            colnm, found = false;
                     if (!p.columns.length) {
                         $.each(columns, function(i, n) {
                             if (!n.label) {
@@ -7471,6 +7505,20 @@ var xmlJsonClass = {
                             {"field":colnm,"op":"eq","data":""}
                         ]};
                     }
+                    found = false;
+                    if (p.tmplNames && p.tmplNames.length) {
+                        found = true;
+                        tmpl = p.tmplLabel;
+                        tmpl += "<select class='ui-template'>";
+                        tmpl += "<option value='default'>Default</option>";
+                        $.each(p.tmplNames, function(i, n) {
+                            tmpl += "<option value='" + i + "'>" + n + "</option>";
+                        });
+                        tmpl += "</select>";
+                    }
+
+                    bt = "<table class='EditTable' style='border:0px none;margin-top:5px' id='" + fid + "_2'><tbody><tr><td colspan='2'><hr class='ui-widget-content' style='margin:1px'/></td></tr><tr><td class='EditButton' style='text-align:left'>" + bC + tmpl + "</td><td class='EditButton'>" + bQ + bS + "</td></tr></tbody></table>";
+
                     $("#" + fid).jqFilter({
                         columns : columns,
                         filter: p.loadDefaults ? defaultFilters : null,
@@ -7486,6 +7534,17 @@ var xmlJsonClass = {
                         }
                     });
                     fil.append(bt);
+                    if (found && p.tmplFilters && p.tmplFilters.length) {
+                        $(".ui-template", fil).bind('change', function(e) {
+                            var curtempl = $(this).val();
+                            if (curtempl == "default") {
+                                $("#" + fid).jqFilter('addFilter', defaultFilters);
+                            } else {
+                                $("#" + fid).jqFilter('addFilter', p.tmplFilters[parseInt(curtempl, 10)]);
+                            }
+                            return false;
+                        });
+                    }
                     if (p.multipleSearch === false) {
                         $(".add-rule", "#" + fid).hide();
                         $(".delete-rule", "#" + fid).hide();
@@ -7493,7 +7552,10 @@ var xmlJsonClass = {
                     if ($.isFunction(p.onInitializeSearch)) {
                         p.onInitializeSearch($("#" + fid));
                     }
-                    $.jgrid.createModal(IDs, fil, p, "#gview_" + $t.p.id, $("#gbox_" + $t.p.id)[0]);
+                    if (p.layer)
+                        $.jgrid.createModal(IDs, fil, p, "#gview_" + $t.p.id, $("#gbox_" + $t.p.id)[0], "#" + p.layer, {position: "relative"});
+                    else
+                        $.jgrid.createModal(IDs, fil, p, "#gview_" + $t.p.id, $("#gbox_" + $t.p.id)[0]);
                     if (bQ) {
                         $("#" + fid + "_query").bind('click', function(e) {
                             $(".queryresult", fil).toggle();
@@ -7571,6 +7633,9 @@ var xmlJsonClass = {
                             sdata[p.sFilter] = "";
                         }
                         fl[0].resetFilter();
+                        if (found) {
+                            $(".ui-template", fil).val("default");
+                        }
                         $.extend($t.p.postData, sdata);
                         if ($.isFunction(p.onReset)) {
                             p.onReset();
@@ -8081,7 +8146,7 @@ var xmlJsonClass = {
                                         //id processing
                                         // user not set the id ret[2]
                                         if (!ret[2]) {
-                                            ret[2] = (parseInt($t.p.records, 10) + 1) + "";
+                                            ret[2] = $.jgrid.randId();
                                         }
                                         postdata[idname] = ret[2];
                                         if (rp_ge.closeAfterAdd) {
@@ -9401,6 +9466,8 @@ var xmlJsonClass = {
                                     $(this).removeClass("ui-state-hover");
                                 }
                                 );
+                        if (pSearch.showOnLoad && pSearch.showOnLoad === true)
+                            $(tbd, navtbl).click();
                         tbd = null;
                     }
                     if (o.refresh) {
@@ -10922,15 +10989,17 @@ var xmlJsonClass = {
                     ldat = $t.p.data[dind];
                     //$t.rows[i].level = ldat[level];
                     if ($t.p.treeGridModel == 'nested') {
-                        lft = parseInt(ldat[$t.p.treeReader.left_field], 10);
-                        rgt = parseInt(ldat[$t.p.treeReader.right_field], 10);
                         if (!ldat[isLeaf]) {
+                            lft = parseInt(ldat[$t.p.treeReader.left_field], 10);
+                            rgt = parseInt(ldat[$t.p.treeReader.right_field], 10);
                             // NS Model
                             ldat[isLeaf] = (rgt === lft + 1) ? 'true' : 'false';
+                            $t.rows[i].cells[$t.p._treeleafpos].innerHTML = ldat[isLeaf];
                         }
-                    } else {
-                        //row.parent_id = rd[$t.p.treeReader.parent_id_field];
                     }
+                    //else {
+                    //row.parent_id = rd[$t.p.treeReader.parent_id_field];
+                    //}
                     curLevel = parseInt(ldat[level], 10);
                     if ($t.p.tree_root_level === 0) {
                         ident = curLevel + 1;
@@ -10967,6 +11036,7 @@ var xmlJsonClass = {
 
                     twrap += "</div></div>";
                     $($t.rows[i].cells[expCol]).wrapInner("<span class='cell-wrapper" + lf + "'></span>").prepend(twrap);
+
                     if (curLevel !== parseInt($t.p.tree_root_level, 10)) {
                         var pn = $($t).jqGrid('getNodeParent', ldat);
                         expan = pn && pn.hasOwnProperty(expanded) ? pn[expanded] : true;
@@ -11065,7 +11135,6 @@ var xmlJsonClass = {
                         }
                         i++;
                         //
-
                         for (var tkey in $t.p.treeReader) {
                             if ($t.p.treeReader[tkey] == nm)
                                 dupcols.push(nm);
@@ -11073,8 +11142,12 @@ var xmlJsonClass = {
 
                     }
                 }
-                $.each($t.p.treeReader, function(i, n) {
+                $.each($t.p.treeReader, function(j, n) {
                     if (n && $.inArray(n, dupcols) === -1) {
+                        if (j === 'leaf_field') {
+                            $t.p._treeleafpos = i;
+                        }
+                        i++;
                         $t.p.colNames.push(n);
                         $t.p.colModel.push({name:n,width:1,hidden:true,sortable:false,resizable:false,hidedlg:true,editable:true,search:false});
                     }
@@ -11615,6 +11688,9 @@ var xmlJsonClass = {
                     if (!grp.groupField.length) {
                         $t.p.grouping = false;
                     } else {
+                        if (typeof(grp.visibiltyOnNextGrouping) == 'undefined') {
+                            grp.visibiltyOnNextGrouping = [];
+                        }
                         for (var i = 0; i < grp.groupField.length; i++) {
                             if (!grp.groupOrder[i]) {
                                 grp.groupOrder[i] = 'asc';
@@ -11629,8 +11705,10 @@ var xmlJsonClass = {
                                 grp.groupSummary[i] = false;
                             }
                             if (grp.groupColumnShow[i] === true) {
+                                grp.visibiltyOnNextGrouping[i] = true;
                                 $($t).jqGrid('showCol', grp.groupField[i]);
                             } else {
+                                grp.visibiltyOnNextGrouping[i] = $("#" + $t.p.id + "_" + grp.groupField[i]).is(":visible");
                                 $($t).jqGrid('hideCol', grp.groupField[i]);
                             }
                             grp.sortitems[i] = [];
@@ -11834,11 +11912,15 @@ var xmlJsonClass = {
                 }
                 var grp = $t.p.groupingView;
                 $t.p.grouping = true;
-                // show previoous hidden  groups if they are hidden
+                // show previous hidden groups if they are hidden and weren't removed yet
                 for (var i = 0; i < grp.groupField.length; i++) {
-                    if (!grp.groupColumnShow[i]) {
+                    if (!grp.groupColumnShow[i] && grp.visibiltyOnNextGrouping[i]) {
                         $($t).jqGrid('showCol', grp.groupField[i]);
                     }
+                }
+                // set visibility status of current group columns on next grouping
+                for (var i = 0; i < name.length; i++) {
+                    grp.visibiltyOnNextGrouping[i] = $("#" + $t.p.id + "_" + name[i]).is(":visible");
                 }
                 $t.p.groupingView = $.extend($t.p.groupingView, options || {});
                 grp.groupField = name;
@@ -11853,6 +11935,13 @@ var xmlJsonClass = {
                 }
                 $t.p.grouping = false;
                 if (current === true) {
+                    var grp = $t.p.groupingView;
+                    // show previous hidden groups if they are hidden and weren't removed yet
+                    for (var i = 0; i < grp.groupField.length; i++) {
+                        if (!grp.groupColumnShow[i] && grp.visibiltyOnNextGrouping[i]) {
+                            $($t).jqGrid('showCol', grp.groupField);
+                        }
+                    }
                     $("tr.jqgroup, tr.jqfoot", "#" + $t.p.id + " tbody:first").remove();
                     $("tr.jqgrow:hidden", "#" + $t.p.id + " tbody:first").show();
                 } else {
@@ -11893,6 +11982,7 @@ var xmlJsonClass = {
         }
     });
 })(jQuery);
+
 
 ;
 (function($) {

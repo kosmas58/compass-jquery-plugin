@@ -14,6 +14,10 @@
     top: -9999px;
 }
 
+.ui-select .ui-btn {
+    overflow: hidden;
+}
+
 .ui-select .ui-btn select {
     cursor: pointer;
     -webkit-appearance: button;
@@ -21,7 +25,9 @@
     top: 0;
     width: 100%;
     height: 100%;
-    opacity: 0.001;
+    opacity: 0;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+    filter: alpha(opacity = 0);
 }
 
 .ui-select .ui-btn select.ui-select-nativeonly {
@@ -54,7 +60,7 @@ label.ui-select {
 .ui-select .ui-btn-text {
     text-overflow: ellipsis;
     overflow: hidden;
-    width: 85%
+    display: block;
 }
 
 .ui-selectmenu {
@@ -98,6 +104,10 @@ label.ui-select {
 
 .ui-li.ui-selectmenu-placeholder {
     display: none;
+}
+
+.ui-selectmenu .ui-header .ui-title {
+    margin: 0.6em 46px 0.8em;
 }
 
 .min-width-480px label.ui-select {

@@ -51,7 +51,7 @@ body {
     width: 250px;
 }
 
-#jqt .button, #jqt .back, #jqt .cancel, #jqt .add, #jqt .backRemote {
+#jqt .button, #jqt .back, #jqt .cancel, #jqt .add {
     position: absolute;
     overflow: hidden;
     top: 8px;
@@ -83,7 +83,7 @@ body {
     border-width: 0 5px;
 }
 
-#jqt .back, #jqt .backRemote {
+#jqt .back {
     left: 6px;
     right: auto;
     padding: 0;
@@ -92,7 +92,7 @@ body {
     -webkit-border-image: url(img/back_button.png) 0 8 0 14;
 }
 
-#jqt .back.active, #jqt .backRemote.active {
+#jqt .back.active {
     -webkit-border-image: url(img/back_button_clicked.png) 0 8 0 14;
 }
 
@@ -350,6 +350,10 @@ body {
     width: 246px;
     color: #777;
     margin: -12px 0 0 17px;
+}
+
+#jqt.android ul li input[type="checkbox"]:after, #jqt.android ul li input[type="radio"]:after {
+    margin: 3px 0 0 24px;
 }
 
 /* @end */

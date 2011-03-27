@@ -53,8 +53,9 @@
             }
             return [curleft,curtop];
         },
-        createModal : function(aIDs, content, p, insertSelector, posSelector, appendsel) {
+        createModal : function(aIDs, content, p, insertSelector, posSelector, appendsel, css) {
             var mw = document.createElement('div'), rtlsup, self = this;
+            css = $.extend({}, css || {});
             rtlsup = $(p.gbox).attr("dir") == "rtl" ? true : false;
             mw.className = "ui-widget ui-widget-content ui-corner-all ui-jqdialog";
             mw.id = aIDs.themodal;
@@ -88,15 +89,18 @@
             if (appendsel === true) {
                 $('body').append(mw);
             } //append as first child in body -for alert dialog
+            else if (typeof appendsel == "string")
+                $(appendsel).append(mw);
             else {
                 $(mw).insertBefore(insertSelector);
             }
+            $(mw).css(css);
             if (typeof p.jqModal === 'undefined') {
                 p.jqModal = true;
             } // internal use
             var coord = {};
             if ($.fn.jqm && p.jqModal === true) {
-                if (p.left === 0 && p.top === 0) {
+                if (p.left === 0 && p.top === 0 && p.overlay) {
                     var pos = [];
                     pos = this.findPos(posSelector);
                     p.left = pos[0] + 4;
@@ -121,7 +125,7 @@
                 p.height = 200;
             }
             if (!p.zIndex) {
-                var parentZ = $(insertSelector).parents("*[role=dialog]").first().css("z-index");
+                var parentZ = $(insertSelector).parents("*[role=dialog]").filter(':first').css("z-index");
                 if (parentZ) {
                     p.zIndex = parseInt(parentZ, 10) + 1;
                 } else {
@@ -334,12 +338,15 @@
             }
 
             function setAttributes(elm, atr) {
-                var exclude = ['dataInit','dataEvents', 'value','dataUrl', 'buildSelect'];
+                var exclude = ['dataInit','dataEvents','dataUrl', 'buildSelect','sopt', 'searchhidden', 'defaultValue', 'attr'];
                 $.each(atr, function(key, value) {
                     if ($.inArray(key, exclude) === -1) {
-                        $(elem).attr(key, value);
+                        $(elm).attr(key, value);
                     }
                 });
+                if (!atr.hasOwnProperty('id')) {
+                    $(elm).attr('id', $.jgrid.randId());
+                }
             }
 
             switch (eltype) {
@@ -405,8 +412,11 @@
                             url: options.dataUrl,
                             type : "GET",
                             dataType: "html",
+                            context: {elem:elem, options:options, vl:vl},
                             success: function(data, status) {
-                                var a;
+                                var a,    ovm = [], elem = this.elem, vl = this.vl,
+                                        options = $.extend({}, this.options),
+                                        msl = options.multiple === true;
                                 if (typeof(options.buildSelect) != "undefined") {
                                     var b = options.buildSelect(data);
                                     a = $(b).html();
@@ -435,9 +445,6 @@
                                             $(this).attr("role", "option");
                                             if ($.inArray($.trim($(this).text()), ovm) > -1 || $.inArray($.trim($(this).val()), ovm) > -1) {
                                                 this.selected = "selected";
-                                                if (!msl) {
-                                                    return false;
-                                                }
                                             }
                                         });
                                     }, 0);
