@@ -3,7 +3,7 @@ $:.push File.expand_path("../lib", __FILE__)
 require 'lib/jquery'
 
 Gem::Specification.new do |s|
-  s.name        = "compass-jquery-plugin-edge"
+  s.name        = "compass-jquery-plugin"
   s.version     = Compass::Jquery::Plugin::VERSION
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Kosmas Schuetz"]
