@@ -10,7 +10,7 @@
 
     $(":jqmData(role='listview')").live("listviewcreate", function() {
         var list = $(this),
-                listview = list.jqmData("listview");
+                listview = list.data("listview");
 
         if (!listview.options.filter) {
             return;
