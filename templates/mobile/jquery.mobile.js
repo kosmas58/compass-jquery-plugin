@@ -1231,10 +1231,10 @@
             // classes so we'll handle page and content roles outside of the main role processing
             // loop below.
             $elem.find(":jqmData(role='page'), :jqmData(role='content')").andSelf().each(function() {
-                $(this).addClass("ui-" + $(this).jqmData($.mobile.ns + "role"));
+                $(this).addClass("ui-" + $(this).jqmData("role"));
             });
 
-            $elem.find("[data-" + $.mobile.ns + "role='nojs']").addClass("ui-nojs");
+            $elem.find(":jqmData(role='nojs')").addClass("ui-nojs");
 
             // pre-find data els
             var $dataEls = $elem.find(":jqmData(role)").andSelf().each(function() {
@@ -1512,56 +1512,46 @@
         }
     });
 
-    //mobile version of data() method
-    //treats namespaced data-attrs the same as non-namespaced ones
+    //mobile version of data and removeData and hasData methods
+    //ensures all data is set and retrieved using jQuery Mobile's data namespace
     $.fn.jqmData = function(prop, value) {
-        var pUndef = prop === undefined,
-                vUndef = value === undefined;
-
-        if (pUndef || vUndef) {
-            var ret,
-                    nsret;
-            //if no args are passed, a data hash is expected. Remap non-namespaced props
-            if (pUndef) {
-                ret = this.data();
-                $.each(ret, function(i) {
-                    var nsIndex = i.indexOf($.mobile.ns);
-                    if (nsIndex == 0) {
-                        ret[ i.substr($.mobile.ns.length) ] = ret[ i ];
-                    }
-                });
-            }
-            //if it's a prop get, try namepaced version if prop is undefined
-            else if (vUndef) {
-                ret = this.data(prop);
-                if (ret === undefined) {
-                    nsret = this.data($.mobile.ns + prop);
-                    if (nsret !== undefined) {
-                        ret = nsret;
-                    }
-                }
-            }
-            return ret;
-        }
+        return this.data(prop ? $.mobile.ns + prop : prop, value);
     };
 
-    // Monkey-patching Sizzle to filter the :jqmData selector
-    var oldFind = jQuery.find;
+    $.jqmData = function(elem, prop, value) {
+        return $.data(elem, prop && $.mobile.ns + prop, value);
+    };
 
-    jQuery.find = function(selector, context, ret, extra) {
-        selector = selector.replace(/:jqmData\(([^)]*)\)/g, "[data-" + (jQuery.mobile.ns || "") + "$1]");
+    $.fn.jqmRemoveData = function(prop) {
+        return this.removeData($.mobile.ns + prop);
+    };
+
+    $.jqmRemoveData = function(elem, prop) {
+        return $.removeData(elem, prop && $.mobile.ns + prop);
+    };
+
+    $.jqmHasData = function(elem, prop) {
+        return $.hasData(elem, prop && $.mobile.ns + prop);
+    };
+
+
+    // Monkey-patching Sizzle to filter the :jqmData selector
+    var oldFind = $.find;
+
+    $.find = function(selector, context, ret, extra) {
+        selector = selector.replace(/:jqmData\(([^)]*)\)/g, "[data-" + ($.mobile.ns || "") + "$1]");
 
         return oldFind.call(this, selector, context, ret, extra);
     };
 
-    jQuery.extend(jQuery.find, oldFind);
+    $.extend($.find, oldFind);
 
-    jQuery.find.matches = function(expr, set) {
-        return jQuery.find(expr, null, null, set);
+    $.find.matches = function(expr, set) {
+        return $.find(expr, null, null, set);
     };
 
-    jQuery.find.matchesSelector = function(node, expr) {
-        return jQuery.find(expr, null, null, [node]).length > 0;
+    $.find.matchesSelector = function(node, expr) {
+        return $.find(expr, null, null, [node]).length > 0;
     };
 })(jQuery, this);
 
@@ -2284,16 +2274,8 @@
                 removeActiveLinkClass(true);
             }, 200);
 
-            //deliberately redirect, in case click was triggered
-            if (hasTarget) {
-                window.open(url);
-            }
-            else if (hasAjaxDisabled) {
-                return;
-            }
-            else {
-                location.href = url;
-            }
+            //use default click handling
+            return;
         }
         else {
             //use ajax
@@ -4070,7 +4052,7 @@
                             .not($(event.target).closest(".ui-collapsible-contain"))
                             .not("> .ui-collapsible-contain .ui-collapsible-contain")
                             .trigger("collapse");
-                })
+                });
                 var set = collapsibleParent.find(":jqmData(role=collapsible)")
 
                 set.first()
@@ -4266,14 +4248,6 @@
                 }
             });
 
-            // tapping the whole LI triggers click on the first link
-            $list.delegate("li", "click", function(event) {
-                if (!$(event.target).closest("a").length) {
-                    $(this).find("a").first().trigger("click");
-                    return false;
-                }
-            });
-
         },
 
         _itemApply: function($list, item) {
@@ -4285,7 +4259,7 @@
 
             item.find("p, dl").addClass("ui-li-desc");
 
-            $list.find("li").find(">img:eq(0)").addClass("ui-li-thumb").each(function() {
+            $list.find("li").find(">img:eq(0), >a:first>img:eq(0)").addClass("ui-li-thumb").each(function() {
                 $(this).closest("li")
                         .addClass($(this).is(".ui-li-icon") ? "ui-li-has-icon" : "ui-li-has-thumb");
             });
@@ -4327,15 +4301,6 @@
 
             li.first().attr("tabindex", "0");
 
-            //workaround for Windows Phone 7 focus/active tap color
-            //without this, delegated events will highlight the whole list, rather than the LI
-            if ($.mobile.browser.ie && $.mobile.browser.ie <= 8) {
-                li
-                        .unbind("mousedown.iefocus")
-                        .bind("mousedown.iefocus", function(e) {
-                    e.preventDefault();
-                });
-            }
 
             li.each(function(pos) {
                 var item = $(this),
@@ -4448,7 +4413,7 @@
                             .prepend("<span class='ui-li-dec'>" + (counter++) + ". </span>");
                 }
 
-                item.addClass(itemClass);
+                item.add(item.find(".ui-btn-inner")).addClass(itemClass);
 
                 if (!create) {
                     self._itemApply($list, item);
@@ -4512,7 +4477,7 @@
 
     $(":jqmData(role='listview')").live("listviewcreate", function() {
         var list = $(this),
-                listview = list.jqmData("listview");
+                listview = list.data("listview");
 
         if (!listview.options.filter) {
             return;

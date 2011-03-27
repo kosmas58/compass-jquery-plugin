@@ -1195,13 +1195,16 @@ ol.ui-listview .ui-li-jsnumbering:before {
   .ui-btn-inner {
     display: block;
     position: relative;
-    padding: .7em 75px .7em 15px; } }
+    padding: 0;
+    a {
+      padding: .7em 75px .7em 15px;
+      display: block; } } }
 
-.ui-li-has-thumb .ui-btn-inner {
+.ui-li-has-thumb .ui-btn-inner a {
   min-height: 60px;
   padding-left: 100px; }
 
-.ui-li-has-icon .ui-btn-inner {
+.ui-li-has-icon .ui-btn-inner a {
   min-height: 20px;
   padding-left: 40px; }
 
@@ -1257,7 +1260,7 @@ ol.ui-listview .ui-li-jsnumbering:before {
 .ui-li-divider {
   cursor: default; }
 
-.ui-li-has-alt .ui-btn-inner {
+.ui-li-has-alt .ui-btn-inner a {
   padding-right: 95px; }
 
 .ui-li-count {
