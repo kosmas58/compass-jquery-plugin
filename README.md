@@ -12,7 +12,7 @@ Description
 
 A Sass-based Meta-Framework for Compass that allows you to mix and match any of the following:
 
-* jRails with jQuery 1.5.1 and jQuery.UI 1.8.11 including themes
+* jquery-rails with jQuery 1.5.1 and jQuery.UI 1.8.11 including themes
 * jQuery Tools 1.2.5
 * jquery.jstree.js V1.0rc3
 * jquery.dynatree.js V1.0.2
@@ -33,10 +33,10 @@ An upgrade to Rails 3.x is planned, but depends on the upgrade of compass which 
 
 *Hint: When trying to build the gem under Windows, bundler can't locate the rakefile. Apply the patch from [Arve Knudsen][4] to fix it.*
 
-jRails, jQuery and jQuery.UI including themes
+jquery-rails, jQuery and jQuery.UI including themes
 ---------------------------------------------
 
-Use compass to install the jRails, jQuery and jQuery.UI javascript library including themes into your project.
+Use compass to install the jquery-rails, jQuery and jQuery.UI javascript library including themes into your project.
 
 For jQuery:
 <pre>compass install [-r jquery] jquery/jquery <project name></pre>
@@ -259,7 +259,7 @@ Thanks to the Contributors:
 Rails:
 ------
 
-* aaron for [jRails][5]
+* Andre Arko for [jquery-rails][5]
 * David Turnbull for [compass-jquery][6]
 * Jonathan Linowes for [gridify][7]
 * ahe for [2dc_jqgrid][8]
@@ -323,7 +323,7 @@ Copyright &copy; 2009-2011 Kosmas Schuetz. See LICENSE for details.
   [2]: http://github.com/kosmas58/compass-jquery-plugin
   [3]: http://compass-style.org/docs/
   [4]: http://groups.google.com/group/ruby-bundler/msg/e375ee77b225609f
-  [5]: http://code.google.com/p/ennerchi/
+  [5]: http://indirect/jquery-rails/
   [6]: http://github.com/dturnbull/compass-jquery/tree/master
   [7]: http://github.com/linoj/gridify
   [8]: http://github.com/ahe/2dc_jqgrid/tree/master
