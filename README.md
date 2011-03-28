@@ -289,6 +289,7 @@ jQuery Plugins included:
 * Gareth Watts from Splunk Inc for [jQuery Sparklines plugin][24]
 * Denis Howlett for [jQuery Table Drag and Drop Plugin][25]
 * John Reisig et. al. for [jQuery Templating Plugin][26]
+* James Smith for [jQuery Tokeninput][41]
 * Juan G. Hurtado for [jQuery TOOLS][27]
 * Michael Aufreiter for [jQuery UI Multiselect Plugin][28]
 * Andrew M Andrews III for [Any+Time][29]
@@ -359,3 +360,4 @@ Copyright &copy; 2009-2011 Kosmas Schuetz. See LICENSE for details.
   [38]: http://github.com/gamache/DSt
   [39]: http://github.com/thegrubbsian/jquery.ganttView
   [40]: http://tinymce.moxiecode.com/
+  [41]: http://github.com/loopj/jquery-tokeninput

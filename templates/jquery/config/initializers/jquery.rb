@@ -38,6 +38,10 @@ ActionView::Helpers::AssetTagHelper.register_javascript_expansion :pngFix => ['j
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :replaceText => ['jquery.replaceText.min']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :themeSwitcher => ['jquery.themeswitchertool.min']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :tmpl => ['jquery.tmpl.min', 'jquery.tmplPlus.min']
+ActionView::Helpers::AssetTagHelper.register_stylesheet_expansion :tokeninput => ['compiled/jquery/ui/tokeninput.css']
+ActionView::Helpers::AssetTagHelper.register_stylesheet_expansion :tokeninput_facebook => ['compiled/jquery/ui/tokeninput.facebook.css']
+ActionView::Helpers::AssetTagHelper.register_stylesheet_expansion :tokeninput_mac => ['compiled/jquery/ui/tokeninput.mac.css']
+ActionView::Helpers::AssetTagHelper.register_javascript_expansion :tokeninput => ['jquery.tokeninput.min']
 
 require 'jquery/jquery'
 require 'handle_attributes'
