@@ -1,13 +1,13 @@
 // ==ClosureCompiler==
 // @compilation_level SIMPLE_OPTIMIZATIONS
 
-/*
- * jqGrid  4.0 beta  - jQuery Grid
+/**
+ * @license jqGrid  4.0 beta  - jQuery Grid
  * Copyright (c) 2008, Tony Tomov, tony@trirand.com
  * Dual licensed under the MIT and GPL licenses
  * http://www.opensource.org/licenses/mit-license.php
  * http://www.gnu.org/licenses/gpl-2.0.html
- * Date: 2011-03-21
+ * Date: 2011-03-22
  */
 //jsHint options
 /*global document, window, jQuery, DOMParser, ActiveXObject $ */
@@ -858,8 +858,15 @@
                         return;
                     }
                     var table = $("table:first", grid.bDiv);
-                    var rows = $("> tbody > tr:gt(0):visible:first", table);
-                    var rh = rows.outerHeight() || grid.prevRowHeight;
+                    var rows, rh;
+                    if (table[0].rows.length) {
+                        try {
+                            rows = table[0].rows[1];
+                            rh = rows ? $(rows).outerHeight() || grid.prevRowHeight : grid.prevRowHeight;
+                        } catch (pv) {
+                            rh = grid.prevRowHeight;
+                        }
+                    }
                     if (!rh) {
                         return;
                     }
@@ -886,7 +893,7 @@
                         empty = true;
                     }
                     if (npage) {
-                        if (p.lastpage && page > p.lastpage || p.lastpage == 1) {
+                        if (p.lastpage && page > p.lastpage || p.lastpage == 1 || (page === p.page && page === p.lastpage)) {
                             return;
                         }
                         if (grid.hDiv.loading) {
@@ -901,7 +908,7 @@
                         }
                     }
                 },
-                scrollGrid: function() {
+                scrollGrid: function(e) {
                     if (p.scroll) {
                         var scrollTop = grid.bDiv.scrollTop;
                         if (grid.scrollTop === undefined) {
@@ -919,6 +926,7 @@
                     if (p.footerrow) {
                         grid.sDiv.scrollLeft = grid.bDiv.scrollLeft;
                     }
+                    e.stopPropagation();
                 },
                 selectionPreserver : function(ts) {
                     var p = ts.p;
@@ -8268,6 +8276,16 @@ var xmlJsonClass = {
                     return ret;
                 }
 
+                function setNulls() {
+                    $.each($t.p.colModel, function(i, n) {
+                        if (n.editoptions && n.editoptions.NullIfEmpty === true) {
+                            if (postdata.hasOwnProperty(n.name) && postdata[n.name] == "") {
+                                postdata[n.name] = 'null';
+                            }
+                        }
+                    });
+                }
+
                 function checkUpdates() {
                     var stat = true;
                     $("#FormError", "#" + frmtb).hide();
@@ -8281,6 +8299,8 @@ var xmlJsonClass = {
                             $("#" + frmgr).data("disabled", true);
                             $(".confirm", "#" + IDs.themodal).show();
                             stat = false;
+                        } else {
+                            setNulls();
                         }
                     }
                     return stat;
@@ -8587,6 +8607,7 @@ var xmlJsonClass = {
                         //ret[1] - msg if not succes
                         //ret[2] - the id  that will be set if reload after submit false
                         getFormData();
+                        setNulls();
                         if (postdata[$t.p.id + "_id"] == "_empty") {
                             postIt();
                         }
@@ -9899,6 +9920,11 @@ var xmlJsonClass = {
                         }
                         if ($t.p.autoencode) {
                             tmp[nm] = $.jgrid.htmlEncode(tmp[nm]);
+                        }
+                        if (o.url !== 'clientArray' && cm.editoptions && cm.editoptions.NullIfEmpty === true) {
+                            if (tmp[nm] == "") {
+                                tmp[nm] = 'null';
+                            }
                         }
                     }
                 });

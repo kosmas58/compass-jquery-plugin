@@ -271,7 +271,7 @@ jQuery Plugins included:
 ------------------------
 
 * Chris Domigan for [jQuery ContextMenu Plugin][13]
-* Kalus Hartl for [jQuery Cookie Plugin][14]
+* Klaus Hartl for [jQuery Cookie Plugin][14]
 * "Cowboy" Ben Alman for [jQuery doTimeout Plugin][37]
 * Pete Gamache for [jQuery DSt Plugin][38]
 * Martin Wendt for [jQuery Dynatree Plugin][15]

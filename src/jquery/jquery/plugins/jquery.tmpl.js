@@ -16,7 +16,7 @@
         // The content field is a hierarchical array of strings and nested items (to be
         // removed and replaced by nodes field of dom elements, once inserted in DOM).
         var newItem = {
-            data: data || (parentItem ? parentItem.data : {}),
+            data: data || (data === 0 || data === false) ? data : (parentItem ? parentItem.data : {}),
             _wrap: parentItem ? parentItem._wrap : null,
             tmpl: null,
             parent: parentItem || null,
@@ -195,7 +195,8 @@
             // Return named compiled template
             return name ? (typeof name !== "string" ? jQuery.template(null, name) :
                     (jQuery.template[name] ||
-                        // If not in map, treat as a selector. (If integrated with core, use quickExpr.exec)
+                        // If not in map, and not containing at least on HTML tag, treat as a selector.
+                        // (If integrated with core, use quickExpr.exec)
                             jQuery.template(null, htmlExpr.test(name) ? name : jQuery(name)))) : null;
         },
 
@@ -209,15 +210,15 @@
         tag: {
             "tmpl": {
                 _default: { $2: "null" },
-                open: "if($notnull_1){_=_.concat($item.nest($1,$2));}"
+                open: "if($notnull_1){__=__.concat($item.nest($1,$2));}"
                 // tmpl target parameter can be of type function, so use $1, not $1a (so not auto detection of functions)
                 // This means that {{tmpl foo}} treats foo as a template (which IS a function).
                 // Explicit parens can be used if foo is a function that returns a template: {{tmpl foo()}}.
             },
             "wrap": {
                 _default: { $2: "null" },
-                open: "$item.calls(_,$1,$2);_=[];",
-                close: "call=$item.calls();_=call._.concat($item.wrap(call,_));"
+                open: "$item.calls(__,$1,$2);__=[];",
+                close: "call=$item.calls();__=call._.concat($item.wrap(call,__));"
             },
             "each": {
                 _default: { $2: "$index, $value" },
@@ -234,12 +235,12 @@
             },
             "html": {
                 // Unecoded expression evaluation.
-                open: "if($notnull_1){_.push($1a);}"
+                open: "if($notnull_1){__.push($1a);}"
             },
             "=": {
                 // Encoded expression evaluation. Abbreviated form is ${}.
                 _default: { $1: "$data" },
-                open: "if($notnull_1){_.push($.encode($1a));}"
+                open: "if($notnull_1){__.push($.encode($1a));}"
             },
             "!": {
                 // Comment tag. Skipped by parser
@@ -316,10 +317,11 @@
     // Generate a reusable function that will serve to render a template against data
     function buildTmplFn(markup) {
         return new Function("jQuery", "$item",
-                "var $=jQuery,call,_=[],$data=$item.data;" +
+            // Use the variable __ to hold a string array while building the compiled template. (See https://github.com/jquery/jquery-tmpl/issues#issue/10).
+                "var $=jQuery,call,__=[],$data=$item.data;" +
 
                     // Introduce the data as local variables using with(){}
-                        "with($data){_.push('" +
+                        "with($data){__.push('" +
 
                     // Convert the template into pure JavaScript
                         jQuery.trim(markup)
@@ -330,7 +332,7 @@
                                 function(all, slash, type, fnargs, target, parens, args) {
                                     var tag = jQuery.tmpl.tag[ type ], def, expr, exprAutoFnDetect;
                                     if (!tag) {
-                                        throw "Template command not found: " + type;
+                                        throw "Unknown template tag: " + type;
                                     }
                                     def = tag._default || [];
                                     if (parens && !/\w$/.test(target)) {
@@ -354,9 +356,9 @@
                                                     .split("$1a").join(exprAutoFnDetect)
                                                     .split("$1").join(expr)
                                                     .split("$2").join(fnargs || def.$2 || "") +
-                                            "_.push('";
+                                            "__.push('";
                                 }) +
-                        "');}return _;"
+                        "');}return __;"
                 );
     }
 

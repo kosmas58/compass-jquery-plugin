@@ -133,18 +133,15 @@
             }
 
             collapsibleHeading
-                    .bind({
-                              "tap": function() {
-                                  if (collapsibleHeading.is('.ui-collapsible-heading-collapsed')) {
-                                      collapsibleContain.trigger('expand');
-                                  }
-                                  else {
-                                      collapsibleContain.trigger('collapse');
-                                  }
-                                  return false;
-                              },
-                              "click": false
-                          });
+                    .bind("vclick", function(e) {
+                if (collapsibleHeading.is('.ui-collapsible-heading-collapsed')) {
+                    collapsibleContain.trigger('expand');
+                }
+                else {
+                    collapsibleContain.trigger('collapse');
+                }
+                e.preventDefault();
+            });
         }
     });
 })(jQuery);
