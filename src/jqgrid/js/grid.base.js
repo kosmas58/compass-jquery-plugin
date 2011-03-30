@@ -2517,10 +2517,10 @@
                 $('#cb_' + $.jgrid.jqID(ts.p.id), this).bind('click', function() {
                     ts.p.selarrrow = [];
                     if (this.checked) {
-                        $("[id^=jqg_" + ts.p.id + "_" + "]").attr("checked", "checked");
                         $(ts.rows).each(function(i) {
                             if (i > 0) {
-                                if (!$(this).hasClass("subgrid") && !$(this).hasClass("jqgroup")) {
+                                if (!$(this).hasClass("subgrid") && !$(this).hasClass("jqgroup") && !$(this).hasClass('ui-state-disabled')) {
+                                    $("#jqg_" + $.jgrid.jqID(ts.p.id) + "_" + $.jgrid.jqID(this.id)).attr("checked", "checked");
                                     $(this).addClass("ui-state-highlight").attr("aria-selected", "true");
                                     ts.p.selarrrow.push(this.id);
                                     ts.p.selrow = this.id;
@@ -2531,10 +2531,10 @@
                         emp = [];
                     }
                     else {
-                        $("[id^=jqg_" + ts.p.id + "_" + "]").removeAttr("checked");
                         $(ts.rows).each(function(i) {
                             if (i > 0) {
-                                if (!$(this).hasClass("subgrid")) {
+                                if (!$(this).hasClass("subgrid") && !$(this).hasClass('ui-state-disabled')) {
+                                    $("#jqg_" + $.jgrid.jqID(ts.p.id) + "_" + $.jgrid.jqID(this.id)).removeAttr("checked");
                                     $(this).removeClass("ui-state-highlight").attr("aria-selected", "false");
                                     emp.push(this.id);
                                 }
@@ -2708,12 +2708,12 @@
             $(ts).before(grid.hDiv).click(
                     function(e) {
                         td = e.target;
-                        var scb = $(td).hasClass("cbox");
                         ptr = $(td, ts.rows).closest("tr.jqgrow");
-                        if ($(ptr).length === 0) {
+                        if ($(ptr).length === 0 || ptr[0].className.indexOf('ui-state-disabled') > -1) {
                             return this;
                         }
-                        var cSel = true;
+                        var scb = $(td).hasClass("cbox"),
+                                cSel = true;
                         if ($.isFunction(ts.p.beforeSelectRow)) {
                             cSel = ts.p.beforeSelectRow.call(ts, ptr[0].id, e);
                         }
@@ -2754,8 +2754,8 @@
                                 if (e[ts.p.multikey]) {
                                     $(ts).jqGrid("setSelection", ptr[0].id, true);
                                 } else if (ts.p.multiselect && scb) {
-                                    scb = $("[id^=jqg_" + ts.p.id + "_" + "]").attr("checked");
-                                    $("[id^=jqg_" + ts.p.id + "_" + "]").attr("checked", !scb);
+                                    scb = $("[id^=jqg_" + $.jgrid.jqID(ts.p.id) + "_" + "]").attr("checked");
+                                    $("[id^=jqg_" + $.jgrid.jqID(ts.p.id) + "_" + "]").attr("checked", !scb);
                                 }
                             }
                             if ($.isFunction(ts.p.onCellSelect)) {
@@ -3072,7 +3072,7 @@
                 }
                 onsr = onsr === false ? false : true;
                 pt = $t.rows.namedItem(selection + "");
-                if (!pt) {
+                if (!pt || pt.className.indexOf('ui-state-disabled') > -1) {
                     return;
                 }
                 function scrGrid(iR) {

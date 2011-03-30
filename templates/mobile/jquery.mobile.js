@@ -2024,8 +2024,16 @@
                 },
 
                 //prefix a relative url with the current path
+                // TODO rename to reflect conditional functionality
                 makeAbsolute: function(url) {
-                    return path.get() + url;
+                    // only create an absolute path when the hash can be used as one
+                    return path.isPath(window.location.hash) ? path.get() + url : url;
+                },
+
+                // test if a given url (string) is a path
+                // NOTE might be exceptionally naive
+                isPath: function(url) {
+                    return /\//.test(url);
                 },
 
                 //return a url path with the window's location protocol/hostname/pathname removed
@@ -2856,15 +2864,12 @@
 
         $(function() {
             $(document)
-                    .bind(touchStartEvent, function(event) {
+                    .bind("vmousedown", function(event) {
                 if (touchToggleEnabled) {
-                    if ($(event.target).closest(ignoreTargets).length) {
-                        return;
-                    }
                     stateBefore = currentstate;
                 }
             })
-                    .bind(touchStopEvent, function(event) {
+                    .bind("vclick", function(event) {
                 if (touchToggleEnabled) {
                     if ($(event.target).closest(ignoreTargets).length) {
                         return;
@@ -2876,9 +2881,6 @@
                 }
             })
                     .bind('scrollstart', function(event) {
-                if ($(event.target).closest(ignoreTargets).length) {
-                    return;
-                } //because it could be a touchmove...
                 scrollTriggered = true;
                 if (stateBefore == null) {
                     stateBefore = currentstate;
