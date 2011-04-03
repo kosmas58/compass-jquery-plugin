@@ -197,8 +197,9 @@ To use the stylesheets and javascripts include:
 
 <pre>
   = stylesheet_link_tag :ganttView', :media => 'screen, projection'
-  = javascript_include_tag :sparkline
-  = javascript_include_tag :ganttView</pre>
+  = javascript_include_tag :ganttView
+  = javascript_include_tag :highcharts
+  = javascript_include_tag :sparkline</pre>
 
 Emulators
 ---------
