@@ -526,11 +526,8 @@
 // the traditional mouse environment, should multiple handlers be registered
 // on the same element for different events.
 //
-// The current version simply adds mBind and mUnbind to the $.fn space,
-// but we're considering other methods for making this easier. One alternative
-// would be to allow users to use virtual mouse event names, such as
-// "vmousedown", "vmouseup", etc, to triggerVirtualEvent the traditional jQuery special/custom
-// event api, which would then triggerVirtualEvent this same code.
+// The current version exposes the following virtual events to jQuery bind methods:
+// "vmouseover vmousedown vmousemove vmouseup vclick vmouseout vmousecancel"
 
 (function($, window, document, undefined) {
 
@@ -2096,13 +2093,13 @@
                 },
 
                 // addNew is used whenever a new page is added
-                addNew: function(url, transition, storedTo) {
+                addNew: function(url, transition, title, storedTo) {
                     //if there's forward history, wipe it
                     if (urlHistory.getNext()) {
                         urlHistory.clearForward();
                     }
 
-                    urlHistory.stack.push({url : url, transition: transition, page: storedTo });
+                    urlHistory.stack.push({url : url, transition: transition, title: title, page: storedTo });
 
                     urlHistory.activeIndex = urlHistory.stack.length - 1;
                 },
@@ -2288,7 +2285,8 @@
                 duplicateCachedPage = null,
                 currPage = urlHistory.getActive(),
                 back = false,
-                forward = false;
+                forward = false,
+                pageTitle = document.title;
 
 
         // If we are trying to transition to the same page that we are currently on ignore the request.
@@ -2345,7 +2343,9 @@
         }
 
         //kill the keyboard
-        $(window.document.activeElement).add("input:focus, textarea:focus, select:focus").blur();
+        if (window.document.activeElement) {
+            $(window.document.activeElement || "").add("input:focus, textarea:focus, select:focus").blur();
+        }
 
         function defaultTransition() {
             if (transition === undefined) {
@@ -2391,10 +2391,19 @@
                     path.set(url);
                 }
 
+                //if title element wasn't found, try the page div data attr too
+                var newPageTitle = to.jqmData("title") || to.find(".ui-header .ui-title").text();
+                if (!!newPageTitle && pageTitle == document.title) {
+                    pageTitle = newPageTitle;
+                }
+
                 //add page to history stack if it's not back or forward
                 if (!back && !forward) {
-                    urlHistory.addNew(url, transition, to);
+                    urlHistory.addNew(url, transition, pageTitle, to);
                 }
+
+                //set page title
+                document.title = urlHistory.getActive().title;
 
                 removeActiveLinkClass();
 
@@ -2436,7 +2445,6 @@
 
                 pageContainerClasses = [];
             }
-
 
             if (transition && (transition !== 'none')) {
                 $.mobile.pageLoading(true);
@@ -2525,14 +2533,20 @@
                 url: fileUrl,
                 type: type,
                 data: data,
+                dataType: "html",
                 success: function(html) {
                     //pre-parse html to check for a data-url,
                     //use it as the new fileUrl, base path, etc
                     var all = $("<div></div>"),
                             redirectLoc,
+
+                        //page title regexp
+                            newPageTitle = html.match(/<title[^>]*>([^<]*)/) && RegExp.$1,
+
                         // TODO handle dialogs again
                             pageElemRegex = new RegExp(".*(<[^>]+\\bdata-" + $.mobile.ns + "role=[\"']?page[\"']?[^>]*>).*"),
                             dataUrlRegex = new RegExp("\\bdata-" + $.mobile.ns + "url=[\"']?([^\"'>]*)[\"']?");
+
 
                     // data-url must be provided for the base tag so resource requests can be directed to the
                     // correct url. loading into a temprorary element makes these requests immediately
@@ -2556,15 +2570,21 @@
                     all.get(0).innerHTML = html;
                     to = all.find(":jqmData(role='page'), :jqmData(role='dialog')").first();
 
+                    //finally, if it's defined now, set the page title for storage in urlHistory
+                    if (newPageTitle) {
+                        pageTitle = newPageTitle;
+                    }
+
                     //rewrite src and href attrs to use a base url
                     if (!$.support.dynamicBaseTag) {
                         var newPath = path.get(fileUrl);
-                        to.find('[src],link[href]').each(function() {
+                        to.find("[src], link[href], a[rel='external'], :jqmData(ajax='false'), a[target]").each(function() {
                             var thisAttr = $(this).is('[href]') ? 'href' : 'src',
                                     thisUrl = $(this).attr(thisAttr);
 
+
                             //if full path exists and is same, chop it - helps IE out
-                            thisUrl.replace(location.protocol + '//' + location.host + location.pathname, '');
+                            thisUrl = thisUrl.replace(location.protocol + '//' + location.host + location.pathname, '');
 
                             if (!/^(\w+:|#|\/)/.test(thisUrl)) {
                                 $(this).attr(thisAttr, newPath + thisUrl);
@@ -2651,6 +2671,9 @@
     });
 
 
+    //temporary fix for allowing 3rd party onclick handlers to still function.
+    var preventClickDefault = false, stopClickPropagation = false;
+
     //click routing - direct to HTTP or Ajax, accordingly
     $("a").live("vclick", function(event) {
 
@@ -2693,17 +2716,27 @@
             //if data-ajax attr is set to false, use the default behavior of a link
                 hasAjaxDisabled = $this.is(":jqmData(ajax='false')");
 
+        //reset our prevDefault value because I'm paranoid.
+        preventClickDefault = stopClickPropagation = false;
+
         //if there's a data-rel=back attr, go back in history
         if ($this.is(":jqmData(rel='back')")) {
             window.history.back();
-            return false;
+            preventClickDefault = stopClickPropagation = true;
+            return;
         }
 
         //prevent # urls from bubbling
         //path.get() is replaced to combat abs url prefixing in IE
         if (url.replace(path.get(), "") == "#") {
             //for links created purely for interaction - ignore
-            event.preventDefault();
+            //don't call preventDefault on the event here, vclick
+            //may have been triggered by a touchend, before any moues
+            //click event was dispatched and we want to make sure
+            //3rd party onclick handlers get triggered. If and when
+            //a mouse click event is generated, our live("click") handler
+            //will get triggered and do the preventDefault.
+            preventClickDefault = true;
             return;
         }
 
@@ -2720,29 +2753,38 @@
             //use default click handling
             return;
         }
-        else {
-            //use ajax
-            var transition = $this.jqmData("transition"),
-                    direction = $this.jqmData("direction"),
-                    reverse = (direction && direction === "reverse") ||
-                        // deprecated - remove by 1.0
-                            $this.jqmData("back");
 
-            //this may need to be more specific as we use data-rel more
-            nextPageRole = $this.attr("data-" + $.mobile.ns + "rel");
+        //use ajax
+        var transition = $this.jqmData("transition"),
+                direction = $this.jqmData("direction"),
+                reverse = (direction && direction === "reverse") ||
+                    // deprecated - remove by 1.0
+                        $this.jqmData("back");
 
-            //if it's a relative href, prefix href with base url
-            if (path.isRelative(url) && !hadProtocol) {
-                url = path.makeAbsolute(url);
-            }
+        //this may need to be more specific as we use data-rel more
+        nextPageRole = $this.attr("data-" + $.mobile.ns + "rel");
 
-            url = path.stripHash(url);
-
-            $.mobile.changePage(url, transition, reverse);
+        //if it's a relative href, prefix href with base url
+        if (path.isRelative(url) && !hadProtocol) {
+            url = path.makeAbsolute(url);
         }
-        event.preventDefault();
+
+        url = path.stripHash(url);
+
+        $.mobile.changePage(url, transition, reverse);
+        preventClickDefault = true;
     });
 
+    $("a").live("click", function(event) {
+        if (preventClickDefault) {
+            event.preventDefault();
+            preventClickDefault = false;
+        }
+        if (stopClickPropagation) {
+            event.stopPropagation();
+            stopClickPropagation = false;
+        }
+    });
 
     //hashchange event handler
     $window.bind("hashchange", function(e, triggered) {
@@ -2800,6 +2842,7 @@
             $.mobile.changePage($.mobile.firstPage, transition, true, false, true);
         }
     });
+
 })(jQuery);
 
 
@@ -2925,9 +2968,9 @@
             prevFooter = prevPage && prevPage.find(":jqmData(role='footer')");
             var prevFooterMatches = prevFooter.jqmData("id") === id;
 
-            if (prevFooterMatches) {
+            if (id && prevFooterMatches) {
                 stickyFooter = footer;
-                setTop(stickyFooter.removeClass("fade").appendTo($.mobile.pageContainer));
+                setTop(stickyFooter.removeClass("fade in out").appendTo($.mobile.pageContainer));
             }
         });
 
@@ -2938,9 +2981,9 @@
             if (stickyFooter && stickyFooter.length) {
 
                 setTimeout(function() {
-                    setTop(stickyFooter.appendTo($this));
+                    setTop(stickyFooter.appendTo($this).addClass("fade"));
                     stickyFooter = null;
-                }, 400);
+                }, 500);
             }
 
             $.fixedToolbars.show(true, this);
@@ -3187,8 +3230,7 @@
 
         _updateAll: function() {
             this._getInputSet().each(function() {
-                var dVal = $(this).jqmData("cacheVal");
-                if (dVal && dVal !== $(this).is(":checked") || this.inputtype === "checkbox") {
+                if ($(this).is(":checked") || this.inputtype === "checkbox") {
                     $(this).trigger("change");
                 }
             })
@@ -3540,13 +3582,24 @@
 
                 //button events
                 button
-                        .bind("vclick", function(event) {
-                    self.open();
-                    event.preventDefault();
+                        .bind("vclick keydown", function(event) {
+                    if (event.type == "vclick" ||
+                            event.keyCode && ( event.keyCode === $.mobile.keyCode.ENTER || event.keyCode === $.mobile.keyCode.SPACE )) {
+                        self.open();
+                        event.preventDefault();
+                    }
                 });
 
                 //events for list items
-                list.delegate("li:not(.ui-disabled, .ui-li-divider)", "vclick", function(event) {
+                list
+                        .attr("role", "listbox")
+                        .delegate(".ui-li>a", "focusin", function() {
+                    $(this).attr("tabindex", "0");
+                })
+                        .delegate(".ui-li>a", "focusout", function() {
+                    $(this).attr("tabindex", "-1");
+                })
+                        .delegate("li:not(.ui-disabled, .ui-li-divider)", "vclick", function(event) {
 
                     // index of option tag to be selected
                     var oldIndex = select[0].selectedIndex,
@@ -3575,6 +3628,54 @@
                     }
 
                     event.preventDefault();
+                })
+                    //keyboard events for menu items
+                        .keydown(function(e) {
+                    var target = $(e.target),
+                            li = target.closest("li");
+
+                    // switch logic based on which key was pressed
+                    switch (e.keyCode) {
+                        // up or left arrow keys
+                        case 38:
+                            var prev = li.prev();
+
+                            // if there's a previous option, focus it
+                            if (prev.length) {
+                                target
+                                        .blur()
+                                        .attr("tabindex", "-1");
+
+                                prev.find("a").first().focus();
+                            }
+
+                            return false;
+                            break;
+
+                        // down or right arrow keys
+                        case 40:
+                            var next = li.next();
+
+                            // if there's a next option, focus it
+                            if (next.length) {
+                                target
+                                        .blur()
+                                        .attr("tabindex", "-1");
+
+                                next.find("a").first().focus();
+                            }
+
+                            return false;
+                            break;
+
+                        // if enter or space is pressed, trigger click
+                        case 13:
+                        case 32:
+                            target.trigger("vclick");
+
+                            return false;
+                            break;
+                    }
                 });
 
                 //events on "screen" overlay
@@ -3640,6 +3741,10 @@
             });
 
             self.list.html(lis.join(" "));
+
+            self.list.find("li")
+                    .attr({ "role": "option", "tabindex": "-1" })
+                    .first().attr("tabindex", "0");
 
             // hide header close link for single selects
             if (!this.isMultiple) {
@@ -4566,91 +4671,15 @@
 
             // create listview markup
             $list
-                    .addClass("ui-listview")
-                    .attr("role", "listbox")
+                    .addClass("ui-listview");
 
             if (o.inset) {
                 $list.addClass("ui-listview-inset ui-corner-all ui-shadow");
             }
 
-            $list.delegate(".ui-li", "focusin", function() {
-                $(this).attr("tabindex", "0");
-            });
-
             this._itemApply($list, $list);
 
             this.refresh(true);
-
-            //keyboard events for menu items
-            $list.keydown(function(e) {
-                var target = $(e.target),
-                        li = target.closest("li");
-
-                // switch logic based on which key was pressed
-                switch (e.keyCode) {
-                    // up or left arrow keys
-                    case 38:
-                        var prev = li.prev();
-
-                        // if there's a previous option, focus it
-                        if (prev.length) {
-                            target
-                                    .blur()
-                                    .attr("tabindex", "-1");
-
-                            prev.find("a").first().focus();
-                        }
-
-                        return false;
-                        break;
-
-                    // down or right arrow keys
-                    case 40:
-                        var next = li.next();
-
-                        // if there's a next option, focus it
-                        if (next.length) {
-                            target
-                                    .blur()
-                                    .attr("tabindex", "-1");
-
-                            next.find("a").first().focus();
-                        }
-
-                        return false;
-                        break;
-
-                    case 39:
-                        var a = li.find("a.ui-li-link-alt");
-
-                        if (a.length) {
-                            target.blur();
-                            a.first().focus();
-                        }
-
-                        return false;
-                        break;
-
-                    case 37:
-                        var a = li.find("a.ui-link-inherit");
-
-                        if (a.length) {
-                            target.blur();
-                            a.first().focus();
-                        }
-
-                        return false;
-                        break;
-
-                    // if enter or space is pressed, trigger click
-                    case 13:
-                    case 32:
-                        target.trigger("vclick");
-
-                        return false;
-                        break;
-                }
-            });
 
         },
 
@@ -4663,9 +4692,8 @@
 
             item.find("p, dl").addClass("ui-li-desc");
 
-            $list.find("li").find(">img:eq(0), >a:first>img:eq(0)").addClass("ui-li-thumb").each(function() {
-                $(this).closest("li")
-                        .addClass($(this).is(".ui-li-icon") ? "ui-li-has-icon" : "ui-li-has-thumb");
+            $list.find("li").find(">img:eq(0), >:first>img:eq(0)").addClass("ui-li-thumb").each(function() {
+                $(this).closest("li").addClass($(this).is(".ui-li-icon") ? "ui-li-has-icon" : "ui-li-has-thumb");
             });
 
             var aside = item.find(".ui-li-aside");
@@ -4701,11 +4729,6 @@
                 $list.find(".ui-li-dec").remove();
             }
 
-            li.attr({ "role": "option", "tabindex": "-1" });
-
-            li.first().attr("tabindex", "0");
-
-
             li.each(function(pos) {
                 var item = $(this),
                         itemClass = "ui-li";
@@ -4717,7 +4740,7 @@
 
                 var itemTheme = item.jqmData("theme") || o.theme;
 
-                var a = item.find("a");
+                var a = item.find(">a");
 
                 if (a.length) {
                     var icon = item.jqmData("icon");
@@ -4772,7 +4795,7 @@
                     }
 
                 } else {
-                    itemClass += " ui-li-static ui-btn-up-" + itemTheme;
+                    itemClass += " ui-li-static ui-body-" + itemTheme;
                 }
 
 
@@ -4811,8 +4834,10 @@
 
 
                 if (counter && itemClass.indexOf("ui-li-divider") < 0) {
-                    item
-                            .find(".ui-link-inherit").first()
+
+                    var countParent = item.is(".ui-li-static:first") ? item : item.find(".ui-link-inherit");
+
+                    countParent
                             .addClass("ui-li-jsnumbering")
                             .prepend("<span class='ui-li-dec'>" + (counter++) + ". </span>");
                 }

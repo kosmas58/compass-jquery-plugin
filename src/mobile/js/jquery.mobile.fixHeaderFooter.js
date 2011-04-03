@@ -120,9 +120,9 @@
             prevFooter = prevPage && prevPage.find(":jqmData(role='footer')");
             var prevFooterMatches = prevFooter.jqmData("id") === id;
 
-            if (prevFooterMatches) {
+            if (id && prevFooterMatches) {
                 stickyFooter = footer;
-                setTop(stickyFooter.removeClass("fade").appendTo($.mobile.pageContainer));
+                setTop(stickyFooter.removeClass("fade in out").appendTo($.mobile.pageContainer));
             }
         });
 
@@ -133,9 +133,9 @@
             if (stickyFooter && stickyFooter.length) {
 
                 setTimeout(function() {
-                    setTop(stickyFooter.appendTo($this));
+                    setTop(stickyFooter.appendTo($this).addClass("fade"));
                     stickyFooter = null;
-                }, 400);
+                }, 500);
             }
 
             $.fixedToolbars.show(true, this);

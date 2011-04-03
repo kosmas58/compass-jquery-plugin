@@ -12,7 +12,7 @@ Description
 
 A Sass-based Meta-Framework for Compass that allows you to mix and match any of the following:
 
-* jquery-rails with jQuery 1.5.1 and jQuery.UI 1.8.11 including themes
+* jquery-rails with jQuery 1.5.2 and jQuery.UI 1.8.11 including themes
 * jQuery Tools 1.2.5
 * jquery.jstree.js V1.0rc3
 * jquery.dynatree.js V1.0.2
@@ -22,7 +22,7 @@ A Sass-based Meta-Framework for Compass that allows you to mix and match any of 
 
 and for mobile devices <i>(using pure haml/sass without compass)</i>:
 
-* jquery.mobile.js 1.0a3
+* jquery.mobile.js 1.0a4
 * jquery.jqtouch.js V1.0b2
 
 This library requires [Compass][3].
@@ -185,7 +185,7 @@ To use the javascripts include:
 Graphics
 --------
 
-Use compass to install the jquery.sparklines and jquery.ganttView javascript libraries into your project.
+Use compass to install the jquery.ganttView, jquery.highcharts and jquery.sparklines javascript libraries into your project.
 
 <pre>compass install [-r jquery] jquery/graphics <project name></pre>
 
@@ -297,11 +297,13 @@ jQuery Plugins included:
 * Adam Shaw for [FullCalendar][31]
 * Moxiecode Systems AB for [TinyMCE][40]
 
+
 Other stuff included:
 ---------------------
 
 * Benjamin Lupton for [History.js][19]
 * Rick DeNatale for [ri_cal][33]
+* Highslide Software Torstein Hønsi for [Highcharts][42]
 
 Note on Patches/Pull Requests
 =============================
@@ -361,3 +363,4 @@ Copyright &copy; 2009-2011 Kosmas Schuetz. See LICENSE for details.
   [39]: http://github.com/thegrubbsian/jquery.ganttView
   [40]: http://tinymce.moxiecode.com/
   [41]: http://github.com/loopj/jquery-tokeninput
+  [42]: http://http://www.highcharts.com

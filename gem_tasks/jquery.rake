@@ -53,6 +53,7 @@ namespace :build do
       all_jquery_scripts = [
           'intro.js',
           'core.js',
+          'deferred.js',
           'support.js',
           'data.js',
           'queue.js',

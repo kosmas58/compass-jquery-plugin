@@ -211,13 +211,24 @@
 
                 //button events
                 button
-                        .bind("vclick", function(event) {
-                    self.open();
-                    event.preventDefault();
+                        .bind("vclick keydown", function(event) {
+                    if (event.type == "vclick" ||
+                            event.keyCode && ( event.keyCode === $.mobile.keyCode.ENTER || event.keyCode === $.mobile.keyCode.SPACE )) {
+                        self.open();
+                        event.preventDefault();
+                    }
                 });
 
                 //events for list items
-                list.delegate("li:not(.ui-disabled, .ui-li-divider)", "vclick", function(event) {
+                list
+                        .attr("role", "listbox")
+                        .delegate(".ui-li>a", "focusin", function() {
+                    $(this).attr("tabindex", "0");
+                })
+                        .delegate(".ui-li>a", "focusout", function() {
+                    $(this).attr("tabindex", "-1");
+                })
+                        .delegate("li:not(.ui-disabled, .ui-li-divider)", "vclick", function(event) {
 
                     // index of option tag to be selected
                     var oldIndex = select[0].selectedIndex,
@@ -246,6 +257,54 @@
                     }
 
                     event.preventDefault();
+                })
+                    //keyboard events for menu items
+                        .keydown(function(e) {
+                    var target = $(e.target),
+                            li = target.closest("li");
+
+                    // switch logic based on which key was pressed
+                    switch (e.keyCode) {
+                        // up or left arrow keys
+                        case 38:
+                            var prev = li.prev();
+
+                            // if there's a previous option, focus it
+                            if (prev.length) {
+                                target
+                                        .blur()
+                                        .attr("tabindex", "-1");
+
+                                prev.find("a").first().focus();
+                            }
+
+                            return false;
+                            break;
+
+                        // down or right arrow keys
+                        case 40:
+                            var next = li.next();
+
+                            // if there's a next option, focus it
+                            if (next.length) {
+                                target
+                                        .blur()
+                                        .attr("tabindex", "-1");
+
+                                next.find("a").first().focus();
+                            }
+
+                            return false;
+                            break;
+
+                        // if enter or space is pressed, trigger click
+                        case 13:
+                        case 32:
+                            target.trigger("vclick");
+
+                            return false;
+                            break;
+                    }
                 });
 
                 //events on "screen" overlay
@@ -311,6 +370,10 @@
             });
 
             self.list.html(lis.join(" "));
+
+            self.list.find("li")
+                    .attr({ "role": "option", "tabindex": "-1" })
+                    .first().attr("tabindex", "0");
 
             // hide header close link for single selects
             if (!this.isMultiple) {
