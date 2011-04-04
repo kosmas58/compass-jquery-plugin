@@ -674,8 +674,9 @@
                     ajax_params.success = function(results) {
                         if ($.isFunction(settings.onResult)) {
                             results = settings.onResult.call(this, results);
-                        }¡
-                  cache.add(query, settings.jsonContainer ? results[settings.jsonContainer] : results);
+                        }
+                        ;
+                        cache.add(query, settings.jsonContainer ? results[settings.jsonContainer] : results);
 
                         // only populate the dropdown if the results are associated with the active search query
                         if (input_box.val().toLowerCase() === query) {
