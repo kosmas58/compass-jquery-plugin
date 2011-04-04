@@ -4555,13 +4555,11 @@ function Chart (options, callback) {
 			return returnValue;
 		};
 		
-		/**
-		 * Create the path for a plot line that goes from the given value on 
-		 * this axis, across the plot to the opposite side
-		 * @param {Number} value
-		 * @param {Number} lineWidth Used for calculation crisp line
-		 * @param {Number] old Use old coordinates (for resizing and rescaling)
-		 */
+		// Create the path for a plot line that goes from the given value on
+		// this axis, across the plot to the opposite side
+		// @param {Number} value
+		// @param {Number} lineWidth Used for calculation crisp line
+		// @param {Number] old Use old coordinates (for resizing and rescaling)
 		getPlotLinePath = function(value, lineWidth, old) {
 			var x1, 
 				y1, 
@@ -4596,10 +4594,8 @@ function Chart (options, callback) {
 				renderer.crispLine([M, x1, y1, L, x2, y2], lineWidth || 0);
 		};
 		
-		/**
-		 * Take an interval and normalize it to multiples of 1, 2, 2.5 and 5
-		 * @param {Number} interval
-		 */
+		// Take an interval and normalize it to multiples of 1, 2, 2.5 and 5
+		// @param {Number} interval
 		function normalizeTickInterval(interval, multiples) {
 			var normalized;
 				
