@@ -12,10 +12,14 @@ high_scripts = [
     'js/exporting.js'
 ].collect { |filename| File.read(File.join(HIGHCHARTS_SRC, filename)) }.join "\n\n"
 HIGHCHARTS_SRC_THEMES = File.join(HIGHCHARTS_SRC, 'themes')
+HIGHCHARTS_SRC_STYLESHEETS = File.join(HIGHCHARTS_SRC, 'css')
 HIGHCHARTS_SRC_IMAGES = File.join(HIGHCHARTS_SRC, 'images')
+
+HIGHSLIDE_SRC_IMAGES = File.join(HIGHCHARTS_SRC_IMAGES, 'graphics')
 
 GRAPHICS_DEST_TEMPLATES = File.join(GEM_ROOT, 'templates', 'graphics')
 GRAPHICS_DEST_THEMES = File.join(GRAPHICS_DEST_TEMPLATES, 'jquery')
+
 HIGHCHARTS_DEST_THEMES = File.join(GRAPHICS_DEST_TEMPLATES, 'highcharts')
 HIGHCHARTS_DEST_IMAGES = File.join(GRAPHICS_DEST_THEMES, 'highcharts')
 
@@ -109,6 +113,34 @@ namespace :build do
         next unless /\.jpg$/ =~ image
         FileUtils.cp(File.join(src_dir, image), dest_dir)
         manifest.print "image 'jquery/highcharts/#{image}'\n"
+      end
+
+      css = File.read File.join(HIGHCHARTS_SRC_STYLESHEETS, 'highslide.css')
+      sass = ''
+      IO.popen("sass-convert -F css -T scss", 'r+') { |f| f.print(css); f.close_write; sass = f.read }
+      open File.join(GRAPHICS_DEST_THEMES, 'highslide.scss'), 'w' do |f|
+        f.write sass
+      end
+      manifest.print "stylesheet 'jquery/highslide.scss'\n"
+
+      FileUtils.mkdir_p File.join(HIGHCHARTS_DEST_IMAGES, 'graphics', 'outlines')
+
+      src_dir = HIGHSLIDE_SRC_IMAGES
+      dest_dir = File.join(HIGHCHARTS_DEST_IMAGES, 'graphics')
+
+      Dir.foreach(src_dir) do |image|
+        next unless (/\.cur|.gif|.png$/) =~ image
+        FileUtils.cp(File.join(src_dir, image), dest_dir)
+        manifest.print "image 'jquery/highcharts/graphics/#{image}'\n"
+      end
+
+      src_dir = File.join(HIGHSLIDE_SRC_IMAGES, 'outlines')
+      dest_dir = File.join(HIGHCHARTS_DEST_IMAGES, 'graphics', 'outlines')
+
+      Dir.foreach(src_dir) do |image|
+        next unless /\.png$/ =~ image
+        FileUtils.cp(File.join(src_dir, image), dest_dir)
+        manifest.print "image 'jquery/highcharts/graphics/outlines/#{image}'\n"
       end
     end
   end
