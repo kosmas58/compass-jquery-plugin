@@ -582,10 +582,12 @@
         }
 
         if (t.search(/^touch/) !== -1) {
-            var ne = getNativeEvent(oe);
-            if (typeof ne.touches !== "undefined" && ne.touches[0]) {
-                var touch = ne.touches[0];
-                for (var i = 0; i < touchEventProps.length; i++) {
+            var ne = getNativeEvent(oe),
+                    t = ne.touches,
+                    ct = ne.changedTouches,
+                    touch = (t && t.length) ? t[0] : ((ct && ct.length) ? ct[0] : undefined);
+            if (touch) {
+                for (var i = 0, len = touchEventProps.length; i < len; i++) {
                     var prop = touchEventProps[i];
                     event[prop] = touch[prop];
                 }
@@ -1027,7 +1029,7 @@
                 function clearTapHandlers() {
                     touching = false;
                     clearTimeout(timer);
-                    $(this).unbind("vmouseclick", clickHandler).unbind("vmousecancel", clearTapHandlers);
+                    $this.unbind("vclick", clickHandler).unbind("vmousecancel", clearTapHandlers);
                 }
 
                 function clickHandler(event) {
@@ -3209,8 +3211,10 @@
         },
 
         _updateAll: function() {
+            var self = this;
+
             this._getInputSet().each(function() {
-                if ($(this).is(":checked") || this.inputtype === "checkbox") {
+                if ($(this).is(":checked") || self.inputtype === "checkbox") {
                     $(this).trigger("change");
                 }
             })

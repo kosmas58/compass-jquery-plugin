@@ -80,7 +80,7 @@
                 function clearTapHandlers() {
                     touching = false;
                     clearTimeout(timer);
-                    $(this).unbind("vmouseclick", clickHandler).unbind("vmousecancel", clearTapHandlers);
+                    $this.unbind("vclick", clickHandler).unbind("vmousecancel", clearTapHandlers);
                 }
 
                 function clickHandler(event) {
