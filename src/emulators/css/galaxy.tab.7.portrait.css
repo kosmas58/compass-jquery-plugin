@@ -1,0 +1,18 @@
+.ipad .emulator {
+    background: image_url("emulators/galaxy.tab.7.portrait.png") no-repeat;
+    width: 816px;
+    height: 1266px;
+}
+
+.ipad .emulator .display-area {
+    position: relative;
+    top: 159px;
+    width: 600px;
+    height: 987px;
+    max-height: 987px;
+    color: #ffffff;
+}
+
+.ipad .emulator .display-area a {
+    color: #ff5500;
+}
