@@ -2,12 +2,12 @@
 // @compilation_level SIMPLE_OPTIMIZATIONS
 
 /**
- * @license jqGrid  4.0 beta  - jQuery Grid
+ * @license jqGrid  4.0  - jQuery Grid
  * Copyright (c) 2008, Tony Tomov, tony@trirand.com
  * Dual licensed under the MIT and GPL licenses
  * http://www.opensource.org/licenses/mit-license.php
  * http://www.gnu.org/licenses/gpl-2.0.html
- * Date: 2011-03-22
+ * Date: 2011-04-09
  */
 //jsHint options
 /*global document, window, jQuery, DOMParser, ActiveXObject $ */
@@ -2838,6 +2838,11 @@
 //                });
 //            }
             grid.bDiv = document.createElement("div");
+            if (isMSIE) {
+                if (String(ts.p.height).toLowerCase() === "auto") {
+                    ts.p.height = "100%";
+                }
+            }
             $(grid.bDiv)
                     .append($('<div style="position:relative;' + (isMSIE && $.browser.version < 8 ? "height:0.01%;" : "") + '"></div>').append('<div></div>').append(this))
                     .addClass("ui-jqgrid-bdiv")
@@ -3519,16 +3524,8 @@
                     }
                 });
                 if (fndh === true) {
-                    if ($t.p.shrinkToFit === true && !isNaN($t.p.width) && $t.grid.width !== $t.p.tblwidth) {
-                        $($t).jqGrid("setGridWidth", $t.p.tblwidth, true);
-                    } else {
-                        $("table:first", $t.grid.hDiv).width($t.p.tblwidth);
-                        $("table:first", $t.grid.bDiv).width($t.p.tblwidth);
-                        $t.grid.hDiv.scrollLeft = $t.grid.bDiv.scrollLeft;
-                        if ($t.p.footerrow) {
-                            $("table:first", $t.grid.sDiv).width($t.p.tblwidth);
-                            $t.grid.sDiv.scrollLeft = $t.grid.bDiv.scrollLeft;
-                        }
+                    if ($t.grid.width !== $t.p.tblwidth) {
+                        $($t).jqGrid("setGridWidth", $t.p.shrinkToFit === true ? $t.grid.width : $t.p.tblwidth, true);
                     }
                 }
             });

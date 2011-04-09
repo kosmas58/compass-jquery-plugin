@@ -132,7 +132,8 @@
             this.handle
                     .bind("vmousedown", function() {
                 $(this).focus();
-            });
+            })
+                    .bind("vclick", false);
 
             this.handle
                     .bind("keydown", function(event) {

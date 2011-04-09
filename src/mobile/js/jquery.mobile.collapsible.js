@@ -133,7 +133,7 @@
             }
 
             collapsibleHeading
-                    .bind("vclick", function(e) {
+                    .bind("vmouseup", function(e) {
                 if (collapsibleHeading.is('.ui-collapsible-heading-collapsed')) {
                     collapsibleContain.trigger('expand');
                 }
@@ -141,7 +141,8 @@
                     collapsibleContain.trigger('collapse');
                 }
                 e.preventDefault();
-            });
+            })
+                    .bind("vclick", false);
         }
     });
 })(jQuery);
