@@ -1,0 +1,18 @@
+.ipad .emulator {
+    background: image_url("emulators/galaxy.s.landscape.png") no-repeat;
+    width: 1132px;
+    height: 600px;
+}
+
+.ipad .emulator .display-area {
+    position: relative;
+    top: 98px;
+    width: 800px;
+    height: 445px;
+    max-height: 445px;
+    color: #ffffff;
+}
+
+.ipad .emulator .display-area a {
+    color: #ff5500;
+}
