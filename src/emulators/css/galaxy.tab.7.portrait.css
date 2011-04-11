@@ -1,12 +1,12 @@
 .ipad .emulator {
     background: image_url("emulators/galaxy.tab.7.portrait.png") no-repeat;
-    width: 816px;
-    height: 1266px;
+    width: 720px;
+    height: 1160px;
 }
 
 .ipad .emulator .display-area {
     position: relative;
-    top: 159px;
+    top: 104px;
     width: 600px;
     height: 987px;
     max-height: 987px;
