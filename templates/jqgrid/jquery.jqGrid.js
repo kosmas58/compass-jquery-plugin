@@ -954,7 +954,7 @@
                     };
                 }
             };
-            if (this.tagName != 'TABLE') {
+            if (this.tagName.toUpperCase() != 'TABLE') {
                 alert("Element is not a table");
                 return;
             }
@@ -7029,7 +7029,7 @@ var xmlJsonClass = {
                     var s = "",so = "";
                     for (i = 0; i < that.p.ops.length; i++) {
                         if ($.inArray(that.p.ops[i].name, op) !== -1) {
-                            so = rule.op === that.p.ops[i].name ? " selected=selected" : "";
+                            so = rule.op === that.p.ops[i].name ? " selected='selected'" : "";
                             s += "<option value='" + that.p.ops[i].name + "'" + so + ">" + that.p.ops[i].description + "</option>";
                         }
                     }
@@ -7908,7 +7908,7 @@ var xmlJsonClass = {
                             nm = this.name;
                             opt = $.extend({}, this.editoptions || {});
                             fld = $("#" + $.jgrid.jqID(nm), "#" + fmid);
-                            if (fld && fld[0] !== null) {
+                            if (fld && fld.length && fld[0] !== null) {
                                 vl = "";
                                 if (opt.defaultValue) {
                                     vl = $.isFunction(opt.defaultValue) ? opt.defaultValue() : opt.defaultValue;
@@ -8429,8 +8429,8 @@ var xmlJsonClass = {
                             bn = rtlb ? "pData" : "nData";
                     createData(rowid, $t, tbl, maxCols);
                     // buttons at footer
-                    var bP = "<a href='javascript:void(0)' id='" + bp + "' class='fm-button ui-state-default ui-corner-left'><span class='ui-icon ui-icon-triangle-1-w'></span></div>",
-                            bN = "<a href='javascript:void(0)' id='" + bn + "' class='fm-button ui-state-default ui-corner-right'><span class='ui-icon ui-icon-triangle-1-e'></span></div>",
+                    var bP = "<a href='javascript:void(0)' id='" + bp + "' class='fm-button ui-state-default ui-corner-left'><span class='ui-icon ui-icon-triangle-1-w'></span></a>",
+                            bN = "<a href='javascript:void(0)' id='" + bn + "' class='fm-button ui-state-default ui-corner-right'><span class='ui-icon ui-icon-triangle-1-e'></span></a>",
                             bS = "<a href='javascript:void(0)' id='sData' class='fm-button ui-state-default ui-corner-all'>" + p.bSubmit + "</a>",
                             bC = "<a href='javascript:void(0)' id='cData' class='fm-button ui-state-default ui-corner-all'>" + p.bCancel + "</a>";
                     var bt = "<table border='0' cellspacing='0' cellpadding='0' class='EditTable' id='" + frmtb + "_2'><tbody><tr><td colspan='2'><hr class='ui-widget-content' style='margin:1px'/></td></tr><tr id='Act_Buttons'><td class='navButton'>" + (rtlb ? bN + bP : bP + bN) + "</td><td class='EditButton'>" + bS + bC + "</td></tr>";
@@ -9706,7 +9706,7 @@ var xmlJsonClass = {
      * http://www.gnu.org/licenses/gpl-2.0.html
      **/
     $.jgrid.extend({
-        //Editing
+//Editing
         editRow : function(rowid, keys, oneditfunc, succesfunc, url, extraparam, aftersavefunc, errorfunc, afterrestorefunc) {
             // Compatible mode old versions
             var settings = {

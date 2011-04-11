@@ -9,7 +9,7 @@
      * http://www.gnu.org/licenses/gpl-2.0.html
      **/
     $.jgrid.extend({
-        //Editing
+//Editing
         editRow : function(rowid, keys, oneditfunc, succesfunc, url, extraparam, aftersavefunc, errorfunc, afterrestorefunc) {
             // Compatible mode old versions
             var settings = {
