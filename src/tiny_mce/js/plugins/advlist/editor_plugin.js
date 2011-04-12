@@ -12,7 +12,10 @@
         }
 
         d.numlist = b.getParam("advlist_number_styles") || e("default,lower-alpha,lower-greek,lower-roman,upper-alpha,upper-roman");
-        d.bullist = b.getParam("advlist_bullet_styles") || e("default,circle,disc,square")
+        d.bullist = b.getParam("advlist_bullet_styles") || e("default,circle,disc,square");
+        if (tinymce.isIE && /MSIE [2-7]/.test(navigator.userAgent)) {
+            d.isIE7 = true
+        }
     },createControl:function(d, b) {
         var f = this,e,h;
         if (d == "numlist" || d == "bullist") {
@@ -78,6 +81,9 @@
                 });
                 j.add({id:f.editor.dom.uniqueId(),title:"advlist.types","class":"mceMenuItemTitle",titleItem:true}).setDisabled(1);
                 a(f[d], function(k) {
+                    if (f.isIE7 && k.styles.listStyleType == "lower-greek") {
+                        return
+                    }
                     k.id = f.editor.dom.uniqueId();
                     j.add({id:k.id,title:k.title,onclick:function() {
                         h = k;

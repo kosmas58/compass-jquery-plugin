@@ -124,7 +124,7 @@
         }
 
         function isCellSelected(cell) {
-            return dom.hasClass(cell.elm, 'mceSelected') || cell == selectedCell;
+            return cell && (dom.hasClass(cell.elm, 'mceSelected') || cell == selectedCell);
         }
 
         ;
@@ -187,8 +187,8 @@
             }, 'childNodes');
 
             cell = cloneNode(cell, false);
-            setSpanVal(cell, 'rowspan', 1);
-            setSpanVal(cell, 'colspan', 1);
+            setSpanVal(cell, 'rowSpan', 1);
+            setSpanVal(cell, 'colSpan', 1);
 
             if (formatNode) {
                 cell.appendChild(formatNode);
@@ -282,8 +282,8 @@
                         rowSpan = getSpanVal(cell, 'rowspan');
 
                         if (colSpan > 1 || rowSpan > 1) {
-                            setSpanVal(cell, 'rowspan', 1);
-                            setSpanVal(cell, 'colspan', 1);
+                            setSpanVal(cell, 'rowSpan', 1);
+                            setSpanVal(cell, 'colSpan', 1);
 
                             // Insert cells right
                             for (i = 0; i < colSpan - 1; i++)
@@ -328,12 +328,15 @@
 
                 // Set row/col span to start cell
                 startCell = getCell(startX, startY).elm;
-                setSpanVal(startCell, 'colspan', (endX - startX) + 1);
-                setSpanVal(startCell, 'rowspan', (endY - startY) + 1);
+                setSpanVal(startCell, 'colSpan', (endX - startX) + 1);
+                setSpanVal(startCell, 'rowSpan', (endY - startY) + 1);
 
                 // Remove other cells and add it's contents to the start cell
                 for (y = startY; y <= endY; y++) {
                     for (x = startX; x <= endX; x++) {
+                        if (!grid[y] || !grid[y][x])
+                            continue;
+
                         cell = grid[y][x].elm;
 
                         if (cell != startCell) {
@@ -367,7 +370,7 @@
         ;
 
         function insertRow(before) {
-            var posY, cell, lastCell, x, rowElm, newRow, newCell, otherCell;
+            var posY, cell, lastCell, x, rowElm, newRow, newCell, otherCell, rowSpan;
 
             // Find first/last row
             each(grid, function(row, y) {
@@ -388,22 +391,26 @@
             });
 
             for (x = 0; x < grid[0].length; x++) {
+                // Cell not found could be because of an invalid table structure
+                if (!grid[posY][x])
+                    continue;
+
                 cell = grid[posY][x].elm;
 
                 if (cell != lastCell) {
                     if (!before) {
                         rowSpan = getSpanVal(cell, 'rowspan');
                         if (rowSpan > 1) {
-                            setSpanVal(cell, 'rowspan', rowSpan + 1);
+                            setSpanVal(cell, 'rowSpan', rowSpan + 1);
                             continue;
                         }
                     } else {
                         // Check if cell above can be expanded
                         if (posY > 0 && grid[posY - 1][x]) {
                             otherCell = grid[posY - 1][x].elm;
-                            rowSpan = getSpanVal(otherCell, 'rowspan');
+                            rowSpan = getSpanVal(otherCell, 'rowSpan');
                             if (rowSpan > 1) {
-                                setSpanVal(otherCell, 'rowspan', rowSpan + 1);
+                                setSpanVal(otherCell, 'rowSpan', rowSpan + 1);
                                 continue;
                             }
                         }
@@ -411,7 +418,7 @@
 
                     // Insert new cell into new row
                     newCell = cloneCell(cell);
-                    setSpanVal(newCell, 'colspan', cell.colSpan);
+                    setSpanVal(newCell, 'colSpan', cell.colSpan);
 
                     newRow.appendChild(newCell);
 
@@ -448,8 +455,12 @@
             });
 
             each(grid, function(row, y) {
-                var cell = row[posX].elm, rowSpan, colSpan;
+                var cell, rowSpan, colSpan;
 
+                if (!row[posX])
+                    return;
+
+                cell = row[posX].elm;
                 if (cell != lastCell) {
                     colSpan = getSpanVal(cell, 'colspan');
                     rowSpan = getSpanVal(cell, 'rowspan');
@@ -463,7 +474,7 @@
                             fillLeftDown(posX, y, rowSpan - 1, colSpan);
                         }
                     } else
-                        setSpanVal(cell, 'colspan', cell.colSpan + 1);
+                        setSpanVal(cell, 'colSpan', cell.colSpan + 1);
 
                     lastCell = cell;
                 }
@@ -482,10 +493,10 @@
                         each(grid, function(row) {
                             var cell = row[x].elm, colSpan;
 
-                            colSpan = getSpanVal(cell, 'colspan');
+                            colSpan = getSpanVal(cell, 'colSpan');
 
                             if (colSpan > 1)
-                                setSpanVal(cell, 'colspan', colSpan - 1);
+                                setSpanVal(cell, 'colSpan', colSpan - 1);
                             else
                                 dom.remove(cell);
                         });
@@ -510,10 +521,10 @@
 
                 // Move down row spanned cells
                 each(tr.cells, function(cell) {
-                    var rowSpan = getSpanVal(cell, 'rowspan');
+                    var rowSpan = getSpanVal(cell, 'rowSpan');
 
                     if (rowSpan > 1) {
-                        setSpanVal(cell, 'rowspan', rowSpan - 1);
+                        setSpanVal(cell, 'rowSpan', rowSpan - 1);
                         pos = getPos(cell);
                         fillLeftDown(pos.x, pos.y, 1, 1);
                     }
@@ -527,12 +538,12 @@
                     cell = cell.elm;
 
                     if (cell != lastCell) {
-                        rowSpan = getSpanVal(cell, 'rowspan');
+                        rowSpan = getSpanVal(cell, 'rowSpan');
 
                         if (rowSpan <= 1)
                             dom.remove(cell);
                         else
-                            setSpanVal(cell, 'rowspan', rowSpan - 1);
+                            setSpanVal(cell, 'rowSpan', rowSpan - 1);
 
                         lastCell = cell;
                     }
@@ -608,8 +619,8 @@
                 // Remove col/rowspans
                 for (i = 0; i < cellCount; i++) {
                     cell = row.cells[i];
-                    setSpanVal(cell, 'colspan', 1);
-                    setSpanVal(cell, 'rowspan', 1);
+                    setSpanVal(cell, 'colSpan', 1);
+                    setSpanVal(cell, 'rowSpan', 1);
                 }
 
                 // Needs more cells
@@ -759,8 +770,10 @@
 
                 // Add new selection
                 for (y = startY; y <= maxY; y++) {
-                    for (x = startX; x <= maxX; x++)
-                        dom.addClass(grid[y][x].elm, 'mceSelected');
+                    for (x = startX; x <= maxX; x++) {
+                        if (grid[y][x])
+                            dom.addClass(grid[y][x].elm, 'mceSelected');
+                    }
                 }
             }
         }
@@ -831,8 +844,10 @@
                 ed.onClick.add(function(ed, e) {
                     e = e.target;
 
-                    if (e.nodeName === 'TABLE')
+                    if (e.nodeName === 'TABLE') {
                         ed.selection.select(e);
+                        ed.nodeChanged();
+                    }
                 });
             }
 
@@ -917,10 +932,14 @@
                         // Remove current selection
                         sel = ed.selection.getSel();
 
-                        if (sel.removeAllRanges)
-                            sel.removeAllRanges();
-                        else
-                            sel.empty();
+                        try {
+                            if (sel.removeAllRanges)
+                                sel.removeAllRanges();
+                            else
+                                sel.empty();
+                        } catch (ex) {
+                            // IE9 might throw errors here
+                        }
 
                         e.preventDefault();
                     }

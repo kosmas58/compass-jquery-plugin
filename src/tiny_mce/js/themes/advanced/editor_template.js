@@ -8,7 +8,7 @@
         l.onResolveName = new e.util.Dispatcher(this);
         j.forcedHighContrastMode = j.settings.detect_highcontrast && l._isHighContrast();
         j.settings.skin = j.forcedHighContrastMode ? "highcontrast" : j.settings.skin;
-        l.settings = m = h({theme_advanced_path:true,theme_advanced_toolbar_location:"bottom",theme_advanced_buttons1:"bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,styleselect,formatselect",theme_advanced_buttons2:"bullist,numlist,|,outdent,indent,|,undo,redo,|,link,unlink,anchor,image,cleanup,help,code",theme_advanced_buttons3:"hr,removeformat,visualaid,|,sub,sup,|,charmap",theme_advanced_blockformats:"p,address,pre,h1,h2,h3,h4,h5,h6",theme_advanced_toolbar_align:"center",theme_advanced_fonts:"Andale Mono=andale mono,times;Arial=arial,helvetica,sans-serif;Arial Black=arial black,avant garde;Book Antiqua=book antiqua,palatino;Comic Sans MS=comic sans ms,sans-serif;Courier New=courier new,courier;Georgia=georgia,palatino;Helvetica=helvetica;Impact=impact,chicago;Symbol=symbol;Tahoma=tahoma,arial,helvetica,sans-serif;Terminal=terminal,monaco;Times New Roman=times new roman,times;Trebuchet MS=trebuchet ms,geneva;Verdana=verdana,geneva;Webdings=webdings;Wingdings=wingdings,zapf dingbats",theme_advanced_more_colors:1,theme_advanced_row_height:23,theme_advanced_resize_horizontal:1,theme_advanced_resizing_use_cookie:1,theme_advanced_font_sizes:"1,2,3,4,5,6,7",theme_advanced_font_selector:"span",readonly:j.settings.readonly}, j.settings);
+        l.settings = m = h({theme_advanced_path:true,theme_advanced_toolbar_location:"bottom",theme_advanced_buttons1:"bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,styleselect,formatselect",theme_advanced_buttons2:"bullist,numlist,|,outdent,indent,|,undo,redo,|,link,unlink,anchor,image,cleanup,help,code",theme_advanced_buttons3:"hr,removeformat,visualaid,|,sub,sup,|,charmap",theme_advanced_blockformats:"p,address,pre,h1,h2,h3,h4,h5,h6",theme_advanced_toolbar_align:"center",theme_advanced_fonts:"Andale Mono=andale mono,times;Arial=arial,helvetica,sans-serif;Arial Black=arial black,avant garde;Book Antiqua=book antiqua,palatino;Comic Sans MS=comic sans ms,sans-serif;Courier New=courier new,courier;Georgia=georgia,palatino;Helvetica=helvetica;Impact=impact,chicago;Symbol=symbol;Tahoma=tahoma,arial,helvetica,sans-serif;Terminal=terminal,monaco;Times New Roman=times new roman,times;Trebuchet MS=trebuchet ms,geneva;Verdana=verdana,geneva;Webdings=webdings;Wingdings=wingdings,zapf dingbats",theme_advanced_more_colors:1,theme_advanced_row_height:23,theme_advanced_resize_horizontal:1,theme_advanced_resizing_use_cookie:1,theme_advanced_font_sizes:"1,2,3,4,5,6,7",theme_advanced_font_selector:"span",theme_advanced_show_current_color:0,readonly:j.settings.readonly}, j.settings);
         if (!m.font_size_style_values) {
             m.font_size_style_values = "8pt,10pt,12pt,14pt,18pt,24pt,36pt"
         }
@@ -174,6 +174,9 @@
             k.select(function(n) {
                 return l == n
             });
+            if (m && m.value == l) {
+                k.select(null)
+            }
             return false
         }});
         if (k) {
@@ -209,6 +212,9 @@
             n.select(function(p) {
                 return i == p
             });
+            if (o && (o.value.fontSize == i.fontSize || o.value["class"] == i["class"])) {
+                n.select(null)
+            }
             return false
         }});
         if (n) {
@@ -223,7 +229,10 @@
         return n
     },_createBlockFormats:function() {
         var k,i = {p:"advanced.paragraph",address:"advanced.address",pre:"advanced.pre",h1:"advanced.h1",h2:"advanced.h2",h3:"advanced.h3",h4:"advanced.h4",h5:"advanced.h5",h6:"advanced.h6",div:"advanced.div",blockquote:"advanced.blockquote",code:"advanced.code",dt:"advanced.dt",dd:"advanced.dd",samp:"advanced.samp"},j = this;
-        k = j.editor.controlManager.createListBox("formatselect", {title:"advanced.block",cmd:"FormatBlock"});
+        k = j.editor.controlManager.createListBox("formatselect", {title:"advanced.block",onselect:function(l) {
+            j.editor.execCommand("FormatBlock", false, l);
+            return false
+        }});
         if (k) {
             f(j.editor.getParam("theme_advanced_blockformats", j.settings.theme_advanced_blockformats, "hash"), function(m, l) {
                 k.add(j.editor.translate(l != m ? l : i[m]), m, {"class":"mce_formatPreview mce_" + m})
@@ -418,7 +427,7 @@
         x = w.theme_advanced_containers_default_align || "center";
         f(c(w.theme_advanced_containers || ""), function(s, o) {
             var n = w["theme_advanced_container_" + s] || "";
-            switch (n.toLowerCase()) {case"mceeditor":l = d.add(m, "tr");l = j = d.add(l, "td", {"class":"mceIframeContainer"});break;case"mceelementpath":v._addStatusBar(m, k);break;default:q = (w["theme_advanced_container_" + s + "_align"] || x).toLowerCase();q = "mce" + v._ufirst(q);l = d.add(d.add(m, "tr"), "td", {"class":"mceToolbar " + (w["theme_advanced_container_" + s + "_class"] || u) + " " + q || x});r = i.createToolbar("toolbar" + o);v._addControls(n, r);d.setHTML(l, r.renderHTML());k.deltaHeight -= w.theme_advanced_row_height
+            switch (s.toLowerCase()) {case"mceeditor":l = d.add(m, "tr");l = j = d.add(l, "td", {"class":"mceIframeContainer"});break;case"mceelementpath":v._addStatusBar(m, k);break;default:q = (w["theme_advanced_container_" + s + "_align"] || x).toLowerCase();q = "mce" + v._ufirst(q);l = d.add(d.add(m, "tr"), "td", {"class":"mceToolbar " + (w["theme_advanced_container_" + s + "_class"] || u) + " " + q || x});r = i.createToolbar("toolbar" + o);v._addControls(n, r);d.setHTML(l, r.renderHTML());k.deltaHeight -= w.theme_advanced_row_height
             }
         });
         return j
@@ -539,13 +548,13 @@
         var i = j.controlManager;
         i.setDisabled("undo", !j.undoManager.hasUndo() && !j.typing);
         i.setDisabled("redo", !j.undoManager.hasRedo())
-    },_nodeChanged:function(l, q, B, m, C) {
-        var x = this,A,D = 0,w,E,y = x.settings,u,k,r,j,i;
-        e.each(x.stateControls, function(n) {
-            q.setActive(n, l.queryCommandState(x.controls[n][1]))
+    },_nodeChanged:function(m, r, D, q, E) {
+        var y = this,C,F = 0,x,G,z = y.settings,w,k,u,B,l,j,i;
+        e.each(y.stateControls, function(n) {
+            r.setActive(n, m.queryCommandState(y.controls[n][1]))
         });
         function o(p) {
-            var s,n = C.parents,t = p;
+            var s,n = E.parents,t = p;
             if (typeof(p) == "string") {
                 t = function(v) {
                     return v.nodeName == p
@@ -558,156 +567,176 @@
             }
         }
 
-        q.setActive("visualaid", l.hasVisual);
-        q.setDisabled("undo", !l.undoManager.hasUndo() && !l.typing);
-        q.setDisabled("redo", !l.undoManager.hasRedo());
-        q.setDisabled("outdent", !l.queryCommandState("Outdent"));
-        A = o("A");
-        if (E = q.get("link")) {
-            if (!A || !A.name) {
-                E.setDisabled(!A && m);
-                E.setActive(!!A)
+        r.setActive("visualaid", m.hasVisual);
+        y._updateUndoStatus(m);
+        r.setDisabled("outdent", !m.queryCommandState("Outdent"));
+        C = o("A");
+        if (G = r.get("link")) {
+            if (!C || !C.name) {
+                G.setDisabled(!C && q);
+                G.setActive(!!C)
             }
         }
-        if (E = q.get("unlink")) {
-            E.setDisabled(!A && m);
-            E.setActive(!!A && !A.name)
+        if (G = r.get("unlink")) {
+            G.setDisabled(!C && q);
+            G.setActive(!!C && !C.name)
         }
-        if (E = q.get("anchor")) {
-            E.setActive(!m && !!A && A.name)
+        if (G = r.get("anchor")) {
+            G.setActive(!q && !!C && C.name)
         }
-        A = o("IMG");
-        if (E = q.get("image")) {
-            E.setActive(!m && !!A && B.className.indexOf("mceItem") == -1)
+        C = o("IMG");
+        if (G = r.get("image")) {
+            G.setActive(!q && !!C && D.className.indexOf("mceItem") == -1)
         }
-        if (E = q.get("styleselect")) {
-            x._importClasses();
+        if (G = r.get("styleselect")) {
+            y._importClasses();
             j = [];
-            f(E.items, function(n) {
+            f(G.items, function(n) {
                 j.push(n.value)
             });
-            i = l.formatter.matchAll(j);
-            E.select(i[0])
+            i = m.formatter.matchAll(j);
+            G.select(i[0])
         }
-        if (E = q.get("formatselect")) {
-            A = o(d.isBlock);
-            if (A) {
-                E.select(A.nodeName.toLowerCase())
+        if (G = r.get("formatselect")) {
+            C = o(d.isBlock);
+            if (C) {
+                G.select(C.nodeName.toLowerCase())
             }
         }
         o(function(p) {
             if (p.nodeName === "SPAN") {
-                if (!u && p.className) {
-                    u = p.className
+                if (!w && p.className) {
+                    w = p.className
                 }
             }
-            if (l.dom.is(p, y.theme_advanced_font_selector)) {
+            if (m.dom.is(p, z.theme_advanced_font_selector)) {
                 if (!k && p.style.fontSize) {
                     k = p.style.fontSize
                 }
-                if (!r && p.style.fontFamily) {
-                    r = p.style.fontFamily.replace(/[\"\']+/g, "").replace(/^([^,]+).*/, "$1").toLowerCase()
+                if (!u && p.style.fontFamily) {
+                    u = p.style.fontFamily.replace(/[\"\']+/g, "").replace(/^([^,]+).*/, "$1").toLowerCase()
+                }
+                if (!B && p.style.color) {
+                    B = p.style.color
+                }
+                if (!l && p.style.backgroundColor) {
+                    l = p.style.backgroundColor
                 }
             }
             return false
         });
-        if (E = q.get("fontselect")) {
-            E.select(function(n) {
-                return n.replace(/^([^,]+).*/, "$1").toLowerCase() == r
+        if (G = r.get("fontselect")) {
+            G.select(function(n) {
+                return n.replace(/^([^,]+).*/, "$1").toLowerCase() == u
             })
         }
-        if (E = q.get("fontsizeselect")) {
-            if (y.theme_advanced_runtime_fontsize && !k && !u) {
-                k = l.dom.getStyle(B, "fontSize", true)
+        if (G = r.get("fontsizeselect")) {
+            if (z.theme_advanced_runtime_fontsize && !k && !w) {
+                k = m.dom.getStyle(D, "fontSize", true)
             }
-            E.select(function(n) {
+            G.select(function(n) {
                 if (n.fontSize && n.fontSize === k) {
                     return true
                 }
-                if (n["class"] && n["class"] === u) {
+                if (n["class"] && n["class"] === w) {
                     return true
                 }
             })
         }
-        if (y.theme_advanced_show_current_color) {
-            function z(p, n) {
-                if (E = q.get(p)) {
+        if (z.theme_advanced_show_current_color) {
+            function A(p, n) {
+                if (G = r.get(p)) {
                     if (!n) {
-                        n = E.settings.default_color
+                        n = G.settings.default_color
                     }
-                    if (n !== E.value) {
-                        E.displayColor(n)
+                    if (n !== G.value) {
+                        G.displayColor(n)
                     }
                 }
             }
 
-            z("forecolor", fc);
-            z("backcolor", bc)
+            A("forecolor", B);
+            A("backcolor", l)
         }
-        if (y.theme_advanced_path && y.theme_advanced_statusbar_location) {
-            A = d.get(l.id + "_path") || d.add(l.id + "_path_row", "span", {id:l.id + "_path"});
-            if (x.statusKeyboardNavigation) {
-                x.statusKeyboardNavigation.destroy();
-                x.statusKeyboardNavigation = null
+        if (z.theme_advanced_show_current_color) {
+            function A(p, n) {
+                if (G = r.get(p)) {
+                    if (!n) {
+                        n = G.settings.default_color
+                    }
+                    if (n !== G.value) {
+                        G.displayColor(n)
+                    }
+                }
             }
-            d.setHTML(A, "");
-            o(function(F) {
-                var p = F.nodeName.toLowerCase(),s,v,t = "";
-                if (F.getAttribute("data-mce-bogus")) {
+
+            A("forecolor", B);
+            A("backcolor", l)
+        }
+        if (z.theme_advanced_path && z.theme_advanced_statusbar_location) {
+            C = d.get(m.id + "_path") || d.add(m.id + "_path_row", "span", {id:m.id + "_path"});
+            if (y.statusKeyboardNavigation) {
+                y.statusKeyboardNavigation.destroy();
+                y.statusKeyboardNavigation = null
+            }
+            d.setHTML(C, "");
+            o(function(H) {
+                var p = H.nodeName.toLowerCase(),s,v,t = "";
+                if (H.getAttribute("data-mce-bogus")) {
                     return
                 }
-                if (F.nodeType != 1 || F.nodeName === "BR" || (d.hasClass(F, "mceItemHidden") || d.hasClass(F, "mceItemRemoved"))) {
+                if (H.nodeType != 1 || H.nodeName === "BR" || (d.hasClass(H, "mceItemHidden") || d.hasClass(H, "mceItemRemoved"))) {
                     return
                 }
-                if (e.isIE && F.scopeName !== "HTML") {
-                    p = F.scopeName + ":" + p
+                if (e.isIE && H.scopeName !== "HTML") {
+                    p = H.scopeName + ":" + p
                 }
                 p = p.replace(/mce\:/g, "");
-                switch (p) {case"b":p = "strong";break;case"i":p = "em";break;case"img":if (w = d.getAttrib(F, "src")) {
-                    t += "src: " + w + " "
-                }break;case"a":if (w = d.getAttrib(F, "name")) {
-                    t += "name: " + w + " ";
-                    p += "#" + w
-                }if (w = d.getAttrib(F, "href")) {
-                    t += "href: " + w + " "
-                }break;case"font":if (w = d.getAttrib(F, "face")) {
-                    t += "font: " + w + " "
-                }if (w = d.getAttrib(F, "size")) {
-                    t += "size: " + w + " "
-                }if (w = d.getAttrib(F, "color")) {
-                    t += "color: " + w + " "
-                }break;case"span":if (w = d.getAttrib(F, "style")) {
-                    t += "style: " + w + " "
+                switch (p) {case"b":p = "strong";break;case"i":p = "em";break;case"img":if (x = d.getAttrib(H, "src")) {
+                    t += "src: " + x + " "
+                }break;case"a":if (x = d.getAttrib(H, "name")) {
+                    t += "name: " + x + " ";
+                    p += "#" + x
+                }if (x = d.getAttrib(H, "href")) {
+                    t += "href: " + x + " "
+                }break;case"font":if (x = d.getAttrib(H, "face")) {
+                    t += "font: " + x + " "
+                }if (x = d.getAttrib(H, "size")) {
+                    t += "size: " + x + " "
+                }if (x = d.getAttrib(H, "color")) {
+                    t += "color: " + x + " "
+                }break;case"span":if (x = d.getAttrib(H, "style")) {
+                    t += "style: " + x + " "
                 }break
                 }
-                if (w = d.getAttrib(F, "id")) {
-                    t += "id: " + w + " "
+                if (x = d.getAttrib(H, "id")) {
+                    t += "id: " + x + " "
                 }
-                if (w = F.className) {
-                    w = w.replace(/\b\s*(webkit|mce|Apple-)\w+\s*\b/g, "");
-                    if (w) {
-                        t += "class: " + w + " ";
-                        if (d.isBlock(F) || p == "img" || p == "span") {
-                            p += "." + w
+                if (x = H.className) {
+                    x = x.replace(/\b\s*(webkit|mce|Apple-)\w+\s*\b/g, "");
+                    if (x) {
+                        t += "class: " + x + " ";
+                        if (d.isBlock(H) || p == "img" || p == "span") {
+                            p += "." + x
                         }
                     }
                 }
                 p = p.replace(/(html:)/g, "");
-                p = {name:p,node:F,title:t};
-                x.onResolveName.dispatch(x, p);
+                p = {name:p,node:H,title:t};
+                y.onResolveName.dispatch(y, p);
                 t = p.title;
                 p = p.name;
-                v = d.create("a", {href:"javascript:;",role:"button",onmousedown:"return false;",title:t,"class":"mcePath_" + (D++)}, p);
-                if (A.hasChildNodes()) {
-                    A.insertBefore(d.create("span", {"aria-hidden":"true"}, "\u00a0\u00bb "), A.firstChild);
-                    A.insertBefore(v, A.firstChild)
+                v = d.create("a", {href:"javascript:;",role:"button",onmousedown:"return false;",title:t,"class":"mcePath_" + (F++)}, p);
+                if (C.hasChildNodes()) {
+                    C.insertBefore(d.create("span", {"aria-hidden":"true"}, "\u00a0\u00bb "), C.firstChild);
+                    C.insertBefore(v, C.firstChild)
                 } else {
-                    A.appendChild(v)
+                    C.appendChild(v)
                 }
-            }, l.getBody());
-            if (d.select("a", A).length > 0) {
-                x.statusKeyboardNavigation = new e.ui.KeyboardNavigation({root:l.id + "_path_row",items:d.select("a", A),excludeFromTabOrder:true,onCancel:function() {
-                    l.focus()
+            }, m.getBody());
+            if (d.select("a", C).length > 0) {
+                y.statusKeyboardNavigation = new e.ui.KeyboardNavigation({root:m.id + "_path_row",items:d.select("a", C),excludeFromTabOrder:true,onCancel:function() {
+                    m.focus()
                 }}, d)
             }
         }

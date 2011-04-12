@@ -1,5 +1,5 @@
 (function() {
-    var c = tinymce.each,a = {paste_auto_cleanup_on_paste:true,paste_block_drop:false,paste_retain_style_properties:"none",paste_strip_class_attributes:"mso",paste_remove_spans:false,paste_remove_styles:false,paste_remove_styles_if_webkit:true,paste_convert_middot_lists:true,paste_convert_headers_to_strong:false,paste_dialog_width:"450",paste_dialog_height:"400",paste_text_use_dialog:false,paste_text_sticky:false,paste_text_notifyalways:false,paste_text_linebreaktype:"p",paste_text_replacements:[
+    var c = tinymce.each,a = {paste_auto_cleanup_on_paste:true,paste_enable_default_filters:true,paste_block_drop:false,paste_retain_style_properties:"none",paste_strip_class_attributes:"mso",paste_remove_spans:false,paste_remove_styles:false,paste_remove_styles_if_webkit:true,paste_convert_middot_lists:true,paste_convert_headers_to_strong:false,paste_dialog_width:"450",paste_dialog_height:"400",paste_text_use_dialog:false,paste_text_sticky:false,paste_text_sticky_default:false,paste_text_notifyalways:false,paste_text_linebreaktype:"p",paste_text_replacements:[
         [/\u2026/g,"..."],
         [/[\x93\x94\u201c\u201d]/g,'"'],
         [/[\x60\x91\x92\u2018\u2019]/g,"'"]
@@ -23,7 +23,12 @@
         f.onPostProcess.add(function(i, j) {
             d.execCallback("paste_postprocess", i, j)
         });
-        d.pasteAsPlainText = false;
+        d.onKeyDown.addToTop(function(i, j) {
+            if (((tinymce.isMac ? j.metaKey : j.ctrlKey) && j.keyCode == 86) || (j.shiftKey && j.keyCode == 45)) {
+                return false
+            }
+        });
+        d.pasteAsPlainText = b(d, "paste_text_sticky_default");
         function h(m, k) {
             var l = d.dom,i,j;
             f.onPreProcess.dispatch(f, m);
@@ -32,7 +37,7 @@
                 i = d.selection.getRng(true);
                 if (i.startContainer == i.endContainer && i.startContainer.nodeType == 3) {
                     j = l.select("p,h1,h2,h3,h4,h5,h6,pre", m.node);
-                    if (j.length == 1) {
+                    if (j.length == 1 && m.content.indexOf("__MCE_ITEM__") === -1) {
                         l.remove(j.reverse(), true)
                     }
                 }
@@ -73,7 +78,7 @@
         d.addButton("pastetext", {title:"paste.paste_text_desc",cmd:"mcePasteText"});
         d.addButton("selectall", {title:"paste.selectall_desc",cmd:"selectall"});
         function g(s) {
-            var l,p,j,k = d.selection,o = d.dom,q = d.getBody(),i,r;
+            var l,p,j,t,k = d.selection,o = d.dom,q = d.getBody(),i,r;
             if (s.clipboardData || o.doc.dataTransfer) {
                 r = (s.clipboardData || o.doc.dataTransfer).getData("Text");
                 if (d.pasteAsPlainText) {
@@ -85,7 +90,7 @@
             if (o.get("_mcePaste")) {
                 return
             }
-            l = o.add(q, "div", {id:"_mcePaste","class":"mcePaste","data-mce-bogus":"1"}, '\uFEFF<br data-mce-bogus="1">');
+            l = o.add(q, "div", {id:"_mcePaste","class":"mcePaste","data-mce-bogus":"1"}, "\uFEFF\uFEFF");
             if (q != d.getDoc().body) {
                 i = o.getPos(d.selection.getStart(), q).y
             } else {
@@ -93,16 +98,21 @@
             }
             o.setStyles(l, {position:"absolute",left:-10000,top:i,width:1,height:1,overflow:"hidden"});
             if (tinymce.isIE) {
+                t = k.getRng();
                 j = o.doc.body.createTextRange();
                 j.moveToElementText(l);
                 j.execCommand("Paste");
                 o.remove(l);
-                if (l.innerHTML === "\uFEFF") {
+                if (l.innerHTML === "\uFEFF\uFEFF") {
                     d.execCommand("mcePasteWord");
                     s.preventDefault();
                     return
                 }
-                h({content:l.innerHTML});
+                k.setRng(t);
+                k.setContent("");
+                setTimeout(function() {
+                    h({content:l.innerHTML})
+                }, 0);
                 return tinymce.dom.Event.cancel(s)
             } else {
                 function m(n) {
@@ -115,37 +125,37 @@
                 l = l.firstChild;
                 j = d.getDoc().createRange();
                 j.setStart(l, 0);
-                j.setEnd(l, 1);
+                j.setEnd(l, 2);
                 k.setRng(j);
                 window.setTimeout(function() {
-                    var t = "",n;
+                    var u = "",n;
                     if (!o.select("div.mcePaste > div.mcePaste").length) {
                         n = o.select("div.mcePaste");
-                        c(n, function(v) {
-                            var u = v.firstChild;
-                            if (u && u.nodeName == "DIV" && u.style.marginTop && u.style.backgroundColor) {
-                                o.remove(u, 1)
+                        c(n, function(w) {
+                            var v = w.firstChild;
+                            if (v && v.nodeName == "DIV" && v.style.marginTop && v.style.backgroundColor) {
+                                o.remove(v, 1)
                             }
-                            c(o.select("span.Apple-style-span", v), function(w) {
-                                o.remove(w, 1)
+                            c(o.select("span.Apple-style-span", w), function(x) {
+                                o.remove(x, 1)
                             });
-                            c(o.select("br[data-mce-bogus]", v), function(w) {
-                                o.remove(w)
+                            c(o.select("br[data-mce-bogus]", w), function(x) {
+                                o.remove(x)
                             });
-                            if (v.parentNode.className != "mcePaste") {
-                                t += v.innerHTML
+                            if (w.parentNode.className != "mcePaste") {
+                                u += w.innerHTML
                             }
                         })
                     } else {
-                        t = "<pre>" + o.encode(r).replace(/\r?\n/g, "<br />") + "</pre>"
+                        u = "<pre>" + o.encode(r).replace(/\r?\n/g, "<br />") + "</pre>"
                     }
-                    c(o.select("div.mcePaste"), function(u) {
-                        o.remove(u)
+                    c(o.select("div.mcePaste"), function(v) {
+                        o.remove(v)
                     });
                     if (p) {
                         k.setRng(p)
                     }
-                    h({content:t});
+                    h({content:u});
                     o.unbind(d.getDoc(), "mousedown", m);
                     o.unbind(d.getDoc(), "keydown", m)
                 }, 0)
@@ -154,7 +164,7 @@
 
         if (b(d, "paste_auto_cleanup_on_paste")) {
             if (tinymce.isOpera || /Firefox\/2/.test(navigator.userAgent)) {
-                d.onKeyDown.add(function(i, j) {
+                d.onKeyDown.addToTop(function(i, j) {
                     if (((tinymce.isMac ? j.metaKey : j.ctrlKey) && j.keyCode == 86) || (j.shiftKey && j.keyCode == 45)) {
                         g(j)
                     }
@@ -165,15 +175,16 @@
                 })
             }
         }
-        if (b(d, "paste_block_drop")) {
-            d.onInit.add(function() {
+        d.onInit.add(function() {
+            d.controlManager.setActive("pastetext", d.pasteAsPlainText);
+            if (b(d, "paste_block_drop")) {
                 d.dom.bind(d.getBody(), ["dragend","dragover","draggesture","dragdrop","drop","drag"], function(i) {
                     i.preventDefault();
                     i.stopPropagation();
                     return false
                 })
-            })
-        }
+            }
+        });
         f._legacySupport()
     },getInfo:function() {
         return{longname:"Paste text/word",author:"Moxiecode Systems AB",authorurl:"http://tinymce.moxiecode.com",infourl:"http://wiki.moxiecode.com/index.php/TinyMCE:Plugins/paste",version:tinymce.majorVersion + "." + tinymce.minorVersion}
@@ -190,6 +201,14 @@
             })
         }
 
+        if (k.settings.paste_enable_default_filters == false) {
+            return
+        }
+        if (tinymce.isIE && document.documentMode >= 9) {
+            d([
+                [/(?:<br>&nbsp;[\s\r\n]+|<br>)*(<\/?(h[1-6r]|p|div|address|pre|form|table|tbody|thead|tfoot|th|tr|td|li|ol|ul|caption|blockquote|center|dl|dt|dd|dir|fieldset)[^>]*>)(?:<br>&nbsp;[\s\r\n]+|<br>)*/g,"$1"]
+            ])
+        }
         if (/class="?Mso|style="[^"]*\bmso-|w:WordDocument/i.test(j) || e.wordContent) {
             e.wordContent = true;
             d([/^\s*(&nbsp;)+/gi,/(&nbsp;|<br[^>]*>)+\s*$/gi]);
@@ -278,6 +297,9 @@
         e.content = j
     },_postProcess:function(g, i) {
         var f = this,e = f.editor,h = e.dom,d;
+        if (e.settings.paste_enable_default_filters == false) {
+            return
+        }
         if (i.wordContent) {
             c(h.select("a", i.node), function(j) {
                 if (!j.href || j.href.indexOf("#_Toc") != -1) {
@@ -333,7 +355,7 @@
                 u += q.nodeValue
             }
             u = t.innerHTML.replace(/<\/?\w+[^>]*>/gi, "").replace(/&nbsp;/g, "\u00a0");
-            if (/^(__MCE_ITEM__)+[\u2022\u00b7\u00a7\u00d8o]\s*\u00a0*/.test(u)) {
+            if (/^(__MCE_ITEM__)+[\u2022\u00b7\u00a7\u00d8o\u25CF]\s*\u00a0*/.test(u)) {
                 s = "ul"
             }
             if (/^__MCE_ITEM__\s*\w+\.\s*\u00a0+/.test(u)) {
@@ -360,17 +382,17 @@
                 }
                 c(i.select("span", t), function(v) {
                     var p = v.innerHTML.replace(/<\/?\w+[^>]*>/gi, "");
-                    if (s == "ul" && /^[\u2022\u00b7\u00a7\u00d8o]/.test(p)) {
+                    if (s == "ul" && /^__MCE_ITEM__[\u2022\u00b7\u00a7\u00d8o\u25CF]/.test(p)) {
                         i.remove(v)
                     } else {
-                        if (/^[\s\S]*\w+\.(&nbsp;|\u00a0)*\s*/.test(p)) {
+                        if (/^__MCE_ITEM__[\s\S]*\w+\.(&nbsp;|\u00a0)*\s*/.test(p)) {
                             i.remove(v)
                         }
                     }
                 });
                 r = t.innerHTML;
                 if (s == "ul") {
-                    r = t.innerHTML.replace(/__MCE_ITEM__/g, "").replace(/^[\u2022\u00b7\u00a7\u00d8o]\s*(&nbsp;|\u00a0)+\s*/, "")
+                    r = t.innerHTML.replace(/__MCE_ITEM__/g, "").replace(/^[\u2022\u00b7\u00a7\u00d8o\u25CF]\s*(&nbsp;|\u00a0)+\s*/, "")
                 } else {
                     r = t.innerHTML.replace(/__MCE_ITEM__/g, "").replace(/^\s*\w+\.(&nbsp;|\u00a0)+\s*/, "")
                 }

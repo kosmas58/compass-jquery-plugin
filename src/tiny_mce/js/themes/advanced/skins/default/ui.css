@@ -29,7 +29,7 @@
 /* Containers */
 .defaultSkin table {
     direction: ltr;
-    background: #F0F0EE
+    background: transparent
 }
 
 .defaultSkin iframe {
