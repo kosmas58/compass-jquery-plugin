@@ -1,7 +1,7 @@
 /*!
  * jQuery UI Widget @VERSION
  *
- * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
+ * Copyright 2010, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * http://jquery.org/license
  *
@@ -96,19 +96,15 @@
 
             if (isMethodCall) {
                 this.each(function() {
-                    var instance = $.data(this, name),
-                            methodValue = instance && $.isFunction(instance[options]) ?
-                                    instance[ options ].apply(instance, args) :
-                                    instance;
-                    // TODO: add this back in 1.9 and use $.error() (see #5972)
-//				if ( !instance ) {
-//					throw "cannot call methods on " + name + " prior to initialization; " +
-//						"attempted to call method '" + options + "'";
-//				}
-//				if ( !$.isFunction( instance[options] ) ) {
-//					throw "no such method '" + options + "' for " + name + " widget instance";
-//				}
-//				var methodValue = instance[ options ].apply( instance, args );
+                    var instance = $.data(this, name);
+                    if (!instance) {
+                        throw "cannot call methods on " + name + " prior to initialization; " +
+                                "attempted to call method '" + options + "'";
+                    }
+                    if (!$.isFunction(instance[options])) {
+                        throw "no such method '" + options + "' for " + name + " widget instance";
+                    }
+                    var methodValue = instance[ options ].apply(instance, args);
                     if (methodValue !== instance && methodValue !== undefined) {
                         returnValue = methodValue;
                         return false;
@@ -162,7 +158,11 @@
             this._init();
         },
         _getCreateOptions: function() {
-            return $.metadata && $.metadata.get(this.element[0])[ this.widgetName ];
+            var options = {};
+            if ($.metadata) {
+                options = $.metadata.get(element)[ this.widgetName ];
+            }
+            return options;
         },
         _create: function() {
         },
@@ -428,7 +428,7 @@
  * jQuery Mobile Framework : support tests
  * Copyright (c) jQuery Project
  * Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
- * Note: Code is in draft form and is subject to change 
+ * Note: Code is in draft form and is subject to change
  */
 (function($, undefined) {
 
@@ -542,6 +542,7 @@
             didScroll = false,
             clickBlockList = [],
             blockMouseTriggers = false,
+            blockTouchTriggers = false,
             eventCaptureSupported = $.support.eventCapture,
             $document = $(document),
             nextTouchID = 1,
@@ -622,33 +623,11 @@
     }
 
     function enableTouchBindings() {
-        if (!activeDocHandlers["touchbindings"]) {
-            $document.bind("touchend", handleTouchEnd)
-
-                // On touch platforms, touching the screen and then dragging your finger
-                // causes the window content to scroll after some distance threshold is
-                // exceeded. On these platforms, a scroll prevents a click event from being
-                // dispatched, and on some platforms, even the touchend is suppressed. To
-                // mimic the suppression of the click event, we need to watch for a scroll
-                // event. Unfortunately, some platforms like iOS don't dispatch scroll
-                // events until *AFTER* the user lifts their finger (touchend). This means
-                // we need to watch both scroll and touchmove events to figure out whether
-                // or not a scroll happenens before the touchend event is fired.
-
-                    .bind("touchmove", handleTouchMove)
-                    .bind("scroll", handleScroll);
-
-            activeDocHandlers["touchbindings"] = 1;
-        }
+        blockTouchTriggers = false;
     }
 
     function disableTouchBindings() {
-        if (activeDocHandlers["touchbindings"]) {
-            $document.unbind("touchmove", handleTouchMove)
-                    .unbind("touchend", handleTouchEnd)
-                    .unbind("scroll", handleScroll);
-            activeDocHandlers["touchbindings"] = 0;
-        }
+        blockTouchTriggers = true;
     }
 
     function enableMouseBindings() {
@@ -727,6 +706,10 @@
     }
 
     function handleScroll(event) {
+        if (blockTouchTriggers) {
+            return;
+        }
+
         if (!didScroll) {
             triggerVirtualEvent("vmousecancel", event, getVirtualBindingFlags(event.target));
         }
@@ -736,6 +719,10 @@
     }
 
     function handleTouchMove(event) {
+        if (blockTouchTriggers) {
+            return;
+        }
+
         var t = getNativeEvent(event).touches[0];
 
         var didCancel = didScroll,
@@ -752,6 +739,10 @@
     }
 
     function handleTouchEnd(event) {
+        if (blockTouchTriggers) {
+            return;
+        }
+
         disableTouchBindings();
 
         var flags = getVirtualBindingFlags(event.target);
@@ -831,7 +822,22 @@
 
                     activeDocHandlers["touchstart"] = (activeDocHandlers["touchstart"] || 0) + 1;
                     if (activeDocHandlers["touchstart"] === 1) {
-                        $document.bind("touchstart", handleTouchStart);
+                        $document.bind("touchstart", handleTouchStart)
+
+                                .bind("touchend", handleTouchEnd)
+
+                            // On touch platforms, touching the screen and then dragging your finger
+                            // causes the window content to scroll after some distance threshold is
+                            // exceeded. On these platforms, a scroll prevents a click event from being
+                            // dispatched, and on some platforms, even the touchend is suppressed. To
+                            // mimic the suppression of the click event, we need to watch for a scroll
+                            // event. Unfortunately, some platforms like iOS don't dispatch scroll
+                            // events until *AFTER* the user lifts their finger (touchend). This means
+                            // we need to watch both scroll and touchmove events to figure out whether
+                            // or not a scroll happenens before the touchend event is fired.
+
+                                .bind("touchmove", handleTouchMove)
+                                .bind("scroll", handleScroll);
                     }
                 }
             },
@@ -851,7 +857,10 @@
 
                     --activeDocHandlers["touchstart"];
                     if (!activeDocHandlers["touchstart"]) {
-                        $document.unbind("touchstart", handleTouchStart);
+                        $document.unbind("touchstart", handleTouchStart)
+                                .unbind("touchmove", handleTouchMove)
+                                .unbind("touchend", handleTouchEnd)
+                                .unbind("scroll", handleScroll);
                     }
                 }
 
@@ -4053,19 +4062,19 @@
 
     var attachEvents = function() {
         $(".ui-btn:not(.ui-disabled)").live({
-            "touchstart mousedown": function() {
+            "vmousedown": function() {
                 var theme = $(this).attr("data-" + $.mobile.ns + "theme");
                 $(this).removeClass("ui-btn-up-" + theme).addClass("ui-btn-down-" + theme);
             },
-            "touchmove touchend mouseup": function() {
+            "vmousecancel vmouseup": function() {
                 var theme = $(this).attr("data-" + $.mobile.ns + "theme");
                 $(this).removeClass("ui-btn-down-" + theme).addClass("ui-btn-up-" + theme);
             },
-            "mouseover focus": function() {
+            "vmouseover focus": function() {
                 var theme = $(this).attr("data-" + $.mobile.ns + "theme");
                 $(this).removeClass("ui-btn-up-" + theme).addClass("ui-btn-hover-" + theme);
             },
-            "mouseout blur": function() {
+            "vmouseout blur": function() {
                 var theme = $(this).attr("data-" + $.mobile.ns + "theme");
                 $(this).removeClass("ui-btn-hover-" + theme).addClass("ui-btn-up-" + theme);
             }
@@ -4696,15 +4705,21 @@
 
             item.find("p, dl").addClass("ui-li-desc");
 
-            var children = item.children();
-            children.filter("img:eq(0)").add(children.eq(0).children("img:eq(0)")).addClass("ui-li-thumb").each(function() {
-                item.addClass($(this).is(".ui-li-icon") ? "ui-li-has-icon" : "ui-li-has-thumb");
+            $list.find("li").find(">img:eq(0), >:first>img:eq(0)").addClass("ui-li-thumb").each(function() {
+                $(this).closest("li").addClass($(this).is(".ui-li-icon") ? "ui-li-has-icon" : "ui-li-has-thumb");
             });
 
-            item.find(".ui-li-aside").each(function() {
-                var $this = $(this);
-                $this.prependTo($this.parent()); //shift aside to front for css float
-            });
+            var aside = item.find(".ui-li-aside");
+
+            if (aside.length) {
+                aside.each(function(i, el) {
+                    $(el).prependTo($(el).parent()); //shift aside to front for css float
+                });
+            }
+
+            if ($.support.cssPseudoElement || !$.nodeName(item[0], "ol")) {
+                return;
+            }
         },
 
         _removeCorners: function(li) {
@@ -4720,8 +4735,6 @@
                     $list = this.element,
                     self = this,
                     dividertheme = $list.jqmData("dividertheme") || o.dividerTheme,
-                    listsplittheme = $list.jqmData("splittheme"),
-                    listspliticon = $list.jqmData("spliticon"),
                     li = $list.children("li"),
                     counter = $.support.cssPseudoElement || !$.nodeName($list[0], "ol") ? 0 : 1;
 
@@ -4729,19 +4742,18 @@
                 $list.find(".ui-li-dec").remove();
             }
 
-            var numli = li.length;
-            for (var pos = 0; pos < numli; pos++) {
-                var item = li.eq(pos),
+            li.each(function(pos) {
+                var item = $(this),
                         itemClass = "ui-li";
 
                 // If we're creating the element, we update it regardless
                 if (!create && item.hasClass("ui-li")) {
-                    continue;
+                    return;
                 }
 
                 var itemTheme = item.jqmData("theme") || o.theme;
 
-                var a = item.children("a");
+                var a = item.find(">a");
 
                 if (a.length) {
                     var icon = item.jqmData("icon");
@@ -4762,7 +4774,7 @@
                         itemClass += " ui-li-has-alt";
 
                         var last = a.last(),
-                                splittheme = listsplittheme || last.jqmData("theme") || o.splitTheme;
+                                splittheme = $list.jqmData("splittheme") || last.jqmData("theme") || o.splitTheme;
 
                         last
                                 .appendTo(item)
@@ -4782,7 +4794,7 @@
                             corners: true,
                             theme: splittheme,
                             iconpos: "notext",
-                            icon: listspliticon || last.jqmData("icon") || o.splitIcon
+                            icon: $list.jqmData("spliticon") || last.jqmData("icon") || o.splitIcon
                         }));
                     }
 
@@ -4848,7 +4860,7 @@
                 if (!create) {
                     self._itemApply($list, item);
                 }
-            }
+            });
         },
 
         //create a string for ID/subpage url creation
@@ -4861,7 +4873,6 @@
                     parentPage = parentList.closest(".ui-page"),
                     parentId = parentPage.jqmData("url"),
                     o = this.options,
-                    dns = "data-" + $.mobile.ns,
                     self = this,
                     persistentFooterID = parentPage.find(":jqmData(role='footer')").jqmData("id");
 
@@ -4875,12 +4886,14 @@
                                 id = parentId + "&" + $.mobile.subPageUrlKey + "=" + self._idStringEscape(title + " " + i),
                                 theme = list.jqmData("theme") || o.theme,
                                 countTheme = list.jqmData("counttheme") || parentList.jqmData("counttheme") || o.countTheme,
-                                newPage = list.detach()
-                                        .wrap("<div " + dns + "role='page'" + dns + "url='" + id + "' " + dns + "theme='" + theme + "' " + dns + "count-theme='" + countTheme + "'><div " + dns + "role='content'></div></div>")
+                                newPage = list.wrap("<div data-" + $.mobile.ns + "role='page'><div data-" + $.mobile.ns + "role='content'></div></div>")
                                         .parent()
-                                        .before("<div " + dns + "role='header' " + dns + "theme='" + o.headerTheme + "'><div class='ui-title'>" + title + "</div></div>")
-                                        .after(persistentFooterID ? $("<div " + dns + "role='footer' " + dns + "id='" + persistentFooterID + "'>") : "")
+                                        .before("<div data-" + $.mobile.ns + "role='header' data-" + $.mobile.ns + "theme='" + o.headerTheme + "'><div class='ui-title'>" + title + "</div></div>")
+                                        .after(persistentFooterID ? $("<div data-" + $.mobile.ns + "role='footer'  data-" + $.mobile.ns + "id='" + persistentFooterID + "'>") : "")
                                         .parent()
+                                        .attr("data-" + $.mobile.ns + "url", id)
+                                        .attr("data-" + $.mobile.ns + "theme", theme)
+                                        .attr("data-" + $.mobile.ns + "count-theme", countTheme)
                                         .appendTo($.mobile.pageContainer);
 
                         newPage.page();
