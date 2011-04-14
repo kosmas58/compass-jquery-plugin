@@ -2821,22 +2821,18 @@
                     return false;
                 });
             }
-//            if ($.isFunction(this.p.onRightClickRow)) {
-//                $(this).bind('contextmenu', function(e) {
-//                    td = e.target;
-//                    ptr = $(td, ts.rows).closest("tr.jqgrow");
-//                    if ($(ptr).length === 0) {
-//                        return false;
-//                    }
-//                    if (!ts.p.multiselect) {
-//                        $(ts).jqGrid("setSelection", ptr[0].id, true);
-//                    }
-//                    ri = ptr[0].rowIndex;
-//                    ci = $.jgrid.getCellIndex(td);
-//                    ts.p.onRightClickRow.call(ts, $(ptr).attr("id"), ri, ci, e);
-//                    return false;
-//                });
-//            }
+//		if ($.isFunction(this.p.onRightClickRow)) {
+//			$(this).bind('contextmenu', function(e) {
+//				td = e.target;
+//				ptr = $(td,ts.rows).closest("tr.jqgrow");
+//				if($(ptr).length === 0 ){return false;}
+//				if(!ts.p.multiselect) {	$(ts).jqGrid("setSelection",ptr[0].id,true);	}
+//				ri = ptr[0].rowIndex;
+//				ci = $.jgrid.getCellIndex(td);
+//				ts.p.onRightClickRow.call(ts,$(ptr).attr("id"),ri,ci, e);
+//				return false;
+//			});
+//		}
             grid.bDiv = document.createElement("div");
             if (isMSIE) {
                 if (String(ts.p.height).toLowerCase() === "auto") {
@@ -3734,7 +3730,7 @@
                 if (!$t.grid) {
                     return;
                 }
-                if (isNaN(colname)) {
+                if (typeof(colname) != "undefined") {
                     $($t.p.colModel).each(function(i) {
                         if (this.name == colname) {
                             pos = i;
@@ -3742,7 +3738,7 @@
                         }
                     });
                 } else {
-                    pos = parseInt(colname, 10);
+                    return;
                 }
                 if (pos >= 0) {
                     var thecol = $("tr.ui-jqgrid-labels th:eq(" + pos + ")", $t.grid.hDiv);
@@ -6153,8 +6149,11 @@ var xmlJsonClass = {
                 return opt;
             }
 
-            function setAttributes(elm, atr) {
+            function setAttributes(elm, atr, exl) {
                 var exclude = ['dataInit','dataEvents','dataUrl', 'buildSelect','sopt', 'searchhidden', 'defaultValue', 'attr'];
+                if (typeof(exl) != "undefined" && $.isArray(exl)) {
+                    exclude = $.extend(exclude, exl);
+                }
                 $.each(atr, function(key, value) {
                     if ($.inArray(key, exclude) === -1) {
                         $(elm).attr(key, value);
@@ -6208,7 +6207,7 @@ var xmlJsonClass = {
                         elem.value = cbval[0];
                         $(elem).attr("offval", cbval[1]);
                     }
-                    setAttributes(elem, options);
+                    setAttributes(elem, options, ['value']);
                     options = bindEv(elem, options);
                     $(elem).attr("role", "checkbox");
                     break;
@@ -6326,7 +6325,7 @@ var xmlJsonClass = {
                                 }
                             }
                         }
-                        setAttributes(elem, options);
+                        setAttributes(elem, options, ['value']);
                         options = bindEv(elem, options);
                     }
                     break;
