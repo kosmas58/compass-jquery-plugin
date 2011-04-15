@@ -1,0 +1,18 @@
+.galaxy10 .emulator {
+    background: image_url("emulators/galaxy.tab.10.1.portrait.png") no-repeat;
+    width: 998px;
+    height: 1438px;
+}
+
+.galaxy10 .emulator .display-area {
+    position: relative;
+    top: 128px;
+    width: 800px;
+    height: 1188px;
+    max-height: 1188px;
+    color: #ffffff;
+}
+
+.galaxy10 .emulator .display-area a {
+    color: #ff5500;
+}

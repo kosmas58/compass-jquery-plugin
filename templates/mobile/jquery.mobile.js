@@ -436,7 +436,7 @@
     var fakeBody = $("<body>").prependTo("html"),
             fbCSS = fakeBody[0].style,
             vendors = ['webkit','moz','o'],
-            webos = window.palmGetResource || window.PalmServiceBridge, //only used to rule out scrollTop
+            webos = "palmGetResource" in window, //only used to rule out scrollTop
             bb = window.blackberry; //only used to rule out box shadow, as it's filled opaque on BB
 
 //thx Modernizr
@@ -2064,8 +2064,9 @@
                     return url.replace(/^#/, "");
                 },
 
+                //remove the preceding hash, any query params, and dialog notations
                 cleanHash: function(hash) {
-                    return path.stripHash(hash.replace(/\?.*$/, ""));
+                    return path.stripHash(hash.replace(/\?.*$/, "").replace(dialogHashKey, ""));
                 },
 
                 //check whether a url is referencing the same domain, or an external domain or different protocol
@@ -2312,7 +2313,7 @@
                 type = 'get',
                 isFormRequest = false,
                 duplicateCachedPage = null,
-                currPage = urlHistory.getActive(),
+                active = urlHistory.getActive(),
                 back = false,
                 forward = false,
                 pageTitle = document.title;
@@ -2321,7 +2322,9 @@
         // If we are trying to transition to the same page that we are currently on ignore the request.
         // an illegal same page request is defined by the current page being the same as the url, as long as there's history
         // and to is not an array or object (those are allowed to be "same")
-        if (currPage && urlHistory.stack.length >= 1 && currPage.url === url && !toIsArray && !toIsObject) {
+        if (urlHistory.stack.length > 0
+                && active.page.jqmData("url") === url
+                && !toIsArray && !toIsObject) {
             return;
         }
         else if (isPageTransitioning) {
@@ -2339,7 +2342,7 @@
                 isBack: function() {
                     forward = !(back = true);
                     reverse = true;
-                    transition = transition || currPage.transition;
+                    transition = transition || active.transition;
                 },
                 isForward: function() {
                     forward = !(back = false);
@@ -4690,10 +4693,7 @@
                 $list.addClass("ui-listview-inset ui-corner-all ui-shadow");
             }
 
-            this._itemApply($list, $list);
-
-            this.refresh(true);
-
+            this.refresh();
         },
 
         _itemApply: function($list, item) {
@@ -4705,21 +4705,14 @@
 
             item.find("p, dl").addClass("ui-li-desc");
 
-            $list.find("li").find(">img:eq(0), >:first>img:eq(0)").addClass("ui-li-thumb").each(function() {
-                $(this).closest("li").addClass($(this).is(".ui-li-icon") ? "ui-li-has-icon" : "ui-li-has-thumb");
+            item.find("img:first-child:eq(0)").addClass("ui-li-thumb").each(function() {
+                item.addClass($(this).is(".ui-li-icon") ? "ui-li-has-icon" : "ui-li-has-thumb");
             });
 
-            var aside = item.find(".ui-li-aside");
-
-            if (aside.length) {
-                aside.each(function(i, el) {
-                    $(el).prependTo($(el).parent()); //shift aside to front for css float
-                });
-            }
-
-            if ($.support.cssPseudoElement || !$.nodeName(item[0], "ol")) {
-                return;
-            }
+            item.find(".ui-li-aside").each(function() {
+                var $this = $(this);
+                $this.prependTo($this.parent()); //shift aside to front for css float
+            });
         },
 
         _removeCorners: function(li) {
@@ -4735,6 +4728,8 @@
                     $list = this.element,
                     self = this,
                     dividertheme = $list.jqmData("dividertheme") || o.dividerTheme,
+                    listsplittheme = $list.jqmData("splittheme"),
+                    listspliticon = $list.jqmData("spliticon"),
                     li = $list.children("li"),
                     counter = $.support.cssPseudoElement || !$.nodeName($list[0], "ol") ? 0 : 1;
 
@@ -4742,18 +4737,19 @@
                 $list.find(".ui-li-dec").remove();
             }
 
-            li.each(function(pos) {
-                var item = $(this),
+            var numli = li.length;
+            for (var pos = 0; pos < numli; pos++) {
+                var item = li.eq(pos),
                         itemClass = "ui-li";
 
                 // If we're creating the element, we update it regardless
                 if (!create && item.hasClass("ui-li")) {
-                    return;
+                    continue;
                 }
 
                 var itemTheme = item.jqmData("theme") || o.theme;
 
-                var a = item.find(">a");
+                var a = item.children("a");
 
                 if (a.length) {
                     var icon = item.jqmData("icon");
@@ -4774,7 +4770,7 @@
                         itemClass += " ui-li-has-alt";
 
                         var last = a.last(),
-                                splittheme = $list.jqmData("splittheme") || last.jqmData("theme") || o.splitTheme;
+                                splittheme = listsplittheme || last.jqmData("theme") || o.splitTheme;
 
                         last
                                 .appendTo(item)
@@ -4794,7 +4790,7 @@
                             corners: true,
                             theme: splittheme,
                             iconpos: "notext",
-                            icon: $list.jqmData("spliticon") || last.jqmData("icon") || o.splitIcon
+                            icon: listspliticon || last.jqmData("icon") || o.splitIcon
                         }));
                     }
 
@@ -4860,7 +4856,7 @@
                 if (!create) {
                     self._itemApply($list, item);
                 }
-            });
+            }
         },
 
         //create a string for ID/subpage url creation
@@ -4873,6 +4869,7 @@
                     parentPage = parentList.closest(".ui-page"),
                     parentId = parentPage.jqmData("url"),
                     o = this.options,
+                    dns = "data-" + $.mobile.ns,
                     self = this,
                     persistentFooterID = parentPage.find(":jqmData(role='footer')").jqmData("id");
 
@@ -4886,14 +4883,12 @@
                                 id = parentId + "&" + $.mobile.subPageUrlKey + "=" + self._idStringEscape(title + " " + i),
                                 theme = list.jqmData("theme") || o.theme,
                                 countTheme = list.jqmData("counttheme") || parentList.jqmData("counttheme") || o.countTheme,
-                                newPage = list.wrap("<div data-" + $.mobile.ns + "role='page'><div data-" + $.mobile.ns + "role='content'></div></div>")
+                                newPage = list.detach()
+                                        .wrap("<div " + dns + "role='page'" + dns + "url='" + id + "' " + dns + "theme='" + theme + "' " + dns + "count-theme='" + countTheme + "'><div " + dns + "role='content'></div></div>")
                                         .parent()
-                                        .before("<div data-" + $.mobile.ns + "role='header' data-" + $.mobile.ns + "theme='" + o.headerTheme + "'><div class='ui-title'>" + title + "</div></div>")
-                                        .after(persistentFooterID ? $("<div data-" + $.mobile.ns + "role='footer'  data-" + $.mobile.ns + "id='" + persistentFooterID + "'>") : "")
+                                        .before("<div " + dns + "role='header' " + dns + "theme='" + o.headerTheme + "'><div class='ui-title'>" + title + "</div></div>")
+                                        .after(persistentFooterID ? $("<div " + dns + "role='footer' " + dns + "id='" + persistentFooterID + "'>") : "")
                                         .parent()
-                                        .attr("data-" + $.mobile.ns + "url", id)
-                                        .attr("data-" + $.mobile.ns + "theme", theme)
-                                        .attr("data-" + $.mobile.ns + "count-theme", countTheme)
                                         .appendTo($.mobile.pageContainer);
 
                         newPage.page();
