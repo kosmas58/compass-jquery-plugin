@@ -1,10 +1,10 @@
-.ipad .emulator {
+.galaxys .emulator {
     background: image_url("emulators/galaxy.s.portrait.png") no-repeat;
     width: 600px;
     height: 1120px;
 }
 
-.ipad .emulator .display-area {
+.galaxys .emulator .display-area {
     position: relative;
     top: 198px;
     width: 480px;
@@ -13,6 +13,6 @@
     color: #ffffff;
 }
 
-.ipad .emulator .display-area a {
+.galaxys .emulator .display-area a {
     color: #ff5500;
 }
