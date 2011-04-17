@@ -1,12 +1,18 @@
 /*jslint browser: true */ /*global jQuery: true */
 
+//
 // jQuery Cookie plugin
 //
 // Copyright (c) 2010 Klaus Hartl (stilbuero.de)
 // Dual licensed under the MIT and GPL licenses:
 // http://www.opensource.org/licenses/mit-license.php
 // http://www.gnu.org/licenses/gpl.html
+//
+//
 
+// TODO JsDoc
+
+//
 // Create a cookie with the given key and value and other optional parameters.
 //
 // @example $.cookie('the_cookie', 'the_value');
@@ -35,7 +41,9 @@
 // @name $.cookie
 // @cat Plugins/Cookie
 // @author Klaus Hartl/klaus.hartl@stilbuero.de
+//
 
+//
 // Get the value of a cookie with the given key.
 //
 // @example $.cookie('the_cookie');
@@ -48,14 +56,14 @@
 // @name $.cookie
 // @cat Plugins/Cookie
 // @author Klaus Hartl/klaus.hartl@stilbuero.de
-
+//
 jQuery.cookie = function (key, value, options) {
 
-    // key and value given, set cookie...
-    if (arguments.length > 1 && (value === null || typeof value !== "object")) {
+    // key and at least value given, set cookie...
+    if (arguments.length > 1 && String(value) !== "[object Object]") {
         options = jQuery.extend({}, options);
 
-        if (value === null) {
+        if (value === null || value === undefined) {
             options.expires = -1;
         }
 
@@ -64,9 +72,11 @@ jQuery.cookie = function (key, value, options) {
             t.setDate(t.getDate() + days);
         }
 
+        value = String(value);
+
         return (document.cookie = [
             encodeURIComponent(key), '=',
-            options.raw ? String(value) : encodeURIComponent(String(value)),
+            options.raw ? value : encodeURIComponent(value),
             options.expires ? '; expires=' + options.expires.toUTCString() : '', // use expires attribute, max-age is not supported by IE
             options.path ? '; path=' + options.path : '',
             options.domain ? '; domain=' + options.domain : '',

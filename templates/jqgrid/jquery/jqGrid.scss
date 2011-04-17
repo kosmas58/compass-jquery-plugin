@@ -574,25 +574,6 @@ tr.ui-search-toolbar {
     text-overflow: ellipsis;
     -moz-binding: url('ellipsis-xbl.xml#ellipsis'); } }
 
-.ui-searchFilter {
-  display: none;
-  position: absolute;
-  z-index: 770;
-  overflow: visible;
-  table {
-    position: relative;
-    margin: 0em;
-    width: auto;
-    td {
-      margin: 0em;
-      padding: 1px;
-      input, select {
-        margin: 0.1em; } } }
-  .ui-state-default {
-    cursor: pointer; }
-  .divider hr {
-    margin: 1px; } }
-
 /* Multiselect
 ----------------------------------*/
 
