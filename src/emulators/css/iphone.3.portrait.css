@@ -3,6 +3,9 @@
     background: image_url("emulators/iphone.3.portrait.png") no-repeat;
     width: 390px;
     height: 740px;
+    -moz-transform-origin: 0 0;
+    -o-transform-origin: 0 0;
+    -webkit-transform-origin: 0 0;
 }
 
 .emulator .actions {

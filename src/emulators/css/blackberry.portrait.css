@@ -2,6 +2,9 @@
     background: image_url("emulators/blackberry.torch.portrait.png") no-repeat;
     width: 534px;
     height: 852px;
+    -moz-transform-origin: 0 0;
+    -o-transform-origin: 0 0;
+    -webkit-transform-origin: 0 0;
 }
 
 .emulator .actions {

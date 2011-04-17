@@ -4,6 +4,9 @@
   background: image_url("emulators/galaxy.tab.7.portrait.png") no-repeat;
   width: 720px;
   height: 1160px;
+  -moz-transform-origin: 0 0;
+  -o-transform-origin: 0 0;
+  -webkit-transform-origin: 0 0;
   .actions {
     position: absolute; }
   .display-area {
