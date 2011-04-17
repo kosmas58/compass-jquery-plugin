@@ -4,6 +4,8 @@
   background: image_url("emulators/galaxy.tab.7.landscape.png") no-repeat;
   width: 1200px;
   height: 720px;
+  .actions {
+    position: absolute; }
   .display-area {
     position: relative;
     top: 100px;

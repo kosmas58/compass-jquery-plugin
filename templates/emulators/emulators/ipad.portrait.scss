@@ -4,6 +4,8 @@
   background: image_url("emulators/ipad.portrait.png") no-repeat;
   width: 852px;
   height: 1108px;
+  .actions {
+    position: absolute; }
   .display-area {
     position: relative;
     top: 61px;

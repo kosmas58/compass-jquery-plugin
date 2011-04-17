@@ -5,6 +5,8 @@
   background: image_url("emulators/palm.pre.landscape.png") no-repeat;
   width: 800px;
   height: 442px;
+  .actions {
+    position: absolute; }
   .display-area {
     position: relative;
     top: 85px;

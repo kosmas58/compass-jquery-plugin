@@ -4,6 +4,8 @@
   background: image_url("emulators/ipad.landscape.png") no-repeat;
   width: 1108px;
   height: 852px;
+  .actions {
+    position: absolute; }
   .display-area {
     position: relative;
     top: 61px;

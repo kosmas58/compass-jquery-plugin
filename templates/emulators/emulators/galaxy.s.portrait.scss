@@ -4,6 +4,8 @@
   background: image_url("emulators/galaxy.s.portrait.png") no-repeat;
   width: 600px;
   height: 1120px;
+  .actions {
+    position: absolute; }
   .display-area {
     position: relative;
     top: 198px;

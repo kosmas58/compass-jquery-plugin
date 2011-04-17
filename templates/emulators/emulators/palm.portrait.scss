@@ -5,6 +5,8 @@
   background: image_url("emulators/palm.pre.portrait.png") no-repeat;
   width: 416px;
   height: 740px;
+  .actions {
+    position: absolute; }
   .display-area {
     position: relative;
     top: 126px;

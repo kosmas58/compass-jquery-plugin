@@ -5,6 +5,8 @@
   background: image_url("emulators/iphone.3.portrait.png") no-repeat;
   width: 390px;
   height: 740px;
+  .actions {
+    position: absolute; }
   .display-area {
     position: relative;
     top: 138px;

@@ -5,6 +5,10 @@
     height: 442px;
 }
 
+.emulator .actions {
+  position: absolute;
+}
+
 .emulator .display-area {
     position: relative;
     top: 85px;
