@@ -1,11 +1,11 @@
-.palm .emulator {
+.emulator {
     margin-top: 56px;
     background: image_url("emulators/palm.pre.portrait.png") no-repeat;
     width: 416px;
     height: 740px;
 }
 
-.palm .emulator .display-area {
+.emulator .display-area {
     position: relative;
     top: 126px;
     width: 320px;
@@ -14,6 +14,6 @@
     color: #ffffff;
 }
 
-.palm .emulator .display-area a {
+.emulator .display-area a {
     color: #ff5500;
 }

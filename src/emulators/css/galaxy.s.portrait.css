@@ -1,10 +1,10 @@
-.galaxys .emulator {
+.emulator {
     background: image_url("emulators/galaxy.s.portrait.png") no-repeat;
     width: 600px;
     height: 1120px;
 }
 
-.galaxys .emulator .display-area {
+.emulator .display-area {
     position: relative;
     top: 198px;
     width: 480px;
@@ -13,6 +13,6 @@
     color: #ffffff;
 }
 
-.galaxys .emulator .display-area a {
+.emulator .display-area a {
     color: #ff5500;
 }

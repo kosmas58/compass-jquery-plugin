@@ -1,10 +1,10 @@
-.galaxy7 .emulator {
+.emulator {
     background: image_url("emulators/galaxy.tab.7.portrait.png") no-repeat;
     width: 720px;
     height: 1160px;
 }
 
-.galaxy7 .emulator .display-area {
+.emulator .display-area {
     position: relative;
     top: 104px;
     width: 600px;
@@ -13,6 +13,6 @@
     color: #ffffff;
 }
 
-.galaxy7 .emulator .display-area a {
+.emulator .display-area a {
     color: #ff5500;
 }

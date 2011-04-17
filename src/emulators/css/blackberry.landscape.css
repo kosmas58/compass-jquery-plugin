@@ -1,11 +1,11 @@
-.blackberry .emulator {
+.emulator {
     margin-top: 160px;
     background: image_url("emulators/blackberry.torch.landscape.png") no-repeat;
     width: 840px;
     height: 460px;
 }
 
-.blackberry .emulator .display-area {
+.emulator .display-area {
     position: relative;
     top: 52px;
     width: 480px;
@@ -14,6 +14,6 @@
     color: #ffffff;
 }
 
-.blackberry .emulator .display-area a {
+.emulator .display-area a {
     color: #ff5500;
 }
