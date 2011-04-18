@@ -1,7 +1,8 @@
 .emulator {
-    background: image_url("emulators/ipad.portrait.png") no-repeat;
-    width: 1000px;
-    height: 1280px;
+    margin-top: 56px;
+    background: image_url("emulators/iphone.4.portrait.png") no-repeat;
+    width: 390px;
+    height: 740px;
     -moz-transform-origin: 0 0;
     -o-transform-origin: 0 0;
     -webkit-transform-origin: 0 0;
@@ -13,10 +14,10 @@
 
 .emulator .display-area {
     position: relative;
-    top: 149px;
-    width: 768px;
-    height: 1004px;
-    max-height: 1004px;
+    top: 138px;
+    width: 320px;
+    height: 460px;
+    max-height: 460px;
     color: #ffffff;
 }
 
