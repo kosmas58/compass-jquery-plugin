@@ -6987,7 +6987,7 @@ var xmlJsonClass = {
 
 
                 // dropdown for: choosing field
-                var ruleFieldSelect = $("<select></select>");
+                var ruleFieldSelect = $("<select></select>"), ina, aoprs = [];
                 ruleFieldTd.append(ruleFieldSelect);
                 ruleFieldSelect.bind('change', function() {
                     rule.field = $(ruleFieldSelect).val();
@@ -7026,10 +7026,16 @@ var xmlJsonClass = {
                     }
                     // operators
                     var s = "",so = "";
-                    for (i = 0; i < that.p.ops.length; i++) {
-                        if ($.inArray(that.p.ops[i].name, op) !== -1) {
-                            so = rule.op === that.p.ops[i].name ? " selected='selected'" : "";
-                            s += "<option value='" + that.p.ops[i].name + "'" + so + ">" + that.p.ops[i].description + "</option>";
+                    aoprs = [];
+                    $.each(that.p.ops, function() {
+                        aoprs.push(this.name)
+                    });
+                    for (i = op.length - 1; i >= 0; i--) {
+                        ina = $.inArray(op[i], aoprs);
+                        if (ina !== -1) {
+                            rule.op = that.p.ops[ina].name
+                            so = i == 0 ? " selected='selected'" : "";
+                            s += "<option value='" + that.p.ops[ina].name + "'" + so + ">" + that.p.ops[ina].description + "</option>";
                         }
                     }
                     $(".selectopts", trpar).empty().append(s);
@@ -7116,10 +7122,14 @@ var xmlJsonClass = {
                     op = that.p.numopts;
                 }
                 str = "";
-                for (i = 0; i < that.p.ops.length; i++) {
-                    if ($.inArray(that.p.ops[i].name, op) !== -1) {
-                        selected = rule.op === that.p.ops[i].name ? " selected='selected'" : "";
-                        str += "<option value='" + that.p.ops[i].name + "'" + selected + ">" + that.p.ops[i].description + "</option>";
+                $.each(that.p.ops, function() {
+                    aoprs.push(this.name)
+                });
+                for (i = 0; i < op.length; i++) {
+                    ina = $.inArray(op[i], aoprs);
+                    if (ina !== -1) {
+                        selected = rule.op === that.p.ops[ina].name ? " selected='selected'" : "";
+                        str += "<option value='" + that.p.ops[ina].name + "'" + selected + ">" + that.p.ops[ina].description + "</option>";
                     }
                 }
                 ruleOperatorSelect.append(str);
@@ -7482,7 +7492,7 @@ var xmlJsonClass = {
                     var columns = $.extend([], $t.p.colModel),
                             bS = "<a href='javascript:void(0)' id='" + fid + "_search' class='fm-button ui-state-default ui-corner-all fm-button-icon-right ui-reset'><span class='ui-icon ui-icon-search'></span>" + p.Find + "</a>",
                             bC = "<a href='javascript:void(0)' id='" + fid + "_reset' class='fm-button ui-state-default ui-corner-all fm-button-icon-left ui-search'><span class='ui-icon ui-icon-arrowreturnthick-1-w'></span>" + p.Reset + "</a>",
-                            bQ = "", tmpl = "", colnm, found = false, bt;
+                            bQ = "", tmpl = "", colnm, found = false, bt, cmi = -1;
                     if (p.showQuery) {
                         bQ = "<a href='javascript:void(0)' id='" + fid + "_query' class='fm-button ui-state-default ui-corner-all fm-button-icon-left'><span class='ui-icon ui-icon-comment'></span>Query</a>";
                     }
@@ -7499,6 +7509,7 @@ var xmlJsonClass = {
                                 if ((ignoreHiding && searchable) || (searchable && !hidden)) {
                                     found = true;
                                     colnm = n.index || n.name;
+                                    cmi = i;
                                 }
                             }
                         });
@@ -7507,8 +7518,14 @@ var xmlJsonClass = {
                     }
                     // old behaviour
                     if ((!defaultFilters && colnm) || p.multipleSearch === false) {
+                        var cmop = "eq";
+                        if (cmi >= 0 && columns[cmi].searchoptions && columns[cmi].searchoptions.sopt) {
+                            cmop = columns[cmi].searchoptions.sopt[0];
+                        } else if (p.sopt.length) {
+                            cmop = p.sopt[0];
+                        }
                         defaultFilters = {"groupOp": "AND",rules:[
-                            {"field":colnm,"op":"eq","data":""}
+                            {"field":colnm,"op":cmop,"data":""}
                         ]};
                     }
                     found = false;
@@ -7554,6 +7571,7 @@ var xmlJsonClass = {
                     if (p.multipleSearch === false) {
                         $(".add-rule", "#" + fid).hide();
                         $(".delete-rule", "#" + fid).hide();
+                        $(".opsel", "#" + fid).hide();
                     }
                     if ($.isFunction(p.onInitializeSearch)) {
                         p.onInitializeSearch($("#" + fid));
