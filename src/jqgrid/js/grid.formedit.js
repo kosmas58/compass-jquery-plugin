@@ -86,6 +86,12 @@
                     }
                 }
 
+                function hideButtons() {
+                    $(".add-rule", "#" + fid).hide();
+                    $(".delete-rule", "#" + fid).hide();
+                    $(".opsel", "#" + fid).hide();
+                }
+
                 if ($("#" + IDs.themodal).html() !== null) {
                     showFilter();
                 } else {
@@ -173,9 +179,7 @@
                         });
                     }
                     if (p.multipleSearch === false) {
-                        $(".add-rule", "#" + fid).hide();
-                        $(".delete-rule", "#" + fid).hide();
-                        $(".opsel", "#" + fid).hide();
+                        hideButtons();
                     }
                     if ($.isFunction(p.onInitializeSearch)) {
                         p.onInitializeSearch($("#" + fid));
@@ -267,6 +271,9 @@
                         $.extend($t.p.postData, sdata);
                         if ($.isFunction(p.onReset)) {
                             p.onReset();
+                        }
+                        if (p.multipleSearch === false) {
+                            hideButtons();
                         }
                         $($t).trigger("reloadGrid", [
                             {page:1}
@@ -1677,8 +1684,8 @@
                 if (!rowids) {
                     return;
                 }
-                var onBeforeShow = typeof p.beforeShowForm === 'function' ? true : false,
-                        onAfterShow = typeof p.afterShowForm === 'function' ? true : false,
+                var onBeforeShow = $.isFunction(p.beforeShowForm),
+                        onAfterShow = $.isFunction(p.afterShowForm),
                         onBeforeInit = $.isFunction(p.beforeInitData) ? p.beforeInitData : false,
                         gID = $t.p.id, onCS = {},
                         showFrm = true,
@@ -1758,10 +1765,10 @@
                         var ret = [true,""];
                         onCS = {};
                         var postdata = $("#DelData>td", "#" + dtbl).text(); //the pair is name=val1,val2,...
-                        if (typeof p.onclickSubmit === 'function') {
+                        if ($.isFunction(p.onclickSubmit)) {
                             onCS = p.onclickSubmit(rp_ge, postdata) || {};
                         }
-                        if (typeof p.beforeSubmit === 'function') {
+                        if ($.isFunction(p.beforeSubmit)) {
                             ret = p.beforeSubmit(postdata);
                         }
                         if (ret[0] && !rp_ge.processing) {
@@ -1793,7 +1800,7 @@
                                     } else {
                                         // data is posted successful
                                         // execute aftersubmit with the returned data from server
-                                        if (typeof rp_ge.afterSubmit === 'function') {
+                                        if ($.isFunction(rp_ge.afterSubmit)) {
                                             ret = rp_ge.afterSubmit(data, postd);
                                         }
                                     }
@@ -1953,7 +1960,7 @@
                                 .click(
                                 function() {
                                     if (!$(this).hasClass('ui-state-disabled')) {
-                                        if (typeof o.addfunc == 'function') {
+                                        if ($.isFunction(o.addfunc)) {
                                             o.addfunc();
                                         } else {
                                             $($t).jqGrid("editGridRow", "new", pAdd);
@@ -1984,7 +1991,7 @@
                                     if (!$(this).hasClass('ui-state-disabled')) {
                                         var sr = $t.p.selrow;
                                         if (sr) {
-                                            if (typeof o.editfunc == 'function') {
+                                            if ($.isFunction(o.editfunc)) {
                                                 o.editfunc(sr);
                                             } else {
                                                 $($t).jqGrid("editGridRow", sr, pEdit);
@@ -2019,7 +2026,11 @@
                                     if (!$(this).hasClass('ui-state-disabled')) {
                                         var sr = $t.p.selrow;
                                         if (sr) {
-                                            $($t).jqGrid("viewGridRow", sr, pView);
+                                            if ($.isFunction(o.viewfunc)) {
+                                                o.viewfunc(sr);
+                                            } else {
+                                                $($t).jqGrid("viewGridRow", sr, pView);
+                                            }
                                         } else {
                                             $.jgrid.viewModal("#" + alertIDs.themodal, {gbox:"#gbox_" + $t.p.id,jqm:true});
                                             $("#jqg_alrt").focus();

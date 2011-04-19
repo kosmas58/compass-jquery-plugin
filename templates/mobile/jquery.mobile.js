@@ -597,27 +597,25 @@
 
     function getVirtualBindingFlags(element) {
         var flags = {};
-        var $ele = $(element);
-        while ($ele && $ele.length) {
-            var b = $ele.data(dataPropertyName);
+        while (element) {
+            var b = $.data(element, dataPropertyName);
             for (var k in b) {
                 if (b[k]) {
                     flags[k] = flags.hasVirtualBinding = true;
                 }
             }
-            $ele = $ele.parent();
+            element = element.parentNode;
         }
         return flags;
     }
 
     function getClosestElementWithVirtualBinding(element, eventType) {
-        var $ele = $(element);
-        while ($ele && $ele.length) {
-            var b = $ele.data(dataPropertyName);
+        while (element) {
+            var b = $.data(element, dataPropertyName);
             if (b && (!eventType || b[eventType])) {
-                return $ele;
+                return element;
             }
-            $ele = $ele.parent();
+            element = element.parentNode;
         }
         return null;
     }
@@ -674,7 +672,7 @@
     }
 
     function mouseEventCallback(event) {
-        var touchID = $(event.target).data(touchTargetPropertyName);
+        var touchID = $.data(event.target, touchTargetPropertyName);
         if (!blockMouseTriggers && (!lastTouchID || lastTouchID !== touchID)) {
             triggerVirtualEvent("v" + event.type, event);
         }
@@ -688,7 +686,7 @@
 
             if (flags.hasVirtualBinding) {
                 lastTouchID = nextTouchID++;
-                $(target).data(touchTargetPropertyName, lastTouchID);
+                $.data(target, touchTargetPropertyName, lastTouchID);
 
                 clearResetTimer();
 
@@ -767,8 +765,8 @@
         startResetTimer();
     }
 
-    function hasVirtualBindings($ele) {
-        var bindings = $ele.data(dataPropertyName), k;
+    function hasVirtualBindings(ele) {
+        var bindings = $.data(ele, dataPropertyName), k;
         if (bindings) {
             for (k in bindings) {
                 if (bindings[k]) {
@@ -789,16 +787,14 @@
                 // If this is the first virtual mouse binding for this element,
                 // add a bindings object to its data.
 
-                var $this = $(this);
-
-                if (!hasVirtualBindings($this)) {
-                    $this.data(dataPropertyName, {});
+                if (!hasVirtualBindings(this)) {
+                    $.data(this, dataPropertyName, {});
                 }
 
                 // If setup is called, we know it is the first binding for this
                 // eventType, so initialize the count for the eventType to zero.
 
-                var bindings = $this.data(dataPropertyName);
+                var bindings = $.data(this, dataPropertyName);
                 bindings[eventType] = true;
 
                 // If this is the first virtual mouse event for this type,
@@ -813,7 +809,7 @@
                 // for elements unless they actually have handlers registered on them.
                 // To get around this, we register dummy handlers on the elements.
 
-                $this.bind(realType, dummyMouseHandler);
+                $(this).bind(realType, dummyMouseHandler);
 
                 // For now, if event capture is not supported, we rely on mouse handlers.
                 if (eventCaptureSupported) {
@@ -865,7 +861,7 @@
                 }
 
                 var $this = $(this),
-                        bindings = $this.data(dataPropertyName);
+                        bindings = $.data(this, dataPropertyName);
                 bindings[eventType] = false;
 
                 // Unregister the dummy event handler.
@@ -875,7 +871,7 @@
                 // If this is the last virtual mouse binding on the
                 // element, remove the binding data from the element.
 
-                if (!hasVirtualBindings($this)) {
+                if (!hasVirtualBindings(this)) {
                     $this.removeData(dataPropertyName);
                 }
             }
@@ -932,7 +928,7 @@
                     for (var i = 0; i < cnt; i++) {
                         var o = clickBlockList[i],
                                 touchID = 0;
-                        if ((ele === target && Math.abs(o.x - x) < threshold && Math.abs(o.y - y) < threshold) || $(ele).data(touchTargetPropertyName) === o.touchID) {
+                        if ((ele === target && Math.abs(o.x - x) < threshold && Math.abs(o.y - y) < threshold) || $.data(ele, touchTargetPropertyName) === o.touchID) {
                             // XXX: We may want to consider removing matches from the block list
                             //      instead of waiting for the reset timer to fire.
                             e.preventDefault();
@@ -2022,22 +2018,21 @@
                     path.origin = path.get(location.protocol + '//' + location.host + location.pathname);
                 },
 
-                //prefix a relative url with the current path
-                // TODO rename to reflect conditional functionality
+                // prefix a relative url with the current path
+                // TODO force old relative deeplinks into new absolute path
                 makeAbsolute: function(url) {
-                    var hash = window.location.hash,
-                            isHashPath = path.isPath(hash);
+                    var isHashPath = path.isPath(location.hash);
 
                     if (path.isQuery(url)) {
                         // if the path is a list of query params and the hash is a path
-                        // append the query params to the paramless version of it.
+                        // append the query params to the hash (without params or dialog keys).
                         // otherwise use the pathname and append the query params
-                        return ( isHashPath ? path.cleanHash(hash) : location.pathname ) + url;
+                        return ( isHashPath ? path.cleanHash(location.hash) : location.pathname ) + url;
                     }
 
-                    // otherwise use the hash as the path prefix with the file and
-                    // extension removed by path.get if it is indeed a path
-                    return ( isHashPath ? path.get() : "" ) + url;
+                    // If the hash is a path, even if its not absolute, use it to prepend to the url
+                    // otherwise use the path with the trailing segement removed
+                    return ( isHashPath ? path.get() : path.get(location.pathname) ) + url;
                 },
 
                 // test if a given url (string) is a path
@@ -2052,10 +2047,9 @@
 
                 //return a url path with the window's location protocol/hostname/pathname removed
                 clean: function(url) {
-                    // Replace the protocol, host, and pathname only once at the beginning of the url to avoid
+                    // Replace the protocol host only once at the beginning of the url to avoid
                     // problems when it's included as a part of a param
-                    // Also, since all urls are absolute in IE, we need to remove the pathname as well.
-                    var leadingUrlRootRegex = new RegExp("^" + location.protocol + "//" + location.host + location.pathname);
+                    var leadingUrlRootRegex = new RegExp("^" + location.protocol + "//" + location.host);
                     return url.replace(leadingUrlRootRegex, "");
                 },
 
@@ -2301,8 +2295,9 @@
     // changepage function
     $.mobile.changePage = function(to, transition, reverse, changeHash, fromHashChange) {
         //from is always the currently viewed page
-        var toIsArray = $.type(to) === "array",
-                toIsObject = $.type(to) === "object",
+        var toType = $.type(to),
+                toIsArray = toType === "array",
+                toIsObject = toType === "object",
                 from = toIsArray ? to[0] : $.mobile.activePage;
 
         to = toIsArray ? to[1] : to;
@@ -2478,8 +2473,10 @@
                 pageContainerClasses = [];
             }
 
+            //clear page loader
+            $.mobile.pageLoading(true);
+
             if (transition && (transition !== 'none')) {
-                $.mobile.pageLoading(true);
                 if ($.inArray(transition, perspectiveTransitions) >= 0) {
                     addContainerClass('ui-mobile-viewport-perspective');
                 }
@@ -2503,7 +2500,6 @@
                 });
             }
             else {
-                $.mobile.pageLoading(true);
                 if (from) {
                     from.removeClass($.mobile.activePageClass);
                 }
@@ -2702,19 +2698,36 @@
         event.preventDefault();
     });
 
+    function findClosestLink(ele) {
+        while (ele) {
+            if (ele.nodeName.toLowerCase() == "a") {
+                break;
+            }
+            ele = ele.parentNode;
+        }
+        return ele;
+    }
+
     //add active state on vclick
-    $("a").live("vclick", function() {
-        $(this).closest(".ui-btn").not(".ui-disabled").addClass($.mobile.activeBtnClass);
+    $(document).bind("vclick", function(event) {
+        var link = findClosestLink(event.target);
+        if (link) {
+            $(link).closest(".ui-btn").not(".ui-disabled").addClass($.mobile.activeBtnClass);
+        }
     });
 
 
     //click routing - direct to HTTP or Ajax, accordingly
-    $("a").live("click", function(event) {
+    $(document).bind("click", function(event) {
+        var link = findClosestLink(event.target);
+        if (!link) {
+            return;
+        }
 
-        var $this = $(this),
+        var $link = $(link),
 
             //get href, if defined, otherwise fall to null #
-                href = $this.attr("href") || "#",
+                href = $link.attr("href") || "#",
 
             //cache a check for whether the link had a protocol
             //if this is true and the link was same domain, we won't want
@@ -2726,7 +2739,7 @@
                 url = path.clean(href),
 
             //rel set to external
-                isRelExternal = $this.is("[rel='external']"),
+                isRelExternal = $link.is("[rel='external']"),
 
             //rel set to external
                 isEmbeddedPage = path.isEmbeddedPage(url),
@@ -2745,13 +2758,13 @@
                 isExternal = (path.isExternal(url) && !isCrossDomainPageLoad) || (isRelExternal && !isEmbeddedPage),
 
             //if target attr is specified we mimic _blank... for now
-                hasTarget = $this.is("[target]"),
+                hasTarget = $link.is("[target]"),
 
             //if data-ajax attr is set to false, use the default behavior of a link
-                hasAjaxDisabled = $this.is(":jqmData(ajax='false')");
+                hasAjaxDisabled = $link.is(":jqmData(ajax='false')");
 
         //if there's a data-rel=back attr, go back in history
-        if ($this.is(":jqmData(rel='back')")) {
+        if ($link.is(":jqmData(rel='back')")) {
             window.history.back();
             return false;
         }
@@ -2764,7 +2777,7 @@
             return;
         }
 
-        $activeClickedLink = $this.closest(".ui-btn");
+        $activeClickedLink = $link.closest(".ui-btn");
 
         if (isExternal || hasAjaxDisabled || hasTarget || !$.mobile.ajaxEnabled ||
             // TODO: deprecated - remove at 1.0
@@ -2779,14 +2792,14 @@
         }
 
         //use ajax
-        var transition = $this.jqmData("transition"),
-                direction = $this.jqmData("direction"),
+        var transition = $link.jqmData("transition"),
+                direction = $link.jqmData("direction"),
                 reverse = (direction && direction === "reverse") ||
                     // deprecated - remove by 1.0
-                        $this.jqmData("back");
+                        $link.jqmData("back");
 
         //this may need to be more specific as we use data-rel more
-        nextPageRole = $this.attr("data-" + $.mobile.ns + "rel");
+        nextPageRole = $link.attr("data-" + $.mobile.ns + "rel");
 
         //if it's a relative href, prefix href with base url
         if (path.isRelative(url) && !hadProtocol) {
@@ -4063,23 +4076,50 @@
         wrapperEls: "span"
     };
 
+    function closestEnabledButton(element) {
+        while (element) {
+            var $ele = $(element);
+            if ($ele.hasClass("ui-btn") && !ele.hasClass("ui-disabled")) {
+                break;
+            }
+            element = element.parentNode;
+        }
+        return element;
+    }
+
     var attachEvents = function() {
-        $(".ui-btn:not(.ui-disabled)").live({
+        $(document).bind({
             "vmousedown": function() {
-                var theme = $(this).attr("data-" + $.mobile.ns + "theme");
-                $(this).removeClass("ui-btn-up-" + theme).addClass("ui-btn-down-" + theme);
+                var btn = closestEnabledButton(this);
+                if (btn) {
+                    var $btn = $(btn),
+                            theme = $btn.attr("data-" + $.mobile.ns + "theme");
+                    $btn.removeClass("ui-btn-up-" + theme).addClass("ui-btn-down-" + theme);
+                }
             },
             "vmousecancel vmouseup": function() {
-                var theme = $(this).attr("data-" + $.mobile.ns + "theme");
-                $(this).removeClass("ui-btn-down-" + theme).addClass("ui-btn-up-" + theme);
+                var btn = closestEnabledButton(this);
+                if (btn) {
+                    var $btn = $(btn),
+                            theme = $btn.attr("data-" + $.mobile.ns + "theme");
+                    $btn.removeClass("ui-btn-down-" + theme).addClass("ui-btn-up-" + theme);
+                }
             },
             "vmouseover focus": function() {
-                var theme = $(this).attr("data-" + $.mobile.ns + "theme");
-                $(this).removeClass("ui-btn-up-" + theme).addClass("ui-btn-hover-" + theme);
+                var btn = closestEnabledButton(this);
+                if (btn) {
+                    var $btn = $(btn),
+                            theme = $btn.attr("data-" + $.mobile.ns + "theme");
+                    $btn.removeClass("ui-btn-up-" + theme).addClass("ui-btn-hover-" + theme);
+                }
             },
             "vmouseout blur": function() {
-                var theme = $(this).attr("data-" + $.mobile.ns + "theme");
-                $(this).removeClass("ui-btn-hover-" + theme).addClass("ui-btn-up-" + theme);
+                var btn = closestEnabledButton(this);
+                if (btn) {
+                    var $btn = $(btn),
+                            theme = $btn.attr("data-" + $.mobile.ns + "theme");
+                    $btn.removeClass("ui-btn-hover-" + theme).addClass("ui-btn-up-" + theme);
+                }
             }
         });
 

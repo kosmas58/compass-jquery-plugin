@@ -88,27 +88,25 @@
 
     function getVirtualBindingFlags(element) {
         var flags = {};
-        var $ele = $(element);
-        while ($ele && $ele.length) {
-            var b = $ele.data(dataPropertyName);
+        while (element) {
+            var b = $.data(element, dataPropertyName);
             for (var k in b) {
                 if (b[k]) {
                     flags[k] = flags.hasVirtualBinding = true;
                 }
             }
-            $ele = $ele.parent();
+            element = element.parentNode;
         }
         return flags;
     }
 
     function getClosestElementWithVirtualBinding(element, eventType) {
-        var $ele = $(element);
-        while ($ele && $ele.length) {
-            var b = $ele.data(dataPropertyName);
+        while (element) {
+            var b = $.data(element, dataPropertyName);
             if (b && (!eventType || b[eventType])) {
-                return $ele;
+                return element;
             }
-            $ele = $ele.parent();
+            element = element.parentNode;
         }
         return null;
     }
@@ -165,7 +163,7 @@
     }
 
     function mouseEventCallback(event) {
-        var touchID = $(event.target).data(touchTargetPropertyName);
+        var touchID = $.data(event.target, touchTargetPropertyName);
         if (!blockMouseTriggers && (!lastTouchID || lastTouchID !== touchID)) {
             triggerVirtualEvent("v" + event.type, event);
         }
@@ -179,7 +177,7 @@
 
             if (flags.hasVirtualBinding) {
                 lastTouchID = nextTouchID++;
-                $(target).data(touchTargetPropertyName, lastTouchID);
+                $.data(target, touchTargetPropertyName, lastTouchID);
 
                 clearResetTimer();
 
@@ -258,8 +256,8 @@
         startResetTimer();
     }
 
-    function hasVirtualBindings($ele) {
-        var bindings = $ele.data(dataPropertyName), k;
+    function hasVirtualBindings(ele) {
+        var bindings = $.data(ele, dataPropertyName), k;
         if (bindings) {
             for (k in bindings) {
                 if (bindings[k]) {
@@ -280,16 +278,14 @@
                 // If this is the first virtual mouse binding for this element,
                 // add a bindings object to its data.
 
-                var $this = $(this);
-
-                if (!hasVirtualBindings($this)) {
-                    $this.data(dataPropertyName, {});
+                if (!hasVirtualBindings(this)) {
+                    $.data(this, dataPropertyName, {});
                 }
 
                 // If setup is called, we know it is the first binding for this
                 // eventType, so initialize the count for the eventType to zero.
 
-                var bindings = $this.data(dataPropertyName);
+                var bindings = $.data(this, dataPropertyName);
                 bindings[eventType] = true;
 
                 // If this is the first virtual mouse event for this type,
@@ -304,7 +300,7 @@
                 // for elements unless they actually have handlers registered on them.
                 // To get around this, we register dummy handlers on the elements.
 
-                $this.bind(realType, dummyMouseHandler);
+                $(this).bind(realType, dummyMouseHandler);
 
                 // For now, if event capture is not supported, we rely on mouse handlers.
                 if (eventCaptureSupported) {
@@ -356,7 +352,7 @@
                 }
 
                 var $this = $(this),
-                        bindings = $this.data(dataPropertyName);
+                        bindings = $.data(this, dataPropertyName);
                 bindings[eventType] = false;
 
                 // Unregister the dummy event handler.
@@ -366,7 +362,7 @@
                 // If this is the last virtual mouse binding on the
                 // element, remove the binding data from the element.
 
-                if (!hasVirtualBindings($this)) {
+                if (!hasVirtualBindings(this)) {
                     $this.removeData(dataPropertyName);
                 }
             }
@@ -423,7 +419,7 @@
                     for (var i = 0; i < cnt; i++) {
                         var o = clickBlockList[i],
                                 touchID = 0;
-                        if ((ele === target && Math.abs(o.x - x) < threshold && Math.abs(o.y - y) < threshold) || $(ele).data(touchTargetPropertyName) === o.touchID) {
+                        if ((ele === target && Math.abs(o.x - x) < threshold && Math.abs(o.y - y) < threshold) || $.data(ele, touchTargetPropertyName) === o.touchID) {
                             // XXX: We may want to consider removing matches from the block list
                             //      instead of waiting for the reset timer to fire.
                             e.preventDefault();
