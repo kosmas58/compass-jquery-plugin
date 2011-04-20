@@ -1,45 +1,48 @@
 (function() {
     var a = tinymce.dom.Event,c = tinymce.each,b = tinymce.DOM;
-    tinymce.create("tinymce.plugins.ContextMenu", {init:function(d) {
-        var g = this,h,e;
-        g.editor = d;
-        g.onContextMenu = new tinymce.util.Dispatcher(this);
-        e = d.onContextMenu.add(function(i, j) {
-            if (!j.ctrlKey) {
-                if (h) {
-                    i.selection.setRng(h)
-                }
-                g._getMenu(i).showMenu(j.clientX || j.pageX, j.clientY || j.pageX);
-                a.add(i.getDoc(), "click", function(k) {
-                    f(i, k)
-                });
-                a.cancel(j)
-            }
-        });
-        d.onRemove.add(function() {
-            if (g._menu) {
-                g._menu.removeAll()
-            }
-        });
-        function f(i, j) {
-            h = null;
-            if (j && j.button == 2) {
-                h = i.selection.getRng();
+    tinymce.create("tinymce.plugins.ContextMenu", {init:function(e) {
+        var h = this,f,d,i;
+        h.editor = e;
+        d = e.settings.contextmenu_never_use_native;
+        h.onContextMenu = new tinymce.util.Dispatcher(this);
+        f = e.onContextMenu.add(function(j, k) {
+            if ((i !== 0 ? i : k.ctrlKey) && !d) {
                 return
             }
-            if (g._menu) {
-                g._menu.removeAll();
-                g._menu.destroy();
-                a.remove(i.getDoc(), "click", f)
+            a.cancel(k);
+            if (k.target.nodeName == "IMG") {
+                j.selection.select(k.target)
+            }
+            h._getMenu(j).showMenu(k.clientX || k.pageX, k.clientY || k.pageX);
+            a.add(j.getDoc(), "click", function(l) {
+                g(j, l)
+            });
+            j.nodeChanged()
+        });
+        e.onRemove.add(function() {
+            if (h._menu) {
+                h._menu.removeAll()
+            }
+        });
+        function g(j, k) {
+            i = 0;
+            if (k && k.button == 2) {
+                i = k.ctrlKey;
+                return
+            }
+            if (h._menu) {
+                h._menu.removeAll();
+                h._menu.destroy();
+                a.remove(j.getDoc(), "click", g)
             }
         }
 
-        d.onMouseDown.add(f);
-        d.onKeyDown.add(f);
-        d.onKeyDown.add(function(i, j) {
-            if (j.shiftKey && !j.ctrlKey && !j.altKey && j.keyCode === 121) {
-                a.cancel(j);
-                e(i, j)
+        e.onMouseDown.add(g);
+        e.onKeyDown.add(g);
+        e.onKeyDown.add(function(j, k) {
+            if (k.shiftKey && !k.ctrlKey && !k.altKey && k.keyCode === 121) {
+                a.cancel(k);
+                f(j, k)
             }
         })
     },getInfo:function() {

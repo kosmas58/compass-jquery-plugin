@@ -179,20 +179,20 @@
 
                 select
                         .appendTo(button)
-                        .bind("touchstart mousedown", function(e) {
+                        .bind("vmousedown", function(e) {
                     //add active class to button
                     button.addClass($.mobile.activeBtnClass);
                 })
-                        .bind("focus mouseover", function() {
-                    button.trigger("mouseover");
+                        .bind("focus vmouseover", function() {
+                    button.trigger("vmouseover");
                 })
-                        .bind("touchmove", function() {
+                        .bind("vmousemove", function() {
                     //remove active class on scroll/touchmove
                     button.removeClass($.mobile.activeBtnClass);
                 })
-                        .bind("change blur mouseout", function() {
+                        .bind("change blur vmouseout", function() {
                     button
-                            .trigger("mouseout")
+                            .trigger("vmouseout")
                             .removeClass($.mobile.activeBtnClass);
                 });
 
@@ -211,43 +211,28 @@
 
                 //button events
                 button
-                        .bind("touchstart", function(event) {
-                    //set startTouches to cached copy of
-                    $(this).jqmData("startTouches", $.extend({}, event.originalEvent.touches[ 0 ]));
-                })
-                        .bind($.support.touch ? "touchend" : "mouseup", function(event) {
-                    //if it's a scroll, don't open
-                    if ($(this).jqmData("moved")) {
-                        $(this).removeData("moved");
-                    } else {
+                        .bind("vclick keydown", function(event) {
+                    if (event.type == "vclick" ||
+                            event.keyCode && ( event.keyCode === $.mobile.keyCode.ENTER || event.keyCode === $.mobile.keyCode.SPACE )) {
                         self.open();
-                    }
-                    event.preventDefault();
-                })
-                        .bind("touchmove", function(event) {
-                    //if touch moved enough, set data moved and don't open menu
-                    var thisTouches = event.originalEvent.touches[ 0 ],
-                            startTouches = $(this).jqmData("startTouches"),
-                            deltaX = Math.abs(thisTouches.pageX - startTouches.pageX),
-                            deltaY = Math.abs(thisTouches.pageY - startTouches.pageY);
-
-                    if (deltaX > 10 || deltaY > 10) {
-                        $(this).jqmData("moved", true);
+                        event.preventDefault();
                     }
                 });
 
-
                 //events for list items
-                list.delegate("li:not(.ui-disabled, .ui-li-divider)", "click", function(event) {
-                    // clicking on the list item fires click on the link in listview.js.
-                    // to prevent this handler from firing twice if the link isn't clicked on,
-                    // short circuit unless the target is the link
-                    if (!$(event.target).is("a")) {
-                        return;
-                    }
+                list
+                        .attr("role", "listbox")
+                        .delegate(".ui-li>a", "focusin", function() {
+                    $(this).attr("tabindex", "0");
+                })
+                        .delegate(".ui-li>a", "focusout", function() {
+                    $(this).attr("tabindex", "-1");
+                })
+                        .delegate("li:not(.ui-disabled, .ui-li-divider)", "vclick", function(event) {
 
                     // index of option tag to be selected
-                    var newIndex = list.find("li:not(.ui-li-divider)").index(this),
+                    var oldIndex = select[0].selectedIndex,
+                            newIndex = list.find("li:not(.ui-li-divider)").index(this),
                             option = self.optionElems.eq(newIndex)[0];
 
                     // toggle selected status on the tag for multi selects
@@ -261,8 +246,10 @@
                                 .toggleClass('ui-icon-checkbox-off', !option.selected);
                     }
 
-                    // trigger change
-                    select.trigger("change");
+                    // trigger change if value changed
+                    if (oldIndex !== newIndex) {
+                        select.trigger("change");
+                    }
 
                     //hide custom select for single selects only
                     if (!isMultiple) {
@@ -270,12 +257,68 @@
                     }
 
                     event.preventDefault();
+                })
+                    //keyboard events for menu items
+                        .keydown(function(e) {
+                    var target = $(e.target),
+                            li = target.closest("li");
+
+                    // switch logic based on which key was pressed
+                    switch (e.keyCode) {
+                        // up or left arrow keys
+                        case 38:
+                            var prev = li.prev();
+
+                            // if there's a previous option, focus it
+                            if (prev.length) {
+                                target
+                                        .blur()
+                                        .attr("tabindex", "-1");
+
+                                prev.find("a").first().focus();
+                            }
+
+                            return false;
+                            break;
+
+                        // down or right arrow keys
+                        case 40:
+                            var next = li.next();
+
+                            // if there's a next option, focus it
+                            if (next.length) {
+                                target
+                                        .blur()
+                                        .attr("tabindex", "-1");
+
+                                next.find("a").first().focus();
+                            }
+
+                            return false;
+                            break;
+
+                        // if enter or space is pressed, trigger click
+                        case 13:
+                        case 32:
+                            target.trigger("vclick");
+
+                            return false;
+                            break;
+                    }
                 });
 
-                //events on "screen" overlay + close button
-                screen.click(function(event) {
+                //events on "screen" overlay
+                screen.bind("vclick", function(event) {
                     self.close();
                 });
+
+                //close button on small overlays
+                self.headerClose.click(function() {
+                    if (self.menuType == "overlay") {
+                        self.close();
+                        return false;
+                    }
+                })
             }
         },
 
@@ -327,6 +370,10 @@
             });
 
             self.list.html(lis.join(" "));
+
+            self.list.find("li")
+                    .attr({ "role": "option", "tabindex": "-1" })
+                    .first().attr("tabindex", "0");
 
             // hide header close link for single selects
             if (!this.isMultiple) {
@@ -413,8 +460,7 @@
                     scrollTop = $(window).scrollTop(),
                     btnOffset = self.button.offset().top,
                     screenHeight = window.innerHeight,
-                    screenWidth = window.innerWidth,
-                    dialogUsed = self.list.parents('.ui-dialog').length;
+                    screenWidth = window.innerWidth;
 
             //add active class to button
             self.button.addClass($.mobile.activeBtnClass);
@@ -428,9 +474,7 @@
                 self.list.find(".ui-btn-active").focus();
             }
 
-            // NOTE addresses issue with firefox outerHeight when the parent dialog
-            //      is display: none. Upstream?
-            if (dialogUsed || menuHeight > screenHeight - 80 || !$.support.scrollTop) {
+            if (menuHeight > screenHeight - 80 || !$.support.scrollTop) {
 
                 //for webos (set lastscroll using button offset)
                 if (scrollTop == 0 && btnOffset > screenHeight) {

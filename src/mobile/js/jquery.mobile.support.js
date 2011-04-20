@@ -10,7 +10,7 @@
     var fakeBody = $("<body>").prependTo("html"),
             fbCSS = fakeBody[0].style,
             vendors = ['webkit','moz','o'],
-            webos = window.palmGetResource || window.PalmServiceBridge, //only used to rule out scrollTop
+            webos = "palmGetResource" in window, //only used to rule out scrollTop
             bb = window.blackberry; //only used to rule out box shadow, as it's filled opaque on BB
 
 //thx Modernizr
@@ -68,7 +68,8 @@
         cssPseudoElement: !!propExists('content'),
         boxShadow: !!propExists('boxShadow') && !bb,
         scrollTop: ("pageXOffset" in window || "scrollTop" in document.documentElement || "scrollTop" in fakeBody[0]) && !webos,
-        dynamicBaseTag: baseTagTest()
+        dynamicBaseTag: baseTagTest(),
+        eventCapture: ("addEventListener" in document) // This is a weak test. We may want to beef this up later.
     });
 
     fakeBody.remove();

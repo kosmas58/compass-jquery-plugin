@@ -59,15 +59,12 @@
 
         $(function() {
             $(document)
-                    .bind(touchStartEvent, function(event) {
+                    .bind("vmousedown", function(event) {
                 if (touchToggleEnabled) {
-                    if ($(event.target).closest(ignoreTargets).length) {
-                        return;
-                    }
                     stateBefore = currentstate;
                 }
             })
-                    .bind(touchStopEvent, function(event) {
+                    .bind("vclick", function(event) {
                 if (touchToggleEnabled) {
                     if ($(event.target).closest(ignoreTargets).length) {
                         return;
@@ -79,9 +76,6 @@
                 }
             })
                     .bind('scrollstart', function(event) {
-                if ($(event.target).closest(ignoreTargets).length) {
-                    return;
-                } //because it could be a touchmove...
                 scrollTriggered = true;
                 if (stateBefore == null) {
                     stateBefore = currentstate;
@@ -119,30 +113,30 @@
         //before page is shown, check for duplicate footer
         $('.ui-page').live('pagebeforeshow', function(event, ui) {
             var page = $(event.target),
-                    footer = page.find(":jqmData(role='footer'):not(.ui-sticky-footer)"),
-                    id = footer.jqmData('id');
-            stickyFooter = null;
-            if (id) {
-                stickyFooter = $(".ui-footer:jqmData(id='" + id + "').ui-sticky-footer");
-                if (stickyFooter.length == 0) {
-                    // No sticky footer exists for this data-id. We'll use this
-                    // footer as the sticky footer for the group and then create
-                    // a placeholder footer for the page.
-                    stickyFooter = footer;
-                    footer = stickyFooter.clone(); // footer placeholder
-                    stickyFooter.addClass('ui-sticky-footer').before(footer);
-                }
-                footer.addClass('ui-footer-duplicate');
-                stickyFooter.appendTo($.mobile.pageContainer).css('top', 0);
-                setTop(stickyFooter);
+                    footer = page.find(":jqmData(role='footer')"),
+                    id = footer.data('id'),
+                    prevPage = ui.prevPage,
+                    prevFooter = prevPage && prevPage.find(":jqmData(role='footer')"),
+                    prevFooterMatches = prevFooter.length && prevFooter.jqmData("id") === id;
+
+            if (id && prevFooterMatches) {
+                stickyFooter = footer;
+                setTop(stickyFooter.removeClass("fade in out").appendTo($.mobile.pageContainer));
             }
         });
 
         //after page is shown, append footer to new page
         $('.ui-page').live('pageshow', function(event, ui) {
+            var $this = $(this);
+
             if (stickyFooter && stickyFooter.length) {
-                stickyFooter.appendTo(event.target).css('top', 0);
+
+                setTimeout(function() {
+                    setTop(stickyFooter.appendTo($this).addClass("fade"));
+                    stickyFooter = null;
+                }, 500);
             }
+
             $.fixedToolbars.show(true, this);
         });
 

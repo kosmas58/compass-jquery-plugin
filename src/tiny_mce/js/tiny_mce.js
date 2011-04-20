@@ -1,6 +1,6 @@
 (function(d) {
     var a = /^\s*|\s*$/g,e,c = "B".replace(/A(.)|B/, "$1") === "$1";
-    var b = {majorVersion:"3",minorVersion:"4",releaseDate:"2011-03-10",_init:function() {
+    var b = {majorVersion:"3",minorVersion:"4.2",releaseDate:"2011-04-07",_init:function() {
         var s = this,q = document,o = navigator,g = o.userAgent,m,f,l,k,j,r;
         s.isOpera = d.opera && opera.buildNumber;
         s.isWebKit = /WebKit/.test(g);
@@ -643,7 +643,7 @@ tinymce.create("tinymce.util.Dispatcher", {scope:null,listeners:null,Dispatcher:
         t = typeof o;
         if (t == "string") {
             v = "\bb\tt\nn\ff\rr\"\"''\\\\";
-            return quote + o.replace(/([\u0080-\uFFFF\x00-\x1f\"\'])/g, function(a, b) {
+            return quote + o.replace(/([\u0080-\uFFFF\x00-\x1f\"\'\\])/g, function(a, b) {
                 if (quote === '"' && a === "'") {
                     return a
                 }
@@ -757,86 +757,95 @@ tinymce.create("static tinymce.util.XHR", {send:function(g) {
         return new tinymce.util.JSONRequest().send(d)
     }}})
 }());
-(function(i) {
-    var a,g,d,j = /[&\"\u007E-\uFFFF]/g,b = /[<>&\u007E-\uFFFF]/g,f = /[<>&\"\']/g,c = /&(#)?([\w]+);/g;
+(function(j) {
+    var a,g,d,k = /[&\"\u007E-\uD7FF]|[\uD800-\uDBFF][\uDC00-\uDFFF]/g,b = /[<>&\u007E-\uD7FF]|[\uD800-\uDBFF][\uDC00-\uDFFF]/g,f = /[<>&\"\']/g,c = /&(#)?([\w]+);/g,i = {128:"\u20AC",130:"\u201A",131:"\u0192",132:"\u201E",133:"\u2026",134:"\u2020",135:"\u2021",136:"\u02C6",137:"\u2030",138:"\u0160",139:"\u2039",140:"\u0152",142:"\u017D",145:"\u2018",146:"\u2019",147:"\u201C",148:"\u201D",149:"\u2022",150:"\u2013",151:"\u2014",152:"\u02DC",153:"\u2122",154:"\u0161",155:"\u203A",156:"\u0153",158:"\u017E",159:"\u0178"};
     g = {'"':"&quot;","'":"&#39;","<":"&lt;",">":"&gt;","&":"&amp;"};
     d = {"&lt;":"<","&gt;":">","&amp;":"&","&quot;":'"',"&apos;":"'"};
-    function h(k) {
-        var l;
-        l = document.createElement("div");
-        l.innerHTML = k;
-        return l.textContent || l.innerText || k
+    function h(l) {
+        var m;
+        m = document.createElement("div");
+        m.innerHTML = l;
+        return m.textContent || m.innerText || l
     }
 
-    function e(l, o) {
-        var m,n,k,p = {};
-        if (l) {
-            l = l.split(",");
-            o = o || 10;
-            for (m = 0; m < l.length; m += 2) {
-                n = String.fromCharCode(parseInt(l[m], o));
-                if (!g[n]) {
-                    k = "&" + l[m + 1] + ";";
-                    p[n] = k;
-                    p[k] = n
+    function e(m, p) {
+        var n,o,l,q = {};
+        if (m) {
+            m = m.split(",");
+            p = p || 10;
+            for (n = 0; n < m.length; n += 2) {
+                o = String.fromCharCode(parseInt(m[n], p));
+                if (!g[o]) {
+                    l = "&" + m[n + 1] + ";";
+                    q[o] = l;
+                    q[l] = o
                 }
             }
-            return p
+            return q
         }
     }
 
     a = e("50,nbsp,51,iexcl,52,cent,53,pound,54,curren,55,yen,56,brvbar,57,sect,58,uml,59,copy,5a,ordf,5b,laquo,5c,not,5d,shy,5e,reg,5f,macr,5g,deg,5h,plusmn,5i,sup2,5j,sup3,5k,acute,5l,micro,5m,para,5n,middot,5o,cedil,5p,sup1,5q,ordm,5r,raquo,5s,frac14,5t,frac12,5u,frac34,5v,iquest,60,Agrave,61,Aacute,62,Acirc,63,Atilde,64,Auml,65,Aring,66,AElig,67,Ccedil,68,Egrave,69,Eacute,6a,Ecirc,6b,Euml,6c,Igrave,6d,Iacute,6e,Icirc,6f,Iuml,6g,ETH,6h,Ntilde,6i,Ograve,6j,Oacute,6k,Ocirc,6l,Otilde,6m,Ouml,6n,times,6o,Oslash,6p,Ugrave,6q,Uacute,6r,Ucirc,6s,Uuml,6t,Yacute,6u,THORN,6v,szlig,70,agrave,71,aacute,72,acirc,73,atilde,74,auml,75,aring,76,aelig,77,ccedil,78,egrave,79,eacute,7a,ecirc,7b,euml,7c,igrave,7d,iacute,7e,icirc,7f,iuml,7g,eth,7h,ntilde,7i,ograve,7j,oacute,7k,ocirc,7l,otilde,7m,ouml,7n,divide,7o,oslash,7p,ugrave,7q,uacute,7r,ucirc,7s,uuml,7t,yacute,7u,thorn,7v,yuml,ci,fnof,sh,Alpha,si,Beta,sj,Gamma,sk,Delta,sl,Epsilon,sm,Zeta,sn,Eta,so,Theta,sp,Iota,sq,Kappa,sr,Lambda,ss,Mu,st,Nu,su,Xi,sv,Omicron,t0,Pi,t1,Rho,t3,Sigma,t4,Tau,t5,Upsilon,t6,Phi,t7,Chi,t8,Psi,t9,Omega,th,alpha,ti,beta,tj,gamma,tk,delta,tl,epsilon,tm,zeta,tn,eta,to,theta,tp,iota,tq,kappa,tr,lambda,ts,mu,tt,nu,tu,xi,tv,omicron,u0,pi,u1,rho,u2,sigmaf,u3,sigma,u4,tau,u5,upsilon,u6,phi,u7,chi,u8,psi,u9,omega,uh,thetasym,ui,upsih,um,piv,812,bull,816,hellip,81i,prime,81j,Prime,81u,oline,824,frasl,88o,weierp,88h,image,88s,real,892,trade,89l,alefsym,8cg,larr,8ch,uarr,8ci,rarr,8cj,darr,8ck,harr,8dl,crarr,8eg,lArr,8eh,uArr,8ei,rArr,8ej,dArr,8ek,hArr,8g0,forall,8g2,part,8g3,exist,8g5,empty,8g7,nabla,8g8,isin,8g9,notin,8gb,ni,8gf,prod,8gh,sum,8gi,minus,8gn,lowast,8gq,radic,8gt,prop,8gu,infin,8h0,ang,8h7,and,8h8,or,8h9,cap,8ha,cup,8hb,int,8hk,there4,8hs,sim,8i5,cong,8i8,asymp,8j0,ne,8j1,equiv,8j4,le,8j5,ge,8k2,sub,8k3,sup,8k4,nsub,8k6,sube,8k7,supe,8kl,oplus,8kn,otimes,8l5,perp,8m5,sdot,8o8,lceil,8o9,rceil,8oa,lfloor,8ob,rfloor,8p9,lang,8pa,rang,9ea,loz,9j0,spades,9j3,clubs,9j5,hearts,9j6,diams,ai,OElig,aj,oelig,b0,Scaron,b1,scaron,bo,Yuml,m6,circ,ms,tilde,802,ensp,803,emsp,809,thinsp,80c,zwnj,80d,zwj,80e,lrm,80f,rlm,80j,ndash,80k,mdash,80o,lsquo,80p,rsquo,80q,sbquo,80s,ldquo,80t,rdquo,80u,bdquo,810,dagger,811,Dagger,81g,permil,81p,lsaquo,81q,rsaquo,85c,euro", 32);
-    i.html = i.html || {};
-    i.html.Entities = {encodeRaw:function(l, k) {
-        return l.replace(k ? j : b, function(m) {
+    j.html = j.html || {};
+    j.html.Entities = {encodeRaw:function(m, l) {
+        return m.replace(l ? k : b, function(n) {
+            return g[n] || n
+        })
+    },encodeAllRaw:function(l) {
+        return("" + l).replace(f, function(m) {
             return g[m] || m
         })
-    },encodeAllRaw:function(k) {
-        return("" + k).replace(f, function(l) {
-            return g[l] || l
+    },encodeNumeric:function(m, l) {
+        return m.replace(l ? k : b, function(n) {
+            if (n.length > 1) {
+                return"&#" + (((n.charCodeAt(0) - 55296) * 1024) + (n.charCodeAt(1) - 56320) + 65536) + ";"
+            }
+            return g[n] || "&#" + n.charCodeAt(0) + ";"
         })
-    },encodeNumeric:function(l, k) {
-        return l.replace(k ? j : b, function(m) {
-            return g[m] || "&#" + m.charCodeAt(0) + ";"
+    },encodeNamed:function(n, l, m) {
+        m = m || a;
+        return n.replace(l ? k : b, function(o) {
+            return g[o] || m[o] || o
         })
-    },encodeNamed:function(m, k, l) {
-        l = l || a;
-        return m.replace(k ? j : b, function(n) {
-            return g[n] || l[n] || n
-        })
-    },getEncodeFunc:function(k, n) {
-        var o = i.html.Entities;
-        n = e(n) || a;
-        function l(q, p) {
-            return q.replace(p ? j : b, function(r) {
-                return g[r] || n[r] || "&#" + r.charCodeAt(0) + ";" || r
+    },getEncodeFunc:function(l, o) {
+        var p = j.html.Entities;
+        o = e(o) || a;
+        function m(r, q) {
+            return r.replace(q ? k : b, function(s) {
+                return g[s] || o[s] || "&#" + s.charCodeAt(0) + ";" || s
             })
         }
 
-        function m(q, p) {
-            return o.encodeNamed(q, p, n)
+        function n(r, q) {
+            return p.encodeNamed(r, q, o)
         }
 
-        k = i.makeMap(k.replace(/\+/g, ","));
-        if (k.named && k.numeric) {
-            return l
+        l = j.makeMap(l.replace(/\+/g, ","));
+        if (l.named && l.numeric) {
+            return m
         }
-        if (k.named) {
-            if (n) {
-                return m
+        if (l.named) {
+            if (o) {
+                return n
             }
-            return o.encodeNamed
+            return p.encodeNamed
         }
-        if (k.numeric) {
-            return o.encodeNumeric
+        if (l.numeric) {
+            return p.encodeNumeric
         }
-        return o.encodeRaw
-    },decode:function(k) {
-        return k.replace(c, function(m, l, n) {
-            if (l) {
-                return String.fromCharCode(n)
+        return p.encodeRaw
+    },decode:function(l) {
+        return l.replace(c, function(n, m, o) {
+            if (m) {
+                o = parseInt(o);
+                if (o > 65535) {
+                    o -= 65536;
+                    return String.fromCharCode(55296 + (o >> 10), 56320 + (o & 1023))
+                } else {
+                    return i[o] || String.fromCharCode(o)
+                }
             }
-            return d[m] || a[m] || h(m)
+            return d[n] || a[n] || h(n)
         })
     }}
 })(tinymce);
@@ -990,7 +999,7 @@ tinymce.html.Styles = function(d, f) {
                 for (u = 0,s = x.length; u < s; u++) {
                     t = x[u];
                     v = p[t];
-                    if (v !== e) {
+                    if (v !== e && v.length > 0) {
                         o += (o.length > 0 ? " " : "") + t + ": " + v + ";"
                     }
                 }
@@ -1003,7 +1012,7 @@ tinymce.html.Styles = function(d, f) {
         } else {
             for (n in p) {
                 q = p[n];
-                if (q !== e) {
+                if (q !== e && q.length > 0) {
                     o += (o.length > 0 ? " " : "") + n + ": " + q + ";"
                 }
             }
@@ -1694,28 +1703,29 @@ tinymce.html.Styles = function(d, f) {
         }
         g.firstChild = g.lastChild = null;
         return g
-    },isEmpty:function(j) {
-        var f = this,h = f.firstChild,g;
-        if (h) {
+    },isEmpty:function(k) {
+        var f = this,j = f.firstChild,h,g;
+        if (j) {
             do{
-                if (h.type === 1) {
-                    if (h.attributes.map["data-mce-bogus"]) {
+                if (j.type === 1) {
+                    if (j.attributes.map["data-mce-bogus"]) {
                         continue
                     }
-                    if (j[h.name]) {
+                    if (k[j.name]) {
                         return false
                     }
-                    g = h.attributes.length;
-                    while (g--) {
-                        if (h.attributes[g].name.indexOf("data-") === 0) {
+                    h = j.attributes.length;
+                    while (h--) {
+                        g = j.attributes[h].name;
+                        if (g === "name" || g.indexOf("data-") === 0) {
                             return false
                         }
                     }
                 }
-                if ((h.type === 3 && !c.test(h.value))) {
+                if ((j.type === 3 && !c.test(j.value))) {
                     return false
                 }
-            } while (h = a(h, f))
+            } while (j = a(j, f))
         }
         return true
     }});
@@ -1733,73 +1743,75 @@ tinymce.html.Styles = function(d, f) {
 })(tinymce);
 (function(b) {
     var a = b.html.Node;
-    b.html.DomParser = function(f, g) {
-        var e = this,d = {},c = [];
-        f = f || {};
-        f.root_name = f.root_name || "body";
-        e.schema = g = g || new b.html.Schema();
-        function h(l) {
-            var n,o,v,u,y,m,p,k,s,t,j,r,x,q;
-            r = b.makeMap("tr,td,th,tbody,thead,tfoot,table");
-            j = g.getNonEmptyElements();
-            for (n = 0; n < l.length; n++) {
-                o = l[n];
-                if (!o.parent) {
+    b.html.DomParser = function(g, h) {
+        var f = this,e = {},d = [],i = {},c = {};
+        g = g || {};
+        g.validate = "validate" in g ? g.validate : true;
+        g.root_name = g.root_name || "body";
+        f.schema = h = h || new b.html.Schema();
+        function j(m) {
+            var o,p,x,v,z,n,q,l,t,u,k,s,y,r;
+            s = b.makeMap("tr,td,th,tbody,thead,tfoot,table");
+            k = h.getNonEmptyElements();
+            for (o = 0; o < m.length; o++) {
+                p = m[o];
+                if (!p.parent) {
                     continue
                 }
-                u = [o];
-                for (v = o.parent; v && !g.isValidChild(v.name, o.name) && !r[v.name]; v = v.parent) {
-                    u.push(v)
+                v = [p];
+                for (x = p.parent; x && !h.isValidChild(x.name, p.name) && !s[x.name]; x = x.parent) {
+                    v.push(x)
                 }
-                if (v && u.length > 1) {
-                    u.reverse();
-                    y = m = u[0].clone();
-                    for (s = 0; s < u.length - 1; s++) {
-                        if (g.isValidChild(m.name, u[s].name)) {
-                            p = u[s].clone();
-                            m.append(p)
+                if (x && v.length > 1) {
+                    v.reverse();
+                    z = n = f.filterNode(v[0].clone());
+                    for (t = 0; t < v.length - 1; t++) {
+                        if (h.isValidChild(n.name, v[t].name)) {
+                            q = f.filterNode(v[t].clone());
+                            n.append(q)
                         } else {
-                            p = m
+                            q = n
                         }
-                        for (k = u[s].firstChild; k && k != u[s + 1];) {
-                            q = k.next;
-                            p.append(k);
-                            k = q
+                        for (l = v[t].firstChild; l && l != v[t + 1];) {
+                            r = l.next;
+                            q.append(l);
+                            l = r
                         }
-                        m = p
+                        n = q
                     }
-                    if (!y.isEmpty(j)) {
-                        v.insert(y, u[0], true);
-                        v.insert(o, y)
+                    if (!z.isEmpty(k)) {
+                        x.insert(z, v[0], true);
+                        x.insert(p, z)
                     } else {
-                        v.insert(o, u[0], true)
+                        x.insert(p, v[0], true)
                     }
-                    if (u[0].isEmpty(j)) {
-                        u[0].empty().remove()
+                    x = v[0];
+                    if (x.isEmpty(k) || x.firstChild === x.lastChild && x.firstChild.name === "br") {
+                        x.empty().remove()
                     }
                 } else {
-                    if (o.parent) {
-                        if (o.name === "li") {
-                            x = o.prev;
-                            if (x && (x.name === "ul" || x.name === "ul")) {
-                                x.append(o);
+                    if (p.parent) {
+                        if (p.name === "li") {
+                            y = p.prev;
+                            if (y && (y.name === "ul" || y.name === "ul")) {
+                                y.append(p);
                                 continue
                             }
-                            x = o.next;
-                            if (x && (x.name === "ul" || x.name === "ul")) {
-                                x.insert(o, x.firstChild, true);
+                            y = p.next;
+                            if (y && (y.name === "ul" || y.name === "ul")) {
+                                y.insert(p, y.firstChild, true);
                                 continue
                             }
-                            o.wrap(new a("ul", 1));
+                            p.wrap(f.filterNode(new a("ul", 1)));
                             continue
                         }
-                        if (g.isValidChild(o.parent.name, "div") && g.isValidChild("div", o.name)) {
-                            o.wrap(new a("div", 1))
+                        if (h.isValidChild(p.parent.name, "div") && h.isValidChild("div", p.name)) {
+                            p.wrap(f.filterNode(new a("div", 1)))
                         } else {
-                            if (o.name === "style" || o.name === "script") {
-                                o.empty().remove()
+                            if (p.name === "style" || p.name === "script") {
+                                p.empty().remove()
                             } else {
-                                o.unwrap()
+                                p.unwrap()
                             }
                         }
                     }
@@ -1807,160 +1819,196 @@ tinymce.html.Styles = function(d, f) {
             }
         }
 
-        e.addNodeFilter = function(i, j) {
-            b.each(b.explode(i), function(k) {
-                var l = d[k];
-                if (!l) {
-                    d[k] = l = []
+        f.filterNode = function(m) {
+            var l,k,n;
+            if (k in e) {
+                n = i[k];
+                if (n) {
+                    n.push(m)
+                } else {
+                    i[k] = [m]
                 }
-                l.push(j)
+            }
+            l = d.length;
+            while (l--) {
+                k = d[l].name;
+                if (k in m.attributes.map) {
+                    n = c[k];
+                    if (n) {
+                        n.push(m)
+                    } else {
+                        c[k] = [m]
+                    }
+                }
+            }
+            return m
+        };
+        f.addNodeFilter = function(k, l) {
+            b.each(b.explode(k), function(m) {
+                var n = e[m];
+                if (!n) {
+                    e[m] = n = []
+                }
+                n.push(l)
             })
         };
-        e.addAttributeFilter = function(i, j) {
-            b.each(b.explode(i), function(k) {
-                var l;
-                for (l = 0; l < c.length; l++) {
-                    if (c[l].name === k) {
-                        c[l].callbacks.push(j);
+        f.addAttributeFilter = function(k, l) {
+            b.each(b.explode(k), function(m) {
+                var n;
+                for (n = 0; n < d.length; n++) {
+                    if (d[n].name === m) {
+                        d[n].callbacks.push(l);
                         return
                     }
                 }
-                c.push({name:k,callbacks:[j]})
+                d.push({name:m,callbacks:[l]})
             })
         };
-        e.parse = function(v, m) {
-            var n,E,z,y,k = {},p = {},B,A,x,r,D,H,o,C,G = [],t,j,s,q,u;
+        f.parse = function(u, m) {
+            var n,F,z,y,B,A,v,q,D,I,x,o,C,H = [],s,k,r,p,t;
             m = m || {};
-            o = b.extend(b.makeMap("script,style,head,title,meta,param"), g.getBlockElements());
-            u = g.getNonEmptyElements();
-            q = g.children;
-            s = g.getWhiteSpaceElements();
+            i = {};
+            c = {};
+            o = b.extend(b.makeMap("script,style,head,html,body,title,meta,param"), h.getBlockElements());
+            t = h.getNonEmptyElements();
+            p = h.children;
+            x = g.validate;
+            r = h.getWhiteSpaceElements();
             C = /^[ \t\r\n]+/;
-            t = /[ \t\r\n]+$/;
-            j = /[ \t\r\n]+/g;
-            function F(i, l) {
-                var I = new a(i, l),J;
-                if (i in d) {
-                    J = k[i];
-                    if (J) {
-                        J.push(I)
+            s = /[ \t\r\n]+$/;
+            k = /[ \t\r\n]+/g;
+            function G(l, J) {
+                var K = new a(l, J),L;
+                if (l in e) {
+                    L = i[l];
+                    if (L) {
+                        L.push(K)
                     } else {
-                        k[i] = [I]
+                        i[l] = [K]
                     }
                 }
-                return I
+                return K
             }
 
-            n = new b.html.SaxParser({validate:f.validate,fix_self_closing:false,cdata:function(i) {
-                z.append(F("#cdata", 4)).value = i
-            },text:function(I, i) {
-                var l;
-                if (!s[z.name]) {
-                    I = I.replace(j, " ");
+            function E(K) {
+                var L,l,J;
+                for (L = K.prev; L && L.type === 3;) {
+                    l = L.value.replace(s, "");
+                    if (l.length > 0) {
+                        L.value = l;
+                        L = L.prev
+                    } else {
+                        J = L.prev;
+                        L.remove();
+                        L = J
+                    }
+                }
+            }
+
+            n = new b.html.SaxParser({validate:x,fix_self_closing:!x,cdata:function(l) {
+                z.append(G("#cdata", 4)).value = l
+            },text:function(K, l) {
+                var J;
+                if (!r[z.name]) {
+                    K = K.replace(k, " ");
                     if (z.lastChild && o[z.lastChild.name]) {
-                        I = I.replace(C, "")
+                        K = K.replace(C, "")
                     }
                 }
-                if (I.length !== 0) {
-                    l = F("#text", 3);
-                    l.raw = !!i;
-                    z.append(l).value = I
+                if (K.length !== 0) {
+                    J = G("#text", 3);
+                    J.raw = !!l;
+                    z.append(J).value = K
                 }
-            },comment:function(i) {
-                z.append(F("#comment", 8)).value = i
-            },pi:function(i, l) {
-                z.append(F(i, 7)).value = l
-            },doctype:function(i) {
-                z.append(F("#doctype", 10)).value = i
-            },start:function(i, P, I) {
-                var N,K,J,l,L,Q,O,M;
-                J = g.getElementRule(i);
-                if (J) {
-                    N = F(J.outputName || i, 1);
-                    N.attributes = P;
-                    N.shortEnded = I;
-                    z.append(N);
-                    M = q[z.name];
-                    if (M && q[N.name] && !M[N.name]) {
-                        G.push(N)
+            },comment:function(l) {
+                z.append(G("#comment", 8)).value = l
+            },pi:function(l, J) {
+                z.append(G(l, 7)).value = J;
+                E(z)
+            },doctype:function(J) {
+                var l;
+                l = z.append(G("#doctype", 10));
+                l.value = J;
+                E(z)
+            },start:function(l, R, K) {
+                var P,M,L,J,N,S,Q,O;
+                L = x ? h.getElementRule(l) : {};
+                if (L) {
+                    P = G(L.outputName || l, 1);
+                    P.attributes = R;
+                    P.shortEnded = K;
+                    z.append(P);
+                    O = p[z.name];
+                    if (O && p[P.name] && !O[P.name]) {
+                        H.push(P)
                     }
-                    K = c.length;
-                    while (K--) {
-                        L = c[K].name;
-                        if (L in P.map) {
-                            D = p[L];
+                    M = d.length;
+                    while (M--) {
+                        N = d[M].name;
+                        if (N in R.map) {
+                            D = c[N];
                             if (D) {
-                                D.push(N)
+                                D.push(P)
                             } else {
-                                p[L] = [N]
+                                c[N] = [P]
                             }
                         }
                     }
-                    if (o[i]) {
-                        for (l = N.prev; l && l.type === 3;) {
-                            Q = l.value.replace(t, "");
-                            if (Q.length > 0) {
-                                l.value = Q;
-                                l = l.prev
-                            } else {
-                                O = l.prev;
-                                l.remove();
-                                l = O
-                            }
-                        }
+                    if (o[l]) {
+                        E(P)
                     }
-                    if (!I) {
-                        z = N
+                    if (!K) {
+                        z = P
                     }
                 }
-            },end:function(i) {
-                var L,I,K,l,J;
-                I = g.getElementRule(i);
-                if (I) {
-                    if (o[i]) {
-                        if (!s[z.name]) {
-                            for (L = z.firstChild; L && L.type === 3;) {
-                                K = L.value.replace(C, "");
-                                if (K.length > 0) {
-                                    L.value = K;
-                                    L = L.next
+            },end:function(l) {
+                var N,K,M,J,L;
+                K = x ? h.getElementRule(l) : {};
+                if (K) {
+                    if (o[l]) {
+                        if (!r[z.name]) {
+                            for (N = z.firstChild; N && N.type === 3;) {
+                                M = N.value.replace(C, "");
+                                if (M.length > 0) {
+                                    N.value = M;
+                                    N = N.next
                                 } else {
-                                    l = L.next;
-                                    L.remove();
-                                    L = l
+                                    J = N.next;
+                                    N.remove();
+                                    N = J
                                 }
                             }
-                            for (L = z.lastChild; L && L.type === 3;) {
-                                K = L.value.replace(t, "");
-                                if (K.length > 0) {
-                                    L.value = K;
-                                    L = L.prev
+                            for (N = z.lastChild; N && N.type === 3;) {
+                                M = N.value.replace(s, "");
+                                if (M.length > 0) {
+                                    N.value = M;
+                                    N = N.prev
                                 } else {
-                                    l = L.prev;
-                                    L.remove();
-                                    L = l
+                                    J = N.prev;
+                                    N.remove();
+                                    N = J
                                 }
                             }
                         }
-                        L = z.prev;
-                        if (L && L.type === 3) {
-                            K = L.value.replace(C, "");
-                            if (K.length > 0) {
-                                L.value = K
+                        N = z.prev;
+                        if (N && N.type === 3) {
+                            M = N.value.replace(C, "");
+                            if (M.length > 0) {
+                                N.value = M
                             } else {
-                                L.remove()
+                                N.remove()
                             }
                         }
                     }
-                    if (I.removeEmpty || I.paddEmpty) {
-                        if (z.isEmpty(u)) {
-                            if (I.paddEmpty) {
+                    if (K.removeEmpty || K.paddEmpty) {
+                        if (z.isEmpty(t)) {
+                            if (K.paddEmpty) {
                                 z.empty().append(new a("#text", "3")).value = "\u00a0"
                             } else {
                                 if (!z.attributes.map.name) {
-                                    J = z.parent;
+                                    L = z.parent;
                                     z.empty().remove();
-                                    z = J;
+                                    z = L;
                                     return
                                 }
                             }
@@ -1968,70 +2016,72 @@ tinymce.html.Styles = function(d, f) {
                     }
                     z = z.parent
                 }
-            }}, g);
-            E = z = new a(f.root_name, 11);
-            n.parse(v);
-            h(G);
-            for (H in k) {
-                D = d[H];
-                y = k[H];
-                x = y.length;
-                while (x--) {
-                    if (!y[x].parent) {
-                        y.splice(x, 1)
+            }}, h);
+            F = z = new a(g.root_name, 11);
+            n.parse(u);
+            if (x) {
+                j(H)
+            }
+            for (I in i) {
+                D = e[I];
+                y = i[I];
+                v = y.length;
+                while (v--) {
+                    if (!y[v].parent) {
+                        y.splice(v, 1)
                     }
                 }
                 for (B = 0,A = D.length; B < A; B++) {
-                    D[B](y, H, m)
+                    D[B](y, I, m)
                 }
             }
-            for (B = 0,A = c.length; B < A; B++) {
-                D = c[B];
-                if (D.name in p) {
-                    y = p[D.name];
-                    x = y.length;
-                    while (x--) {
-                        if (!y[x].parent) {
-                            y.splice(x, 1)
+            for (B = 0,A = d.length; B < A; B++) {
+                D = d[B];
+                if (D.name in c) {
+                    y = c[D.name];
+                    v = y.length;
+                    while (v--) {
+                        if (!y[v].parent) {
+                            y.splice(v, 1)
                         }
                     }
-                    for (x = 0,r = D.callbacks.length; x < r; x++) {
-                        D.callbacks[x](y, D.name, m)
+                    for (v = 0,q = D.callbacks.length; v < q; v++) {
+                        D.callbacks[v](y, D.name, m)
                     }
                 }
             }
-            return E
+            return F
         };
-        if (f.remove_trailing_brs) {
-            e.addNodeFilter("br", function(m, k) {
-                var q,p = m.length,n,t = g.getBlockElements(),j = g.getNonEmptyElements(),r,o,s;
-                for (q = 0; q < p; q++) {
-                    n = m[q];
-                    r = n.parent;
-                    if (t[n.parent.name] && n === r.lastChild) {
-                        o = n.prev;
-                        while (o) {
-                            s = o.name;
-                            if (s !== "span" || o.attr("data-mce-type") !== "bookmark") {
-                                if (s !== "br") {
+        if (g.remove_trailing_brs) {
+            f.addNodeFilter("br", function(n, m) {
+                var r,q = n.length,o,u = h.getBlockElements(),k = h.getNonEmptyElements(),s,p,t;
+                for (r = 0; r < q; r++) {
+                    o = n[r];
+                    s = o.parent;
+                    if (u[o.parent.name] && o === s.lastChild) {
+                        p = o.prev;
+                        while (p) {
+                            t = p.name;
+                            if (t !== "span" || p.attr("data-mce-type") !== "bookmark") {
+                                if (t !== "br") {
                                     break
                                 }
-                                if (s === "br") {
-                                    n = null;
+                                if (t === "br") {
+                                    o = null;
                                     break
                                 }
                             }
-                            o = o.prev
+                            p = p.prev
                         }
-                        if (n) {
-                            n.remove();
-                            if (r.isEmpty(j)) {
-                                elementRule = g.getElementRule(r.name);
+                        if (o) {
+                            o.remove();
+                            if (s.isEmpty(k)) {
+                                elementRule = h.getElementRule(s.name);
                                 if (elementRule.removeEmpty) {
-                                    r.remove()
+                                    s.remove()
                                 } else {
                                     if (elementRule.paddEmpty) {
-                                        r.empty().append(new b.html.Node("#text", 3)).value = "\u00a0"
+                                        s.empty().append(new b.html.Node("#text", 3)).value = "\u00a0"
                                     }
                                 }
                             }
@@ -2070,6 +2120,12 @@ tinymce.html.Writer = function(e) {
         } else {
             c[c.length] = " />"
         }
+        if (p && a && d[m] && c.length > 0) {
+            o = c[c.length - 1];
+            if (o.length > 0 && o !== "\n") {
+                c.push("\n")
+            }
+        }
     },end:function(h) {
         var i;
         c.push("</", h, ">");
@@ -2093,8 +2149,11 @@ tinymce.html.Writer = function(e) {
         } else {
             c.push("<?", h, "?>")
         }
+        if (a) {
+            c.push("\n")
+        }
     },doctype:function(h) {
-        c.push("<!DOCTYPE", h, ">")
+        c.push("<!DOCTYPE", h, ">", a ? "\n" : "")
     },reset:function() {
         c.length = 0
     },getContent:function() {
@@ -2180,588 +2239,588 @@ tinymce.html.Writer = function(e) {
         }
     }
 })(tinymce);
-(function(d) {
-    var f = d.each,c = d.is,e = d.isWebKit,a = d.isIE,h = d.html.Entities,b = /^([a-z0-9],?)+$/i,g = d.html.Schema.blockElementsMap;
-    d.create("tinymce.dom.DOMUtils", {doc:null,root:null,files:null,pixelStyles:/^(top|left|bottom|right|width|height|borderWidth)$/,props:{"for":"htmlFor","class":"className",className:"className",checked:"checked",disabled:"disabled",maxlength:"maxLength",readonly:"readOnly",selected:"selected",value:"value",id:"id",name:"name",type:"type"},DOMUtils:function(m, k) {
-        var j = this,i;
-        j.doc = m;
-        j.win = window;
-        j.files = {};
-        j.cssFlicker = false;
-        j.counter = 0;
-        j.stdMode = !d.isIE || m.documentMode >= 8;
-        j.boxModel = !d.isIE || m.compatMode == "CSS1Compat" || j.stdMode;
-        j.hasOuterHTML = "outerHTML" in m.createElement("a");
-        j.settings = k = d.extend({keep_values:false,hex_colors:1}, k);
-        j.styles = new d.html.Styles({url_converter:k.url_converter,url_converter_scope:k.url_converter_scope}, k.schema);
-        if (d.isIE6) {
+(function(h) {
+    var f = h.each,e = h.is,d = h.isWebKit,b = h.isIE,c = h.html.Entities,a = /^([a-z0-9],?)+$/i,g = h.html.Schema.blockElementsMap,i = /^[ \t\r\n]*$/;
+    h.create("tinymce.dom.DOMUtils", {doc:null,root:null,files:null,pixelStyles:/^(top|left|bottom|right|width|height|borderWidth)$/,props:{"for":"htmlFor","class":"className",className:"className",checked:"checked",disabled:"disabled",maxlength:"maxLength",readonly:"readOnly",selected:"selected",value:"value",id:"id",name:"name",type:"type"},DOMUtils:function(n, l) {
+        var k = this,j;
+        k.doc = n;
+        k.win = window;
+        k.files = {};
+        k.cssFlicker = false;
+        k.counter = 0;
+        k.stdMode = !h.isIE || n.documentMode >= 8;
+        k.boxModel = !h.isIE || n.compatMode == "CSS1Compat" || k.stdMode;
+        k.hasOuterHTML = "outerHTML" in n.createElement("a");
+        k.settings = l = h.extend({keep_values:false,hex_colors:1}, l);
+        k.schema = l.schema;
+        k.styles = new h.html.Styles({url_converter:l.url_converter,url_converter_scope:l.url_converter_scope}, l.schema);
+        if (h.isIE6) {
             try {
-                m.execCommand("BackgroundImageCache", false, true)
-            } catch(l) {
-                j.cssFlicker = true
+                n.execCommand("BackgroundImageCache", false, true)
+            } catch(m) {
+                k.cssFlicker = true
             }
         }
-        if (a) {
-            ("abbr article aside audio canvas details figcaption figure footer header hgroup mark menu meter nav output progress section summary time video").replace(/\w+/g, function(n) {
-                m.createElement(n)
+        if (b) {
+            ("abbr article aside audio canvas details figcaption figure footer header hgroup mark menu meter nav output progress section summary time video").replace(/\w+/g, function(o) {
+                n.createElement(o)
             })
         }
-        d.addUnload(j.destroy, j)
+        h.addUnload(k.destroy, k)
     },getRoot:function() {
-        var i = this,j = i.settings;
-        return(j && i.get(j.root_element)) || i.doc.body
-    },getViewPort:function(j) {
-        var k,i;
-        j = !j ? this.win : j;
-        k = j.document;
-        i = this.boxModel ? k.documentElement : k.body;
-        return{x:j.pageXOffset || i.scrollLeft,y:j.pageYOffset || i.scrollTop,w:j.innerWidth || i.clientWidth,h:j.innerHeight || i.clientHeight}
-    },getRect:function(l) {
-        var k,i = this,j;
-        l = i.get(l);
-        k = i.getPos(l);
-        j = i.getSize(l);
-        return{x:k.x,y:k.y,w:j.w,h:j.h}
-    },getSize:function(l) {
-        var j = this,i,k;
-        l = j.get(l);
-        i = j.getStyle(l, "width");
-        k = j.getStyle(l, "height");
-        if (i.indexOf("px") === -1) {
-            i = 0
+        var j = this,k = j.settings;
+        return(k && j.get(k.root_element)) || j.doc.body
+    },getViewPort:function(k) {
+        var l,j;
+        k = !k ? this.win : k;
+        l = k.document;
+        j = this.boxModel ? l.documentElement : l.body;
+        return{x:k.pageXOffset || j.scrollLeft,y:k.pageYOffset || j.scrollTop,w:k.innerWidth || j.clientWidth,h:k.innerHeight || j.clientHeight}
+    },getRect:function(m) {
+        var l,j = this,k;
+        m = j.get(m);
+        l = j.getPos(m);
+        k = j.getSize(m);
+        return{x:l.x,y:l.y,w:k.w,h:k.h}
+    },getSize:function(m) {
+        var k = this,j,l;
+        m = k.get(m);
+        j = k.getStyle(m, "width");
+        l = k.getStyle(m, "height");
+        if (j.indexOf("px") === -1) {
+            j = 0
         }
-        if (k.indexOf("px") === -1) {
-            k = 0
+        if (l.indexOf("px") === -1) {
+            l = 0
         }
-        return{w:parseInt(i) || l.offsetWidth || l.clientWidth,h:parseInt(k) || l.offsetHeight || l.clientHeight}
-    },getParent:function(k, j, i) {
-        return this.getParents(k, j, i, false)
-    },getParents:function(s, m, k, q) {
-        var j = this,i,l = j.settings,p = [];
-        s = j.get(s);
-        q = q === undefined;
-        if (l.strict_root) {
-            k = k || j.getRoot()
+        return{w:parseInt(j) || m.offsetWidth || m.clientWidth,h:parseInt(l) || m.offsetHeight || m.clientHeight}
+    },getParent:function(l, k, j) {
+        return this.getParents(l, k, j, false)
+    },getParents:function(u, p, l, s) {
+        var k = this,j,m = k.settings,q = [];
+        u = k.get(u);
+        s = s === undefined;
+        if (m.strict_root) {
+            l = l || k.getRoot()
         }
-        if (c(m, "string")) {
-            i = m;
-            if (m === "*") {
-                m = function(o) {
+        if (e(p, "string")) {
+            j = p;
+            if (p === "*") {
+                p = function(o) {
                     return o.nodeType == 1
                 }
             } else {
-                m = function(o) {
-                    return j.is(o, i)
+                p = function(o) {
+                    return k.is(o, j)
                 }
             }
         }
-        while (s) {
-            if (s == k || !s.nodeType || s.nodeType === 9) {
+        while (u) {
+            if (u == l || !u.nodeType || u.nodeType === 9) {
                 break
             }
-            if (!m || m(s)) {
-                if (q) {
-                    p.push(s)
+            if (!p || p(u)) {
+                if (s) {
+                    q.push(u)
                 } else {
-                    return s
+                    return u
                 }
             }
-            s = s.parentNode
+            u = u.parentNode
         }
-        return q ? p : null
-    },get:function(i) {
-        var j;
-        if (i && this.doc && typeof(i) == "string") {
-            j = i;
-            i = this.doc.getElementById(i);
-            if (i && i.id !== j) {
-                return this.doc.getElementsByName(j)[1]
+        return s ? q : null
+    },get:function(j) {
+        var k;
+        if (j && this.doc && typeof(j) == "string") {
+            k = j;
+            j = this.doc.getElementById(j);
+            if (j && j.id !== k) {
+                return this.doc.getElementsByName(k)[1]
             }
         }
-        return i
-    },getNext:function(j, i) {
-        return this._findSib(j, i, "nextSibling")
-    },getPrev:function(j, i) {
-        return this._findSib(j, i, "previousSibling")
-    },add:function(l, o, i, k, m) {
-        var j = this;
-        return this.run(l, function(r) {
-            var q,n;
-            q = c(o, "string") ? j.doc.createElement(o) : o;
-            j.setAttribs(q, i);
-            if (k) {
-                if (k.nodeType) {
-                    q.appendChild(k)
+        return j
+    },getNext:function(k, j) {
+        return this._findSib(k, j, "nextSibling")
+    },getPrev:function(k, j) {
+        return this._findSib(k, j, "previousSibling")
+    },add:function(m, q, j, l, o) {
+        var k = this;
+        return this.run(m, function(s) {
+            var r,n;
+            r = e(q, "string") ? k.doc.createElement(q) : q;
+            k.setAttribs(r, j);
+            if (l) {
+                if (l.nodeType) {
+                    r.appendChild(l)
                 } else {
-                    j.setHTML(q, k)
+                    k.setHTML(r, l)
                 }
             }
-            return !m ? r.appendChild(q) : q
+            return !o ? s.appendChild(r) : r
         })
-    },create:function(k, i, j) {
-        return this.add(this.doc.createElement(k), k, i, j, 1)
-    },createHTML:function(q, i, m) {
-        var p = "",l = this,j;
-        p += "<" + q;
-        for (j in i) {
-            if (i.hasOwnProperty(j)) {
-                p += " " + j + '="' + l.encode(i[j]) + '"'
+    },create:function(l, j, k) {
+        return this.add(this.doc.createElement(l), l, j, k, 1)
+    },createHTML:function(r, j, p) {
+        var q = "",m = this,l;
+        q += "<" + r;
+        for (l in j) {
+            if (j.hasOwnProperty(l)) {
+                q += " " + l + '="' + m.encode(j[l]) + '"'
             }
         }
-        if (typeof(m) != "undefined") {
-            return p + ">" + m + "</" + q + ">"
+        if (typeof(p) != "undefined") {
+            return q + ">" + p + "</" + r + ">"
         }
-        return p + " />"
-    },remove:function(i, j) {
-        return this.run(i, function(l) {
-            var k,m;
-            k = l.parentNode;
-            if (!k) {
+        return q + " />"
+    },remove:function(j, k) {
+        return this.run(j, function(m) {
+            var n,l = m.parentNode;
+            if (!l) {
                 return null
             }
-            if (j) {
-                while (m = l.firstChild) {
-                    if (!d.isIE || m.nodeType !== 3 || m.nodeValue) {
-                        k.insertBefore(m, l)
+            if (k) {
+                while (n = m.firstChild) {
+                    if (!h.isIE || n.nodeType !== 3 || n.nodeValue) {
+                        l.insertBefore(n, m)
                     } else {
-                        l.removeChild(m)
+                        m.removeChild(n)
                     }
                 }
             }
-            return k.removeChild(l)
+            return l.removeChild(m)
         })
-    },setStyle:function(l, i, j) {
-        var k = this;
-        return k.run(l, function(o) {
-            var n,m;
-            n = o.style;
-            i = i.replace(/-(\D)/g, function(q, p) {
-                return p.toUpperCase()
+    },setStyle:function(m, j, k) {
+        var l = this;
+        return l.run(m, function(p) {
+            var o,n;
+            o = p.style;
+            j = j.replace(/-(\D)/g, function(r, q) {
+                return q.toUpperCase()
             });
-            if (k.pixelStyles.test(i) && (d.is(j, "number") || /^[\-0-9\.]+$/.test(j))) {
-                j += "px"
+            if (l.pixelStyles.test(j) && (h.is(k, "number") || /^[\-0-9\.]+$/.test(k))) {
+                k += "px"
             }
-            switch (i) {case"opacity":if (a) {
-                n.filter = j === "" ? "" : "alpha(opacity=" + (j * 100) + ")";
-                if (!l.currentStyle || !l.currentStyle.hasLayout) {
-                    n.display = "inline-block"
+            switch (j) {case"opacity":if (b) {
+                o.filter = k === "" ? "" : "alpha(opacity=" + (k * 100) + ")";
+                if (!m.currentStyle || !m.currentStyle.hasLayout) {
+                    o.display = "inline-block"
                 }
-            }n[i] = n["-moz-opacity"] = n["-khtml-opacity"] = j || "";break;case"float":a ? n.styleFloat = j : n.cssFloat = j;break;default:n[i] = j || ""
+            }o[j] = o["-moz-opacity"] = o["-khtml-opacity"] = k || "";break;case"float":b ? o.styleFloat = k : o.cssFloat = k;break;default:o[j] = k || ""
             }
-            if (k.settings.update_styles) {
-                k.setAttrib(o, "data-mce-style")
-            }
-        })
-    },getStyle:function(l, i, k) {
-        l = this.get(l);
-        if (!l) {
-            return false
-        }
-        if (this.doc.defaultView && k) {
-            i = i.replace(/[A-Z]/g, function(m) {
-                return"-" + m
-            });
-            try {
-                return this.doc.defaultView.getComputedStyle(l, null).getPropertyValue(i)
-            } catch(j) {
-                return null
-            }
-        }
-        i = i.replace(/-(\D)/g, function(n, m) {
-            return m.toUpperCase()
-        });
-        if (i == "float") {
-            i = a ? "styleFloat" : "cssFloat"
-        }
-        if (l.currentStyle && k) {
-            return l.currentStyle[i]
-        }
-        return l.style[i]
-    },setStyles:function(l, m) {
-        var j = this,k = j.settings,i;
-        i = k.update_styles;
-        k.update_styles = 0;
-        f(m, function(o, p) {
-            j.setStyle(l, p, o)
-        });
-        k.update_styles = i;
-        if (k.update_styles) {
-            j.setAttrib(l, k.cssText)
-        }
-    },removeAllAttribs:function(i) {
-        return this.run(i, function(l) {
-            var j = l.attributes;
-            for (var k = j.length - 1; k >= 0; k--) {
-                l.removeAttributeNode(j.item(k))
+            if (l.settings.update_styles) {
+                l.setAttrib(p, "data-mce-style")
             }
         })
-    },setAttrib:function(k, l, i) {
-        var j = this;
-        if (!k || !l) {
+    },getStyle:function(m, j, l) {
+        m = this.get(m);
+        if (!m) {
             return
         }
-        if (j.settings.strict) {
-            l = l.toLowerCase()
+        if (this.doc.defaultView && l) {
+            j = j.replace(/[A-Z]/g, function(n) {
+                return"-" + n
+            });
+            try {
+                return this.doc.defaultView.getComputedStyle(m, null).getPropertyValue(j)
+            } catch(k) {
+                return null
+            }
         }
-        return this.run(k, function(n) {
-            var m = j.settings;
-            switch (l) {case"style":if (!c(i, "string")) {
-                f(i, function(o, p) {
-                    j.setStyle(n, p, o)
+        j = j.replace(/-(\D)/g, function(o, n) {
+            return n.toUpperCase()
+        });
+        if (j == "float") {
+            j = b ? "styleFloat" : "cssFloat"
+        }
+        if (m.currentStyle && l) {
+            return m.currentStyle[j]
+        }
+        return m.style ? m.style[j] : undefined
+    },setStyles:function(m, n) {
+        var k = this,l = k.settings,j;
+        j = l.update_styles;
+        l.update_styles = 0;
+        f(n, function(o, p) {
+            k.setStyle(m, p, o)
+        });
+        l.update_styles = j;
+        if (l.update_styles) {
+            k.setAttrib(m, l.cssText)
+        }
+    },removeAllAttribs:function(j) {
+        return this.run(j, function(m) {
+            var l,k = m.attributes;
+            for (l = k.length - 1; l >= 0; l--) {
+                m.removeAttributeNode(k.item(l))
+            }
+        })
+    },setAttrib:function(l, m, j) {
+        var k = this;
+        if (!l || !m) {
+            return
+        }
+        if (k.settings.strict) {
+            m = m.toLowerCase()
+        }
+        return this.run(l, function(o) {
+            var n = k.settings;
+            switch (m) {case"style":if (!e(j, "string")) {
+                f(j, function(p, q) {
+                    k.setStyle(o, q, p)
                 });
                 return
-            }if (m.keep_values) {
-                if (i && !j._isRes(i)) {
-                    n.setAttribute("data-mce-style", i, 2)
+            }if (n.keep_values) {
+                if (j && !k._isRes(j)) {
+                    o.setAttribute("data-mce-style", j, 2)
                 } else {
-                    n.removeAttribute("data-mce-style", 2)
+                    o.removeAttribute("data-mce-style", 2)
                 }
-            }n.style.cssText = i;break;case"class":n.className = i || "";break;case"src":case"href":if (m.keep_values) {
-                if (m.url_converter) {
-                    i = m.url_converter.call(m.url_converter_scope || j, i, l, n)
+            }o.style.cssText = j;break;case"class":o.className = j || "";break;case"src":case"href":if (n.keep_values) {
+                if (n.url_converter) {
+                    j = n.url_converter.call(n.url_converter_scope || k, j, m, o)
                 }
-                j.setAttrib(n, "data-mce-" + l, i, 2)
-            }break;case"shape":n.setAttribute("data-mce-style", i);break
+                k.setAttrib(o, "data-mce-" + m, j, 2)
+            }break;case"shape":o.setAttribute("data-mce-style", j);break
             }
-            if (c(i) && i !== null && i.length !== 0) {
-                n.setAttribute(l, "" + i, 2)
+            if (e(j) && j !== null && j.length !== 0) {
+                o.setAttribute(m, "" + j, 2)
             } else {
-                n.removeAttribute(l, 2)
+                o.removeAttribute(m, 2)
             }
         })
-    },setAttribs:function(j, k) {
-        var i = this;
-        return this.run(j, function(l) {
-            f(k, function(m, o) {
-                i.setAttrib(l, o, m)
+    },setAttribs:function(k, l) {
+        var j = this;
+        return this.run(k, function(m) {
+            f(l, function(o, p) {
+                j.setAttrib(m, p, o)
             })
         })
-    },getAttrib:function(l, m, k) {
-        var i,j = this;
-        l = j.get(l);
-        if (!l || l.nodeType !== 1) {
+    },getAttrib:function(m, o, l) {
+        var j,k = this;
+        m = k.get(m);
+        if (!m || m.nodeType !== 1) {
             return false
         }
-        if (!c(k)) {
-            k = ""
+        if (!e(l)) {
+            l = ""
         }
-        if (/^(src|href|style|coords|shape)$/.test(m)) {
-            i = l.getAttribute("data-mce-" + m);
-            if (i) {
-                return i
+        if (/^(src|href|style|coords|shape)$/.test(o)) {
+            j = m.getAttribute("data-mce-" + o);
+            if (j) {
+                return j
             }
         }
-        if (a && j.props[m]) {
-            i = l[j.props[m]];
-            i = i && i.nodeValue ? i.nodeValue : i
+        if (b && k.props[o]) {
+            j = m[k.props[o]];
+            j = j && j.nodeValue ? j.nodeValue : j
         }
-        if (!i) {
-            i = l.getAttribute(m, 2)
+        if (!j) {
+            j = m.getAttribute(o, 2)
         }
-        if (/^(checked|compact|declare|defer|disabled|ismap|multiple|nohref|noshade|nowrap|readonly|selected)$/.test(m)) {
-            if (l[j.props[m]] === true && i === "") {
-                return m
+        if (/^(checked|compact|declare|defer|disabled|ismap|multiple|nohref|noshade|nowrap|readonly|selected)$/.test(o)) {
+            if (m[k.props[o]] === true && j === "") {
+                return o
             }
-            return i ? m : ""
+            return j ? o : ""
         }
-        if (l.nodeName === "FORM" && l.getAttributeNode(m)) {
-            return l.getAttributeNode(m).nodeValue
+        if (m.nodeName === "FORM" && m.getAttributeNode(o)) {
+            return m.getAttributeNode(o).nodeValue
         }
-        if (m === "style") {
-            i = i || l.style.cssText;
-            if (i) {
-                i = j.serializeStyle(j.parseStyle(i), l.nodeName);
-                if (j.settings.keep_values && !j._isRes(i)) {
-                    l.setAttribute("data-mce-style", i)
+        if (o === "style") {
+            j = j || m.style.cssText;
+            if (j) {
+                j = k.serializeStyle(k.parseStyle(j), m.nodeName);
+                if (k.settings.keep_values && !k._isRes(j)) {
+                    m.setAttribute("data-mce-style", j)
                 }
             }
         }
-        if (e && m === "class" && i) {
-            i = i.replace(/(apple|webkit)\-[a-z\-]+/gi, "")
+        if (d && o === "class" && j) {
+            j = j.replace(/(apple|webkit)\-[a-z\-]+/gi, "")
         }
-        if (a) {
-            switch (m) {case"rowspan":case"colspan":if (i === 1) {
-                i = ""
-            }break;case"size":if (i === "+0" || i === 20 || i === 0) {
-                i = ""
-            }break;case"width":case"height":case"vspace":case"checked":case"disabled":case"readonly":if (i === 0) {
-                i = ""
-            }break;case"hspace":if (i === -1) {
-                i = ""
-            }break;case"maxlength":case"tabindex":if (i === 32768 || i === 2147483647 || i === "32768") {
-                i = ""
-            }break;case"multiple":case"compact":case"noshade":case"nowrap":if (i === 65535) {
-                return m
-            }return k;case"shape":i = i.toLowerCase();break;default:if (m.indexOf("on") === 0 && i) {
-                i = d._replace(/^function\s+\w+\(\)\s+\{\s+(.*)\s+\}$/, "$1", "" + i)
+        if (b) {
+            switch (o) {case"rowspan":case"colspan":if (j === 1) {
+                j = ""
+            }break;case"size":if (j === "+0" || j === 20 || j === 0) {
+                j = ""
+            }break;case"width":case"height":case"vspace":case"checked":case"disabled":case"readonly":if (j === 0) {
+                j = ""
+            }break;case"hspace":if (j === -1) {
+                j = ""
+            }break;case"maxlength":case"tabindex":if (j === 32768 || j === 2147483647 || j === "32768") {
+                j = ""
+            }break;case"multiple":case"compact":case"noshade":case"nowrap":if (j === 65535) {
+                return o
+            }return l;case"shape":j = j.toLowerCase();break;default:if (o.indexOf("on") === 0 && j) {
+                j = h._replace(/^function\s+\w+\(\)\s+\{\s+(.*)\s+\}$/, "$1", "" + j)
             }
-            }
-        }
-        return(i !== undefined && i !== null && i !== "") ? "" + i : k
-    },getPos:function(q, l) {
-        var j = this,i = 0,p = 0,m,o = j.doc,k;
-        q = j.get(q);
-        l = l || o.body;
-        if (q) {
-            if (a && !j.stdMode) {
-                q = q.getBoundingClientRect();
-                m = j.boxModel ? o.documentElement : o.body;
-                i = j.getStyle(j.select("html")[0], "borderWidth");
-                i = (i == "medium" || j.boxModel && !j.isIE6) && 2 || i;
-                return{x:q.left + m.scrollLeft - i,y:q.top + m.scrollTop - i}
-            }
-            k = q;
-            while (k && k != l && k.nodeType) {
-                i += k.offsetLeft || 0;
-                p += k.offsetTop || 0;
-                k = k.offsetParent
-            }
-            k = q.parentNode;
-            while (k && k != l && k.nodeType) {
-                i -= k.scrollLeft || 0;
-                p -= k.scrollTop || 0;
-                k = k.parentNode
             }
         }
-        return{x:i,y:p}
-    },parseStyle:function(i) {
-        return this.styles.parse(i)
-    },serializeStyle:function(j, i) {
-        return this.styles.serialize(j, i)
-    },loadCSS:function(i) {
-        var k = this,l = k.doc,j;
-        if (!i) {
-            i = ""
+        return(j !== undefined && j !== null && j !== "") ? "" + j : l
+    },getPos:function(s, m) {
+        var k = this,j = 0,q = 0,o,p = k.doc,l;
+        s = k.get(s);
+        m = m || p.body;
+        if (s) {
+            if (b && !k.stdMode) {
+                s = s.getBoundingClientRect();
+                o = k.boxModel ? p.documentElement : p.body;
+                j = k.getStyle(k.select("html")[0], "borderWidth");
+                j = (j == "medium" || k.boxModel && !k.isIE6) && 2 || j;
+                return{x:s.left + o.scrollLeft - j,y:s.top + o.scrollTop - j}
+            }
+            l = s;
+            while (l && l != m && l.nodeType) {
+                j += l.offsetLeft || 0;
+                q += l.offsetTop || 0;
+                l = l.offsetParent
+            }
+            l = s.parentNode;
+            while (l && l != m && l.nodeType) {
+                j -= l.scrollLeft || 0;
+                q -= l.scrollTop || 0;
+                l = l.parentNode
+            }
         }
-        j = k.select("head")[0];
-        f(i.split(","), function(m) {
-            var n;
-            if (k.files[m]) {
+        return{x:j,y:q}
+    },parseStyle:function(j) {
+        return this.styles.parse(j)
+    },serializeStyle:function(k, j) {
+        return this.styles.serialize(k, j)
+    },loadCSS:function(j) {
+        var l = this,m = l.doc,k;
+        if (!j) {
+            j = ""
+        }
+        k = l.select("head")[0];
+        f(j.split(","), function(n) {
+            var o;
+            if (l.files[n]) {
                 return
             }
-            k.files[m] = true;
-            n = k.create("link", {rel:"stylesheet",href:d._addVer(m)});
-            if (a && l.documentMode && l.recalc) {
-                n.onload = function() {
-                    if (l.recalc) {
-                        l.recalc()
+            l.files[n] = true;
+            o = l.create("link", {rel:"stylesheet",href:h._addVer(n)});
+            if (b && m.documentMode && m.recalc) {
+                o.onload = function() {
+                    if (m.recalc) {
+                        m.recalc()
                     }
-                    n.onload = null
+                    o.onload = null
                 }
             }
-            j.appendChild(n)
+            k.appendChild(o)
         })
-    },addClass:function(i, j) {
-        return this.run(i, function(k) {
-            var l;
-            if (!j) {
+    },addClass:function(j, k) {
+        return this.run(j, function(l) {
+            var m;
+            if (!k) {
                 return 0
             }
-            if (this.hasClass(k, j)) {
-                return k.className
+            if (this.hasClass(l, k)) {
+                return l.className
             }
-            l = this.removeClass(k, j);
-            return k.className = (l != "" ? (l + " ") : "") + j
+            m = this.removeClass(l, k);
+            return l.className = (m != "" ? (m + " ") : "") + k
         })
-    },removeClass:function(k, l) {
-        var i = this,j;
-        return i.run(k, function(n) {
-            var m;
-            if (i.hasClass(n, l)) {
-                if (!j) {
-                    j = new RegExp("(^|\\s+)" + l + "(\\s+|$)", "g")
+    },removeClass:function(l, m) {
+        var j = this,k;
+        return j.run(l, function(o) {
+            var n;
+            if (j.hasClass(o, m)) {
+                if (!k) {
+                    k = new RegExp("(^|\\s+)" + m + "(\\s+|$)", "g")
                 }
-                m = n.className.replace(j, " ");
-                m = d.trim(m != " " ? m : "");
-                n.className = m;
-                if (!m) {
-                    n.removeAttribute("class");
-                    n.removeAttribute("className")
+                n = o.className.replace(k, " ");
+                n = h.trim(n != " " ? n : "");
+                o.className = n;
+                if (!n) {
+                    o.removeAttribute("class");
+                    o.removeAttribute("className")
                 }
-                return m
+                return n
             }
-            return n.className
+            return o.className
         })
-    },hasClass:function(j, i) {
-        j = this.get(j);
-        if (!j || !i) {
+    },hasClass:function(k, j) {
+        k = this.get(k);
+        if (!k || !j) {
             return false
         }
-        return(" " + j.className + " ").indexOf(" " + i + " ") !== -1
-    },show:function(i) {
-        return this.setStyle(i, "display", "block")
-    },hide:function(i) {
-        return this.setStyle(i, "display", "none")
-    },isHidden:function(i) {
-        i = this.get(i);
-        return !i || i.style.display == "none" || this.getStyle(i, "display") == "none"
-    },uniqueId:function(i) {
-        return(!i ? "mce_" : i) + (this.counter++)
-    },setHTML:function(k, j) {
-        var i = this;
-        return i.run(k, function(m) {
-            if (a) {
-                while (m.firstChild) {
-                    m.removeChild(m.firstChild)
+        return(" " + k.className + " ").indexOf(" " + j + " ") !== -1
+    },show:function(j) {
+        return this.setStyle(j, "display", "block")
+    },hide:function(j) {
+        return this.setStyle(j, "display", "none")
+    },isHidden:function(j) {
+        j = this.get(j);
+        return !j || j.style.display == "none" || this.getStyle(j, "display") == "none"
+    },uniqueId:function(j) {
+        return(!j ? "mce_" : j) + (this.counter++)
+    },setHTML:function(l, k) {
+        var j = this;
+        return j.run(l, function(n) {
+            if (b) {
+                while (n.firstChild) {
+                    n.removeChild(n.firstChild)
                 }
                 try {
-                    m.innerHTML = "<br />" + j;
-                    m.removeChild(m.firstChild)
-                } catch(l) {
-                    m = i.create("div");
-                    m.innerHTML = "<br />" + j;
-                    f(m.childNodes, function(o, n) {
-                        if (n) {
-                            m.appendChild(o)
+                    n.innerHTML = "<br />" + k;
+                    n.removeChild(n.firstChild)
+                } catch(m) {
+                    n = j.create("div");
+                    n.innerHTML = "<br />" + k;
+                    f(n.childNodes, function(p, o) {
+                        if (o) {
+                            n.appendChild(p)
                         }
                     })
                 }
             } else {
-                m.innerHTML = j
+                n.innerHTML = k
             }
-            return j
+            return k
         })
-    },getOuterHTML:function(k) {
-        var j,i = this;
-        k = i.get(k);
-        if (!k) {
+    },getOuterHTML:function(l) {
+        var k,j = this;
+        l = j.get(l);
+        if (!l) {
             return null
         }
-        if (k.nodeType === 1 && i.hasOuterHTML) {
-            return k.outerHTML
+        if (l.nodeType === 1 && j.hasOuterHTML) {
+            return l.outerHTML
         }
-        j = (k.ownerDocument || i.doc).createElement("body");
-        j.appendChild(k.cloneNode(true));
-        return j.innerHTML
-    },setOuterHTML:function(l, j, m) {
-        var i = this;
+        k = (l.ownerDocument || j.doc).createElement("body");
+        k.appendChild(l.cloneNode(true));
+        return k.innerHTML
+    },setOuterHTML:function(m, k, n) {
+        var j = this;
 
-        function k(p, o, r) {
+        function l(p, o, r) {
             var s,q;
             q = r.createElement("body");
             q.innerHTML = o;
             s = q.lastChild;
             while (s) {
-                i.insertAfter(s.cloneNode(true), p);
+                j.insertAfter(s.cloneNode(true), p);
                 s = s.previousSibling
             }
-            i.remove(p)
+            j.remove(p)
         }
 
-        return this.run(l, function(o) {
-            o = i.get(o);
-            if (o.nodeType == 1) {
-                m = m || o.ownerDocument || i.doc;
-                if (a) {
+        return this.run(m, function(p) {
+            p = j.get(p);
+            if (p.nodeType == 1) {
+                n = n || p.ownerDocument || j.doc;
+                if (b) {
                     try {
-                        if (a && o.nodeType == 1) {
-                            o.outerHTML = j
+                        if (b && p.nodeType == 1) {
+                            p.outerHTML = k
                         } else {
-                            k(o, j, m)
+                            l(p, k, n)
                         }
-                    } catch(n) {
-                        k(o, j, m)
+                    } catch(o) {
+                        l(p, k, n)
                     }
                 } else {
-                    k(o, j, m)
+                    l(p, k, n)
                 }
             }
         })
-    },decode:h.decode,encode:h.encodeAllRaw,insertAfter:function(i, j) {
-        j = this.get(j);
-        return this.run(i, function(l) {
-            var k,m;
-            k = j.parentNode;
-            m = j.nextSibling;
-            if (m) {
-                k.insertBefore(l, m)
+    },decode:c.decode,encode:c.encodeAllRaw,insertAfter:function(j, k) {
+        k = this.get(k);
+        return this.run(j, function(m) {
+            var l,n;
+            l = k.parentNode;
+            n = k.nextSibling;
+            if (n) {
+                l.insertBefore(m, n)
             } else {
-                k.appendChild(l)
+                l.appendChild(m)
             }
-            return l
+            return m
         })
-    },isBlock:function(j) {
-        var i = j.nodeType;
-        if (i) {
-            return !!(i === 1 && g[j.nodeName])
+    },isBlock:function(k) {
+        var j = k.nodeType;
+        if (j) {
+            return !!(j === 1 && g[k.nodeName])
         }
-        return !!g[j]
-    },replace:function(m, l, i) {
-        var j = this;
-        if (c(l, "array")) {
-            m = m.cloneNode(true)
+        return !!g[k]
+    },replace:function(p, m, j) {
+        var l = this;
+        if (e(m, "array")) {
+            p = p.cloneNode(true)
         }
-        return j.run(l, function(k) {
-            if (i) {
-                f(d.grep(k.childNodes), function(n) {
-                    m.appendChild(n)
+        return l.run(m, function(k) {
+            if (j) {
+                f(h.grep(k.childNodes), function(n) {
+                    p.appendChild(n)
                 })
             }
-            return k.parentNode.replaceChild(m, k)
+            return k.parentNode.replaceChild(p, k)
         })
-    },rename:function(l, i) {
-        var k = this,j;
-        if (l.nodeName != i.toUpperCase()) {
-            j = k.create(i);
-            f(k.getAttribs(l), function(m) {
-                k.setAttrib(j, m.nodeName, k.getAttrib(l, m.nodeName))
+    },rename:function(m, j) {
+        var l = this,k;
+        if (m.nodeName != j.toUpperCase()) {
+            k = l.create(j);
+            f(l.getAttribs(m), function(n) {
+                l.setAttrib(k, n.nodeName, l.getAttrib(m, n.nodeName))
             });
-            k.replace(j, l, 1)
+            l.replace(k, m, 1)
         }
-        return j || l
-    },findCommonAncestor:function(k, i) {
-        var l = k,j;
-        while (l) {
-            j = i;
-            while (j && l != j) {
-                j = j.parentNode
+        return k || m
+    },findCommonAncestor:function(l, j) {
+        var m = l,k;
+        while (m) {
+            k = j;
+            while (k && m != k) {
+                k = k.parentNode
             }
-            if (l == j) {
+            if (m == k) {
                 break
             }
-            l = l.parentNode
+            m = m.parentNode
         }
-        if (!l && k.ownerDocument) {
-            return k.ownerDocument.documentElement
+        if (!m && l.ownerDocument) {
+            return l.ownerDocument.documentElement
         }
-        return l
-    },toHex:function(i) {
-        var k = /^\s*rgb\s*?\(\s*?([0-9]+)\s*?,\s*?([0-9]+)\s*?,\s*?([0-9]+)\s*?\)\s*$/i.exec(i);
+        return m
+    },toHex:function(j) {
+        var l = /^\s*rgb\s*?\(\s*?([0-9]+)\s*?,\s*?([0-9]+)\s*?,\s*?([0-9]+)\s*?\)\s*$/i.exec(j);
 
-        function j(l) {
-            l = parseInt(l).toString(16);
-            return l.length > 1 ? l : "0" + l
+        function k(m) {
+            m = parseInt(m).toString(16);
+            return m.length > 1 ? m : "0" + m
         }
 
-        if (k) {
-            i = "#" + j(k[1]) + j(k[2]) + j(k[3]);
-            return i
+        if (l) {
+            j = "#" + k(l[1]) + k(l[2]) + k(l[3]);
+            return j
         }
-        return i
+        return j
     },getClasses:function() {
         var n = this,j = [],m,o = {},p = n.settings.class_filter,l;
         if (n.classes) {
             return n.classes
         }
-        function q(i) {
-            f(i.imports, function(s) {
+        function q(r) {
+            f(r.imports, function(s) {
                 q(s)
             });
-            f(i.cssRules || i.rules, function(s) {
+            f(r.cssRules || r.rules, function(s) {
                 switch (s.type || 1) {case 1:if (s.selectorText) {
-                    f(s.selectorText.split(","), function(r) {
-                        r = r.replace(/^\s*|\s*$|^\s\./g, "");
-                        if (/\.mce/.test(r) || !/\.[\w\-]+$/.test(r)) {
+                    f(s.selectorText.split(","), function(t) {
+                        t = t.replace(/^\s*|\s*$|^\s\./g, "");
+                        if (/\.mce/.test(t) || !/\.[\w\-]+$/.test(t)) {
                             return
                         }
-                        l = r;
-                        r = d._replace(/.*\.([a-z0-9_\-]+).*/i, "$1", r);
-                        if (p && !(r = p(r, l))) {
+                        l = t;
+                        t = h._replace(/.*\.([a-z0-9_\-]+).*/i, "$1", t);
+                        if (p && !(t = p(t, l))) {
                             return
                         }
-                        if (!o[r]) {
-                            j.push({"class":r});
-                            o[r] = 1
+                        if (!o[t]) {
+                            j.push({"class":t});
+                            o[t] = 1
                         }
                     })
                 }break;case 3:q(s.styleSheet);break
@@ -2777,161 +2836,192 @@ tinymce.html.Writer = function(e) {
             n.classes = j
         }
         return j
-    },run:function(l, k, j) {
-        var i = this,m;
-        if (i.doc && typeof(l) === "string") {
-            l = i.get(l)
+    },run:function(m, l, k) {
+        var j = this,n;
+        if (j.doc && typeof(m) === "string") {
+            m = j.get(m)
         }
-        if (!l) {
+        if (!m) {
             return false
         }
-        j = j || this;
-        if (!l.nodeType && (l.length || l.length === 0)) {
-            m = [];
-            f(l, function(o, n) {
-                if (o) {
-                    if (typeof(o) == "string") {
-                        o = i.doc.getElementById(o)
+        k = k || this;
+        if (!m.nodeType && (m.length || m.length === 0)) {
+            n = [];
+            f(m, function(p, o) {
+                if (p) {
+                    if (typeof(p) == "string") {
+                        p = j.doc.getElementById(p)
                     }
-                    m.push(k.call(j, o, n))
+                    n.push(l.call(k, p, o))
                 }
             });
-            return m
+            return n
         }
-        return k.call(j, l)
-    },getAttribs:function(j) {
-        var i;
-        j = this.get(j);
-        if (!j) {
+        return l.call(k, m)
+    },getAttribs:function(k) {
+        var j;
+        k = this.get(k);
+        if (!k) {
             return[]
         }
-        if (a) {
-            i = [];
-            if (j.nodeName == "OBJECT") {
-                return j.attributes
+        if (b) {
+            j = [];
+            if (k.nodeName == "OBJECT") {
+                return k.attributes
             }
-            if (j.nodeName === "OPTION" && this.getAttrib(j, "selected")) {
-                i.push({specified:1,nodeName:"selected"})
+            if (k.nodeName === "OPTION" && this.getAttrib(k, "selected")) {
+                j.push({specified:1,nodeName:"selected"})
             }
-            j.cloneNode(false).outerHTML.replace(/<\/?[\w:\-]+ ?|=[\"][^\"]+\"|=\'[^\']+\'|=[\w\-]+|>/gi, "").replace(/[\w:\-]+/gi, function(k) {
-                i.push({specified:1,nodeName:k})
+            k.cloneNode(false).outerHTML.replace(/<\/?[\w:\-]+ ?|=[\"][^\"]+\"|=\'[^\']+\'|=[\w\-]+|>/gi, "").replace(/[\w:\-]+/gi, function(l) {
+                j.push({specified:1,nodeName:l})
             });
-            return i
+            return j
         }
-        return j.attributes
-    },destroy:function(j) {
-        var i = this;
-        if (i.events) {
-            i.events.destroy()
+        return k.attributes
+    },isEmpty:function(o, p) {
+        var k = this,m,j,n,q,l;
+        o = o.firstChild;
+        if (o) {
+            q = new h.dom.TreeWalker(o);
+            p = p || k.schema ? k.schema.getNonEmptyElements() : null;
+            do{
+                n = o.nodeType;
+                if (n === 1) {
+                    if (o.getAttribute("data-mce-bogus")) {
+                        continue
+                    }
+                    if (p && p[o.nodeName.toLowerCase()]) {
+                        return false
+                    }
+                    j = k.getAttribs(o);
+                    m = o.attributes.length;
+                    while (m--) {
+                        l = o.attributes[m].nodeName;
+                        if (l === "name" || l.indexOf("data-") === 0) {
+                            return false
+                        }
+                    }
+                }
+                if ((n === 3 && !i.test(o.nodeValue))) {
+                    return false
+                }
+            } while (o = q.next())
         }
-        i.win = i.doc = i.root = i.events = null;
-        if (!j) {
-            d.removeUnload(i.destroy)
+        return true
+    },destroy:function(k) {
+        var j = this;
+        if (j.events) {
+            j.events.destroy()
+        }
+        j.win = j.doc = j.root = j.events = null;
+        if (!k) {
+            h.removeUnload(j.destroy)
         }
     },createRng:function() {
-        var i = this.doc;
-        return i.createRange ? i.createRange() : new d.dom.Range(this)
-    },nodeIndex:function(n, o) {
-        var i = 0,l,m,k,j;
-        if (n) {
-            for (l = n.nodeType,n = n.previousSibling,m = n; n; n = n.previousSibling) {
-                k = n.nodeType;
-                if (o && k == 3) {
-                    j = false;
+        var j = this.doc;
+        return j.createRange ? j.createRange() : new h.dom.Range(this)
+    },nodeIndex:function(o, p) {
+        var j = 0,m,n,l,k;
+        if (o) {
+            for (m = o.nodeType,o = o.previousSibling,n = o; o; o = o.previousSibling) {
+                l = o.nodeType;
+                if (p && l == 3) {
+                    k = false;
                     try {
-                        j == n.nodeValue.length
-                    } catch(p) {
+                        k = o.nodeValue.length
+                    } catch(q) {
                     }
-                    if (k == l || !j) {
+                    if (l == m || !k) {
                         continue
                     }
                 }
-                i++;
-                l = k
+                j++;
+                m = l
             }
         }
-        return i
-    },split:function(m, l, p) {
-        var q = this,i = q.createRng(),n,k,o;
+        return j
+    },split:function(n, m, q) {
+        var s = this,j = s.createRng(),o,l,p;
 
-        function j(t) {
-            var s,r = t.childNodes;
-            if (t.nodeType == 1 && t.getAttribute("data-mce-type") == "bookmark") {
+        function k(v) {
+            var t,r = v.childNodes,u = v.nodeType;
+            if (u == 1 && v.getAttribute("data-mce-type") == "bookmark") {
                 return
             }
-            for (s = r.length - 1; s >= 0; s--) {
-                j(r[s])
+            for (t = r.length - 1; t >= 0; t--) {
+                k(r[t])
             }
-            if (t.nodeType != 9) {
-                if (t.nodeType == 3 && t.nodeValue.length > 0) {
-                    if (!q.isBlock(t.parentNode) || d.trim(t.nodeValue).length > 0) {
+            if (u != 9) {
+                if (u == 3 && v.nodeValue.length > 0) {
+                    if (!s.isBlock(v.parentNode) || h.trim(v.nodeValue).length > 0) {
                         return
                     }
-                }
-                if (t.nodeType == 1) {
-                    r = t.childNodes;
-                    if (r.length == 1 && r[0] && r[0].nodeType == 1 && r[0].getAttribute("data-mce-type") == "bookmark") {
-                        t.parentNode.insertBefore(r[0], t)
+                } else {
+                    if (u == 1) {
+                        r = v.childNodes;
+                        if (r.length == 1 && r[0] && r[0].nodeType == 1 && r[0].getAttribute("data-mce-type") == "bookmark") {
+                            v.parentNode.insertBefore(r[0], v)
+                        }
+                        if (r.length || /^(br|hr|input|img)$/i.test(v.nodeName)) {
+                            return
+                        }
                     }
-                    if (r.length || /^(br|hr|input|img)$/i.test(t.nodeName)) {
-                        return
-                    }
                 }
-                q.remove(t)
+                s.remove(v)
             }
-            return t
+            return v
         }
 
-        if (m && l) {
-            i.setStart(m.parentNode, q.nodeIndex(m));
-            i.setEnd(l.parentNode, q.nodeIndex(l));
-            n = i.extractContents();
-            i = q.createRng();
-            i.setStart(l.parentNode, q.nodeIndex(l) + 1);
-            i.setEnd(m.parentNode, q.nodeIndex(m) + 1);
-            k = i.extractContents();
-            o = m.parentNode;
-            o.insertBefore(j(n), m);
-            if (p) {
-                o.replaceChild(p, l)
+        if (n && m) {
+            j.setStart(n.parentNode, s.nodeIndex(n));
+            j.setEnd(m.parentNode, s.nodeIndex(m));
+            o = j.extractContents();
+            j = s.createRng();
+            j.setStart(m.parentNode, s.nodeIndex(m) + 1);
+            j.setEnd(n.parentNode, s.nodeIndex(n) + 1);
+            l = j.extractContents();
+            p = n.parentNode;
+            p.insertBefore(k(o), n);
+            if (q) {
+                p.replaceChild(q, m)
             } else {
-                o.insertBefore(l, m)
+                p.insertBefore(m, n)
             }
-            o.insertBefore(j(k), m);
-            q.remove(m);
-            return p || l
+            p.insertBefore(k(l), n);
+            s.remove(n);
+            return q || m
         }
-    },bind:function(m, i, l, k) {
-        var j = this;
-        if (!j.events) {
-            j.events = new d.dom.EventUtils()
+    },bind:function(n, j, m, l) {
+        var k = this;
+        if (!k.events) {
+            k.events = new h.dom.EventUtils()
         }
-        return j.events.add(m, i, l, k || this)
-    },unbind:function(l, i, k) {
-        var j = this;
-        if (!j.events) {
-            j.events = new d.dom.EventUtils()
+        return k.events.add(n, j, m, l || this)
+    },unbind:function(m, j, l) {
+        var k = this;
+        if (!k.events) {
+            k.events = new h.dom.EventUtils()
         }
-        return j.events.remove(l, i, k)
-    },_findSib:function(l, i, j) {
-        var k = this,m = i;
-        if (l) {
-            if (c(m, "string")) {
-                m = function(n) {
-                    return k.is(n, i)
+        return k.events.remove(m, j, l)
+    },_findSib:function(m, j, k) {
+        var l = this,n = j;
+        if (m) {
+            if (e(n, "string")) {
+                n = function(o) {
+                    return l.is(o, j)
                 }
             }
-            for (l = l[j]; l; l = l[j]) {
-                if (m(l)) {
-                    return l
+            for (m = m[k]; m; m = m[k]) {
+                if (n(m)) {
+                    return m
                 }
             }
         }
         return null
-    },_isRes:function(i) {
-        return/^(top|left|bottom|right|width|height)/i.test(i) || /;\s*(top|left|bottom|right|width|height)/i.test(i)
+    },_isRes:function(j) {
+        return/^(top|left|bottom|right|width|height)/i.test(j) || /;\s*(top|left|bottom|right|width|height)/i.test(j)
     }});
-    d.DOM = new d.dom.DOMUtils(document, {process_html:0})
+    h.DOM = new h.dom.DOMUtils(document, {process_html:0})
 })(tinymce);
 (function(a) {
     function b(c) {
@@ -4084,6 +4174,10 @@ tinymce.html.Writer = function(e) {
                     g.pasteHTML('<span data-mce-type="bookmark" id="' + i + '_start" style="' + u + '">' + l + "</span>");
                     if (!n) {
                         j.collapse(false);
+                        g.moveToElementText(j.parentElement());
+                        if (g.compareEndPoints("StartToEnd", j) == 0) {
+                            j.move("character", -1)
+                        }
                         j.pasteHTML('<span data-mce-type="bookmark" id="' + i + '_end" style="' + u + '">' + l + "</span>")
                     }
                 } catch(q) {
@@ -4122,26 +4216,24 @@ tinymce.html.Writer = function(e) {
                 function g(z) {
                     var t = n[z ? "start" : "end"],v,x,y,u;
                     if (t) {
+                        y = t[0];
                         for (x = q,v = t.length - 1; v >= 1; v--) {
                             u = x.childNodes;
-                            if (u.length) {
-                                x = u[t[v]];
-                                if (!x) {
-                                    return
-                                }
-                            }
-                        }
-                        if (x.nodeType === 3 && t[0] > x.nodeValue.length - 1) {
-                            return
-                        } else {
-                            if (x.nodeType === 1 && t[0] > x.childNodes.length) {
+                            if (t[v] > u.length - 1) {
                                 return
                             }
+                            x = u[t[v]]
+                        }
+                        if (x.nodeType === 3) {
+                            y = Math.min(t[0], x.nodeValue.length)
+                        }
+                        if (x.nodeType === 1) {
+                            y = Math.min(t[0], x.childNodes.length)
                         }
                         if (z) {
-                            f.setStart(x, t[0])
+                            f.setStart(x, y)
                         } else {
-                            f.setEnd(x, t[0])
+                            f.setEnd(x, y)
                         }
                     }
                     return true
@@ -4295,7 +4387,7 @@ tinymce.html.Writer = function(e) {
             }
         } catch(f) {
         }
-        if (c.isIE && i.setStart && j.selection.createRange().item) {
+        if (c.isIE && i && i.setStart && j.selection.createRange().item) {
             k = j.selection.createRange().item(0);
             i = j.createRange();
             i.setStartBefore(k);
@@ -4319,7 +4411,10 @@ tinymce.html.Writer = function(e) {
             h = g.getSel();
             if (h) {
                 g.explicitRange = i;
-                h.removeAllRanges();
+                try {
+                    h.removeAllRanges()
+                } catch(f) {
+                }
                 h.addRange(i);
                 g.selectedRange = h.getRangeAt(0)
             }
@@ -4509,7 +4604,7 @@ tinymce.html.Writer = function(e) {
             var l = j.length,m,n;
             while (l--) {
                 m = j[l];
-                n = m.attr("class").replace(/\s*mceItem\w+\s*/g, "");
+                n = m.attr("class").replace(/\s*mce(Item\w+|Selected)\s*/g, "");
                 m.attr("class", n.length > 0 ? n : null)
             }
         });
@@ -4628,6 +4723,9 @@ tinymce.html.Writer = function(e) {
             }
             j = new a.html.Serializer(e, f);
             m.content = j.serialize(c.parse(m.getInner ? o.innerHTML : a.trim(i.getOuterHTML(o), m), m));
+            if (!m.cleanup) {
+                m.content = m.content.replace(/\uFEFF/g, "")
+            }
             if (!m.no_events) {
                 b.dispatch(self, m)
             }
@@ -4647,29 +4745,35 @@ tinymce.html.Writer = function(e) {
     a.dom.ScriptLoader = function(h) {
         var c = 0,k = 1,i = 2,l = {},j = [],f = {},d = [],g = 0,e;
 
-        function b(m, u) {
-            var v = this,q = a.DOM,s,o,r,n;
+        function b(m, v) {
+            var x = this,q = a.DOM,s,o,r,n;
 
             function p() {
                 q.remove(n);
                 if (s) {
                     s.onreadystatechange = s.onload = s = null
                 }
-                u()
+                v()
+            }
+
+            function u() {
+                if (typeof(console) !== "undefined" && console.log) {
+                    console.log("Failed to load: " + m)
+                }
             }
 
             n = q.uniqueId();
             if (a.isIE6) {
                 o = new a.util.URI(m);
                 r = location;
-                if (o.host == r.hostname && o.port == r.port && (o.protocol + ":") == r.protocol) {
-                    a.util.XHR.send({url:a._addVer(o.getURI()),success:function(x) {
+                if (o.host == r.hostname && o.port == r.port && (o.protocol + ":") == r.protocol && o.protocol.toLowerCase() != "file") {
+                    a.util.XHR.send({url:a._addVer(o.getURI()),success:function(y) {
                         var t = q.create("script", {type:"text/javascript"});
-                        t.text = x;
+                        t.text = y;
                         document.getElementsByTagName("head")[0].appendChild(t);
                         q.remove(t);
                         p()
-                    }});
+                    },error:u});
                     return
                 }
             }
@@ -4677,6 +4781,7 @@ tinymce.html.Writer = function(e) {
             if (!a.isIE) {
                 s.onload = p
             }
+            s.onerror = u;
             if (!a.isOpera) {
                 s.onreadystatechange = function() {
                     var t = s.readyState;
@@ -5911,20 +6016,20 @@ tinymce.create("tinymce.ui.Separator:tinymce.ui.Control", {Separator:function(b,
         f.isMenuVisible = 1
     },hideMenu:function(g) {
         var f = this;
-        if (g && g.type == "mousedown" && c.getParent(g.target, function(h) {
-            return h.id === f.id + "_open"
-        })) {
-            return
+        if (f.isMenuVisible) {
+            if (g && g.type == "mousedown" && c.getParent(g.target, function(h) {
+                return h.id === f.id + "_open"
+            })) {
+                return
+            }
+            if (!g || !c.getParent(g.target, ".mceSplitButtonMenu")) {
+                c.removeClass(f.id, "mceSplitButtonSelected");
+                a.remove(c.doc, "mousedown", f.hideMenu, f);
+                a.remove(f.id + "_menu", "keydown", f._keyHandler);
+                c.hide(f.id + "_menu")
+            }
+            f.isMenuVisible = 0
         }
-        if (!g || !c.getParent(g.target, ".mceSplitButtonMenu")) {
-            c.removeClass(f.id, "mceSplitButtonSelected");
-            a.remove(c.doc, "mousedown", f.hideMenu, f);
-            a.remove(f.id + "_menu", "keydown", f._keyHandler);
-            c.hide(f.id + "_menu")
-        }
-        f.onHideMenu.dispatch(f);
-        f.isMenuVisible = 0;
-        f.editor.focus()
     },renderMenu:function() {
         var p = this,h,k = 0,q = p.settings,g,j,l,o,f;
         o = c.add(q.menu_container, "div", {role:"listbox",id:p.id + "_menu","class":q.menu_class + " " + q["class"],style:"position:absolute;left:0;top:-1000px;"});
@@ -6453,6 +6558,11 @@ tinymce.create("tinymce.ui.Separator:tinymce.ui.Control", {Separator:function(b,
         }
         F.controlManager = new m.ControlManager(F);
         if (G.custom_undo_redo) {
+            F.onBeforeExecCommand.add(function(t, H, u, I, s) {
+                if (H != "Undo" && H != "Redo" && H != "mceRepaint" && (!s || !s.skip_undo)) {
+                    F.undoManager.beforeChange()
+                }
+            });
             F.onExecCommand.add(function(t, H, u, I, s) {
                 if (H != "Undo" && H != "Redo" && H != "mceRepaint" && (!s || !s.skip_undo)) {
                     F.undoManager.add()
@@ -6651,7 +6761,7 @@ tinymce.create("tinymce.ui.Separator:tinymce.ui.Control", {Separator:function(b,
         ],strikethrough:[
             {inline:"span",styles:{textDecoration:"line-through"},exact:true},
             {inline:"strike",remove:"all"}
-        ],forecolor:{inline:"span",styles:{color:"%value"},wrap_links:false},hilitecolor:{inline:"span",styles:{backgroundColor:"%value"},wrap_links:false},fontname:{inline:"span",styles:{fontFamily:"%value"}},fontsize:{inline:"span",styles:{fontSize:"%value"}},fontsize_class:{inline:"span",attributes:{"class":"%value"}},blockquote:{block:"blockquote",wrapper:1,remove:"all"},removeformat:[
+        ],forecolor:{inline:"span",styles:{color:"%value"},wrap_links:false},hilitecolor:{inline:"span",styles:{backgroundColor:"%value"},wrap_links:false},fontname:{inline:"span",styles:{fontFamily:"%value"}},fontsize:{inline:"span",styles:{fontSize:"%value"}},fontsize_class:{inline:"span",attributes:{"class":"%value"}},blockquote:{block:"blockquote",wrapper:1,remove:"all"},subscript:{inline:"sub"},superscript:{inline:"sup"},removeformat:[
             {selector:"b,strong,em,i,font,u,strike",remove:"all",split:true,expand:false,block_expand:true,deep:true},
             {selector:"span",attributes:["style","class"],remove:"empty",split:true,expand:false,deep:true},
             {selector:"*",attributes:["style","class"],split:false,expand:false,deep:true}
@@ -6662,7 +6772,7 @@ tinymce.create("tinymce.ui.Separator:tinymce.ui.Control", {Separator:function(b,
         r.formatter.register(r.settings.formats);
         r.undoManager = new m.UndoManager(r);
         r.undoManager.onAdd.add(function(t, s) {
-            if (!s.initial) {
+            if (t.hasUndo()) {
                 return r.onChange.dispatch(r, s, t)
             }
         });
@@ -6922,7 +7032,7 @@ tinymce.create("tinymce.ui.Separator:tinymce.ui.Control", {Separator:function(b,
         }
         return q
     },nodeChanged:function(r) {
-        var p = this,q = p.selection,u = (b ? q.getNode() : q.getStart()) || p.getBody();
+        var p = this,q = p.selection,u = q.getStart() || p.getBody();
         if (p.initialized) {
             r = r || {};
             u = b && u.ownerDocument != p.getDoc() ? p.getBody() : u;
@@ -7123,14 +7233,16 @@ tinymce.create("tinymce.ui.Separator:tinymce.ui.Control", {Separator:function(b,
         if (!s.no_events) {
             r.onBeforeSetContent.dispatch(r, s)
         }
+        t = s.content;
         if (!m.isIE && (t.length === 0 || /^\s+$/.test(t))) {
             p.innerHTML = '<br data-mce-bogus="1" />';
             return
         }
         if (s.format !== "raw") {
-            s.content = new m.html.Serializer({}, r.schema).serialize(r.parser.parse(s.content))
+            t = new m.html.Serializer({}, r.schema).serialize(r.parser.parse(t))
         }
-        p.innerHTML = m.trim(s.content);
+        s.content = m.trim(t);
+        r.dom.setHTML(p, s.content);
         if (!s.no_events) {
             r.onSetContent.dispatch(r, s)
         }
@@ -7468,6 +7580,9 @@ tinymce.create("tinymce.ui.Separator:tinymce.ui.Control", {Separator:function(b,
                     y()
                 }
             });
+            B.dom.bind(B.dom.getRoot(), "dragend", function(s) {
+                y()
+            });
             B.onKeyUp.add(function(t, F) {
                 var s,E,D;
                 if (b && F.keyCode == 8) {
@@ -7483,13 +7598,18 @@ tinymce.create("tinymce.ui.Separator:tinymce.ui.Control", {Separator:function(b,
                     y()
                 }
             });
-            B.onKeyDown.add(function(t, G) {
-                var s,F,E;
-                if (b && G.keyCode == 46) {
+            B.onKeyDown.add(function(t, H) {
+                var s,F,E,G = H.keyCode;
+                if (b && G == 46) {
                     s = B.selection.getRng();
                     if (s.parentElement) {
                         F = s.parentElement();
-                        if (G.ctrlKey) {
+                        if (!B.undoManager.typing) {
+                            B.undoManager.beforeChange();
+                            B.undoManager.typing = true;
+                            B.undoManager.add()
+                        }
+                        if (H.ctrlKey) {
                             s.moveEnd("word", 1);
                             s.select()
                         }
@@ -7502,17 +7622,21 @@ tinymce.create("tinymce.ui.Separator:tinymce.ui.Control", {Separator:function(b,
                             }
                             B.selection.moveToBookmark(E)
                         }
-                        G.preventDefault();
+                        H.preventDefault();
                         return
                     }
                 }
-                if ((G.keyCode >= 33 && G.keyCode <= 36) || (G.keyCode >= 37 && G.keyCode <= 40) || G.keyCode == 13 || G.keyCode == 45) {
+                if ((G >= 33 && G <= 36) || (G >= 37 && G <= 40) || G == 13 || G == 45) {
+                    if (m.isIE && G == 13) {
+                        B.undoManager.beforeChange()
+                    }
                     if (B.undoManager.typing) {
                         y()
                     }
                     return
                 }
-                if (!B.undoManager.typing) {
+                if ((G < 16 || G > 20) && G != 224 && G != 91 && !B.undoManager.typing) {
+                    B.undoManager.beforeChange();
                     B.undoManager.add();
                     B.undoManager.typing = true
                 }
@@ -7525,17 +7649,13 @@ tinymce.create("tinymce.ui.Separator:tinymce.ui.Control", {Separator:function(b,
         }
         if (m.isGecko) {
             function A() {
-                B.undoManager.typing = false;
-                B.undoManager.add();
                 var s = B.dom.getAttribs(B.selection.getStart().cloneNode(false));
                 return function() {
                     var t = B.selection.getStart();
                     B.dom.removeAllAttribs(t);
                     i(s, function(D) {
                         t.setAttributeNode(D.cloneNode(true))
-                    });
-                    B.undoManager.typing = false;
-                    B.undoManager.add()
+                    })
                 }
             }
 
@@ -7545,16 +7665,18 @@ tinymce.create("tinymce.ui.Separator:tinymce.ui.Control", {Separator:function(b,
             }
 
             B.onKeyPress.add(function(s, D) {
+                var t;
                 if ((D.keyCode == 8 || D.keyCode == 46) && z()) {
-                    var t = A();
+                    t = A();
                     B.getDoc().execCommand("delete", false, null);
                     t();
                     return j.cancel(D)
                 }
             });
             B.dom.bind(B.getDoc(), "cut", function(t) {
+                var s;
                 if (z()) {
-                    var s = A();
+                    s = A();
                     B.onKeyUp.addToTop(j.cancel, j);
                     setTimeout(function() {
                         s();
@@ -7689,7 +7811,7 @@ tinymce.create("tinymce.ui.Separator:tinymce.ui.Control", {Separator:function(b,
                     g()
                 }
             }
-        },"Bold,Italic,Underline,Strikethrough":function(u) {
+        },"Bold,Italic,Underline,Strikethrough,Superscript,Subscript":function(u) {
             r(u)
         },"ForeColor,HiliteColor,FontName":function(x, v, u) {
             r(x, u)
@@ -7735,13 +7857,17 @@ tinymce.create("tinymce.ui.Separator:tinymce.ui.Control", {Separator:function(b,
         },mceInsertContent:function(z, D, E) {
             var C,u,x,F,y,u,A,G,B;
 
-            function v(H, J) {
-                var I,K = new c.dom.TreeWalker(H, J);
+            function v(I, J, H) {
+                var K = new c.dom.TreeWalker(H ? I.nextSibling : I.previousSibling, J);
                 while ((I = K.current())) {
                     if ((I.nodeType == 3 && c.trim(I.nodeValue).length) || I.nodeName == "BR" || I.nodeName == "IMG") {
                         return I
                     }
-                    K.prev()
+                    if (H) {
+                        K.next()
+                    } else {
+                        K.prev()
+                    }
                 }
             }
 
@@ -7756,7 +7882,7 @@ tinymce.create("tinymce.ui.Separator:tinymce.ui.Control", {Separator:function(b,
             C = l.select("#__mce")[0];
             x = l.getRoot();
             if (C.previousSibling && l.isBlock(C.previousSibling) || C.parentNode == x) {
-                y = v(C.previousSibling, x);
+                y = v(C, x);
                 if (y) {
                     if (y.nodeName == "BR") {
                         y.parentNode.insertBefore(C, y)
@@ -7767,7 +7893,7 @@ tinymce.create("tinymce.ui.Separator:tinymce.ui.Control", {Separator:function(b,
             }
             while (C) {
                 if (C === x) {
-                    l.setOuterHTML(F, new c.html.Serializer({}, n.schema).serialize(new c.html.DomParser({remove_trailing_brs:true}, n.schema).parse(l.getOuterHTML(F))));
+                    l.setOuterHTML(F, new c.html.Serializer({}, n.schema).serialize(n.parser.parse(l.getOuterHTML(F))));
                     break
                 }
                 F = C;
@@ -7775,7 +7901,7 @@ tinymce.create("tinymce.ui.Separator:tinymce.ui.Control", {Separator:function(b,
             }
             C = l.select("#__mce")[0];
             if (C) {
-                y = v(C.previousSibling, x);
+                y = v(C, x) || v(C, x, true);
                 l.remove(C);
                 if (y) {
                     u = l.createRng();
@@ -7803,6 +7929,7 @@ tinymce.create("tinymce.ui.Separator:tinymce.ui.Control", {Separator:function(b,
                         }
                         l.remove(y)
                     }
+                    p.collapse(true)
                 }
             }
             p.onSetContent.dispatch(p, B);
@@ -7847,12 +7974,12 @@ tinymce.create("tinymce.ui.Separator:tinymce.ui.Control", {Separator:function(b,
         },mceToggleFormat:function(x, v, u) {
             n.formatter.toggle(u)
         },InsertHorizontalRule:function() {
-            p.setContent("<hr />")
+            n.execCommand("mceInsertContent", false, "<hr />")
         },mceToggleVisualAid:function() {
             n.hasVisual = !n.hasVisual;
             n.addVisual()
         },mceReplaceContent:function(x, v, u) {
-            n.execCommand("mceInsertContent", false, p.setContent(u.replace(/\{\$selection\}/g, p.getContent({format:"text"}))))
+            n.execCommand("mceInsertContent", false, u.replace(/\{\$selection\}/g, p.getContent({format:"text"})))
         },mceInsertLink:function(A, z, y) {
             var x = l.getParent(p.getNode(), "a"),v,u;
             if (c.is(y, "string")) {
@@ -7889,7 +8016,7 @@ tinymce.create("tinymce.ui.Separator:tinymce.ui.Control", {Separator:function(b,
         }});
         t({"JustifyLeft,JustifyCenter,JustifyRight,JustifyFull":function(u) {
             return s("align" + u.substring(7))
-        },"Bold,Italic,Underline,Strikethrough":function(u) {
+        },"Bold,Italic,Underline,Strikethrough,Superscript,Subscript":function(u) {
             return s(u)
         },mceBlockQuote:function() {
             return s("blockquote")
@@ -7936,15 +8063,17 @@ tinymce.create("tinymce.ui.Separator:tinymce.ui.Control", {Separator:function(b,
             return b.trim(e.getContent({format:"raw",no_events:1}))
         }
 
-        return c = {typing:false,onAdd:new a(c),onUndo:new a(c),onRedo:new a(c),add:function(l) {
+        return c = {typing:false,onAdd:new a(c),onUndo:new a(c),onRedo:new a(c),beforeChange:function() {
+            if (g[d]) {
+                g[d].beforeBookmark = e.selection.getBookmark(2, true)
+            }
+        },add:function(l) {
             var h,j = e.settings,k;
             l = l || {};
             l.content = f();
             k = g[d];
             if (k && k.content == l.content) {
-                if (d > 0 || g.length == 1) {
-                    return null
-                }
+                return null
             }
             if (j.custom_undo_redo_levels) {
                 if (g.length > j.custom_undo_redo_levels) {
@@ -7973,7 +8102,7 @@ tinymce.create("tinymce.ui.Separator:tinymce.ui.Control", {Separator:function(b,
             if (d > 0) {
                 j = g[--d];
                 e.setContent(j.content, {format:"raw"});
-                e.selection.moveToBookmark(j.bookmark);
+                e.selection.moveToBookmark(j.beforeBookmark);
                 c.onUndo.dispatch(c, j)
             }
             return j
@@ -7991,193 +8120,186 @@ tinymce.create("tinymce.ui.Separator:tinymce.ui.Control", {Separator:function(b,
             d = 0;
             c.typing = false
         },hasUndo:function() {
-            return d > 0 || c.typing
+            return d > 0 || this.typing
         },hasRedo:function() {
-            return d < g.length - 1
+            return d < g.length - 1 && !this.typing
         }}
     }
 })(tinymce);
-(function(m) {
-    var k = m.dom.Event,c = m.isIE,a = m.isGecko,b = m.isOpera,j = m.each,i = m.extend,d = true,h = false;
+(function(l) {
+    var j = l.dom.Event,c = l.isIE,a = l.isGecko,b = l.isOpera,i = l.each,h = l.extend,d = true,g = false;
 
-    function l(p) {
-        var q,o,n;
+    function k(o) {
+        var p,n,m;
         do{
-            if (/^(SPAN|STRONG|B|EM|I|FONT|STRIKE|U)$/.test(p.nodeName)) {
-                if (q) {
-                    o = p.cloneNode(false);
-                    o.appendChild(q);
-                    q = o
+            if (/^(SPAN|STRONG|B|EM|I|FONT|STRIKE|U)$/.test(o.nodeName)) {
+                if (p) {
+                    n = o.cloneNode(false);
+                    n.appendChild(p);
+                    p = n
                 } else {
-                    q = n = p.cloneNode(false)
+                    p = m = o.cloneNode(false)
                 }
-                q.removeAttribute("id")
+                p.removeAttribute("id")
             }
-        } while (p = p.parentNode);
-        if (q) {
-            return{wrapper:q,inner:n}
+        } while (o = o.parentNode);
+        if (p) {
+            return{wrapper:p,inner:m}
         }
     }
 
-    function g(o, p) {
-        var n = p.ownerDocument.createRange();
-        n.setStart(o.endContainer, o.endOffset);
-        n.setEndAfter(p);
-        return n.cloneContents().textContent.length == 0
+    function f(n, o) {
+        var m = o.ownerDocument.createRange();
+        m.setStart(n.endContainer, n.endOffset);
+        m.setEndAfter(o);
+        return m.cloneContents().textContent.length == 0
     }
 
-    function f(o) {
-        o = o.innerHTML;
-        o = o.replace(/<(img|hr|table|input|select|textarea)[ \>]/gi, "-");
-        o = o.replace(/<[^>]+>/g, "");
-        return o.replace(/[ \u00a0\t\r\n]+/g, "") == ""
-    }
-
-    function e(p, r, n) {
-        var o,q;
-        if (f(n)) {
-            o = r.getParent(n, "ul,ol");
-            if (!r.getParent(o.parentNode, "ul,ol")) {
-                r.split(o, n);
-                q = r.create("p", 0, '<br data-mce-bogus="1" />');
-                r.replace(q, n);
-                p.select(q, 1)
+    function e(o, q, m) {
+        var n,p;
+        if (q.isEmpty(m)) {
+            n = q.getParent(m, "ul,ol");
+            if (!q.getParent(n.parentNode, "ul,ol")) {
+                q.split(n, m);
+                p = q.create("p", 0, '<br data-mce-bogus="1" />');
+                q.replace(p, m);
+                o.select(p, 1)
             }
-            return h
+            return g
         }
         return d
     }
 
-    m.create("tinymce.ForceBlocks", {ForceBlocks:function(n) {
-        var o = this,p = n.settings,q;
-        o.editor = n;
-        o.dom = n.dom;
-        q = (p.forced_root_block || "p").toLowerCase();
-        p.element = q.toUpperCase();
-        n.onPreInit.add(o.setup, o);
-        if (p.forced_root_block) {
-            n.onInit.add(o.forceRoots, o);
-            n.onSetContent.add(o.forceRoots, o);
-            n.onBeforeGetContent.add(o.forceRoots, o);
-            n.onExecCommand.add(function(r, s) {
-                if (s == "mceInsertContent") {
-                    o.forceRoots();
-                    r.nodeChanged()
+    l.create("tinymce.ForceBlocks", {ForceBlocks:function(m) {
+        var n = this,o = m.settings,p;
+        n.editor = m;
+        n.dom = m.dom;
+        p = (o.forced_root_block || "p").toLowerCase();
+        o.element = p.toUpperCase();
+        m.onPreInit.add(n.setup, n);
+        if (o.forced_root_block) {
+            m.onInit.add(n.forceRoots, n);
+            m.onSetContent.add(n.forceRoots, n);
+            m.onBeforeGetContent.add(n.forceRoots, n);
+            m.onExecCommand.add(function(q, r) {
+                if (r == "mceInsertContent") {
+                    n.forceRoots();
+                    q.nodeChanged()
                 }
             })
         }
     },setup:function() {
-        var o = this,n = o.editor,q = n.settings,u = n.dom,p = n.selection;
-        if (q.forced_root_block) {
-            n.onBeforeExecCommand.add(o.forceRoots, o);
-            n.onKeyUp.add(o.forceRoots, o);
-            n.onPreProcess.add(o.forceRoots, o)
+        var n = this,m = n.editor,p = m.settings,r = m.dom,o = m.selection;
+        if (p.forced_root_block) {
+            m.onBeforeExecCommand.add(n.forceRoots, n);
+            m.onKeyUp.add(n.forceRoots, n);
+            m.onPreProcess.add(n.forceRoots, n)
         }
-        if (q.force_br_newlines) {
+        if (p.force_br_newlines) {
             if (c) {
-                n.onKeyPress.add(function(s, t) {
-                    var v;
-                    if (t.keyCode == 13 && p.getNode().nodeName != "LI") {
-                        p.setContent('<br id="__" /> ', {format:"raw"});
-                        v = u.get("__");
-                        v.removeAttribute("id");
-                        p.select(v);
-                        p.collapse();
-                        return k.cancel(t)
+                m.onKeyPress.add(function(s, t) {
+                    var u;
+                    if (t.keyCode == 13 && o.getNode().nodeName != "LI") {
+                        o.setContent('<br id="__" /> ', {format:"raw"});
+                        u = r.get("__");
+                        u.removeAttribute("id");
+                        o.select(u);
+                        o.collapse();
+                        return j.cancel(t)
                     }
                 })
             }
         }
-        if (q.force_p_newlines) {
+        if (p.force_p_newlines) {
             if (!c) {
-                n.onKeyPress.add(function(s, t) {
-                    if (t.keyCode == 13 && !t.shiftKey && !o.insertPara(t)) {
-                        k.cancel(t)
+                m.onKeyPress.add(function(s, t) {
+                    if (t.keyCode == 13 && !t.shiftKey && !n.insertPara(t)) {
+                        j.cancel(t)
                     }
                 })
             } else {
-                m.addUnload(function() {
-                    o._previousFormats = 0
+                l.addUnload(function() {
+                    n._previousFormats = 0
                 });
-                n.onKeyPress.add(function(s, t) {
-                    o._previousFormats = 0;
-                    if (t.keyCode == 13 && !t.shiftKey && s.selection.isCollapsed() && q.keep_styles) {
-                        o._previousFormats = l(s.selection.getStart())
+                m.onKeyPress.add(function(s, t) {
+                    n._previousFormats = 0;
+                    if (t.keyCode == 13 && !t.shiftKey && s.selection.isCollapsed() && p.keep_styles) {
+                        n._previousFormats = k(s.selection.getStart())
                     }
                 });
-                n.onKeyUp.add(function(t, x) {
-                    if (x.keyCode == 13 && !x.shiftKey) {
-                        var v = t.selection.getStart(),s = o._previousFormats;
-                        if (!v.hasChildNodes() && s) {
-                            v = u.getParent(v, u.isBlock);
-                            if (v && v.nodeName != "LI") {
-                                v.innerHTML = "";
-                                if (o._previousFormats) {
-                                    v.appendChild(s.wrapper);
+                m.onKeyUp.add(function(t, v) {
+                    if (v.keyCode == 13 && !v.shiftKey) {
+                        var u = t.selection.getStart(),s = n._previousFormats;
+                        if (!u.hasChildNodes() && s) {
+                            u = r.getParent(u, r.isBlock);
+                            if (u && u.nodeName != "LI") {
+                                u.innerHTML = "";
+                                if (n._previousFormats) {
+                                    u.appendChild(s.wrapper);
                                     s.inner.innerHTML = "\uFEFF"
                                 } else {
-                                    v.innerHTML = "\uFEFF"
+                                    u.innerHTML = "\uFEFF"
                                 }
-                                p.select(v, 1);
-                                p.collapse(true);
+                                o.select(u, 1);
+                                o.collapse(true);
                                 t.getDoc().execCommand("Delete", false, null);
-                                o._previousFormats = 0
+                                n._previousFormats = 0
                             }
                         }
                     }
                 })
             }
             if (a) {
-                n.onKeyDown.add(function(s, t) {
+                m.onKeyDown.add(function(s, t) {
                     if ((t.keyCode == 8 || t.keyCode == 46) && !t.shiftKey) {
-                        o.backspaceDelete(t, t.keyCode == 8)
+                        n.backspaceDelete(t, t.keyCode == 8)
                     }
                 })
             }
         }
-        if (m.isWebKit) {
-            function r(t) {
-                var s = p.getRng(),v,z = u.create("div", null, " "),y,x = u.getViewPort(t.getWin()).h;
-                s.insertNode(v = u.create("br"));
-                s.setStartAfter(v);
-                s.setEndAfter(v);
-                p.setRng(s);
-                if (p.getSel().focusNode == v.previousSibling) {
-                    p.select(u.insertAfter(u.doc.createTextNode("\u00a0"), v));
-                    p.collapse(d)
+        if (l.isWebKit) {
+            function q(t) {
+                var s = o.getRng(),u,y = r.create("div", null, " "),x,v = r.getViewPort(t.getWin()).h;
+                s.insertNode(u = r.create("br"));
+                s.setStartAfter(u);
+                s.setEndAfter(u);
+                o.setRng(s);
+                if (o.getSel().focusNode == u.previousSibling) {
+                    o.select(r.insertAfter(r.doc.createTextNode("\u00a0"), u));
+                    o.collapse(d)
                 }
-                u.insertAfter(z, v);
-                y = u.getPos(z).y;
-                u.remove(z);
-                if (y > x) {
-                    t.getWin().scrollTo(0, y)
+                r.insertAfter(y, u);
+                x = r.getPos(y).y;
+                r.remove(y);
+                if (x > v) {
+                    t.getWin().scrollTo(0, x)
                 }
             }
 
-            n.onKeyPress.add(function(s, t) {
-                if (t.keyCode == 13 && (t.shiftKey || (q.force_br_newlines && !u.getParent(p.getNode(), "h1,h2,h3,h4,h5,h6,ol,ul")))) {
-                    r(s);
-                    k.cancel(t)
+            m.onKeyPress.add(function(s, t) {
+                if (t.keyCode == 13 && (t.shiftKey || (p.force_br_newlines && !r.getParent(o.getNode(), "h1,h2,h3,h4,h5,h6,ol,ul")))) {
+                    q(s);
+                    j.cancel(t)
                 }
             })
         }
         if (c) {
-            if (q.element != "P") {
-                n.onKeyPress.add(function(s, t) {
-                    o.lastElm = p.getNode().nodeName
+            if (p.element != "P") {
+                m.onKeyPress.add(function(s, t) {
+                    n.lastElm = o.getNode().nodeName
                 });
-                n.onKeyUp.add(function(t, v) {
-                    var y,x = p.getNode(),s = t.getBody();
-                    if (s.childNodes.length === 1 && x.nodeName == "P") {
-                        x = u.rename(x, q.element);
-                        p.select(x);
-                        p.collapse();
+                m.onKeyUp.add(function(t, u) {
+                    var x,v = o.getNode(),s = t.getBody();
+                    if (s.childNodes.length === 1 && v.nodeName == "P") {
+                        v = r.rename(v, p.element);
+                        o.select(v);
+                        o.collapse();
                         t.nodeChanged()
                     } else {
-                        if (v.keyCode == 13 && !v.shiftKey && o.lastElm != "P") {
-                            y = u.getParent(x, "p");
-                            if (y) {
-                                u.rename(y, q.element);
+                        if (u.keyCode == 13 && !u.shiftKey && n.lastElm != "P") {
+                            x = r.getParent(v, "p");
+                            if (x) {
+                                r.rename(x, p.element);
                                 t.nodeChanged()
                             }
                         }
@@ -8185,268 +8307,269 @@ tinymce.create("tinymce.ui.Separator:tinymce.ui.Control", {Separator:function(b,
                 })
             }
         }
-    },find:function(v, q, r) {
-        var p = this.editor,o = p.getDoc().createTreeWalker(v, 4, null, h),u = -1;
-        while (v = o.nextNode()) {
-            u++;
-            if (q == 0 && v == r) {
-                return u
+    },find:function(u, p, q) {
+        var o = this.editor,m = o.getDoc().createTreeWalker(u, 4, null, g),r = -1;
+        while (u = m.nextNode()) {
+            r++;
+            if (p == 0 && u == q) {
+                return r
             }
-            if (q == 1 && u == r) {
-                return v
+            if (p == 1 && r == q) {
+                return u
             }
         }
         return -1
-    },forceRoots:function(x, I) {
-        var z = this,x = z.editor,M = x.getBody(),J = x.getDoc(),P = x.selection,A = P.getSel(),B = P.getRng(),N = -2,v,G,o,p,K = -16777215;
-        var L,q,O,F,C,u = M.childNodes,E,D,y;
-        for (E = u.length - 1; E >= 0; E--) {
-            L = u[E];
-            if (L.nodeType === 1 && L.getAttribute("data-mce-type")) {
-                q = null;
+    },forceRoots:function(v, H) {
+        var y = this,v = y.editor,L = v.getBody(),I = v.getDoc(),O = v.selection,z = O.getSel(),A = O.getRng(),M = -2,u,F,m,o,J = -16777215;
+        var K,p,N,E,B,q = L.childNodes,D,C,x;
+        for (D = q.length - 1; D >= 0; D--) {
+            K = q[D];
+            if (K.nodeType === 1 && K.getAttribute("data-mce-type")) {
+                p = null;
                 continue
             }
-            if (L.nodeType === 3 || (!z.dom.isBlock(L) && L.nodeType !== 8 && !/^(script|mce:script|style|mce:style)$/i.test(L.nodeName))) {
-                if (!q) {
-                    if (L.nodeType != 3 || /[^\s]/g.test(L.nodeValue)) {
-                        if (N == -2 && B) {
-                            if (!c || B.setStart) {
-                                if (B.startContainer.nodeType == 1 && (D = B.startContainer.childNodes[B.startOffset]) && D.nodeType == 1) {
-                                    y = D.getAttribute("id");
-                                    D.setAttribute("id", "__mce")
+            if (K.nodeType === 3 || (!y.dom.isBlock(K) && K.nodeType !== 8 && !/^(script|mce:script|style|mce:style)$/i.test(K.nodeName))) {
+                if (!p) {
+                    if (K.nodeType != 3 || /[^\s]/g.test(K.nodeValue)) {
+                        if (M == -2 && A) {
+                            if (!c || A.setStart) {
+                                if (A.startContainer.nodeType == 1 && (C = A.startContainer.childNodes[A.startOffset]) && C.nodeType == 1) {
+                                    x = C.getAttribute("id");
+                                    C.setAttribute("id", "__mce")
                                 } else {
-                                    if (x.dom.getParent(B.startContainer, function(n) {
-                                        return n === M
+                                    if (v.dom.getParent(A.startContainer, function(n) {
+                                        return n === L
                                     })) {
-                                        G = B.startOffset;
-                                        o = B.endOffset;
-                                        N = z.find(M, 0, B.startContainer);
-                                        v = z.find(M, 0, B.endContainer)
+                                        F = A.startOffset;
+                                        m = A.endOffset;
+                                        M = y.find(L, 0, A.startContainer);
+                                        u = y.find(L, 0, A.endContainer)
                                     }
                                 }
                             } else {
-                                if (B.item) {
-                                    p = J.body.createTextRange();
-                                    p.moveToElementText(B.item(0));
-                                    B = p
+                                if (A.item) {
+                                    o = I.body.createTextRange();
+                                    o.moveToElementText(A.item(0));
+                                    A = o
                                 }
-                                p = J.body.createTextRange();
-                                p.moveToElementText(M);
-                                p.collapse(1);
-                                O = p.move("character", K) * -1;
-                                p = B.duplicate();
-                                p.collapse(1);
-                                F = p.move("character", K) * -1;
-                                p = B.duplicate();
-                                p.collapse(0);
-                                C = (p.move("character", K) * -1) - F;
-                                N = F - O;
-                                v = C
+                                o = I.body.createTextRange();
+                                o.moveToElementText(L);
+                                o.collapse(1);
+                                N = o.move("character", J) * -1;
+                                o = A.duplicate();
+                                o.collapse(1);
+                                E = o.move("character", J) * -1;
+                                o = A.duplicate();
+                                o.collapse(0);
+                                B = (o.move("character", J) * -1) - E;
+                                M = E - N;
+                                u = B
                             }
                         }
-                        q = x.dom.create(x.settings.forced_root_block);
-                        L.parentNode.replaceChild(q, L);
-                        q.appendChild(L)
+                        p = v.dom.create(v.settings.forced_root_block);
+                        K.parentNode.replaceChild(p, K);
+                        p.appendChild(K)
                     }
                 } else {
-                    if (q.hasChildNodes()) {
-                        q.insertBefore(L, q.firstChild)
+                    if (p.hasChildNodes()) {
+                        p.insertBefore(K, p.firstChild)
                     } else {
-                        q.appendChild(L)
+                        p.appendChild(K)
                     }
                 }
             } else {
-                q = null
+                p = null
             }
         }
-        if (N != -2) {
-            if (!c || B.setStart) {
-                q = M.getElementsByTagName(x.settings.element)[0];
-                B = J.createRange();
-                if (N != -1) {
-                    B.setStart(z.find(M, 1, N), G)
+        if (M != -2) {
+            if (!c || A.setStart) {
+                p = L.getElementsByTagName(v.settings.element)[0];
+                A = I.createRange();
+                if (M != -1) {
+                    A.setStart(y.find(L, 1, M), F)
                 } else {
-                    B.setStart(q, 0)
+                    A.setStart(p, 0)
                 }
-                if (v != -1) {
-                    B.setEnd(z.find(M, 1, v), o)
+                if (u != -1) {
+                    A.setEnd(y.find(L, 1, u), m)
                 } else {
-                    B.setEnd(q, 0)
+                    A.setEnd(p, 0)
                 }
-                if (A) {
-                    A.removeAllRanges();
-                    A.addRange(B)
+                if (z) {
+                    z.removeAllRanges();
+                    z.addRange(A)
                 }
             } else {
                 try {
-                    B = A.createRange();
-                    B.moveToElementText(M);
-                    B.collapse(1);
-                    B.moveStart("character", N);
-                    B.moveEnd("character", v);
-                    B.select()
-                } catch(H) {
+                    A = z.createRange();
+                    A.moveToElementText(L);
+                    A.collapse(1);
+                    A.moveStart("character", M);
+                    A.moveEnd("character", u);
+                    A.select()
+                } catch(G) {
                 }
             }
         } else {
-            if ((!c || B.setStart) && (D = x.dom.get("__mce"))) {
-                if (y) {
-                    D.setAttribute("id", y)
+            if ((!c || A.setStart) && (C = v.dom.get("__mce"))) {
+                if (x) {
+                    C.setAttribute("id", x)
                 } else {
-                    D.removeAttribute("id")
+                    C.removeAttribute("id")
                 }
-                B = J.createRange();
-                B.setStartBefore(D);
-                B.setEndBefore(D);
-                P.setRng(B)
+                A = I.createRange();
+                A.setStartBefore(C);
+                A.setEndBefore(C);
+                O.setRng(A)
             }
         }
-    },getParentBlock:function(p) {
-        var o = this.dom;
-        return o.getParent(p, o.isBlock)
-    },insertPara:function(S) {
-        var G = this,x = G.editor,O = x.dom,T = x.getDoc(),X = x.settings,H = x.selection.getSel(),I = H.getRangeAt(0),W = T.body;
-        var L,M,J,Q,P,u,p,v,A,o,E,V,q,z,K,N = O.getViewPort(x.getWin()),D,F,C;
-        L = T.createRange();
-        L.setStart(H.anchorNode, H.anchorOffset);
+    },getParentBlock:function(o) {
+        var m = this.dom;
+        return m.getParent(o, m.isBlock)
+    },insertPara:function(R) {
+        var F = this,v = F.editor,N = v.dom,S = v.getDoc(),W = v.settings,G = v.selection.getSel(),H = G.getRangeAt(0),V = S.body;
+        var K,L,I,P,O,q,o,u,z,m,D,U,p,x,J,M = N.getViewPort(v.getWin()),C,E,B;
+        v.undoManager.beforeChange();
+        K = S.createRange();
+        K.setStart(G.anchorNode, G.anchorOffset);
+        K.collapse(d);
+        L = S.createRange();
+        L.setStart(G.focusNode, G.focusOffset);
         L.collapse(d);
-        M = T.createRange();
-        M.setStart(H.focusNode, H.focusOffset);
-        M.collapse(d);
-        J = L.compareBoundaryPoints(L.START_TO_END, M) < 0;
-        Q = J ? H.anchorNode : H.focusNode;
-        P = J ? H.anchorOffset : H.focusOffset;
-        u = J ? H.focusNode : H.anchorNode;
-        p = J ? H.focusOffset : H.anchorOffset;
-        if (Q === u && /^(TD|TH)$/.test(Q.nodeName)) {
-            if (Q.firstChild.nodeName == "BR") {
-                O.remove(Q.firstChild)
+        I = K.compareBoundaryPoints(K.START_TO_END, L) < 0;
+        P = I ? G.anchorNode : G.focusNode;
+        O = I ? G.anchorOffset : G.focusOffset;
+        q = I ? G.focusNode : G.anchorNode;
+        o = I ? G.focusOffset : G.anchorOffset;
+        if (P === q && /^(TD|TH)$/.test(P.nodeName)) {
+            if (P.firstChild.nodeName == "BR") {
+                N.remove(P.firstChild)
             }
-            if (Q.childNodes.length == 0) {
-                x.dom.add(Q, X.element, null, "<br />");
-                V = x.dom.add(Q, X.element, null, "<br />")
+            if (P.childNodes.length == 0) {
+                v.dom.add(P, W.element, null, "<br />");
+                U = v.dom.add(P, W.element, null, "<br />")
             } else {
-                K = Q.innerHTML;
-                Q.innerHTML = "";
-                x.dom.add(Q, X.element, null, K);
-                V = x.dom.add(Q, X.element, null, "<br />")
+                J = P.innerHTML;
+                P.innerHTML = "";
+                v.dom.add(P, W.element, null, J);
+                U = v.dom.add(P, W.element, null, "<br />")
             }
-            I = T.createRange();
-            I.selectNodeContents(V);
-            I.collapse(1);
-            x.selection.setRng(I);
-            return h
+            H = S.createRange();
+            H.selectNodeContents(U);
+            H.collapse(1);
+            v.selection.setRng(H);
+            return g
         }
-        if (Q == W && u == W && W.firstChild && x.dom.isBlock(W.firstChild)) {
-            Q = u = Q.firstChild;
-            P = p = 0;
-            L = T.createRange();
-            L.setStart(Q, 0);
-            M = T.createRange();
-            M.setStart(u, 0)
+        if (P == V && q == V && V.firstChild && v.dom.isBlock(V.firstChild)) {
+            P = q = P.firstChild;
+            O = o = 0;
+            K = S.createRange();
+            K.setStart(P, 0);
+            L = S.createRange();
+            L.setStart(q, 0)
         }
-        Q = Q.nodeName == "HTML" ? T.body : Q;
-        Q = Q.nodeName == "BODY" ? Q.firstChild : Q;
-        u = u.nodeName == "HTML" ? T.body : u;
-        u = u.nodeName == "BODY" ? u.firstChild : u;
-        v = G.getParentBlock(Q);
-        A = G.getParentBlock(u);
-        o = v ? v.nodeName : X.element;
-        if (K = G.dom.getParent(v, "li,pre")) {
-            if (K.nodeName == "LI") {
-                return e(x.selection, G.dom, K)
+        P = P.nodeName == "HTML" ? S.body : P;
+        P = P.nodeName == "BODY" ? P.firstChild : P;
+        q = q.nodeName == "HTML" ? S.body : q;
+        q = q.nodeName == "BODY" ? q.firstChild : q;
+        u = F.getParentBlock(P);
+        z = F.getParentBlock(q);
+        m = u ? u.nodeName : W.element;
+        if (J = F.dom.getParent(u, "li,pre")) {
+            if (J.nodeName == "LI") {
+                return e(v.selection, F.dom, J)
             }
             return d
         }
-        if (v && (v.nodeName == "CAPTION" || /absolute|relative|fixed/gi.test(O.getStyle(v, "position", 1)))) {
-            o = X.element;
-            v = null
+        if (u && (u.nodeName == "CAPTION" || /absolute|relative|fixed/gi.test(N.getStyle(u, "position", 1)))) {
+            m = W.element;
+            u = null
         }
-        if (A && (A.nodeName == "CAPTION" || /absolute|relative|fixed/gi.test(O.getStyle(v, "position", 1)))) {
-            o = X.element;
-            A = null
+        if (z && (z.nodeName == "CAPTION" || /absolute|relative|fixed/gi.test(N.getStyle(u, "position", 1)))) {
+            m = W.element;
+            z = null
         }
-        if (/(TD|TABLE|TH|CAPTION)/.test(o) || (v && o == "DIV" && /left|right/gi.test(O.getStyle(v, "float", 1)))) {
-            o = X.element;
-            v = A = null
+        if (/(TD|TABLE|TH|CAPTION)/.test(m) || (u && m == "DIV" && /left|right/gi.test(N.getStyle(u, "float", 1)))) {
+            m = W.element;
+            u = z = null
         }
-        E = (v && v.nodeName == o) ? v.cloneNode(0) : x.dom.create(o);
-        V = (A && A.nodeName == o) ? A.cloneNode(0) : x.dom.create(o);
-        V.removeAttribute("id");
-        if (/^(H[1-6])$/.test(o) && g(I, v)) {
-            V = x.dom.create(X.element)
+        D = (u && u.nodeName == m) ? u.cloneNode(0) : v.dom.create(m);
+        U = (z && z.nodeName == m) ? z.cloneNode(0) : v.dom.create(m);
+        U.removeAttribute("id");
+        if (/^(H[1-6])$/.test(m) && f(H, u)) {
+            U = v.dom.create(W.element)
         }
-        K = q = Q;
+        J = p = P;
         do{
-            if (K == W || K.nodeType == 9 || G.dom.isBlock(K) || /(TD|TABLE|TH|CAPTION)/.test(K.nodeName)) {
+            if (J == V || J.nodeType == 9 || F.dom.isBlock(J) || /(TD|TABLE|TH|CAPTION)/.test(J.nodeName)) {
                 break
             }
-            q = K
-        } while ((K = K.previousSibling ? K.previousSibling : K.parentNode));
-        K = z = u;
+            p = J
+        } while ((J = J.previousSibling ? J.previousSibling : J.parentNode));
+        J = x = q;
         do{
-            if (K == W || K.nodeType == 9 || G.dom.isBlock(K) || /(TD|TABLE|TH|CAPTION)/.test(K.nodeName)) {
+            if (J == V || J.nodeType == 9 || F.dom.isBlock(J) || /(TD|TABLE|TH|CAPTION)/.test(J.nodeName)) {
                 break
             }
-            z = K
-        } while ((K = K.nextSibling ? K.nextSibling : K.parentNode));
-        if (q.nodeName == o) {
-            L.setStart(q, 0)
+            x = J
+        } while ((J = J.nextSibling ? J.nextSibling : J.parentNode));
+        if (p.nodeName == m) {
+            K.setStart(p, 0)
         } else {
-            L.setStartBefore(q)
+            K.setStartBefore(p)
         }
-        L.setEnd(Q, P);
-        E.appendChild(L.cloneContents() || T.createTextNode(""));
+        K.setEnd(P, O);
+        D.appendChild(K.cloneContents() || S.createTextNode(""));
         try {
-            M.setEndAfter(z)
-        } catch(R) {
+            L.setEndAfter(x)
+        } catch(Q) {
         }
-        M.setStart(u, p);
-        V.appendChild(M.cloneContents() || T.createTextNode(""));
-        I = T.createRange();
-        if (!q.previousSibling && q.parentNode.nodeName == o) {
-            I.setStartBefore(q.parentNode)
+        L.setStart(q, o);
+        U.appendChild(L.cloneContents() || S.createTextNode(""));
+        H = S.createRange();
+        if (!p.previousSibling && p.parentNode.nodeName == m) {
+            H.setStartBefore(p.parentNode)
         } else {
-            if (L.startContainer.nodeName == o && L.startOffset == 0) {
-                I.setStartBefore(L.startContainer)
+            if (K.startContainer.nodeName == m && K.startOffset == 0) {
+                H.setStartBefore(K.startContainer)
             } else {
-                I.setStart(L.startContainer, L.startOffset)
+                H.setStart(K.startContainer, K.startOffset)
             }
         }
-        if (!z.nextSibling && z.parentNode.nodeName == o) {
-            I.setEndAfter(z.parentNode)
+        if (!x.nextSibling && x.parentNode.nodeName == m) {
+            H.setEndAfter(x.parentNode)
         } else {
-            I.setEnd(M.endContainer, M.endOffset)
+            H.setEnd(L.endContainer, L.endOffset)
         }
-        I.deleteContents();
+        H.deleteContents();
         if (b) {
-            x.getWin().scrollTo(0, N.y)
+            v.getWin().scrollTo(0, M.y)
         }
-        if (E.firstChild && E.firstChild.nodeName == o) {
-            E.innerHTML = E.firstChild.innerHTML
+        if (D.firstChild && D.firstChild.nodeName == m) {
+            D.innerHTML = D.firstChild.innerHTML
         }
-        if (V.firstChild && V.firstChild.nodeName == o) {
-            V.innerHTML = V.firstChild.innerHTML
+        if (U.firstChild && U.firstChild.nodeName == m) {
+            U.innerHTML = U.firstChild.innerHTML
         }
-        if (f(E)) {
-            E.innerHTML = "<br />"
+        if (N.isEmpty(D)) {
+            D.innerHTML = "<br />"
         }
-        function U(y, s) {
-            var r = [],Z,Y,t;
+        function T(y, s) {
+            var r = [],Y,X,t;
             y.innerHTML = "";
-            if (X.keep_styles) {
-                Y = s;
+            if (W.keep_styles) {
+                X = s;
                 do{
-                    if (/^(SPAN|STRONG|B|EM|I|FONT|STRIKE|U)$/.test(Y.nodeName)) {
-                        Z = Y.cloneNode(h);
-                        O.setAttrib(Z, "id", "");
-                        r.push(Z)
+                    if (/^(SPAN|STRONG|B|EM|I|FONT|STRIKE|U)$/.test(X.nodeName)) {
+                        Y = X.cloneNode(g);
+                        N.setAttrib(Y, "id", "");
+                        r.push(Y)
                     }
-                } while (Y = Y.parentNode)
+                } while (X = X.parentNode)
             }
             if (r.length > 0) {
-                for (t = r.length - 1,Z = y; t >= 0; t--) {
-                    Z = Z.appendChild(r[t])
+                for (t = r.length - 1,Y = y; t >= 0; t--) {
+                    Y = Y.appendChild(r[t])
                 }
                 r[0].innerHTML = b ? "\u00a0" : "<br />";
                 return r[0]
@@ -8455,63 +8578,64 @@ tinymce.create("tinymce.ui.Separator:tinymce.ui.Control", {Separator:function(b,
             }
         }
 
-        if (f(V)) {
-            C = U(V, u)
+        if (N.isEmpty(U)) {
+            B = T(U, q)
         }
         if (b && parseFloat(opera.version()) < 9.5) {
-            I.insertNode(E);
-            I.insertNode(V)
+            H.insertNode(D);
+            H.insertNode(U)
         } else {
-            I.insertNode(V);
-            I.insertNode(E)
+            H.insertNode(U);
+            H.insertNode(D)
         }
-        V.normalize();
-        E.normalize();
-        function B(r) {
-            return T.createTreeWalker(r, NodeFilter.SHOW_TEXT, null, h).nextNode() || r
+        U.normalize();
+        D.normalize();
+        function A(r) {
+            return S.createTreeWalker(r, NodeFilter.SHOW_TEXT, null, g).nextNode() || r
         }
 
-        I = T.createRange();
-        I.selectNodeContents(a ? B(C || V) : C || V);
-        I.collapse(1);
-        H.removeAllRanges();
-        H.addRange(I);
-        D = x.dom.getPos(V).y;
-        if (D < N.y || D + 25 > N.y + N.h) {
-            x.getWin().scrollTo(0, D < N.y ? D : D - N.h + 25)
+        H = S.createRange();
+        H.selectNodeContents(a ? A(B || U) : B || U);
+        H.collapse(1);
+        G.removeAllRanges();
+        G.addRange(H);
+        C = v.dom.getPos(U).y;
+        if (C < M.y || C + 25 > M.y + M.h) {
+            v.getWin().scrollTo(0, C < M.y ? C : C - M.h + 25)
         }
-        return h
-    },backspaceDelete:function(v, C) {
-        var D = this,u = D.editor,z = u.getBody(),s = u.dom,q,x = u.selection,p = x.getRng(),y = p.startContainer,q,A,B,o;
-        if (!C && p.collapsed && y.nodeType == 1 && p.startOffset == y.childNodes.length) {
-            o = new m.dom.TreeWalker(y.lastChild, y);
-            for (q = y.lastChild; q; q = o.prev()) {
-                if (q.nodeType == 3) {
-                    p.setStart(q, q.nodeValue.length);
-                    p.collapse(true);
-                    x.setRng(p);
+        v.undoManager.add();
+        return g
+    },backspaceDelete:function(u, B) {
+        var C = this,s = C.editor,y = s.getBody(),q = s.dom,p,v = s.selection,o = v.getRng(),x = o.startContainer,p,z,A,m;
+        if (!B && o.collapsed && x.nodeType == 1 && o.startOffset == x.childNodes.length) {
+            m = new l.dom.TreeWalker(x.lastChild, x);
+            for (p = x.lastChild; p; p = m.prev()) {
+                if (p.nodeType == 3) {
+                    o.setStart(p, p.nodeValue.length);
+                    o.collapse(true);
+                    v.setRng(o);
                     return
                 }
             }
         }
-        if (y && u.dom.isBlock(y) && !/^(TD|TH)$/.test(y.nodeName) && C) {
-            if (y.childNodes.length == 0 || (y.childNodes.length == 1 && y.firstChild.nodeName == "BR")) {
-                q = y;
-                while ((q = q.previousSibling) && !u.dom.isBlock(q)) {
+        if (x && s.dom.isBlock(x) && !/^(TD|TH)$/.test(x.nodeName) && B) {
+            if (x.childNodes.length == 0 || (x.childNodes.length == 1 && x.firstChild.nodeName == "BR")) {
+                p = x;
+                while ((p = p.previousSibling) && !s.dom.isBlock(p)) {
                 }
-                if (q) {
-                    if (y != z.firstChild) {
-                        A = u.dom.doc.createTreeWalker(q, NodeFilter.SHOW_TEXT, null, h);
-                        while (B = A.nextNode()) {
-                            q = B
+                if (p) {
+                    if (x != y.firstChild) {
+                        z = s.dom.doc.createTreeWalker(p, NodeFilter.SHOW_TEXT, null, g);
+                        while (A = z.nextNode()) {
+                            p = A
                         }
-                        p = u.getDoc().createRange();
-                        p.setStart(q, q.nodeValue ? q.nodeValue.length : 0);
-                        p.setEnd(q, q.nodeValue ? q.nodeValue.length : 0);
-                        x.setRng(p);
-                        u.dom.remove(y)
+                        o = s.getDoc().createRange();
+                        o.setStart(p, p.nodeValue ? p.nodeValue.length : 0);
+                        o.setEnd(p, p.nodeValue ? p.nodeValue.length : 0);
+                        v.setRng(o);
+                        s.dom.remove(x)
                     }
-                    return k.cancel(v)
+                    return j.cancel(u)
                 }
             }
         }
@@ -8851,1047 +8975,1114 @@ tinymce.create("tinymce.ui.Separator:tinymce.ui.Control", {Separator:function(b,
     }})
 }(tinymce));
 (function(a) {
-    a.Formatter = function(T) {
-        var K = {},M = a.each,c = T.dom,p = T.selection,s = a.dom.TreeWalker,I = new a.dom.RangeUtils(c),d = T.schema.isValidChild,E = c.isBlock,k = T.settings.forced_root_block,r = c.nodeIndex,D = "\uFEFF",e = /^(src|href|style)$/,Q = false,A = true,o,N = {apply:[],remove:[]};
+    a.Formatter = function(V) {
+        var M = {},O = a.each,c = V.dom,q = V.selection,t = a.dom.TreeWalker,K = new a.dom.RangeUtils(c),d = V.schema.isValidChild,F = c.isBlock,l = V.settings.forced_root_block,s = c.nodeIndex,E = "\uFEFF",e = /^(src|href|style)$/,S = false,B = true,p,P = {apply:[],remove:[]};
 
-        function y(U) {
-            return U instanceof Array
+        function z(W) {
+            return W instanceof Array
         }
 
-        function l(V, U) {
-            return c.getParents(V, U, c.getRoot())
+        function m(X, W) {
+            return c.getParents(X, W, c.getRoot())
         }
 
-        function b(U) {
-            return U.nodeType === 1 && (U.face === "mceinline" || U.style.fontFamily === "mceinline")
+        function b(W) {
+            return W.nodeType === 1 && (W.face === "mceinline" || W.style.fontFamily === "mceinline")
         }
 
-        function P(U) {
-            return U ? K[U] : K
+        function R(W) {
+            return W ? M[W] : M
         }
 
-        function j(U, V) {
-            if (U) {
-                if (typeof(U) !== "string") {
-                    M(U, function(X, W) {
-                        j(W, X)
+        function k(W, X) {
+            if (W) {
+                if (typeof(W) !== "string") {
+                    O(W, function(Z, Y) {
+                        k(Y, Z)
                     })
                 } else {
-                    V = V.length ? V : [V];
-                    M(V, function(W) {
-                        if (W.deep === o) {
-                            W.deep = !W.selector
+                    X = X.length ? X : [X];
+                    O(X, function(Y) {
+                        if (Y.deep === p) {
+                            Y.deep = !Y.selector
                         }
-                        if (W.split === o) {
-                            W.split = !W.selector || W.inline
+                        if (Y.split === p) {
+                            Y.split = !Y.selector || Y.inline
                         }
-                        if (W.remove === o && W.selector && !W.inline) {
-                            W.remove = "none"
+                        if (Y.remove === p && Y.selector && !Y.inline) {
+                            Y.remove = "none"
                         }
-                        if (W.selector && W.inline) {
-                            W.mixed = true;
-                            W.block_expand = true
+                        if (Y.selector && Y.inline) {
+                            Y.mixed = true;
+                            Y.block_expand = true
                         }
-                        if (typeof(W.classes) === "string") {
-                            W.classes = W.classes.split(/\s+/)
+                        if (typeof(Y.classes) === "string") {
+                            Y.classes = Y.classes.split(/\s+/)
                         }
                     });
-                    K[U] = V
+                    M[W] = X
                 }
             }
         }
 
-        function R(W, ad, Y) {
-            var Z = P(W),ae = Z[0],ac,V,ab,aa = p.isCollapsed();
+        var i = function(X) {
+            var W;
+            V.dom.getParent(X, function(Y) {
+                W = V.dom.getStyle(Y, "text-decoration");
+                return W && W !== "none"
+            });
+            return W
+        };
+        var I = function(W) {
+            var X;
+            if (W.nodeType === 1 && W.parentNode && W.parentNode.nodeType === 1) {
+                X = i(W.parentNode);
+                if (V.dom.getStyle(W, "color") && X) {
+                    V.dom.setStyle(W, "text-decoration", X)
+                } else {
+                    if (V.dom.getStyle(W, "textdecoration") === X) {
+                        V.dom.setStyle(W, "text-decoration", null)
+                    }
+                }
+            }
+        };
 
-            function X(ah) {
-                var ag = ah.startContainer,ak = ah.startOffset,aj,ai;
-                if (ag.nodeType == 1 || ag.nodeValue === "") {
-                    ag = ag.nodeType == 1 ? ag.childNodes[ak] : ag;
-                    if (ag) {
-                        aj = new s(ag, ag.parentNode);
-                        for (ai = aj.current(); ai; ai = aj.next()) {
-                            if (ai.nodeType == 3 && !f(ai)) {
-                                ah.setStart(ai, 0);
+        function T(Y, af, aa) {
+            var ab = R(Y),ag = ab[0],ae,X,ad,ac = q.isCollapsed();
+
+            function Z(ak) {
+                var aj = ak.startContainer,an = ak.startOffset,am,al;
+                if (aj.nodeType == 1 || aj.nodeValue === "") {
+                    aj = aj.nodeType == 1 ? aj.childNodes[an] : aj;
+                    if (aj) {
+                        am = new t(aj, aj.parentNode);
+                        for (al = am.current(); al; al = am.next()) {
+                            if (al.nodeType == 3 && !f(al)) {
+                                ak.setStart(al, 0);
                                 break
                             }
                         }
                     }
                 }
-                return ah
-            }
-
-            function U(ah, ag) {
-                ag = ag || ae;
-                if (ah) {
-                    M(ag.styles, function(aj, ai) {
-                        c.setStyle(ah, ai, q(aj, ad))
-                    });
-                    M(ag.attributes, function(aj, ai) {
-                        c.setAttrib(ah, ai, q(aj, ad))
-                    });
-                    M(ag.classes, function(ai) {
-                        ai = q(ai, ad);
-                        if (!c.hasClass(ah, ai)) {
-                            c.addClass(ah, ai)
-                        }
-                    })
-                }
-            }
-
-            function af(ah) {
-                var ag = [],aj,ai;
-                aj = ae.inline || ae.block;
-                ai = c.create(aj);
-                U(ai);
-                I.walk(ah, function(ak) {
-                    var al;
-
-                    function am(an) {
-                        var aq = an.nodeName.toLowerCase(),ap = an.parentNode.nodeName.toLowerCase(),ao;
-                        if (g(aq, "br")) {
-                            al = 0;
-                            if (ae.block) {
-                                c.remove(an)
-                            }
-                            return
-                        }
-                        if (ae.wrapper && v(an, W, ad)) {
-                            al = 0;
-                            return
-                        }
-                        if (ae.block && !ae.wrapper && F(aq)) {
-                            an = c.rename(an, aj);
-                            U(an);
-                            ag.push(an);
-                            al = 0;
-                            return
-                        }
-                        if (ae.selector) {
-                            M(Z, function(ar) {
-                                if ("collapsed" in ar && ar.collapsed !== aa) {
-                                    return
-                                }
-                                if (c.is(an, ar.selector) && !b(an)) {
-                                    U(an, ar);
-                                    ao = true
-                                }
-                            });
-                            if (!ae.inline || ao) {
-                                al = 0;
-                                return
-                            }
-                        }
-                        if (d(aj, aq) && d(ap, aj) && !(an.nodeType === 3 && an.nodeValue.length === 1 && an.nodeValue.charCodeAt(0) === 65279)) {
-                            if (!al) {
-                                al = ai.cloneNode(Q);
-                                an.parentNode.insertBefore(al, an);
-                                ag.push(al)
-                            }
-                            al.appendChild(an)
-                        } else {
-                            al = 0;
-                            M(a.grep(an.childNodes), am);
-                            al = 0
-                        }
-                    }
-
-                    M(ak, am)
-                });
-                if (ae.wrap_links === false) {
-                    M(ag, function(ak) {
-                        function al(ap) {
-                            var ao,an,am;
-                            if (ap.nodeName === "A") {
-                                an = ai.cloneNode(Q);
-                                ag.push(an);
-                                am = a.grep(ap.childNodes);
-                                for (ao = 0; ao < am.length; ao++) {
-                                    an.appendChild(am[ao])
-                                }
-                                ap.appendChild(an)
-                            }
-                            M(a.grep(ap.childNodes), al)
-                        }
-
-                        al(ak)
-                    })
-                }
-                M(ag, function(am) {
-                    var ak;
-
-                    function an(ap) {
-                        var ao = 0;
-                        M(ap.childNodes, function(aq) {
-                            if (!f(aq) && !G(aq)) {
-                                ao++
-                            }
-                        });
-                        return ao
-                    }
-
-                    function al(ao) {
-                        var aq,ap;
-                        M(ao.childNodes, function(ar) {
-                            if (ar.nodeType == 1 && !G(ar) && !b(ar)) {
-                                aq = ar;
-                                return Q
-                            }
-                        });
-                        if (aq && h(aq, ae)) {
-                            ap = aq.cloneNode(Q);
-                            U(ap);
-                            c.replace(ap, ao, A);
-                            c.remove(aq, 1)
-                        }
-                        return ap || ao
-                    }
-
-                    ak = an(am);
-                    if ((ag.length > 1 || !E(am)) && ak === 0) {
-                        c.remove(am, 1);
-                        return
-                    }
-                    if (ae.inline || ae.wrapper) {
-                        if (!ae.exact && ak === 1) {
-                            am = al(am)
-                        }
-                        M(Z, function(ao) {
-                            M(c.select(ao.inline, am), function(aq) {
-                                var ap;
-                                if (ao.wrap_links === false) {
-                                    ap = aq.parentNode;
-                                    do{
-                                        if (ap.nodeName === "A") {
-                                            return
-                                        }
-                                    } while (ap = ap.parentNode)
-                                }
-                                S(ao, ad, aq, ao.exact ? aq : null)
-                            })
-                        });
-                        if (v(am.parentNode, W, ad)) {
-                            c.remove(am, 1);
-                            am = 0;
-                            return A
-                        }
-                        if (ae.merge_with_parents) {
-                            c.getParent(am.parentNode, function(ao) {
-                                if (v(ao, W, ad)) {
-                                    c.remove(am, 1);
-                                    am = 0;
-                                    return A
-                                }
-                            })
-                        }
-                        if (am) {
-                            am = t(B(am), am);
-                            am = t(am, B(am, A))
-                        }
-                    }
-                })
-            }
-
-            if (ae) {
-                if (Y) {
-                    V = c.createRng();
-                    V.setStartBefore(Y);
-                    V.setEndAfter(Y);
-                    af(n(V, Z))
-                } else {
-                    if (!aa || !ae.inline || c.select("td.mceSelected,th.mceSelected").length) {
-                        ac = p.getBookmark();
-                        af(n(p.getRng(A), Z));
-                        p.moveToBookmark(ac);
-                        p.setRng(X(p.getRng(A)));
-                        T.nodeChanged()
-                    } else {
-                        O("apply", W, ad)
-                    }
-                }
-            }
-        }
-
-        function z(W, af, Z) {
-            var aa = P(W),ah = aa[0],ae,ad,V;
-
-            function Y(ak) {
-                var aj = ak.startContainer,ap = ak.startOffset,ao,an,al,am;
-                if (aj.nodeType == 3 && ap >= aj.nodeValue.length - 1) {
-                    aj = aj.parentNode;
-                    ap = r(aj) + 1
-                }
-                if (aj.nodeType == 1) {
-                    al = aj.childNodes;
-                    aj = al[Math.min(ap, al.length - 1)];
-                    ao = new s(aj);
-                    if (ap > al.length - 1) {
-                        ao.next()
-                    }
-                    for (an = ao.current(); an; an = ao.next()) {
-                        if (an.nodeType == 3 && !f(an)) {
-                            am = c.create("a", null, D);
-                            an.parentNode.insertBefore(am, an);
-                            ak.setStart(an, 0);
-                            p.setRng(ak);
-                            c.remove(am);
-                            return
-                        }
-                    }
-                }
-            }
-
-            function X(am) {
-                var al,ak,aj;
-                al = a.grep(am.childNodes);
-                for (ak = 0,aj = aa.length; ak < aj; ak++) {
-                    if (S(aa[ak], af, am, am)) {
-                        break
-                    }
-                }
-                if (ah.deep) {
-                    for (ak = 0,aj = al.length; ak < aj; ak++) {
-                        X(al[ak])
-                    }
-                }
-            }
-
-            function ab(aj) {
-                var ak;
-                M(l(aj.parentNode).reverse(), function(al) {
-                    var am;
-                    if (!ak && al.id != "_start" && al.id != "_end") {
-                        am = v(al, W, af);
-                        if (am && am.split !== false) {
-                            ak = al
-                        }
-                    }
-                });
                 return ak
             }
 
-            function U(am, aj, ao, ar) {
-                var at,aq,ap,al,an,ak;
-                if (am) {
-                    ak = am.parentNode;
-                    for (at = aj.parentNode; at && at != ak; at = at.parentNode) {
-                        aq = at.cloneNode(Q);
-                        for (an = 0; an < aa.length; an++) {
-                            if (S(aa[an], af, aq, aq)) {
-                                aq = 0;
+            function W(ak, aj) {
+                aj = aj || ag;
+                if (ak) {
+                    O(aj.styles, function(am, al) {
+                        c.setStyle(ak, al, r(am, af))
+                    });
+                    O(aj.attributes, function(am, al) {
+                        c.setAttrib(ak, al, r(am, af))
+                    });
+                    O(aj.classes, function(al) {
+                        al = r(al, af);
+                        if (!c.hasClass(ak, al)) {
+                            c.addClass(ak, al)
+                        }
+                    })
+                }
+            }
+
+            function ah(ak) {
+                var aj = [],am,al;
+                am = ag.inline || ag.block;
+                al = c.create(am);
+                W(al);
+                K.walk(ak, function(an) {
+                    var ao;
+
+                    function ap(aq) {
+                        var au = aq.nodeName.toLowerCase(),at = aq.parentNode.nodeName.toLowerCase(),ar;
+                        if (g(au, "br")) {
+                            ao = 0;
+                            if (ag.block) {
+                                c.remove(aq)
+                            }
+                            return
+                        }
+                        if (ag.wrapper && x(aq, Y, af)) {
+                            ao = 0;
+                            return
+                        }
+                        if (ag.block && !ag.wrapper && G(au)) {
+                            aq = c.rename(aq, am);
+                            W(aq);
+                            aj.push(aq);
+                            ao = 0;
+                            return
+                        }
+                        if (ag.selector) {
+                            O(ab, function(av) {
+                                if ("collapsed" in av && av.collapsed !== ac) {
+                                    return
+                                }
+                                if (c.is(aq, av.selector) && !b(aq)) {
+                                    W(aq, av);
+                                    ar = true
+                                }
+                            });
+                            if (!ag.inline || ar) {
+                                ao = 0;
+                                return
+                            }
+                        }
+                        if (d(am, au) && d(at, am) && !(aq.nodeType === 3 && aq.nodeValue.length === 1 && aq.nodeValue.charCodeAt(0) === 65279)) {
+                            if (!ao) {
+                                ao = al.cloneNode(S);
+                                aq.parentNode.insertBefore(ao, aq);
+                                aj.push(ao)
+                            }
+                            ao.appendChild(aq)
+                        } else {
+                            ao = 0;
+                            O(a.grep(aq.childNodes), ap);
+                            ao = 0
+                        }
+                    }
+
+                    O(an, ap)
+                });
+                if (ag.wrap_links === false) {
+                    O(aj, function(an) {
+                        function ao(at) {
+                            var ar,aq,ap;
+                            if (at.nodeName === "A") {
+                                aq = al.cloneNode(S);
+                                aj.push(aq);
+                                ap = a.grep(at.childNodes);
+                                for (ar = 0; ar < ap.length; ar++) {
+                                    aq.appendChild(ap[ar])
+                                }
+                                at.appendChild(aq)
+                            }
+                            O(a.grep(at.childNodes), ao)
+                        }
+
+                        ao(an)
+                    })
+                }
+                O(aj, function(ap) {
+                    var an;
+
+                    function aq(at) {
+                        var ar = 0;
+                        O(at.childNodes, function(au) {
+                            if (!f(au) && !H(au)) {
+                                ar++
+                            }
+                        });
+                        return ar
+                    }
+
+                    function ao(ar) {
+                        var au,at;
+                        O(ar.childNodes, function(av) {
+                            if (av.nodeType == 1 && !H(av) && !b(av)) {
+                                au = av;
+                                return S
+                            }
+                        });
+                        if (au && h(au, ag)) {
+                            at = au.cloneNode(S);
+                            W(at);
+                            c.replace(at, ar, B);
+                            c.remove(au, 1)
+                        }
+                        return at || ar
+                    }
+
+                    an = aq(ap);
+                    if ((aj.length > 1 || !F(ap)) && an === 0) {
+                        c.remove(ap, 1);
+                        return
+                    }
+                    if (ag.inline || ag.wrapper) {
+                        if (!ag.exact && an === 1) {
+                            ap = ao(ap)
+                        }
+                        O(ab, function(ar) {
+                            O(c.select(ar.inline, ap), function(au) {
+                                var at;
+                                if (ar.wrap_links === false) {
+                                    at = au.parentNode;
+                                    do{
+                                        if (at.nodeName === "A") {
+                                            return
+                                        }
+                                    } while (at = at.parentNode)
+                                }
+                                U(ar, af, au, ar.exact ? au : null)
+                            })
+                        });
+                        if (x(ap.parentNode, Y, af)) {
+                            c.remove(ap, 1);
+                            ap = 0;
+                            return B
+                        }
+                        if (ag.merge_with_parents) {
+                            c.getParent(ap.parentNode, function(ar) {
+                                if (x(ar, Y, af)) {
+                                    c.remove(ap, 1);
+                                    ap = 0;
+                                    return B
+                                }
+                            })
+                        }
+                        if (ap) {
+                            ap = u(C(ap), ap);
+                            ap = u(ap, C(ap, B))
+                        }
+                    }
+                })
+            }
+
+            if (ag) {
+                if (aa) {
+                    X = c.createRng();
+                    X.setStartBefore(aa);
+                    X.setEndAfter(aa);
+                    ah(o(X, ab))
+                } else {
+                    if (!ac || !ag.inline || c.select("td.mceSelected,th.mceSelected").length) {
+                        var ai = V.selection.getNode();
+                        ae = q.getBookmark();
+                        ah(o(q.getRng(B), ab));
+                        if (ag.styles && (ag.styles.color || ag.styles.textDecoration)) {
+                            a.walk(ai, I, "childNodes");
+                            I(ai)
+                        }
+                        q.moveToBookmark(ae);
+                        q.setRng(Z(q.getRng(B)));
+                        V.nodeChanged()
+                    } else {
+                        Q("apply", Y, af)
+                    }
+                }
+            }
+        }
+
+        function A(Y, ah, ab) {
+            var ac = R(Y),aj = ac[0],ag,af,X;
+
+            function aa(am) {
+                var al = am.startContainer,ar = am.startOffset,aq,ap,an,ao;
+                if (al.nodeType == 3 && ar >= al.nodeValue.length - 1) {
+                    al = al.parentNode;
+                    ar = s(al) + 1
+                }
+                if (al.nodeType == 1) {
+                    an = al.childNodes;
+                    al = an[Math.min(ar, an.length - 1)];
+                    aq = new t(al);
+                    if (ar > an.length - 1) {
+                        aq.next()
+                    }
+                    for (ap = aq.current(); ap; ap = aq.next()) {
+                        if (ap.nodeType == 3 && !f(ap)) {
+                            ao = c.create("a", null, E);
+                            ap.parentNode.insertBefore(ao, ap);
+                            am.setStart(ap, 0);
+                            q.setRng(am);
+                            c.remove(ao);
+                            return
+                        }
+                    }
+                }
+            }
+
+            function Z(ao) {
+                var an,am,al;
+                an = a.grep(ao.childNodes);
+                for (am = 0,al = ac.length; am < al; am++) {
+                    if (U(ac[am], ah, ao, ao)) {
+                        break
+                    }
+                }
+                if (aj.deep) {
+                    for (am = 0,al = an.length; am < al; am++) {
+                        Z(an[am])
+                    }
+                }
+            }
+
+            function ad(al) {
+                var am;
+                O(m(al.parentNode).reverse(), function(an) {
+                    var ao;
+                    if (!am && an.id != "_start" && an.id != "_end") {
+                        ao = x(an, Y, ah);
+                        if (ao && ao.split !== false) {
+                            am = an
+                        }
+                    }
+                });
+                return am
+            }
+
+            function W(ao, al, aq, au) {
+                var av,at,ar,an,ap,am;
+                if (ao) {
+                    am = ao.parentNode;
+                    for (av = al.parentNode; av && av != am; av = av.parentNode) {
+                        at = av.cloneNode(S);
+                        for (ap = 0; ap < ac.length; ap++) {
+                            if (U(ac[ap], ah, at, at)) {
+                                at = 0;
                                 break
                             }
                         }
-                        if (aq) {
-                            if (ap) {
-                                aq.appendChild(ap)
+                        if (at) {
+                            if (ar) {
+                                at.appendChild(ar)
                             }
-                            if (!al) {
-                                al = aq
+                            if (!an) {
+                                an = at
                             }
-                            ap = aq
+                            ar = at
                         }
                     }
-                    if (ar && (!ah.mixed || !E(am))) {
-                        aj = c.split(am, aj)
+                    if (au && (!aj.mixed || !F(ao))) {
+                        al = c.split(ao, al)
                     }
-                    if (ap) {
-                        ao.parentNode.insertBefore(ap, ao);
-                        al.appendChild(ao)
+                    if (ar) {
+                        aq.parentNode.insertBefore(ar, aq);
+                        an.appendChild(aq)
                     }
                 }
-                return aj
+                return al
             }
 
-            function ag(aj) {
-                return U(ab(aj), aj, aj, true)
+            function ai(al) {
+                return W(ad(al), al, al, true)
             }
 
-            function ac(al) {
-                var ak = c.get(al ? "_start" : "_end"),aj = ak[al ? "firstChild" : "lastChild"];
-                if (G(aj)) {
-                    aj = aj[al ? "firstChild" : "lastChild"]
+            function ae(an) {
+                var am = c.get(an ? "_start" : "_end"),al = am[an ? "firstChild" : "lastChild"];
+                if (H(al)) {
+                    al = al[an ? "firstChild" : "lastChild"]
                 }
-                c.remove(ak, true);
-                return aj
+                c.remove(am, true);
+                return al
             }
 
-            function ai(aj) {
-                var ak,al;
-                aj = n(aj, aa, A);
-                if (ah.split) {
-                    ak = H(aj, A);
-                    al = H(aj);
-                    if (ak != al) {
-                        ak = L(ak, "span", {id:"_start","data-mce-type":"bookmark"});
-                        al = L(al, "span", {id:"_end","data-mce-type":"bookmark"});
-                        ag(ak);
-                        ag(al);
-                        ak = ac(A);
-                        al = ac()
+            function ak(al) {
+                var am,an;
+                al = o(al, ac, B);
+                if (aj.split) {
+                    am = J(al, B);
+                    an = J(al);
+                    if (am != an) {
+                        am = N(am, "span", {id:"_start","data-mce-type":"bookmark"});
+                        an = N(an, "span", {id:"_end","data-mce-type":"bookmark"});
+                        ai(am);
+                        ai(an);
+                        am = ae(B);
+                        an = ae()
                     } else {
-                        ak = al = ag(ak)
+                        am = an = ai(am)
                     }
-                    aj.startContainer = ak.parentNode;
-                    aj.startOffset = r(ak);
-                    aj.endContainer = al.parentNode;
-                    aj.endOffset = r(al) + 1
+                    al.startContainer = am.parentNode;
+                    al.startOffset = s(am);
+                    al.endContainer = an.parentNode;
+                    al.endOffset = s(an) + 1
                 }
-                I.walk(aj, function(am) {
-                    M(am, function(an) {
-                        X(an)
+                K.walk(al, function(ao) {
+                    O(ao, function(ap) {
+                        Z(ap);
+                        if (ap.nodeType === 1 && V.dom.getStyle(ap, "text-decoration") === "underline" && ap.parentNode && i(ap.parentNode) === "underline") {
+                            U({deep:false,exact:true,inline:"span",styles:{textDecoration:"underline"}}, null, ap)
+                        }
                     })
                 })
             }
 
-            if (Z) {
-                V = c.createRng();
-                V.setStartBefore(Z);
-                V.setEndAfter(Z);
-                ai(V);
+            if (ab) {
+                X = c.createRng();
+                X.setStartBefore(ab);
+                X.setEndAfter(ab);
+                ak(X);
                 return
             }
-            if (!p.isCollapsed() || !ah.inline || c.select("td.mceSelected,th.mceSelected").length) {
-                ae = p.getBookmark();
-                ai(p.getRng(A));
-                p.moveToBookmark(ae);
-                if (i(W, af, p.getStart())) {
-                    Y(p.getRng(true))
+            if (!q.isCollapsed() || !aj.inline || c.select("td.mceSelected,th.mceSelected").length) {
+                ag = q.getBookmark();
+                ak(q.getRng(B));
+                q.moveToBookmark(ag);
+                if (j(Y, ah, q.getStart())) {
+                    aa(q.getRng(true))
                 }
-                T.nodeChanged()
+                V.nodeChanged()
             } else {
-                O("remove", W, af)
+                Q("remove", Y, ah)
             }
         }
 
-        function C(U, W, V) {
-            if (i(U, W, V)) {
-                z(U, W, V)
+        function D(X, Z, Y) {
+            var W = R(X);
+            if (j(X, Z, Y) && (!("toggle" in W[0]) || W[0]["toggle"])) {
+                A(X, Z, Y)
             } else {
-                R(U, W, V)
+                T(X, Z, Y)
             }
         }
 
-        function v(V, U, aa, Y) {
-            var W = P(U),ab,Z,X;
+        function x(X, W, ac, aa) {
+            var Y = R(W),ad,ab,Z;
 
-            function ac(ag, ai, aj) {
-                var af,ah,ad = ai[aj],ae;
-                if (ad) {
-                    if (ad.length === o) {
-                        for (af in ad) {
-                            if (ad.hasOwnProperty(af)) {
-                                if (aj === "attributes") {
-                                    ah = c.getAttrib(ag, af)
+            function ae(ai, ak, al) {
+                var ah,aj,af = ak[al],ag;
+                if (af) {
+                    if (af.length === p) {
+                        for (ah in af) {
+                            if (af.hasOwnProperty(ah)) {
+                                if (al === "attributes") {
+                                    aj = c.getAttrib(ai, ah)
                                 } else {
-                                    ah = J(ag, af)
+                                    aj = L(ai, ah)
                                 }
-                                if (Y && !ah && !ai.exact) {
+                                if (aa && !aj && !ak.exact) {
                                     return
                                 }
-                                if ((!Y || ai.exact) && !g(ah, q(ad[af], aa))) {
+                                if ((!aa || ak.exact) && !g(aj, r(af[ah], ac))) {
                                     return
                                 }
                             }
                         }
                     } else {
-                        for (ae = 0; ae < ad.length; ae++) {
-                            if (aj === "attributes" ? c.getAttrib(ag, ad[ae]) : J(ag, ad[ae])) {
-                                return ai
+                        for (ag = 0; ag < af.length; ag++) {
+                            if (al === "attributes" ? c.getAttrib(ai, af[ag]) : L(ai, af[ag])) {
+                                return ak
                             }
                         }
                     }
                 }
-                return ai
+                return ak
             }
 
-            if (W && V) {
-                for (Z = 0; Z < W.length; Z++) {
-                    ab = W[Z];
-                    if (h(V, ab) && ac(V, ab, "attributes") && ac(V, ab, "styles")) {
-                        if (X = ab.classes) {
-                            for (Z = 0; Z < X.length; Z++) {
-                                if (!c.hasClass(V, X[Z])) {
+            if (Y && X) {
+                for (ab = 0; ab < Y.length; ab++) {
+                    ad = Y[ab];
+                    if (h(X, ad) && ae(X, ad, "attributes") && ae(X, ad, "styles")) {
+                        if (Z = ad.classes) {
+                            for (ab = 0; ab < Z.length; ab++) {
+                                if (!c.hasClass(X, Z[ab])) {
                                     return
                                 }
                             }
                         }
-                        return ab
+                        return ad
                     }
                 }
             }
         }
 
-        function i(W, Z, Y) {
-            var V,X;
+        function j(Y, ab, aa) {
+            var X,Z;
 
-            function U(aa) {
-                aa = c.getParent(aa, function(ab) {
-                    return !!v(ab, W, Z, true)
+            function W(ac) {
+                ac = c.getParent(ac, function(ad) {
+                    return !!x(ad, Y, ab, true)
                 });
-                return v(aa, W, Z)
+                return x(ac, Y, ab)
             }
 
-            if (Y) {
-                return U(Y)
+            if (aa) {
+                return W(aa)
             }
-            if (p.isCollapsed()) {
-                for (X = N.apply.length - 1; X >= 0; X--) {
-                    if (N.apply[X].name == W) {
+            if (q.isCollapsed()) {
+                for (Z = P.apply.length - 1; Z >= 0; Z--) {
+                    if (P.apply[Z].name == Y) {
                         return true
                     }
                 }
-                for (X = N.remove.length - 1; X >= 0; X--) {
-                    if (N.remove[X].name == W) {
+                for (Z = P.remove.length - 1; Z >= 0; Z--) {
+                    if (P.remove[Z].name == Y) {
                         return false
                     }
                 }
-                return U(p.getNode())
+                return W(q.getNode())
             }
-            Y = p.getNode();
-            if (U(Y)) {
-                return A
+            aa = q.getNode();
+            if (W(aa)) {
+                return B
             }
-            V = p.getStart();
-            if (V != Y) {
-                if (U(V)) {
-                    return A
+            X = q.getStart();
+            if (X != aa) {
+                if (W(X)) {
+                    return B
                 }
             }
-            return Q
+            return S
         }
 
-        function u(ab, aa) {
-            var Y,Z = [],X = {},W,V,U;
-            if (p.isCollapsed()) {
-                for (V = 0; V < ab.length; V++) {
-                    for (W = N.remove.length - 1; W >= 0; W--) {
-                        U = ab[V];
-                        if (N.remove[W].name == U) {
-                            X[U] = true;
+        function v(ad, ac) {
+            var aa,ab = [],Z = {},Y,X,W;
+            if (q.isCollapsed()) {
+                for (X = 0; X < ad.length; X++) {
+                    for (Y = P.remove.length - 1; Y >= 0; Y--) {
+                        W = ad[X];
+                        if (P.remove[Y].name == W) {
+                            Z[W] = true;
                             break
                         }
                     }
                 }
-                for (W = N.apply.length - 1; W >= 0; W--) {
-                    for (V = 0; V < ab.length; V++) {
-                        U = ab[V];
-                        if (!X[U] && N.apply[W].name == U) {
-                            X[U] = true;
-                            Z.push(U)
+                for (Y = P.apply.length - 1; Y >= 0; Y--) {
+                    for (X = 0; X < ad.length; X++) {
+                        W = ad[X];
+                        if (!Z[W] && P.apply[Y].name == W) {
+                            Z[W] = true;
+                            ab.push(W)
                         }
                     }
                 }
             }
-            Y = p.getStart();
-            c.getParent(Y, function(ae) {
-                var ad,ac;
-                for (ad = 0; ad < ab.length; ad++) {
-                    ac = ab[ad];
-                    if (!X[ac] && v(ae, ac, aa)) {
-                        X[ac] = true;
-                        Z.push(ac)
+            aa = q.getStart();
+            c.getParent(aa, function(ag) {
+                var af,ae;
+                for (af = 0; af < ad.length; af++) {
+                    ae = ad[af];
+                    if (!Z[ae] && x(ag, ae, ac)) {
+                        Z[ae] = true;
+                        ab.push(ae)
                     }
                 }
             });
-            return Z
+            return ab
         }
 
-        function x(Y) {
-            var aa = P(Y),X,W,Z,V,U;
-            if (aa) {
-                X = p.getStart();
-                W = l(X);
-                for (V = aa.length - 1; V >= 0; V--) {
-                    U = aa[V].selector;
-                    if (!U) {
-                        return A
+        function y(aa) {
+            var ac = R(aa),Z,Y,ab,X,W;
+            if (ac) {
+                Z = q.getStart();
+                Y = m(Z);
+                for (X = ac.length - 1; X >= 0; X--) {
+                    W = ac[X].selector;
+                    if (!W) {
+                        return B
                     }
-                    for (Z = W.length - 1; Z >= 0; Z--) {
-                        if (c.is(W[Z], U)) {
-                            return A
+                    for (ab = Y.length - 1; ab >= 0; ab--) {
+                        if (c.is(Y[ab], W)) {
+                            return B
                         }
                     }
                 }
             }
-            return Q
+            return S
         }
 
-        a.extend(this, {get:P,register:j,apply:R,remove:z,toggle:C,match:i,matchAll:u,matchNode:v,canApply:x});
-        function h(U, V) {
-            if (g(U, V.inline)) {
-                return A
+        a.extend(this, {get:R,register:k,apply:T,remove:A,toggle:D,match:j,matchAll:v,matchNode:x,canApply:y});
+        function h(W, X) {
+            if (g(W, X.inline)) {
+                return B
             }
-            if (g(U, V.block)) {
-                return A
+            if (g(W, X.block)) {
+                return B
             }
-            if (V.selector) {
-                return c.is(U, V.selector)
+            if (X.selector) {
+                return c.is(W, X.selector)
             }
         }
 
-        function g(V, U) {
-            V = V || "";
-            U = U || "";
-            V = "" + (V.nodeName || V);
-            U = "" + (U.nodeName || U);
-            return V.toLowerCase() == U.toLowerCase()
+        function g(X, W) {
+            X = X || "";
+            W = W || "";
+            X = "" + (X.nodeName || X);
+            W = "" + (W.nodeName || W);
+            return X.toLowerCase() == W.toLowerCase()
         }
 
-        function J(V, U) {
-            var W = c.getStyle(V, U);
-            if (U == "color" || U == "backgroundColor") {
-                W = c.toHex(W)
+        function L(X, W) {
+            var Y = c.getStyle(X, W);
+            if (W == "color" || W == "backgroundColor") {
+                Y = c.toHex(Y)
             }
-            if (U == "fontWeight" && W == 700) {
-                W = "bold"
+            if (W == "fontWeight" && Y == 700) {
+                Y = "bold"
             }
-            return"" + W
+            return"" + Y
         }
 
-        function q(U, V) {
-            if (typeof(U) != "string") {
-                U = U(V)
+        function r(W, X) {
+            if (typeof(W) != "string") {
+                W = W(X)
             } else {
-                if (V) {
-                    U = U.replace(/%(\w+)/g, function(X, W) {
-                        return V[W] || X
+                if (X) {
+                    W = W.replace(/%(\w+)/g, function(Z, Y) {
+                        return X[Y] || Z
                     })
                 }
             }
-            return U
+            return W
         }
 
-        function f(U) {
-            return U && U.nodeType === 3 && /^([\s\r\n]+|)$/.test(U.nodeValue)
+        function f(W) {
+            return W && W.nodeType === 3 && /^([\s\r\n]+|)$/.test(W.nodeValue)
         }
 
-        function L(W, V, U) {
-            var X = c.create(V, U);
-            W.parentNode.insertBefore(X, W);
-            X.appendChild(W);
-            return X
+        function N(Y, X, W) {
+            var Z = c.create(X, W);
+            Y.parentNode.insertBefore(Z, Y);
+            Z.appendChild(Y);
+            return Z
         }
 
-        function n(U, ac, X) {
-            var W = U.startContainer,Z = U.startOffset,af = U.endContainer,aa = U.endOffset,ae,ab;
+        function o(W, ag, Z) {
+            var Y = W.startContainer,ad = W.startOffset,aj = W.endContainer,ae = W.endOffset,ai,af,ac;
 
-            function ad(ai, aj, ag, ah) {
-                var ak,al;
-                ah = ah || c.getRoot();
+            function ah(am, an, ak, al) {
+                var ao,ap;
+                al = al || c.getRoot();
                 for (; ;) {
-                    ak = ai.parentNode;
-                    if (ak == ah || (!ac[0].block_expand && E(ak))) {
-                        return ai
+                    ao = am.parentNode;
+                    if (ao == al || (!ag[0].block_expand && F(ao))) {
+                        return am
                     }
-                    for (ae = ak[aj]; ae && ae != ai; ae = ae[ag]) {
-                        if (ae.nodeType == 1 && !G(ae)) {
-                            return ai
+                    for (ai = ao[an]; ai && ai != am; ai = ai[ak]) {
+                        if (ai.nodeType == 1 && !H(ai)) {
+                            return am
                         }
-                        if (ae.nodeType == 3 && !f(ae)) {
-                            return ai
+                        if (ai.nodeType == 3 && !f(ai)) {
+                            return am
                         }
                     }
-                    ai = ai.parentNode
+                    am = am.parentNode
                 }
-                return ai
+                return am
             }
 
-            if (W.nodeType == 1 && W.hasChildNodes()) {
-                ab = W.childNodes.length - 1;
-                W = W.childNodes[Z > ab ? ab : Z];
-                if (W.nodeType == 3) {
-                    Z = 0
+            function ab(ak, al) {
+                if (al === p) {
+                    al = ak.nodeType === 3 ? ak.length : ak.childNodes.length
                 }
-            }
-            if (af.nodeType == 1 && af.hasChildNodes()) {
-                ab = af.childNodes.length - 1;
-                af = af.childNodes[aa > ab ? ab : aa - 1];
-                if (af.nodeType == 3) {
-                    aa = af.nodeValue.length
-                }
-            }
-            if (G(W.parentNode)) {
-                W = W.parentNode
-            }
-            if (G(W)) {
-                W = W.nextSibling || W
-            }
-            if (G(af.parentNode)) {
-                af = af.parentNode
-            }
-            if (G(af)) {
-                af = af.previousSibling || af
-            }
-            if (ac[0].inline || ac[0].block_expand) {
-                W = ad(W, "firstChild", "nextSibling");
-                af = ad(af, "lastChild", "previousSibling")
-            }
-            if (ac[0].selector && ac[0].expand !== Q && !ac[0].inline) {
-                function Y(ah, ag) {
-                    var ai,aj,al,ak;
-                    if (ah.nodeType == 3 && ah.nodeValue.length == 0 && ah[ag]) {
-                        ah = ah[ag]
+                while (ak && ak.hasChildNodes()) {
+                    ak = ak.childNodes[al];
+                    if (ak) {
+                        al = ak.nodeType === 3 ? ak.length : ak.childNodes.length
                     }
-                    ai = l(ah);
-                    for (aj = 0; aj < ai.length; aj++) {
-                        for (al = 0; al < ac.length; al++) {
-                            ak = ac[al];
-                            if ("collapsed" in ak && ak.collapsed !== U.collapsed) {
+                }
+                return{node:ak,offset:al}
+            }
+
+            if (Y.nodeType == 1 && Y.hasChildNodes()) {
+                af = Y.childNodes.length - 1;
+                Y = Y.childNodes[ad > af ? af : ad];
+                if (Y.nodeType == 3) {
+                    ad = 0
+                }
+            }
+            if (aj.nodeType == 1 && aj.hasChildNodes()) {
+                af = aj.childNodes.length - 1;
+                aj = aj.childNodes[ae > af ? af : ae - 1];
+                if (aj.nodeType == 3) {
+                    ae = aj.nodeValue.length
+                }
+            }
+            if (H(Y.parentNode)) {
+                Y = Y.parentNode
+            }
+            if (H(Y)) {
+                Y = Y.nextSibling || Y
+            }
+            if (H(aj.parentNode)) {
+                ae = c.nodeIndex(aj);
+                aj = aj.parentNode
+            }
+            if (H(aj) && aj.previousSibling) {
+                aj = aj.previousSibling;
+                ae = aj.length
+            }
+            if (ag[0].inline) {
+                ac = ab(aj, ae);
+                if (ac.node) {
+                    while (ac.node && ac.offset === 0 && ac.node.previousSibling) {
+                        ac = ab(ac.node.previousSibling)
+                    }
+                    if (ac.node && ac.offset > 0 && ac.node.nodeType === 3 && ac.node.nodeValue.charAt(ac.offset - 1) === " ") {
+                        if (ac.offset > 1) {
+                            aj = ac.node;
+                            aj.splitText(ac.offset - 1)
+                        } else {
+                            if (ac.node.previousSibling) {
+                                aj = ac.node.previousSibling
+                            }
+                        }
+                    }
+                }
+            }
+            if (ag[0].inline || ag[0].block_expand) {
+                Y = ah(Y, "firstChild", "nextSibling");
+                aj = ah(aj, "lastChild", "previousSibling")
+            }
+            if (ag[0].selector && ag[0].expand !== S && !ag[0].inline) {
+                function aa(al, ak) {
+                    var am,an,ap,ao;
+                    if (al.nodeType == 3 && al.nodeValue.length == 0 && al[ak]) {
+                        al = al[ak]
+                    }
+                    am = m(al);
+                    for (an = 0; an < am.length; an++) {
+                        for (ap = 0; ap < ag.length; ap++) {
+                            ao = ag[ap];
+                            if ("collapsed" in ao && ao.collapsed !== W.collapsed) {
                                 continue
                             }
-                            if (c.is(ai[aj], ak.selector)) {
-                                return ai[aj]
+                            if (c.is(am[an], ao.selector)) {
+                                return am[an]
                             }
                         }
                     }
-                    return ah
+                    return al
                 }
 
-                W = Y(W, "previousSibling");
-                af = Y(af, "nextSibling")
+                Y = aa(Y, "previousSibling");
+                aj = aa(aj, "nextSibling")
             }
-            if (ac[0].block || ac[0].selector) {
-                function V(ah, ag, aj) {
-                    var ai;
-                    if (!ac[0].wrapper) {
-                        ai = c.getParent(ah, ac[0].block)
+            if (ag[0].block || ag[0].selector) {
+                function X(al, ak, an) {
+                    var am;
+                    if (!ag[0].wrapper) {
+                        am = c.getParent(al, ag[0].block)
                     }
-                    if (!ai) {
-                        ai = c.getParent(ah.nodeType == 3 ? ah.parentNode : ah, E)
+                    if (!am) {
+                        am = c.getParent(al.nodeType == 3 ? al.parentNode : al, F)
                     }
-                    if (ai && ac[0].wrapper) {
-                        ai = l(ai, "ul,ol").reverse()[0] || ai
+                    if (am && ag[0].wrapper) {
+                        am = m(am, "ul,ol").reverse()[0] || am
                     }
-                    if (!ai) {
-                        ai = ah;
-                        while (ai[ag] && !E(ai[ag])) {
-                            ai = ai[ag];
-                            if (g(ai, "br")) {
+                    if (!am) {
+                        am = al;
+                        while (am[ak] && !F(am[ak])) {
+                            am = am[ak];
+                            if (g(am, "br")) {
                                 break
                             }
                         }
                     }
-                    return ai || ah
+                    return am || al
                 }
 
-                W = V(W, "previousSibling");
-                af = V(af, "nextSibling");
-                if (ac[0].block) {
-                    if (!E(W)) {
-                        W = ad(W, "firstChild", "nextSibling")
+                Y = X(Y, "previousSibling");
+                aj = X(aj, "nextSibling");
+                if (ag[0].block) {
+                    if (!F(Y)) {
+                        Y = ah(Y, "firstChild", "nextSibling")
                     }
-                    if (!E(af)) {
-                        af = ad(af, "lastChild", "previousSibling")
+                    if (!F(aj)) {
+                        aj = ah(aj, "lastChild", "previousSibling")
                     }
                 }
             }
-            if (W.nodeType == 1) {
-                Z = r(W);
-                W = W.parentNode
+            if (Y.nodeType == 1) {
+                ad = s(Y);
+                Y = Y.parentNode
             }
-            if (af.nodeType == 1) {
-                aa = r(af) + 1;
-                af = af.parentNode
+            if (aj.nodeType == 1) {
+                ae = s(aj) + 1;
+                aj = aj.parentNode
             }
-            return{startContainer:W,startOffset:Z,endContainer:af,endOffset:aa}
+            return{startContainer:Y,startOffset:ad,endContainer:aj,endOffset:ae}
         }
 
-        function S(aa, Z, X, U) {
-            var W,V,Y;
-            if (!h(X, aa)) {
-                return Q
+        function U(ac, ab, Z, W) {
+            var Y,X,aa;
+            if (!h(Z, ac)) {
+                return S
             }
-            if (aa.remove != "all") {
-                M(aa.styles, function(ac, ab) {
-                    ac = q(ac, Z);
-                    if (typeof(ab) === "number") {
-                        ab = ac;
-                        U = 0
+            if (ac.remove != "all") {
+                O(ac.styles, function(ae, ad) {
+                    ae = r(ae, ab);
+                    if (typeof(ad) === "number") {
+                        ad = ae;
+                        W = 0
                     }
-                    if (!U || g(J(U, ab), ac)) {
-                        c.setStyle(X, ab, "")
+                    if (!W || g(L(W, ad), ae)) {
+                        c.setStyle(Z, ad, "")
                     }
-                    Y = 1
+                    aa = 1
                 });
-                if (Y && c.getAttrib(X, "style") == "") {
-                    X.removeAttribute("style");
-                    X.removeAttribute("data-mce-style")
+                if (aa && c.getAttrib(Z, "style") == "") {
+                    Z.removeAttribute("style");
+                    Z.removeAttribute("data-mce-style")
                 }
-                M(aa.attributes, function(ad, ab) {
-                    var ac;
-                    ad = q(ad, Z);
-                    if (typeof(ab) === "number") {
-                        ab = ad;
-                        U = 0
+                O(ac.attributes, function(af, ad) {
+                    var ae;
+                    af = r(af, ab);
+                    if (typeof(ad) === "number") {
+                        ad = af;
+                        W = 0
                     }
-                    if (!U || g(c.getAttrib(U, ab), ad)) {
-                        if (ab == "class") {
-                            ad = c.getAttrib(X, ab);
-                            if (ad) {
-                                ac = "";
-                                M(ad.split(/\s+/), function(ae) {
-                                    if (/mce\w+/.test(ae)) {
-                                        ac += (ac ? " " : "") + ae
+                    if (!W || g(c.getAttrib(W, ad), af)) {
+                        if (ad == "class") {
+                            af = c.getAttrib(Z, ad);
+                            if (af) {
+                                ae = "";
+                                O(af.split(/\s+/), function(ag) {
+                                    if (/mce\w+/.test(ag)) {
+                                        ae += (ae ? " " : "") + ag
                                     }
                                 });
-                                if (ac) {
-                                    c.setAttrib(X, ab, ac);
+                                if (ae) {
+                                    c.setAttrib(Z, ad, ae);
                                     return
                                 }
                             }
                         }
-                        if (ab == "class") {
-                            X.removeAttribute("className")
+                        if (ad == "class") {
+                            Z.removeAttribute("className")
                         }
-                        if (e.test(ab)) {
-                            X.removeAttribute("data-mce-" + ab)
+                        if (e.test(ad)) {
+                            Z.removeAttribute("data-mce-" + ad)
                         }
-                        X.removeAttribute(ab)
+                        Z.removeAttribute(ad)
                     }
                 });
-                M(aa.classes, function(ab) {
-                    ab = q(ab, Z);
-                    if (!U || c.hasClass(U, ab)) {
-                        c.removeClass(X, ab)
+                O(ac.classes, function(ad) {
+                    ad = r(ad, ab);
+                    if (!W || c.hasClass(W, ad)) {
+                        c.removeClass(Z, ad)
                     }
                 });
-                V = c.getAttribs(X);
-                for (W = 0; W < V.length; W++) {
-                    if (V[W].nodeName.indexOf("_") !== 0) {
-                        return Q
+                X = c.getAttribs(Z);
+                for (Y = 0; Y < X.length; Y++) {
+                    if (X[Y].nodeName.indexOf("_") !== 0) {
+                        return S
                     }
                 }
             }
-            if (aa.remove != "none") {
-                m(X, aa);
-                return A
+            if (ac.remove != "none") {
+                n(Z, ac);
+                return B
             }
         }
 
-        function m(W, X) {
-            var U = W.parentNode,V;
-            if (X.block) {
-                if (!k) {
-                    function Y(aa, Z, ab) {
-                        aa = B(aa, Z, ab);
-                        return !aa || (aa.nodeName == "BR" || E(aa))
+        function n(Y, Z) {
+            var W = Y.parentNode,X;
+            if (Z.block) {
+                if (!l) {
+                    function aa(ac, ab, ad) {
+                        ac = C(ac, ab, ad);
+                        return !ac || (ac.nodeName == "BR" || F(ac))
                     }
 
-                    if (E(W) && !E(U)) {
-                        if (!Y(W, Q) && !Y(W.firstChild, A, 1)) {
-                            W.insertBefore(c.create("br"), W.firstChild)
+                    if (F(Y) && !F(W)) {
+                        if (!aa(Y, S) && !aa(Y.firstChild, B, 1)) {
+                            Y.insertBefore(c.create("br"), Y.firstChild)
                         }
-                        if (!Y(W, A) && !Y(W.lastChild, Q, 1)) {
-                            W.appendChild(c.create("br"))
+                        if (!aa(Y, B) && !aa(Y.lastChild, S, 1)) {
+                            Y.appendChild(c.create("br"))
                         }
                     }
                 } else {
-                    if (U == c.getRoot()) {
-                        if (!X.list_block || !g(W, X.list_block)) {
-                            M(a.grep(W.childNodes), function(Z) {
-                                if (d(k, Z.nodeName.toLowerCase())) {
-                                    if (!V) {
-                                        V = L(Z, k)
+                    if (W == c.getRoot()) {
+                        if (!Z.list_block || !g(Y, Z.list_block)) {
+                            O(a.grep(Y.childNodes), function(ab) {
+                                if (d(l, ab.nodeName.toLowerCase())) {
+                                    if (!X) {
+                                        X = N(ab, l)
                                     } else {
-                                        V.appendChild(Z)
+                                        X.appendChild(ab)
                                     }
                                 } else {
-                                    V = 0
+                                    X = 0
                                 }
                             })
                         }
                     }
                 }
             }
-            if (X.selector && X.inline && !g(X.inline, W)) {
+            if (Z.selector && Z.inline && !g(Z.inline, Y)) {
                 return
             }
-            c.remove(W, 1)
+            c.remove(Y, 1)
         }
 
-        function B(V, U, W) {
-            if (V) {
-                U = U ? "nextSibling" : "previousSibling";
-                for (V = W ? V : V[U]; V; V = V[U]) {
-                    if (V.nodeType == 1 || !f(V)) {
-                        return V
+        function C(X, W, Y) {
+            if (X) {
+                W = W ? "nextSibling" : "previousSibling";
+                for (X = Y ? X : X[W]; X; X = X[W]) {
+                    if (X.nodeType == 1 || !f(X)) {
+                        return X
                     }
                 }
             }
         }
 
-        function G(U) {
-            return U && U.nodeType == 1 && U.getAttribute("data-mce-type") == "bookmark"
+        function H(W) {
+            return W && W.nodeType == 1 && W.getAttribute("data-mce-type") == "bookmark"
         }
 
-        function t(Y, X) {
-            var U,W,V;
+        function u(aa, Z) {
+            var W,Y,X;
 
-            function aa(ad, ac) {
-                if (ad.nodeName != ac.nodeName) {
-                    return Q
+            function ac(af, ae) {
+                if (af.nodeName != ae.nodeName) {
+                    return S
                 }
-                function ab(af) {
-                    var ag = {};
-                    M(c.getAttribs(af), function(ah) {
-                        var ai = ah.nodeName.toLowerCase();
-                        if (ai.indexOf("_") !== 0 && ai !== "style") {
-                            ag[ai] = c.getAttrib(af, ai)
+                function ad(ah) {
+                    var ai = {};
+                    O(c.getAttribs(ah), function(aj) {
+                        var ak = aj.nodeName.toLowerCase();
+                        if (ak.indexOf("_") !== 0 && ak !== "style") {
+                            ai[ak] = c.getAttrib(ah, ak)
                         }
                     });
-                    return ag
+                    return ai
                 }
 
-                function ae(ai, ah) {
-                    var ag,af;
-                    for (af in ai) {
-                        if (ai.hasOwnProperty(af)) {
-                            ag = ah[af];
-                            if (ag === o) {
-                                return Q
+                function ag(ak, aj) {
+                    var ai,ah;
+                    for (ah in ak) {
+                        if (ak.hasOwnProperty(ah)) {
+                            ai = aj[ah];
+                            if (ai === p) {
+                                return S
                             }
-                            if (ai[af] != ag) {
-                                return Q
+                            if (ak[ah] != ai) {
+                                return S
                             }
-                            delete ah[af]
+                            delete aj[ah]
                         }
                     }
-                    for (af in ah) {
-                        if (ah.hasOwnProperty(af)) {
-                            return Q
+                    for (ah in aj) {
+                        if (aj.hasOwnProperty(ah)) {
+                            return S
                         }
                     }
-                    return A
+                    return B
                 }
 
-                if (!ae(ab(ad), ab(ac))) {
-                    return Q
+                if (!ag(ad(af), ad(ae))) {
+                    return S
                 }
-                if (!ae(c.parseStyle(c.getAttrib(ad, "style")), c.parseStyle(c.getAttrib(ac, "style")))) {
-                    return Q
+                if (!ag(c.parseStyle(c.getAttrib(af, "style")), c.parseStyle(c.getAttrib(ae, "style")))) {
+                    return S
                 }
-                return A
+                return B
             }
 
-            if (Y && X) {
-                function Z(ac, ab) {
-                    for (W = ac; W; W = W[ab]) {
-                        if (W.nodeType == 3 && W.nodeValue.length !== 0) {
-                            return ac
+            if (aa && Z) {
+                function ab(ae, ad) {
+                    for (Y = ae; Y; Y = Y[ad]) {
+                        if (Y.nodeType == 3 && Y.nodeValue.length !== 0) {
+                            return ae
                         }
-                        if (W.nodeType == 1 && !G(W)) {
-                            return W
+                        if (Y.nodeType == 1 && !H(Y)) {
+                            return Y
                         }
                     }
-                    return ac
+                    return ae
                 }
 
-                Y = Z(Y, "previousSibling");
-                X = Z(X, "nextSibling");
-                if (aa(Y, X)) {
-                    for (W = Y.nextSibling; W && W != X;) {
-                        V = W;
-                        W = W.nextSibling;
-                        Y.appendChild(V)
+                aa = ab(aa, "previousSibling");
+                Z = ab(Z, "nextSibling");
+                if (ac(aa, Z)) {
+                    for (Y = aa.nextSibling; Y && Y != Z;) {
+                        X = Y;
+                        Y = Y.nextSibling;
+                        aa.appendChild(X)
                     }
-                    c.remove(X);
-                    M(a.grep(X.childNodes), function(ab) {
-                        Y.appendChild(ab)
+                    c.remove(Z);
+                    O(a.grep(Z.childNodes), function(ad) {
+                        aa.appendChild(ad)
                     });
-                    return Y
+                    return aa
                 }
             }
-            return X
+            return Z
         }
 
-        function F(U) {
-            return/^(h[1-6]|p|div|pre|address|dl|dt|dd)$/.test(U)
+        function G(W) {
+            return/^(h[1-6]|p|div|pre|address|dl|dt|dd)$/.test(W)
         }
 
-        function H(V, Y) {
-            var U,X,W;
-            U = V[Y ? "startContainer" : "endContainer"];
-            X = V[Y ? "startOffset" : "endOffset"];
-            if (U.nodeType == 1) {
-                W = U.childNodes.length - 1;
-                if (!Y && X) {
-                    X--
+        function J(X, aa) {
+            var W,Z,Y;
+            W = X[aa ? "startContainer" : "endContainer"];
+            Z = X[aa ? "startOffset" : "endOffset"];
+            if (W.nodeType == 1) {
+                Y = W.childNodes.length - 1;
+                if (!aa && Z) {
+                    Z--
                 }
-                U = U.childNodes[X > W ? W : X]
+                W = W.childNodes[Z > Y ? Y : Z]
             }
-            return U
+            return W
         }
 
-        function O(Z, V, Y) {
-            var W,U = N[Z],aa = N[Z == "apply" ? "remove" : "apply"];
+        function Q(ab, X, aa) {
+            var Y,W = P[ab],ac = P[ab == "apply" ? "remove" : "apply"];
 
-            function ab() {
-                return N.apply.length || N.remove.length
+            function ad() {
+                return P.apply.length || P.remove.length
             }
 
-            function X() {
-                N.apply = [];
-                N.remove = []
+            function Z() {
+                P.apply = [];
+                P.remove = []
             }
 
-            function ac(ad) {
-                M(N.apply.reverse(), function(ae) {
-                    R(ae.name, ae.vars, ad)
+            function ae(af) {
+                O(P.apply.reverse(), function(ag) {
+                    T(ag.name, ag.vars, af);
+                    if (ag.name === "forecolor" && ag.vars.value) {
+                        I(af.parentNode)
+                    }
                 });
-                M(N.remove.reverse(), function(ae) {
-                    z(ae.name, ae.vars, ad)
+                O(P.remove.reverse(), function(ag) {
+                    A(ag.name, ag.vars, af)
                 });
-                c.remove(ad, 1);
-                X()
+                c.remove(af, 1);
+                Z()
             }
 
-            for (W = U.length - 1; W >= 0; W--) {
-                if (U[W].name == V) {
+            for (Y = W.length - 1; Y >= 0; Y--) {
+                if (W[Y].name == X) {
                     return
                 }
             }
-            U.push({name:V,vars:Y});
-            for (W = aa.length - 1; W >= 0; W--) {
-                if (aa[W].name == V) {
-                    aa.splice(W, 1)
+            W.push({name:X,vars:aa});
+            for (Y = ac.length - 1; Y >= 0; Y--) {
+                if (ac[Y].name == X) {
+                    ac.splice(Y, 1)
                 }
             }
-            if (ab()) {
-                T.getDoc().execCommand("FontName", false, "mceinline");
-                N.lastRng = p.getRng();
-                M(c.select("font,span"), function(ae) {
-                    var ad;
-                    if (b(ae)) {
-                        ad = p.getBookmark();
-                        ac(ae);
-                        p.moveToBookmark(ad);
-                        T.nodeChanged()
+            if (ad()) {
+                V.getDoc().execCommand("FontName", false, "mceinline");
+                P.lastRng = q.getRng();
+                O(c.select("font,span"), function(ag) {
+                    var af;
+                    if (b(ag)) {
+                        af = q.getBookmark();
+                        ae(ag);
+                        q.moveToBookmark(af);
+                        V.nodeChanged()
                     }
                 });
-                if (!N.isListening && ab()) {
-                    N.isListening = true;
-                    M("onKeyDown,onKeyUp,onKeyPress,onMouseUp".split(","), function(ad) {
-                        T[ad].addToTop(function(ae, af) {
-                            if (ab() && !a.dom.RangeUtils.compareRanges(N.lastRng, p.getRng())) {
-                                M(c.select("font,span"), function(ah) {
-                                    var ai,ag;
-                                    if (b(ah)) {
-                                        ai = ah.firstChild;
-                                        if (ai) {
-                                            ac(ah);
-                                            ag = c.createRng();
-                                            ag.setStart(ai, ai.nodeValue.length);
-                                            ag.setEnd(ai, ai.nodeValue.length);
-                                            p.setRng(ag);
-                                            ae.nodeChanged()
+                if (!P.isListening && ad()) {
+                    P.isListening = true;
+                    O("onKeyDown,onKeyUp,onKeyPress,onMouseUp".split(","), function(af) {
+                        V[af].addToTop(function(ag, ah) {
+                            if (ad() && !a.dom.RangeUtils.compareRanges(P.lastRng, q.getRng())) {
+                                O(c.select("font,span"), function(aj) {
+                                    var ak,ai;
+                                    if (b(aj)) {
+                                        ak = aj.firstChild;
+                                        if (ak) {
+                                            ae(aj);
+                                            ai = c.createRng();
+                                            ai.setStart(ak, ak.nodeValue.length);
+                                            ai.setEnd(ak, ak.nodeValue.length);
+                                            q.setRng(ai);
+                                            ag.nodeChanged()
                                         } else {
-                                            c.remove(ah)
+                                            c.remove(aj)
                                         }
                                     }
                                 });
-                                if (af.type == "keyup" || af.type == "mouseup") {
-                                    X()
+                                if (ah.type == "keyup" || ah.type == "mouseup") {
+                                    Z()
                                 }
                             }
                         })

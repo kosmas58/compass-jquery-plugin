@@ -81,23 +81,50 @@
         wrapperEls: "span"
     };
 
+    function closestEnabledButton(element) {
+        while (element) {
+            var $ele = $(element);
+            if ($ele.hasClass("ui-btn") && !ele.hasClass("ui-disabled")) {
+                break;
+            }
+            element = element.parentNode;
+        }
+        return element;
+    }
+
     var attachEvents = function() {
-        $(".ui-btn:not(.ui-disabled)").live({
-            "touchstart mousedown": function() {
-                var theme = $(this).attr("data-" + $.mobile.ns + "theme");
-                $(this).removeClass("ui-btn-up-" + theme).addClass("ui-btn-down-" + theme);
+        $(document).bind({
+            "vmousedown": function() {
+                var btn = closestEnabledButton(this);
+                if (btn) {
+                    var $btn = $(btn),
+                            theme = $btn.attr("data-" + $.mobile.ns + "theme");
+                    $btn.removeClass("ui-btn-up-" + theme).addClass("ui-btn-down-" + theme);
+                }
             },
-            "touchmove touchend mouseup": function() {
-                var theme = $(this).attr("data-" + $.mobile.ns + "theme");
-                $(this).removeClass("ui-btn-down-" + theme).addClass("ui-btn-up-" + theme);
+            "vmousecancel vmouseup": function() {
+                var btn = closestEnabledButton(this);
+                if (btn) {
+                    var $btn = $(btn),
+                            theme = $btn.attr("data-" + $.mobile.ns + "theme");
+                    $btn.removeClass("ui-btn-down-" + theme).addClass("ui-btn-up-" + theme);
+                }
             },
-            "mouseover focus": function() {
-                var theme = $(this).attr("data-" + $.mobile.ns + "theme");
-                $(this).removeClass("ui-btn-up-" + theme).addClass("ui-btn-hover-" + theme);
+            "vmouseover focus": function() {
+                var btn = closestEnabledButton(this);
+                if (btn) {
+                    var $btn = $(btn),
+                            theme = $btn.attr("data-" + $.mobile.ns + "theme");
+                    $btn.removeClass("ui-btn-up-" + theme).addClass("ui-btn-hover-" + theme);
+                }
             },
-            "mouseout blur": function() {
-                var theme = $(this).attr("data-" + $.mobile.ns + "theme");
-                $(this).removeClass("ui-btn-hover-" + theme).addClass("ui-btn-up-" + theme);
+            "vmouseout blur": function() {
+                var btn = closestEnabledButton(this);
+                if (btn) {
+                    var $btn = $(btn),
+                            theme = $btn.attr("data-" + $.mobile.ns + "theme");
+                    $btn.removeClass("ui-btn-hover-" + theme).addClass("ui-btn-up-" + theme);
+                }
             }
         });
 

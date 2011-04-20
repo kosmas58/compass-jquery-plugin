@@ -1,33 +1,31 @@
-/**
- * --------------------------------------------------------------------
- * jQuery-Plugin "pngFix"
- * Version: 1.1, 11.09.2007
- * by Andreas Eberhard, andreas.eberhard@gmail.com
- *                      http://jquery.andreaseberhard.de/
- *
- * Copyright (c) 2007 Andreas Eberhard
- * Licensed under GPL (http://www.opensource.org/licenses/gpl-license.php)
- *
- * Changelog:
- *    11.09.2007 Version 1.1
- *    - removed noConflict
- *    - added png-support for input type=image
- *    - 01.08.2007 CSS background-image support extension added by Scott Jehl, scott@filamentgroup.com, http://www.filamentgroup.com
- *    31.05.2007 initial Version 1.0
- * --------------------------------------------------------------------
- * @example $(function(){$(document).pngFix();});
- * @desc Fixes all PNG's in the document on document.ready
- *
- * jQuery(function(){jQuery(document).pngFix();});
- * @desc Fixes all PNG's in the document on document.ready when using noConflict
- *
- * @example $(function(){$('div.examples').pngFix();});
- * @desc Fixes all PNG's within div with class examples
- *
- * @example $(function(){$('div.examples').pngFix( { blankgif:'ext.gif' } );});
- * @desc Fixes all PNG's within div with class examples, provides blank gif for input with png
- * --------------------------------------------------------------------
- */
+// --------------------------------------------------------------------
+// jQuery-Plugin "pngFix"
+// Version: 1.1, 11.09.2007
+// by Andreas Eberhard, andreas.eberhard@gmail.com
+//                      http://jquery.andreaseberhard.de/
+//
+// Copyright (c) 2007 Andreas Eberhard
+// Licensed under GPL (http://www.opensource.org/licenses/gpl-license.php)
+//
+// Changelog:
+//    11.09.2007 Version 1.1
+//    - removed noConflict
+//    - added png-support for input type=image
+//    - 01.08.2007 CSS background-image support extension added by Scott Jehl, scott@filamentgroup.com, http://www.filamentgroup.com
+//    31.05.2007 initial Version 1.0
+// --------------------------------------------------------------------
+// @example $(function(){$(document).pngFix();});
+// @desc Fixes all PNG's in the document on document.ready
+//
+// jQuery(function(){jQuery(document).pngFix();});
+// @desc Fixes all PNG's in the document on document.ready when using noConflict
+//
+// @example $(function(){$('div.examples').pngFix();});
+// @desc Fixes all PNG's within div with class examples
+//
+// @example $(function(){$('div.examples').pngFix( { blankgif:'ext.gif' } );});
+// @desc Fixes all PNG's within div with class examples, provides blank gif for input with png
+// --------------------------------------------------------------------
 
 (function($) {
 

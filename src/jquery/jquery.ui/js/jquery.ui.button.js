@@ -1,5 +1,5 @@
 /*
- * jQuery UI Button 1.8.11
+ * jQuery UI Button 1.8.12
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -185,16 +185,12 @@
 
             if (this.element.is(":checkbox")) {
                 this.type = "checkbox";
+            } else if (this.element.is(":radio")) {
+                this.type = "radio";
+            } else if (this.element.is("input")) {
+                this.type = "input";
             } else {
-                if (this.element.is(":radio")) {
-                    this.type = "radio";
-                } else {
-                    if (this.element.is("input")) {
-                        this.type = "input";
-                    } else {
-                        this.type = "button";
-                    }
-                }
+                this.type = "button";
             }
 
             if (this.type === "checkbox" || this.type === "radio") {

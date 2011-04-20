@@ -51,6 +51,9 @@
         //if false, message will not appear, but loading classes will still be toggled on html el
         loadingMessage: "loading",
 
+        //error response message - appears when an Ajax page request fails
+        pageLoadErrorMessage: "Error Loading Page",
+
         //configure meta viewport tag's content attr:
         //note: this feature is deprecated in A4 in favor of adding
         //the meta viewport element directly in the markup

@@ -12,17 +12,17 @@ Description
 
 A Sass-based Meta-Framework for Compass that allows you to mix and match any of the following:
 
-* jRails with jQuery 1.5.1 and jQuery.UI 1.8.11 including themes
+* jquery-rails with jQuery 1.5.2 and jQuery.UI 1.8.11 including themes
 * jQuery Tools 1.2.5
 * jquery.jstree.js V1.0rc3
 * jquery.dynatree.js V1.0.2
 * jquery.ribbon.js
-* jquery.jqGrid.js V3.8.2 (with minor changes to make it RESTful)
+* jquery.jqGrid.js V4.0 (with minor changes to make it RESTful)
 * jquery.tinymce.js V3.4
 
 and for mobile devices <i>(using pure haml/sass without compass)</i>:
 
-* jquery.mobile.js 1.0a3
+* jquery.mobile.js 1.0a4.1
 * jquery.jqtouch.js V1.0b2
 
 This library requires [Compass][3].
@@ -33,10 +33,10 @@ An upgrade to Rails 3.x is planned, but depends on the upgrade of compass which 
 
 *Hint: When trying to build the gem under Windows, bundler can't locate the rakefile. Apply the patch from [Arve Knudsen][4] to fix it.*
 
-jRails, jQuery and jQuery.UI including themes
+jquery-rails, jQuery and jQuery.UI including themes
 ---------------------------------------------
 
-Use compass to install the jRails, jQuery and jQuery.UI javascript library including themes into your project.
+Use compass to install the jquery-rails, jQuery and jQuery.UI javascript library including themes into your project.
 
 For jQuery:
 <pre>compass install [-r jquery] jquery/jquery <project name></pre>
@@ -185,7 +185,7 @@ To use the javascripts include:
 Graphics
 --------
 
-Use compass to install the jquery.sparklines and jquery.ganttView javascript libraries into your project.
+Use compass to install the jquery.ganttView, jquery.highcharts and jquery.sparklines javascript libraries into your project.
 
 <pre>compass install [-r jquery] jquery/graphics <project name></pre>
 
@@ -197,8 +197,9 @@ To use the stylesheets and javascripts include:
 
 <pre>
   = stylesheet_link_tag :ganttView', :media => 'screen, projection'
-  = javascript_include_tag :sparkline
-  = javascript_include_tag :ganttView</pre>
+  = javascript_include_tag :ganttView
+  = javascript_include_tag :highcharts
+  = javascript_include_tag :sparkline</pre>
 
 Emulators
 ---------
@@ -259,7 +260,7 @@ Thanks to the Contributors:
 Rails:
 ------
 
-* aaron for [jRails][5]
+* Andre Arko for [jquery-rails][5]
 * David Turnbull for [compass-jquery][6]
 * Jonathan Linowes for [gridify][7]
 * ahe for [2dc_jqgrid][8]
@@ -271,7 +272,7 @@ jQuery Plugins included:
 ------------------------
 
 * Chris Domigan for [jQuery ContextMenu Plugin][13]
-* Kalus Hartl for [jQuery Cookie Plugin][14]
+* Klaus Hartl for [jQuery Cookie Plugin][14]
 * "Cowboy" Ben Alman for [jQuery doTimeout Plugin][37]
 * Pete Gamache for [jQuery DSt Plugin][38]
 * Martin Wendt for [jQuery Dynatree Plugin][15]
@@ -289,6 +290,7 @@ jQuery Plugins included:
 * Gareth Watts from Splunk Inc for [jQuery Sparklines plugin][24]
 * Denis Howlett for [jQuery Table Drag and Drop Plugin][25]
 * John Reisig et. al. for [jQuery Templating Plugin][26]
+* James Smith for [jQuery Tokeninput][41]
 * Juan G. Hurtado for [jQuery TOOLS][27]
 * Michael Aufreiter for [jQuery UI Multiselect Plugin][28]
 * Andrew M Andrews III for [Any+Time][29]
@@ -296,11 +298,13 @@ jQuery Plugins included:
 * Adam Shaw for [FullCalendar][31]
 * Moxiecode Systems AB for [TinyMCE][40]
 
+
 Other stuff included:
 ---------------------
 
 * Benjamin Lupton for [History.js][19]
 * Rick DeNatale for [ri_cal][33]
+* Highslide Software Torstein Hønsi for [Highcharts][42]
 
 Note on Patches/Pull Requests
 =============================
@@ -323,7 +327,7 @@ Copyright &copy; 2009-2011 Kosmas Schuetz. See LICENSE for details.
   [2]: http://github.com/kosmas58/compass-jquery-plugin
   [3]: http://compass-style.org/docs/
   [4]: http://groups.google.com/group/ruby-bundler/msg/e375ee77b225609f
-  [5]: http://code.google.com/p/ennerchi/
+  [5]: http://indirect/jquery-rails/
   [6]: http://github.com/dturnbull/compass-jquery/tree/master
   [7]: http://github.com/linoj/gridify
   [8]: http://github.com/ahe/2dc_jqgrid/tree/master
@@ -359,3 +363,5 @@ Copyright &copy; 2009-2011 Kosmas Schuetz. See LICENSE for details.
   [38]: http://github.com/gamache/DSt
   [39]: http://github.com/thegrubbsian/jquery.ganttView
   [40]: http://tinymce.moxiecode.com/
+  [41]: http://github.com/loopj/jquery-tokeninput
+  [42]: http://http://www.highcharts.com

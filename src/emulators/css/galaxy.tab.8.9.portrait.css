@@ -1,0 +1,25 @@
+.emulator {
+    background: image_url("emulators/galaxy.tab.8.9.portrait.png") no-repeat;
+    width: 1060px;
+    height: 1540px;
+    -moz-transform-origin: 0 0;
+    -o-transform-origin: 0 0;
+    -webkit-transform-origin: 0 0;
+}
+
+.emulator .actions {
+  position: absolute;
+}
+
+.emulator .display-area {
+    position: relative;
+    top: 190px;
+    width: 800px;
+    height: 1188px;
+    max-height: 1188px;
+    color: #ffffff;
+}
+
+.emulator .display-area a {
+    color: #ff5500;
+}

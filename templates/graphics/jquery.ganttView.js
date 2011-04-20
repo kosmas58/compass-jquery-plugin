@@ -853,7 +853,7 @@ Date.CultureInfo = {name:"en-US",englishName:"English (United States)",nativeNam
                 args = arguments[0];
             }
             if (args) {
-                for (var i = 0,px = args.shift(); i < px.length; i++) {
+                for (var i = 0, px = args.shift(); i < px.length; i++) {
                     args.unshift(px[i]);
                     rx.push(op.apply(null, args));
                     args.shift();

@@ -25,6 +25,10 @@ all_stylesheets = [
     'fullcalendar.css'
 ].collect { |filename| File.read(File.join(ICAL_SRC, 'css', filename)) }.join "\n\n"
 
+print_stylesheets = [
+    'fullcalendar.print.css'
+].collect { |filename| File.read(File.join(ICAL_SRC, 'css', filename)) }.join "\n\n"
+
 namespace :build do
   desc 'Build the stylesheets and templates for ical.'
   task :ical do
@@ -68,6 +72,13 @@ namespace :build do
         f.print sass
       end
       manifest.print "stylesheet 'jquery/ical.scss'\n"
+
+      open File.join(ICAL_DEST_STYLESHEETS, 'ical.print.scss'), 'w' do |f|
+        sass = ICAL_MESSAGE2
+        IO.popen("sass-convert -F css -T scss", 'r+') { |ff| ff.print(print_stylesheets); ff.close_write; sass += ff.read }
+        f.print sass
+      end
+      manifest.print "stylesheet 'jquery/ical.print.scss'\n"
 
       # Images  
 

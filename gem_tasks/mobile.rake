@@ -15,6 +15,7 @@ all_scripts = [
     'js/jquery.mobile.widget.js',
     'js/jquery.mobile.media.js',
     'js/jquery.mobile.support.js',
+    'js/jquery.mobile.vmouse.js',
     'js/jquery.mobile.event.js',
     'js/jquery.mobile.hashchange.js',
     'js/jquery.mobile.page.js',

@@ -38,12 +38,14 @@
                 b.onKeyDown.addToTop(c._block);
                 b.onKeyPress.addToTop(c._block);
                 b.onKeyUp.addToTop(c._block);
-                b.onPaste.addToTop(c._block)
+                b.onPaste.addToTop(c._block);
+                b.onContextMenu.addToTop(c._block)
             } else {
                 b.onKeyDown.remove(c._block);
                 b.onKeyPress.remove(c._block);
                 b.onKeyUp.remove(c._block);
-                b.onPaste.remove(c._block)
+                b.onPaste.remove(c._block);
+                b.onContextMenu.remove(c._block)
             }
             c.disabled = d
         }

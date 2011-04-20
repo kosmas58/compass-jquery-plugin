@@ -89,6 +89,9 @@
                 c(f.languages, function(n, m) {
                     var p = {icon:1},l;
                     p.onclick = function() {
+                        if (n == f.selectedLang) {
+                            return
+                        }
                         l.setSelected(1);
                         f.selectedItem.setSelected(0);
                         f.selectedItem = l;
@@ -151,41 +154,48 @@
             }
         });
         g.moveToBookmark(d)
-    },_markWords:function(o) {
-        var i,h,g,f,e,n = "",k = this.editor,p = this._getSeparators(),j = k.dom,d = [];
-        var l = k.selection,m = l.getBookmark();
-        c(o, function(q) {
-            n += (n ? "|" : "") + q
-        });
-        i = new RegExp("([" + p + "])(" + n + ")([" + p + "])", "g");
-        h = new RegExp("^(" + n + ")", "g");
-        g = new RegExp("(" + n + ")([" + p + "]?)$", "g");
-        f = new RegExp("^(" + n + ")([" + p + "]?)$", "g");
-        e = new RegExp("(" + n + ")([" + p + "])", "g");
-        this._walk(this.editor.getBody(), function(q) {
-            if (q.nodeType == 3) {
-                d.push(q)
+    },_markWords:function(l) {
+        var g = this.editor,f = g.dom,j = g.getDoc(),h = g.selection,i = h.getBookmark(),d = [],k = l.join("|"),m = this._getSeparators(),e = new RegExp("(^|[" + m + "])(" + k + ")(?=[" + m + "]|$)", "g");
+        this._walk(g.getBody(), function(o) {
+            if (o.nodeType == 3) {
+                d.push(o)
             }
         });
-        c(d, function(r) {
-            var q;
-            if (r.nodeType == 3) {
-                q = r.nodeValue;
-                if (i.test(q) || h.test(q) || g.test(q) || f.test(q)) {
-                    q = j.encode(q);
-                    q = q.replace(e, '<span class="mceItemHiddenSpellWord">$1</span>$2');
-                    q = q.replace(g, '<span class="mceItemHiddenSpellWord">$1</span>$2');
-                    j.replace(j.create("span", {"class":"mceItemHidden"}, q), r)
+        c(d, function(t) {
+            var r,q,o,s,p = t.nodeValue;
+            if (e.test(p)) {
+                p = f.encode(p);
+                q = f.create("span", {"class":"mceItemHidden"});
+                if (tinymce.isIE) {
+                    p = p.replace(e, "$1<mcespell>$2</mcespell>");
+                    while ((s = p.indexOf("<mcespell>")) != -1) {
+                        o = p.substring(0, s);
+                        if (o.length) {
+                            r = j.createTextNode(f.decode(o));
+                            q.appendChild(r)
+                        }
+                        p = p.substring(s + 10);
+                        s = p.indexOf("</mcespell>");
+                        o = p.substring(0, s);
+                        p = p.substring(s + 11);
+                        q.appendChild(f.create("span", {"class":"mceItemHiddenSpellWord"}, o))
+                    }
+                    if (p.length) {
+                        r = j.createTextNode(f.decode(p));
+                        q.appendChild(r)
+                    }
+                } else {
+                    q.innerHTML = p.replace(e, '$1<span class="mceItemHiddenSpellWord">$2</span>')
                 }
+                f.replace(q, t)
             }
         });
-        l.moveToBookmark(m)
+        h.moveToBookmark(i)
     },_showMenu:function(h, j) {
         var i = this,h = i.editor,d = i._menu,l,k = h.dom,g = k.getViewPort(h.getWin()),f = j.target;
         j = 0;
         if (!d) {
-            l = b.getPos(h.getContentAreaContainer());
-            d = h.controlManager.createDropMenu("spellcheckermenu", {offset_x:l.x,offset_y:l.y,"class":"mceNoIcons"});
+            d = h.controlManager.createDropMenu("spellcheckermenu", {"class":"mceNoIcons"});
             i._menu = d
         }
         if (k.hasClass(f, "mceItemHiddenSpellWord")) {
@@ -242,6 +252,9 @@
                 }
                 d.update()
             });
+            l = k.getPos(h.getContentAreaContainer());
+            d.settings.offset_x = l.x;
+            d.settings.offset_y = l.y;
             h.selection.select(f);
             l = k.getPos(f);
             d.showMenu(l.x, l.y + f.offsetHeight - g.y);

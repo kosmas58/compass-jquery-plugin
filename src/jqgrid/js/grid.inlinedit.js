@@ -139,7 +139,7 @@
             }
             // End compatible
             var success = false;
-            var $t = this[0], nm, tmp = {}, tmp2 = {}, editable, fr, cv, ind;
+            var $t = this[0], nm, tmp = {}, tmp2 = {}, tmp3 = {}, editable, fr, cv, ind;
             if (!$t.grid) {
                 return success;
             }
@@ -223,6 +223,11 @@
                         if ($t.p.autoencode) {
                             tmp[nm] = $.jgrid.htmlEncode(tmp[nm]);
                         }
+                        if (o.url !== 'clientArray' && cm.editoptions && cm.editoptions.NullIfEmpty === true) {
+                            if (tmp[nm] == "") {
+                                tmp3[nm] = 'null';
+                            }
+                        }
                     }
                 });
                 if (cv[0] === false) {
@@ -277,10 +282,11 @@
                     else {
                         mtype = "POST";
                     }
+                    tmp3 = $.extend({}, tmp, tmp3);
                     $.ajax($.extend({
                         url:o.url,
-                        data: $.isFunction($t.p.serializeRowData) ? $t.p.serializeRowData.call($t, tmp) : tmp,
-                        type: mtype,
+                        data: $.isFunction($t.p.serializeRowData) ? $t.p.serializeRowData.call($t, tmp3) : tmp3,
+                        type: mytype,
                         async : false, //?!?
                         complete: function(res, stat) {
                             $("#lui_" + $t.p.id).hide();

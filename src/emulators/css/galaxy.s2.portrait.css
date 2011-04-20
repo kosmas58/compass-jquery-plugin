@@ -1,0 +1,25 @@
+.emulator {
+    background: image_url("emulators/galaxy.s2.portrait.png") no-repeat;
+    width: 566px;
+    height: 1068px;
+    -moz-transform-origin: 0 0;
+    -o-transform-origin: 0 0;
+    -webkit-transform-origin: 0 0;
+}
+
+.emulator .actions {
+  position: absolute;
+}
+
+.emulator .display-area {
+    position: relative;
+    top: 169px;
+    width: 480px;
+    height: 765px;
+    max-height: 765px;
+    color: #ffffff;
+}
+
+.emulator .display-area a {
+    color: #ff5500;
+}
