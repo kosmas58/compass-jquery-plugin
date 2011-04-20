@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   
   s.add_dependency("haml", [">= 3.0.25"])
   s.add_dependency("compass", [">= 0.10.6"])
-  s.add_dependency("ri_cal", [">= 0.8.7"])
+  s.add_dependency("ri_cal", [">= 0.8.8"])
   
   s.add_development_dependency("rspec", ["~> 1.3.1"])
   
