@@ -282,7 +282,8 @@ jQuery Plugins included:
 * John Reisig et. al. for [jQuery Form Plugin][16]
 * Ivan Bozhanov for [jQuery jsTree Plugin][20]
 * Fabrizio Balliano and Kevin Dalman for [jQuery Layout Plugin][21]
-* Brandon Aaron and Fabrizio Balliano for [jQuery Mousewheel Plugin][21]
+* Scott Jehl for [jQuery Media Helper Plugin][43]
+* Brandon Aaron and Fabrizio Balliano for [jQuery Mousewheel Plugin][35]
 * Yehuda Katz for [jQuery Offline Plugin][34]
 * Andreas Eberhard for [jQuery PngFix Plugin][22] (for IE)
 * "Cowboy" Ben Alman for [jQuery replaceText Plugin][36]
@@ -365,3 +366,4 @@ Copyright &copy; 2009-2011 Kosmas Schuetz. See LICENSE for details.
   [40]: http://tinymce.moxiecode.com/
   [41]: http://github.com/loopj/jquery-tokeninput
   [42]: http://http://www.highcharts.com
+  [43]: http://github.com/scottjehl/jQuery-Media-Helpers
