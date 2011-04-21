@@ -926,7 +926,9 @@
                     if (p.footerrow) {
                         grid.sDiv.scrollLeft = grid.bDiv.scrollLeft;
                     }
-                    e.stopPropagation();
+                    if (e) {
+                        e.stopPropagation();
+                    }
                 },
                 selectionPreserver : function(ts) {
                     var p = ts.p;
@@ -2821,18 +2823,22 @@
                     return false;
                 });
             }
-//		if ($.isFunction(this.p.onRightClickRow)) {
-//			$(this).bind('contextmenu', function(e) {
-//				td = e.target;
-//				ptr = $(td,ts.rows).closest("tr.jqgrow");
-//				if($(ptr).length === 0 ){return false;}
-//				if(!ts.p.multiselect) {	$(ts).jqGrid("setSelection",ptr[0].id,true);	}
-//				ri = ptr[0].rowIndex;
-//				ci = $.jgrid.getCellIndex(td);
-//				ts.p.onRightClickRow.call(ts,$(ptr).attr("id"),ri,ci, e);
-//				return false;
-//			});
-//		}
+//            if ($.isFunction(this.p.onRightClickRow)) {
+//                $(this).bind('contextmenu', function(e) {
+//                    td = e.target;
+//                    ptr = $(td, ts.rows).closest("tr.jqgrow");
+//                    if ($(ptr).length === 0) {
+//                        return false;
+//                    }
+//                    if (!ts.p.multiselect) {
+//                        $(ts).jqGrid("setSelection", ptr[0].id, true);
+//                    }
+//                    ri = ptr[0].rowIndex;
+//                    ci = $.jgrid.getCellIndex(td);
+//                    ts.p.onRightClickRow.call(ts, $(ptr).attr("id"), ri, ci, e);
+//                    return false;
+//                });
+//            }
             grid.bDiv = document.createElement("div");
             if (isMSIE) {
                 if (String(ts.p.height).toLowerCase() === "auto") {
@@ -7527,7 +7533,7 @@ var xmlJsonClass = {
                         var cmop = "eq";
                         if (cmi >= 0 && columns[cmi].searchoptions && columns[cmi].searchoptions.sopt) {
                             cmop = columns[cmi].searchoptions.sopt[0];
-                        } else if (p.sopt.length) {
+                        } else if (p.sopt && p.sopt.length) {
                             cmop = p.sopt[0];
                         }
                         defaultFilters = {"groupOp": "AND",rules:[
