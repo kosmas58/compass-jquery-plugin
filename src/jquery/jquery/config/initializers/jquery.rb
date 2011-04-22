@@ -26,6 +26,7 @@ ActionView::Helpers::AssetTagHelper.register_javascript_expansion :contextMenu =
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :cookie => ['jquery.cookie.min']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :doTimeout => ['jquery.dotimeout.min']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :dst => ['jquery.dst.min']
+ActionView::Helpers::AssetTagHelper.register_javascript_expansion :easing => ['jquery.easing.min']
 ActionView::Helpers::AssetTagHelper.register_stylesheet_expansion :farbtastic => ['compiled/jquery/ui/farbtastic.css']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :farbtastic => ['jquery.farbtastic.min']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :form => ['jquery.form.min']

@@ -122,6 +122,7 @@
                             .trigger("collapse");
                 });
 
+
                 var set = collapsibleParent.find(":jqmData(role=collapsible)")
 
                 set.first()
@@ -141,7 +142,7 @@
                 else {
                     collapsibleContain.trigger('collapse');
                 }
-                return false;
+                e.preventDefault();
             });
         }
     });
