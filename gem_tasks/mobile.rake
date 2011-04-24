@@ -64,7 +64,7 @@ namespace :build do
       #JavaScripts
 
       open File.join(MOBILE_DEST_TEMPLATES, 'jquery.mobile.js'), 'w' do |f|
-        f.print concat_files(all_scripts)
+        f.print set_version(concat_files(all_scripts), File.read(File.join(MOBILE_SRC, 'version.txt')), Time.now().to_s)
       end
       manifest.print "javascript 'jquery.mobile.js'\n"
 

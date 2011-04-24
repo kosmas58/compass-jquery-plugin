@@ -74,7 +74,7 @@ namespace :build do
       ].collect { |filename| File.read(File.join(JQUERY_SRC, 'js', filename)) }.join "\n\n"
 
       open File.join(JQUERY_DEST_TEMPLATES, 'jquery.js'), 'w' do |f|
-        f.print concat_files(all_jquery_scripts)
+        f.print set_version(concat_files(all_jquery_scripts), File.read(File.join(JQUERY_SRC, 'version.txt')), Time.now().to_s)
       end
       manifest.print "javascript 'jquery.js'\n"
 

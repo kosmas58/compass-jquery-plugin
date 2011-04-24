@@ -1,5 +1,5 @@
 /*!
- * jQuery JavaScript Library v@VERSION
+ * jQuery JavaScript Library v1.5.2
  * http://jquery.com/
  *
  * Copyright 2011, John Resig
@@ -11,7 +11,7 @@
  * Copyright 2011, The Dojo Foundation
  * Released under the MIT, BSD, and GPL Licenses.
  *
- * Date: @DATE
+ * Date: Sun Apr 24 15:49:23 +0200 2011
  */
 (function( window, undefined ) {
 
@@ -198,7 +198,7 @@ jQuery.fn = jQuery.prototype = {
 	selector: "",
 
 	// The current version of jQuery being used
-	jquery: "@VERSION",
+	jquery: "1.5.2",
 
 	// The default length of a jQuery object is 0
 	length: 0,

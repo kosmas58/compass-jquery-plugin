@@ -53,7 +53,7 @@ namespace :build do
       #JavaScripts
 
       open File.join(TOOLS_DEST_TEMPLATES, 'jquery.tools.js'), 'w' do |f|
-        f.print concat_files(all_scripts)
+        f.print set_version(concat_files(all_scripts), File.read(File.join(TOOLS_SRC, 'version.txt')), Time.now().to_s)
       end
       manifest.print "javascript 'jquery.tools.js'\n"
 
