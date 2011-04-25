@@ -1,10 +1,13 @@
+
+
 //quick & dirty theme switcher, written to potentially work as a bookmarklet
 (function($) {
   $.themeswitcher = function() {
     if ($('[data-' + $.mobile.ns + '-url=themeswitcher]').length) {
       return;
     }
-    var themesDir = '/stylesheets/compiled/jquery/mobile/',
+    //var themesDir = 'http://jquerymobile.com/test/themes/',
+   var themesDir = '/stylesheets/compiled/jquery/mobile/',
             themes = ['default','valencia'],
             currentPage = $.mobile.activePage,
             menuPage = $('<div data-' + $.mobile.ns + 'url="themeswitcher" data-' + $.mobile.ns + 'role=\'dialog\' data-' + $.mobile.ns + 'theme=\'a\'>' +
@@ -28,7 +31,7 @@
 
     //remover, adder
     function addTheme(theme) {
-      $('head').append('<link rel=\'stylesheet\' href=\'' + themesDir + theme + '/\' />');
+      $('head').append('<link rel=\'stylesheet\' href=\'' + themesDir + theme + '.css\' />');
     }
 
     //create page, listview
