@@ -2,9 +2,8 @@ require 'fileutils'
 require 'lib/handle_js_files'
 require 'lib/jquery_ui_theme'
 
-# Compass generator for jquery
+# Compass generator for jrails 0.1+
 SRC = File.join(GEM_ROOT, 'src', 'jquery')
-
 JQUERY_SRC = File.join(SRC, 'jquery')
 
 JQUERY_UI_SRC = File.join(SRC, 'jquery.ui')
@@ -30,11 +29,12 @@ namespace :build do
 
     FileUtils.remove_dir JQUERY_DEST_TEMPLATES if File.exists? JQUERY_DEST_TEMPLATES
     FileUtils.mkdir_p(File.join(JQUERY_DEST_TEMPLATES, 'config', 'initializers'))
+    FileUtils.mkdir_p(File.join(JQUERY_DEST_TEMPLATES, 'lib', 'tasks'))
     FileUtils.mkdir_p(File.join(JQUERY_DEST_THEMES))
 
     open File.join(JQUERY_DEST_TEMPLATES, 'manifest.rb'), 'w' do |manifest|
 
-      # jQuery
+      # jRails
       manifest.print JQUERY_MESSAGE1
 
       open File.join(JQUERY_DEST_TEMPLATES, 'config', 'initializers', 'jquery.rb'), 'w' do |f|
@@ -42,11 +42,12 @@ namespace :build do
       end
       manifest.print "file 'config/initializers/jquery.rb'\n"
 
-      # jQuery 1.5.1
+      # jQuery 1.5.2
 
       all_jquery_scripts = [
           'intro.js',
           'core.js',
+          'deferred.js',
           'support.js',
           'data.js',
           'queue.js',
@@ -67,7 +68,7 @@ namespace :build do
       ].collect { |filename| File.read(File.join(JQUERY_SRC, 'js', filename)) }.join "\n\n"
 
       open File.join(JQUERY_DEST_TEMPLATES, 'jquery.js'), 'w' do |f|
-        f.print concat_files(all_jquery_scripts)
+        f.print set_version(concat_files(all_jquery_scripts), File.read(File.join(JQUERY_SRC, 'version.txt')), Time.now().to_s)
       end
       manifest.print "javascript 'jquery.js'\n"
 
@@ -292,7 +293,7 @@ namespace :jquery do
   desc 'Remove the prototype / script.aculo.us javascript files'
   task :scrub_default_js do
     files = %W[controls.js dragdrop.js effects.js prototype.js]
-    project_dir = File.join(::Rails.root.to_s, 'public', 'javascripts')
+    project_dir = File.join(RAILS_ROOT, 'public', 'javascripts')
     files.each do |fname|
       FileUtils.rm File.join(project_dir, fname)
     end

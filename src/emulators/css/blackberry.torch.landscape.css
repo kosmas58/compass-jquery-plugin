@@ -1,0 +1,21 @@
+.emulator {
+    background: image_url("emulators/blackberry.torch.landscape.png") no-repeat;
+    width: 840px;
+    height: 460px;
+    -moz-transform-origin: 0 0;
+    -o-transform-origin: 0 0;
+    -webkit-transform-origin: 0 0;
+}
+
+.emulator .display-area {
+    position: relative;
+    top: 52px;
+    width: 480px;
+    height: 360px;
+    max-height: 360px;
+    color: #ffffff;
+}
+
+.emulator .display-area a {
+    color: #ff5500;
+}

@@ -79,7 +79,7 @@
   display: none;
   position: absolute;
   opacity: .85;
-  z-index: 10;
+  z-index: 100;
   left: 50%;
   width: 200px;
   margin-left: -130px;
@@ -1164,7 +1164,15 @@ textarea.ui-input-text {
   text-align: left;
   border-width: 0;
   border-top-width: 1px;
-  .ui-btn-text a {
+  &.ui-field-contain {
+    display: block;
+    margin: 0;
+    position: relative;
+    overflow: visible;
+    text-align: left;
+    border-width: 0;
+    border-top-width: 1px; }
+  .ui-btn-text a.ui-link-inherit {
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap; } }
@@ -1172,10 +1180,21 @@ textarea.ui-input-text {
 .ui-li-divider, .ui-li-static {
   padding: .5em 15px;
   font-size: 14px;
-  font-weight: bold;
+  font-weight: bold; }
+
+.ui-li-divider {
   counter-reset: listnumbering; }
 
-ol.ui-listview .ui-link-inherit:before, .ui-li-dec {
+ol.ui-listview {
+  .ui-link-inherit:before, .ui-li-static:before {
+    font-size: .8em;
+    display: inline-block;
+    padding-right: .3em;
+    font-weight: normal;
+    counter-increment: listnumbering;
+    content: counter(listnumbering) ". "; } }
+
+.ui-li-dec {
   font-size: .8em;
   display: inline-block;
   padding-right: .3em;
@@ -1193,21 +1212,23 @@ ol.ui-listview .ui-li-jsnumbering:before {
   border-left-width: 1px; }
 
 .ui-li {
-  &:last-child {
-    border-bottom-width: 1px; }
-  .ui-btn-inner {
-    display: block;
-    position: relative;
-    padding: 0;
-    a {
-      padding: .7em 75px .7em 15px;
-      display: block; } } }
+  &:last-child, &.ui-field-contain:last-child {
+    border-bottom-width: 1px; } }
 
-.ui-li-has-thumb .ui-btn-inner a {
+.ui-li>.ui-btn-inner {
+  display: block;
+  position: relative;
+  padding: 0; }
+
+.ui-li .ui-btn-inner a.ui-link-inherit, .ui-li-static.ui-li {
+  padding: .7em 75px .7em 15px;
+  display: block; }
+
+.ui-li-has-thumb .ui-btn-inner a.ui-link-inherit, .ui-li-static.ui-li-has-thumb {
   min-height: 60px;
   padding-left: 100px; }
 
-.ui-li-has-icon .ui-btn-inner a {
+.ui-li-has-icon .ui-btn-inner a.ui-link-inherit, .ui-li-static.ui-li-has-icon {
   min-height: 20px;
   padding-left: 40px; }
 
@@ -1263,7 +1284,7 @@ ol.ui-listview .ui-li-jsnumbering:before {
 .ui-li-divider {
   cursor: default; }
 
-.ui-li-has-alt .ui-btn-inner a {
+.ui-li-has-alt .ui-btn-inner a.ui-link-inherit, .ui-li-static.ui-li-has-alt {
   padding-right: 95px; }
 
 .ui-li-count {
@@ -1275,7 +1296,7 @@ ol.ui-listview .ui-li-jsnumbering:before {
   margin-top: -0.9em;
   right: 38px; }
 
-.ui-li-divider .ui-li-count {
+.ui-li-divider .ui-li-count, .ui-li-static .ui-li-count {
   right: 10px; }
 
 .ui-li-has-alt .ui-li-count {

@@ -79,7 +79,7 @@
         }
 
         function j(M) {
-            return G.hasClass(M.elm, "mceSelected") || M == o
+            return M && (G.hasClass(M.elm, "mceSelected") || M == o)
         }
 
         function k() {
@@ -126,8 +126,8 @@
                 }
             }, "childNodes");
             M = A(M, false);
-            s(M, "rowspan", 1);
-            s(M, "colspan", 1);
+            s(M, "rowSpan", 1);
+            s(M, "colSpan", 1);
             if (N) {
                 M.appendChild(N)
             } else {
@@ -198,8 +198,8 @@
                         S = h(P, "colspan");
                         R = h(P, "rowspan");
                         if (S > 1 || R > 1) {
-                            s(P, "rowspan", 1);
-                            s(P, "colspan", 1);
+                            s(P, "rowSpan", 1);
+                            s(P, "colSpan", 1);
                             for (Q = 0; Q < S - 1; Q++) {
                                 G.insertAfter(e(P), P)
                             }
@@ -230,10 +230,13 @@
                 C();
                 t();
                 T = z(P, O).elm;
-                s(T, "colspan", (X - P) + 1);
-                s(T, "rowspan", (W - O) + 1);
+                s(T, "colSpan", (X - P) + 1);
+                s(T, "rowSpan", (W - O) + 1);
                 for (R = O; R <= W; R++) {
                     for (U = P; U <= X; U++) {
+                        if (!f[R] || !f[R][U]) {
+                            continue
+                        }
                         V = f[R][U].elm;
                         if (V != T) {
                             N = c.grep(V.childNodes);
@@ -257,54 +260,57 @@
             }
         }
 
-        function l(P) {
-            var M,R,O,Q,S,T,N,U;
-            d(f, function(V, W) {
-                d(V, function(Y, X) {
-                    if (j(Y)) {
-                        Y = Y.elm;
-                        S = Y.parentNode;
-                        T = A(S, false);
-                        M = W;
-                        if (P) {
+        function l(Q) {
+            var M,S,P,R,T,U,N,V,O;
+            d(f, function(W, X) {
+                d(W, function(Z, Y) {
+                    if (j(Z)) {
+                        Z = Z.elm;
+                        T = Z.parentNode;
+                        U = A(T, false);
+                        M = X;
+                        if (Q) {
                             return false
                         }
                     }
                 });
-                if (P) {
+                if (Q) {
                     return !M
                 }
             });
-            for (Q = 0; Q < f[0].length; Q++) {
-                R = f[M][Q].elm;
-                if (R != O) {
-                    if (!P) {
-                        rowSpan = h(R, "rowspan");
-                        if (rowSpan > 1) {
-                            s(R, "rowspan", rowSpan + 1);
+            for (R = 0; R < f[0].length; R++) {
+                if (!f[M][R]) {
+                    continue
+                }
+                S = f[M][R].elm;
+                if (S != P) {
+                    if (!Q) {
+                        O = h(S, "rowspan");
+                        if (O > 1) {
+                            s(S, "rowSpan", O + 1);
                             continue
                         }
                     } else {
-                        if (M > 0 && f[M - 1][Q]) {
-                            U = f[M - 1][Q].elm;
-                            rowSpan = h(U, "rowspan");
-                            if (rowSpan > 1) {
-                                s(U, "rowspan", rowSpan + 1);
+                        if (M > 0 && f[M - 1][R]) {
+                            V = f[M - 1][R].elm;
+                            O = h(V, "rowSpan");
+                            if (O > 1) {
+                                s(V, "rowSpan", O + 1);
                                 continue
                             }
                         }
                     }
-                    N = e(R);
-                    s(N, "colspan", R.colSpan);
-                    T.appendChild(N);
-                    O = R
+                    N = e(S);
+                    s(N, "colSpan", S.colSpan);
+                    U.appendChild(N);
+                    P = S
                 }
             }
-            if (T.hasChildNodes()) {
-                if (!P) {
-                    G.insertAfter(T, S)
+            if (U.hasChildNodes()) {
+                if (!Q) {
+                    G.insertAfter(U, T)
                 } else {
-                    S.parentNode.insertBefore(T, S)
+                    T.parentNode.insertBefore(U, T)
                 }
             }
         }
@@ -325,7 +331,11 @@
                 }
             });
             d(f, function(S, T) {
-                var P = S[O].elm,Q,R;
+                var P,Q,R;
+                if (!S[O]) {
+                    return
+                }
+                P = S[O].elm;
                 if (P != M) {
                     R = h(P, "colspan");
                     Q = h(P, "rowspan");
@@ -338,7 +348,7 @@
                             u(O, T, Q - 1, R)
                         }
                     } else {
-                        s(P, "colspan", P.colSpan + 1)
+                        s(P, "colSpan", P.colSpan + 1)
                     }
                     M = P
                 }
@@ -352,9 +362,9 @@
                     if (j(Q) && c.inArray(M, P) === -1) {
                         d(f, function(T) {
                             var R = T[P].elm,S;
-                            S = h(R, "colspan");
+                            S = h(R, "colSpan");
                             if (S > 1) {
-                                s(R, "colspan", S - 1)
+                                s(R, "colSpan", S - 1)
                             } else {
                                 G.remove(R)
                             }
@@ -373,9 +383,9 @@
                 var P,R,O;
                 P = G.getNext(Q, "tr");
                 d(Q.cells, function(S) {
-                    var T = h(S, "rowspan");
+                    var T = h(S, "rowSpan");
                     if (T > 1) {
-                        s(S, "rowspan", T - 1);
+                        s(S, "rowSpan", T - 1);
                         R = F(S);
                         u(R.x, R.y, 1, 1)
                     }
@@ -385,11 +395,11 @@
                     var T;
                     S = S.elm;
                     if (S != O) {
-                        T = h(S, "rowspan");
+                        T = h(S, "rowSpan");
                         if (T <= 1) {
                             G.remove(S)
                         } else {
-                            s(S, "rowspan", T - 1)
+                            s(S, "rowSpan", T - 1)
                         }
                         O = S
                     }
@@ -442,8 +452,8 @@
                 var S = T.cells.length,R;
                 for (i = 0; i < S; i++) {
                     R = T.cells[i];
-                    s(R, "colspan", 1);
-                    s(R, "rowspan", 1)
+                    s(R, "colSpan", 1);
+                    s(R, "rowSpan", 1)
                 }
                 for (i = S; i < Q; i++) {
                     T.appendChild(e(T.cells[S - 1]))
@@ -559,7 +569,9 @@
                 G.removeClass(G.select("td.mceSelected,th.mceSelected"), "mceSelected");
                 for (y = O; y <= M; y++) {
                     for (x = P; x <= N; x++) {
-                        G.addClass(f[y][x].elm, "mceSelected")
+                        if (f[y][x]) {
+                            G.addClass(f[y][x].elm, "mceSelected")
+                        }
                     }
                 }
             }
@@ -603,7 +615,8 @@
             f.onClick.add(function(l, m) {
                 m = m.target;
                 if (m.nodeName === "TABLE") {
-                    l.selection.select(m)
+                    l.selection.select(m);
+                    l.nodeChanged()
                 }
             })
         }
@@ -655,25 +668,28 @@
                     l = q.getParent(p, "table")
                 }
             });
-            q.bind(m.getDoc(), "mouseover", function(u) {
-                var s,r,t = u.target;
-                if (p && (n || t != p) && (t.nodeName == "TD" || t.nodeName == "TH")) {
-                    r = q.getParent(t, "table");
-                    if (r == l) {
+            q.bind(m.getDoc(), "mouseover", function(v) {
+                var t,s,u = v.target;
+                if (p && (n || u != p) && (u.nodeName == "TD" || u.nodeName == "TH")) {
+                    s = q.getParent(u, "table");
+                    if (s == l) {
                         if (!n) {
-                            n = j(r);
+                            n = j(s);
                             n.setStartCell(p);
                             m.getBody().style.webkitUserSelect = "none"
                         }
-                        n.setEndCell(t)
+                        n.setEndCell(u)
                     }
-                    s = m.selection.getSel();
-                    if (s.removeAllRanges) {
-                        s.removeAllRanges()
-                    } else {
-                        s.empty()
+                    t = m.selection.getSel();
+                    try {
+                        if (t.removeAllRanges) {
+                            t.removeAllRanges()
+                        } else {
+                            t.empty()
+                        }
+                    } catch(r) {
                     }
-                    u.preventDefault()
+                    v.preventDefault()
                 }
             });
             m.onMouseUp.add(function(A, B) {

@@ -48,7 +48,7 @@ You will find all the stylesheets in easy-to-read Sass format at:
 To use the localized stylesheets and javacripts for jQuery include (using the rails_xss plugin):
 
 <pre>
-= stylesheet_link_tag "compiled/jquery/ui/[theme].css", :media => 'screen, projection'
+= stylesheet_link_tag "jquery/ui/[theme].css", :media => 'screen, projection'
 = javascript_include_tag :jquery_ui
 = javascript_include_tag :jrails
 = raw jquery_javascripts(I18n.locale)</pre>
@@ -271,7 +271,7 @@ jQuery Plugins included:
 ------------------------
 
 * Chris Domigan for [jQuery ContextMenu Plugin][13]
-* Kalus Hartl for [jQuery Cookie Plugin][14]
+* Klaus Hartl for [jQuery Cookie Plugin][14]
 * "Cowboy" Ben Alman for [jQuery doTimeout Plugin][37]
 * Pete Gamache for [jQuery DSt Plugin][38]
 * Martin Wendt for [jQuery Dynatree Plugin][15]

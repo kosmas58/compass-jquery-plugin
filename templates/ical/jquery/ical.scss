@@ -82,7 +82,7 @@ div.AnyTime-win {
   .AnyTime-hdr {
     background-color: #D0D0D1;
     color: #606062;
-    font-family: Arial,Helvetica,sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
     font-size: medium;
     font-weight: normal;
     height: 1em;
@@ -108,7 +108,7 @@ div.AnyTime-win {
     color: #606062;
     cursor: default;
     float: left;
-    font-family: Arial,Helvetica,sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
     height: 1.5em;
     margin-bottom: 1px;
     margin-right: 1px;
@@ -123,7 +123,7 @@ div.AnyTime-win {
   .AnyTime-lbl {
     clear: left;
     color: #606063;
-    font-family: Arial,Helvetica,sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
     font-size: 100%;
     font-weight: normal;
     font-style: normal;
@@ -160,7 +160,7 @@ div.AnyTime-win {
   th.AnyTime-dow {
     background-color: #C0C0C1;
     color: white;
-    font-family: Arial,Helvetica,sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
     font-size: 95%;
     font-weight: normal;
     font-style: normal; }
@@ -342,14 +342,14 @@ div.AnyTime-win {
  */
 
 /*
- *  .AnyTime-dom-table is the table containing days-of-the-month.
- *  .AnyTime-dom-head is the table heading, containing days-of-the-week labels.
- *  tr.AnyTime-dow is the row in the heading.
- *  td.AnyTime-dow is a column heading; each heading has its own class, also.
- *  .AnyTime-dom-body is the table heading, containing days-of-the-week labels.
- *  .AnyTime-wk is a table row, containing pseudo-buttons for days.
- *  Each week has its own class (.AnyTime-wk***), also.
- */
+*  .AnyTime-dom-table is the table containing days-of-the-month.
+*  .AnyTime-dom-head is the table heading, containing days-of-the-week labels.
+*  tr.AnyTime-dow is the row in the heading.
+*  td.AnyTime-dow is a column heading; each heading has its own class, also.
+*  .AnyTime-dom-body is the table heading, containing days-of-the-week labels.
+*  .AnyTime-wk is a table row, containing pseudo-buttons for days.
+*  Each week has its own class (.AnyTime-wk***), also.
+*/
 
 /*
  *  .AnyTime-dom-btn is a pseudo-button for a day-of-the-month.
@@ -409,14 +409,14 @@ div.AnyTime-win {
  */
 
 /*
- *  .AnyTime-offs contains the UTC offset (timezone) selection pseudo-buttons.
- *  The container is designed to have clear:left, float:left and padding. 
- *  The two buttons have their own styles, and .AnyTime-off-select-btn should
- *  include a width.
- *  The width of the container and the .AnyTime-off-cur-btn should not be
- *  specified, as they are computed based on the width of the
- *  .AnyTime-off-select-btn and the .AnyTime-time container.
- */
+*  .AnyTime-offs contains the UTC offset (timezone) selection pseudo-buttons.
+*  The container is designed to have clear:left, float:left and padding.
+*  The two buttons have their own styles, and .AnyTime-off-select-btn should
+*  include a width.
+*  The width of the container and the .AnyTime-off-cur-btn should not be
+*  specified, as they are computed based on the width of the
+*  .AnyTime-off-select-btn and the .AnyTime-time container.
+*/
 
 /*
  *  .AnyTime-yr-selector is an overlay (popup) for selecting a specific year.
@@ -448,15 +448,15 @@ div.AnyTime-win {
  */
 
 /*
- *  .AnyTime-off-selector is an overlay (popup) for selecting a specific year.
- *  The picker attempts to size the overlay automatically, based on
- *  its contents; therefore, do not set width.
- *  .AnyTime-hdr-off-selector is its title bar. 
- *  .AnyTime-body-off-selector is its body.
- *  .AnyTime-off-off is the column of offset-selector pseudo-buttons.
- *  .AnyTime-off-off-btn is an offset-selector pseudo-button.
- *  .AnyTime-off-off-last-btn is the last offset-selector pseudo-button.
- */
+*  .AnyTime-off-selector is an overlay (popup) for selecting a specific year.
+*  The picker attempts to size the overlay automatically, based on
+*  its contents; therefore, do not set width.
+*  .AnyTime-hdr-off-selector is its title bar.
+*  .AnyTime-body-off-selector is its body.
+*  .AnyTime-off-off is the column of offset-selector pseudo-buttons.
+*  .AnyTime-off-off-btn is an offset-selector pseudo-button.
+*  .AnyTime-off-off-last-btn is the last offset-selector pseudo-button.
+*/
 
 /*
  *  .AnyTime-cur-btn is applied to every pseudo-button that represents
@@ -489,27 +489,29 @@ div.AnyTime-win {
  */
 
 /*
- * FullCalendar v1.4.11 Stylesheet
+ * FullCalendar v1.5.1 Stylesheet
  *
- * Feel free to edit this file to customize the look of FullCalendar.
- * When upgrading to newer versions, please upgrade this file as well,
- * porting over any customizations afterwards.
+ * Copyright (c) 2011 Adam Shaw
+ * Dual licensed under the MIT and GPL licenses, located in
+ * MIT-LICENSE.txt and GPL-LICENSE.txt respectively.
  *
- * Date: Tue Feb 22 21:47:22 2011 -0800
+ * Date: Sat Apr 9 14:09:51 2011 -0700
  *
  */
 
-/* TODO: make font sizes look the same in all doctypes */
-
 .fc {
-  font-size: 1em;
-  .fc-header, .fc-content {
-    font-size: 1em; }
   direction: ltr;
   text-align: left;
   table {
     border-collapse: collapse;
-    border-spacing: 0; }
+    border-spacing: 0; } }
+
+html .fc {
+  font-size: 1em; }
+
+.fc {
+  table {
+    font-size: 1em; }
   td, th {
     padding: 0;
     vertical-align: top; } }
@@ -517,136 +519,74 @@ div.AnyTime-win {
 /* Header
 ------------------------------------------------------------------------*/
 
-table.fc-header {
-  width: 100%; }
+.fc-header td {
+  white-space: nowrap; }
 
 .fc-header-left {
   width: 25%;
-  table {
-    float: left; } }
+  text-align: left; }
 
 .fc-header-center {
-  width: 50%;
-  text-align: center;
-  table {
-    margin: 0 auto; } }
+  text-align: center; }
 
 .fc-header-right {
   width: 25%;
-  table {
-    float: right; } }
+  text-align: right; }
 
 .fc-header-title {
-  margin-top: 0;
-  white-space: nowrap; }
+  display: inline-block;
+  vertical-align: top;
+  h2 {
+    margin-top: 0;
+    white-space: nowrap; } }
 
-.fc-header-space {
+.fc .fc-header-space {
   padding-left: 10px; }
 
-/* right-to-left */
-
-.fc-rtl .fc-header-title {
-  direction: rtl; }
-
-/* Buttons
-------------------------------------------------------------------------*/
-
 .fc-header {
-  .fc-state-default, .ui-state-default {
+  .fc-button {
     margin-bottom: 1em;
-    cursor: pointer; }
-  .fc-state-default {
-    border-width: 1px 0;
-    padding: 0 1px;
-    border-style: solid;
-    a {
-      border-style: solid;
-      display: block;
-      border-width: 0 1px;
-      margin: 0 -1px;
-      width: 100%;
-      text-decoration: none; }
-    span {
-      display: block;
-      border-style: solid;
-      border-width: 1px 0 1px 1px;
-      padding: 3px 5px; } }
-  .ui-state-default {
-    padding: 4px 6px; }
-  .fc-state-default span, .ui-state-default span {
-    white-space: nowrap; }
-  .fc-no-right {
-    padding-right: 0;
-    a {
-      margin-right: 0;
-      border-right: 0; } }
-  .ui-no-right {
-    border-right: 0; }
-  .fc-corner-left {
-    margin-left: 1px;
-    padding-left: 0; }
+    vertical-align: top;
+    margin-right: -1px; }
   .fc-corner-right {
     margin-right: 1px;
-    padding-right: 0; }
-  .fc-state-default {
-    border-color: #777;
-    /* outer border */
-    color: #333;
-    a {
-      border-color: #777;
-      /* outer border */
-      color: #333; }
-    span {
-      border-color: #fff #fff #d1d1d1;
-      /* inner border */
-      background: #e8e8e8; } }
-  .fc-state-active a {
-    color: #fff; }
-  .fc-state-down span, .fc-state-active span {
-    background: #888;
-    border-color: #808080 #808080 #909090;
-    /* inner border */ }
-  .fc-state-disabled {
-    a {
-      color: #999;
-      border-color: #ccc;
-      /* outer border */ }
-    border-color: #ccc;
-    /* outer border */
-    span {
-      border-color: #fff #fff #f0f0f0;
-      /* inner border */
-      background: #f0f0f0; } } }
+    /* back to normal */ }
+  .ui-corner-right {
+    margin-right: 0;
+    /* back to normal */ }
+  .fc-state-hover, .ui-state-hover {
+    z-index: 2; }
+  .fc-state-down {
+    z-index: 3; }
+  .fc-state-active, .ui-state-active {
+    z-index: 4; } }
 
-/* for adjacent buttons */
+/* buttons edges butting together */
 
-/* for fake rounded corners */
+/* button layering (for border precedence) */
 
-/* DEFAULT button COLORS */
-
-/* PRESSED button COLORS (down and active) */
-
-/* DISABLED button COLORS */
-
-/* Content Area & Global Cell Styles
+/* Content
 ------------------------------------------------------------------------*/
 
-.fc-widget-content {
-  border: 1px solid #ccc;
-  /* outer border color */ }
-
 .fc-content {
-  clear: both;
-  .fc-state-default {
-    border-style: solid;
-    border-color: #ccc;
-    /* inner border color */ }
-  .fc-state-highlight {
-    /* today */
-    background: #ffc; }
-  .fc-not-today {
-    /* override jq-ui highlight (TODO: ui-widget-content) */
-    background: none; } }
+  clear: both; }
+
+.fc-view {
+  width: 100%;
+  /* needed for view switching (when view is absolute) */
+  overflow: hidden; }
+
+/* Cell Styles
+------------------------------------------------------------------------*/
+
+.fc-widget-header, .fc-widget-content {
+  /* <td>, usually */
+  border: 1px solid #ccc; }
+
+.fc-state-highlight {
+  /* <td> today cell */
+  /* TODO: add .fc-today to <th> */
+  background: #ffc; }
 
 .fc-cell-overlay {
   /* semi-transparent rectangle while dragging */
@@ -655,80 +595,159 @@ table.fc-header {
   filter: alpha(opacity = 20);
   /* for IE */ }
 
-.fc-view {
-  /* prevents dragging outside of widget */
-  width: 100%;
+/* Buttons
+------------------------------------------------------------------------*/
+
+.fc-button {
+  position: relative;
+  display: inline-block;
+  cursor: pointer; }
+
+.fc-state-default {
+  /* non-theme */
+  border-style: solid;
+  border-width: 1px 0; }
+
+.fc-button-inner {
+  position: relative;
+  float: left;
   overflow: hidden; }
+
+.fc-state-default .fc-button-inner {
+  /* non-theme */
+  border-style: solid;
+  border-width: 0 1px; }
+
+.fc-button-content {
+  position: relative;
+  float: left;
+  height: 1.9em;
+  line-height: 1.9em;
+  padding: 0 .6em;
+  white-space: nowrap;
+  .fc-icon-wrap {
+    position: relative;
+    float: left;
+    top: 50%; }
+  .ui-icon {
+    position: relative;
+    float: left;
+    margin-top: -50%;
+    *margin-top: 0;
+    *top: -50%; } }
+
+/* icon (for jquery ui) */
+
+/* gloss effect */
+
+.fc-state-default {
+  .fc-button-effect {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    span {
+      position: absolute;
+      top: -100px;
+      left: 0;
+      width: 500px;
+      height: 100px;
+      border-width: 100px 0 0 1px;
+      border-style: solid;
+      border-color: #fff;
+      background: #444;
+      opacity: .09;
+      filter: alpha(opacity = 9); } }
+  border-style: solid;
+  border-color: #ccc #bbb #aaa;
+  background: #F3F3F3;
+  color: #000;
+  .fc-button-inner {
+    border-style: solid;
+    border-color: #ccc #bbb #aaa;
+    background: #F3F3F3;
+    color: #000; } }
+
+/* button states (determines colors)  */
+
+.fc-state-hover {
+  border-color: #999;
+  .fc-button-inner {
+    border-color: #999; } }
+
+.fc-state-down {
+  border-color: #555;
+  background: #777;
+  .fc-button-inner {
+    border-color: #555;
+    background: #777; } }
+
+.fc-state-active {
+  border-color: #555;
+  background: #777;
+  color: #fff;
+  .fc-button-inner {
+    border-color: #555;
+    background: #777;
+    color: #fff; } }
+
+.fc-state-disabled {
+  color: #999;
+  border-color: #ddd;
+  .fc-button-inner {
+    color: #999;
+    border-color: #ddd; }
+  cursor: default;
+  .fc-button-effect {
+    display: none; } }
 
 /* Global Event Styles
 ------------------------------------------------------------------------*/
 
-.fc-event, .fc-agenda .fc-event-time {
+.fc-event {
   border-style: solid;
+  border-width: 0;
+  font-size: .85em;
+  cursor: default; }
+
+a.fc-event, .fc-event-draggable {
+  cursor: pointer; }
+
+a.fc-event {
+  text-decoration: none; }
+
+.fc-rtl .fc-event {
+  text-align: right; }
+
+.fc-event-skin {
   border-color: #36c;
-  /* default BORDER color (probably the same as background-color) */
+  /* default BORDER color */
   background-color: #36c;
   /* default BACKGROUND color */
   color: #fff;
   /* default TEXT color */ }
 
-.fc-event {
-  a {
-    border-style: solid;
-    border-color: #36c;
-    /* default BORDER color (probably the same as background-color) */
-    background-color: #36c;
-    /* default BACKGROUND color */
-    color: #fff;
-    /* default TEXT color */
-    overflow: hidden;
-    font-size: .85em;
-    text-decoration: none;
-    cursor: pointer; }
-  text-align: left; }
-
-/* Use the 'className' CalEvent property and the following
- * example CSS to change event color on a per-event basis:
- *
- * .myclass,
- * .fc-agenda .myclass .fc-event-time,
- * .myclass a {
- *     background-color: black;
- *     border-color: black;
- *     color: red;
- *     }
- */
-
-.fc-event-editable {
-  cursor: pointer; }
+.fc-event-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-style: solid;
+  border-width: 0;
+  overflow: hidden; }
 
 .fc-event-time, .fc-event-title {
   padding: 0 1px; }
 
-/* for fake rounded corners */
-
-.fc-event a {
-  display: block;
-  position: relative;
-  width: 100%;
-  height: 100%; }
-
-/* right-to-left */
-
-.fc-rtl .fc-event a {
-  text-align: right; }
-
-/* resizable */
-
 .fc .ui-resizable-handle {
-  /*** TODO: don't use ui-resizable anoymore, change class ***/
+  /*** TODO: don't use ui-resizable anymore, change class ***/
   display: block;
   position: absolute;
   z-index: 99999;
-  border: 0 !important;
-  /* important overrides pre jquery ui 1.7 styles */
-  background: url(data:image/gif;base64,AAAA) !important;
-  /* hover fix for IE */ }
+  overflow: hidden;
+  /* hacky spaces (IE6/7) */
+  font-size: 300%;
+  /* */
+  line-height: 50%;
+  /* */ }
 
 /* Horizontal Events
 ------------------------------------------------------------------------*/
@@ -736,26 +755,6 @@ table.fc-header {
 .fc-event-hori {
   border-width: 1px 0;
   margin-bottom: 1px;
-  a {
-    border-width: 0; } }
-
-/* for fake rounded corners */
-
-.fc-content {
-  .fc-corner-left {
-    margin-left: 1px;
-    a {
-      margin-left: -1px;
-      border-left-width: 1px; } }
-  .fc-corner-right {
-    margin-right: 1px;
-    a {
-      margin-right: -1px;
-      border-right-width: 1px; } } }
-
-/* resizable */
-
-.fc-event-hori {
   .ui-resizable-e {
     top: 0 !important;
     /* importants override pre jquery ui 1.7 styles */
@@ -773,22 +772,70 @@ table.fc-header {
     _padding-bottom: 14px;
     /* IE6 had 0 height */ } }
 
+/* resizable */
+
+/* Fake Rounded Corners (for buttons and events)
+------------------------------------------------------------*/
+
+.fc-corner-left {
+  margin-left: 1px;
+  .fc-button-inner, .fc-event-inner {
+    margin-left: -1px; } }
+
+.fc-corner-right {
+  margin-right: 1px;
+  .fc-button-inner, .fc-event-inner {
+    margin-right: -1px; } }
+
+.fc-corner-top {
+  margin-top: 1px;
+  .fc-event-inner {
+    margin-top: -1px; } }
+
+.fc-corner-bottom {
+  margin-bottom: 1px;
+  .fc-event-inner {
+    margin-bottom: -1px; } }
+
+/* Fake Rounded Corners SPECIFICALLY FOR EVENTS
+-----------------------------------------------------------------*/
+
+.fc-corner-left .fc-event-inner {
+  border-left-width: 1px; }
+
+.fc-corner-right .fc-event-inner {
+  border-right-width: 1px; }
+
+.fc-corner-top .fc-event-inner {
+  border-top-width: 1px; }
+
+.fc-corner-bottom .fc-event-inner {
+  border-bottom-width: 1px; }
+
+/* Reusable Separate-border Table
+------------------------------------------------------------*/
+
+table.fc-border-separate {
+  border-collapse: separate; }
+
+.fc-border-separate {
+  th, td {
+    border-width: 1px 0 0 1px; }
+  th.fc-last, td.fc-last {
+    border-right-width: 1px; }
+  tr.fc-last {
+    th, td {
+      border-bottom-width: 1px; } }
+  tbody tr.fc-first {
+    td, th {
+      border-top-width: 0; } } }
+
 /* Month View, Basic Week View, Basic Day View
 ------------------------------------------------------------------------*/
 
-.fc-grid table {
-  width: 100%; }
-
-.fc .fc-grid {
-  th {
-    border-width: 0 0 0 1px;
-    text-align: center; }
-  td {
-    border-width: 1px 0 0 1px; } }
-
 .fc-grid {
-  th.fc-leftmost, td.fc-leftmost {
-    border-left: 0; }
+  th {
+    text-align: center; }
   .fc-day-number {
     float: right;
     padding: 0 2px; }
@@ -797,11 +844,11 @@ table.fc-header {
     filter: alpha(opacity = 30);
     /* for IE */
     /* opacity with small font can sometimes look too faded
-       might want to set the 'color' property instead
-       making day-numbers bold also fixes the problem */ }
+        might want to set the 'color' property instead
+        making day-numbers bold also fixes the problem */ }
   .fc-day-content {
     clear: both;
-    padding: 2px 2px 0;
+    padding: 2px 2px 1px;
     /* distance between events and day edges */ }
   .fc-event-time {
     font-weight: bold; } }
@@ -811,7 +858,6 @@ table.fc-header {
 /* right-to-left */
 
 .fc-rtl .fc-grid {
-  direction: rtl;
   .fc-day-number {
     float: left; }
   .fc-event-time {
@@ -820,131 +866,114 @@ table.fc-header {
 /* Agenda Week View, Agenda Day View
 ------------------------------------------------------------------------*/
 
-.fc .fc-agenda {
-  th, td {
-    border-width: 1px 0 0 1px; }
-  .fc-leftmost {
-    border-left: 0; } }
+.fc-agenda table {
+  border-collapse: separate; }
 
-.fc-agenda tr.fc-first {
-  th, td {
-    border-top: 0; } }
-
-.fc-agenda-head tr.fc-last th {
-  border-bottom-width: 1px; }
-
-.fc {
-  .fc-agenda-head td, .fc-agenda-body td {
-    background: none; } }
-
-.fc-agenda-head th {
+.fc-agenda-days th {
   text-align: center; }
 
-/* the time axis running down the left side */
+.fc-agenda {
+  .fc-agenda-axis {
+    width: 50px;
+    padding: 0 4px;
+    vertical-align: middle;
+    text-align: right;
+    white-space: nowrap;
+    font-weight: normal; }
+  .fc-day-content {
+    padding: 2px 2px 1px; } }
 
-.fc-agenda .fc-axis {
-  width: 50px;
-  padding: 0 4px;
-  vertical-align: middle;
-  white-space: nowrap;
-  text-align: right;
-  font-weight: normal; }
+/* make axis border take precedence */
 
-/* all-day event cells at top */
+.fc-agenda-days {
+  .fc-agenda-axis {
+    border-right-width: 1px; }
+  .fc-col0 {
+    border-left-width: 0; } }
 
-.fc-agenda-head {
-  tr.fc-all-day th {
-    height: 35px; }
+/* all-day area */
+
+.fc-agenda-allday {
+  th {
+    border-width: 0 1px; }
+  .fc-day-content {
+    min-height: 34px;
+    /* TODO: doesnt work well in quirksmode */
+    _height: 34px; } }
+
+/* divider (between all-day and slots) */
+
+.fc-agenda-divider-inner {
+  height: 2px;
+  overflow: hidden; }
+
+.fc-widget-header .fc-agenda-divider-inner {
+  background: #eee; }
+
+/* slot rows */
+
+.fc-agenda-slots {
+  th {
+    border-width: 1px 1px 0; }
   td {
-    padding-bottom: 10px; } }
-
-.fc {
-  .fc-divider {
+    border-width: 1px 0 0;
+    background: none;
     div {
-      font-size: 1px;
-      /* for IE6/7 */
-      height: 2px; }
-    .fc-state-default {
-      background: #eee;
-      /* color for divider between all-day and time-slot events */ } }
-  .fc-agenda-body {
-    td div {
-      height: 20px;
-      /* slot height */ }
-    tr.fc-minor {
+      height: 20px; } }
+  tr {
+    &.fc-slot0 {
       th, td {
-        border-top-style: dotted; } } } }
-
-/* body styles */
-
-.fc-agenda .fc-day-content {
-  padding: 2px 2px 0;
-  /* distance between events and day edges */ }
-
-/* vertical background columns */
-
-.fc .fc-agenda-bg .ui-state-highlight {
-  background-image: none;
-  /* tall column, don't want repeating background image */ }
+        border-top-width: 0; } }
+    &.fc-minor {
+      th, td {
+        border-top-style: dotted; }
+      th.ui-widget-header {
+        *border-top-style: solid;
+        /* doesn't work with background in IE6/7 */ } } } }
 
 /* Vertical Events
 ------------------------------------------------------------------------*/
 
 .fc-event-vert {
   border-width: 0 1px;
-  a {
-    border-width: 0; } }
-
-/* for fake rounded corners */
-
-.fc-content {
-  .fc-corner-top {
-    margin-top: 1px;
-    a {
-      margin-top: -1px;
-      border-top-width: 1px; } }
-  .fc-corner-bottom {
-    margin-bottom: 1px;
-    a {
-      margin-bottom: -1px;
-      border-bottom-width: 1px; } } }
-
-/* event content */
-
-.fc-event-vert {
-  span {
-    display: block;
+  .fc-event-head, .fc-event-content {
     position: relative;
     z-index: 2;
-    &.fc-event-time {
-      white-space: nowrap;
-      _white-space: normal;
-      overflow: hidden;
-      border: 0;
-      font-size: 10px; }
-    &.fc-event-title {
-      line-height: 13px; }
-    &.fc-event-bg {
-      /* makes the event lighter w/ a semi-transparent overlay  */
-      position: absolute;
-      z-index: 1;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: #fff;
-      opacity: .3;
-      filter: alpha(opacity = 30);
-      /* for IE */ } }
-  .ui-resizable-s {
-    bottom: 0 !important;
-    /* importants override pre jquery ui 1.7 styles */
-    width: 100% !important;
-    height: 8px !important;
-    line-height: 8px !important;
-    font-size: 11px !important;
-    font-family: monospace;
-    text-align: center;
-    cursor: s-resize; } }
+    width: 100%;
+    overflow: hidden; }
+  .fc-event-time {
+    white-space: nowrap;
+    font-size: 10px; }
+  .fc-event-bg {
+    /* makes the event lighter w/ a semi-transparent overlay  */
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #fff;
+    opacity: .3;
+    filter: alpha(opacity = 30); } }
+
+.fc .ui-draggable-dragging .fc-event-bg, .fc-select-helper .fc-event-bg {
+  display: none\9;
+  /* for IE6/7/8. nested opacity filters while dragging don't work */ }
 
 /* resizable */
+
+.fc-event-vert .ui-resizable-s {
+  bottom: 0 !important;
+  /* importants override pre jquery ui 1.7 styles */
+  width: 100% !important;
+  height: 8px !important;
+  overflow: hidden !important;
+  line-height: 8px !important;
+  font-size: 11px !important;
+  font-family: monospace;
+  text-align: center;
+  cursor: s-resize; }
+
+.fc-agenda .ui-resizable-resizing {
+  /* TODO: better selector */
+  _overflow: hidden; }

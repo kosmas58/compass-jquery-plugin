@@ -28,12 +28,11 @@
 
 /* Containers */
 .o2k7Skin table {
-    background: #E5EFFD
+    background: transparent
 }
 
 .o2k7Skin iframe {
     display: block;
-    background: #FFF
 }
 
 .o2k7Skin .mceToolbar {
@@ -87,7 +86,12 @@
     border-bottom: 1px solid #ABC6DD
 }
 
+.o2k7Skin td.mceToolbar {
+    background: #E5EFFD
+}
+
 .o2k7Skin .mceStatusbar {
+    background: #E5EFFD;
     display: block;
     font-family: 'MS Sans Serif', sans-serif, Verdana, Arial;
     font-size: 9pt;

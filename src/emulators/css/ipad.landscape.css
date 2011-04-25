@@ -1,18 +1,21 @@
-.ipad .emulator {
+.emulator {
     background: image_url("emulators/ipad.landscape.png") no-repeat;
-    width: 1108px;
-    height: 852px;
+    width: 1280px;
+    height: 1000px;
+    -moz-transform-origin: 0 0;
+    -o-transform-origin: 0 0;
+    -webkit-transform-origin: 0 0;
 }
 
-.ipad .emulator .display-area {
+.emulator .display-area {
     position: relative;
-    top: 61px;
+    top: 150px;
     width: 1024px;
     height: 748px;
     max-height: 748px;
     color: #ffffff;
 }
 
-.ipad .emulator .display-area a {
+.emulator .display-area a {
     color: #ff5500;
 }

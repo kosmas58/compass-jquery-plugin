@@ -35,6 +35,7 @@ namespace :build do
 
     FileUtils.remove_dir TOOLS_DEST_TEMPLATES if File.exists? TOOLS_DEST_TEMPLATES
     FileUtils.mkdir_p(File.join(TOOLS_DEST_TEMPLATES, 'config', 'initializers'))
+    FileUtils.mkdir_p(File.join(TOOLS_DEST_TEMPLATES, 'lib', 'tasks'))
 
     open File.join(TOOLS_DEST_TEMPLATES, 'manifest.rb'), 'w' do |manifest|
       manifest.print TOOLS_MESSAGE1
@@ -47,7 +48,7 @@ namespace :build do
       #JavaScripts
 
       open File.join(TOOLS_DEST_TEMPLATES, 'jquery.tools.js'), 'w' do |f|
-        f.print concat_files(all_scripts)
+        f.print set_version(concat_files(all_scripts), File.read(File.join(TOOLS_SRC, 'version.txt')), Time.now().to_s)
       end
       manifest.print "javascript 'jquery.tools.js'\n"
 

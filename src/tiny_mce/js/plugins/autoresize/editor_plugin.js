@@ -1,16 +1,20 @@
 (function() {
     tinymce.create("tinymce.plugins.AutoResizePlugin", {init:function(a, c) {
-        var d = this;
+        var d = this,e = 0;
         if (a.getParam("fullscreen_is_enabled")) {
             return
         }
         function b() {
-            var h = a.getDoc(),e = h.body,j = h.documentElement,g = tinymce.DOM,i = d.autoresize_min_height,f;
-            f = tinymce.isIE ? e.scrollHeight : j.offsetHeight;
-            if (f > d.autoresize_min_height) {
-                i = f
+            var i = a.getDoc(),f = i.body,k = i.documentElement,h = tinymce.DOM,j = d.autoresize_min_height,g;
+            g = tinymce.isIE ? f.scrollHeight : k.offsetHeight;
+            g = d.bottom_margin + g;
+            if (g > d.autoresize_min_height) {
+                j = g
             }
-            g.setStyle(g.get(a.id + "_ifr"), "height", i + "px");
+            if (j !== e) {
+                h.setStyle(h.get(a.id + "_ifr"), "height", j + "px");
+                e = j
+            }
             if (d.throbbing) {
                 a.setProgressState(false);
                 a.setProgressState(true)
@@ -19,22 +23,23 @@
 
         d.editor = a;
         d.autoresize_min_height = a.getElement().offsetHeight;
+        d.bottom_margin = parseInt(a.getParam("autoresize_bottom_margin", 50));
         a.onChange.add(b);
         a.onSetContent.add(b);
         a.onPaste.add(b);
         a.onKeyUp.add(b);
         a.onPostRender.add(b);
         if (a.getParam("autoresize_on_init", true)) {
-            a.onInit.add(function(f, e) {
-                f.setProgressState(true);
+            a.onInit.add(function(g, f) {
+                g.setProgressState(true);
                 d.throbbing = true;
-                f.getBody().style.overflowY = "hidden"
+                g.getBody().style.overflowY = "hidden"
             });
-            a.onLoadContent.add(function(f, e) {
+            a.onLoadContent.add(function(g, f) {
                 b();
                 setTimeout(function() {
                     b();
-                    f.setProgressState(false);
+                    g.setProgressState(false);
                     d.throbbing = false
                 }, 1250)
             })

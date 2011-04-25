@@ -4,19 +4,19 @@
             a.windowManager.open({file:b + "/cite.htm",width:350 + parseInt(a.getLang("xhtmlxtras.cite_delta_width", 0)),height:250 + parseInt(a.getLang("xhtmlxtras.cite_delta_height", 0)),inline:1}, {plugin_url:b})
         });
         a.addCommand("mceAcronym", function() {
-            a.windowManager.open({file:b + "/acronym.htm",width:350 + parseInt(a.getLang("xhtmlxtras.acronym_delta_width", 0)),height:250 + parseInt(a.getLang("xhtmlxtras.acronym_delta_width", 0)),inline:1}, {plugin_url:b})
+            a.windowManager.open({file:b + "/acronym.htm",width:350 + parseInt(a.getLang("xhtmlxtras.acronym_delta_width", 0)),height:250 + parseInt(a.getLang("xhtmlxtras.acronym_delta_height", 0)),inline:1}, {plugin_url:b})
         });
         a.addCommand("mceAbbr", function() {
-            a.windowManager.open({file:b + "/abbr.htm",width:350 + parseInt(a.getLang("xhtmlxtras.abbr_delta_width", 0)),height:250 + parseInt(a.getLang("xhtmlxtras.abbr_delta_width", 0)),inline:1}, {plugin_url:b})
+            a.windowManager.open({file:b + "/abbr.htm",width:350 + parseInt(a.getLang("xhtmlxtras.abbr_delta_width", 0)),height:250 + parseInt(a.getLang("xhtmlxtras.abbr_delta_height", 0)),inline:1}, {plugin_url:b})
         });
         a.addCommand("mceDel", function() {
-            a.windowManager.open({file:b + "/del.htm",width:340 + parseInt(a.getLang("xhtmlxtras.del_delta_width", 0)),height:310 + parseInt(a.getLang("xhtmlxtras.del_delta_width", 0)),inline:1}, {plugin_url:b})
+            a.windowManager.open({file:b + "/del.htm",width:340 + parseInt(a.getLang("xhtmlxtras.del_delta_width", 0)),height:310 + parseInt(a.getLang("xhtmlxtras.del_delta_height", 0)),inline:1}, {plugin_url:b})
         });
         a.addCommand("mceIns", function() {
-            a.windowManager.open({file:b + "/ins.htm",width:340 + parseInt(a.getLang("xhtmlxtras.ins_delta_width", 0)),height:310 + parseInt(a.getLang("xhtmlxtras.ins_delta_width", 0)),inline:1}, {plugin_url:b})
+            a.windowManager.open({file:b + "/ins.htm",width:340 + parseInt(a.getLang("xhtmlxtras.ins_delta_width", 0)),height:310 + parseInt(a.getLang("xhtmlxtras.ins_delta_height", 0)),inline:1}, {plugin_url:b})
         });
         a.addCommand("mceAttributes", function() {
-            a.windowManager.open({file:b + "/attributes.htm",width:380,height:370,inline:1}, {plugin_url:b})
+            a.windowManager.open({file:b + "/attributes.htm",width:380 + parseInt(a.getLang("xhtmlxtras.attr_delta_width", 0)),height:370 + parseInt(a.getLang("xhtmlxtras.attr_delta_height", 0)),inline:1}, {plugin_url:b})
         });
         a.addButton("cite", {title:"xhtmlxtras.cite_desc",cmd:"mceCite"});
         a.addButton("acronym", {title:"xhtmlxtras.acronym_desc",cmd:"mceAcronym"});

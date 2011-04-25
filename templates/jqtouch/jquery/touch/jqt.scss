@@ -390,7 +390,7 @@ body {
       margin-bottom: -1px;
       &.arrow {
         background-color: #404142 !important;
-        background-image: image_url("jquery/touch/jqt/chevron.png");
+        background-image: image_url("jquery/touch/jqt/chevron.png"), -webkit-gradient(linear, 0% 0%, 0% 100%, from(#1e1f21), to(#272729));
         background-position: right center;
         background-repeat: no-repeat; }
       &.sep {

@@ -3,7 +3,7 @@
     background-image: url(img/button_bg_silver.png)
 }
 
-.o2k7SkinSilver table, .o2k7SkinSilver .mceMenuItemTitle a {
+.o2k7SkinSilver td.mceToolbar, .o2k7SkinSilver td.mceStatusbar, .o2k7SkinSilver .mceMenuItemTitle a {
     background: #eee
 }
 

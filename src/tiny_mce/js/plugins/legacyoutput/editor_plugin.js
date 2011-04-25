@@ -5,7 +5,7 @@
     a.create("tinymce.plugins.LegacyOutput", {init:function(b) {
         b.onInit.add(function() {
             var c = "p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img",e = a.explode(b.settings.font_size_style_values),d = b.schema;
-            b.formatter.register({alignleft:{selector:c,attributes:{align:"left"}},aligncenter:{selector:c,attributes:{align:"center"}},alignright:{selector:c,attributes:{align:"right"}},alignfull:{selector:c,attributes:{align:"full"}},bold:[
+            b.formatter.register({alignleft:{selector:c,attributes:{align:"left"}},aligncenter:{selector:c,attributes:{align:"center"}},alignright:{selector:c,attributes:{align:"right"}},alignfull:{selector:c,attributes:{align:"justify"}},bold:[
                 {inline:"b",remove:"all"},
                 {inline:"strong",remove:"all"},
                 {inline:"span",styles:{fontWeight:"bold"}}

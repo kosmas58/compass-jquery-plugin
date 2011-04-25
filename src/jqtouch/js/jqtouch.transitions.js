@@ -21,40 +21,40 @@
 
 (function($) {
 
-    $.fn.transition = function(css, options) {
-        return this.each(function() {
-            var $el = $(this);
-            var defaults = {
-                speed : '300ms',
-                callback: null,
-                ease: 'ease-in-out'
-            };
-            var settings = $.extend({}, defaults, options);
-            if (settings.speed === 0) {
-                $el.css(css);
-                window.setTimeout(settings.callback, 0);
-            } else {
-                if ($.browser.safari) {
-                    var s = [];
-                    for (var i in css) {
-                        s.push(i);
-                    }
-                    $el.css({
-                        webkitTransitionProperty: s.join(", "),
-                        webkitTransitionDuration: settings.speed,
-                        webkitTransitionTimingFunction: settings.ease
-                    });
-                    if (settings.callback) {
-                        $el.one('webkitTransitionEnd', settings.callback);
-                    }
-                    setTimeout(function(el) {
-                        el.css(css)
-                    }, 0, $el);
-                }
-                else {
-                    $el.animate(css, settings.speed, settings.callback);
-                }
-            }
-        });
-    }
+  $.fn.transition = function(css, options) {
+    return this.each(function() {
+      var $el = $(this);
+      var defaults = {
+        speed : '300ms',
+        callback: null,
+        ease: 'ease-in-out'
+      };
+      var settings = $.extend({}, defaults, options);
+      if (settings.speed === 0) {
+        $el.css(css);
+        window.setTimeout(settings.callback, 0);
+      } else {
+        if ($.browser.safari) {
+          var s = [];
+          for (var i in css) {
+            s.push(i);
+          }
+          $el.css({
+            webkitTransitionProperty: s.join(", "),
+            webkitTransitionDuration: settings.speed,
+            webkitTransitionTimingFunction: settings.ease
+          });
+          if (settings.callback) {
+            $el.one('webkitTransitionEnd', settings.callback);
+          }
+          setTimeout(function(el) {
+            el.css(css)
+          }, 0, $el);
+        }
+        else {
+          $el.animate(css, settings.speed, settings.callback);
+        }
+      }
+    });
+  }
 })(jQuery);

@@ -1,5 +1,5 @@
 /*
- * jQuery UI Tabs 1.8.11
+ * jQuery UI Tabs 1.8.12
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -701,7 +701,7 @@
     });
 
     $.extend($.ui.tabs, {
-        version: "1.8.11"
+        version: "1.8.12"
     });
 
     /*

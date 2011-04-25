@@ -12,9 +12,9 @@ Gem::Specification.new do |s|
   s.summary     = %q{A compass plugin to integrate jQuery}
   s.description = %q{This plugin integrates jQuery, jQuery UI and Themes, jqGrid and more into the Compass Sass framework.}
   
-  s.add_dependency("haml", ["~> 3.1.0.alpha"])
-  s.add_dependency("compass", ["~> 0.11.beta.5"])
-  s.add_dependency("ri_cal", [">= 0.8.7"])
+  s.add_dependency("haml", ["~> 3.1.0"])
+  s.add_dependency("compass", ["~> 0.11"])
+  s.add_dependency("ri_cal", [">= 0.8.8"])
    
   s.add_development_dependency("rspec", ["~> 2.5.0"])
   

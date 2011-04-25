@@ -3,7 +3,7 @@
     background-image: url(img/button_bg_black.png)
 }
 
-.o2k7SkinBlack table, .o2k7SkinBlack .mceMenuItemTitle a, .o2k7SkinBlack .mceMenuItemTitle span.mceText, .o2k7SkinBlack .mceStatusbar div, .o2k7SkinBlack .mceStatusbar span, .o2k7SkinBlack .mceStatusbar a {
+.o2k7SkinBlack td.mceToolbar, .o2k7SkinBlack td.mceStatusbar, .o2k7SkinBlack .mceMenuItemTitle a, .o2k7SkinBlack .mceMenuItemTitle span.mceText, .o2k7SkinBlack .mceStatusbar div, .o2k7SkinBlack .mceStatusbar span, .o2k7SkinBlack .mceStatusbar a {
     background: #535353;
     color: #FFF
 }

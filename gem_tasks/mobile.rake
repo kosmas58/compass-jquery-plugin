@@ -15,6 +15,7 @@ all_scripts = [
     'js/jquery.mobile.widget.js',
     'js/jquery.mobile.media.js',
     'js/jquery.mobile.support.js',
+    'js/jquery.mobile.vmouse.js',
     'js/jquery.mobile.event.js',
     'js/jquery.mobile.hashchange.js',
     'js/jquery.mobile.page.js',
@@ -45,6 +46,7 @@ namespace :build do
 
     FileUtils.remove_dir MOBILE_DEST_TEMPLATES if File.exists? MOBILE_DEST_TEMPLATES
     FileUtils.mkdir_p(File.join(MOBILE_DEST_TEMPLATES, 'config', 'initializers'))
+    FileUtils.mkdir_p(File.join(MOBILE_DEST_TEMPLATES, 'lib', 'tasks'))
 
     open File.join(MOBILE_DEST_TEMPLATES, 'manifest.rb'), 'w' do |manifest|
       manifest.print MOBILE_MESSAGE1
@@ -57,7 +59,7 @@ namespace :build do
       #JavaScripts
 
       open File.join(MOBILE_DEST_TEMPLATES, 'jquery.mobile.js'), 'w' do |f|
-        f.print concat_files(all_scripts)
+        f.print set_version(concat_files(all_scripts), File.read(File.join(MOBILE_SRC, 'version.txt')), Time.now().to_s)
       end
       manifest.print "javascript 'jquery.mobile.js'\n"
 

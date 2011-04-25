@@ -2,6 +2,7 @@ require 'jquery/ical'
 require 'jquery/ical/helpers/ui_event_helper'
 
 ActionView::Helpers::AssetTagHelper.register_stylesheet_expansion :ical => ['jquery/ical.css']
+ActionView::Helpers::AssetTagHelper.register_stylesheet_expansion :ical_print => ['jquery/ical.print.css']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :ical => ['jquery.ical.min']
 
 ActionView::Base.send :include, Ical::Helpers::UiEventHelper
