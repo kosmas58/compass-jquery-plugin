@@ -164,9 +164,14 @@ tr.ui-search-toolbar select {
 .ui-jqgrid .ui-jqgrid-btable {
     table-layout: fixed;
     margin: 0em;
+    outline-style: none;
 }
 
 .ui-jqgrid tr.jqgrow {
+    outline-style: none;
+}
+
+.ui-jqgrid tr.jqgroup {
     outline-style: none;
 }
 

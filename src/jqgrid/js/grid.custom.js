@@ -64,7 +64,7 @@
             reload = false;
           }
           if (sort) {
-            $t.sortData("jqgh_" + colname, idx, reload, sor);
+            $t.sortData("jqgh_" + $t.p.id + "_" + colname, idx, reload, sor);
           }
         }
       });

@@ -1,528 +1,616 @@
-(function( jQuery ) {
+(function(jQuery) {
 
-var elemdisplay = {},
-	rfxtypes = /^(?:toggle|show|hide)$/,
-	rfxnum = /^([+\-]=)?([\d+.\-]+)([a-z%]*)$/i,
-	timerId,
-	fxAttrs = [
-		// height animations
-		[ "height", "marginTop", "marginBottom", "paddingTop", "paddingBottom" ],
-		// width animations
-		[ "width", "marginLeft", "marginRight", "paddingLeft", "paddingRight" ],
-		// opacity animations
-		[ "opacity" ]
-	];
+  var elemdisplay = {},
+          iframe, iframeDoc,
+          rfxtypes = /^(?:toggle|show|hide)$/,
+          rfxnum = /^([+\-]=)?([\d+.\-]+)([a-z%]*)$/i,
+          timerId,
+          fxAttrs = [
+            // height animations
+            [ "height", "marginTop", "marginBottom", "paddingTop", "paddingBottom" ],
+            // width animations
+            [ "width", "marginLeft", "marginRight", "paddingLeft", "paddingRight" ],
+            // opacity animations
+            [ "opacity" ]
+          ],
+          fxNow,
+          requestAnimationFrame = window.webkitRequestAnimationFrame ||
+                  window.mozRequestAnimationFrame ||
+                  window.oRequestAnimationFrame;
 
-jQuery.fn.extend({
-	show: function( speed, easing, callback ) {
-		var elem, display;
+  jQuery.fn.extend({
+    show: function(speed, easing, callback) {
+      var elem, display;
 
-		if ( speed || speed === 0 ) {
-			return this.animate( genFx("show", 3), speed, easing, callback);
+      if (speed || speed === 0) {
+        return this.animate(genFx("show", 3), speed, easing, callback);
 
-		} else {
-			for ( var i = 0, j = this.length; i < j; i++ ) {
-				elem = this[i];
-				display = elem.style.display;
+      } else {
+        for (var i = 0, j = this.length; i < j; i++) {
+          elem = this[i];
 
-				// Reset the inline display of this element to learn if it is
-				// being hidden by cascaded rules or not
-				if ( !jQuery._data(elem, "olddisplay") && display === "none" ) {
-					display = elem.style.display = "";
-				}
+          if (elem.style) {
+            display = elem.style.display;
 
-				// Set elements which have been overridden with display: none
-				// in a stylesheet to whatever the default browser style is
-				// for such an element
-				if ( display === "" && jQuery.css( elem, "display" ) === "none" ) {
-					jQuery._data(elem, "olddisplay", defaultDisplay(elem.nodeName));
-				}
-			}
+            // Reset the inline display of this element to learn if it is
+            // being hidden by cascaded rules or not
+            if (!jQuery._data(elem, "olddisplay") && display === "none") {
+              display = elem.style.display = "";
+            }
 
-			// Set the display of most of the elements in a second loop
-			// to avoid the constant reflow
-			for ( i = 0; i < j; i++ ) {
-				elem = this[i];
-				display = elem.style.display;
+            // Set elements which have been overridden with display: none
+            // in a stylesheet to whatever the default browser style is
+            // for such an element
+            if (display === "" && jQuery.css(elem, "display") === "none") {
+              jQuery._data(elem, "olddisplay", defaultDisplay(elem.nodeName));
+            }
+          }
+        }
 
-				if ( display === "" || display === "none" ) {
-					elem.style.display = jQuery._data(elem, "olddisplay") || "";
-				}
-			}
+        // Set the display of most of the elements in a second loop
+        // to avoid the constant reflow
+        for (i = 0; i < j; i++) {
+          elem = this[i];
 
-			return this;
-		}
-	},
+          if (elem.style) {
+            display = elem.style.display;
 
-	hide: function( speed, easing, callback ) {
-		if ( speed || speed === 0 ) {
-			return this.animate( genFx("hide", 3), speed, easing, callback);
+            if (display === "" || display === "none") {
+              elem.style.display = jQuery._data(elem, "olddisplay") || "";
+            }
+          }
+        }
 
-		} else {
-			for ( var i = 0, j = this.length; i < j; i++ ) {
-				var display = jQuery.css( this[i], "display" );
+        return this;
+      }
+    },
 
-				if ( display !== "none" && !jQuery._data( this[i], "olddisplay" ) ) {
-					jQuery._data( this[i], "olddisplay", display );
-				}
-			}
+    hide: function(speed, easing, callback) {
+      if (speed || speed === 0) {
+        return this.animate(genFx("hide", 3), speed, easing, callback);
 
-			// Set the display of the elements in a second loop
-			// to avoid the constant reflow
-			for ( i = 0; i < j; i++ ) {
-				this[i].style.display = "none";
-			}
+      } else {
+        for (var i = 0, j = this.length; i < j; i++) {
+          if (this[i].style) {
+            var display = jQuery.css(this[i], "display");
 
-			return this;
-		}
-	},
+            if (display !== "none" && !jQuery._data(this[i], "olddisplay")) {
+              jQuery._data(this[i], "olddisplay", display);
+            }
+          }
+        }
 
-	// Save the old toggle function
-	_toggle: jQuery.fn.toggle,
+        // Set the display of the elements in a second loop
+        // to avoid the constant reflow
+        for (i = 0; i < j; i++) {
+          if (this[i].style) {
+            this[i].style.display = "none";
+          }
+        }
 
-	toggle: function( fn, fn2, callback ) {
-		var bool = typeof fn === "boolean";
+        return this;
+      }
+    },
 
-		if ( jQuery.isFunction(fn) && jQuery.isFunction(fn2) ) {
-			this._toggle.apply( this, arguments );
+    // Save the old toggle function
+    _toggle: jQuery.fn.toggle,
 
-		} else if ( fn == null || bool ) {
-			this.each(function() {
-				var state = bool ? fn : jQuery(this).is(":hidden");
-				jQuery(this)[ state ? "show" : "hide" ]();
-			});
+    toggle: function(fn, fn2, callback) {
+      var bool = typeof fn === "boolean";
 
-		} else {
-			this.animate(genFx("toggle", 3), fn, fn2, callback);
-		}
+      if (jQuery.isFunction(fn) && jQuery.isFunction(fn2)) {
+        this._toggle.apply(this, arguments);
 
-		return this;
-	},
+      } else if (fn == null || bool) {
+        this.each(function() {
+          var state = bool ? fn : jQuery(this).is(":hidden");
+          jQuery(this)[ state ? "show" : "hide" ]();
+        });
 
-	fadeTo: function( speed, to, easing, callback ) {
-		return this.filter(":hidden").css("opacity", 0).show().end()
-					.animate({opacity: to}, speed, easing, callback);
-	},
+      } else {
+        this.animate(genFx("toggle", 3), fn, fn2, callback);
+      }
 
-	animate: function( prop, speed, easing, callback ) {
-		var optall = jQuery.speed(speed, easing, callback);
+      return this;
+    },
 
-		if ( jQuery.isEmptyObject( prop ) ) {
-			return this.each( optall.complete );
-		}
+    fadeTo: function(speed, to, easing, callback) {
+      return this.filter(":hidden").css("opacity", 0).show().end()
+              .animate({opacity: to}, speed, easing, callback);
+    },
 
-		return this[ optall.queue === false ? "each" : "queue" ](function() {
-			// XXX 'this' does not always have a nodeName when running the
-			// test suite
+    animate: function(prop, speed, easing, callback) {
+      var optall = jQuery.speed(speed, easing, callback);
 
-			var opt = jQuery.extend({}, optall), p,
-				isElement = this.nodeType === 1,
-				hidden = isElement && jQuery(this).is(":hidden"),
-				self = this;
+      if (jQuery.isEmptyObject(prop)) {
+        return this.each(optall.complete, [ false ]);
+      }
 
-			for ( p in prop ) {
-				var name = jQuery.camelCase( p );
+      return this[ optall.queue === false ? "each" : "queue" ](function() {
+        // XXX 'this' does not always have a nodeName when running the
+        // test suite
 
-				if ( p !== name ) {
-					prop[ name ] = prop[ p ];
-					delete prop[ p ];
-					p = name;
-				}
+        if (optall.queue === false) {
+          jQuery._mark(this);
+        }
 
-				if ( prop[p] === "hide" && hidden || prop[p] === "show" && !hidden ) {
-					return opt.complete.call(this);
-				}
+        var opt = jQuery.extend({}, optall),
+                isElement = this.nodeType === 1,
+                hidden = isElement && jQuery(this).is(":hidden"),
+                name, val, p,
+                display, e,
+                parts, start, end, unit;
 
-				if ( isElement && ( p === "height" || p === "width" ) ) {
-					// Make sure that nothing sneaks out
-					// Record all 3 overflow attributes because IE does not
-					// change the overflow attribute when overflowX and
-					// overflowY are set to the same value
-					opt.overflow = [ this.style.overflow, this.style.overflowX, this.style.overflowY ];
+        // will store per property easing and be used to determine when an animation is complete
+        opt.animatedProperties = {};
 
-					// Set display property to inline-block for height/width
-					// animations on inline elements that are having width/height
-					// animated
-					if ( jQuery.css( this, "display" ) === "inline" &&
-							jQuery.css( this, "float" ) === "none" ) {
-						if ( !jQuery.support.inlineBlockNeedsLayout ) {
-							this.style.display = "inline-block";
+        for (p in prop) {
 
-						} else {
-							var display = defaultDisplay(this.nodeName);
+          // property name normalization
+          name = jQuery.camelCase(p);
+          if (p !== name) {
+            prop[ name ] = prop[ p ];
+            delete prop[ p ];
+          }
 
-							// inline-level elements accept inline-block;
-							// block-level elements need to be inline with layout
-							if ( display === "inline" ) {
-								this.style.display = "inline-block";
+          val = prop[name];
 
-							} else {
-								this.style.display = "inline";
-								this.style.zoom = 1;
-							}
-						}
-					}
-				}
+          if (val === "hide" && hidden || val === "show" && !hidden) {
+            return opt.complete.call(this);
+          }
 
-				if ( jQuery.isArray( prop[p] ) ) {
-					// Create (if needed) and add to specialEasing
-					(opt.specialEasing = opt.specialEasing || {})[p] = prop[p][1];
-					prop[p] = prop[p][0];
-				}
-			}
+          if (isElement && ( name === "height" || name === "width" )) {
+            // Make sure that nothing sneaks out
+            // Record all 3 overflow attributes because IE does not
+            // change the overflow attribute when overflowX and
+            // overflowY are set to the same value
+            opt.overflow = [ this.style.overflow, this.style.overflowX, this.style.overflowY ];
 
-			if ( opt.overflow != null ) {
-				this.style.overflow = "hidden";
-			}
+            // Set display property to inline-block for height/width
+            // animations on inline elements that are having width/height
+            // animated
+            if (jQuery.css(this, "display") === "inline" &&
+                    jQuery.css(this, "float") === "none") {
+              if (!jQuery.support.inlineBlockNeedsLayout) {
+                this.style.display = "inline-block";
 
-			opt.curAnim = jQuery.extend({}, prop);
+              } else {
+                display = defaultDisplay(this.nodeName);
 
-			jQuery.each( prop, function( name, val ) {
-				var e = new jQuery.fx( self, opt, name );
+                // inline-level elements accept inline-block;
+                // block-level elements need to be inline with layout
+                if (display === "inline") {
+                  this.style.display = "inline-block";
 
-				if ( rfxtypes.test(val) ) {
-					e[ val === "toggle" ? hidden ? "show" : "hide" : val ]( prop );
+                } else {
+                  this.style.display = "inline";
+                  this.style.zoom = 1;
+                }
+              }
+            }
+          }
 
-				} else {
-					var parts = rfxnum.exec(val),
-						start = e.cur();
+          // easing resolution: per property > opt.specialEasing > opt.easing > 'swing' (default)
+          opt.animatedProperties[name] = jQuery.isArray(val) ?
+                  val[1] :
+                  opt.specialEasing && opt.specialEasing[name] || opt.easing || 'swing';
+        }
 
-					if ( parts ) {
-						var end = parseFloat( parts[2] ),
-							unit = parts[3] || ( jQuery.cssNumber[ name ] ? "" : "px" );
+        if (opt.overflow != null) {
+          this.style.overflow = "hidden";
+        }
 
-						// We need to compute starting value
-						if ( unit !== "px" ) {
-							jQuery.style( self, name, (end || 1) + unit);
-							start = ((end || 1) / e.cur()) * start;
-							jQuery.style( self, name, start + unit);
-						}
+        for (p in prop) {
+          e = new jQuery.fx(this, opt, p);
 
-						// If a +=/-= token was provided, we're doing a relative animation
-						if ( parts[1] ) {
-							end = ((parts[1] === "-=" ? -1 : 1) * end) + start;
-						}
+          val = prop[p];
 
-						e.custom( start, end, unit );
+          if (rfxtypes.test(val)) {
+            e[ val === "toggle" ? hidden ? "show" : "hide" : val ]();
 
-					} else {
-						e.custom( start, val, "" );
-					}
-				}
-			});
+          } else {
+            parts = rfxnum.exec(val);
+            start = e.cur();
 
-			// For JS strict compliance
-			return true;
-		});
-	},
+            if (parts) {
+              end = parseFloat(parts[2]);
+              unit = parts[3] || ( jQuery.cssNumber[ name ] ? "" : "px" );
 
-	stop: function( clearQueue, gotoEnd ) {
-		var timers = jQuery.timers;
+              // We need to compute starting value
+              if (unit !== "px") {
+                jQuery.style(this, p, (end || 1) + unit);
+                start = ((end || 1) / e.cur()) * start;
+                jQuery.style(this, p, start + unit);
+              }
 
-		if ( clearQueue ) {
-			this.queue([]);
-		}
+              // If a +=/-= token was provided, we're doing a relative animation
+              if (parts[1]) {
+                end = ((parts[1] === "-=" ? -1 : 1) * end) + start;
+              }
 
-		this.each(function() {
-			// go in reverse order so anything added to the queue during the loop is ignored
-			for ( var i = timers.length - 1; i >= 0; i-- ) {
-				if ( timers[i].elem === this ) {
-					if (gotoEnd) {
-						// force the next step to be the last
-						timers[i](true);
-					}
+              e.custom(start, end, unit);
 
-					timers.splice(i, 1);
-				}
-			}
-		});
+            } else {
+              e.custom(start, val, "");
+            }
+          }
+        }
 
-		// start the next in the queue if the last step wasn't forced
-		if ( !gotoEnd ) {
-			this.dequeue();
-		}
+        // For JS strict compliance
+        return true;
+      });
+    },
 
-		return this;
-	}
+    stop: function(clearQueue, gotoEnd) {
+      if (clearQueue) {
+        this.queue([]);
+      }
 
-});
+      this.each(function() {
+        var timers = jQuery.timers,
+                i = timers.length;
+        // clear marker counters if we know they won't be
+        if (!gotoEnd) {
+          jQuery._unmark(true, this);
+        }
+        // go in reverse order so anything added to the queue during the loop is ignored
+        while (i--) {
+          if (timers[i].elem === this) {
+            if (gotoEnd) {
+              // force the next step to be the last
+              timers[i](true);
+            }
 
-function genFx( type, num ) {
-	var obj = {};
+            timers.splice(i, 1);
+          }
+        }
+      });
 
-	jQuery.each( fxAttrs.concat.apply([], fxAttrs.slice(0,num)), function() {
-		obj[ this ] = type;
-	});
+      // start the next in the queue if the last step wasn't forced
+      if (!gotoEnd) {
+        this.dequeue();
+      }
 
-	return obj;
-}
+      return this;
+    }
+
+  });
+
+// Animations created synchronously will run synchronously
+  function createFxNow() {
+    setTimeout(clearFxNow, 0);
+    return ( fxNow = jQuery.now() );
+  }
+
+  function clearFxNow() {
+    fxNow = undefined;
+  }
+
+// Generate parameters to create a standard animation
+  function genFx(type, num) {
+    var obj = {};
+
+    jQuery.each(fxAttrs.concat.apply([], fxAttrs.slice(0, num)), function() {
+      obj[ this ] = type;
+    });
+
+    return obj;
+  }
 
 // Generate shortcuts for custom animations
-jQuery.each({
-	slideDown: genFx("show", 1),
-	slideUp: genFx("hide", 1),
-	slideToggle: genFx("toggle", 1),
-	fadeIn: { opacity: "show" },
-	fadeOut: { opacity: "hide" },
-	fadeToggle: { opacity: "toggle" }
-}, function( name, props ) {
-	jQuery.fn[ name ] = function( speed, easing, callback ) {
-		return this.animate( props, speed, easing, callback );
-	};
-});
+  jQuery.each({
+    slideDown: genFx("show", 1),
+    slideUp: genFx("hide", 1),
+    slideToggle: genFx("toggle", 1),
+    fadeIn: { opacity: "show" },
+    fadeOut: { opacity: "hide" },
+    fadeToggle: { opacity: "toggle" }
+  }, function(name, props) {
+    jQuery.fn[ name ] = function(speed, easing, callback) {
+      return this.animate(props, speed, easing, callback);
+    };
+  });
 
-jQuery.extend({
-	speed: function( speed, easing, fn ) {
-		var opt = speed && typeof speed === "object" ? jQuery.extend({}, speed) : {
-			complete: fn || !fn && easing ||
-				jQuery.isFunction( speed ) && speed,
-			duration: speed,
-			easing: fn && easing || easing && !jQuery.isFunction(easing) && easing
-		};
+  jQuery.extend({
+    speed: function(speed, easing, fn) {
+      var opt = speed && typeof speed === "object" ? jQuery.extend({}, speed) : {
+        complete: fn || !fn && easing ||
+                jQuery.isFunction(speed) && speed,
+        duration: speed,
+        easing: fn && easing || easing && !jQuery.isFunction(easing) && easing
+      };
 
-		opt.duration = jQuery.fx.off ? 0 : typeof opt.duration === "number" ? opt.duration :
-			opt.duration in jQuery.fx.speeds ? jQuery.fx.speeds[opt.duration] : jQuery.fx.speeds._default;
+      opt.duration = jQuery.fx.off ? 0 : typeof opt.duration === "number" ? opt.duration :
+              opt.duration in jQuery.fx.speeds ? jQuery.fx.speeds[opt.duration] : jQuery.fx.speeds._default;
 
-		// Queueing
-		opt.old = opt.complete;
-		opt.complete = function() {
-			if ( opt.queue !== false ) {
-				jQuery(this).dequeue();
-			}
-			if ( jQuery.isFunction( opt.old ) ) {
-				opt.old.call( this );
-			}
-		};
+      // Queueing
+      opt.old = opt.complete;
+      opt.complete = function(noUnmark) {
+        if (opt.queue !== false) {
+          jQuery.dequeue(this);
+        } else if (noUnmark !== false) {
+          jQuery._unmark(this);
+        }
 
-		return opt;
-	},
+        if (jQuery.isFunction(opt.old)) {
+          opt.old.call(this);
+        }
+      };
 
-	easing: {
-		linear: function( p, n, firstNum, diff ) {
-			return firstNum + diff * p;
-		},
-		swing: function( p, n, firstNum, diff ) {
-			return ((-Math.cos(p*Math.PI)/2) + 0.5) * diff + firstNum;
-		}
-	},
+      return opt;
+    },
 
-	timers: [],
+    easing: {
+      linear: function(p, n, firstNum, diff) {
+        return firstNum + diff * p;
+      },
+      swing: function(p, n, firstNum, diff) {
+        return ((-Math.cos(p * Math.PI) / 2) + 0.5) * diff + firstNum;
+      }
+    },
 
-	fx: function( elem, options, prop ) {
-		this.options = options;
-		this.elem = elem;
-		this.prop = prop;
+    timers: [],
 
-		if ( !options.orig ) {
-			options.orig = {};
-		}
-	}
+    fx: function(elem, options, prop) {
+      this.options = options;
+      this.elem = elem;
+      this.prop = prop;
 
-});
+      options.orig = options.orig || {};
+    }
 
-jQuery.fx.prototype = {
-	// Simple function for setting a style value
-	update: function() {
-		if ( this.options.step ) {
-			this.options.step.call( this.elem, this.now, this );
-		}
+  });
 
-		(jQuery.fx.step[this.prop] || jQuery.fx.step._default)( this );
-	},
+  jQuery.fx.prototype = {
+    // Simple function for setting a style value
+    update: function() {
+      if (this.options.step) {
+        this.options.step.call(this.elem, this.now, this);
+      }
 
-	// Get the current size
-	cur: function() {
-		if ( this.elem[this.prop] != null && (!this.elem.style || this.elem.style[this.prop] == null) ) {
-			return this.elem[ this.prop ];
-		}
+      (jQuery.fx.step[this.prop] || jQuery.fx.step._default)(this);
+    },
 
-		var parsed,
-			r = jQuery.css( this.elem, this.prop );
-		// Empty strings, null, undefined and "auto" are converted to 0,
-		// complex values such as "rotate(1rad)" are returned as is,
-		// simple values such as "10px" are parsed to Float.
-		return isNaN( parsed = parseFloat( r ) ) ? !r || r === "auto" ? 0 : r : parsed;
-	},
+    // Get the current size
+    cur: function() {
+      if (this.elem[this.prop] != null && (!this.elem.style || this.elem.style[this.prop] == null)) {
+        return this.elem[ this.prop ];
+      }
 
-	// Start an animation from one number to another
-	custom: function( from, to, unit ) {
-		var self = this,
-			fx = jQuery.fx;
+      var parsed,
+              r = jQuery.css(this.elem, this.prop);
+      // Empty strings, null, undefined and "auto" are converted to 0,
+      // complex values such as "rotate(1rad)" are returned as is,
+      // simple values such as "10px" are parsed to Float.
+      return isNaN(parsed = parseFloat(r)) ? !r || r === "auto" ? 0 : r : parsed;
+    },
 
-		this.startTime = jQuery.now();
-		this.start = from;
-		this.end = to;
-		this.unit = unit || this.unit || ( jQuery.cssNumber[ this.prop ] ? "" : "px" );
-		this.now = this.start;
-		this.pos = this.state = 0;
+    // Start an animation from one number to another
+    custom: function(from, to, unit) {
+      var self = this,
+              fx = jQuery.fx,
+              raf;
 
-		function t( gotoEnd ) {
-			return self.step(gotoEnd);
-		}
+      this.startTime = fxNow || createFxNow();
+      this.start = from;
+      this.end = to;
+      this.unit = unit || this.unit || ( jQuery.cssNumber[ this.prop ] ? "" : "px" );
+      this.now = this.start;
+      this.pos = this.state = 0;
 
-		t.elem = this.elem;
+      function t(gotoEnd) {
+        return self.step(gotoEnd);
+      }
 
-		if ( t() && jQuery.timers.push(t) && !timerId ) {
-			timerId = setInterval(fx.tick, fx.interval);
-		}
-	},
+      t.elem = this.elem;
 
-	// Simple 'show' function
-	show: function() {
-		// Remember where we started, so that we can go back to it later
-		this.options.orig[this.prop] = jQuery.style( this.elem, this.prop );
-		this.options.show = true;
+      if (t() && jQuery.timers.push(t) && !timerId) {
+        // Use requestAnimationFrame instead of setInterval if available
+        if (requestAnimationFrame) {
+          timerId = 1;
+          raf = function() {
+            // When timerId gets set to null at any point, this stops
+            if (timerId) {
+              requestAnimationFrame(raf);
+              fx.tick();
+            }
+          };
+          requestAnimationFrame(raf);
+        } else {
+          timerId = setInterval(fx.tick, fx.interval);
+        }
+      }
+    },
 
-		// Begin the animation
-		// Make sure that we start at a small width/height to avoid any
-		// flash of content
-		this.custom(this.prop === "width" || this.prop === "height" ? 1 : 0, this.cur());
+    // Simple 'show' function
+    show: function() {
+      // Remember where we started, so that we can go back to it later
+      this.options.orig[this.prop] = jQuery.style(this.elem, this.prop);
+      this.options.show = true;
 
-		// Start by showing the element
-		jQuery( this.elem ).show();
-	},
+      // Begin the animation
+      // Make sure that we start at a small width/height to avoid any
+      // flash of content
+      this.custom(this.prop === "width" || this.prop === "height" ? 1 : 0, this.cur());
 
-	// Simple 'hide' function
-	hide: function() {
-		// Remember where we started, so that we can go back to it later
-		this.options.orig[this.prop] = jQuery.style( this.elem, this.prop );
-		this.options.hide = true;
+      // Start by showing the element
+      jQuery(this.elem).show();
+    },
 
-		// Begin the animation
-		this.custom(this.cur(), 0);
-	},
+    // Simple 'hide' function
+    hide: function() {
+      // Remember where we started, so that we can go back to it later
+      this.options.orig[this.prop] = jQuery.style(this.elem, this.prop);
+      this.options.hide = true;
 
-	// Each step of an animation
-	step: function( gotoEnd ) {
-		var t = jQuery.now(), done = true;
+      // Begin the animation
+      this.custom(this.cur(), 0);
+    },
 
-		if ( gotoEnd || t >= this.options.duration + this.startTime ) {
-			this.now = this.end;
-			this.pos = this.state = 1;
-			this.update();
+    // Each step of an animation
+    step: function(gotoEnd) {
+      var t = fxNow || createFxNow(),
+              done = true,
+              elem = this.elem,
+              options = this.options,
+              i, n;
 
-			this.options.curAnim[ this.prop ] = true;
+      if (gotoEnd || t >= options.duration + this.startTime) {
+        this.now = this.end;
+        this.pos = this.state = 1;
+        this.update();
 
-			for ( var i in this.options.curAnim ) {
-				if ( this.options.curAnim[i] !== true ) {
-					done = false;
-				}
-			}
+        options.animatedProperties[ this.prop ] = true;
 
-			if ( done ) {
-				// Reset the overflow
-				if ( this.options.overflow != null && !jQuery.support.shrinkWrapBlocks ) {
-					var elem = this.elem,
-						options = this.options;
+        for (i in options.animatedProperties) {
+          if (options.animatedProperties[i] !== true) {
+            done = false;
+          }
+        }
 
-					jQuery.each( [ "", "X", "Y" ], function (index, value) {
-						elem.style[ "overflow" + value ] = options.overflow[index];
-					} );
-				}
+        if (done) {
+          // Reset the overflow
+          if (options.overflow != null && !jQuery.support.shrinkWrapBlocks) {
 
-				// Hide the element if the "hide" operation was done
-				if ( this.options.hide ) {
-					jQuery(this.elem).hide();
-				}
+            jQuery.each([ "", "X", "Y" ], function (index, value) {
+              elem.style[ "overflow" + value ] = options.overflow[index];
+            });
+          }
 
-				// Reset the properties, if the item has been hidden or shown
-				if ( this.options.hide || this.options.show ) {
-					for ( var p in this.options.curAnim ) {
-						jQuery.style( this.elem, p, this.options.orig[p] );
-					}
-				}
+          // Hide the element if the "hide" operation was done
+          if (options.hide) {
+            jQuery(elem).hide();
+          }
 
-				// Execute the complete function
-				this.options.complete.call( this.elem );
-			}
+          // Reset the properties, if the item has been hidden or shown
+          if (options.hide || options.show) {
+            for (var p in options.animatedProperties) {
+              jQuery.style(elem, p, options.orig[p]);
+            }
+          }
 
-			return false;
+          // Execute the complete function
+          options.complete.call(elem);
+        }
 
-		} else {
-			var n = t - this.startTime;
-			this.state = n / this.options.duration;
+        return false;
 
-			// Perform the easing function, defaults to swing
-			var specialEasing = this.options.specialEasing && this.options.specialEasing[this.prop];
-			var defaultEasing = this.options.easing || (jQuery.easing.swing ? "swing" : "linear");
-			this.pos = jQuery.easing[specialEasing || defaultEasing](this.state, n, 0, 1, this.options.duration);
-			this.now = this.start + ((this.end - this.start) * this.pos);
+      } else {
+        // classical easing cannot be used with an Infinity duration
+        if (options.duration == Infinity) {
+          this.now = t;
+        } else {
+          n = t - this.startTime;
 
-			// Perform the next step of the animation
-			this.update();
-		}
+          this.state = n / options.duration;
+          // Perform the easing function, defaults to swing
+          this.pos = jQuery.easing[options.animatedProperties[this.prop]](this.state, n, 0, 1, options.duration);
+          this.now = this.start + ((this.end - this.start) * this.pos);
+        }
+        // Perform the next step of the animation
+        this.update();
+      }
 
-		return true;
-	}
-};
+      return true;
+    }
+  };
 
-jQuery.extend( jQuery.fx, {
-	tick: function() {
-		var timers = jQuery.timers;
+  jQuery.extend(jQuery.fx, {
+    tick: function() {
+      var timers = jQuery.timers,
+              i = timers.length;
+      while (i--) {
+        if (!timers[i]()) {
+          timers.splice(i, 1);
+        }
+      }
 
-		for ( var i = 0; i < timers.length; i++ ) {
-			if ( !timers[i]() ) {
-				timers.splice(i--, 1);
-			}
-		}
+      if (!timers.length) {
+        jQuery.fx.stop();
+      }
+    },
 
-		if ( !timers.length ) {
-			jQuery.fx.stop();
-		}
-	},
+    interval: 13,
 
-	interval: 13,
+    stop: function() {
+      clearInterval(timerId);
+      timerId = null;
+    },
 
-	stop: function() {
-		clearInterval( timerId );
-		timerId = null;
-	},
+    speeds: {
+      slow: 600,
+      fast: 200,
+      // Default speed
+      _default: 400
+    },
 
-	speeds: {
-		slow: 600,
-		fast: 200,
-		// Default speed
-		_default: 400
-	},
+    step: {
+      opacity: function(fx) {
+        jQuery.style(fx.elem, "opacity", fx.now);
+      },
 
-	step: {
-		opacity: function( fx ) {
-			jQuery.style( fx.elem, "opacity", fx.now );
-		},
+      _default: function(fx) {
+        if (fx.elem.style && fx.elem.style[ fx.prop ] != null) {
+          fx.elem.style[ fx.prop ] = (fx.prop === "width" || fx.prop === "height" ? Math.max(0, fx.now) : fx.now) + fx.unit;
+        } else {
+          fx.elem[ fx.prop ] = fx.now;
+        }
+      }
+    }
+  });
 
-		_default: function( fx ) {
-			if ( fx.elem.style && fx.elem.style[ fx.prop ] != null ) {
-				fx.elem.style[ fx.prop ] = (fx.prop === "width" || fx.prop === "height" ? Math.max(0, fx.now) : fx.now) + fx.unit;
-			} else {
-				fx.elem[ fx.prop ] = fx.now;
-			}
-		}
-	}
-});
+  if (jQuery.expr && jQuery.expr.filters) {
+    jQuery.expr.filters.animated = function(elem) {
+      return jQuery.grep(jQuery.timers,
+              function(fn) {
+                return elem === fn.elem;
+              }).length;
+    };
+  }
 
-if ( jQuery.expr && jQuery.expr.filters ) {
-	jQuery.expr.filters.animated = function( elem ) {
-		return jQuery.grep(jQuery.timers, function( fn ) {
-			return elem === fn.elem;
-		}).length;
-	};
-}
+// Try to restore the default display value of an element
+  function defaultDisplay(nodeName) {
 
-function defaultDisplay( nodeName ) {
-	if ( !elemdisplay[ nodeName ] ) {
-		var elem = jQuery("<" + nodeName + ">").appendTo("body"),
-			display = elem.css("display");
+    if (!elemdisplay[ nodeName ]) {
 
-		elem.remove();
+      var elem = jQuery("<" + nodeName + ">").appendTo("body"),
+              display = elem.css("display");
 
-		if ( display === "none" || display === "" ) {
-			display = "block";
-		}
+      elem.remove();
 
-		elemdisplay[ nodeName ] = display;
-	}
+      // If the simple way fails,
+      // get element's real default display by attaching it to a temp iframe
+      if (display === "none" || display === "") {
+        // No iframe to use yet, so create it
+        if (!iframe) {
+          iframe = document.createElement("iframe");
+          iframe.frameBorder = iframe.width = iframe.height = 0;
+        }
 
-	return elemdisplay[ nodeName ];
-}
+        document.body.appendChild(iframe);
 
-})( jQuery );
+        // Create a cacheable copy of the iframe document on first call.
+        // IE and Opera will allow us to reuse the iframeDoc without re-writing the fake html
+        // document to it, Webkit & Firefox won't allow reusing the iframe document
+        if (!iframeDoc || !iframe.createElement) {
+          iframeDoc = ( iframe.contentWindow || iframe.contentDocument ).document;
+          iframeDoc.write("<!doctype><html><body></body></html>");
+        }
+
+        elem = iframeDoc.createElement(nodeName);
+
+        iframeDoc.body.appendChild(elem);
+
+        display = jQuery.css(elem, "display");
+
+        document.body.removeChild(iframe);
+      }
+
+      // Store the correct default display
+      elemdisplay[ nodeName ] = display;
+    }
+
+    return elemdisplay[ nodeName ];
+  }
+
+})(jQuery);

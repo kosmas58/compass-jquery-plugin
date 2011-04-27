@@ -21,6 +21,7 @@ all_scripts = [
     'js/jquery.mobile.page.js',
     'js/jquery.mobile.core.js',
     'js/jquery.mobile.navigation.js',
+    'js/jquery.mobile.transition.js',
     'js/jquery.mobile.fixHeaderFooter.js',
     'js/jquery.mobile.forms.checkboxradio.js',
     'js/jquery.mobile.forms.textinput.js',

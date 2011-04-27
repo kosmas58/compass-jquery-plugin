@@ -1,5 +1,3 @@
-
-
 //quick & dirty theme switcher, written to potentially work as a bookmarklet
 (function($) {
   $.themeswitcher = function() {
@@ -7,7 +5,7 @@
       return;
     }
     //var themesDir = 'http://jquerymobile.com/test/themes/',
-   var themesDir = '/stylesheets/compiled/jquery/mobile/',
+    var themesDir = '/stylesheets/compiled/jquery/mobile/',
             themes = ['default','valencia'],
             currentPage = $.mobile.activePage,
             menuPage = $('<div data-' + $.mobile.ns + 'url="themeswitcher" data-' + $.mobile.ns + 'role=\'dialog\' data-' + $.mobile.ns + 'theme=\'a\'>' +
