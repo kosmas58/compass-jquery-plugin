@@ -73,13 +73,16 @@ namespace :build do
           'outro.js'
       ].collect { |filename| File.read(File.join(JQUERY_SRC, 'js', filename)) }.join "\n\n"
 
+      scripts = ""
+
       open File.join(JQUERY_DEST_TEMPLATES, 'jquery.js'), 'w' do |f|
-        f.print set_version(concat_files(all_jquery_scripts), File.read(File.join(JQUERY_SRC, 'version.txt')), Time.now().to_s)
+        scripts = concat_files(all_jquery_scripts).gsub(/@VERSION/, File.read(File.join(JQUERY_SRC, 'version.txt'))).gsub(/@DATE/, Time.now().to_s)
+        f.print scripts
       end
       manifest.print "javascript 'jquery.js'\n"
 
       open File.join(JQUERY_DEST_TEMPLATES, 'jquery.min.js'), 'w' do |f|
-        f.print compress_js(all_jquery_scripts, "google")
+        f.print compress_js(scripts, "google")
       end
       manifest.print "javascript 'jquery.min.js'\n"
 

@@ -64,13 +64,16 @@ namespace :build do
 
       #JavaScripts
 
+      scripts = ""
+
       open File.join(MOBILE_DEST_TEMPLATES, 'jquery.mobile.js'), 'w' do |f|
-        f.print set_version(concat_files(all_scripts), File.read(File.join(MOBILE_SRC, 'version.txt')), Time.now().to_s)
+        scripts = concat_files(all_scripts).gsub(/@VERSION/, File.read(File.join(MOBILE_SRC, 'version.txt')))
+        f.print scripts
       end
       manifest.print "javascript 'jquery.mobile.js'\n"
 
       open File.join(MOBILE_DEST_TEMPLATES, 'jquery.mobile.min.js'), 'w' do |f|
-        f.print compress_js(all_scripts, "yui")
+        f.print compress_js(scripts, "yui")
       end
       manifest.print "javascript 'jquery.mobile.min.js'\n"
 

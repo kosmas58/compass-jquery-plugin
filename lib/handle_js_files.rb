@@ -31,10 +31,6 @@ def concat_files(files)
   out
 end
 
-def set_version(files, version, date)
-  files.gsub!(/@VERSION/, version).gsub!(/@DATE/, date)
-end
-
 def all_files(pattern)
   FileList[pattern].collect { |filename| File.read(filename) }.join "\n\n"
 end
