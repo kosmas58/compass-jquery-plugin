@@ -353,7 +353,6 @@
             forward = false,
             pageTitle = document.title;
 
-    $.mobile.pageContainer=container? container : $.mobile.pageContainer;
 
     // If we are trying to transition to the same page that we are currently on ignore the request.
     // an illegal same page request is defined by the current page being the same as the url, as long as there's history
