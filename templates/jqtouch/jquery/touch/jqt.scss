@@ -94,7 +94,7 @@ body {
     text-shadow: rgba(255, 255, 255, 0.7) 0 1px 0; }
   .whiteButton.active, .grayButton.active, .redButton.active, .blueButton.active, .greenButton.active, .whiteButton:active, .grayButton:active, .redButton:active, .blueButton:active, .greenButton:active {
     -webkit-border-image: image_url("jquery/touch/jqt/activeButton.png") 0 12 0 12;
-    color: black !important; }
+    color: #000000 !important; }
   .whiteButton {
     -webkit-border-image: image_url("jquery/touch/jqt/whiteButton.png") 0 12 0 12; }
   .grayButton {

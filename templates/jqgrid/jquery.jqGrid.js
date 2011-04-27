@@ -1761,8 +1761,8 @@
                 return  retresult;
               },
               updatepager = function(rn, dnd) {
-                var cp, last, base, from,to,tot,fmt, pgboxes = "",
-                        tspg = "_" + $.jgrid.jqID(ts.p.pager.substr(1));
+                var cp, last, base, from,to,tot,fmt, pgboxes = "", sppg,
+                        tspg = ts.p.pager ? "_" + $.jgrid.jqID(ts.p.pager.substr(1)) : "";
                 base = parseInt(ts.p.page, 10) - 1;
                 if (base < 0) {
                   base = 0;
@@ -1790,7 +1790,8 @@
                   $(".selbox", pgboxes).attr("disabled", false);
                   if (ts.p.pginput === true) {
                     $('.ui-pg-input', pgboxes).val(ts.p.page);
-                    $('#sp_1' + tspg, pgboxes).html($.fmatter ? $.fmatter.util.NumberFormat(ts.p.lastpage, fmt) : ts.p.lastpage);
+                    sppg = ts.p.toppager ? '#sp_1' + tspg + ",#sp_1" + tspg + "_toppager" : '#sp_1' + tspg;
+                    $(sppg).html($.fmatter ? $.fmatter.util.NumberFormat(ts.p.lastpage, fmt) : ts.p.lastpage);
 
                   }
                   if (ts.p.viewrecords) {
@@ -2487,7 +2488,7 @@
         var tooltip = ts.p.headertitles ? (" title=\"" + $.jgrid.stripHtml(ts.p.colNames[i]) + "\"") : "";
         thead += "<th id='" + ts.p.id + "_" + ts.p.colModel[i].name + "' role='columnheader' class='ui-state-default ui-th-column ui-th-" + dir + "'" + tooltip + ">";
         idn = ts.p.colModel[i].index || ts.p.colModel[i].name;
-        thead += "<div id='jqgh_" + ts.p.colModel[i].name + "' " + tdc + ">" + ts.p.colNames[i];
+        thead += "<div id='jqgh_" + ts.p.id + "_" + ts.p.colModel[i].name + "' " + tdc + ">" + ts.p.colNames[i];
         if (!ts.p.colModel[i].width) {
           ts.p.colModel[i].width = 150;
         }
@@ -2752,8 +2753,8 @@
                     if (e[ts.p.multikey]) {
                       $(ts).jqGrid("setSelection", ptr[0].id, true);
                     } else if (ts.p.multiselect && scb) {
-                      scb = $("[id^=jqg_" + $.jgrid.jqID(ts.p.id) + "_" + "]").attr("checked");
-                      $("[id^=jqg_" + $.jgrid.jqID(ts.p.id) + "_" + "]").attr("checked", !scb);
+                      scb = $("#jqg_" + $.jgrid.jqID(ts.p.id) + "_" + ptr[0].id).attr("checked");
+                      $("#jqg_" + $.jgrid.jqID(ts.p.id) + "_" + ptr[0].id).attr("checked", !scb);
                     }
                   }
                   if ($.isFunction(ts.p.onCellSelect)) {
@@ -4131,7 +4132,7 @@
             reload = false;
           }
           if (sort) {
-            $t.sortData("jqgh_" + colname, idx, reload, sor);
+            $t.sortData("jqgh_" + $t.p.id + "_" + colname, idx, reload, sor);
           }
         }
       });
@@ -12312,7 +12313,7 @@ var xmlJsonClass = {
   $.jgrid.extend({
     sortableColumns : function (tblrow) {
       return this.each(function () {
-        var ts = this;
+        var ts = this, tid = ts.p.id;
 
         function start() {
           ts.p.disableClick = true;
@@ -12322,7 +12323,7 @@ var xmlJsonClass = {
           "tolerance" : "pointer",
           "axis" : "x",
           "scrollSensitivity": "1",
-          "items": '>th:not(:has(#jqgh_cb,#jqgh_rn,#jqgh_subgrid),:hidden)',
+          "items": '>th:not(:has(#jqgh_' + tid + '_cb' + ',#jqgh_' + tid + '_rn' + ',#jqgh_' + tid + '_subgrid),:hidden)',
           "placeholder": {
             element: function(item) {
               var el = $(document.createElement(item[0].nodeName))
@@ -12336,16 +12337,16 @@ var xmlJsonClass = {
             }
           },
           "update": function(event, ui) {
-            var p = $(ui.item).parent();
-            var th = $(">th", p);
-            var colModel = ts.p.colModel;
-            var cmMap = {};
+            var p = $(ui.item).parent(),
+                    th = $(">th", p),
+                    colModel = ts.p.colModel,
+                    cmMap = {}, tid = ts.p.id + "_";
             $.each(colModel, function(i) {
               cmMap[this.name] = i;
             });
             var permutation = [];
             th.each(function(i) {
-              var id = $(">div", this).get(0).id.replace(/^jqgh_/, "");
+              var id = $(">div", this).get(0).id.replace(/^jqgh_/, "").replace(tid, "");
               if (id in cmMap) {
                 permutation.push(cmMap[id]);
               }
