@@ -18,34 +18,27 @@
     },
 
     _create: function() {
-      var $list = this.element,
-              o = this.options;
+      var t = this;
 
       // create listview markup
-      $list
-              .addClass("ui-listview");
+      t.element.addClass(function(i, orig) {
+        return orig + " ui-listview " + ( t.options.inset ? " ui-listview-inset ui-corner-all ui-shadow " : "" );
+      });
 
-      if (o.inset) {
-        $list.addClass("ui-listview-inset ui-corner-all ui-shadow");
-      }
-
-      this.refresh();
+      t.refresh();
     },
 
     _itemApply: function($list, item) {
       // TODO class has to be defined in markup
       item.find(".ui-li-count")
-              .addClass("ui-btn-up-" + ($list.jqmData("counttheme") || this.options.countTheme) + " ui-btn-corner-all");
-
-      item.find("h1, h2, h3, h4, h5, h6").addClass("ui-li-heading");
-
-      item.find("p, dl").addClass("ui-li-desc");
-
-      item.find("img:first-child:eq(0)").addClass("ui-li-thumb").each(function() {
-        item.addClass($(this).is(".ui-li-icon") ? "ui-li-has-icon" : "ui-li-has-thumb");
-      });
-
-      item.find(".ui-li-aside").each(function() {
+              .addClass("ui-btn-up-" + ($list.jqmData("counttheme") || this.options.countTheme) + " ui-btn-corner-all").end()
+              .find("h1, h2, h3, h4, h5, h6").addClass("ui-li-heading").end()
+              .find("p, dl").addClass("ui-li-desc").end()
+              .find("img:first-child:eq(0)").addClass("ui-li-thumb").each(
+              function() {
+                item.addClass($(this).is(".ui-li-icon") ? "ui-li-has-icon" : "ui-li-has-thumb");
+              }).end()
+              .find(".ui-li-aside").each(function() {
         var $this = $(this);
         $this.prependTo($this.parent()); //shift aside to front for css float
       });
@@ -73,8 +66,7 @@
         $list.find(".ui-li-dec").remove();
       }
 
-      var numli = li.length;
-      for (var pos = 0; pos < numli; pos++) {
+      for (var pos = 0, numli = li.length; pos < numli; pos++) {
         var item = li.eq(pos),
                 itemClass = "ui-li";
 
@@ -83,9 +75,8 @@
           continue;
         }
 
-        var itemTheme = item.jqmData("theme") || o.theme;
-
-        var a = item.children("a");
+        var itemTheme = item.jqmData("theme") || o.theme,
+                a = item.children("a");
 
         if (a.length) {
           var icon = item.jqmData("icon");
@@ -121,7 +112,7 @@
                                     iconpos: false
                                   })
                     .find(".ui-btn-inner")
-                    .append($("<span>").buttonMarkup({
+                    .append($("<span />").buttonMarkup({
               shadow: true,
               corners: true,
               theme: splittheme,
@@ -230,7 +221,7 @@
                 newPage.page();
                 var anchor = parent.find('a:first');
                 if (!anchor.length) {
-                  anchor = $("<a></a>").html(nodeEls || title).prependTo(parent.empty());
+                  anchor = $("<a />").html(nodeEls || title).prependTo(parent.empty());
                 }
                 anchor.attr('href', '#' + id);
               }).listview();
