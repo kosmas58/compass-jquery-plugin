@@ -1,7 +1,7 @@
 (function(jQuery) {
 
   var rclass = /[\n\t\r]/g,
-          rspaces = /\s+/,
+          rspace = /\s+/,
           rreturn = /\r/g,
           rtype = /^(?:button|input)$/i,
           rfocusable = /^(?:button|input|object|select|textarea)$/i,
@@ -44,7 +44,7 @@
       }
 
       if (value && typeof value === "string") {
-        var classNames = (value || "").split(rspaces);
+        var classNames = (value || "").split(rspace);
 
         for (var i = 0, l = this.length; i < l; i++) {
           var elem = this[i];
@@ -80,7 +80,7 @@
       }
 
       if ((value && typeof value === "string") || value === undefined) {
-        var classNames = (value || "").split(rspaces);
+        var classNames = (value || "").split(rspace);
 
         for (var i = 0, l = this.length; i < l; i++) {
           var elem = this[i];
@@ -121,7 +121,7 @@
                   i = 0,
                   self = jQuery(this),
                   state = stateVal,
-                  classNames = value.split(rspaces);
+                  classNames = value.split(rspace);
 
           while ((className = classNames[ i++ ])) {
             // check each className given, space seperated list

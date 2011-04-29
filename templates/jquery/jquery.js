@@ -11,7 +11,7 @@
  * Copyright 2011, The Dojo Foundation
  * Released under the MIT, BSD, and GPL Licenses.
  *
- * Date: Thu Apr 28 22:15:18 +0200 2011
+ * Date: Fri Apr 29 19:46:13 +0200 2011
  */
 (function(window, undefined) {
 
@@ -1892,7 +1892,7 @@ var jQuery = (function() {
 (function(jQuery) {
 
   var rclass = /[\n\t\r]/g,
-          rspaces = /\s+/,
+          rspace = /\s+/,
           rreturn = /\r/g,
           rtype = /^(?:button|input)$/i,
           rfocusable = /^(?:button|input|object|select|textarea)$/i,
@@ -1935,7 +1935,7 @@ var jQuery = (function() {
       }
 
       if (value && typeof value === "string") {
-        var classNames = (value || "").split(rspaces);
+        var classNames = (value || "").split(rspace);
 
         for (var i = 0, l = this.length; i < l; i++) {
           var elem = this[i];
@@ -1971,7 +1971,7 @@ var jQuery = (function() {
       }
 
       if ((value && typeof value === "string") || value === undefined) {
-        var classNames = (value || "").split(rspaces);
+        var classNames = (value || "").split(rspace);
 
         for (var i = 0, l = this.length; i < l; i++) {
           var elem = this[i];
@@ -2012,7 +2012,7 @@ var jQuery = (function() {
                   i = 0,
                   self = jQuery(this),
                   state = stateVal,
-                  classNames = value.split(rspaces);
+                  classNames = value.split(rspace);
 
           while ((className = classNames[ i++ ])) {
             // check each className given, space seperated list
@@ -2452,7 +2452,7 @@ var jQuery = (function() {
           rnamespaces = /\.(.*)$/,
           rformElems = /^(?:textarea|input|select)$/i,
           rperiod = /\./g,
-          rspace = / /g,
+          rspaces = / /g,
           rescape = /[^\w\s.|`]/g,
           fcleanup = function(nm) {
             return nm.replace(rescape, "\\$&");
@@ -3629,7 +3629,7 @@ var jQuery = (function() {
   }
 
   function liveConvert(type, selector) {
-    return (type && type !== "*" ? type + "." : "") + selector.replace(rperiod, "`").replace(rspace, "&");
+    return (type && type !== "*" ? type + "." : "") + selector.replace(rperiod, "`").replace(rspaces, "&");
   }
 
   jQuery.each(("blur focus focusin focusout load resize scroll unload click dblclick " +
