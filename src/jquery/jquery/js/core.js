@@ -96,9 +96,10 @@ var jQuery = (function() {
       // Handle HTML strings
       if (typeof selector === "string") {
         // Are we dealing with HTML string or an ID?
-        if (selector.length > 1024) {
-          // Assume very large strings are HTML and skip the regex check
+        if (selector.charAt(0) === "<" && selector.charAt(selector.length - 1) === ">" && selector.length >= 3) {
+          // Assume that strings that start and end with <> are HTML and skip the regex check
           match = [ null, selector, null ];
+
         } else {
           match = quickExpr.exec(selector);
         }
@@ -722,7 +723,7 @@ var jQuery = (function() {
               i = 0,
               length = elems.length,
         // jquery objects are treated as arrays
-              isArray = elems instanceof jQuery || length !== undefined && typeof length === "number" && ( ( length > 0 && elems[ 0 ] && elems[ length - 1 ] ) || jQuery.isArray(elems) );
+              isArray = elems instanceof jQuery || length !== undefined && typeof length === "number" && ( ( length > 0 && elems[ 0 ] && elems[ length - 1 ] ) || length === 0 || jQuery.isArray(elems) );
 
       // Go through the array, translating each of the items to their
       if (isArray) {

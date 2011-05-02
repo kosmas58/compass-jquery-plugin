@@ -11,7 +11,7 @@
  * Copyright 2011, The Dojo Foundation
  * Released under the MIT, BSD, and GPL Licenses.
  *
- * Date: Fri Apr 29 19:46:13 +0200 2011
+ * Date: Mon May 02 19:40:24 +0200 2011
  */
 (function(window, undefined) {
 
@@ -119,9 +119,10 @@ var jQuery = (function() {
       // Handle HTML strings
       if (typeof selector === "string") {
         // Are we dealing with HTML string or an ID?
-        if (selector.length > 1024) {
-          // Assume very large strings are HTML and skip the regex check
+        if (selector.charAt(0) === "<" && selector.charAt(selector.length - 1) === ">" && selector.length >= 3) {
+          // Assume that strings that start and end with <> are HTML and skip the regex check
           match = [ null, selector, null ];
+
         } else {
           match = quickExpr.exec(selector);
         }
@@ -745,7 +746,7 @@ var jQuery = (function() {
               i = 0,
               length = elems.length,
         // jquery objects are treated as arrays
-              isArray = elems instanceof jQuery || length !== undefined && typeof length === "number" && ( ( length > 0 && elems[ 0 ] && elems[ length - 1 ] ) || jQuery.isArray(elems) );
+              isArray = elems instanceof jQuery || length !== undefined && typeof length === "number" && ( ( length > 0 && elems[ 0 ] && elems[ length - 1 ] ) || length === 0 || jQuery.isArray(elems) );
 
       // Go through the array, translating each of the items to their
       if (isArray) {
@@ -1288,7 +1289,9 @@ var jQuery = (function() {
       width: 0,
       height: 0,
       border: 0,
-      margin: 0
+      margin: 0,
+      // Set background to avoid IE crashes when removing (#9028)
+      background: "none"
     };
     for (i in bodyStyle) {
       body.style[ i ] = bodyStyle[ i ];
@@ -1353,6 +1356,7 @@ var jQuery = (function() {
     }
 
     // Remove the body element we added
+    body.innerHTML = "";
     document.documentElement.removeChild(body);
 
     // Technique from Juriy Zaytsev
@@ -1898,6 +1902,7 @@ var jQuery = (function() {
           rfocusable = /^(?:button|input|object|select|textarea)$/i,
           rclickable = /^a(?:rea)?$/i,
           rspecial = /^(?:data-|aria-)/,
+          rinvalidChar = /\:/,
           formHook;
 
   jQuery.fn.extend({
@@ -2200,7 +2205,10 @@ var jQuery = (function() {
 
       // Get the appropriate hook, or the formHook
       // if getSetAttribute is not supported and we have form objects in IE6/7
-      hooks = jQuery.attrHooks[ name ] || ( jQuery.nodeName(elem, "form") && formHook );
+      hooks = jQuery.attrHooks[ name ] ||
+              ( formHook && (jQuery.nodeName(elem, "form") || rinvalidChar.test(name)) ?
+                      formHook :
+                      undefined );
 
       if (value !== undefined) {
 
@@ -2343,10 +2351,11 @@ var jQuery = (function() {
     // Use this for any attribute on a form in IE6/7
     formHook = jQuery.attrHooks.name = jQuery.attrHooks.value = jQuery.valHooks.button = {
       get: function(elem, name) {
+        var ret;
         if (name === "value" && !jQuery.nodeName(elem, "button")) {
           return elem.getAttribute(name);
         }
-        var ret = elem.getAttributeNode(name);
+        ret = elem.getAttributeNode(name);
         // Return undefined if not specified instead of empty string
         return ret && ret.specified ?
                 ret.nodeValue :
