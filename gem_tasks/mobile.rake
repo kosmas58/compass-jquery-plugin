@@ -108,18 +108,31 @@ namespace :build do
 
       Dir.foreach MOBILE_SRC_THEMES do |theme|
         next if /^\./ =~ theme
-        mobile.convert_theme(theme, File.join(MOBILE_SRC_THEMES, theme), File.join(MOBILE_DEST_THEMES))
-        manifest.print "stylesheet 'jquery/mobile/#{theme}.scss'\n"
+        if /\.css$/ =~ theme
+          # 960,gs Stylesheets
+          css = File.read File.join(MOBILE_SRC_THEMES, theme)
+          sass = ''
+          IO.popen("sass-convert -F css -T scss", 'r+') { |f| f.print(css); f.close_write; sass = f.read }
+          theme.gsub!(/\.css$/, '.scss')
+          open File.join(MOBILE_DEST_THEMES, theme), 'w' do |f|
+            f.write sass
+          end
+          manifest.print "stylesheet 'jquery/mobile/#{theme}'\n"
+        else
+          # jQuery Mobile Themes
+          mobile.convert_theme(theme, File.join(MOBILE_SRC_THEMES, theme), File.join(MOBILE_DEST_THEMES))
+          manifest.print "stylesheet 'jquery/mobile/#{theme}.scss'\n"
 
-        # Copy the theme images directory
-        src_dir = File.join(MOBILE_SRC_THEMES, theme, 'images')
-        dest_dir = File.join(MOBILE_DEST_IMAGES, theme)
-        FileUtils.mkdir_p dest_dir
+          # Copy the theme images directory
+          src_dir = File.join(MOBILE_SRC_THEMES, theme, 'images')
+          dest_dir = File.join(MOBILE_DEST_IMAGES, theme)
+          FileUtils.mkdir_p dest_dir
 
-        Dir.foreach(src_dir) do |image|
-          next if /^\./ =~ image
-          FileUtils.cp(File.join(src_dir, image), dest_dir)
-          manifest.print "image 'jquery/mobile/#{theme}/#{image}'\n"
+          Dir.foreach(src_dir) do |image|
+            next if /^\./ =~ image
+            FileUtils.cp(File.join(src_dir, image), dest_dir)
+            manifest.print "image 'jquery/mobile/#{theme}/#{image}'\n"
+          end
         end
       end
 
@@ -155,7 +168,6 @@ namespace :build do
         f.print(File.read(File.join(MOBILE_SRC_IMAGES, 'glyphish', 'Read me first - license.txt')))
       end
       manifest.print "image 'glyphish/License.txt'\n"
-
     end
   end
 end
