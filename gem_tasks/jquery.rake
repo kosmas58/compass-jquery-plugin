@@ -48,7 +48,7 @@ namespace :build do
       end
       manifest.print "file 'lib/tasks/haml.rake'\n"
 
-      # jQuery 1.5.1
+      # jQuery
 
       all_jquery_scripts = [
           'intro.js',
@@ -86,7 +86,7 @@ namespace :build do
       end
       manifest.print "javascript 'jquery.min.js'\n"
 
-      # jQuery 1.5 Plugins
+      # jQuery Plugins
 
       ['plugins'].each do |path|
         Dir.foreach File.join(JQUERY_SRC, path) do |file|
@@ -131,7 +131,7 @@ namespace :build do
         end
       end
 
-      # jQuery.UI 1.8.10
+      # jQuery.UI
 
       # Scripts
 
