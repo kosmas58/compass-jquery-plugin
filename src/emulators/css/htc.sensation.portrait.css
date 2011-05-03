@@ -1,0 +1,21 @@
+.emulator {
+    background: image_url("emulators/htc.sensation.portrait.png") no-repeat;
+    width: 668px;
+    height: 1284px;
+    -moz-transform-origin: 0 0;
+    -o-transform-origin: 0 0;
+    -webkit-transform-origin: 0 0;
+}
+
+.emulator .display-area {
+    position: relative;
+    top: 186px;
+    width: 540px;
+    height: 920px;
+    max-height: 920px;
+    color: #ffffff;
+}
+
+.emulator .display-area a {
+    color: #ff5500;
+}
