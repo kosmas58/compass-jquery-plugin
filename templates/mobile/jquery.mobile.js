@@ -2568,7 +2568,7 @@
                   newPageTitle = html.match(/<title[^>]*>([^<]*)/) && RegExp.$1,
 
             // TODO handle dialogs again
-                  pageElemRegex = new RegExp(".*(<[^>]+\\bdata-" + $.mobile.ns + "role=[\"']?page[\"']?[^>]*>).*"),
+                  pageElemRegex = new RegExp("(<[^>]+\\bdata-" + $.mobile.ns + "role=[\"']?page[\"']?[^>]*>)"),
                   dataUrlRegex = new RegExp("\\bdata-" + $.mobile.ns + "url=[\"']?([^\"'>]*)[\"']?");
 
           // data-url must be provided for the base tag so resource requests can be directed to the
@@ -2877,7 +2877,7 @@
  * http://jquery.org/license
  */
 
-(function($, window, undefined) {
+( function($, window, undefined) {
 
   function css3TransitionHandler(name, reverse, $to, $from) {
     var deferred = new $.Deferred(),

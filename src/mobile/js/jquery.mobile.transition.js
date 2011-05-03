@@ -7,7 +7,7 @@
  * http://jquery.org/license
  */
 
-(function($, window, undefined) {
+( function($, window, undefined) {
 
   function css3TransitionHandler(name, reverse, $to, $from) {
     var deferred = new $.Deferred(),
