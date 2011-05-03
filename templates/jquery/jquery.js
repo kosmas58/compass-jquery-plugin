@@ -1,5 +1,5 @@
 /*!
- * jQuery JavaScript Library v1.6rc1
+ * jQuery JavaScript Library v1.6
  * http://jquery.com/
  *
  * Copyright 2011, John Resig
@@ -11,7 +11,7 @@
  * Copyright 2011, The Dojo Foundation
  * Released under the MIT, BSD, and GPL Licenses.
  *
- * Date: Tue May 03 21:44:03 +0200 2011
+ * Date: Tue May 03 21:54:01 +0200 2011
  */
 (function(window, undefined) {
 
@@ -206,7 +206,7 @@ var jQuery = (function() {
     selector: "",
 
     // The current version of jQuery being used
-    jquery: "1.6rc1",
+    jquery: "1.6",
 
     // The default length of a jQuery object is 0
     length: 0,
