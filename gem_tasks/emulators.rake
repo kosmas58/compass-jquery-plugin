@@ -1,5 +1,6 @@
 require 'fileutils'
-require 'lib/handle_js_files'
+$:.push File.expand_path("../lib", __FILE__)
+require 'handle_js_files'
 
 EMULATORS_SRC = File.join(GEM_ROOT, 'src', 'emulators')
 EMULATORS_SRC_STYLESHEETS = File.join(EMULATORS_SRC, 'css')

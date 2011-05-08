@@ -1,6 +1,7 @@
 require 'fileutils'
-require 'lib/handle_js_files'
-require 'lib/jquery_ui_theme'
+$:.push File.expand_path("../lib", __FILE__)
+require 'handle_js_files'
+require 'jquery_ui_theme'
 
 # Compass generator for jrails 0.1+
 SRC = File.join(GEM_ROOT, 'src', 'jquery')
@@ -29,7 +30,6 @@ namespace :build do
 
     FileUtils.remove_dir JQUERY_DEST_TEMPLATES if File.exists? JQUERY_DEST_TEMPLATES
     FileUtils.mkdir_p(File.join(JQUERY_DEST_TEMPLATES, 'config', 'initializers'))
-    FileUtils.mkdir_p(File.join(JQUERY_DEST_TEMPLATES, 'lib', 'tasks'))
     FileUtils.mkdir_p(File.join(JQUERY_DEST_THEMES))
 
     open File.join(JQUERY_DEST_TEMPLATES, 'manifest.rb'), 'w' do |manifest|
@@ -41,8 +41,7 @@ namespace :build do
         f.print(File.read(File.join(JQUERY_SRC, 'config', 'initializers', 'jquery.rb')))
       end
       manifest.print "file 'config/initializers/jquery.rb'\n"
-
-      # jQuery 1.5.2
+      # jQuery
 
       all_jquery_scripts = [
           'intro.js',
@@ -67,17 +66,20 @@ namespace :build do
           'outro.js'
       ].collect { |filename| File.read(File.join(JQUERY_SRC, 'js', filename)) }.join "\n\n"
 
+      scripts = ""
+
       open File.join(JQUERY_DEST_TEMPLATES, 'jquery.js'), 'w' do |f|
-        f.print set_version(concat_files(all_jquery_scripts), File.read(File.join(JQUERY_SRC, 'version.txt')), Time.now().to_s)
+        scripts = all_jquery_scripts.gsub(/@VERSION/, File.read(File.join(JQUERY_SRC, 'version.txt'))).gsub(/@DATE/, Time.now().to_s)
+        f.print scripts
       end
       manifest.print "javascript 'jquery.js'\n"
 
       open File.join(JQUERY_DEST_TEMPLATES, 'jquery.min.js'), 'w' do |f|
-        f.print compress_js(all_jquery_scripts, "google")
+        f.print compress_js(scripts, "google")
       end
       manifest.print "javascript 'jquery.min.js'\n"
 
-      # jQuery 1.5 Plugins
+      # jQuery Plugins
 
       ['plugins'].each do |path|
         Dir.foreach File.join(JQUERY_SRC, path) do |file|
@@ -122,7 +124,7 @@ namespace :build do
         end
       end
 
-      # jQuery.UI 1.8.10
+      # jQuery.UI
 
       # Scripts
 
@@ -163,7 +165,7 @@ namespace :build do
       ].collect { |filename| File.read(File.join(JQUERY_UI_SRC, 'js', filename)) }.join "\n\n"
 
       open File.join(JQUERY_DEST_TEMPLATES, 'jquery-ui.js'), 'w' do |f|
-        f.print concat_files(all_jquery_ui_scripts)
+        f.print all_jquery_ui_scripts
       end
       manifest.print "javascript 'jquery-ui.js'\n"
 
@@ -246,7 +248,7 @@ namespace :build do
       # jQuery haml
 
       open File.join(JQUERY_DEST_TEMPLATES, 'jquery.haml.js'), 'w' do |f|
-        f.print concat_files(all_files(JHAML_SRC_SCRIPTS))
+        f.print all_files(JHAML_SRC_SCRIPTS)
       end
       manifest.print "javascript 'jquery.haml.js'\n"
 
@@ -257,7 +259,7 @@ namespace :build do
 
       #Flash Messages  
       open File.join(JQUERY_DEST_TEMPLATES, 'jquery.flashMessages.js'), 'w' do |f|
-        f.print concat_files(all_files(FLASH_SRC_JS_SCRIPTS))
+        f.print all_files(FLASH_SRC_JS_SCRIPTS)
       end
       manifest.print "javascript 'jquery.flashMessages.js'\n"
 

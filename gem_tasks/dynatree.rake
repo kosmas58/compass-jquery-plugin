@@ -1,5 +1,6 @@
 require 'fileutils'
-require 'lib/handle_js_files'
+$:.push File.expand_path("../lib", __FILE__)
+require 'handle_js_files'
 
 # Compass generator for DYNATREE_14
 DYNATREE_SRC = File.join(GEM_ROOT, 'src', 'dynatree')
@@ -32,7 +33,7 @@ namespace :build do
       manifest.print "file 'config/initializers/dynatree.rb'\n"
 
       open File.join(DYNATREE_DEST_TEMPLATES, 'jquery.dynatree.js'), 'w' do |f|
-        f.print concat_files(all_scripts)
+        f.print all_scripts
       end
       manifest.print "javascript 'jquery.dynatree.js'\n"
 

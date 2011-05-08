@@ -1,5 +1,6 @@
 require 'fileutils'
-require 'lib/handle_js_files'
+$:.push File.expand_path("../lib", __FILE__)
+require 'handle_js_files'
 
 # Compass generator for jqGrid 3.5+
 SECRET_SAUCE_SRC = File.join(GEM_ROOT, 'src', 'secret_sauce')
@@ -39,7 +40,7 @@ namespace :build do
       manifest.print "file 'config/initializers/secret_sauce.rb'\n"
 
       open File.join(SECRET_SAUCE_DEST_TEMPLATES, 'secret_sauce.js'), 'w' do |f|
-        f.print concat_files(all_files(SECRET_SAUCE_SRC_SCRIPTS))
+        f.print all_files(SECRET_SAUCE_SRC_SCRIPTS)
       end
       manifest.print "javascript 'secret_sauce.js'\n"
 

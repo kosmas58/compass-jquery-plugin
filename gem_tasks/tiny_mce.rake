@@ -1,5 +1,6 @@
 require 'fileutils'
-require 'lib/handle_js_files'
+$:.push File.expand_path("../lib", __FILE__)
+require 'handle_js_files'
 
 TINY_MCE_SRC = File.join(GEM_ROOT, 'src', 'tiny_mce')
 TINY_MCE_SRC_SCRIPTS = File.join(TINY_MCE_SRC, 'js/')

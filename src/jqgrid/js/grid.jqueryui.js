@@ -52,7 +52,7 @@
   $.jgrid.extend({
     sortableColumns : function (tblrow) {
       return this.each(function () {
-        var ts = this;
+        var ts = this, tid = ts.p.id;
 
         function start() {
           ts.p.disableClick = true;
@@ -62,7 +62,7 @@
           "tolerance" : "pointer",
           "axis" : "x",
           "scrollSensitivity": "1",
-          "items": '>th:not(:has(#jqgh_cb,#jqgh_rn,#jqgh_subgrid),:hidden)',
+          "items": '>th:not(:has(#jqgh_' + tid + '_cb' + ',#jqgh_' + tid + '_rn' + ',#jqgh_' + tid + '_subgrid),:hidden)',
           "placeholder": {
             element: function(item) {
               var el = $(document.createElement(item[0].nodeName))
@@ -76,16 +76,16 @@
             }
           },
           "update": function(event, ui) {
-            var p = $(ui.item).parent();
-            var th = $(">th", p);
-            var colModel = ts.p.colModel;
-            var cmMap = {};
+            var p = $(ui.item).parent(),
+                    th = $(">th", p),
+                    colModel = ts.p.colModel,
+                    cmMap = {}, tid = ts.p.id + "_";
             $.each(colModel, function(i) {
               cmMap[this.name] = i;
             });
             var permutation = [];
             th.each(function(i) {
-              var id = $(">div", this).get(0).id.replace(/^jqgh_/, "");
+              var id = $(">div", this).get(0).id.replace(/^jqgh_/, "").replace(tid, "");
               if (id in cmMap) {
                 permutation.push(cmMap[id]);
               }

@@ -1,7 +1,7 @@
 .emulator {
-    background: image_url("emulators/blackberry.torch.portrait.png") no-repeat;
-    width: 534px;
-    height: 852px;
+    background: image_url("emulators/bb.torch.landscape.png") no-repeat;
+    width: 840px;
+    height: 460px;
     -moz-transform-origin: 0 0;
     -o-transform-origin: 0 0;
     -webkit-transform-origin: 0 0;
@@ -9,10 +9,10 @@
 
 .emulator .display-area {
     position: relative;
-    top: 157px;
-    width: 360px;
-    height: 480px;
-    max-height: 480px;
+    top: 52px;
+    width: 480px;
+    height: 360px;
+    max-height: 360px;
     color: #ffffff;
 }
 

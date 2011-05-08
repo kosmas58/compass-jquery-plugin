@@ -4,6 +4,7 @@
     if ($('[data-' + $.mobile.ns + '-url=themeswitcher]').length) {
       return;
     }
+    //var themesDir = 'http://jquerymobile.com/test/themes/',
     var themesDir = '/stylesheets/jquery/mobile/',
             themes = ['default','valencia'],
             currentPage = $.mobile.activePage,
@@ -28,7 +29,7 @@
 
     //remover, adder
     function addTheme(theme) {
-      $('head').append('<link rel=\'stylesheet\' href=\'' + themesDir + theme + '/\' />');
+      $('head').append('<link rel=\'stylesheet\' href=\'' + themesDir + theme + '.css\' />');
     }
 
     //create page, listview

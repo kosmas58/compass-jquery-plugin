@@ -1,6 +1,7 @@
 require 'fileutils'
-require 'lib/handle_js_files'
-require 'lib/jqtouch_theme'
+$:.push File.expand_path("../lib", __FILE__)
+require 'handle_js_files'
+require 'jqtouch_theme'
 
 JQTOUCH_SRC = File.join(GEM_ROOT, 'src', 'jqtouch')
 JQTOUCH_SRC_STYLESHEETS = File.join(JQTOUCH_SRC, 'css')
@@ -68,7 +69,7 @@ namespace :build do
       #JavaScripts
 
       open File.join(JQTOUCH_DEST_TEMPLATES, 'jquery.jqtouch.js'), 'w' do |f|
-        f.print concat_files(all_scripts)
+        f.print all_scripts
       end
       manifest.print "javascript 'jquery.jqtouch.js'\n"
 

@@ -1,5 +1,6 @@
 require 'fileutils'
-require 'lib/handle_js_files'
+$:.push File.expand_path("../lib", __FILE__)
+require 'handle_js_files'
 
 # Compass generator for RIBBON_14
 RIBBON_SRC = File.join(GEM_ROOT, 'src', 'ribbon')
@@ -33,7 +34,7 @@ namespace :build do
       manifest.print "file 'config/initializers/ribbon.rb'\n"
 
       open File.join(RIBBON_DEST_TEMPLATES, 'jquery.ribbon.js'), 'w' do |f|
-        f.print concat_files(all_scripts)
+        f.print all_scripts
       end
       manifest.print "javascript 'jquery.ribbon.js'\n"
 

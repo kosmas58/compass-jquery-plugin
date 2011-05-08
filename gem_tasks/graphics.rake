@@ -1,5 +1,6 @@
 require 'fileutils'
-require 'lib/handle_js_files'
+$:.push File.expand_path("../lib", __FILE__)
+require 'handle_js_files'
 
 GRAPHICS_SRC = File.join(GEM_ROOT, 'src', 'graphics')
 SPARKLINES_SRC_SCRIPTS = File.join(GRAPHICS_SRC, 'sparklines') + "/*.js"
@@ -44,7 +45,7 @@ namespace :build do
       # jQuery Sparklines
 
       open File.join(GRAPHICS_DEST_TEMPLATES, 'jquery.sparkline.js'), 'w' do |f|
-        f.print concat_files(all_files(SPARKLINES_SRC_SCRIPTS))
+        f.print all_files(SPARKLINES_SRC_SCRIPTS)
       end
       manifest.print "javascript 'jquery.sparkline.js'\n"
 
@@ -56,7 +57,7 @@ namespace :build do
       # jQuery GanttView
 
       open File.join(GRAPHICS_DEST_TEMPLATES, 'jquery.ganttView.js'), 'w' do |f|
-        f.print concat_files(all_files(GANTTVIEW_SRC_SCRIPTS))
+        f.print all_files(GANTTVIEW_SRC_SCRIPTS)
       end
       manifest.print "javascript 'jquery.ganttView.js'\n"
 
@@ -76,7 +77,7 @@ namespace :build do
 
       # Highcharts
       open File.join(GRAPHICS_DEST_TEMPLATES, 'jquery.highcharts.js'), 'w' do |f|
-        f.print concat_files(high_scripts)
+        f.print high_scripts
       end
       manifest.print "javascript 'jquery.highcharts.js'\n"
 
@@ -93,7 +94,7 @@ namespace :build do
         next unless /\.js$/ =~ file
         js = File.read File.join(HIGHCHARTS_SRC_THEMES, file)
         open File.join(HIGHCHARTS_DEST_THEMES, file), 'w' do |f|
-          f.print concat_files(js)
+          f.print js
         end
         manifest.print "javascript 'highcharts/#{file}'\n"
 

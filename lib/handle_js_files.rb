@@ -23,14 +23,6 @@ def compress_css(src)
   min_css
 end
 
-def concat_files(files)
-  out = ''
-  files.each do |file|
-    out += file
-  end
-  out
-end
-
 def set_version(files, version, date)
   files.gsub!(/@VERSION/, version).gsub!(/@DATE/, date)
 end

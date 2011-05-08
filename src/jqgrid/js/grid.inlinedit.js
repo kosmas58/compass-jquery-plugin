@@ -10,12 +10,12 @@
    **/
   $.jgrid.extend({
 //Editing
-    editRow : function(rowid, keys, oneditfunc, succesfunc, url, extraparam, aftersavefunc, errorfunc, afterrestorefunc) {
+    editRow : function(rowid, keys, oneditfunc, successfunc, url, extraparam, aftersavefunc, errorfunc, afterrestorefunc) {
       // Compatible mode old versions
       var settings = {
         "keys" : keys || false,
         "oneditfunc" : oneditfunc || null,
-        "successfunc" : succesfunc || null,
+        "successfunc" : successfunc || null,
         "url" : url || null,
         "extraparam" : extraparam || {},
         "aftersavefunc" : aftersavefunc || null,
@@ -119,10 +119,10 @@
         }
       });
     },
-    saveRow : function(rowid, succesfunc, url, extraparam, aftersavefunc, errorfunc, afterrestorefunc) {
+    saveRow : function(rowid, successfunc, url, extraparam, aftersavefunc, errorfunc, afterrestorefunc) {
       // Compatible mode old versions
       var settings = {
-        "successfunc" : succesfunc || null,
+        "successfunc" : successfunc || null,
         "url" : url || null,
         "extraparam" : extraparam || {},
         "aftersavefunc" : aftersavefunc || null,
@@ -286,14 +286,14 @@
           $.ajax($.extend({
             url:o.url,
             data: $.isFunction($t.p.serializeRowData) ? $t.p.serializeRowData.call($t, tmp3) : tmp3,
-            type: mytype,
+            type: mytype
             async : false, //?!?
             complete: function(res, stat) {
               $("#lui_" + $t.p.id).hide();
               if (stat === "success") {
                 var ret;
-                if ($.isFunction(o.succesfunc)) {
-                  ret = o.succesfunc.call($t, res);
+                if ($.isFunction(o.successfunc)) {
+                  ret = o.successfunc.call($t, res);
                 }
                 else {
                   ret = true;

@@ -289,7 +289,7 @@ ul.menu li {
     border-right: 1px solid #abc; } }
 
 .ribbon-backstage {
-  background-color: white !important;
+  background-color: #fff !important;
   background-position: left top !important;
   background-repeat: no-repeat !important;
   top: 23px !important;
@@ -309,7 +309,7 @@ ul.menu li {
       padding: 0px !important; }
     * {
       background-color: Transparent !important;
-      color: black !important; }
+      color: #000 !important; }
     a {
       line-height: 34px !important;
       height: 34px !important;
@@ -327,7 +327,7 @@ ul.menu li {
         bottom: 9px !important;
         left: 3px !important; } }
     ul.ribbon-backstage-subMenu {
-      background-color: white !important;
+      background-color: #fff !important;
       left: 115px !important;
       padding-left: 10px !important;
       padding-right: 10px !important;
@@ -370,18 +370,18 @@ ul.menu li {
           bottom: 8px !important; }
         span {
           left: 40px;
-          color: black !important;
+          color: #000 !important;
           top: 5px;
           padding-left: 20px;
           &:hover {
-            color: black !important; } } } }
+            color: #000 !important; } } } }
     div {
       &.ribbon-backstage-rightColumnWide {
-        background-color: #edf0f2 !important;
+        background-color: #EDF0F2 !important;
         background-image: image_url("jquery/ribbon/windows7/ribbon-backstage-rightColumn-wide.png");
         background-position: left;
         background-repeat: repeat-y;
-        color: black !important;
+        color: #000 !important;
         display: none;
         left: 382px;
         margin-top: -11px;
@@ -393,11 +393,11 @@ ul.menu li {
         z-index: 30;
         line-height: 17px; }
       &.ribbon-backstage-rightColumnSmall {
-        background-color: #edf0f2 !important;
+        background-color: #EDF0F2 !important;
         background-image: image_url("jquery/ribbon/windows7/ribbon-backstage-rightColumn-wide.png");
         background-position: left;
         background-repeat: repeat-y;
-        color: black !important;
+        color: #000 !important;
         display: none;
         left: 382px;
         margin-top: -11px;
@@ -410,7 +410,7 @@ ul.menu li {
         line-height: 17px;
         text-align: center;
         * {
-          color: black !important; }
+          color: #000 !important; }
         img {
           max-width: 100px;
           max-width: 100px; } } }
@@ -418,7 +418,7 @@ ul.menu li {
       background-image: image_url("jquery/ribbon/windows7/ribbon-backstage-subMenu-itemSquare.png") !important;
       background-position: center !important;
       background-repeat: no-repeat !important;
-      color: lime !important;
+      color: #0f0 !important;
       float: left;
       height: 100px !important;
       width: 90px !important;
@@ -427,7 +427,7 @@ ul.menu li {
         background-image: image_url("jquery/ribbon/windows7/ribbon-backstage-subMenu-itemSquare-hover.png") !important;
         background-position: center !important;
         background-repeat: no-repeat !important;
-        color: lime !important;
+        color: #0f0 !important;
         float: left;
         height: 100px !important;
         width: 90px !important; }

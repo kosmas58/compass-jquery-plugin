@@ -1,0 +1,21 @@
+.emulator {
+    background: image_url("emulators/bb.playbook.landscape.png") no-repeat;
+    width: 1300px;
+    height: 872px;
+    -moz-transform-origin: 0 0;
+    -o-transform-origin: 0 0;
+    -webkit-transform-origin: 0 0;
+}
+
+.emulator .display-area {
+    position: relative;
+    top: 135px;
+    width: 1024px;
+    height: 600px;
+    max-height: 600px;
+    color: #ffffff;
+}
+
+.emulator .display-area a {
+    color: #ff5500;
+}

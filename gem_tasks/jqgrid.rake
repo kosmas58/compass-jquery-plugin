@@ -1,5 +1,6 @@
 require 'fileutils'
-require 'lib/handle_js_files'
+$:.push File.expand_path("../lib", __FILE__)
+require 'handle_js_files'
 
 # Compass generator for jqGrid 3.5+
 JQGRID_SRC = File.join(GEM_ROOT, 'src', 'jqgrid')
@@ -79,7 +80,7 @@ namespace :build do
       end
 
       open File.join(JQGRID_DEST_TEMPLATES, 'jquery.jqGrid.js'), 'w' do |f|
-        f.print concat_files(all_scripts)
+        f.print all_scripts
       end
       manifest.print "javascript 'jquery.jqGrid.js'\n"
 

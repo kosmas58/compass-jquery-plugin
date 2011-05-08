@@ -9,11 +9,11 @@
    * http://www.gnu.org/licenses/gpl.html
    *
    * update 2010.05.04
-   *        add double u3000 SPACE for search:odata to fix SEARCH box display err when narrow width from only use of eq/ne/cn/in/lt/gt operator under IE6/7
+   *    add double u3000 SPACE for search:odata to fix SEARCH box display err when narrow width from only use of eq/ne/cn/in/lt/gt operator under IE6/7
    **/
   $.jgrid = {
     defaults : {
-      recordtext: "{0} - {1}\u3000共 {2} 条",    // 共字前是全角空格
+      recordtext: "{0} - {1}\u3000共 {2} 条",  // 共字前是全角空格
       emptyrecords: "无数据显示",
       loadtext: "读取中...",
       pgtext : " {0} 共 {1} 页"

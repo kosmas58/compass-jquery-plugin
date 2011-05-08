@@ -338,14 +338,14 @@ Built by David Kaneda and maintained by Jonathan Stark.
     z-index: 0;
     -webkit-animation-name: fadeout; } }
 
-/* The properties in this body rule are only necessary for the 'flip' transition.
+/* The properties in this rule are only necessary for the 'flip' transition.
  * We need specify the perspective to create a projection matrix. This will add
  * some depth as the element flips. The depth number represents the distance of
  * the viewer from the z-plane. According to the CSS3 spec, 1000 is a moderate
  * value.
  */
 
-.ui-mobile-viewport-perspective {
+.viewport-flip {
   -webkit-perspective: 1000;
   position: absolute; }
 
@@ -1343,6 +1343,7 @@ ol.ui-listview .ui-li-jsnumbering:before {
 @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
   .ui-li .ui-btn-text {
     overflow: visible; } }
+
 
 /*
 * jQuery Mobile Framework

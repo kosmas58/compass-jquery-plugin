@@ -20,14 +20,14 @@
 
 .fc-event-skin {
   background: none !important;
-  color: black !important; }
+  color: #000 !important; }
 
 /* horizontal events */
 
 .fc-event-hori {
   border-width: 0 0 1px 0 !important;
   border-bottom-style: dotted !important;
-  border-bottom-color: black !important;
+  border-bottom-color: #000 !important;
   padding: 1px 0 0 0 !important;
   .fc-event-inner {
     border-width: 0 !important;
@@ -38,7 +38,7 @@
 .fc-event-vert {
   border-width: 0 0 0 1px !important;
   border-left-style: dotted !important;
-  border-left-color: black !important;
+  border-left-color: #000 !important;
   padding: 0 1px 0 0 !important;
   .fc-event-inner {
     border-width: 0 !important;

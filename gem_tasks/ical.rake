@@ -1,5 +1,6 @@
 require 'fileutils'
-require 'lib/handle_js_files'
+$:.push File.expand_path("../lib", __FILE__)
+require 'handle_js_files'
 
 ICAL_SRC = File.join(GEM_ROOT, 'src', 'ical')
 ICAL_SRC_IMAGES = File.join(ICAL_SRC, 'images')
@@ -55,7 +56,7 @@ namespace :build do
       manifest.print "file 'config/initializers/ical.rb'\n"
 
       open File.join(ICAL_DEST_TEMPLATES, 'jquery.ical.js'), 'w' do |f|
-        f.print concat_files(all_scripts)
+        f.print all_scripts
       end
       manifest.print "javascript 'jquery.ical.js'\n"
 

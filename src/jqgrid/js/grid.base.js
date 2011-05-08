@@ -1761,7 +1761,9 @@
                 return  retresult;
               },
               updatepager = function(rn, dnd) {
-                var cp, last, base, from,to,tot,fmt, pgboxes = "";
+                var cp, last, base, from,to,tot,fmt, pgboxes = "", sppg,
+                        tspg = ts.p.pager ? "_" + $.jgrid.jqID(ts.p.pager.substr(1)) : "",
+                        tspg_t = ts.p.toppager ? "_" + ts.p.toppager.substr(1) : "";
                 base = parseInt(ts.p.page, 10) - 1;
                 if (base < 0) {
                   base = 0;
@@ -1789,7 +1791,8 @@
                   $(".selbox", pgboxes).attr("disabled", false);
                   if (ts.p.pginput === true) {
                     $('.ui-pg-input', pgboxes).val(ts.p.page);
-                    $('#sp_1', pgboxes).html($.fmatter ? $.fmatter.util.NumberFormat(ts.p.lastpage, fmt) : ts.p.lastpage);
+                    sppg = ts.p.toppager ? '#sp_1' + tspg + ",#sp_1" + tspg_t : '#sp_1' + tspg;
+                    $(sppg).html($.fmatter ? $.fmatter.util.NumberFormat(ts.p.lastpage, fmt) : ts.p.lastpage);
 
                   }
                   if (ts.p.viewrecords) {
@@ -1811,25 +1814,25 @@
                       cp = last = 0;
                     }
                     if (cp == 1 || cp === 0) {
-                      $("#first, #prev", ts.p.pager).addClass('ui-state-disabled').removeClass('ui-state-hover');
+                      $("#first" + tspg + ", #prev" + tspg).addClass('ui-state-disabled').removeClass('ui-state-hover');
                       if (ts.p.toppager) {
-                        $("#first_t, #prev_t", ts.p.toppager).addClass('ui-state-disabled').removeClass('ui-state-hover');
+                        $("#first_t" + tspg_t + ", #prev_t" + tspg_t).addClass('ui-state-disabled').removeClass('ui-state-hover');
                       }
                     } else {
-                      $("#first, #prev", ts.p.pager).removeClass('ui-state-disabled');
+                      $("#first" + tspg + ", #prev" + tspg).removeClass('ui-state-disabled');
                       if (ts.p.toppager) {
-                        $("#first_t, #prev_t", ts.p.toppager).removeClass('ui-state-disabled');
+                        $("#first_t" + tspg_t + ", #prev_t" + tspg_t).removeClass('ui-state-disabled');
                       }
                     }
                     if (cp == last || cp === 0) {
-                      $("#next, #last", ts.p.pager).addClass('ui-state-disabled').removeClass('ui-state-hover');
+                      $("#next" + tspg + ", #last" + tspg).addClass('ui-state-disabled').removeClass('ui-state-hover');
                       if (ts.p.toppager) {
-                        $("#next_t, #last_t", ts.p.toppager).addClass('ui-state-disabled').removeClass('ui-state-hover');
+                        $("#next_t" + tspg_t + ", #last_t" + tspg_t).addClass('ui-state-disabled').removeClass('ui-state-hover');
                       }
                     } else {
-                      $("#next, #last", ts.p.pager).removeClass('ui-state-disabled');
+                      $("#next" + tspg + ", #last" + tspg).removeClass('ui-state-disabled');
                       if (ts.p.toppager) {
-                        $("#next_t, #last_t", ts.p.toppager).removeClass('ui-state-disabled');
+                        $("#next_t" + tspg_t + ", #last_t" + tspg_t).removeClass('ui-state-disabled');
                       }
                     }
                   }
@@ -2077,7 +2080,7 @@
                   pgl += str;
                 }
                 if (ts.p.pginput === true) {
-                  pginp = "<td dir='" + dir + "'>" + $.jgrid.format(ts.p.pgtext || "", "<input class='ui-pg-input' type='text' size='2' maxlength='7' value='0' role='textbox'/>", "<span id='sp_1'></span>") + "</td>";
+                  pginp = "<td dir='" + dir + "'>" + $.jgrid.format(ts.p.pgtext || "", "<input class='ui-pg-input' type='text' size='2' maxlength='7' value='0' role='textbox'/>", "<span id='sp_1_" + $.jgrid.jqID(pgid) + "'></span>") + "</td>";
                 }
                 if (ts.p.pgbuttons === true) {
                   var po = ["first" + tp,"prev" + tp, "next" + tp,"last" + tp];
@@ -2144,7 +2147,7 @@
                       this.style.cursor = "default";
                     }
                   });
-                  $("#first" + tp + ", #prev" + tp + ", #next" + tp + ", #last" + tp, "#" + pgid).click(function(e) {
+                  $("#first" + $.jgrid.jqID(tp) + ", #prev" + $.jgrid.jqID(tp) + ", #next" + $.jgrid.jqID(tp) + ", #last" + $.jgrid.jqID(tp)).click(function(e) {
                     var cp = intNum(ts.p.page, 1),
                             last = intNum(ts.p.lastpage, 1), selclick = false,
                             fp = true, pp = true, np = true,lp = true;
@@ -2486,7 +2489,7 @@
         var tooltip = ts.p.headertitles ? (" title=\"" + $.jgrid.stripHtml(ts.p.colNames[i]) + "\"") : "";
         thead += "<th id='" + ts.p.id + "_" + ts.p.colModel[i].name + "' role='columnheader' class='ui-state-default ui-th-column ui-th-" + dir + "'" + tooltip + ">";
         idn = ts.p.colModel[i].index || ts.p.colModel[i].name;
-        thead += "<div id='jqgh_" + ts.p.colModel[i].name + "' " + tdc + ">" + ts.p.colNames[i];
+        thead += "<div id='jqgh_" + ts.p.id + "_" + ts.p.colModel[i].name + "' " + tdc + ">" + ts.p.colNames[i];
         if (!ts.p.colModel[i].width) {
           ts.p.colModel[i].width = 150;
         }
@@ -2751,8 +2754,8 @@
                     if (e[ts.p.multikey]) {
                       $(ts).jqGrid("setSelection", ptr[0].id, true);
                     } else if (ts.p.multiselect && scb) {
-                      scb = $("[id^=jqg_" + $.jgrid.jqID(ts.p.id) + "_" + "]").attr("checked");
-                      $("[id^=jqg_" + $.jgrid.jqID(ts.p.id) + "_" + "]").attr("checked", !scb);
+                      scb = $("#jqg_" + $.jgrid.jqID(ts.p.id) + "_" + ptr[0].id).attr("checked");
+                      $("#jqg_" + $.jgrid.jqID(ts.p.id) + "_" + ptr[0].id).attr("checked", !scb);
                     }
                   }
                   if ($.isFunction(ts.p.onCellSelect)) {

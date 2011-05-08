@@ -1761,7 +1761,9 @@
                 return  retresult;
               },
               updatepager = function(rn, dnd) {
-                var cp, last, base, from,to,tot,fmt, pgboxes = "";
+                var cp, last, base, from,to,tot,fmt, pgboxes = "", sppg,
+                        tspg = ts.p.pager ? "_" + $.jgrid.jqID(ts.p.pager.substr(1)) : "",
+                        tspg_t = ts.p.toppager ? "_" + ts.p.toppager.substr(1) : "";
                 base = parseInt(ts.p.page, 10) - 1;
                 if (base < 0) {
                   base = 0;
@@ -1789,7 +1791,8 @@
                   $(".selbox", pgboxes).attr("disabled", false);
                   if (ts.p.pginput === true) {
                     $('.ui-pg-input', pgboxes).val(ts.p.page);
-                    $('#sp_1', pgboxes).html($.fmatter ? $.fmatter.util.NumberFormat(ts.p.lastpage, fmt) : ts.p.lastpage);
+                    sppg = ts.p.toppager ? '#sp_1' + tspg + ",#sp_1" + tspg_t : '#sp_1' + tspg;
+                    $(sppg).html($.fmatter ? $.fmatter.util.NumberFormat(ts.p.lastpage, fmt) : ts.p.lastpage);
 
                   }
                   if (ts.p.viewrecords) {
@@ -1811,25 +1814,25 @@
                       cp = last = 0;
                     }
                     if (cp == 1 || cp === 0) {
-                      $("#first, #prev", ts.p.pager).addClass('ui-state-disabled').removeClass('ui-state-hover');
+                      $("#first" + tspg + ", #prev" + tspg).addClass('ui-state-disabled').removeClass('ui-state-hover');
                       if (ts.p.toppager) {
-                        $("#first_t, #prev_t", ts.p.toppager).addClass('ui-state-disabled').removeClass('ui-state-hover');
+                        $("#first_t" + tspg_t + ", #prev_t" + tspg_t).addClass('ui-state-disabled').removeClass('ui-state-hover');
                       }
                     } else {
-                      $("#first, #prev", ts.p.pager).removeClass('ui-state-disabled');
+                      $("#first" + tspg + ", #prev" + tspg).removeClass('ui-state-disabled');
                       if (ts.p.toppager) {
-                        $("#first_t, #prev_t", ts.p.toppager).removeClass('ui-state-disabled');
+                        $("#first_t" + tspg_t + ", #prev_t" + tspg_t).removeClass('ui-state-disabled');
                       }
                     }
                     if (cp == last || cp === 0) {
-                      $("#next, #last", ts.p.pager).addClass('ui-state-disabled').removeClass('ui-state-hover');
+                      $("#next" + tspg + ", #last" + tspg).addClass('ui-state-disabled').removeClass('ui-state-hover');
                       if (ts.p.toppager) {
-                        $("#next_t, #last_t", ts.p.toppager).addClass('ui-state-disabled').removeClass('ui-state-hover');
+                        $("#next_t" + tspg_t + ", #last_t" + tspg_t).addClass('ui-state-disabled').removeClass('ui-state-hover');
                       }
                     } else {
-                      $("#next, #last", ts.p.pager).removeClass('ui-state-disabled');
+                      $("#next" + tspg + ", #last" + tspg).removeClass('ui-state-disabled');
                       if (ts.p.toppager) {
-                        $("#next_t, #last_t", ts.p.toppager).removeClass('ui-state-disabled');
+                        $("#next_t" + tspg_t + ", #last_t" + tspg_t).removeClass('ui-state-disabled');
                       }
                     }
                   }
@@ -2077,7 +2080,7 @@
                   pgl += str;
                 }
                 if (ts.p.pginput === true) {
-                  pginp = "<td dir='" + dir + "'>" + $.jgrid.format(ts.p.pgtext || "", "<input class='ui-pg-input' type='text' size='2' maxlength='7' value='0' role='textbox'/>", "<span id='sp_1'></span>") + "</td>";
+                  pginp = "<td dir='" + dir + "'>" + $.jgrid.format(ts.p.pgtext || "", "<input class='ui-pg-input' type='text' size='2' maxlength='7' value='0' role='textbox'/>", "<span id='sp_1_" + $.jgrid.jqID(pgid) + "'></span>") + "</td>";
                 }
                 if (ts.p.pgbuttons === true) {
                   var po = ["first" + tp,"prev" + tp, "next" + tp,"last" + tp];
@@ -2144,7 +2147,7 @@
                       this.style.cursor = "default";
                     }
                   });
-                  $("#first" + tp + ", #prev" + tp + ", #next" + tp + ", #last" + tp, "#" + pgid).click(function(e) {
+                  $("#first" + $.jgrid.jqID(tp) + ", #prev" + $.jgrid.jqID(tp) + ", #next" + $.jgrid.jqID(tp) + ", #last" + $.jgrid.jqID(tp)).click(function(e) {
                     var cp = intNum(ts.p.page, 1),
                             last = intNum(ts.p.lastpage, 1), selclick = false,
                             fp = true, pp = true, np = true,lp = true;
@@ -2486,7 +2489,7 @@
         var tooltip = ts.p.headertitles ? (" title=\"" + $.jgrid.stripHtml(ts.p.colNames[i]) + "\"") : "";
         thead += "<th id='" + ts.p.id + "_" + ts.p.colModel[i].name + "' role='columnheader' class='ui-state-default ui-th-column ui-th-" + dir + "'" + tooltip + ">";
         idn = ts.p.colModel[i].index || ts.p.colModel[i].name;
-        thead += "<div id='jqgh_" + ts.p.colModel[i].name + "' " + tdc + ">" + ts.p.colNames[i];
+        thead += "<div id='jqgh_" + ts.p.id + "_" + ts.p.colModel[i].name + "' " + tdc + ">" + ts.p.colNames[i];
         if (!ts.p.colModel[i].width) {
           ts.p.colModel[i].width = 150;
         }
@@ -2751,8 +2754,8 @@
                     if (e[ts.p.multikey]) {
                       $(ts).jqGrid("setSelection", ptr[0].id, true);
                     } else if (ts.p.multiselect && scb) {
-                      scb = $("[id^=jqg_" + $.jgrid.jqID(ts.p.id) + "_" + "]").attr("checked");
-                      $("[id^=jqg_" + $.jgrid.jqID(ts.p.id) + "_" + "]").attr("checked", !scb);
+                      scb = $("#jqg_" + $.jgrid.jqID(ts.p.id) + "_" + ptr[0].id).attr("checked");
+                      $("#jqg_" + $.jgrid.jqID(ts.p.id) + "_" + ptr[0].id).attr("checked", !scb);
                     }
                   }
                   if ($.isFunction(ts.p.onCellSelect)) {
@@ -4130,7 +4133,7 @@
             reload = false;
           }
           if (sort) {
-            $t.sortData("jqgh_" + colname, idx, reload, sor);
+            $t.sortData("jqgh_" + $t.p.id + "_" + colname, idx, reload, sor);
           }
         }
       });
@@ -9742,12 +9745,12 @@ var xmlJsonClass = {
    **/
   $.jgrid.extend({
 //Editing
-    editRow : function(rowid, keys, oneditfunc, succesfunc, url, extraparam, aftersavefunc, errorfunc, afterrestorefunc) {
+    editRow : function(rowid, keys, oneditfunc, successfunc, url, extraparam, aftersavefunc, errorfunc, afterrestorefunc) {
       // Compatible mode old versions
       var settings = {
         "keys" : keys || false,
         "oneditfunc" : oneditfunc || null,
-        "successfunc" : succesfunc || null,
+        "successfunc" : successfunc || null,
         "url" : url || null,
         "extraparam" : extraparam || {},
         "aftersavefunc" : aftersavefunc || null,
@@ -9851,10 +9854,10 @@ var xmlJsonClass = {
         }
       });
     },
-    saveRow : function(rowid, succesfunc, url, extraparam, aftersavefunc, errorfunc, afterrestorefunc) {
+    saveRow : function(rowid, successfunc, url, extraparam, aftersavefunc, errorfunc, afterrestorefunc) {
       // Compatible mode old versions
       var settings = {
-        "successfunc" : succesfunc || null,
+        "successfunc" : successfunc || null,
         "url" : url || null,
         "extraparam" : extraparam || {},
         "aftersavefunc" : aftersavefunc || null,
@@ -10018,14 +10021,14 @@ var xmlJsonClass = {
           $.ajax($.extend({
             url:o.url,
             data: $.isFunction($t.p.serializeRowData) ? $t.p.serializeRowData.call($t, tmp3) : tmp3,
-            type: mytype,
+            type: mytype
             async : false, //?!?
             complete: function(res, stat) {
               $("#lui_" + $t.p.id).hide();
               if (stat === "success") {
                 var ret;
-                if ($.isFunction(o.succesfunc)) {
-                  ret = o.succesfunc.call($t, res);
+                if ($.isFunction(o.successfunc)) {
+                  ret = o.successfunc.call($t, res);
                 }
                 else {
                   ret = true;
@@ -12217,7 +12220,7 @@ var xmlJsonClass = {
             ret = "<" + o.root + ">" + xmlJsonClass.json2xml(gprm, o.ident) + "</" + o.root + ">";
             break;
           case 'jsonstring' :
-            ret = "{" + xmlJsonClass.toJson(gprm, o.root, o.ident) + "}";
+            ret = "{" + xmlJsonClass.toJson(gprm, o.root, o.ident, false) + "}";
             if (gprm.postData.filters !== undefined) {
               ret = ret.replace(/filters":"/, 'filters":');
               ret = ret.replace(/}]}"/, '}]}');
@@ -12311,7 +12314,7 @@ var xmlJsonClass = {
   $.jgrid.extend({
     sortableColumns : function (tblrow) {
       return this.each(function () {
-        var ts = this;
+        var ts = this, tid = ts.p.id;
 
         function start() {
           ts.p.disableClick = true;
@@ -12321,7 +12324,7 @@ var xmlJsonClass = {
           "tolerance" : "pointer",
           "axis" : "x",
           "scrollSensitivity": "1",
-          "items": '>th:not(:has(#jqgh_cb,#jqgh_rn,#jqgh_subgrid),:hidden)',
+          "items": '>th:not(:has(#jqgh_' + tid + '_cb' + ',#jqgh_' + tid + '_rn' + ',#jqgh_' + tid + '_subgrid),:hidden)',
           "placeholder": {
             element: function(item) {
               var el = $(document.createElement(item[0].nodeName))
@@ -12335,16 +12338,16 @@ var xmlJsonClass = {
             }
           },
           "update": function(event, ui) {
-            var p = $(ui.item).parent();
-            var th = $(">th", p);
-            var colModel = ts.p.colModel;
-            var cmMap = {};
+            var p = $(ui.item).parent(),
+                    th = $(">th", p),
+                    colModel = ts.p.colModel,
+                    cmMap = {}, tid = ts.p.id + "_";
             $.each(colModel, function(i) {
               cmMap[this.name] = i;
             });
             var permutation = [];
             th.each(function(i) {
-              var id = $(">div", this).get(0).id.replace(/^jqgh_/, "");
+              var id = $(">div", this).get(0).id.replace(/^jqgh_/, "").replace(tid, "");
               if (id in cmMap) {
                 permutation.push(cmMap[id]);
               }
