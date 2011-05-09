@@ -286,8 +286,8 @@
           $.ajax($.extend({
             url:o.url,
             data: $.isFunction($t.p.serializeRowData) ? $t.p.serializeRowData.call($t, tmp3) : tmp3,
-            type: mytype
-            async : false, //?!?
+            type: mytype,
+            async: false, //?!?
             complete: function(res, stat) {
               $("#lui_" + $t.p.id).hide();
               if (stat === "success") {
