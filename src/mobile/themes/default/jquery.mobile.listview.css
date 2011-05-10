@@ -216,6 +216,10 @@ ol.ui-listview .ui-li-jsnumbering:before {
     background: transparent;
 }
 
+.ui-li.ui-screen-hidden {
+    display: none;
+}
+
 /* Odd iPad positioning issue. */
 @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
     .ui-li .ui-btn-text {
