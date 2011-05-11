@@ -77,17 +77,17 @@ module Gridify
     def jqgrid_type
       return sortable unless sortable==true
       case value_type
-        when :string :
+        when :string
           'text'
-        when :text :
+        when :text
           'text'
-        when :integer :
+        when :integer
           'integer'
-        when :float :
+        when :float
           'float'
-        when :boolean :
+        when :boolean
           'boolean'
-        when :datetime :
+        when :datetime
           'date'
       end
     end
