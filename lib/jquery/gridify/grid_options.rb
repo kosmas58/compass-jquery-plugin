@@ -194,9 +194,9 @@ module Gridify
     # header layer
     def title
       case @title
-        when String :
+        when String
           @title
-        when true :
+        when true
           resource.titleize
         else
           ('&nbsp;' if collapsible || collapsed) #show header with blank title
@@ -210,9 +210,9 @@ module Gridify
     # pager layer
     def pager
       case @pager
-        when String :
+        when String
           @pager
-        when true :
+        when true
           dom_id+'_pager'
       end
     end
