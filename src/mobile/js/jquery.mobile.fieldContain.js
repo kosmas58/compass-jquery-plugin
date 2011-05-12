@@ -5,7 +5,7 @@
  * http://jquery.org/license
  */
 (function($, undefined) {
-  $.fn.fieldcontain = function(options) {
-    return this.addClass('ui-field-contain ui-body ui-br');
-  };
+    $.fn.fieldcontain = function(options) {
+        return this.addClass('ui-field-contain ui-body ui-br');
+    };
 })(jQuery);
