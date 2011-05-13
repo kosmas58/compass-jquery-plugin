@@ -1,3 +1,2 @@
 window.jQuery = window.$ = jQuery;
-})
-(window);
+})(window);
