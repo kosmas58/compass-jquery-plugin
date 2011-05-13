@@ -914,11 +914,17 @@ Built by David Kaneda and maintained by Jonathan Stark.
   text-align: left;
   z-index: 2; }
 
+.ui-checkbox .ui-btn-inner, .ui-radio .ui-btn-inner {
+  white-space: normal; }
+
 .ui-checkbox .ui-btn-icon-left .ui-btn-inner, .ui-radio .ui-btn-icon-left .ui-btn-inner {
   padding-left: 45px; }
 
 .ui-checkbox .ui-btn-icon-right .ui-btn-inner, .ui-radio .ui-btn-icon-right .ui-btn-inner {
   padding-right: 45px; }
+
+.ui-checkbox .ui-icon, .ui-radio .ui-icon {
+  top: 1.1em; }
 
 .ui-checkbox .ui-btn-icon-left .ui-icon, .ui-radio .ui-btn-icon-left .ui-icon {
   left: 15px; }
