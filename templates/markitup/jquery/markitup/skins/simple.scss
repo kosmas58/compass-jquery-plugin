@@ -26,14 +26,15 @@
   width: 690px;
   height: 320px;
   clear: both;
+  display: block;
   line-height: 18px;
   overflow: auto; }
 
 .markItUpPreviewFrame {
   overflow: auto;
-  background-color: #FFF;
+  background-color: #FFFFFF;
   width: 99.9%;
-  height: 300px;
+  height: 350px;
   margin: 5px 0; }
 
 .markItUpFooter {
@@ -45,7 +46,7 @@
   height: 5px;
   margin-left: auto;
   margin-right: auto;
-  background-image: url(images/handle.png);
+  background-image: image_url("jquery/markitup/skins/simple/handle.png");
   cursor: n-resize; }
 
 /***************************************************************************************/
@@ -59,7 +60,7 @@
     &:hover > ul {
       display: block; } }
   .markItUpDropMenu {
-    background: transparent url(images/menu.png) no-repeat 115% 50%;
+    background: transparent image_url("jquery/markitup/skins/simple/menu.png") no-repeat 115% 50%;
     margin-right: 5px;
     li {
       margin-right: 0px; } }
@@ -74,7 +75,7 @@
       float: none;
       border-bottom: 1px solid #000; }
     .markItUpDropMenu {
-      background: white url(images/submenu.png) no-repeat 100% 50%; } }
+      background: white image_url("jquery/markitup/skins/simple/submenu.png") no-repeat 100% 50%; } }
   .markItUpSeparator {
     margin: 0 10px;
     width: 1px;

@@ -1,5 +1,5 @@
 require 'fileutils'
-require 'lib/jquery/helpers/handle_js_files'
+require 'lib/handle_js_files'
 
 MARKITUP_SRC = File.join(GEM_ROOT, 'src', 'markitup')
 MARKITUP_SRC_SETS = File.join(MARKITUP_SRC, 'sets')
@@ -72,6 +72,7 @@ namespace :build do
         Dir.foreach File.join(MARKITUP_SRC_SETS, "#{set}") do |file|
           next unless /\.css$/ =~ file
           css = File.read File.join(MARKITUP_SRC_SETS, "#{set}", file)
+          css.gsub! /url\(images(.+?)\)/, "image_url(\"jquery/markitup/sets/#{set}\\1\")"
           sass = ''
           IO.popen("sass-convert -F css -T scss", 'r+') { |f| f.print(css); f.close_write; sass = f.read }
           open File.join(MARKITUP_DEST_SETS, "#{set}.scss"), 'w' do |f|
@@ -103,6 +104,7 @@ namespace :build do
         Dir.foreach File.join(MARKITUP_SRC_SKINS, "#{skin}") do |file|
           next unless /\.css$/ =~ file
           css = File.read File.join(MARKITUP_SRC_SKINS, "#{skin}", file)
+          css.gsub! /url\(images(.+?)\)/, "image_url(\"jquery/markitup/skins/#{skin}\\1\")"
           sass = ''
           IO.popen("sass-convert -F css -T scss", 'r+') { |f| f.print(css); f.close_write; sass = f.read }
           open File.join(MARKITUP_DEST_SKINS, "#{skin}.scss"), 'w' do |f|

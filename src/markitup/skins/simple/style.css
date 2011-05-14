@@ -23,15 +23,15 @@
 	padding:5px;
 	width:690px;
 	height:320px;
-	clear:both;
+	clear:both; display:block;
 	line-height:18px;
 	overflow:auto;
 }
 .markItUpPreviewFrame	{
 	overflow:auto;
-	background-color:#FFF;
+	background-color:#FFFFFF;
 	width:99.9%;
-	height:300px;
+	height:350px;
 	margin:5px 0;
 }
 .markItUpFooter {
