@@ -1,0 +1,2 @@
+module MarkItUp #:nodoc:
+end

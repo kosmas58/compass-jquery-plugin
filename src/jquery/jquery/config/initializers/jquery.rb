@@ -46,7 +46,7 @@ ActionView::Helpers::AssetTagHelper.register_stylesheet_expansion :tokeninput_ma
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :tokeninput => ['jquery.tokeninput.min']
 
 require 'jquery/jquery'
-require 'handle_attributes'
+require 'jquery/helpers/handle_attributes'
 require 'jquery/jquery_selector_assertions' if RAILS_ENV == 'test'
 require 'jquery/jquery_auto_complete'
 require 'jquery/jquery_json_response'

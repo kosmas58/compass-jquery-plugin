@@ -2,4 +2,4 @@ module JqGrid #:nodoc:
 end
 
 require 'jquery/jqgrid/jqgrid'
-require 'handle_attributes'
+require 'jquery/helpers/handle_attributes'

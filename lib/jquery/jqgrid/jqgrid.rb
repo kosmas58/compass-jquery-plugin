@@ -416,7 +416,7 @@ module ActionView
   end
 end
 
-require 'handle_attributes'
+require 'jquery/helpers/handle_attributes'
 
 module JqgridJson
   include ActionView::Helpers::JavaScriptHelper

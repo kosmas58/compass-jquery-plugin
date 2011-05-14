@@ -173,7 +173,7 @@ To use the stylesheets and javacripts include:
 jQuery TinyMCE Plugin
 --------------------
 
-Use compass to install the jQuery TinyMCE Editor Javascript WYSIWYG Editor into your project.
+Use compass to install the jQuery TinyMCE Javascript WYSIWYG Editor into your project.
 
 <pre>compass install [-r jquery] jquery/tiny_mce <project name></pre>
 
@@ -181,6 +181,20 @@ To use the javascripts include:
 
 <pre>
 = javascript_include_tag :tiny_mce</pre>
+
+
+jQuery markItUp! Plugin
+--------------------
+
+Use compass to install the jQuery markItUp! Editor J into your project.
+
+<pre>compass install [-r jquery] jquery/markitup <project name></pre>
+
+To use the javascripts include:
+
+<pre>
+= javascript_include_tag :markitup</pre>
+
 
 Graphics
 --------
@@ -282,6 +296,7 @@ jQuery Plugins included:
 * John Reisig et. al. for [jQuery Form Plugin][16]
 * Ivan Bozhanov for [jQuery jsTree Plugin][20]
 * Fabrizio Balliano and Kevin Dalman for [jQuery Layout Plugin][21]
+* Jay Salvat for [markItUp!][44]
 * Scott Jehl for [jQuery Media Helper Plugin][43]
 * Brandon Aaron and Fabrizio Balliano for [jQuery Mousewheel Plugin][35]
 * Yehuda Katz for [jQuery Offline Plugin][34]
@@ -367,3 +382,4 @@ Copyright &copy; 2009-2011 Kosmas Schuetz. See LICENSE for details.
   [41]: http://github.com/loopj/jquery-tokeninput
   [42]: http://http://www.highcharts.com
   [43]: http://github.com/scottjehl/jQuery-Media-Helpers
+  [44]: https://github.com/markitup/1.x
