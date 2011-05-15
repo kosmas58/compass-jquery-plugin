@@ -144,13 +144,13 @@ namespace :build do
       end
 
       FileUtils.mkdir_p(MARKITUP_DEST_TEMP)
-      #css = File.read File.join(MARKITUP_SRC_TEMP, "preview.css")
-      #sass = ''
-      #IO.popen("sass-convert -F css -T scss", 'r+') { |f| f.print(css); f.close_write; sass = f.read }
-      #open File.join(MARKITUP_DEST_TEMP, "preview.scss"), 'w' do |f|
-      #  f.write MARKITUP_MESSAGE2 + sass
-      #end
-      #manifest.print "stylesheet 'jquery/markitup/templates/preview.scss'\n"
+      css = File.read File.join(MARKITUP_SRC_TEMP, "preview.css")
+      sass = ''
+      IO.popen("sass-convert -F css -T scss", 'r+') { |f| f.print(css); f.close_write; sass = f.read }
+      open File.join(MARKITUP_DEST_TEMP, "preview.scss"), 'w' do |f|
+        f.write MARKITUP_MESSAGE2 + sass
+      end
+      manifest.print "stylesheet 'jquery/markitup/templates/preview.scss'\n"
     end
   end
 end
