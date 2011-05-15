@@ -3,10 +3,12 @@ require 'lib/handle_js_files'
 
 # Compass generator for jqGrid 3.5+
 JQGRID_SRC = File.join(GEM_ROOT, 'src', 'jqgrid')
+JQGRID_SRC_CONFIG = File.join(JQGRID_SRC, 'config', 'initializers')
 JQGRID_SRC_LOCALES = File.join(JQGRID_SRC, 'config', 'locales')
 JQGRID_SRC_TRANSLATIONS = File.join(JQGRID_SRC, 'js', 'i18n') + "/*.js"
 
 JQGRID_DEST_TEMPLATES = File.join(GEM_ROOT, 'templates', 'jqgrid')
+JQGRID_DEST_CONFIG = File.join(JQGRID_DEST_TEMPLATES, 'config', 'initializers')
 JQGRID_DEST_LOCALES = File.join(JQGRID_DEST_TEMPLATES, 'config', 'locales', 'jquery', 'jqgrid')
 JQGRID_DEST_STYLESHEETS = File.join(JQGRID_DEST_TEMPLATES, 'jquery')
 JQGRID_DEST_TRANSLATIONS = File.join(JQGRID_DEST_TEMPLATES, 'i18n', 'jqgrid')
@@ -61,8 +63,8 @@ namespace :build do
     open File.join(JQGRID_DEST_TEMPLATES, 'manifest.rb'), 'w' do |manifest|
       manifest.print JQGRID_MESSAGE1
 
-      open File.join(JQGRID_DEST_TEMPLATES, 'config', 'initializers', 'jqgrid.rb'), 'w' do |f|
-        f.print(File.read(File.join(JQGRID_SRC, 'config', 'initializers', 'jqgrid.rb')))
+      open File.join(JQGRID_DEST_CONFIG, 'jqgrid.rb'), 'w' do |f|
+        f.print(File.read(File.join(JQGRID_SRC_CONFIG, 'jqgrid.rb')))
       end
       manifest.print "file 'config/initializers/jqgrid.rb'\n"
 

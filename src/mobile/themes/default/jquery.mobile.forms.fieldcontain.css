@@ -15,8 +15,10 @@
     border-top-width: 0;
 }
 
-.min-width-480px .ui-field-contain {
-    border-width: 0;
-    padding: 0;
-    margin: 1em 0;
-}
+@media all and (min-width: 450px) {
+    .ui-field-contain {
+        border-width: 0;
+        padding: 0;
+        margin: 1em 0;
+    }
+}	

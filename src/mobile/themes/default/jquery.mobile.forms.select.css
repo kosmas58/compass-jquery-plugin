@@ -110,15 +110,17 @@ label.ui-select {
     margin: 0.6em 46px 0.8em;
 }
 
-.min-width-480px label.ui-select {
-    display: inline-block;
-    width: 20%;
-    margin: 0 2% 0 0;
-}
+@media all and (min-width: 450px) {
+    label.ui-select {
+        display: inline-block;
+        width: 20%;
+        margin: 0 2% 0 0;
+    }
 
-.min-width-480px .ui-select {
-    width: 60%;
-    display: inline-block;
+    .ui-select {
+        width: 60%;
+        display: inline-block;
+    }
 }
 
 /* when no placeholder is defined in a multiple select, the header height doesn't even extend past the close button.  this shim's content in there */

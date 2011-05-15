@@ -18,47 +18,30 @@
     },
 
     _create: function() {
-      var $list = this.element,
-              o = this.options;
+      var t = this;
 
       // create listview markup
-      $list
-              .addClass("ui-listview");
+      t.element.addClass(function(i, orig) {
+        return orig + " ui-listview " + ( t.options.inset ? " ui-listview-inset ui-corner-all ui-shadow " : "" );
+      });
 
-      if (o.inset) {
-        $list.addClass("ui-listview-inset ui-corner-all ui-shadow");
-      }
-
-      this._itemApply($list, $list);
-
-      this.refresh(true);
-
+      t.refresh();
     },
 
     _itemApply: function($list, item) {
       // TODO class has to be defined in markup
       item.find(".ui-li-count")
-              .addClass("ui-btn-up-" + ($list.jqmData("counttheme") || this.options.countTheme) + " ui-btn-corner-all");
-
-      item.find("h1, h2, h3, h4, h5, h6").addClass("ui-li-heading");
-
-      item.find("p, dl").addClass("ui-li-desc");
-
-      $list.find("li").find(">img:eq(0), >:first>img:eq(0)").addClass("ui-li-thumb").each(function() {
-        $(this).closest("li").addClass($(this).is(".ui-li-icon") ? "ui-li-has-icon" : "ui-li-has-thumb");
+              .addClass("ui-btn-up-" + ($list.jqmData("counttheme") || this.options.countTheme) + " ui-btn-corner-all").end()
+              .find("h1, h2, h3, h4, h5, h6").addClass("ui-li-heading").end()
+              .find("p, dl").addClass("ui-li-desc").end()
+              .find("img:first-child:eq(0)").addClass("ui-li-thumb").each(
+              function() {
+                item.addClass($(this).is(".ui-li-icon") ? "ui-li-has-icon" : "ui-li-has-thumb");
+              }).end()
+              .find(".ui-li-aside").each(function() {
+        var $this = $(this);
+        $this.prependTo($this.parent()); //shift aside to front for css float
       });
-
-      var aside = item.find(".ui-li-aside");
-
-      if (aside.length) {
-        aside.each(function(i, el) {
-          $(el).prependTo($(el).parent()); //shift aside to front for css float
-        });
-      }
-
-      if ($.support.cssPseudoElement || !$.nodeName(item[0], "ol")) {
-        return;
-      }
     },
 
     _removeCorners: function(li) {
@@ -74,6 +57,8 @@
               $list = this.element,
               self = this,
               dividertheme = $list.jqmData("dividertheme") || o.dividerTheme,
+              listsplittheme = $list.jqmData("splittheme"),
+              listspliticon = $list.jqmData("spliticon"),
               li = $list.children("li"),
               counter = $.support.cssPseudoElement || !$.nodeName($list[0], "ol") ? 0 : 1;
 
@@ -81,18 +66,17 @@
         $list.find(".ui-li-dec").remove();
       }
 
-      li.each(function(pos) {
-        var item = $(this),
+      for (var pos = 0, numli = li.length; pos < numli; pos++) {
+        var item = li.eq(pos),
                 itemClass = "ui-li";
 
         // If we're creating the element, we update it regardless
         if (!create && item.hasClass("ui-li")) {
-          return;
+          continue;
         }
 
-        var itemTheme = item.jqmData("theme") || o.theme;
-
-        var a = item.find(">a");
+        var itemTheme = item.jqmData("theme") || o.theme,
+                a = item.children("a");
 
         if (a.length) {
           var icon = item.jqmData("icon");
@@ -113,7 +97,7 @@
             itemClass += " ui-li-has-alt";
 
             var last = a.last(),
-                    splittheme = $list.jqmData("splittheme") || last.jqmData("theme") || o.splitTheme;
+                    splittheme = listsplittheme || last.jqmData("theme") || o.splitTheme;
 
             last
                     .appendTo(item)
@@ -128,12 +112,12 @@
                                     iconpos: false
                                   })
                     .find(".ui-btn-inner")
-                    .append($("<span>").buttonMarkup({
+                    .append($("<span />").buttonMarkup({
               shadow: true,
               corners: true,
               theme: splittheme,
               iconpos: "notext",
-              icon: $list.jqmData("spliticon") || last.jqmData("icon") || o.splitIcon
+              icon: listspliticon || last.jqmData("icon") || o.splitIcon
             }));
           }
 
@@ -199,7 +183,7 @@
         if (!create) {
           self._itemApply($list, item);
         }
-      });
+      }
     },
 
     //create a string for ID/subpage url creation
@@ -212,6 +196,7 @@
               parentPage = parentList.closest(".ui-page"),
               parentId = parentPage.jqmData("url"),
               o = this.options,
+              dns = "data-" + $.mobile.ns,
               self = this,
               persistentFooterID = parentPage.find(":jqmData(role='footer')").jqmData("id");
 
@@ -225,20 +210,18 @@
                         id = parentId + "&" + $.mobile.subPageUrlKey + "=" + self._idStringEscape(title + " " + i),
                         theme = list.jqmData("theme") || o.theme,
                         countTheme = list.jqmData("counttheme") || parentList.jqmData("counttheme") || o.countTheme,
-                        newPage = list.wrap("<div data-" + $.mobile.ns + "role='page'><div data-" + $.mobile.ns + "role='content'></div></div>")
+                        newPage = list.detach()
+                                .wrap("<div " + dns + "role='page'" + dns + "url='" + id + "' " + dns + "theme='" + theme + "' " + dns + "count-theme='" + countTheme + "'><div " + dns + "role='content'></div></div>")
                                 .parent()
-                                .before("<div data-" + $.mobile.ns + "role='header' data-" + $.mobile.ns + "theme='" + o.headerTheme + "'><div class='ui-title'>" + title + "</div></div>")
-                                .after(persistentFooterID ? $("<div data-" + $.mobile.ns + "role='footer'  data-" + $.mobile.ns + "id='" + persistentFooterID + "'>") : "")
+                                .before("<div " + dns + "role='header' " + dns + "theme='" + o.headerTheme + "'><div class='ui-title'>" + title + "</div></div>")
+                                .after(persistentFooterID ? $("<div " + dns + "role='footer' " + dns + "id='" + persistentFooterID + "'>") : "")
                                 .parent()
-                                .attr("data-" + $.mobile.ns + "url", id)
-                                .attr("data-" + $.mobile.ns + "theme", theme)
-                                .attr("data-" + $.mobile.ns + "count-theme", countTheme)
                                 .appendTo($.mobile.pageContainer);
 
                 newPage.page();
                 var anchor = parent.find('a:first');
                 if (!anchor.length) {
-                  anchor = $("<a></a>").html(nodeEls || title).prependTo(parent.empty());
+                  anchor = $("<a />").html(nodeEls || title).prependTo(parent.empty());
                 }
                 anchor.attr('href', '#' + id);
               }).listview();

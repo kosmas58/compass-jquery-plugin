@@ -121,6 +121,8 @@
                   .not("> .ui-collapsible-contain .ui-collapsible-contain")
                   .trigger("collapse");
         });
+
+
         var set = collapsibleParent.find(":jqmData(role=collapsible)")
 
         set.first()
@@ -133,7 +135,7 @@
       }
 
       collapsibleHeading
-              .bind("vmouseup", function(e) {
+              .bind("vclick", function(e) {
         if (collapsibleHeading.is('.ui-collapsible-heading-collapsed')) {
           collapsibleContain.trigger('expand');
         }
@@ -141,8 +143,7 @@
           collapsibleContain.trigger('collapse');
         }
         e.preventDefault();
-      })
-              .bind("vclick", false);
+      });
     }
   });
 })(jQuery);

@@ -2,11 +2,15 @@ require 'fileutils'
 require 'lib/handle_js_files'
 
 MARKITUP_SRC = File.join(GEM_ROOT, 'src', 'markitup')
+MARKITUP_SRC_VIEWS = File.join(MARKITUP_SRC, 'app', 'views', 'shared')
+MARKITUP_SRC_CONFIG = File.join(MARKITUP_SRC, 'config', 'initializers')
 MARKITUP_SRC_SETS = File.join(MARKITUP_SRC, 'sets')
 MARKITUP_SRC_SKINS = File.join(MARKITUP_SRC, 'skins')
-MARKITUP_SRC_TEMPLATES = File.join(MARKITUP_SRC, 'templates')
+MARKITUP_SRC_TEMP = File.join(MARKITUP_SRC, 'templates')
 
 MARKITUP_DEST_TEMPLATES = File.join(GEM_ROOT, 'templates', 'markitup')
+MARKITUP_DEST_VIEWS = File.join(MARKITUP_DEST_TEMPLATES, 'app', 'views', 'shared')
+MARKITUP_DEST_CONFIG = File.join(MARKITUP_DEST_TEMPLATES, 'config', 'initializers')
 MARKITUP_DEST_SETS = File.join(MARKITUP_DEST_TEMPLATES, 'jquery', 'markitup', 'sets')
 MARKITUP_DEST_SKINS = File.join(MARKITUP_DEST_TEMPLATES, 'jquery', 'markitup', 'skins')
 MARKITUP_DEST_TEMP = File.join(MARKITUP_DEST_TEMPLATES, 'jquery', 'markitup', 'templates')
@@ -23,13 +27,15 @@ namespace :build do
   task :markitup do
 
     FileUtils.remove_dir MARKITUP_DEST_TEMPLATES if File.exists? MARKITUP_DEST_TEMPLATES
-    FileUtils.mkdir_p(File.join(MARKITUP_DEST_TEMPLATES, 'config', 'initializers'))
+    FileUtils.mkdir_p(File.join(MARKITUP_DEST_TEMPLATES, "markitup"))
 
     open File.join(MARKITUP_DEST_TEMPLATES, 'manifest.rb'), 'w' do |manifest|
       manifest.print MARKITUP_MESSAGE1
 
-      open File.join(MARKITUP_DEST_TEMPLATES, 'config', 'initializers', 'mark_it_up.rb'), 'w' do |f|
-        f.print(File.read(File.join(MARKITUP_SRC, 'config', 'initializers', 'mark_it_up.rb')))
+      FileUtils.mkdir_p(MARKITUP_DEST_CONFIG)
+
+      open File.join(MARKITUP_DEST_CONFIG, 'mark_it_up.rb'), 'w' do |f|
+        f.print(File.read(File.join(MARKITUP_SRC_CONFIG, 'mark_it_up.rb')))
       end
       manifest.print "file 'config/initializers/mark_it_up.rb'\n"
 
@@ -49,7 +55,6 @@ namespace :build do
       manifest.print "javascript 'jquery.markitup.min.js'\n"
 
       # Sets
-      FileUtils.mkdir_p(File.join(MARKITUP_DEST_TEMPLATES, "markitup"))
       FileUtils.mkdir_p(File.join(MARKITUP_DEST_SETS))
 
       Dir.foreach MARKITUP_SRC_SETS do |set|
@@ -127,6 +132,25 @@ namespace :build do
 
       # Templates
 
+      FileUtils.mkdir_p(MARKITUP_DEST_VIEWS)
+
+      Dir.foreach MARKITUP_SRC_VIEWS do |file|
+        next unless /\.haml$/ =~ file
+        html = File.read File.join(MARKITUP_SRC_VIEWS, file)
+        open File.join(MARKITUP_DEST_VIEWS, file), 'w' do |f|
+          f.print(html)
+        end
+        manifest.print "file 'app/views/shared/#{file}'\n"
+      end
+
+      FileUtils.mkdir_p(MARKITUP_DEST_TEMP)
+      #css = File.read File.join(MARKITUP_SRC_TEMP, "preview.css")
+      #sass = ''
+      #IO.popen("sass-convert -F css -T scss", 'r+') { |f| f.print(css); f.close_write; sass = f.read }
+      #open File.join(MARKITUP_DEST_TEMP, "preview.scss"), 'w' do |f|
+      #  f.write MARKITUP_MESSAGE2 + sass
+      #end
+      #manifest.print "stylesheet 'jquery/markitup/templates/preview.scss'\n"
     end
   end
 end

@@ -3,10 +3,12 @@ require 'lib/handle_js_files'
 
 # Compass generator for RIBBON_14
 RIBBON_SRC = File.join(GEM_ROOT, 'src', 'ribbon')
+RIBBON_SRC_CONFIG = File.join(RIBBON_SRC, 'config', 'initializers')
 RIBBON_SRC_IMAGES = File.join(RIBBON_SRC, 'images')
 RIBBON_SRC_THEMES = File.join(RIBBON_SRC, 'themes')
 
 RIBBON_DEST_TEMPLATES = File.join(GEM_ROOT, 'templates', 'ribbon')
+RIBBON_DEST_CONFIG = File.join(RIBBON_DEST_TEMPLATES, 'config', 'initializers')
 RIBBON_DEST_THEMES = File.join(RIBBON_DEST_TEMPLATES, 'jquery', 'ribbon')
 RIBBON_DEST_IMAGES = File.join(RIBBON_DEST_THEMES)
 
@@ -27,8 +29,8 @@ namespace :build do
     open File.join(RIBBON_DEST_TEMPLATES, 'manifest.rb'), 'w' do |manifest|
       manifest.print RIBBON_MESSAGE1
 
-      open File.join(RIBBON_DEST_TEMPLATES, 'config', 'initializers', 'ribbon.rb'), 'w' do |f|
-        f.print(File.read(File.join(RIBBON_SRC, 'config', 'initializers', 'ribbon.rb')))
+      open File.join(RIBBON_DEST_CONFIG, 'ribbon.rb'), 'w' do |f|
+        f.print(File.read(File.join(RIBBON_SRC_CONFIG, 'ribbon.rb')))
       end
       manifest.print "file 'config/initializers/ribbon.rb'\n"
 

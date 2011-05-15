@@ -32,7 +32,7 @@
 
               selectID = select.attr("id"),
 
-              label = $("label[for=" + selectID + "]").addClass("ui-select"),
+              label = $('label[for="' + selectID + '"]').addClass("ui-select"),
 
         //IE throws an exception at options.item() function when
         //there is no selected item
@@ -566,8 +566,14 @@
       }
 
       if (self.menuType == "page") {
-        $.mobile.changePage([self.menuPage,self.thisPage], 'pop', true, false);
+        // button refocus ensures proper height calculation
+        // by removing the inline style and ensuring page inclusion
         self.menuPage.one("pagehide", focusButton);
+
+        // doesn't solve the possible issue with calling change page
+        // where the objects don't define data urls which prevents dialog key
+        // stripping - changePage has incoming refactor
+        window.history.back();
       }
       else {
         self.screen.addClass("ui-screen-hidden");

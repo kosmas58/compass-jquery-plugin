@@ -138,8 +138,10 @@ ol.ui-listview .ui-li-jsnumbering:before {
     margin: .3em 0;
 }
 
-.min-width-480px .ui-li-aside {
-    width: 45%;
+@media all and (min-width: 480px) {
+    .ui-li-aside {
+        width: 45%;
+    }
 }
 
 .ui-li-divider {
@@ -214,6 +216,10 @@ ol.ui-listview .ui-li-jsnumbering:before {
 .ui-listview-filter-inset {
     margin: -15px -5px -15px -5px;
     background: transparent;
+}
+
+.ui-li.ui-screen-hidden {
+    display: none;
 }
 
 /* Odd iPad positioning issue. */
