@@ -50,7 +50,7 @@ namespace :build do
       manifest.print "javascript 'jquery.markitup.js'\n"
 
       open File.join(MARKITUP_DEST_TEMPLATES, 'jquery.markitup.min.js'), 'w' do |f|
-        f.print compress_js(scripts, "google")
+        f.print compress_js(scripts, "yui")
       end
       manifest.print "javascript 'jquery.markitup.min.js'\n"
 
