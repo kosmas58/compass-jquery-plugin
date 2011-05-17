@@ -353,7 +353,7 @@
                 onInitializeForm = $.isFunction(rp_ge.onInitializeForm) ? rp_ge.onInitializeForm : false,
                 copydata = null,
                 showFrm = true,
-                maxCols = 1, maxRows = 0,    postdata, extpost, newData, diff;
+                maxCols = 1, maxRows = 0,  postdata, extpost, newData, diff;
         if (rowid === "new") {
           rowid = "_empty";
           p.caption = rp_ge.addCaption;
@@ -600,8 +600,6 @@
                 case "text":
                 case "button" :
                 case "image":
-                  $("#" + nm, "#" + fmid).val(tmp);
-                  break;
                 case "textarea":
                   if (tmp == "&nbsp;" || tmp == "&#160;" || (tmp.length == 1 && tmp.charCodeAt(0) == 160)) {
                     tmp = '';

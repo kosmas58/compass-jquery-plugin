@@ -5506,6 +5506,9 @@ var xmlJsonClass = {
 		if(!$.fmatter.isUndefined(cm.formatoptions)) {
 			op = $.extend(op,cm.formatoptions);
 		}
+		if( !$.fmatter.isUndefined($('#'+gid)[0].p.editOptions) ) {
+			op.editOptions = $('#'+gid)[0].p.editOptions;
+		}
 		var saverow = function( rowid)	{
 			if(op.afterSave) op.afterSave(rowid);
 			$("tr#"+rid+" div.ui-inline-edit, "+"tr#"+rid+" div.ui-inline-del","#"+gid).show();
@@ -7611,7 +7614,7 @@ var xmlJsonClass = {
                 onInitializeForm = $.isFunction(rp_ge.onInitializeForm) ? rp_ge.onInitializeForm : false,
                 copydata = null,
                 showFrm = true,
-                maxCols = 1, maxRows = 0,    postdata, extpost, newData, diff;
+                maxCols = 1, maxRows = 0,  postdata, extpost, newData, diff;
         if (rowid === "new") {
           rowid = "_empty";
           p.caption = rp_ge.addCaption;
@@ -7858,8 +7861,6 @@ var xmlJsonClass = {
                 case "text":
                 case "button" :
                 case "image":
-                  $("#" + nm, "#" + fmid).val(tmp);
-                  break;
                 case "textarea":
                   if (tmp == "&nbsp;" || tmp == "&#160;" || (tmp.length == 1 && tmp.charCodeAt(0) == 160)) {
                     tmp = '';

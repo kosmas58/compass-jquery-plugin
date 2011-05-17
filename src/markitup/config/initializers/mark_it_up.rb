@@ -14,9 +14,9 @@ ActionView::Helpers::AssetTagHelper.register_stylesheet_expansion :markitup_mark
 ActionView::Helpers::AssetTagHelper.register_stylesheet_expansion :markitup_textile  => ['compiled/jquery/markitup/sets/textile.css']
 ActionView::Helpers::AssetTagHelper.register_stylesheet_expansion :markitup_wiki     => ['compiled/jquery/markitup/sets/wiki.css']
 
-ActionView::Helpers::AssetTagHelper.register_stylesheet_expansion :markitup_preview  => ['compiled/jquery/markitup/templates/preview.css']
+ActionView::Helpers::AssetTagHelper.register_stylesheet_expansion :markitup_preview => ['compiled/jquery/markitup/templates/preview.css']
 
-ActionView::Helpers::AssetTagHelper.register_javascript_expansion :markitup => ['jquery.markitup.min']
+ActionView::Helpers::AssetTagHelper.register_javascript_expansion :markitup          => ['jquery.markitup.min']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :markitup_default  => ['markitup/jquery.markitup.set.default.min']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :markitup_bbcode   => ['markitup/jquery.markitup.set.bbcode.min']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :markitup_xbbcode  => ['markitup/jquery.markitup.set.xbbcode.min']
