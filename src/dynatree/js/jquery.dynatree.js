@@ -21,7 +21,7 @@
 /*jslint laxbreak: true, browser: true, evil: true, indent: 0, white: false, onevar: false */
 
 /*************************************************************************
- *    Debug functions
+ *  Debug functions
  */
 
 var _canLog = true;
@@ -70,7 +70,7 @@ var getDynaTreePersistData = null;
 
 
 /*************************************************************************
- *    Constants
+ *  Constants
  */
 var DTNodeStatus_Error = -1;
 var DTNodeStatus_Loading = 1;
@@ -81,7 +81,7 @@ var DTNodeStatus_Ok = 0;
 (function($) {
 
   /*************************************************************************
-   *    Common tool functions.
+   *  Common tool functions.
    */
 
   var Class = {
@@ -108,7 +108,7 @@ var DTNodeStatus_Ok = 0;
   }
 
   /*************************************************************************
-   *    Class DynaTreeNode
+   *  Class DynaTreeNode
    */
   var DynaTreeNode = Class.create();
 
@@ -220,6 +220,7 @@ var DTNodeStatus_Ok = 0;
         var tooltip = data.tooltip ? " title='" + data.tooltip + "'" : "";
         if (opts.noLink || data.noLink) {
           nodeTitle = "<span style='display: inline-block;' class='" + opts.classNames.title + "'" + tooltip + ">" + data.title + "</span>";
+//				this.tree.logDebug("nodeTitle: " + nodeTitle);
         } else {
           nodeTitle = "<a href='#' class='" + opts.classNames.title + "'" + tooltip + ">" + data.title + "</a>";
         }
@@ -303,6 +304,9 @@ var DTNodeStatus_Ok = 0;
 //						parent.ul.className = cn.noConnector;
 //					}
           }
+          // set node connector images, links and text
+//				this.span.innerHTML = this._getInnerHtml();
+
           parent.ul.appendChild(this.li);
         }
         // set node connector images, links and text
@@ -1591,13 +1595,13 @@ var DTNodeStatus_Ok = 0;
        *
        * Data format: array of node objects, with optional 'children' attributes.
        * [
-       *    { title: "t1", isFolder: true, ... }
-       *    { title: "t2", isFolder: true, ...,
-       *        children: [
-       *            {title: "t2.1", ..},
-       *            {..}
-       *            ]
-       *    }
+       *  { title: "t1", isFolder: true, ... }
+       *  { title: "t2", isFolder: true, ...,
+       *    children: [
+       *      {title: "t2.1", ..},
+       *      {..}
+       *      ]
+       *  }
        * ]
        * A simple object is also accepted instead of an array.
        *
@@ -2391,14 +2395,22 @@ var DTNodeStatus_Ok = 0;
        this.$tabs = this.$lis.map(function() { return $("a", this)[0]; });
        */
       $ulParent.find(">li").each(function() {
-        var $li = $(this);
-        var $liSpan = $li.find(">span:first");
-        var title;
+        var $li = $(this),
+                $liSpan = $li.find(">span:first"),
+                $liA = $li.find(">a:first"),
+                title,
+                href = null,
+                target = null;
         if ($liSpan.length) {
           // If a <li><span> tag is specified, use it literally.
           title = $liSpan.html();
+        } else if ($liA.length) {
+          title = $liA.html();
+          href = $liA.attr("href");
+          target = $liA.attr("target");
         } else {
-          // If only a <li> tag is specified, use the trimmed string up to the next child <ul> tag.
+          // If only a <li> tag is specified, use the trimmed string up to
+          // the next child <ul> tag.
           title = $li.html();
           var iPos = title.search(/<ul/i);
           if (iPos >= 0) {
@@ -2419,6 +2431,10 @@ var DTNodeStatus_Ok = 0;
           focus: $li.hasClass("focused"),
           noLink: $li.hasClass("noLink")
         };
+        if (href) {
+          data.href = href;
+          data.target = target;
+        }
         if ($li.attr("title")) {
           data.tooltip = $li.attr("title");
         }
@@ -2910,7 +2926,7 @@ var DTNodeStatus_Ok = 0;
     onActivate: null, // Callback(dtnode) when a node is activated.
     onDeactivate: null, // Callback(dtnode) when a node is deactivated.
     onSelect: null, // Callback(flag, dtnode) when a node is (de)selected.
-    onExpand: null, // Callback(dtnode) when a node is expanded/collapsed.
+    onExpand: null, // Callback(flag, dtnode) when a node is expanded/collapsed.
     onLazyRead: null, // Callback(dtnode) when a lazy node is expanded for the first time.
     onCustomRender: null, // Callback(dtnode) before a node is rendered. Return a HTML string to override.
     onRender: null, // Callback(dtnode, nodeSpan) after a node was rendered.
