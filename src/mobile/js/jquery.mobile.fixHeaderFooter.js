@@ -34,8 +34,8 @@
             toolbarSelector = '.ui-header-fixed:first, .ui-footer-fixed:not(.ui-footer-duplicate):last',
             stickyFooter, //for storing quick references to duplicate footers
             supportTouch = $.support.touch,
-            touchStartEvent = supportTouch ? "touchstart" : "mousedown",
-            touchStopEvent = supportTouch ? "touchend" : "mouseup",
+            touchStartEvent = supportTouch ? "touchstart.toolbar" : "mousedown.toolbar",
+            touchStopEvent = supportTouch ? "touchend.toolbar" : "mouseup.toolbar",
             stateBefore = null,
             scrollTriggered = false,
             touchToggleEnabled = true;
@@ -59,12 +59,12 @@
 
     $(function() {
       $(document)
-              .bind("vmousedown", function(event) {
+              .bind("vmousedown.toolbar", function(event) {
         if (touchToggleEnabled) {
           stateBefore = currentstate;
         }
       })
-              .bind("vclick", function(event) {
+              .bind("vclick.toolbar", function(event) {
         if (touchToggleEnabled) {
           if ($(event.target).closest(ignoreTargets).length) {
             return;
@@ -75,7 +75,7 @@
           }
         }
       })
-              .bind('scrollstart', function(event) {
+              .bind('scrollstart.toolbar', function(event) {
         scrollTriggered = true;
         if (stateBefore == null) {
           stateBefore = currentstate;
@@ -94,7 +94,7 @@
           }
         }
       })
-              .bind('scrollstop', function(event) {
+              .bind('scrollstop.toolbar', function(event) {
         if ($(event.target).closest(ignoreTargets).length) {
           return;
         }
@@ -105,13 +105,13 @@
         }
         stateBefore = null;
       })
-              .bind('silentscroll', showEventCallback);
+              .bind('silentscroll.toolbar', showEventCallback);
 
-      $(window).bind('resize', showEventCallback);
+      $(window).bind('resize.toolbar', showEventCallback);
     });
 
     //before page is shown, check for duplicate footer
-    $('.ui-page').live('pagebeforeshow', function(event, ui) {
+    $('.ui-page').live('pagebeforeshow.toolbar', function(event, ui) {
       var page = $(event.target),
               footer = page.find(":jqmData(role='footer')"),
               id = footer.data('id'),
@@ -126,7 +126,7 @@
     });
 
     //after page is shown, append footer to new page
-    $('.ui-page').live('pageshow', function(event, ui) {
+    $('.ui-page').live('pageshow.toolbar', function(event, ui) {
       var $this = $(this);
 
       if (stickyFooter && stickyFooter.length) {
@@ -140,6 +140,8 @@
       $.fixedToolbars.show(true, this);
     });
 
+    //When a collapsiable is hidden or shown we need to trigger the fixed toolbar to reposition itself (#1635)
+    $(".ui-collapsible-contain").live("collapse expand", showEventCallback);
 
     // element.getBoundingClientRect() is broken in iOS 3.2.1 on the iPad. The
     // coordinates inside of the rect it returns don't have the page scroll position

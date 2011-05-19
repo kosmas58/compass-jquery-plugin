@@ -1615,7 +1615,7 @@
   $.widget("mobile.page", $.mobile.widget, {
     options: {
       backBtnText: "Back",
-      addBackBtn: true,
+      addBackBtn: false,
       backBtnTheme: null,
       degradeInputs: {
         color: false,
@@ -1873,11 +1873,6 @@
 
     //error response message - appears when an Ajax page request fails
     pageLoadErrorMessage: "Error Loading Page",
-
-    //configure meta viewport tag's content attr:
-    //note: this feature is deprecated in A4 in favor of adding
-    //the meta viewport element directly in the markup
-    metaViewportContent: "width=device-width, minimum-scale=1, maximum-scale=1",
 
     //support conditions that must be met in order to proceed
     //default enhanced qualifications are media query support OR IE 7+
@@ -2957,8 +2952,8 @@
             toolbarSelector = '.ui-header-fixed:first, .ui-footer-fixed:not(.ui-footer-duplicate):last',
             stickyFooter, //for storing quick references to duplicate footers
             supportTouch = $.support.touch,
-            touchStartEvent = supportTouch ? "touchstart" : "mousedown",
-            touchStopEvent = supportTouch ? "touchend" : "mouseup",
+            touchStartEvent = supportTouch ? "touchstart.toolbar" : "mousedown.toolbar",
+            touchStopEvent = supportTouch ? "touchend.toolbar" : "mouseup.toolbar",
             stateBefore = null,
             scrollTriggered = false,
             touchToggleEnabled = true;
@@ -2982,12 +2977,12 @@
 
     $(function() {
       $(document)
-              .bind("vmousedown", function(event) {
+              .bind("vmousedown.toolbar", function(event) {
         if (touchToggleEnabled) {
           stateBefore = currentstate;
         }
       })
-              .bind("vclick", function(event) {
+              .bind("vclick.toolbar", function(event) {
         if (touchToggleEnabled) {
           if ($(event.target).closest(ignoreTargets).length) {
             return;
@@ -2998,7 +2993,7 @@
           }
         }
       })
-              .bind('scrollstart', function(event) {
+              .bind('scrollstart.toolbar', function(event) {
         scrollTriggered = true;
         if (stateBefore == null) {
           stateBefore = currentstate;
@@ -3017,7 +3012,7 @@
           }
         }
       })
-              .bind('scrollstop', function(event) {
+              .bind('scrollstop.toolbar', function(event) {
         if ($(event.target).closest(ignoreTargets).length) {
           return;
         }
@@ -3028,13 +3023,13 @@
         }
         stateBefore = null;
       })
-              .bind('silentscroll', showEventCallback);
+              .bind('silentscroll.toolbar', showEventCallback);
 
-      $(window).bind('resize', showEventCallback);
+      $(window).bind('resize.toolbar', showEventCallback);
     });
 
     //before page is shown, check for duplicate footer
-    $('.ui-page').live('pagebeforeshow', function(event, ui) {
+    $('.ui-page').live('pagebeforeshow.toolbar', function(event, ui) {
       var page = $(event.target),
               footer = page.find(":jqmData(role='footer')"),
               id = footer.data('id'),
@@ -3049,7 +3044,7 @@
     });
 
     //after page is shown, append footer to new page
-    $('.ui-page').live('pageshow', function(event, ui) {
+    $('.ui-page').live('pageshow.toolbar', function(event, ui) {
       var $this = $(this);
 
       if (stickyFooter && stickyFooter.length) {
@@ -3063,6 +3058,8 @@
       $.fixedToolbars.show(true, this);
     });
 
+    //When a collapsiable is hidden or shown we need to trigger the fixed toolbar to reposition itself (#1635)
+    $(".ui-collapsible-contain").live("collapse expand", showEventCallback);
 
     // element.getBoundingClientRect() is broken in iOS 3.2.1 on the iPad. The
     // coordinates inside of the rect it returns don't have the page scroll position
@@ -4669,7 +4666,6 @@
                     .find('a:eq(0), .ui-btn-inner')
                     .removeClass('ui-corner-bottom');
           }
-
         }
       })
               .trigger(o.collapsed ? 'collapse' : 'expand');
@@ -4981,7 +4977,7 @@
                         theme = list.jqmData("theme") || o.theme,
                         countTheme = list.jqmData("counttheme") || parentList.jqmData("counttheme") || o.countTheme,
                         newPage = list.detach()
-                                .wrap("<div " + dns + "role='page'" + dns + "url='" + id + "' " + dns + "theme='" + theme + "' " + dns + "count-theme='" + countTheme + "'><div " + dns + "role='content'></div></div>")
+                                .wrap("<div " + dns + "role='page' " + dns + "url='" + id + "' " + dns + "theme='" + theme + "' " + dns + "count-theme='" + countTheme + "'><div " + dns + "role='content'></div></div>")
                                 .parent()
                                 .before("<div " + dns + "role='header' " + dns + "theme='" + o.headerTheme + "'><div class='ui-title'>" + title + "</div></div>")
                                 .after(persistentFooterID ? $("<div " + dns + "role='footer' " + dns + "id='" + persistentFooterID + "'>") : "")
@@ -5291,11 +5287,6 @@
 
   //add mobile, initial load "rendering" classes to docEl
   $html.addClass("ui-mobile ui-mobile-rendering");
-
-  //define & prepend meta viewport tag, if content is defined
-  //NOTE: this is now deprecated. We recommend placing the meta viewport element in
-  //the markup from the start.
-  $.mobile.metaViewportContent && !$head.find("meta[name='viewport']").length ? $("<meta>", { name: "viewport", content: $.mobile.metaViewportContent}).prependTo($head) : undefined;
 
   //loading div which appears during Ajax requests
   //will not appear if $.mobile.loadingMessage is false

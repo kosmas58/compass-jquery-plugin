@@ -105,7 +105,6 @@
                     .find('a:eq(0), .ui-btn-inner')
                     .removeClass('ui-corner-bottom');
           }
-
         }
       })
               .trigger(o.collapsed ? 'collapse' : 'expand');
