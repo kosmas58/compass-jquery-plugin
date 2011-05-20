@@ -119,8 +119,8 @@
       hist.unshift({
         page: page,
         animation: animation,
-        hash: '#' + page.attr('id'),
-        id: page.attr('id')
+        hash: '#' + page.prop('id'),
+        id: page.prop('id')
       });
     }
 
@@ -142,7 +142,7 @@
       }
 
       // Prevent default if we found an internal link (relative or absolute)
-      if ($el && $el.attr('href') && !$el.isExternalLink()) {
+      if ($el && $el.prop('href') && !$el.isExternalLink()) {
         _debug('Need to prevent default click behavior');
         e.preventDefault();
       } else {
@@ -253,7 +253,7 @@
 
         fromPage.unselect();
         lastAnimationTime = (new Date()).getTime();
-        setHash(currentPage.attr('id'));
+        setHash(currentPage.prop('id'));
         tapReady = true;
 
         // Trigger custom events
@@ -405,12 +405,12 @@
       var targetPage = null;
       $(nodes).each(function(index, node) {
         var $node = $(this);
-        if (!$node.attr('id')) {
-          $node.attr('id', 'page-' + (++newPageCount));
+        if (!$node.prop('id')) {
+          $node.prop('id', 'page-' + (++newPageCount));
         }
 
         // Remove any existing instance
-        $('#' + $node.attr('id')).remove();
+        $('#' + $node.prop('id')).remove();
 
         $body.trigger('pageInserted', {page: $node.appendTo($body)});
 
@@ -473,7 +473,7 @@
             var firstPage = insertPages(data, settings.animation);
             if (firstPage) {
               if (settings.method == 'GET' && jQTSettings.cacheGetRequests === true && settings.$referrer) {
-                settings.$referrer.attr('href', '#' + firstPage.attr('id'));
+                settings.$referrer.prop('href', '#' + firstPage.prop('id'));
               }
               if (settings.callback) {
                 settings.callback(true);
@@ -503,12 +503,12 @@
 
       var $form = (typeof(e) === 'string') ? $(e).eq(0) : (e.target ? $(e.target) : $(e));
 
-      _debug($form.attr('action'));
+      _debug($form.prop('action'));
 
-      if ($form.length && $form.is(jQTSettings.formSelector) && $form.attr('action')) {
-        showPageByHref($form.attr('action'), {
+      if ($form.length && $form.is(jQTSettings.formSelector) && $form.prop('action')) {
+        showPageByHref($form.prop('action'), {
           data: $form.serialize(),
-          method: $form.attr('method') || "POST",
+          method: $form.prop('method') || "POST",
           animation: animations[0] || null,
           callback: callback
         });
@@ -616,14 +616,14 @@
       }
 
       // Make sure we have a tappable element
-      if (!$el.length || !$el.attr('href')) {
+      if (!$el.length || !$el.prop('href')) {
         _debug('Could not find a link related to tapped element');
         return false;
       }
 
       // Init some vars
-      var target = $el.attr('target'),
-              hash = $el.attr('hash'),
+      var target = $el.prop('target'),
+              hash = $el.prop('hash'),
               animation = null;
 
       if ($el.isExternalLink()) {
@@ -640,10 +640,10 @@
 
       } else if (target === '_webapp') {
         // User clicked or tapped an internal link, fullscreen mode
-        window.location = $el.attr('href');
+        window.location = $el.prop('href');
         return false;
 
-      } else if ($el.attr('href') === '#') {
+      } else if ($el.prop('href') === '#') {
         // Allow tap on item with no href
         $el.unselect();
         return true;
@@ -673,7 +673,7 @@
         } else {
           // External href
           $el.addClass('loading active');
-          showPageByHref($el.attr('href'), {
+          showPageByHref($el.prop('href'), {
             animation: animation,
             callback: function() {
               $el.removeClass('loading');
@@ -830,7 +830,7 @@
       // Define public jQuery functions
       $.fn.isExternalLink = function() {
         var $el = $(this);
-        return ($el.attr('target') == '_blank' || $el.attr('rel') == 'external' || $el.is('a[href^="http://maps.google.com"], a[href^="mailto:"], a[href^="tel:"], a[href^="javascript:"], a[href*="youtube.com/v"], a[href*="youtube.com/watch"]'));
+        return ($el.prop('target') == '_blank' || $el.prop('rel') == 'external' || $el.is('a[href^="http://maps.google.com"], a[href^="mailto:"], a[href^="tel:"], a[href^="javascript:"], a[href*="youtube.com/v"], a[href*="youtube.com/watch"]'));
       }
       $.fn.makeActive = function() {
         return $(this).addClass('active');
@@ -904,7 +904,7 @@
       $body = $('#jqt');
       if ($body.length === 0) {
         _log('Could not find an element with the id "jqt", so the body id has been set to "jqt". If you are having any problems, wrapping your panels in a div with the id "jqt" might help.');
-        $body = $('body').attr('id', 'jqt');
+        $body = $('body').prop('id', 'jqt');
       }
 
       // Add some specific css if need be
@@ -939,7 +939,7 @@
 
       // Go to the top of the "current" page
       $(currentPage).addClass('current');
-      initialPageId = $(currentPage).attr('id');
+      initialPageId = $(currentPage).prop('id');
       setHash(initialPageId);
       addPageToHistory(currentPage);
       scrollTo(0, 0);
@@ -1980,7 +1980,7 @@ function getNoEvents() {
 function setBindings() {
   // calendar days
   $('#ical td').bind("click", function() {
-    var btnClass = $(this).attr('class');
+    var btnClass = $(this).prop('class');
     var clickedDate = getClickedDate($(this));
 
     // where's the today? let's remove it first
@@ -1990,12 +1990,12 @@ function setBindings() {
 
     if (btnClass.indexOf('date_has_event') != -1 || btnClass.indexOf('today_date_has_event') != -1) {
       // Event Date
-      $(this).attr('class', 'selected_date_has_event');
+      $(this).prop('class', 'selected_date_has_event');
       getEvents(clickedDate);
     }
     if (btnClass == '' || btnClass.indexOf('today') != -1) {
       // Non Event Date
-      $(this).attr('class', 'selected');
+      $(this).prop('class', 'selected');
       getNoEvents();
     }
 
@@ -2064,10 +2064,10 @@ function setToday() {
 
         var td = $(this).closest('td');
 
-        if ($(td).attr('class') == 'date_has_event')
-          $(td).attr('class', 'today_date_has_event');
+        if ($(td).prop('class') == 'date_has_event')
+          $(td).prop('class', 'today_date_has_event');
         else
-          $(td).attr('class', 'today');
+          $(td).prop('class', 'today');
       }
     }
   });
@@ -2082,7 +2082,7 @@ function setSelectedAndLoadEvents(date) {
   RemoveSelectedCell();
 
   $('#ical td').each(function(index) {
-    var css = $(this).attr('class');
+    var css = $(this).prop('class');
     var clickedDate = getClickedDate($(this));
 
     // set todays date
@@ -2092,11 +2092,11 @@ function setSelectedAndLoadEvents(date) {
             && date.getFullYear() == clickedDate.getFullYear()) {
 
       if (css == "date_has_event") {
-        $(this).attr('class', 'selected_date_has_event');
+        $(this).prop('class', 'selected_date_has_event');
         getEvents(date);
       }
       else {
-        $(this).attr('class', 'selected');
+        $(this).prop('class', 'selected');
         getNoEvents();
       }
     }
@@ -2734,7 +2734,7 @@ function changeBack(target) {
     parts.defaults = $.extend({}, parts[o], jqc.defaults || {});
 
     $(document.createElement("style"))
-            .attr("type", "text/css")
+            .prop("type", "text/css")
             .html(
             css.defaults.replace(/\{(\w+)\}/g, function (a, b) {
               return b in parts.defaults ? parts.defaults[b] : a;
@@ -2755,7 +2755,7 @@ function changeBack(target) {
               jqc[o] || {});
 
       $(document.createElement("style"))
-              .attr("type", "text/css")
+              .prop("type", "text/css")
               .html(css[o].replace(/\{(\w+)\}/g, function (a, b) {
         return b in parts[o] ? parts[o][b] : a;
       }))
@@ -3431,7 +3431,7 @@ function changeBack(target) {
                   }
                   // Otherwise fill attribute as normal
                   else {
-                    el.attr(j, val);
+                    el.prop(j, val);
                   }
                 }
 
@@ -3534,7 +3534,7 @@ function changeBack(target) {
                   match.val(data[i]);
                 }
                 else if (match.filter('img').length) {
-                  match.attr('src', data[i]);
+                  match.prop('src', data[i]);
                 }
                 else {
                   match.html(data[i]);
@@ -3750,11 +3750,11 @@ function changeBack(target) {
      * @return {Object} jQuery Object containing cloned Element
      */
     $clone: function() {
-      var id = this.element.attr('id');
-      this.element.attr('id', '');
+      var id = this.element.prop('id');
+      this.element.prop('id', '');
 
       var clone = this.element.clone().empty().html(this.template);
-      this.element.attr('id', id);
+      this.element.prop('id', id);
 
       return clone;
     },
@@ -5385,7 +5385,7 @@ function changeBack(target) {
         return this.each(function() {
           var $el = $(this);
           var settings = $el.data('settings');
-          var wHeight = $('html').attr('clientHeight'); // WRONG
+          var wHeight = $('html').prop('clientHeight'); // WRONG
 
           var newY = window.pageYOffset +
                   ((settings.align == 'top') ?
@@ -5509,7 +5509,7 @@ function changeBack(target) {
               preventDefault: "preventdefault",
               defaultTransform: "defaulttransform",
               bounce: function(e) {
-                return e.attr("bounce") === "false" ? false : defaults.bounce
+                return e.prop("bounce") === "false" ? false : defaults.bounce
               },
               scrollBar: function(e) {
                 return e.hasClass("with-scrollbar")
@@ -5632,8 +5632,8 @@ function changeBack(target) {
     $.each(attributes, function(name, value) {
       if ($.isFunction(value)) {
         options[name] = value(element);
-      } else if (element.attr(value) != undefined) {
-        options[name] = element.attr(value);
+      } else if (element.prop(value) != undefined) {
+        options[name] = element.prop(value);
       }
     });
 
@@ -6029,7 +6029,7 @@ function changeBack(target) {
 
 
     $(document.createElement("style"))
-            .attr({type:"text/css",media:"screen"})
+            .prop({type:"text/css",media:"screen"})
             .html(stringRules)
             .appendTo("head");
 
@@ -6042,7 +6042,7 @@ function changeBack(target) {
         $.each(rules[window.innerHeight > window.innerWidth ? "portrait" : "landscape"], buildRules);
 
         $(document.createElement("style"))
-                .attr({type:"text/css",media:"screen"})
+                .prop({type:"text/css",media:"screen"})
                 .html(stringRules)
                 .appendTo("head");
       }, 30)
@@ -6188,7 +6188,7 @@ function changeBack(target) {
         return navigator.onLine;
       }
 
-      if (!$('html').attr('manifest')) {
+      if (!$('html').prop('manifest')) {
         console.log('No Cache Manifest listed on the <html> tag.')
       }
 
@@ -7063,7 +7063,7 @@ function changeBack(target) {
     var list = options.list = options.gallery.find(options.listSelector),
             lower = options.defaultIndex - options.maxSlidesBefore,
             upper = options.defaultIndex + options.maxSlidesAfter,
-            toolbar = options.gallery.attr("id", id)
+            toolbar = options.gallery.prop("id", id)
                     .find(".toolbar-top")
                     .append(
                     $("<h1></h1>").html(
@@ -7173,7 +7173,7 @@ function changeBack(target) {
       webkitTransitionProperty: options.transitionProperty,
       webkitTransitionTimingFunction: options.timingFunction,
       webkitTransitionDuration: options.defaultDuration + "s",
-      webkitTransform: format(options.transform, -slides.filter("." + options.currentClass).attr("offsetLeft") || 0)
+      webkitTransform: format(options.transform, -slides.filter("." + options.currentClass).prop("offsetLeft") || 0)
     });
 
     parseImageData($elem, images, options);
@@ -7511,7 +7511,7 @@ function changeBack(target) {
     } else {
       n = tablePosition.x < position.current ? -1 : 1;
       x = slides.filter("." + original.options.currentClass);
-      t = abs(x.attr("offsetLeft") + position.current);
+      t = abs(x.prop("offsetLeft") + position.current);
       w = x.width() / 3;
 
       if (t > w) {
@@ -7699,7 +7699,7 @@ function changeBack(target) {
             options = $this.data("jqt-photo-options"),
             slides = $this.find(options.slideSelector),
             n = index === undefined || index < 0
-                    ? Number(slides.filter("." + options.currentClass).attr(options.dataAttribute))
+                    ? Number(slides.filter("." + options.currentClass).prop(options.dataAttribute))
                     : abs(index);
 
     addHover($this.addClass(options.playingClass), $this.find(options.pauseSelector)[0]);
@@ -7728,7 +7728,7 @@ function changeBack(target) {
    */
   function slideInterval(target, slides, options) {
     //current index + 1
-    var index = Number(target.find(options.slideSelector).filter("." + options.currentClass).attr(options.dataAttribute)) + 1,
+    var index = Number(target.find(options.slideSelector).filter("." + options.currentClass).prop(options.dataAttribute)) + 1,
             func = "jqt-photo-slideto";//"slideTo";
 
     if (index === options.data.length) {
@@ -7819,13 +7819,13 @@ function changeBack(target) {
 
     img = current.find(options.imageSelector);
 
-    if (img.attr("src") != options.data[index].src) {
+    if (img.prop("src") != options.data[index].src) {
       img.parent().addClass(options.notLoadedClass);
-      img.attr("src", options.data[index].src);
+      img.prop("src", options.data[index].src);
     }
 
     //new position
-    position = -current.addClass(options.currentClass).attr("offsetLeft");
+    position = -current.addClass(options.currentClass).prop("offsetLeft");
 
     if (position > 0) {
       position = 0;
@@ -7897,13 +7897,13 @@ function changeBack(target) {
 
     img = current.find(options.imageSelector);
 
-    if (img.attr("src") != options.data[index].src) {
+    if (img.prop("src") != options.data[index].src) {
       img.parent().addClass(options.notLoadedClass);
-      img.attr("src", options.data[index].src);
+      img.prop("src", options.data[index].src);
     }
 
     //position of the new current
-    position = -current.addClass(options.currentClass).attr("offsetLeft");
+    position = -current.addClass(options.currentClass).prop("offsetLeft");
 
     if (position > 0) {
       position = 0;
@@ -7942,9 +7942,9 @@ function changeBack(target) {
     var next = current.next()
     prev = current.prev();
 
-    next.length && next.find(options.imageSelector).attr("src", options.data[next.attr(options.dataAttribute)].src);
+    next.length && next.find(options.imageSelector).prop("src", options.data[next.prop(options.dataAttribute)].src);
 
-    prev.length && prev.find(options.imageSelector).attr("src", options.data[prev.attr(options.dataAttribute)].src);
+    prev.length && prev.find(options.imageSelector).prop("src", options.data[prev.prop(options.dataAttribute)].src);
 
     current.prevAll().slice(options.maxSlidesBefore)
             .find(options.imageSelector)
@@ -7994,7 +7994,7 @@ function changeBack(target) {
     var $this = $(this),
             options = $this.data("jqt-photo-options"),
             slides = $this.find(options.slideSelector),
-            index = Number(slides.filter("." + options.currentClass).attr(options.dataAttribute));
+            index = Number(slides.filter("." + options.currentClass).prop(options.dataAttribute));
 
     addHover($this, event.target);
 
@@ -8018,7 +8018,7 @@ function changeBack(target) {
     var $this = $(this),
             options = $this.data("jqt-photo-options"),
             slides = $this.find(options.slideSelector),
-            index = Number(slides.filter("." + options.currentClass).attr(options.dataAttribute));
+            index = Number(slides.filter("." + options.currentClass).prop(options.dataAttribute));
 
     addHover($this, event.target);
 
@@ -8122,7 +8122,7 @@ function changeBack(target) {
       var $this = $(this),
               options = $this.data("jqt-photo-options"),
               slides = $this.find(options.slideSelector),
-              index = Number(slides.filter("." + options.currentClass).attr(options.dataAttribute)),
+              index = Number(slides.filter("." + options.currentClass).prop(options.dataAttribute)),
               n = index > -1 ? index : (options.defaultIndex > -1 ? options.defaultIndex : 0);
       //n = (options.defaultIndex > -1 ? options.defaultIndex : 0);
 
@@ -8154,7 +8154,7 @@ function changeBack(target) {
       $this.triggerHandler("jqt-photo-goto", [options.defaultIndex, 0, options, slides]);
       $this.triggerHandler("jqt-photo-show-toolbars");
     } else {
-      index = Number(slides.filter("." + options.currentClass).attr(options.dataAttribute));
+      index = Number(slides.filter("." + options.currentClass).prop(options.dataAttribute));
       n = index > -1 ? index : (options.defaultIndex > -1 ? options.defaultIndex : 0)
       $this.triggerHandler("jqt-photo-goto", [n, 0, options, slides]);
     }
@@ -8170,13 +8170,13 @@ function changeBack(target) {
    *    @param Boolean inWindow - in the slide window
    */
   function createSlide(data, index, options, inWindow) {
-    var slide = $(data.template || options.slideTemplate).attr(options.dataAttribute, index),
+    var slide = $(data.template || options.slideTemplate).prop(options.dataAttribute, index),
             img = slide.find(options.imageSelector);
 
     parseImageData(options.gallery, img.load(options.loader), options);
 
     if (inWindow) {
-      img.attr("src", data.src);
+      img.prop("src", data.src);
     }
 
     if (data.caption) {
@@ -8311,7 +8311,7 @@ function changeBack(target) {
    */
   function alignSlides($this, slides, options) {
     table = $this.find(options.tableSelector),
-            position = -slides.filter("." + options.currentClass).attr("offsetLeft");
+            position = -slides.filter("." + options.currentClass).prop("offsetLeft");
 
     table.data("jqt-photo-position").x = position;
 
@@ -8398,7 +8398,7 @@ function changeBack(target) {
 
 
       $(document.createElement("style"))
-              .attr({type:"text/css",media:"screen"})
+              .prop({type:"text/css",media:"screen"})
               .html(stringRules)
               .appendTo("head");
 
@@ -8418,7 +8418,7 @@ function changeBack(target) {
         $.each(rules[orientation], buildRules);
 
         $(document.createElement("style"))
-                .attr({type:"text/css",media:"screen"})
+                .prop({type:"text/css",media:"screen"})
                 .html(stringRules)
                 .appendTo("head");
         //}, 10);
@@ -8706,11 +8706,11 @@ function changeBack(target) {
               defaultDuration: "slidespeed",
               //use an attribute to determine whether or not you want the default touch event cancelled
               preventDefault: function(e, d) {
-                return $(e).attr("preventdefault") === "false" ? false : !!defaults[d].preventDefault;
+                return $(e).prop("preventdefault") === "false" ? false : !!defaults[d].preventDefault;
               },
               //use bounce?
               bounce: function(e, d) {
-                return e.attr("bounce") === "false" ? false : defaults[d].bounce
+                return e.prop("bounce") === "false" ? false : defaults[d].bounce
               },
               //use a scrollbar?
               scrollBar: function(e, d) {
@@ -9291,8 +9291,8 @@ function changeBack(target) {
       if ($.isFunction(value)) {
         options[name] = value(element, direction);
 
-      } else if (element.attr(value) != undefined) {
-        options[name] = element.attr(value);
+      } else if (element.prop(value) != undefined) {
+        options[name] = element.prop(value);
       }
     });
 
@@ -9687,12 +9687,12 @@ function changeBack(target) {
       slides.eq(slides.length - 1).addClass(options.slides.currentClass);
     } else if (distance < -difference) {
       position = -slides.eq(index > 0 ? index - 1 : 0)
-              .addClass(options.slides.currentClass).parent().attr(options.slideProperty);
+              .addClass(options.slides.currentClass).parent().prop(options.slideProperty);
     } else if (distance > difference) {
       position = -slides.eq(index < slides.length - 1 ? index + 1 : slides.length - 1)
-              .addClass(options.slides.currentClass).parent().attr(options.slideProperty);
+              .addClass(options.slides.currentClass).parent().prop(options.slideProperty);
     } else {
-      position = -current.addClass(options.slides.currentClass).parent().attr(options.slideProperty);
+      position = -current.addClass(options.slides.currentClass).parent().prop(options.slideProperty);
     }
 
     duration = Math.abs(data.currentPosition - position) * options.slides.easing;
@@ -9879,7 +9879,7 @@ function changeBack(target) {
 
 
     $(document.createElement("style"))
-            .attr({type:"text/css",media:"screen"})
+            .prop({type:"text/css",media:"screen"})
             .html(stringRules)
             .appendTo("head");
 
@@ -9893,7 +9893,7 @@ function changeBack(target) {
         $.each(rules[o], buildRules);
 
         $(document.createElement("style"))
-                .attr({type:"text/css",media:"screen"})
+                .prop({type:"text/css",media:"screen"})
                 .html(stringRules)
                 .appendTo("head");
       }, 30)
@@ -9979,14 +9979,14 @@ function changeBack(target) {
                 vertical = info.page.find('.vertical-scroll > div');
 
         horizontal.scrollHorizontally({
-          acceleration: Number(horizontal.attr("slidespeed") || 500) || null,
-          preventdefault: horizontal.attr("preventdefault") !== "false",
-          startposition: Number(horizontal.attr("position") || 0) || 0
+          acceleration: Number(horizontal.prop("slidespeed") || 500) || null,
+          preventdefault: horizontal.prop("preventdefault") !== "false",
+          startposition: Number(horizontal.prop("position") || 0) || 0
         });
         vertical.scrollVertically({
-          acceleration: Number(vertical.attr("slidespeed") || 500),
-          preventdefault: vertical.attr("preventdefault") !== "false",
-          startposition: Number(horizontal.attr("position") || 0) || 0
+          acceleration: Number(vertical.prop("slidespeed") || 500),
+          preventdefault: vertical.prop("preventdefault") !== "false",
+          startposition: Number(horizontal.prop("position") || 0) || 0
         });
       }
 
@@ -10455,14 +10455,14 @@ function changeBack(target) {
                 vertical = info.page.find('.vertical-slide > div');
 
         horizontal.slideHorizontally({
-          acceleration: Number(horizontal.attr("slidespeed") || 500) || null,
-          preventdefault: horizontal.attr("preventdefault") !== "false",
-          startposition: Number(horizontal.attr("position") || 0) || 0
+          acceleration: Number(horizontal.prop("slidespeed") || 500) || null,
+          preventdefault: horizontal.prop("preventdefault") !== "false",
+          startposition: Number(horizontal.prop("position") || 0) || 0
         });
         vertical.slideVertically({
-          acceleration: Number(vertical.attr("slidespeed") || 500),
-          preventdefault: vertical.attr("preventdefault") !== "false",
-          startposition: Number(horizontal.attr("position") || 0) || 0
+          acceleration: Number(vertical.prop("slidespeed") || 500),
+          preventdefault: vertical.prop("preventdefault") !== "false",
+          startposition: Number(horizontal.prop("position") || 0) || 0
         });
       }
 
@@ -10932,7 +10932,7 @@ function changeBack(target) {
               defaultDuration: "slidespeed",
               preventDefault: "preventdefault",
               bounce: function(e) {
-                return e.attr("bounce") === "false" ? false : defaults.bounce
+                return e.prop("bounce") === "false" ? false : defaults.bounce
               },
               scrollBar: function(e) {
                 return e.hasClass("with-scrollbar")
@@ -11219,8 +11219,8 @@ function changeBack(target) {
     $.each(attributes, function(name, value) {
       if ($.isFunction(value)) {
         options[name] = value(element);
-      } else if (element.attr(value) != undefined) {
-        options[name] = element.attr(value);
+      } else if (element.prop(value) != undefined) {
+        options[name] = element.prop(value);
       }
     });
 
@@ -11701,7 +11701,7 @@ function changeBack(target) {
 
 
     $(document.createElement("style"))
-            .attr({type:"text/css",media:"screen"})
+            .prop({type:"text/css",media:"screen"})
             .html(stringRules)
             .appendTo("head");
 
@@ -11714,7 +11714,7 @@ function changeBack(target) {
         $.each(rules[window.innerHeight > window.innerWidth ? "portrait" : "landscape"], buildRules);
 
         $(document.createElement("style"))
-                .attr({type:"text/css",media:"screen"})
+                .prop({type:"text/css",media:"screen"})
                 .html(stringRules)
                 .appendTo("head");
       }, 30)
