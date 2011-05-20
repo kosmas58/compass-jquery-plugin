@@ -55,6 +55,11 @@ body {
       -webkit-animation-name: fadeIn; }
     &.out {
       -webkit-animation-name: fadeOut; } }
+  .dissolve {
+    &.in {
+      -webkit-animation-name: dissolveIn; }
+    &.out {
+      -webkit-animation-name: dissolveOut; } }
   .pop {
     &.in {
       -webkit-animation-name: popIn; }
@@ -139,6 +144,22 @@ body {
 
 
 @-webkit-keyframes fadeOut {
+  0% {
+    opacity: 1; }
+  100% {
+    opacity: 0; } }
+
+
+/* Disolve */
+
+@-webkit-keyframes dissolveIn {
+  0% {
+    opacity: 0; }
+  100% {
+    opacity: 1; } }
+
+
+@-webkit-keyframes dissolveOut {
   0% {
     opacity: 1; }
   100% {
@@ -233,7 +254,7 @@ body {
 
 @-webkit-keyframes flipLeftIn {
   0% {
-    -webkit-transform: rotateY(-180deg) scale(0.8); }
+    -webkit-transform: rotateY(180deg) scale(0.8); }
   100% {
     -webkit-transform: rotateY(0deg) scale(1); } }
 
@@ -242,14 +263,14 @@ body {
   0% {
     -webkit-transform: rotateY(0deg) scale(1); }
   100% {
-    -webkit-transform: rotateY(180deg) scale(0.8); } }
+    -webkit-transform: rotateY(-180deg) scale(0.8); } }
 
 
 /* Flip Right */
 
 @-webkit-keyframes flipRightIn {
   0% {
-    -webkit-transform: rotateY(180deg) scale(0.8); }
+    -webkit-transform: rotateY(-180deg) scale(0.8); }
   100% {
     -webkit-transform: rotateY(0deg) scale(1); } }
 
@@ -258,7 +279,7 @@ body {
   0% {
     -webkit-transform: rotateY(0deg) scale(1); }
   100% {
-    -webkit-transform: rotateY(-180deg) scale(0.8); } }
+    -webkit-transform: rotateY(180deg) scale(0.8); } }
 
 
 /* Swap Right */
