@@ -839,7 +839,7 @@
     var list = options.list = options.gallery.find(options.listSelector),
             lower = options.defaultIndex - options.maxSlidesBefore,
             upper = options.defaultIndex + options.maxSlidesAfter,
-            toolbar = options.gallery.attr("id", id)
+            toolbar = options.gallery.prop("id", id)
                     .find(".toolbar-top")
                     .append(
                     $("<h1></h1>").html(
@@ -949,7 +949,7 @@
       webkitTransitionProperty: options.transitionProperty,
       webkitTransitionTimingFunction: options.timingFunction,
       webkitTransitionDuration: options.defaultDuration + "s",
-      webkitTransform: format(options.transform, -slides.filter("." + options.currentClass).attr("offsetLeft") || 0)
+      webkitTransform: format(options.transform, -slides.filter("." + options.currentClass).prop("offsetLeft") || 0)
     });
 
     parseImageData($elem, images, options);
@@ -1287,7 +1287,7 @@
     } else {
       n = tablePosition.x < position.current ? -1 : 1;
       x = slides.filter("." + original.options.currentClass);
-      t = abs(x.attr("offsetLeft") + position.current);
+      t = abs(x.prop("offsetLeft") + position.current);
       w = x.width() / 3;
 
       if (t > w) {
@@ -1475,7 +1475,7 @@
             options = $this.data("jqt-photo-options"),
             slides = $this.find(options.slideSelector),
             n = index === undefined || index < 0
-                    ? Number(slides.filter("." + options.currentClass).attr(options.dataAttribute))
+                    ? Number(slides.filter("." + options.currentClass).prop(options.dataAttribute))
                     : abs(index);
 
     addHover($this.addClass(options.playingClass), $this.find(options.pauseSelector)[0]);
@@ -1504,7 +1504,7 @@
    */
   function slideInterval(target, slides, options) {
     //current index + 1
-    var index = Number(target.find(options.slideSelector).filter("." + options.currentClass).attr(options.dataAttribute)) + 1,
+    var index = Number(target.find(options.slideSelector).filter("." + options.currentClass).prop(options.dataAttribute)) + 1,
             func = "jqt-photo-slideto";//"slideTo";
 
     if (index === options.data.length) {
@@ -1595,13 +1595,13 @@
 
     img = current.find(options.imageSelector);
 
-    if (img.attr("src") != options.data[index].src) {
+    if (img.prop("src") != options.data[index].src) {
       img.parent().addClass(options.notLoadedClass);
-      img.attr("src", options.data[index].src);
+      img.prop("src", options.data[index].src);
     }
 
     //new position
-    position = -current.addClass(options.currentClass).attr("offsetLeft");
+    position = -current.addClass(options.currentClass).prop("offsetLeft");
 
     if (position > 0) {
       position = 0;
@@ -1673,13 +1673,13 @@
 
     img = current.find(options.imageSelector);
 
-    if (img.attr("src") != options.data[index].src) {
+    if (img.prop("src") != options.data[index].src) {
       img.parent().addClass(options.notLoadedClass);
-      img.attr("src", options.data[index].src);
+      img.prop("src", options.data[index].src);
     }
 
     //position of the new current
-    position = -current.addClass(options.currentClass).attr("offsetLeft");
+    position = -current.addClass(options.currentClass).prop("offsetLeft");
 
     if (position > 0) {
       position = 0;
@@ -1718,9 +1718,9 @@
     var next = current.next()
     prev = current.prev();
 
-    next.length && next.find(options.imageSelector).attr("src", options.data[next.attr(options.dataAttribute)].src);
+    next.length && next.find(options.imageSelector).prop("src", options.data[next.prop(options.dataAttribute)].src);
 
-    prev.length && prev.find(options.imageSelector).attr("src", options.data[prev.attr(options.dataAttribute)].src);
+    prev.length && prev.find(options.imageSelector).prop("src", options.data[prev.prop(options.dataAttribute)].src);
 
     current.prevAll().slice(options.maxSlidesBefore)
             .find(options.imageSelector)
@@ -1770,7 +1770,7 @@
     var $this = $(this),
             options = $this.data("jqt-photo-options"),
             slides = $this.find(options.slideSelector),
-            index = Number(slides.filter("." + options.currentClass).attr(options.dataAttribute));
+            index = Number(slides.filter("." + options.currentClass).prop(options.dataAttribute));
 
     addHover($this, event.target);
 
@@ -1794,7 +1794,7 @@
     var $this = $(this),
             options = $this.data("jqt-photo-options"),
             slides = $this.find(options.slideSelector),
-            index = Number(slides.filter("." + options.currentClass).attr(options.dataAttribute));
+            index = Number(slides.filter("." + options.currentClass).prop(options.dataAttribute));
 
     addHover($this, event.target);
 
@@ -1898,7 +1898,7 @@
       var $this = $(this),
               options = $this.data("jqt-photo-options"),
               slides = $this.find(options.slideSelector),
-              index = Number(slides.filter("." + options.currentClass).attr(options.dataAttribute)),
+              index = Number(slides.filter("." + options.currentClass).prop(options.dataAttribute)),
               n = index > -1 ? index : (options.defaultIndex > -1 ? options.defaultIndex : 0);
       //n = (options.defaultIndex > -1 ? options.defaultIndex : 0);
 
@@ -1930,7 +1930,7 @@
       $this.triggerHandler("jqt-photo-goto", [options.defaultIndex, 0, options, slides]);
       $this.triggerHandler("jqt-photo-show-toolbars");
     } else {
-      index = Number(slides.filter("." + options.currentClass).attr(options.dataAttribute));
+      index = Number(slides.filter("." + options.currentClass).prop(options.dataAttribute));
       n = index > -1 ? index : (options.defaultIndex > -1 ? options.defaultIndex : 0)
       $this.triggerHandler("jqt-photo-goto", [n, 0, options, slides]);
     }
@@ -1946,13 +1946,13 @@
    *    @param Boolean inWindow - in the slide window
    */
   function createSlide(data, index, options, inWindow) {
-    var slide = $(data.template || options.slideTemplate).attr(options.dataAttribute, index),
+    var slide = $(data.template || options.slideTemplate).prop(options.dataAttribute, index),
             img = slide.find(options.imageSelector);
 
     parseImageData(options.gallery, img.load(options.loader), options);
 
     if (inWindow) {
-      img.attr("src", data.src);
+      img.prop("src", data.src);
     }
 
     if (data.caption) {
@@ -2087,7 +2087,7 @@
    */
   function alignSlides($this, slides, options) {
     table = $this.find(options.tableSelector),
-            position = -slides.filter("." + options.currentClass).attr("offsetLeft");
+            position = -slides.filter("." + options.currentClass).prop("offsetLeft");
 
     table.data("jqt-photo-position").x = position;
 
@@ -2174,7 +2174,7 @@
 
 
       $(document.createElement("style"))
-              .attr({type:"text/css",media:"screen"})
+              .prop({type:"text/css",media:"screen"})
               .html(stringRules)
               .appendTo("head");
 
@@ -2194,7 +2194,7 @@
         $.each(rules[orientation], buildRules);
 
         $(document.createElement("style"))
-                .attr({type:"text/css",media:"screen"})
+                .prop({type:"text/css",media:"screen"})
                 .html(stringRules)
                 .appendTo("head");
         //}, 10);

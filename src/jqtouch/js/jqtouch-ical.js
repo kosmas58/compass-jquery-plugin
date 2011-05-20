@@ -82,7 +82,7 @@ function getNoEvents() {
 function setBindings() {
   // calendar days
   $('#ical td').bind("click", function() {
-    var btnClass = $(this).attr('class');
+    var btnClass = $(this).prop('class');
     var clickedDate = getClickedDate($(this));
 
     // where's the today? let's remove it first
@@ -92,12 +92,12 @@ function setBindings() {
 
     if (btnClass.indexOf('date_has_event') != -1 || btnClass.indexOf('today_date_has_event') != -1) {
       // Event Date
-      $(this).attr('class', 'selected_date_has_event');
+      $(this).prop('class', 'selected_date_has_event');
       getEvents(clickedDate);
     }
     if (btnClass == '' || btnClass.indexOf('today') != -1) {
       // Non Event Date
-      $(this).attr('class', 'selected');
+      $(this).prop('class', 'selected');
       getNoEvents();
     }
 
@@ -167,9 +167,9 @@ function setToday() {
         var td = $(this).closest('td');
 
         if ($(td).attr('class') == 'date_has_event')
-          $(td).attr('class', 'today_date_has_event');
+          $(td).prop('class', 'today_date_has_event');
         else
-          $(td).attr('class', 'today');
+          $(td).prop('class', 'today');
       }
     }
   });
@@ -184,7 +184,7 @@ function setSelectedAndLoadEvents(date) {
   RemoveSelectedCell();
 
   $('#ical td').each(function(index) {
-    var css = $(this).attr('class');
+    var css = $(this).prop('class');
     var clickedDate = getClickedDate($(this));
 
     // set todays date
@@ -194,11 +194,11 @@ function setSelectedAndLoadEvents(date) {
             && date.getFullYear() == clickedDate.getFullYear()) {
 
       if (css == "date_has_event") {
-        $(this).attr('class', 'selected_date_has_event');
+        $(this).prop('class', 'selected_date_has_event');
         getEvents(date);
       }
       else {
-        $(this).attr('class', 'selected');
+        $(this).prop('class', 'selected');
         getNoEvents();
       }
     }

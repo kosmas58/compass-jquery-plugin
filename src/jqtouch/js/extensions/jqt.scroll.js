@@ -676,7 +676,7 @@
         options[name] = value(element, direction);
 
       } else if (element.attr(value) != undefined) {
-        options[name] = element.attr(value);
+        options[name] = element.prop(value);
       }
     });
 
@@ -1071,12 +1071,12 @@
       slides.eq(slides.length - 1).addClass(options.slides.currentClass);
     } else if (distance < -difference) {
       position = -slides.eq(index > 0 ? index - 1 : 0)
-              .addClass(options.slides.currentClass).parent().attr(options.slideProperty);
+              .addClass(options.slides.currentClass).parent().prop(options.slideProperty);
     } else if (distance > difference) {
       position = -slides.eq(index < slides.length - 1 ? index + 1 : slides.length - 1)
-              .addClass(options.slides.currentClass).parent().attr(options.slideProperty);
+              .addClass(options.slides.currentClass).parent().prop(options.slideProperty);
     } else {
-      position = -current.addClass(options.slides.currentClass).parent().attr(options.slideProperty);
+      position = -current.addClass(options.slides.currentClass).parent().prop(options.slideProperty);
     }
 
     duration = Math.abs(data.currentPosition - position) * options.slides.easing;
@@ -1263,7 +1263,7 @@
 
 
     $(document.createElement("style"))
-            .attr({type:"text/css",media:"screen"})
+            .prop({type:"text/css",media:"screen"})
             .html(stringRules)
             .appendTo("head");
 
@@ -1277,7 +1277,7 @@
         $.each(rules[o], buildRules);
 
         $(document.createElement("style"))
-                .attr({type:"text/css",media:"screen"})
+                .prop({type:"text/css",media:"screen"})
                 .html(stringRules)
                 .appendTo("head");
       }, 30)

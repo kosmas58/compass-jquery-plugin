@@ -663,7 +663,7 @@
                   }
                   // Otherwise fill attribute as normal
                   else {
-                    el.attr(j, val);
+                    el.prop(j, val);
                   }
                 }
 
@@ -766,7 +766,7 @@
                   match.val(data[i]);
                 }
                 else if (match.filter('img').length) {
-                  match.attr('src', data[i]);
+                  match.prop('src', data[i]);
                 }
                 else {
                   match.html(data[i]);
@@ -982,11 +982,11 @@
      * @return {Object} jQuery Object containing cloned Element
      */
     $clone: function() {
-      var id = this.element.attr('id');
-      this.element.attr('id', '');
+      var id = this.element.prop('id');
+      this.element.prop('id', '');
 
       var clone = this.element.clone().empty().html(this.template);
-      this.element.attr('id', id);
+      this.element.prop('id', id);
 
       return clone;
     },

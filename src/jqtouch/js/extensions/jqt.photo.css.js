@@ -70,7 +70,7 @@
     parts.defaults = $.extend({}, parts[o], jqc.defaults || {});
 
     $(document.createElement("style"))
-            .attr("type", "text/css")
+            .prop("type", "text/css")
             .html(css.defaults.replace(/\{(\w+)\}/g, function (a, b) {
       return b in parts.defaults ? parts.defaults[b] : a;
     }) +
@@ -90,7 +90,7 @@
               jqc[o] || {});
 
       $(document.createElement("style"))
-              .attr("type", "text/css")
+              .prop("type", "text/css")
               .html(css[o].replace(/\{(\w+)\}/g, function (a, b) {
         return b in parts[o] ? parts[o][b] : a;
       }))

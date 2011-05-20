@@ -2064,7 +2064,7 @@ function setToday() {
 
         var td = $(this).closest('td');
 
-        if ($(td).prop('class') == 'date_has_event')
+        if ($(td).attr('class') == 'date_has_event')
           $(td).prop('class', 'today_date_has_event');
         else
           $(td).prop('class', 'today');
@@ -5632,7 +5632,7 @@ function changeBack(target) {
     $.each(attributes, function(name, value) {
       if ($.isFunction(value)) {
         options[name] = value(element);
-      } else if (element.prop(value) != undefined) {
+      } else if (element.attr(value) != undefined) {
         options[name] = element.prop(value);
       }
     });
@@ -8706,11 +8706,11 @@ function changeBack(target) {
               defaultDuration: "slidespeed",
               //use an attribute to determine whether or not you want the default touch event cancelled
               preventDefault: function(e, d) {
-                return $(e).prop("preventdefault") === "false" ? false : !!defaults[d].preventDefault;
+                return $(e).attr("preventdefault") === "false" ? false : !!defaults[d].preventDefault;
               },
               //use bounce?
               bounce: function(e, d) {
-                return e.prop("bounce") === "false" ? false : defaults[d].bounce
+                return e.attr("bounce") === "false" ? false : defaults[d].bounce
               },
               //use a scrollbar?
               scrollBar: function(e, d) {
@@ -9291,7 +9291,7 @@ function changeBack(target) {
       if ($.isFunction(value)) {
         options[name] = value(element, direction);
 
-      } else if (element.prop(value) != undefined) {
+      } else if (element.attr(value) != undefined) {
         options[name] = element.prop(value);
       }
     });
@@ -9980,12 +9980,12 @@ function changeBack(target) {
 
         horizontal.scrollHorizontally({
           acceleration: Number(horizontal.prop("slidespeed") || 500) || null,
-          preventdefault: horizontal.prop("preventdefault") !== "false",
+          preventdefault: horizontal.attr("preventdefault") !== "false",
           startposition: Number(horizontal.prop("position") || 0) || 0
         });
         vertical.scrollVertically({
           acceleration: Number(vertical.prop("slidespeed") || 500),
-          preventdefault: vertical.prop("preventdefault") !== "false",
+          preventdefault: vertical.attr("preventdefault") !== "false",
           startposition: Number(horizontal.prop("position") || 0) || 0
         });
       }
@@ -10456,12 +10456,12 @@ function changeBack(target) {
 
         horizontal.slideHorizontally({
           acceleration: Number(horizontal.prop("slidespeed") || 500) || null,
-          preventdefault: horizontal.prop("preventdefault") !== "false",
+          preventdefault: horizontal.attr("preventdefault") !== "false",
           startposition: Number(horizontal.prop("position") || 0) || 0
         });
         vertical.slideVertically({
           acceleration: Number(vertical.prop("slidespeed") || 500),
-          preventdefault: vertical.prop("preventdefault") !== "false",
+          preventdefault: vertical.attr("preventdefault") !== "false",
           startposition: Number(horizontal.prop("position") || 0) || 0
         });
       }
@@ -10932,7 +10932,7 @@ function changeBack(target) {
               defaultDuration: "slidespeed",
               preventDefault: "preventdefault",
               bounce: function(e) {
-                return e.prop("bounce") === "false" ? false : defaults.bounce
+                return e.attr("bounce") === "false" ? false : defaults.bounce
               },
               scrollBar: function(e) {
                 return e.hasClass("with-scrollbar")
@@ -11219,7 +11219,7 @@ function changeBack(target) {
     $.each(attributes, function(name, value) {
       if ($.isFunction(value)) {
         options[name] = value(element);
-      } else if (element.prop(value) != undefined) {
+      } else if (element.attr(value) != undefined) {
         options[name] = element.prop(value);
       }
     });

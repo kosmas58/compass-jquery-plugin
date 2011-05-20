@@ -64,7 +64,7 @@
         return navigator.onLine;
       }
 
-      if (!$('html').attr('manifest')) {
+      if (!$('html').prop('manifest')) {
         console.log('No Cache Manifest listed on the <html> tag.')
       }
 

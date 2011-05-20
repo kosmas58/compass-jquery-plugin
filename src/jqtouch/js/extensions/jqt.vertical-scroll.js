@@ -353,7 +353,7 @@
       if ($.isFunction(value)) {
         options[name] = value(element);
       } else if (element.attr(value) != undefined) {
-        options[name] = element.attr(value);
+        options[name] = element.prop(value);
       }
     });
 
@@ -834,7 +834,7 @@
 
 
     $(document.createElement("style"))
-            .attr({type:"text/css",media:"screen"})
+            .prop({type:"text/css",media:"screen"})
             .html(stringRules)
             .appendTo("head");
 
@@ -847,7 +847,7 @@
         $.each(rules[window.innerHeight > window.innerWidth ? "portrait" : "landscape"], buildRules);
 
         $(document.createElement("style"))
-                .attr({type:"text/css",media:"screen"})
+                .prop({type:"text/css",media:"screen"})
                 .html(stringRules)
                 .appendTo("head");
       }, 30)

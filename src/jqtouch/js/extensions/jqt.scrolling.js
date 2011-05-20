@@ -74,14 +74,14 @@
                 vertical = info.page.find('.vertical-scroll > div');
 
         horizontal.scrollHorizontally({
-          acceleration: Number(horizontal.attr("slidespeed") || 500) || null,
+          acceleration: Number(horizontal.prop("slidespeed") || 500) || null,
           preventdefault: horizontal.attr("preventdefault") !== "false",
-          startposition: Number(horizontal.attr("position") || 0) || 0
+          startposition: Number(horizontal.prop("position") || 0) || 0
         });
         vertical.scrollVertically({
-          acceleration: Number(vertical.attr("slidespeed") || 500),
+          acceleration: Number(vertical.prop("slidespeed") || 500),
           preventdefault: vertical.attr("preventdefault") !== "false",
-          startposition: Number(horizontal.attr("position") || 0) || 0
+          startposition: Number(horizontal.prop("position") || 0) || 0
         });
       }
 
