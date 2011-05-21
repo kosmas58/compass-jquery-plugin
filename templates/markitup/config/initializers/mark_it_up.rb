@@ -2,7 +2,8 @@ require 'jquery/mark_it_up'
 
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :markitup              => ['jquery.markitup.min']
 
-ActionView::Helpers::AssetTagHelper.register_stylesheet_expansion :markitup_preview => ['compiled/jquery/markitup/templates/preview.css']
+ActionView::Helpers::AssetTagHelper.register_stylesheet_expansion :markitup_preview      => ['compiled/jquery/markitup/preview/preview.css']
+ActionView::Helpers::AssetTagHelper.register_stylesheet_expansion :markitup_preview_blue => ['compiled/jquery/markitup/preview/preview.blue.css']
 
 ActionView::Helpers::AssetTagHelper.register_stylesheet_expansion :markitup_set_default   => ['compiled/jquery/markitup/sets/default.css']
 ActionView::Helpers::AssetTagHelper.register_stylesheet_expansion :markitup_set_bbcode    => ['compiled/jquery/markitup/sets/bbcode.css']
