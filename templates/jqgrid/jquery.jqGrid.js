@@ -3530,8 +3530,16 @@
           }
         });
         if (fndh === true) {
-          if ($t.grid.width !== $t.p.tblwidth) {
-            $($t).jqGrid("setGridWidth", $t.p.shrinkToFit === true ? $t.grid.width : $t.p.tblwidth, true);
+          if ($t.p.shrinkToFit === false) {
+            $('table:first', $t.grid.bDiv).css("width", $t.p.tblwidth + "px");
+            $('table:first', $t.grid.hDiv).css("width", $t.p.tblwidth + "px");
+            $t.grid.hDiv.scrollLeft = $t.grid.bDiv.scrollLeft;
+            if ($t.p.footerrow) {
+              $('table:first', $t.grid.sDiv).css("width", $t.p.tblwidth + "px");
+            }
+          }
+          else if ($t.grid.width !== $t.p.tblwidth) {
+            $($t).jqGrid("setGridWidth", $t.p.tblwidth);
           }
         }
       });
