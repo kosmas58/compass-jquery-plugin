@@ -13,8 +13,9 @@
 // Feel free to add more tags
 // -------------------------------------------------------------------
 mySettings = {
+  nameSpace:          "rest", // Useful to prevent multi-instances CSS conflict
 	previewParserPath:	'', // path to your ReStructuredText parser
-	onShiftEnter:		{keepDefault:false, replaceWith:'\n\n'},
+	onShiftEnter:		    {keepDefault:false, replaceWith:'\n\n'},
 	markupSet: [
 		{name:'Heading', key:'1', placeHolder:'Your title here...', closeWith:function(markItUp) { return miu.markdownTitle(markItUp, '*') } },
 		{name:'Heading', key:'2', placeHolder:'Your title here...', closeWith:function(markItUp) { return miu.markdownTitle(markItUp, '=') } },

@@ -9,8 +9,9 @@
 // Feel free to add more tags
 // -------------------------------------------------------------------
 mySettings = {
+  nameSpace:          "wiki", // Useful to prevent multi-instances CSS conflict
 	previewParserPath:	'', // path to your Wiki parser
-	onShiftEnter:		{keepDefault:false, replaceWith:'\n\n'},
+	onShiftEnter:		    {keepDefault:false, replaceWith:'\n\n'},
 	markupSet: [
 		{name:'Heading 1', key:'1', openWith:'== ', closeWith:' ==', placeHolder:'Your title here...' },
 		{name:'Heading 2', key:'2', openWith:'=== ', closeWith:' ===', placeHolder:'Your title here...' },

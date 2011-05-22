@@ -12,8 +12,9 @@
 // Feel free to add more tags
 // -------------------------------------------------------------------
 mySettings = {
+  nameSpace:          "markmin", // Useful to prevent multi-instances CSS conflict
 	previewParserPath:	'',
-	onShiftEnter:		{keepDefault:false, openWith:'\n\n'},
+	onShiftEnter:	    	{keepDefault:false, openWith:'\n\n'},
 	markupSet: [
 		{name:'Heading 1', key:'1', openWith:'# ', placeHolder:'Chapter' },
 		{name:'Heading 2', key:'2', openWith:'## ', placeHolder:'Section' },

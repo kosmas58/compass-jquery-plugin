@@ -12,9 +12,10 @@
 // Basic CSS set. Feel free to add more tags
 // ----------------------------------------------------------------------------
 mySettings = {
+  nameSpace:    "css", // Useful to prevent multi-instances CSS conflict
 	onEnter:			{},
-	onShiftEnter:		{keepDefault:false, placeHolder:'Your comment here', openWith:'\n\/* ', closeWith:' *\/'},
-	onCtrlEnter:		{keepDefault:false, placeHolder:"classname", openWith:'\n.', closeWith:' { \n'},
+	onShiftEnter:	{keepDefault:false, placeHolder:'Your comment here', openWith:'\n\/* ', closeWith:' *\/'},
+	onCtrlEnter:	{keepDefault:false, placeHolder:"classname", openWith:'\n.', closeWith:' { \n'},
 	onTab:				{keepDefault:false, openWith:'  '},
 	markupSet:  [	
 		{name:'Class', className:'class', key:'N', placeHolder:'Properties here...', openWith:'.[![Class name]!] {\n', closeWith:'\n}'},

@@ -11,8 +11,9 @@
 // Feel free to add more tags
 // -------------------------------------------------------------------
 mySettings = {
-	previewParserPath:	'',
-	onShiftEnter:		{keepDefault:false, openWith:'\n\n'},
+  nameSpace:         "markdown", // Useful to prevent multi-instances CSS conflict
+	previewParserPath: '',
+	onShiftEnter:		   {keepDefault:false, openWith:'\n\n'},
 	markupSet: [
 		{name:'First Level Heading', key:'1', placeHolder:'Your title here...', closeWith:function(markItUp) { return miu.markdownTitle(markItUp, '=') } },
 		{name:'Second Level Heading', key:'2', placeHolder:'Your title here...', closeWith:function(markItUp) { return miu.markdownTitle(markItUp, '-') } },

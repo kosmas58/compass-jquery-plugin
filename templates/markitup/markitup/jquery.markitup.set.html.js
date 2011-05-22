@@ -10,9 +10,10 @@
 // Basic set. Feel free to add more tags
 // ----------------------------------------------------------------------------
 mySettings = {
+  nameSpace:    "html", // Useful to prevent multi-instances CSS conflict
 	onShiftEnter:	{keepDefault:false, replaceWith:'<br />\n'},
 	onCtrlEnter:	{keepDefault:false, openWith:'\n<p>', closeWith:'</p>\n'},
-	onTab:			{keepDefault:false, openWith:'	 '},
+	onTab:			  {keepDefault:false, openWith:'	 '},
 	markupSet: [
 		{name:'Heading 1', key:'1', openWith:'<h1(!( class="[![Class]!]")!)>', closeWith:'</h1>', placeHolder:'Your title here...' },
 		{name:'Heading 2', key:'2', openWith:'<h2(!( class="[![Class]!]")!)>', closeWith:'</h2>', placeHolder:'Your title here...' },
