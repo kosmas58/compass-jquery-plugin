@@ -4,69 +4,69 @@
 //
 // CSS Set by Kevin Papst - http://www.kevinpapst.de/
 // ------------------------------------------------------------------*/
-.markItUp .class a {
+.css .class a {
 	background-image:url(images/tag.png);
 }
-.markItUp .bold a {
+.css .bold a {
 	background-image:url(images/bold.png);
 }
-.markItUp .italic a {
+.css .italic a {
 	background-image:url(images/italic.png);
 }
-.markItUp .stroke a {
+.css .stroke a {
 	background-image:url(images/stroke.png);
 }
-.markItUp .lowercase a {
+.css .lowercase a {
 	background-image:url(images/text_lowercase.png); 
 }
-.markItUp .uppercase a {
+.css .uppercase a {
 	background-image:url(images/text_uppercase.png); 
 }
 
-.markItUp .alignments a {
+.css .alignments a {
 	background-image:url(images/text_align_left.png); 
 }
-	.markItUp .alignments .left a {
+	.css .alignments .left a {
 		background-image:url(images/text_align_left.png); 
 	}
-	.markItUp .alignments .center a {
+	.css .alignments .center a {
 		background-image:url(images/text_align_center.png); 
 	}
-	.markItUp .alignments .right a {
+	.css .alignments .right a {
 		background-image:url(images/text_align_center.png); 
 	}
-	.markItUp .alignments .justify a {
+	.css .alignments .justify a {
 		background-image:url(images/text_align_justify.png); 
 	}
 
-.markItUp .indent a {
+.css .indent a {
 	background-image:url(images/text_indent.png); 
 }
-.markItUp .letterspacing a {
+.css .letterspacing a {
 	background-image:url(images/text_letterspacing.png); 
 }
-.markItUp .lineheight a {
+.css .lineheight a {
 	background-image:url(images/text_linespacing.png); 
 }
 
-.markItUp .padding a {
+.css .padding a {
 	background-image:url(images/text_padding_left.png); 
 }
-	.markItUp .padding .left a {
+	.css .padding .left a {
 		background-image:url(images/text_padding_left.png);  
 	}
-	.markItUp .padding .top a {
+	.css .padding .top a {
 		background-image:url(images/text_padding_top.png);  
 	}
-	.markItUp .padding .right a {
+	.css .padding .right a {
 		background-image:url(images/text_padding_right.png);  
 	}
-	.markItUp .padding .bottom a {
+	.css .padding .bottom a {
 		background-image:url(images/text_padding_bottom.png); 
 	}
-.markItUp .background a {
+.css .background a {
 	background-image:url(images/picture.png); 
 }
-.markItUp .css a {
+.css .css a {
 	background-image:url(images/css.png); 
 }

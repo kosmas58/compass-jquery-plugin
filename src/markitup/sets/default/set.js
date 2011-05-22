@@ -10,8 +10,9 @@
 // Basic set. Feel free to add more tags
 // ----------------------------------------------------------------------------
 mySettings = {
-  onShiftEnter:    {keepDefault:false, replaceWith:'<br />\n'},
-  onCtrlEnter:    {keepDefault:false, openWith:'\n<p>', closeWith:'</p>'},
+  nameSpace:    "markitup", // Useful to prevent multi-instances CSS conflict
+  onShiftEnter: {keepDefault:false, replaceWith:'<br />\n'},
+  onCtrlEnter:  {keepDefault:false, openWith:'\n<p>', closeWith:'</p>'},
   onTab:        {keepDefault:false, replaceWith:'    '},
   markupSet:  [
     {name:'Bold', key:'B', openWith:'(!(<strong>|!|<b>)!)', closeWith:'(!(</strong>|!|</b>)!)' },
