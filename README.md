@@ -15,7 +15,7 @@ A Sass-based Meta-Framework for Compass that allows you to mix and match any of 
 * jquery-rails with jQuery 1.6.1 and jQuery.UI 1.8.13 including themes
 * jQuery Tools 1.2.5
 * jquery.jstree.js V1.0rc3
-* jquery.dynatree.js V1.0.2
+* jquery.dynatree.js V1.1.1
 * jquery.ribbon.js
 * jquery.jqGrid.js V4.0 (with minor changes to make it RESTful)
 * jquery.tinymce.js V3.4
@@ -353,7 +353,7 @@ Copyright &copy; 2009-2011 Kosmas Schuetz. See LICENSE for details.
   [12]: http://github.com/rpheath/pretty_flash
   [13]: http://www.trendskitchens.co.nz/jquery/contextmenu/
   [14]: http://stilbuero.de
-  [15]: http://www.wwwendt.de
+  [15]: http://code.google.com/p/dynatree/
   [16]: http://malsup.com/jquery/form/
   [17]: http://www.trirand.com/blog/
   [18]: http://github.com/creationix/jquery-haml
