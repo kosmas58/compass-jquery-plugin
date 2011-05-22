@@ -58,3 +58,7 @@
 .markItUp .preview a {
 	background-image:url(images/preview.png);
 }
+
+.markItUp .tablegenerator a {
+	background-image:url(images/table.png);
+}

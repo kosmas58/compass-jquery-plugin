@@ -29,6 +29,23 @@ mySettings = {
 		{name:'Bulleted list', openWith:'(!(* |!|*)!)'},
 		{name:'Numeric list', openWith:'(!(# |!|#)!)'}, 
 		{separator:'---------------' },
+    {name:'Table generator',
+      className:'tablegenerator',
+      placeholder:"Your text here...",
+      replaceWith:function(h) {
+        cols = prompt("How many cols?");
+        rows = prompt("How many rows?");
+        html = "";
+        for (r = 0; r < rows; r++) {
+          for (c = 0; c < cols; c++) {
+            html += "|"+(h.placeholder||"");
+          }
+          html += "|\n";
+        }
+        return html;
+      }
+    },
+		{separator:'---------------' },
 		{name:'Picture', replaceWith:'![![Source:!:http://]!]([![Alternative text]!])!'}, 
 		{name:'Link', openWith:'"', closeWith:'([![Title]!])":[![Link:!:http://]!]', placeHolder:'Your text to link here...' },
 		{separator:'---------------' },
@@ -36,5 +53,27 @@ mySettings = {
 		{name:'Code', openWith:'@', closeWith:'@'},
 		{separator:'---------------' },
 		{name:'Preview', call:'preview', className:'preview'}
+	]
+}
+
+
+mySettings = {
+	markupSet:  [
+	{	name:'Table generator',
+		className:'tablegenerator',
+		placeholder:"Your text here...",
+		replaceWith:function(h) {
+			cols = prompt("How many cols?");
+			rows = prompt("How many rows?");
+			html = "";
+			for (r = 0; r < rows; r++) {
+				for (c = 0; c < cols; c++) {
+					html += "|"+(h.placeholder||"");
+				}
+				html += "|\n";
+			}
+			return html;
+		}
+	}
 	]
 }
