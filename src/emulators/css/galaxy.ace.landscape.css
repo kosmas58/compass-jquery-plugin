@@ -1,0 +1,21 @@
+.emulator {
+    background: image_url("emulators/galaxy.ace.landscape.png") no-repeat;
+    width: 725px;
+    height: 386px;
+    -moz-transform-origin: 0 0;
+    -o-transform-origin: 0 0;
+    -webkit-transform-origin: 0 0;
+}
+
+.emulator .display-area {
+    position: relative;
+    top: 55px;
+    width: 480px;
+    height: 296px;
+    max-height: 296px;
+    color: #ffffff;
+}
+
+.emulator .display-area a {
+    color: #ff5500;
+}

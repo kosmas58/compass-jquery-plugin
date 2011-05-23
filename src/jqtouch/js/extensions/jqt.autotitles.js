@@ -20,31 +20,31 @@
  */
 
 (function($) {
-    if ($.jQTouch) {
-        $.jQTouch.addExtension(function AutoTitles(jQT) {
+  if ($.jQTouch) {
+    $.jQTouch.addExtension(function AutoTitles(jQT) {
 
-            var titleSelector = '.toolbar h1';
+      var titleSelector = '.toolbar h1';
 
-            $(function() {
-                $('#jqt').bind('pageAnimationStart', function(e, data) {
-                    if (data.direction === 'in') {
-                        var $title = $(titleSelector, $(e.target));
-                        var $ref = $(e.target).data('referrer');
-                        if ($title.length && $ref && $title.html() === '') {
-                            $title.html($ref.text());
-                        }
-                    }
-                });
-            });
-
-            function setTitleSelector(ts) {
-                titleSelector = ts;
+      $(function() {
+        $('#jqt').bind('pageAnimationStart', function(e, data) {
+          if (data.direction === 'in') {
+            var $title = $(titleSelector, $(e.target));
+            var $ref = $(e.target).data('referrer');
+            if ($title.length && $ref && $title.html() === '') {
+              $title.html($ref.text());
             }
-
-            return {
-                setTitleSelector: setTitleSelector
-            }
-
+          }
         });
-    }
+      });
+
+      function setTitleSelector(ts) {
+        titleSelector = ts;
+      }
+
+      return {
+        setTitleSelector: setTitleSelector
+      }
+
+    });
+  }
 })(jQuery);

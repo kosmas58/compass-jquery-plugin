@@ -25,155 +25,155 @@
 
 (function($) {
 
-    $.fn.scalable = function (options) {
-        return this.each(function () {
-            new iScale(this, options);
+  $.fn.scalable = function (options) {
+    return this.each(function () {
+      new iScale(this, options);
+    });
+  };
+
+  if ($.jQTouch) {
+    $.jQTouch.addExtension(function (jQT) {
+
+      function binder(e, info) {
+        info.page.find('.scalable').scalable();
+      }
+
+      $(document.body)
+              .bind('pageInserted', binder);
+
+      $(function() {
+        $('body > *')
+                .each(function() {
+          binder({}, {page: $(this)});
         });
-    };
+      });
 
-    if ($.jQTouch) {
-        $.jQTouch.addExtension(function (jQT) {
-
-            function binder(e, info) {
-                info.page.find('.scalable').scalable();
-            }
-
-            $(document.body)
-                    .bind('pageInserted', binder);
-
-            $(function() {
-                $('body > *')
-                        .each(function() {
-                    binder({}, {page: $(this)});
-                });
-            });
-
-            return {};
-        });
+      return {};
+    });
 
 
-        function iScale(el, options) {
-            var that = this;
+    function iScale(el, options) {
+      var that = this;
 
-            this.numberOfTouches = 2;
+      this.numberOfTouches = 2;
 
-            this.element = el;
-            this.scale(1);
-            this.refresh();
+      this.element = el;
+      this.scale(1);
+      this.refresh();
 
-            this.scaleLessThanOne = false;
+      this.scaleLessThanOne = false;
 
-            el.style.webkitTransitionTimingFunction = 'cubic-bezier(0, 0, 0.2, 1)';
+      el.style.webkitTransitionTimingFunction = 'cubic-bezier(0, 0, 0.2, 1)';
 
-            el.addEventListener('touchstart', this, false);
-            //moved up here because I didnt see any reason to add and remove them
-            el.addEventListener('touchmove', this, false);
-            el.addEventListener('touchend', this, false);
+      el.addEventListener('touchstart', this, false);
+      //moved up here because I didnt see any reason to add and remove them
+      el.addEventListener('touchmove', this, false);
+      el.addEventListener('touchend', this, false);
 
-            window.addEventListener('unload', function () {
-                el.removeEventListener('touchstart', that, false);
-                el.removeEventListener('touchmove', that, false);
-                el.removeEventListener('touchend', that, false);
+      window.addEventListener('unload', function () {
+        el.removeEventListener('touchstart', that, false);
+        el.removeEventListener('touchmove', that, false);
+        el.removeEventListener('touchend', that, false);
 
-                this.removeEventListener('unload', arguments.callee, false);
-            }, false);
+        this.removeEventListener('unload', arguments.callee, false);
+      }, false);
 
-            if (options) {
-                $.extend(this, options);
-            }
+      if (options) {
+        $.extend(this, options);
+      }
+    }
+
+    iScale.prototype = {
+      handleEvent: function(e) {
+        switch (e.type) {
+          case 'touchstart': return this.onTouchStart(e); break;
+          case 'touchmove': return this.onTouchMove(e); break;
+          case 'touchend': return this.onTouchEnd(e); break;
+        }
+      },
+
+      scale: function (scale) {
+        if (scale !== undefined) {
+          this._scale = scale;
+          this.element.style.webkitTransform = 'scale(' + scale + ')';
+          return;
         }
 
-        iScale.prototype = {
-            handleEvent: function(e) {
-                switch (e.type) {
-                    case 'touchstart': return this.onTouchStart(e); break;
-                    case 'touchmove': return this.onTouchMove(e); break;
-                    case 'touchend': return this.onTouchEnd(e); break;
-                }
-            },
+        return this._scale;
+      },
 
-            scale: function (scale) {
-                if (scale !== undefined) {
-                    this._scale = scale;
-                    this.element.style.webkitTransform = 'scale(' + scale + ')';
-                    return;
-                }
+      refresh: function() {
+        this.element.style.webkitTransitionDuration = '0';
+      },
 
-                return this._scale;
-            },
+      onTouchStart: function(e) {
+        if (e.targetTouches.length != this.numberOfTouches) {
+          return;
+        }
 
-            refresh: function() {
-                this.element.style.webkitTransitionDuration = '0';
-            },
+        this.refresh();
 
-            onTouchStart: function(e) {
-                if (e.targetTouches.length != this.numberOfTouches) {
-                    return;
-                }
+        this.moved = false;
 
-                this.refresh();
+        this.startDistance = Math.sqrt(
+                Math.pow((e.targetTouches[1].clientX - e.targetTouches[0].clientX), 2)
+                        + Math.pow((e.targetTouches[1].clientX - e.targetTouches[0].clientX), 2)
+                );
 
-                this.moved = false;
+        return false;
+      },
 
-                this.startDistance = Math.sqrt(
-                        Math.pow((e.targetTouches[1].clientX - e.targetTouches[0].clientX), 2)
-                                + Math.pow((e.targetTouches[1].clientX - e.targetTouches[0].clientX), 2)
-                        );
+      onTouchMove: function(e) {
+        if (e.targetTouches.length != this.numberOfTouches)
+          return;
 
-                return false;
-            },
+        e.preventDefault();
 
-            onTouchMove: function(e) {
-                if (e.targetTouches.length != this.numberOfTouches)
-                    return;
+        this.moved = true;
 
-                e.preventDefault();
+        this.refresh();
 
-                this.moved = true;
+        var newDistance = Math.sqrt(
+                Math.pow((e.targetTouches[1].clientX - e.targetTouches[0].clientX), 2)
+                        + Math.pow((e.targetTouches[1].clientY - e.targetTouches[0].clientY), 2)
+                ),
+                difference = newDistance - this.startDistance,
+                percentChange = (difference / this.startDistance) / 2;
 
-                this.refresh();
+        this.scale(this.scale() + (this.scale() * percentChange));
 
-                var newDistance = Math.sqrt(
-                        Math.pow((e.targetTouches[1].clientX - e.targetTouches[0].clientX), 2)
-                                + Math.pow((e.targetTouches[1].clientY - e.targetTouches[0].clientY), 2)
-                        ),
-                        difference = newDistance - this.startDistance,
-                        percentChange = (difference / this.startDistance) / 2;
+        this.startDistance = newDistance;
 
-                this.scale(this.scale() + (this.scale() * percentChange));
+        return false;
+      },
 
-                this.startDistance = newDistance;
+      onTouchEnd: function(e) {
+        var theTarget,theEvent;
 
-                return false;
-            },
+        if (!this.moved) {
+          theTarget = e.target;
+          if (theTarget.nodeType == 3) theTarget = theTarget.parentNode;
+          theEvent = document.createEvent("MouseEvents");
+          theEvent.initEvent('click', true, true);
+          theTarget.dispatchEvent(theEvent);
+          return;
+        }
 
-            onTouchEnd: function(e) {
-                var theTarget,theEvent;
+        e.preventDefault();
+        e.stopPropagation();
 
-                if (!this.moved) {
-                    theTarget = e.target;
-                    if (theTarget.nodeType == 3) theTarget = theTarget.parentNode;
-                    theEvent = document.createEvent("MouseEvents");
-                    theEvent.initEvent('click', true, true);
-                    theTarget.dispatchEvent(theEvent);
-                    return;
-                }
+        if (!this.scaleLessThanOne && this.scale() < 1) {
+          this.element.style.webkitTransitionDuration = '200ms';
+          this.scale(1);
+        }
 
-                e.preventDefault();
-                e.stopPropagation();
+        return false;
+      },
 
-                if (!this.scaleLessThanOne && this.scale() < 1) {
-                    this.element.style.webkitTransitionDuration = '200ms';
-                    this.scale(1);
-                }
-
-                return false;
-            },
-
-            scaleTo: function(dest, runtime) {
-                this.element.style.webkitTransitionDuration = runtime ? runtime : '300ms';
-                this.scale(dest ? dest : 0);
-            }
-        };
-    }
+      scaleTo: function(dest, runtime) {
+        this.element.style.webkitTransitionDuration = runtime ? runtime : '300ms';
+        this.scale(dest ? dest : 0);
+      }
+    };
+  }
 })(jQuery);

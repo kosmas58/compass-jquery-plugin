@@ -12,10 +12,10 @@ Description
 
 A Sass-based Meta-Framework for Compass that allows you to mix and match any of the following:
 
-* jquery-rails with jQuery 1.5.2 and jQuery.UI 1.8.11 including themes
+* jquery-rails with jQuery 1.6.1 and jQuery.UI 1.8.13 including themes
 * jQuery Tools 1.2.5
 * jquery.jstree.js V1.0rc3
-* jquery.dynatree.js V1.0.2
+* jquery.dynatree.js V1.1.1
 * jquery.ribbon.js
 * jquery.jqGrid.js V4.0 (with minor changes to make it RESTful)
 * jquery.tinymce.js V3.4
@@ -23,7 +23,7 @@ A Sass-based Meta-Framework for Compass that allows you to mix and match any of 
 and for mobile devices <i>(using pure haml/sass without compass)</i>:
 
 * jquery.mobile.js 1.0a4.1
-* jquery.jqtouch.js V1.0b2
+* jquery.jqtouch.js V1.0b3
 
 This library requires [Compass][3].
 
@@ -173,7 +173,7 @@ To use the stylesheets and javacripts include:
 jQuery TinyMCE Plugin
 --------------------
 
-Use compass to install the jQuery TinyMCE Editor Javascript WYSIWYG Editor into your project.
+Use compass to install the jQuery TinyMCE Javascript WYSIWYG Editor into your project.
 
 <pre>compass install [-r jquery] jquery/tiny_mce <project name></pre>
 
@@ -181,6 +181,20 @@ To use the javascripts include:
 
 <pre>
 = javascript_include_tag :tiny_mce</pre>
+
+
+jQuery markItUp! Plugin
+--------------------
+
+Use compass to install the jQuery markItUp! Editor J into your project.
+
+<pre>compass install [-r jquery] jquery/markitup <project name></pre>
+
+To use the javascripts include:
+
+<pre>
+= javascript_include_tag :markitup</pre>
+
 
 Graphics
 --------
@@ -282,7 +296,9 @@ jQuery Plugins included:
 * John Reisig et. al. for [jQuery Form Plugin][16]
 * Ivan Bozhanov for [jQuery jsTree Plugin][20]
 * Fabrizio Balliano and Kevin Dalman for [jQuery Layout Plugin][21]
-* Brandon Aaron and Fabrizio Balliano for [jQuery Mousewheel Plugin][21]
+* Jay Salvat for [markItUp!][44]
+* Scott Jehl for [jQuery Media Helper Plugin][43]
+* Brandon Aaron and Fabrizio Balliano for [jQuery Mousewheel Plugin][35]
 * Yehuda Katz for [jQuery Offline Plugin][34]
 * Andreas Eberhard for [jQuery PngFix Plugin][22] (for IE)
 * "Cowboy" Ben Alman for [jQuery replaceText Plugin][36]
@@ -337,7 +353,7 @@ Copyright &copy; 2009-2011 Kosmas Schuetz. See LICENSE for details.
   [12]: http://github.com/rpheath/pretty_flash
   [13]: http://www.trendskitchens.co.nz/jquery/contextmenu/
   [14]: http://stilbuero.de
-  [15]: http://www.wwwendt.de
+  [15]: http://code.google.com/p/dynatree/
   [16]: http://malsup.com/jquery/form/
   [17]: http://www.trirand.com/blog/
   [18]: http://github.com/creationix/jquery-haml
@@ -365,3 +381,5 @@ Copyright &copy; 2009-2011 Kosmas Schuetz. See LICENSE for details.
   [40]: http://tinymce.moxiecode.com/
   [41]: http://github.com/loopj/jquery-tokeninput
   [42]: http://http://www.highcharts.com
+  [43]: http://github.com/scottjehl/jQuery-Media-Helpers
+  [44]: https://github.com/markitup/1.x

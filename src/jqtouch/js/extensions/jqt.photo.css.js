@@ -32,71 +32,71 @@
  */
 (function($) {
 
-    var window = this, jqc = window.jQExtensionsPhotoCSS || {};
+  var window = this, jqc = window.jQExtensionsPhotoCSS || {};
 
-    $(window).load(function() {
-        window.scrollTo(0, 0);
-        var o = window.innerWidth < window.innerHeight ? "portrait" : "landscape",
-                toolbarHeight = jqc.toolbarHeight || $("#jqt .toolbar").outerHeight() || 45,
-                parts = {portrait:null, landscape:null},
-                css = $.extend({
-                    defaults: "\
+  $(window).load(function() {
+    window.scrollTo(0, 0);
+    var o = window.innerWidth < window.innerHeight ? "portrait" : "landscape",
+            toolbarHeight = jqc.toolbarHeight || $("#jqt .toolbar").outerHeight() || 45,
+            parts = {portrait:null, landscape:null},
+            css = $.extend({
+              defaults: "\
 #jqt .jqt-photo .toolbar-bottom{top:{toolbar}px;font-size:30px;text-align:center;vertical-align:top;}\
 #jqt .jqt-photo .jqt-photo-image-slide > div{width:{width}px;height:{height}px;line-height:{height}px;border-spacing:0 10px 0 0;\
     overflow:hidden;text-align:center;position:relative;}\
 #jqt .jqt-photo .jqt-photo-image-slide .jqt-photo-caption{top:{caption}px;}\n",
 
-                    portrait: "#jqt.portrait .jqt-photo{height:{height}px;width:{width}px;}\
+              portrait: "#jqt.portrait .jqt-photo{height:{height}px;width:{width}px;}\
             #jqt.portrait .jqt-photo .toolbar-bottom{top:{toolbar}px;font-size:30px;text-align:center;vertical-align:top;}\
 #jqt.portrait .jqt-photo .jqt-photo-image-slide > div{width:{width}px;height:{height}px;line-height:{height}px;border-spacing:0 10px 0 0;\
     overflow:hidden;text-align:center;}\
 #jqt .jqt-photo .jqt-photo-image-slide .jqt-photo-caption{top:{caption}px;}",
 
-                    landscape: "#jqt.landscape .jqt-photo{height:{height}px;width:{width}px;}\
+              landscape: "#jqt.landscape .jqt-photo{height:{height}px;width:{width}px;}\
 #jqt.landscape .jqt-photo .toolbar-bottom{top:{toolbar}px;}\
 #jqt.landscape .jqt-photo .jqt-photo-image-list{height:{height}px;}\
 #jqt.landscape .jqt-photo .jqt-photo-image-slide > div{height:{height}px;width:{width}px;line-height:{height}px;}\
 #jqt .jqt-photo .jqt-photo-image-slide .jqt-photo-caption{top:{caption}px;}"
-                }, jqc.css || {});
+            }, jqc.css || {});
 
-        parts[o] = $.extend({
-            width: window.innerWidth,
-            height: window.innerHeight,
-            toolbar: window.innerHeight - toolbarHeight,
-            caption: window.innerHeight - toolbarHeight - toolbarHeight
-        },
-                jqc[o] || {});
+    parts[o] = $.extend({
+      width: window.innerWidth,
+      height: window.innerHeight,
+      toolbar: window.innerHeight - toolbarHeight,
+      caption: window.innerHeight - toolbarHeight - toolbarHeight
+    },
+            jqc[o] || {});
 
-        parts.defaults = $.extend({}, parts[o], jqc.defaults || {});
+    parts.defaults = $.extend({}, parts[o], jqc.defaults || {});
 
-        $(document.createElement("style"))
-                .attr("type", "text/css")
-                .html(css.defaults.replace(/\{(\w+)\}/g, function (a, b) {
-            return b in parts.defaults ? parts.defaults[b] : a;
-        }) +
-                css[o].replace(/\{(\w+)\}/g, function (a, b) {
-                    return b in parts[o] ? parts[o][b] : a;
-                }))
-                .appendTo("head");
-
-        $(window).one("orientationchange", function() {
-            var o = window.innerWidth < window.innerHeight ? "portrait" : "landscape";
-            parts[o] = $.extend({
-                width: window.innerWidth,
-                height: window.innerHeight,
-                toolbar: window.innerHeight - toolbarHeight,
-                caption: window.innerHeight - toolbarHeight - toolbarHeight
-            },
-                    jqc[o] || {});
-
-            $(document.createElement("style"))
-                    .attr("type", "text/css")
-                    .html(css[o].replace(/\{(\w+)\}/g, function (a, b) {
-                return b in parts[o] ? parts[o][b] : a;
+    $(document.createElement("style"))
+            .prop("type", "text/css")
+            .html(css.defaults.replace(/\{(\w+)\}/g, function (a, b) {
+      return b in parts.defaults ? parts.defaults[b] : a;
+    }) +
+            css[o].replace(/\{(\w+)\}/g, function (a, b) {
+              return b in parts[o] ? parts[o][b] : a;
             }))
-                    .appendTo("head");
-        });
+            .appendTo("head");
+
+    $(window).one("orientationchange", function() {
+      var o = window.innerWidth < window.innerHeight ? "portrait" : "landscape";
+      parts[o] = $.extend({
+        width: window.innerWidth,
+        height: window.innerHeight,
+        toolbar: window.innerHeight - toolbarHeight,
+        caption: window.innerHeight - toolbarHeight - toolbarHeight
+      },
+              jqc[o] || {});
+
+      $(document.createElement("style"))
+              .prop("type", "text/css")
+              .html(css[o].replace(/\{(\w+)\}/g, function (a, b) {
+        return b in parts[o] ? parts[o][b] : a;
+      }))
+              .appendTo("head");
     });
+  });
 
 })(jQuery);
 

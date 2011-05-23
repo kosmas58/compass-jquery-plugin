@@ -11,75 +11,75 @@
  */
 (function($) {
 
-    var t = $.tools.scrollable;
+  var t = $.tools.scrollable;
 
-    t.autoscroll = {
+  t.autoscroll = {
 
-        conf: {
-            autoplay: true,
-            interval: 3000,
-            autopause: true
+    conf: {
+      autoplay: true,
+      interval: 3000,
+      autopause: true
+    }
+  };
+
+  // jQuery plugin implementation
+  $.fn.autoscroll = function(conf) {
+
+    if (typeof conf == 'number') {
+      conf = {interval: conf};
+    }
+
+    var opts = $.extend({}, t.autoscroll.conf, conf), ret;
+
+    this.each(function() {
+
+      var api = $(this).data("scrollable");
+      if (api) {
+        ret = api;
+      }
+
+      // interval stuff
+      var timer, stopped = true;
+
+      api.play = function() {
+
+        // do not start additional timer if already exists
+        if (timer) {
+          return;
         }
-    };
 
-    // jQuery plugin implementation
-    $.fn.autoscroll = function(conf) {
+        stopped = false;
 
-        if (typeof conf == 'number') {
-            conf = {interval: conf};
-        }
+        // construct new timer
+        timer = setInterval(function() {
+          api.next();
+        }, opts.interval);
 
-        var opts = $.extend({}, t.autoscroll.conf, conf), ret;
+      };
 
-        this.each(function() {
+      api.pause = function() {
+        timer = clearInterval(timer);
+      };
 
-            var api = $(this).data("scrollable");
-            if (api) {
-                ret = api;
-            }
+      // when stopped - mouseover won't restart
+      api.stop = function() {
+        api.pause();
+        stopped = true;
+      };
 
-            // interval stuff
-            var timer, stopped = true;
+      /* when mouse enters, autoscroll stops */
+      if (opts.autopause) {
+        api.getRoot().add(api.getNaviButtons()).hover(api.pause, api.play);
+      }
 
-            api.play = function() {
+      if (opts.autoplay) {
+        api.play();
+      }
 
-                // do not start additional timer if already exists
-                if (timer) {
-                    return;
-                }
+    });
 
-                stopped = false;
+    return opts.api ? ret : this;
 
-                // construct new timer
-                timer = setInterval(function() {
-                    api.next();
-                }, opts.interval);
-
-            };
-
-            api.pause = function() {
-                timer = clearInterval(timer);
-            };
-
-            // when stopped - mouseover won't restart
-            api.stop = function() {
-                api.pause();
-                stopped = true;
-            };
-
-            /* when mouse enters, autoscroll stops */
-            if (opts.autopause) {
-                api.getRoot().add(api.getNaviButtons()).hover(api.pause, api.play);
-            }
-
-            if (opts.autoplay) {
-                api.play();
-            }
-
-        });
-
-        return opts.api ? ret : this;
-
-    };
+  };
 
 })(jQuery);		

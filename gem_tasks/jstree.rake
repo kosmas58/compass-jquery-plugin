@@ -3,9 +3,11 @@ require 'lib/handle_js_files'
 
 # Compass generator for JSTREE
 JSTREE_SRC = File.join(GEM_ROOT, 'src', 'jstree')
+JSTREE_SRC_CONFIG = File.join(JSTREE_SRC, 'config', 'initializers')
 JSTREE_SRC_THEMES = File.join(JSTREE_SRC, 'themes')
 
 JSTREE_DEST_TEMPLATES = File.join(GEM_ROOT, 'templates', 'jstree')
+JSTREE_DEST_CONFIG = File.join(JSTREE_DEST_TEMPLATES, 'config', 'initializers')
 JSTREE_DEST_THEMES = File.join(JSTREE_DEST_TEMPLATES, 'jquery', 'jstree')
 JSTREE_DEST_IMAGES = File.join(JSTREE_DEST_THEMES)
 
@@ -47,8 +49,8 @@ namespace :build do
     open File.join(JSTREE_DEST_TEMPLATES, 'manifest.rb'), 'w' do |manifest|
       manifest.print JSTREE_MESSAGE1
 
-      open File.join(JSTREE_DEST_TEMPLATES, 'config', 'initializers', 'jstree.rb'), 'w' do |f|
-        f.print(File.read(File.join(JSTREE_SRC, 'config', 'initializers', 'jstree.rb')))
+      open File.join(JSTREE_DEST_CONFIG, 'jstree.rb'), 'w' do |f|
+        f.print(File.read(File.join(JSTREE_SRC_CONFIG, 'jstree.rb')))
       end
       manifest.print "file 'config/initializers/jstree.rb'\n"
 

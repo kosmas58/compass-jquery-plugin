@@ -1,0 +1,31 @@
+/* -------------------------------------------------------------------
+// markItUp!
+// By Jay Salvat - http://markitup.jaysalvat.com/
+// ------------------------------------------------------------------*/
+.markitup .markItUpButton1 a {
+    background-image: url(images/bold.png);
+}
+
+.markitup .markItUpButton2 a {
+    background-image: url(images/italic.png);
+}
+
+.markitup .markItUpButton3 a {
+    background-image: url(images/stroke.png);
+}
+
+.markitup .markItUpButton4 a {
+    background-image: url(images/picture.png);
+}
+
+.markitup .markItUpButton5 a {
+    background-image: url(images/link.png);
+}
+
+.markitup .markItUpButton6 a {
+    background-image: url(images/clean.png);
+}
+
+.markitup .preview a {
+    background-image: url(images/preview.png);
+}

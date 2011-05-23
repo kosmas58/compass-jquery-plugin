@@ -7,10 +7,6 @@
     -webkit-transform-origin: 0 0;
 }
 
-.emulator .actions {
-  position: absolute;
-}
-
 .emulator .display-area {
     position: relative;
     top: 169px;

@@ -3,10 +3,16 @@ require 'lib/handle_js_files'
 require 'lib/jquery_mobile_theme'
 
 MOBILE_SRC = File.join(GEM_ROOT, 'src', 'mobile')
+MOBILE_SRC_CONFIG = File.join(MOBILE_SRC, 'config', 'initializers')
 MOBILE_SRC_IMAGES = File.join(MOBILE_SRC, 'images')
+MOBILE_SRC_GLYPHISH = File.join(MOBILE_SRC_IMAGES, 'glyphish')
+MOBILE_SRC_TASKS = File.join(MOBILE_SRC, 'lib', 'tasks')
 MOBILE_SRC_THEMES = File.join(MOBILE_SRC, 'themes')
 
 MOBILE_DEST_TEMPLATES = File.join(GEM_ROOT, 'templates', 'mobile')
+MOBILE_DEST_CONFIG = File.join(MOBILE_DEST_TEMPLATES, 'config', 'initializers')
+MOBILE_DEST_GLYPHISH = File.join(MOBILE_DEST_TEMPLATES, 'glyphish')
+MOBILE_DEST_TASKS = File.join(MOBILE_DEST_TEMPLATES, 'lib', 'tasks')
 MOBILE_DEST_THEMES = File.join(MOBILE_DEST_TEMPLATES, 'jquery', 'mobile')
 MOBILE_DEST_IMAGES = File.join(MOBILE_DEST_THEMES)
 
@@ -21,6 +27,7 @@ all_scripts = [
     'js/jquery.mobile.page.js',
     'js/jquery.mobile.core.js',
     'js/jquery.mobile.navigation.js',
+    'js/jquery.mobile.transition.js',
     'js/jquery.mobile.fixHeaderFooter.js',
     'js/jquery.mobile.forms.checkboxradio.js',
     'js/jquery.mobile.forms.textinput.js',
@@ -51,25 +58,28 @@ namespace :build do
     open File.join(MOBILE_DEST_TEMPLATES, 'manifest.rb'), 'w' do |manifest|
       manifest.print MOBILE_MESSAGE1
 
-      open File.join(MOBILE_DEST_TEMPLATES, 'config', 'initializers', 'mobile.rb'), 'w' do |f|
-        f.print(File.read(File.join(MOBILE_SRC, 'config', 'initializers', 'mobile.rb')))
+      open File.join(MOBILE_DEST_CONFIG, 'mobile.rb'), 'w' do |f|
+        f.print(File.read(File.join(MOBILE_SRC_CONFIG, 'mobile.rb')))
       end
       manifest.print "file 'config/initializers/mobile.rb'\n"
 
-      open File.join(MOBILE_DEST_TEMPLATES, 'lib', 'tasks', 'jquery.mobile.rake'), 'w' do |f|
-        f.print(File.read(File.join(MOBILE_SRC, 'lib', 'tasks', 'jquery.mobile.rake')))
+      open File.join(MOBILE_DEST_TASKS, 'jquery.mobile.rake'), 'w' do |f|
+        f.print(File.read(File.join(MOBILE_SRC_TASKS, 'jquery.mobile.rake')))
       end
       manifest.print "file 'lib/tasks/jquery.mobile.rake'\n"
 
       #JavaScripts
 
+      scripts = ""
+
       open File.join(MOBILE_DEST_TEMPLATES, 'jquery.mobile.js'), 'w' do |f|
-        f.print concat_files(all_scripts)
+        scripts = concat_files(all_scripts).gsub(/@VERSION/, File.read(File.join(MOBILE_SRC, 'version.txt')))
+        f.print scripts
       end
       manifest.print "javascript 'jquery.mobile.js'\n"
 
       open File.join(MOBILE_DEST_TEMPLATES, 'jquery.mobile.min.js'), 'w' do |f|
-        f.print compress_js(all_scripts, "yui")
+        f.print compress_js(scripts, "yui")
       end
       manifest.print "javascript 'jquery.mobile.min.js'\n"
 
@@ -104,54 +114,66 @@ namespace :build do
 
       Dir.foreach MOBILE_SRC_THEMES do |theme|
         next if /^\./ =~ theme
-        mobile.convert_theme(theme, File.join(MOBILE_SRC_THEMES, theme), File.join(MOBILE_DEST_THEMES))
-        manifest.print "stylesheet 'jquery/mobile/#{theme}.scss'\n"
+        if /\.css$/ =~ theme
+          # 960,gs Stylesheets
+          css = File.read File.join(MOBILE_SRC_THEMES, theme)
+          sass = ''
+          IO.popen("sass-convert -F css -T scss", 'r+') { |f| f.print(css); f.close_write; sass = f.read }
+          theme.gsub!(/\.css$/, '.scss')
+          open File.join(MOBILE_DEST_THEMES, theme), 'w' do |f|
+            f.write sass
+          end
+          manifest.print "stylesheet 'jquery/mobile/#{theme}'\n"
+        else
+          # jQuery Mobile Themes
+          mobile.convert_theme(theme, File.join(MOBILE_SRC_THEMES, theme), File.join(MOBILE_DEST_THEMES))
+          manifest.print "stylesheet 'jquery/mobile/#{theme}.scss'\n"
 
-        # Copy the theme images directory
-        src_dir = File.join(MOBILE_SRC_THEMES, theme, 'images')
-        dest_dir = File.join(MOBILE_DEST_IMAGES, theme)
-        FileUtils.mkdir_p dest_dir
+          # Copy the theme images directory
+          src_dir = File.join(MOBILE_SRC_THEMES, theme, 'images')
+          dest_dir = File.join(MOBILE_DEST_IMAGES, theme)
+          FileUtils.mkdir_p dest_dir
 
-        Dir.foreach(src_dir) do |image|
-          next if /^\./ =~ image
-          FileUtils.cp(File.join(src_dir, image), dest_dir)
-          manifest.print "image 'jquery/mobile/#{theme}/#{image}'\n"
+          Dir.foreach(src_dir) do |image|
+            next if /^\./ =~ image
+            FileUtils.cp(File.join(src_dir, image), dest_dir)
+            manifest.print "image 'jquery/mobile/#{theme}/#{image}'\n"
+          end
         end
       end
 
       # glyphish Images
-      FileUtils.mkdir_p(File.join(MOBILE_DEST_TEMPLATES, 'glyphish', 'icons-black'))
-      src_dir = File.join(MOBILE_SRC_IMAGES, 'glyphish', 'icons-black')
-      dest_dir = File.join(MOBILE_DEST_TEMPLATES, 'glyphish', 'icons-black')
+      FileUtils.mkdir_p(File.join(MOBILE_DEST_GLYPHISH, 'icons-black'))
+      src_dir = File.join(MOBILE_SRC_GLYPHISH, 'icons-black')
+      dest_dir = File.join(MOBILE_DEST_GLYPHISH, 'icons-black')
       Dir.foreach(src_dir) do |image|
         next if /^\./ =~ image
         FileUtils.cp(File.join(src_dir, image), dest_dir)
         manifest.print "image 'glyphish/icons-black/#{image}'\n"
       end
 
-      FileUtils.mkdir_p(File.join(MOBILE_DEST_TEMPLATES, 'glyphish', 'icons-white'))
-      src_dir = File.join(MOBILE_SRC_IMAGES, 'glyphish', 'icons-white')
-      dest_dir = File.join(MOBILE_DEST_TEMPLATES, 'glyphish', 'icons-white')
+      FileUtils.mkdir_p(File.join(MOBILE_DEST_GLYPHISH, 'icons-white'))
+      src_dir = File.join(MOBILE_SRC_GLYPHISH, 'icons-white')
+      dest_dir = File.join(MOBILE_DEST_GLYPHISH, 'icons-white')
       Dir.foreach(src_dir) do |image|
         next if /^\./ =~ image
         FileUtils.cp(File.join(src_dir, image), dest_dir)
         manifest.print "image 'glyphish/icons-white/#{image}'\n"
       end
 
-      FileUtils.mkdir_p(File.join(MOBILE_DEST_TEMPLATES, 'glyphish', 'mini-icons-black'))
-      src_dir = File.join(MOBILE_SRC_IMAGES, 'glyphish', 'mini-icons-black')
-      dest_dir = File.join(MOBILE_DEST_TEMPLATES, 'glyphish', 'mini-icons-black')
+      FileUtils.mkdir_p(File.join(MOBILE_DEST_GLYPHISH, 'mini-icons-black'))
+      src_dir = File.join(MOBILE_SRC_GLYPHISH, 'mini-icons-black')
+      dest_dir = File.join(MOBILE_DEST_GLYPHISH, 'mini-icons-black')
       Dir.foreach(src_dir) do |image|
         next if /^\./ =~ image
         FileUtils.cp(File.join(src_dir, image), dest_dir)
         manifest.print "image 'glyphish/mini-icons-black/#{image}'\n"
       end
 
-      open File.join(MOBILE_DEST_TEMPLATES, 'glyphish', 'License.txt'), 'w' do |f|
-        f.print(File.read(File.join(MOBILE_SRC_IMAGES, 'glyphish', 'Read me first - license.txt')))
+      open File.join(MOBILE_DEST_GLYPHISH, 'License.txt'), 'w' do |f|
+        f.print(File.read(File.join(MOBILE_SRC_GLYPHISH, 'Read me first - license.txt')))
       end
       manifest.print "image 'glyphish/License.txt'\n"
-
     end
   end
 end

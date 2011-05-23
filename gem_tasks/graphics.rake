@@ -2,7 +2,8 @@ require 'fileutils'
 require 'lib/handle_js_files'
 
 GRAPHICS_SRC = File.join(GEM_ROOT, 'src', 'graphics')
-SPARKLINES_SRC_SCRIPTS = File.join(GRAPHICS_SRC, 'sparklines') + "/*.js"
+GRAPHICS_SRC_CONFIG = File.join(GRAPHICS_SRC, 'config', 'initializers')
+
 GANTTVIEW_SRC = File.join(GRAPHICS_SRC, 'ganttView')
 GANTTVIEW_SRC_SCRIPTS = GANTTVIEW_SRC + "/*.js"
 
@@ -17,7 +18,11 @@ HIGHCHARTS_SRC_IMAGES = File.join(HIGHCHARTS_SRC, 'images')
 
 HIGHSLIDE_SRC_IMAGES = File.join(HIGHCHARTS_SRC_IMAGES, 'graphics')
 
+SPARKLINES_SRC_SCRIPTS = File.join(GRAPHICS_SRC, 'sparklines') + "/*.js"
+
+
 GRAPHICS_DEST_TEMPLATES = File.join(GEM_ROOT, 'templates', 'graphics')
+GRAPHICS_DEST_CONFIG = File.join(GRAPHICS_DEST_TEMPLATES, 'config', 'initializers')
 GRAPHICS_DEST_THEMES = File.join(GRAPHICS_DEST_TEMPLATES, 'jquery')
 
 HIGHCHARTS_DEST_THEMES = File.join(GRAPHICS_DEST_TEMPLATES, 'highcharts')
@@ -31,13 +36,13 @@ namespace :build do
   task :graphics do
 
     FileUtils.remove_dir GRAPHICS_DEST_TEMPLATES if File.exists? GRAPHICS_DEST_TEMPLATES
-    FileUtils.mkdir_p(File.join(GRAPHICS_DEST_TEMPLATES, 'config', 'initializers'))
+    FileUtils.mkdir_p(GRAPHICS_DEST_CONFIG)
 
     open File.join(GRAPHICS_DEST_TEMPLATES, 'manifest.rb'), 'w' do |manifest|
       manifest.print GRAPHICS_MESSAGE1
 
-      open File.join(GRAPHICS_DEST_TEMPLATES, 'config', 'initializers', 'graphics.rb'), 'w' do |f|
-        f.print(File.read(File.join(GRAPHICS_SRC, 'config', 'initializers', 'graphics.rb')))
+      open File.join(GRAPHICS_DEST_CONFIG, 'graphics.rb'), 'w' do |f|
+        f.print(File.read(File.join(GRAPHICS_SRC_CONFIG, 'graphics.rb')))
       end
       manifest.print "file 'config/initializers/graphics.rb'\n"
 

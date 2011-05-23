@@ -2,10 +2,12 @@ require 'fileutils'
 require 'lib/handle_js_files'
 
 EMULATORS_SRC = File.join(GEM_ROOT, 'src', 'emulators')
+EMULATORS_SRC_CONFIG = File.join(EMULATORS_SRC, 'config', 'initializers')
 EMULATORS_SRC_STYLESHEETS = File.join(EMULATORS_SRC, 'css')
 EMULATORS_SRC_IMAGES = File.join(EMULATORS_SRC, 'images')
 
 EMULATORS_DEST_TEMPLATES = File.join(GEM_ROOT, 'templates', 'emulators')
+EMULATORS_DEST_CONFIG = File.join(EMULATORS_DEST_TEMPLATES, 'config', 'initializers')
 EMULATORS_DEST_STYLESHEETS = File.join(EMULATORS_DEST_TEMPLATES, 'emulators')
 EMULATORS_DEST_IMAGES = File.join(EMULATORS_DEST_STYLESHEETS)
 
@@ -17,13 +19,13 @@ namespace :build do
   task :emulators do
 
     FileUtils.remove_dir EMULATORS_DEST_TEMPLATES if File.exists? EMULATORS_DEST_TEMPLATES
-    FileUtils.mkdir_p(File.join(EMULATORS_DEST_TEMPLATES, 'config', 'initializers'))
+    FileUtils.mkdir_p(EMULATORS_DEST_CONFIG)
 
     open File.join(EMULATORS_DEST_TEMPLATES, 'manifest.rb'), 'w' do |manifest|
       manifest.print EMULATORS_MESSAGE1
 
-      open File.join(EMULATORS_DEST_TEMPLATES, 'config', 'initializers', 'emulators.rb'), 'w' do |f|
-        f.print(File.read(File.join(EMULATORS_SRC, 'config', 'initializers', 'emulators.rb')))
+      open File.join(EMULATORS_DEST_CONFIG, 'emulators.rb'), 'w' do |f|
+        f.print(File.read(File.join(EMULATORS_SRC_CONFIG, 'emulators.rb')))
       end
       manifest.print "file 'config/initializers/emulators.rb'\n"
 

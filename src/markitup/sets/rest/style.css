@@ -1,0 +1,53 @@
+/* -------------------------------------------------------------------
+// Copyright (C) 2011 Florent Gallaire <fgallaire@gmail.com>
+// License GNU GPLv3 or any later version.
+// markItUp!
+// By Jay Salvat - http://markitup.jaysalvat.com/
+// ------------------------------------------------------------------*/
+.rest .markItUpButton1 a {
+	background-image:url(images/h1.png); 
+}
+.rest .markItUpButton2 a {
+	background-image:url(images/h2.png); 
+}
+.rest .markItUpButton3 a {
+	background-image:url(images/h3.png); 
+}
+.rest .markItUpButton4 a {
+	background-image:url(images/h4.png); 
+}
+.rest .markItUpButton5 a {
+	background-image:url(images/h5.png); 
+}
+
+.rest .markItUpButton6 a {
+	background-image:url(images/bold.png);
+}
+.rest .markItUpButton7 a {
+	background-image:url(images/italic.png);
+}
+
+.rest .markItUpButton8 a {
+	background-image:url(images/list-bullet.png);
+}
+.rest .markItUpButton9 a {
+	background-image:url(images/list-numeric.png);
+}
+
+.rest .markItUpButton10 a {
+	background-image:url(images/picture.png); 
+}
+.rest .markItUpButton11 a {
+	background-image:url(images/link.png);
+}
+
+.rest .markItUpButton12 a {
+	background-image:url(images/quotes.png);
+}
+.rest .markItUpButton13 a {
+	background-image:url(images/code.png);
+}
+
+.rest .preview a {
+	background-image:url(images/preview.png);
+}

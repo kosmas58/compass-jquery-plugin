@@ -3,9 +3,11 @@ require 'lib/handle_js_files'
 
 # Compass generator for DYNATREE_14
 DYNATREE_SRC = File.join(GEM_ROOT, 'src', 'dynatree')
+DYNATREE_SRC_CONFIG = File.join(DYNATREE_SRC, 'config', 'initializers')
 DYNATREE_SRC_SKINS = File.join(DYNATREE_SRC, 'skins')
 
 DYNATREE_DEST_TEMPLATES = File.join(GEM_ROOT, 'templates', 'dynatree')
+DYNATREE_DEST_CONFIG = File.join(DYNATREE_DEST_TEMPLATES, 'config', 'initializers')
 DYNATREE_DEST_SKINS = File.join(DYNATREE_DEST_TEMPLATES, 'jquery', 'dynatree')
 DYNATREE_DEST_IMAGES = File.join(DYNATREE_DEST_SKINS)
 
@@ -21,13 +23,13 @@ namespace :build do
   task :dynatree do
 
     FileUtils.remove_dir DYNATREE_DEST_TEMPLATES if File.exists? DYNATREE_DEST_TEMPLATES
-    FileUtils.mkdir_p(File.join(DYNATREE_DEST_TEMPLATES, 'config', 'initializers'))
+    FileUtils.mkdir_p(DYNATREE_DEST_CONFIG)
 
     open File.join(DYNATREE_DEST_TEMPLATES, 'manifest.rb'), 'w' do |manifest|
       manifest.print DYNATREE_MESSAGE1
 
-      open File.join(DYNATREE_DEST_TEMPLATES, 'config', 'initializers', 'dynatree.rb'), 'w' do |f|
-        f.print(File.read(File.join(DYNATREE_SRC, 'config', 'initializers', 'dynatree.rb')))
+      open File.join(DYNATREE_DEST_CONFIG, 'dynatree.rb'), 'w' do |f|
+        f.print(File.read(File.join(DYNATREE_SRC_CONFIG, 'dynatree.rb')))
       end
       manifest.print "file 'config/initializers/dynatree.rb'\n"
 

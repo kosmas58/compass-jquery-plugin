@@ -338,14 +338,14 @@ Built by David Kaneda and maintained by Jonathan Stark.
     z-index: 0;
     -webkit-animation-name: fadeout; } }
 
-/* The properties in this body rule are only necessary for the 'flip' transition.
+/* The properties in this rule are only necessary for the 'flip' transition.
  * We need specify the perspective to create a projection matrix. This will add
  * some depth as the element flips. The depth number represents the distance of
  * the viewer from the z-plane. According to the CSS3 spec, 1000 is a moderate
  * value.
  */
 
-.ui-mobile-viewport-perspective {
+.viewport-flip {
   -webkit-perspective: 1000;
   position: absolute; }
 
@@ -870,7 +870,7 @@ Built by David Kaneda and maintained by Jonathan Stark.
 .ui-controlgroup .ui-btn-icon-notext .ui-btn-inner {  padding: 5px 6px 5px 5px; }
 */
 
-.min-width-480px {
+@media all and (min-width: 450px) {
   .ui-controlgroup-label {
     vertical-align: top;
     display: inline-block;
@@ -879,6 +879,7 @@ Built by David Kaneda and maintained by Jonathan Stark.
   .ui-controlgroup-controls {
     width: 60%;
     display: inline-block; } }
+
 
 /*
 * jQuery Mobile Framework
@@ -913,11 +914,17 @@ Built by David Kaneda and maintained by Jonathan Stark.
   text-align: left;
   z-index: 2; }
 
+.ui-checkbox .ui-btn-inner, .ui-radio .ui-btn-inner {
+  white-space: normal; }
+
 .ui-checkbox .ui-btn-icon-left .ui-btn-inner, .ui-radio .ui-btn-icon-left .ui-btn-inner {
   padding-left: 45px; }
 
 .ui-checkbox .ui-btn-icon-right .ui-btn-inner, .ui-radio .ui-btn-icon-right .ui-btn-inner {
   padding-right: 45px; }
+
+.ui-checkbox .ui-icon, .ui-radio .ui-icon {
+  top: 1.1em; }
 
 .ui-checkbox .ui-btn-icon-left .ui-icon, .ui-radio .ui-btn-icon-left .ui-icon {
   left: 15px; }
@@ -952,10 +959,12 @@ Built by David Kaneda and maintained by Jonathan Stark.
   &:first-child {
     border-top-width: 0; } }
 
-.min-width-480px .ui-field-contain {
-  border-width: 0;
-  padding: 0;
-  margin: 1em 0; }
+@media all and (min-width: 450px) {
+  .ui-field-contain {
+    border-width: 0;
+    padding: 0;
+    margin: 1em 0; } }
+
 
 /*
 * jQuery Mobile Framework
@@ -1044,10 +1053,14 @@ label.ui-select {
 .ui-li.ui-selectmenu-placeholder {
   display: none; }
 
-.ui-selectmenu .ui-header .ui-title {
-  margin: 0.6em 46px 0.8em; }
+.ui-selectmenu .ui-header {
+  .ui-title {
+    margin: 0.6em 46px 0.8em; }
+  h1:after {
+    content: '.';
+    visibility: hidden; } }
 
-.min-width-480px {
+@media all and (min-width: 450px) {
   label.ui-select {
     display: inline-block;
     width: 20%;
@@ -1056,11 +1069,8 @@ label.ui-select {
     width: 60%;
     display: inline-block; } }
 
-/* when no placeholder is defined in a multiple select, the header height doesn't even extend past the close button.  this shim's content in there */
 
-.ui-selectmenu .ui-header h1:after {
-  content: '.';
-  visibility: hidden; }
+/* when no placeholder is defined in a multiple select, the header height doesn't even extend past the close button.  this shim's content in there */
 
 /*
 * jQuery Mobile Framework
@@ -1116,8 +1126,7 @@ textarea.ui-input-text {
     display: none; } }
 
 /* orientation adjustments - incomplete!*/
-
-.min-width-480px {
+@media all and (min-width: 450px) {
   label.ui-input-text {
     vertical-align: top;
     display: inline-block;
@@ -1133,6 +1142,7 @@ textarea.ui-input-text {
     input.ui-input-text {
       width: 98%;
       /*echos rule from above*/ } } }
+
 
 /*
 * jQuery Mobile Framework
@@ -1278,8 +1288,10 @@ ol.ui-listview .ui-li-jsnumbering:before {
   text-align: right;
   margin: .3em 0; }
 
-.min-width-480px .ui-li-aside {
-  width: 45%; }
+@media all and (min-width: 480px) {
+  .ui-li-aside {
+    width: 45%; } }
+
 
 .ui-li-divider {
   cursor: default; }
@@ -1339,10 +1351,14 @@ ol.ui-listview .ui-li-jsnumbering:before {
   margin: -15px -5px -15px -5px;
   background: transparent; }
 
+.ui-li.ui-screen-hidden {
+  display: none; }
+
 /* Odd iPad positioning issue. */
 @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
   .ui-li .ui-btn-text {
     overflow: visible; } }
+
 
 /*
 * jQuery Mobile Framework
@@ -1353,7 +1369,7 @@ ol.ui-listview .ui-li-jsnumbering:before {
 label.ui-slider {
   display: block; }
 
-input.ui-slider-input, .min-width-480px input.ui-slider-input {
+input.ui-slider-input {
   display: inline-block;
   width: 50px; }
 
@@ -1382,13 +1398,14 @@ a.ui-slider-handle {
     padding-left: 0;
     padding-right: 0; } }
 
-.min-width-480px {
+@media all and (min-width: 480px) {
   label.ui-slider {
     display: inline-block;
     width: 20%;
     margin: 0 2% 0 0; }
   div.ui-slider {
     width: 45%; } }
+
 
 div {
   &.ui-slider-switch {

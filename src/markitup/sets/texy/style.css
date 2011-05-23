@@ -1,0 +1,51 @@
+/* -------------------------------------------------------------------
+// markItUp!
+// By Jay Salvat - http://markitup.jaysalvat.com/
+//
+// CSS Set by Kevin Papst - http://www.kevinpapst.de/
+// ------------------------------------------------------------------*/
+.texy .h1 a {
+	background-image:url(images/h1.png);
+}
+.texy .h2 a {
+	background-image:url(images/h2.png);
+}	
+.texy .h3 a {
+	background-image:url(images/h3.png);
+}	
+.texy .h4 a {
+	background-image:url(images/h4.png);
+}
+.texy .bold a {
+	background-image:url(images/bold.png);
+}	
+.texy .italic a {
+	background-image:url(images/italic.png);
+}
+.texy .stroke a {
+	background-image:url(images/stroke.png);
+}
+.texy .list-bullet a {
+	background-image:url(images/list-bullet.png);
+}	
+.texy .list-numeric a {
+	background-image:url(images/list-numeric.png);
+}
+.texy .image a {
+	background-image:url(images/picture.png);
+}	
+.texy .link a {
+	background-image:url(images/link.png);
+}
+.texy .quotes a	{
+	background-image:url(images/quotes.png);
+}
+.texy .code a	{
+	background-image:url(images/page_white_code.png);
+}
+.texy .off a	{
+	background-image:url(images/disconnect.png);
+}
+.texy .preview a {
+	background-image:url(images/preview.png);
+} 

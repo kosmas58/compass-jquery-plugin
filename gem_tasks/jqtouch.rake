@@ -3,11 +3,13 @@ require 'lib/handle_js_files'
 require 'lib/jqtouch_theme'
 
 JQTOUCH_SRC = File.join(GEM_ROOT, 'src', 'jqtouch')
+JQTOUCH_SRC_CONFIG = File.join(JQTOUCH_SRC, 'config', 'initializers')
 JQTOUCH_SRC_STYLESHEETS = File.join(JQTOUCH_SRC, 'css')
 JQTOUCH_SRC_IMAGES = File.join(JQTOUCH_SRC, 'images')
 JQTOUCH_SRC_THEMES = File.join(JQTOUCH_SRC, 'themes')
 
 JQTOUCH_DEST_TEMPLATES = File.join(GEM_ROOT, 'templates', 'jqtouch')
+JQTOUCH_DEST_CONFIG = File.join(JQTOUCH_DEST_TEMPLATES, 'config', 'initializers')
 JQTOUCH_DEST_STYLESHEETS = File.join(JQTOUCH_DEST_TEMPLATES, 'jquery', 'touch')
 JQTOUCH_DEST_THEMES = File.join(JQTOUCH_DEST_STYLESHEETS)
 JQTOUCH_DEST_IMAGES = File.join(JQTOUCH_DEST_STYLESHEETS)
@@ -60,8 +62,8 @@ namespace :build do
     open File.join(JQTOUCH_DEST_TEMPLATES, 'manifest.rb'), 'w' do |manifest|
       manifest.print JQTOUCH_MESSAGE1
 
-      open File.join(JQTOUCH_DEST_TEMPLATES, 'config', 'initializers', 'jqtouch.rb'), 'w' do |f|
-        f.print(File.read(File.join(JQTOUCH_SRC, 'config', 'initializers', 'jqtouch.rb')))
+      open File.join(JQTOUCH_DEST_CONFIG, 'jqtouch.rb'), 'w' do |f|
+        f.print(File.read(File.join(JQTOUCH_SRC_CONFIG, 'jqtouch.rb')))
       end
       manifest.print "file 'config/initializers/jqtouch.rb'\n"
 

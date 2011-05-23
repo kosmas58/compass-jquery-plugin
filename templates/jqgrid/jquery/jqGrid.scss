@@ -124,19 +124,20 @@ tr.ui-search-toolbar {
     text-align: left; }
   .ui-jqgrid-btable {
     table-layout: fixed;
-    margin: 0em; }
+    margin: 0em;
+    outline-style: none; }
   tr {
-    &.jqgrow {
-      outline-style: none;
-      td {
-        font-weight: normal;
-        overflow: hidden;
-        white-space: pre;
-        height: 22px;
-        padding: 0 2px 0 2px;
-        border-bottom-width: 1px;
-        border-bottom-color: inherit;
-        border-bottom-style: solid; } }
+    &.jqgrow, &.jqgroup {
+      outline-style: none; }
+    &.jqgrow td {
+      font-weight: normal;
+      overflow: hidden;
+      white-space: pre;
+      height: 22px;
+      padding: 0 2px 0 2px;
+      border-bottom-width: 1px;
+      border-bottom-color: inherit;
+      border-bottom-style: solid; }
     &.jqgfirstrow td {
       padding: 0 2px 0 2px;
       border-right-width: 1px;
