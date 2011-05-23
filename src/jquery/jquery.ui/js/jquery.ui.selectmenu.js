@@ -221,6 +221,7 @@
           case $.ui.keyCode.TAB:
             ret = true;
             self.close(event, true);
+            $(event.target).parents('li:eq(0)').trigger('mouseup');
             break;
           case $.ui.keyCode.ESCAPE:
             self.close(event, true);
@@ -284,10 +285,13 @@
                 .bind("click.selectmenu", function() {
           return false;
         })
-                .bind('mouseover.selectmenu focus.selectmenu', function() {
-          self._selectedOptionLi().addClass(activeClass);
-          self._focusedOptionLi().removeClass(self.widgetBaseClass + '-item-focus ui-state-hover');
-          $(this).removeClass('ui-state-active').addClass(self.widgetBaseClass + '-item-focus ui-state-hover');
+                .bind('mouseover.selectmenu focus.selectmenu', function(e) {
+          // no hover if diabled
+          if (!$(e.currentTarget).hasClass(self.namespace + '-state-disabled')) {
+            self._selectedOptionLi().addClass(activeClass);
+            self._focusedOptionLi().removeClass(self.widgetBaseClass + '-item-focus ui-state-hover');
+            $(this).removeClass('ui-state-active').addClass(self.widgetBaseClass + '-item-focus ui-state-hover');
+          }
         })
                 .bind('mouseout.selectmenu blur.selectmenu', function() {
           if ($(this).is(self._selectedOptionLi().selector)) {
@@ -455,9 +459,9 @@
         });
 
         // if we didnt find it clear the prevChar
-        if (!focusFound) {
-          //self._prevChar = undefined
-        }
+        // if (!focusFound) {
+        //self._prevChar = undefined
+        // }
 
         // set a 1 second timeout for sequenctial typeahead
         //  	keep this set even if we have no matches so it doesnt typeahead somewhere else
@@ -521,13 +525,14 @@
         } else {
           this.list.appendTo('body');
         }
-        this.list.addClass(self.widgetBaseClass + '-open')
-                .attr('aria-hidden', false)
-                .find('li:not(.' + self.widgetBaseClass + '-group):eq(' + this._selectedIndex() + ') a')[0].focus();
+
+        this.list.addClass(self.widgetBaseClass + '-open').attr('aria-hidden', false);
+        // FIX IE: Refreshing position before focusing the element, prevents IE from scrolling to the focused element before it is in position.
+        this._refreshPosition();
+        this.list.find('li:not(.' + self.widgetBaseClass + '-group):eq(' + this._selectedIndex() + ') a')[0].focus();
         if (this.options.style == "dropdown") {
           this.newelement.removeClass('ui-corner-all').addClass('ui-corner-top');
         }
-        this._refreshPosition();
         this._trigger("open", event, this._uiHash());
       }
     },
@@ -592,7 +597,8 @@
     _moveSelection: function(amt) {
       var currIndex = parseInt(this._selectedOptionLi().data('index'), 10);
       var newIndex = currIndex + amt;
-      return this._optionLis.eq(newIndex).trigger('mouseup');
+      // do not loop when using up key
+      if (newIndex >= 0)  return this._optionLis.eq(newIndex).trigger('mouseup');
     },
 
     _moveFocus: function(amt) {
@@ -609,11 +615,6 @@
       }
       if (newIndex > this._optionLis.size() - 1) {
         newIndex = this._optionLis.size() - 1;
-      }
-
-      //Occurs when a full loop has been made
-      if (newIndex === recIndex) {
-        return false;
       }
 
       var activeID = this.widgetBaseClass + '-item-' + Math.round(Math.random() * 1000);
@@ -652,8 +653,8 @@
     },
 
     disable: function(index, type) {
-      //if options is not provided, call the parents disable function
-      if (!index) {
+      // if options is not provided, call the parents disable function
+      if (typeof( index ) == 'undefined') {
         this._setOption('disabled', true);
       } else {
         if (type == "optgroup") {
@@ -665,8 +666,8 @@
     },
 
     enable: function(index, type) {
-      //if options is not provided, call the parents enable function
-      if (!index) {
+      // if options is not provided, call the parents enable function
+      if (typeof( index ) == 'undefined') {
         this._setOption('disabled', false);
       } else {
         if (type == "optgroup") {
