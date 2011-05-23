@@ -464,7 +464,10 @@
                   try {
                     tmp = $.unformat($("td:eq(" + i + ")", obj.rows[ind]), {rowId:rowid, colModel:this}, i);
                   } catch (_) {
-                    tmp = $("td:eq(" + i + ")", obj.rows[ind]).text();
+                    tmp = (this.edittype && this.edittype == "textarea") ? $("td:eq(" + i + ")", obj.rows[ind]).text() : $("td:eq(" + i + ")", obj.rows[ind]).html();
+                  }
+                  if (tmp == "&nbsp;" || tmp == "&#160;" || (tmp.length == 1 && tmp.charCodeAt(0) == 160)) {
+                    tmp = '';
                   }
                 }
               }
@@ -585,7 +588,7 @@
                 try {
                   tmp = $.unformat($(this), {rowId:rowid, colModel:cm[i]}, i);
                 } catch (_) {
-                  tmp = $(this).text();
+                  tmp = cm[i].edittype == "textarea" ? $(this).text() : $(this).html();
                 }
               }
               if ($t.p.autoencode) {
@@ -886,7 +889,7 @@
           if (ret[0] === false) {
             $("#FormError>td", "#" + frmtb).html(ret[1]);
             $("#FormError", "#" + frmtb).show();
-            // return;
+            // return; 
           }
         }
 
@@ -1719,7 +1722,7 @@
           var dh = isNaN(p.dataheight) ? p.dataheight : p.dataheight + "px";
           var tbl = "<div id='" + dtbl + "' class='formdata' style='width:100%;overflow:auto;position:relative;height:" + dh + ";'>";
           tbl += "<table class='DelTable'><tbody>";
-          // error data
+          // error data 
           tbl += "<tr id='DelError' style='display:none'><td class='ui-state-error'></td></tr>";
           tbl += "<tr id='DelData' style='display:none'><td >" + rowids + "</td></tr>";
           tbl += "<tr><td class=\"delmsg\" style=\"white-space:pre;\">" + p.msg + "</td></tr><tr><td >&#160;</td></tr>";

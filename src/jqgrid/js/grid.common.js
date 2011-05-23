@@ -417,7 +417,7 @@
               dataType: "html",
               context: {elem:elem, options:options, vl:vl},
               success: function(data, status) {
-                var a,    ovm = [], elem = this.elem, vl = this.vl,
+                var a,  ovm = [], elem = this.elem, vl = this.vl,
                         options = $.extend({}, this.options),
                         msl = options.multiple === true;
                 if (typeof(options.buildSelect) != "undefined") {

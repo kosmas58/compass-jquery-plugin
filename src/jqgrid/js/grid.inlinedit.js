@@ -53,7 +53,7 @@
               try {
                 tmp = $.unformat(this, {rowId:rowid, colModel:cm[i]}, i);
               } catch (_) {
-                tmp = $(this).html();
+                tmp = ( cm[i].edittype && cm[i].edittype == 'textarea' ) ? $(this).text() : $(this).html();
               }
             }
             if (nm != 'cb' && nm != 'subgrid' && nm != 'rn') {
@@ -74,6 +74,9 @@
                 var opt = $.extend({}, cm[i].editoptions || {}, {id:rowid + "_" + nm,name:nm});
                 if (!cm[i].edittype) {
                   cm[i].edittype = "text";
+                }
+                if (tmp == "&nbsp;" || tmp == "&#160;" || (tmp.length == 1 && tmp.charCodeAt(0) == 160)) {
+                  tmp = '';
                 }
                 var elc = $.jgrid.createEl(cm[i].edittype, opt, tmp, true, $.extend({}, $.jgrid.ajaxOptions, $t.p.ajaxSelectOptions || {}));
                 $(elc).addClass("editable");
@@ -287,7 +290,7 @@
             url:o.url,
             data: $.isFunction($t.p.serializeRowData) ? $t.p.serializeRowData.call($t, tmp3) : tmp3,
             type: mytype,
-            async: false, //?!?
+            async : false, //?!?
             complete: function(res, stat) {
               $("#lui_" + $t.p.id).hide();
               if (stat === "success") {

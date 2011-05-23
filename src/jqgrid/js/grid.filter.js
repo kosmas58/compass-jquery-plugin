@@ -399,11 +399,14 @@
           $.each(that.p.ops, function() {
             aoprs.push(this.name)
           });
-          for (i = op.length - 1; i >= 0; i--) {
+          for (i = 0; i < op.length; i++) {
             ina = $.inArray(op[i], aoprs);
             if (ina !== -1) {
-              rule.op = that.p.ops[ina].name
-              so = i == 0 ? " selected='selected'" : "";
+              so = "";
+              if (i === 0) {
+                rule.op = that.p.ops[ina].name;
+                so = " selected='selected'";
+              }
               s += "<option value='" + that.p.ops[ina].name + "'" + so + ">" + that.p.ops[ina].description + "</option>";
             }
           }
@@ -413,9 +416,6 @@
           $(".data", trpar).empty().append(elm);
           $(".input-elm", trpar).bind('change', function() {
             rule.data = $(this).val();
-            if ($.isArray(rule.data)) {
-              rule.data = rule.data.join(",");
-            }
             that.onchange(); // signals that the filter has changed
           });
           setTimeout(function() { //IE, Opera, Chrome
@@ -515,10 +515,6 @@
                 .addClass("input-elm")
                 .bind('change', function() {
           rule.data = $(this).val();
-          if ($.isArray(rule.data)) {
-            rule.data = rule.data.join(",");
-          }
-
           that.onchange(); // signals that the filter has changed
         });
 
