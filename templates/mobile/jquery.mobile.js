@@ -482,6 +482,7 @@
     return v > 4 ? v : !v;
   }() );
 
+
   $.extend($.support, {
     orientation: "orientation" in window,
     touch: "ontouchend" in document,
@@ -1856,14 +1857,6 @@
     //automatically load and show pages based on location.hash
     hashListeningEnabled: true,
 
-    // TODO: deprecated - remove at 1.0
-    //automatically handle link clicks through Ajax, when possible
-    ajaxLinksEnabled: true,
-
-    // TODO: deprecated - remove at 1.0
-    //automatically handle form submissions through Ajax, when possible
-    ajaxFormsEnabled: true,
-
     //set default page transition - 'none' for no transitions
     defaultPageTransition: "slide",
 
@@ -2733,8 +2726,6 @@
   $("form").live('submit', function(event) {
     var $this = $(this);
     if (!$.mobile.ajaxEnabled ||
-      //TODO: deprecated - remove at 1.0
-            !$.mobile.ajaxFormsEnabled ||
             $this.is(":jqmData(ajax='false')")) {
       return;
     }
@@ -2850,9 +2841,7 @@
 
     $activeClickedLink = $link.closest(".ui-btn");
 
-    if (isExternal || hasAjaxDisabled || hasTarget || !$.mobile.ajaxEnabled ||
-      // TODO: deprecated - remove at 1.0
-            !$.mobile.ajaxLinksEnabled) {
+    if (isExternal || hasAjaxDisabled || hasTarget || !$.mobile.ajaxEnabled) {
       //remove active link class if external (then it won't be there if you come back)
       window.setTimeout(function() {
         removeActiveLinkClass(true);
@@ -5354,6 +5343,12 @@
   //otherwise, proceed with the enhancements
   if (!$.mobile.gradeA()) {
     return;
+  }
+
+  // override ajaxEnabled on platforms that have known conflicts with hash history updates
+  // or generally work better browsing in regular http for full page refreshes (BB5, Opera Mini)
+  if (window.blackberry && !window.WebKitPoint || window.operamini && Object.prototype.toString.call(window.operamini) === "[object OperaMini]") {
+    $.mobile.ajaxEnabled = false;
   }
 
   //add mobile, initial load "rendering" classes to docEl

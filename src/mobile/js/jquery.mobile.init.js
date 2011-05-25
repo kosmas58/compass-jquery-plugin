@@ -22,6 +22,12 @@
     return;
   }
 
+  // override ajaxEnabled on platforms that have known conflicts with hash history updates
+  // or generally work better browsing in regular http for full page refreshes (BB5, Opera Mini)
+  if (window.blackberry && !window.WebKitPoint || window.operamini && Object.prototype.toString.call(window.operamini) === "[object OperaMini]") {
+    $.mobile.ajaxEnabled = false;
+  }
+
   //add mobile, initial load "rendering" classes to docEl
   $html.addClass("ui-mobile ui-mobile-rendering");
 
