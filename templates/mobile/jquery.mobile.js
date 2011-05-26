@@ -2383,11 +2383,11 @@
 
       // The absolute version of the URL passed into the function. This
       // version of the URL may contain dialog/subpage params in it.
-            absUrl = url; // XXX_jblas: path.makeAbsolute( url ),
+            absUrl = url, // XXX_jblas: path.makeAbsolute( url ),
 
-    // The absolute version of the URL minus any dialog/subpage params.
-    // In otherwords the real URL of the page to be loaded.
-    fileUrl = path.getFilePath(absUrl),
+      // The absolute version of the URL minus any dialog/subpage params.
+      // In otherwords the real URL of the page to be loaded.
+            fileUrl = path.getFilePath(absUrl),
 
       // The DOM element for the page after it has been loaded.
             page = null,
@@ -5210,8 +5210,9 @@
         }
 
         if ($targetel.length && !$targetel.jqmData("transition")) {
+          var active = $.mobile.urlHistory.getActive() || {};
           $targetel
-                  .attr("data-" + $.mobile.ns + "transition", $.mobile.urlHistory.getActive().transition)
+                  .attr("data-" + $.mobile.ns + "transition", ( active.transition || $.mobile.defaultDialogTransition ))
                   .attr("data-" + $.mobile.ns + "direction", "reverse");
         }
       });
