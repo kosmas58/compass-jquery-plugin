@@ -3053,6 +3053,19 @@
           }
         }
       })
+              .bind('silentscroll.toolbar', showEventCallback);
+
+      /*
+       The below checks first for a $(document).scrollTop() value, and if zero, binds scroll events to $(window) instead. If the scrollTop value is actually zero, both will return zero anyway.
+
+       Works with $(document), not $(window) : Opera Mobile (WinMO phone; kinda broken anyway)
+       Works with $(window), not $(document) : IE 7/8
+       Works with either $(window) or $(document) : Chrome, FF 3.6/4, Android 1.6/2.1, iOS
+       Needs work either way : BB5, Opera Mobile (iOS)
+
+       */
+
+      (( $(document).scrollTop() == 0 ) ? $(window) : $(document))
               .bind('scrollstart.toolbar', function(event) {
         scrollTriggered = true;
         if (stateBefore == null) {
@@ -3082,8 +3095,7 @@
           $.fixedToolbars.startShowTimer();
         }
         stateBefore = null;
-      })
-              .bind('silentscroll.toolbar', showEventCallback);
+      });
 
       $(window).bind('resize.toolbar', showEventCallback);
     });
