@@ -63,12 +63,12 @@
 
           self._cacheVals();
 
-          input.attr("checked", inputtype === "radio" && true || !input.is(":checked"));
+          input.prop("checked", inputtype === "radio" && true || !(input.prop("checked")));
 
           // input set for common radio buttons will contain all the radio
           // buttons, but will not for checkboxes. clearing the checked status
           // of other radios ensures the active button state is applied properly
-          self._getInputSet().not(input).removeAttr('checked');
+          self._getInputSet().not(input).prop('checked', false);
 
           self._updateAll();
           return false;
@@ -83,6 +83,13 @@
                       },
 
                       vclick: function() {
+                        // adds checked attribute to checked input when keyboard is used
+                        if ($(this).is(":checked")) {
+                          $(this).prop("checked", true);
+                          self._getInputSet().not($(this)).prop('checked', false);
+                        } else {
+                          $(this).prop("checked", false);
+                        }
                         self._updateAll();
                       },
 
@@ -129,7 +136,7 @@
 
       // input[0].checked expando doesn't always report the proper value
       // for checked='checked'
-      if ($(input[0]).attr('checked')) {
+      if ($(input[0]).prop('checked')) {
         label.addClass($.mobile.activeBtnClass);
         icon.addClass(this.checkedicon).removeClass(this.uncheckedicon);
 
