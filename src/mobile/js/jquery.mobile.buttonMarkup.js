@@ -4,7 +4,7 @@
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * http://jquery.org/license
  */
-(function($, undefined) {
+( function($, undefined) {
 
   $.fn.buttonMarkup = function(options) {
     return this.each(function() {
@@ -66,9 +66,9 @@
               .attr("data-" + $.mobile.ns + "theme", o.theme)
               .addClass(buttonClass);
 
-      var wrap = ("<D class='" + innerClass + "'><D class='ui-btn-text'></D>" +
+      var wrap = ( "<D class='" + innerClass + "'><D class='ui-btn-text'></D>" +
               ( o.icon ? "<span class='" + iconClass + "'></span>" : "" ) +
-              "</D>").replace(/D/g, o.wrapperEls);
+              "</D>" ).replace(/D/g, o.wrapperEls);
 
       el.wrapInner(wrap);
     });

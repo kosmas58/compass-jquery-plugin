@@ -2545,7 +2545,7 @@
 
   $.mobile.loadPage.defaults = {
     type: "get",
-    data: "undefined",
+    data: undefined,
     reloadPage: false,
     role: "page",
     showLoadMsg: true,
@@ -2554,6 +2554,43 @@
 
   // Show a specific page in the page container.
   $.mobile.changePage = function(toPage, options) {
+    // XXX: REMOVE_BEFORE_SHIPPING_1.0
+    // This is temporary code that makes changePage() compatible with previous alpha versions.
+    if (typeof options !== "object") {
+      var opts = null;
+
+      // Map old-style call signature for form submit to the new options object format.
+      if (typeof toPage === "object" && toPage.url && toPage.type) {
+        opts = {
+          type: toPage.type,
+          data: toPage.data,
+          forcePageLoad: true
+        };
+        toPage = toPage.url;
+      }
+
+      // The arguments passed into the function need to be re-mapped
+      // to the new options object format.
+      var len = arguments.length;
+      if (len > 1) {
+        var argNames = [ "transition", "reverse", "changeHash", "fromHashChange" ], i;
+        for (i = 1; i < len; i++) {
+          var a = arguments[ i ];
+          if (typeof a !== "undefined") {
+            opts = opts || {};
+            opts[ argNames[ i - 1 ] ] = a;
+          }
+        }
+      }
+
+      // If an options object was created, then we know changePage() was called
+      // with an old signature.
+      if (opts) {
+        return $.mobile.changePage(toPage, opts);
+      }
+    }
+    // XXX: REMOVE_BEFORE_SHIPPING_1.0
+
     // If we are in the midst of a transition, queue the current request.
     // We'll call changePage() once we're done with the current transition to
     // service the request.
@@ -4133,7 +4170,7 @@
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * http://jquery.org/license
  */
-(function($, undefined) {
+( function($, undefined) {
 
   $.fn.buttonMarkup = function(options) {
     return this.each(function() {
@@ -4195,9 +4232,9 @@
               .attr("data-" + $.mobile.ns + "theme", o.theme)
               .addClass(buttonClass);
 
-      var wrap = ("<D class='" + innerClass + "'><D class='ui-btn-text'></D>" +
+      var wrap = ( "<D class='" + innerClass + "'><D class='ui-btn-text'></D>" +
               ( o.icon ? "<span class='" + iconClass + "'></span>" : "" ) +
-              "</D>").replace(/D/g, o.wrapperEls);
+              "</D>" ).replace(/D/g, o.wrapperEls);
 
       el.wrapInner(wrap);
     });
@@ -4637,28 +4674,28 @@
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * http://jquery.org/license
  */
-(function($, undefined) {
+( function($, undefined) {
   $.widget("mobile.collapsible", $.mobile.widget, {
     options: {
-      expandCueText: ' click to expand contents',
-      collapseCueText: ' click to collapse contents',
+      expandCueText: " click to expand contents",
+      collapseCueText: " click to collapse contents",
       collapsed: false,
-      heading: '>:header,>legend',
+      heading: ">:header,>legend",
       theme: null,
-      iconTheme: 'd'
+      iconTheme: "d"
     },
     _create: function() {
 
       var $el = this.element,
               o = this.options,
-              collapsibleContain = $el.addClass('ui-collapsible-contain'),
+              collapsibleContain = $el.addClass("ui-collapsible-contain"),
               collapsibleHeading = $el.find(o.heading).eq(0),
-              collapsibleContent = collapsibleContain.wrapInner('<div class="ui-collapsible-content"></div>').find('.ui-collapsible-content'),
-              collapsibleParent = $el.closest(":jqmData(role='collapsible-set')").addClass('ui-collapsible-set');
+              collapsibleContent = collapsibleContain.wrapInner('<div class="ui-collapsible-content"></div>').find(".ui-collapsible-content"),
+              collapsibleParent = $el.closest(":jqmData(role='collapsible-set')").addClass("ui-collapsible-set");
 
       //replace collapsibleHeading if it's a legend
-      if (collapsibleHeading.is('legend')) {
-        collapsibleHeading = $('<div role="heading">' + collapsibleHeading.html() + '</div>').insertBefore(collapsibleHeading);
+      if (collapsibleHeading.is("legend")) {
+        collapsibleHeading = $('<div role="heading">' + collapsibleHeading.html() + "</div>").insertBefore(collapsibleHeading);
         collapsibleHeading.next().remove();
       }
 
@@ -4666,81 +4703,80 @@
       collapsibleHeading.insertBefore(collapsibleContent);
 
       //modify markup & attributes
-      collapsibleHeading.addClass('ui-collapsible-heading')
+      collapsibleHeading.addClass("ui-collapsible-heading")
               .append('<span class="ui-collapsible-heading-status"></span>')
               .wrapInner('<a href="#" class="ui-collapsible-heading-toggle"></a>')
-              .find('a:eq(0)')
+              .find("a:eq(0)")
               .buttonMarkup({
                               shadow: !!!collapsibleParent.length,
                               corners:false,
-                              iconPos: 'left',
-                              icon: 'plus',
+                              iconPos: "left",
+                              icon: "plus",
                               theme: o.theme
                             })
-              .find('.ui-icon')
-              .removeAttr('class')
+              .find(".ui-icon")
+              .removeAttr("class")
               .buttonMarkup({
                               shadow: true,
                               corners:true,
-                              iconPos: 'notext',
-                              icon: 'plus',
+                              iconPos: "notext",
+                              icon: "plus",
                               theme: o.iconTheme
                             });
 
       if (!collapsibleParent.length) {
         collapsibleHeading
-                .find('a:eq(0)')
-                .addClass('ui-corner-all')
-                .find('.ui-btn-inner')
-                .addClass('ui-corner-all');
+                .find("a:eq(0)")
+                .addClass("ui-corner-all")
+                .find(".ui-btn-inner")
+                .addClass("ui-corner-all");
       }
       else {
-        if (collapsibleContain.jqmData('collapsible-last')) {
+        if (collapsibleContain.jqmData("collapsible-last")) {
           collapsibleHeading
-                  .find('a:eq(0), .ui-btn-inner')
-                  .addClass('ui-corner-bottom');
+                  .find("a:eq(0), .ui-btn-inner")
+                  .addClass("ui-corner-bottom");
         }
       }
-
 
       //events
       collapsibleContain
-              .bind('collapse', function(event) {
+              .bind("collapse", function(event) {
         if (!event.isDefaultPrevented()) {
           event.preventDefault();
           collapsibleHeading
-                  .addClass('ui-collapsible-heading-collapsed')
-                  .find('.ui-collapsible-heading-status').text(o.expandCueText);
+                  .addClass("ui-collapsible-heading-collapsed")
+                  .find(".ui-collapsible-heading-status").text(o.expandCueText);
 
-          collapsibleHeading.find('.ui-icon').removeClass('ui-icon-minus').addClass('ui-icon-plus');
-          collapsibleContent.addClass('ui-collapsible-content-collapsed').attr('aria-hidden', true);
+          collapsibleHeading.find(".ui-icon").removeClass("ui-icon-minus").addClass("ui-icon-plus");
+          collapsibleContent.addClass("ui-collapsible-content-collapsed").attr("aria-hidden", true);
 
-          if (collapsibleContain.jqmData('collapsible-last')) {
+          if (collapsibleContain.jqmData("collapsible-last")) {
             collapsibleHeading
-                    .find('a:eq(0), .ui-btn-inner')
-                    .addClass('ui-corner-bottom');
+                    .find("a:eq(0), .ui-btn-inner")
+                    .addClass("ui-corner-bottom");
           }
         }
 
       })
-              .bind('expand', function(event) {
+              .bind("expand", function(event) {
         if (!event.isDefaultPrevented()) {
           event.preventDefault();
           collapsibleHeading
-                  .removeClass('ui-collapsible-heading-collapsed')
-                  .find('.ui-collapsible-heading-status').text(o.collapseCueText);
+                  .removeClass("ui-collapsible-heading-collapsed")
+                  .find(".ui-collapsible-heading-status").text(o.collapseCueText);
 
-          collapsibleHeading.find('.ui-icon').removeClass('ui-icon-plus').addClass('ui-icon-minus');
-          collapsibleContent.removeClass('ui-collapsible-content-collapsed').attr('aria-hidden', false);
+          collapsibleHeading.find(".ui-icon").removeClass("ui-icon-plus").addClass("ui-icon-minus");
+          collapsibleContent.removeClass("ui-collapsible-content-collapsed").attr("aria-hidden", false);
 
-          if (collapsibleContain.jqmData('collapsible-last')) {
+          if (collapsibleContain.jqmData("collapsible-last")) {
             collapsibleHeading
-                    .find('a:eq(0), .ui-btn-inner')
-                    .removeClass('ui-corner-bottom');
+                    .find("a:eq(0), .ui-btn-inner")
+                    .removeClass("ui-corner-bottom");
           }
         }
       })
-              .trigger(o.collapsed ? 'collapse' : 'expand');
+              .trigger(o.collapsed ? "collapse" : "expand");
 
 
       //close others in a set
@@ -4755,30 +4791,30 @@
         });
 
 
-        var set = collapsibleParent.find(":jqmData(role=collapsible)")
+        var set = collapsibleParent.find(":jqmData(role=collapsible )");
 
         set.first()
-                .find('a:eq(0)')
-                .addClass('ui-corner-top')
-                .find('.ui-btn-inner')
-                .addClass('ui-corner-top');
+                .find("a:eq(0)")
+                .addClass("ui-corner-top")
+                .find(".ui-btn-inner")
+                .addClass("ui-corner-top");
 
-        set.last().jqmData('collapsible-last', true)
+        set.last().jqmData("collapsible-last", true);
       }
 
       collapsibleHeading
               .bind("vclick", function(e) {
-        if (collapsibleHeading.is('.ui-collapsible-heading-collapsed')) {
-          collapsibleContain.trigger('expand');
+        if (collapsibleHeading.is(".ui-collapsible-heading-collapsed")) {
+          collapsibleContain.trigger("expand");
         }
         else {
-          collapsibleContain.trigger('collapse');
+          collapsibleContain.trigger("collapse");
         }
         e.preventDefault();
       });
     }
   });
-})(jQuery);
+} )(jQuery);
 
 /*
  * jQuery Mobile Framework: "controlgroup" plugin - corner-rounding for groups of buttons, checks, radios, etc
