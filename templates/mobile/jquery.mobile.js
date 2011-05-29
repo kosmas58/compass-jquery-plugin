@@ -2383,7 +2383,7 @@
 
       // The absolute version of the URL passed into the function. This
       // version of the URL may contain dialog/subpage params in it.
-            absUrl = url, // XXX_jblas: path.makeAbsolute( url ),
+            absUrl = path.stripHash(url), // XXX_jblas: path.makeAbsolute( url ),
 
       // The absolute version of the URL minus any dialog/subpage params.
       // In otherwords the real URL of the page to be loaded.
@@ -2408,8 +2408,9 @@
         settings.data = $.param(settings.data);
       }
       // XXX_jblas: We should be checking to see if the url already has a query in it.
-      url += url + "?" + settings.data;
+      absUrl += absUrl + "?" + settings.data;
       settings.data = undefined;
+      fileUrl = path.getFilePath(absUrl);
     }
 
     // Check to see if the page already exists in the DOM.
@@ -2427,7 +2428,7 @@
     if (page.length) {
       if (!settings.reloadPage) {
         enhancePage(page, settings.role);
-        deferred.resolve(url, options, page);
+        deferred.resolve(absUrl, options, page);
         return deferred.promise();
       }
       dupCachedPage = page;
@@ -2514,7 +2515,7 @@
           $.mobile.hidePageLoadingMsg();
         }
 
-        deferred.resolve(url, options, page, dupCachedPage);
+        deferred.resolve(absUrl, options, page, dupCachedPage);
       },
       error: function() {
         //set base back to current path
@@ -2536,7 +2537,7 @@
           });
         }
 
-        deferred.reject(url, options);
+        deferred.reject(absUrl, options);
       }
     });
 
