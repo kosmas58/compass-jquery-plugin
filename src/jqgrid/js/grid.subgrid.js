@@ -42,7 +42,7 @@
       });
       return "<td role=\"grid\" aria-describedby=\"" + sid + "_subgrid\" class=\"ui-sgcollapsed sgcollapsed\" " + prp + "><a href='javascript:void(0);'><span class='ui-icon " + ic + "'></span></a></td>";
     },
-    addSubGrid : function(pos) {
+    addSubGrid : function(pos, sind) {
       return this.each(function() {
         var ts = this;
         if (!ts.grid) {
@@ -188,10 +188,15 @@
             nhc++;
           }
         });
-        $(ts.rows).each(function(i) {
-          var tr = this;
-          if ($(tr).hasClass('jqgrow')) {
-            $(this.cells[pos]).bind('click', function(e) {
+        var len = ts.rows.length, i = 1;
+        if (sind !== undefined && sind > 0) {
+          i = sind;
+          len = sind + 1;
+        }
+        while (i < len) {
+          if ($(ts.rows[i]).hasClass('jqgrow')) {
+            $(ts.rows[i].cells[pos]).bind('click', function(e) {
+              var tr = $(this).parent("tr")[0];
               r = tr.nextSibling;
               if ($(this).hasClass("sgcollapsed")) {
                 pID = ts.p.id;
@@ -242,7 +247,8 @@
               }, i * ts.p.subGridOptions.delayOnLoad);
             }
           }
-        });
+          i++;
+        }
         ts.subGridXml = function(xml, sid) {
           subGridXml(xml, sid);
         };
