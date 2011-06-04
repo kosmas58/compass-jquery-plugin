@@ -34,8 +34,6 @@
     left: 0;
     width: 100%;
     min-height: 100%;
-    height: auto !important;
-    height: 100%;
     position: absolute;
     display: none;
     border: 0;
@@ -52,8 +50,6 @@
 .landscape,
 .landscape .ui-page {
     min-height: 100%;
-    height: auto !important;
-    height: 100%;
 }
 
 /* loading screen */
