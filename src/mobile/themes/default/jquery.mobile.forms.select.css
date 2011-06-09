@@ -31,6 +31,10 @@
     filter: alpha(opacity = 0);
 }
 
+.ui-select .ui-btn option {
+    text-indent: 0;
+}
+
 .ui-select .ui-btn select.ui-select-nativeonly {
     opacity: 1;
     text-indent: 0;

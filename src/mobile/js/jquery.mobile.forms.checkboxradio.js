@@ -154,11 +154,11 @@
     },
 
     disable: function() {
-      this.element.attr("disabled", true).parent().addClass("ui-disabled");
+      this.element.prop("disabled", true).parent().addClass("ui-disabled");
     },
 
     enable: function() {
-      this.element.attr("disabled", false).parent().removeClass("ui-disabled");
+      this.element.prop("disabled", false).parent().removeClass("ui-disabled");
     }
   });
 })(jQuery);
