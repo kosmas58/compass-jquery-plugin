@@ -2482,7 +2482,8 @@
         if (!$.support.dynamicBaseTag) {
           var newPath = path.get(fileUrl);
           page.find("[src], link[href], a[rel='external'], :jqmData(ajax='false'), a[target]").each(function() {
-            var thisAttr = $(this).is('[href]') ? 'href' : 'src',
+            var thisAttr = $(this).is('[href]') ? 'href' :
+                    $(this).is('[src]') ? 'src' : 'action',
                     thisUrl = $(this).attr(thisAttr);
 
             // XXX_jblas: We need to fix this so that it removes the document
@@ -5182,7 +5183,7 @@
                         childItems = false,
                         itemtext = "";
 
-                for (var i = listItems.length; i >= 0; i--) {
+                for (var i = listItems.length - 1; i >= 0; i--) {
                   item = $(listItems[i]);
                   itemtext = item.jqmData('filtertext') || item.text();
 
