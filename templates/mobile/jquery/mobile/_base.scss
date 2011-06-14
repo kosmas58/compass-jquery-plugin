@@ -987,20 +987,22 @@ Built by David Kaneda and maintained by Jonathan Stark.
       top: 0;
       width: 100%;
       height: 100%;
-      text-indent: -999em;
-      opacity: 0.0001;
+      opacity: 0;
       -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
-      filter: alpha(opacity = 0); }
-    option {
-      text-indent: 0; }
-    select.ui-select-nativeonly {
-      opacity: 1;
-      text-indent: 0; } }
+      filter: alpha(opacity = 0);
+      &.ui-select-nativeonly {
+        opacity: 1;
+        text-indent: 0; } } }
   .ui-btn-icon-right {
     .ui-btn-inner {
       padding-right: 45px; }
     .ui-icon {
       right: 15px; } } }
+
+@-moz-document url-prefix() {
+  .ui-select .ui-btn select {
+    opacity: 0.0001; } }
+
 
 /* labels */
 

@@ -1786,6 +1786,7 @@
                 rp_ge.url = $t.p.url + "/" + postdata;
               }
 
+
               var ajaxOptions = $.extend({
                 url: rp_ge.url ? rp_ge.url : $($t).jqGrid('getGridParam', 'editurl'),
                 type: p.mtype,
