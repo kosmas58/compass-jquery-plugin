@@ -8,7 +8,6 @@
    * http://www.gnu.org/licenses/gpl-2.0.html
    **/
   /*global xmlJsonClass, jQuery, $  */
-  var rp_ge = null;
   $.jgrid.extend({
     searchGrid : function (p) {
       p = $.extend({
@@ -338,7 +337,7 @@
         serializeEditData : null,
         viewPagerButtons : true
       }, $.jgrid.edit, p || {});
-      rp_ge = p;
+      var rp_ge = p;
       return this.each(function() {
         var $t = this;
         if (!$t.grid || !rowid) {
@@ -368,7 +367,7 @@
           closeovrl = false;
         }
         function getFormData() {
-          $(".FormElement", "#" + frmtb).each(function(i) {
+          $("#" + frmtb + " > tbody > tr > td > .FormElement").each(function(i) {
             var celm = $(".customelement", this);
             if (celm.length) {
               var elem = celm[0], nm = $(elem).attr('name');
@@ -466,7 +465,7 @@
                   } catch (_) {
                     tmp = (this.edittype && this.edittype == "textarea") ? $("td:eq(" + i + ")", obj.rows[ind]).text() : $("td:eq(" + i + ")", obj.rows[ind]).html();
                   }
-                  if (tmp == "&nbsp;" || tmp == "&#160;" || (tmp.length == 1 && tmp.charCodeAt(0) == 160)) {
+                  if (!tmp || tmp == "&nbsp;" || tmp == "&#160;" || (tmp.length == 1 && tmp.charCodeAt(0) == 160)) {
                     tmp = '';
                   }
                 }
@@ -889,7 +888,7 @@
           if (ret[0] === false) {
             $("#FormError>td", "#" + frmtb).html(ret[1]);
             $("#FormError", "#" + frmtb).show();
-            // return; 
+            // return;
           }
         }
 
@@ -1676,7 +1675,7 @@
         serializeDelData : null,
         useDataProxy : false
       }, $.jgrid.del, p || {});
-      rp_ge = p;
+      var rp_ge = p;
       return this.each(function() {
         var $t = this;
         if (!$t.grid) {
@@ -1722,7 +1721,7 @@
           var dh = isNaN(p.dataheight) ? p.dataheight : p.dataheight + "px";
           var tbl = "<div id='" + dtbl + "' class='formdata' style='width:100%;overflow:auto;position:relative;height:" + dh + ";'>";
           tbl += "<table class='DelTable'><tbody>";
-          // error data 
+          // error data
           tbl += "<tr id='DelError' style='display:none'><td class='ui-state-error'></td></tr>";
           tbl += "<tr id='DelData' style='display:none'><td >" + rowids + "</td></tr>";
           tbl += "<tr><td class=\"delmsg\" style=\"white-space:pre;\">" + p.msg + "</td></tr><tr><td >&#160;</td></tr>";
@@ -1785,7 +1784,6 @@
                 p.mtype = "DELETE";
                 rp_ge.url = $t.p.url + "/" + postdata;
               }
-
 
               var ajaxOptions = $.extend({
                 url: rp_ge.url ? rp_ge.url : $($t).jqGrid('getGridParam', 'editurl'),
