@@ -247,7 +247,7 @@
           }
 
           // trigger change if value changed
-          if (oldIndex !== newIndex) {
+          if (isMultiple || oldIndex !== newIndex) {
             select.trigger("change");
           }
 

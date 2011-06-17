@@ -2477,6 +2477,16 @@
   //enable cross-domain page support
   $.mobile.allowCrossDomainPages = false;
 
+  //return the original document url
+  $.mobile.getDocumentUrl = function(asParsedObject) {
+    return asParsedObject ? $.extend({}, documentUrl) : documentUrl.href;
+  };
+
+  //return the original document base url
+  $.mobile.getDocumentBase = function(asParsedObject) {
+    return asParsedObject ? $.extend({}, documentBase) : documentBase.href;
+  };
+
   // Load a page into the DOM.
   $.mobile.loadPage = function(url, options) {
     // This function uses deferred notifications to let callers
@@ -2658,7 +2668,7 @@
     type: "get",
     data: undefined,
     reloadPage: false,
-    role: "page",
+    role: undefined, // By default we rely on the role defined by the @data-role attribute.
     showLoadMsg: true,
     pageContainer: undefined
   };
@@ -2767,7 +2777,7 @@
     //
     // XXX_jblas: We need to remove this at some point when we allow for transitions
     //            to the same page.
-    if (active && active.page[0] === toPage[0]) {
+    if (fromPage && fromPage[0] === toPage[0]) {
       isPageTransitioning = false;
       mpc.trigger("changepage");
       return;
@@ -2861,7 +2871,7 @@
     reverse: false,
     changeHash: true,
     fromHashChange: false,
-    role: "page",
+    role: undefined, // By default we rely on the role defined by the @data-role attribute.
     duplicateCachedPage: undefined,
     pageContainer: undefined
   };
@@ -3013,7 +3023,7 @@
                     $link.jqmData("back"),
 
       //this may need to be more specific as we use data-rel more
-            role = $link.attr("data-" + $.mobile.ns + "rel") || "page";
+            role = $link.attr("data-" + $.mobile.ns + "rel") || undefined;
 
     $.mobile.changePage(href, { transition: transition, reverse: reverse, role: role });
     event.preventDefault();
@@ -3065,7 +3075,8 @@
 
     //if to is defined, load it
     if (to) {
-      $.mobile.changePage(( path.isPath(to) ? "" : "#" ) + to, { transition: transition, changeHash: false, fromHashChange: true });
+      to = ( typeof to === "string" && !path.isPath(to) ) ? ( '#' + to ) : to;
+      $.mobile.changePage(to, { transition: transition, changeHash: false, fromHashChange: true });
     }
     //there's no hash, go to the first page in the dom
     else {
@@ -3927,7 +3938,7 @@
           }
 
           // trigger change if value changed
-          if (oldIndex !== newIndex) {
+          if (isMultiple || oldIndex !== newIndex) {
             select.trigger("change");
           }
 
@@ -4816,17 +4827,17 @@
         collapsibleHeading.next().remove();
       }
 
-      //drop heading in before content
-      collapsibleHeading.insertBefore(collapsibleContent);
-
-      //modify markup & attributes
-      collapsibleHeading.addClass("ui-collapsible-heading")
+      collapsibleHeading
+        //drop heading in before content
+              .insertBefore(collapsibleContent)
+        //modify markup & attributes
+              .addClass("ui-collapsible-heading")
               .append('<span class="ui-collapsible-heading-status"></span>')
               .wrapInner('<a href="#" class="ui-collapsible-heading-toggle"></a>')
               .find("a:eq(0)")
               .buttonMarkup({
-                              shadow: !!!collapsibleParent.length,
-                              corners:false,
+                              shadow: !collapsibleParent.length,
+                              corners: false,
                               iconPos: "left",
                               icon: "plus",
                               theme: o.theme
@@ -4835,13 +4846,13 @@
               .removeAttr("class")
               .buttonMarkup({
                               shadow: true,
-                              corners:true,
+                              corners: true,
                               iconPos: "notext",
                               icon: "plus",
                               theme: o.iconTheme
                             });
 
-      if (!collapsibleParent.length) {
+      if (! collapsibleParent.length) {
         collapsibleHeading
                 .find("a:eq(0)")
                 .addClass("ui-corner-all")
@@ -4859,13 +4870,16 @@
       //events
       collapsibleContain
               .bind("collapse", function(event) {
-        if (!event.isDefaultPrevented() && $(event.target).closest(".ui-collapsible-contain").is(collapsibleContain)) {
+        if (! event.isDefaultPrevented() && $(event.target).closest(".ui-collapsible-contain").is(collapsibleContain)) {
           event.preventDefault();
           collapsibleHeading
                   .addClass("ui-collapsible-heading-collapsed")
-                  .find(".ui-collapsible-heading-status").text(o.expandCueText);
-
-          collapsibleHeading.find(".ui-icon").removeClass("ui-icon-minus").addClass("ui-icon-plus");
+                  .find(".ui-collapsible-heading-status")
+                  .text(o.expandCueText)
+                  .end()
+                  .find(".ui-icon")
+                  .removeClass("ui-icon-minus")
+                  .addClass("ui-icon-plus");
           collapsibleContent.addClass("ui-collapsible-content-collapsed").attr("aria-hidden", true);
 
           if (collapsibleContain.jqmData("collapsible-last")) {
@@ -4877,7 +4891,7 @@
 
       })
               .bind("expand", function(event) {
-        if (!event.isDefaultPrevented()) {
+        if (! event.isDefaultPrevented()) {
           event.preventDefault();
           collapsibleHeading
                   .removeClass("ui-collapsible-heading-collapsed")
@@ -4910,7 +4924,7 @@
         });
 
 
-        var set = collapsibleParent.find(":jqmData(role=collapsible ):first");
+        var set = collapsibleParent.find(":jqmData(role='collapsible'):first");
 
         set.first()
                 .find("a:eq(0)")
@@ -4934,6 +4948,7 @@
     }
   });
 } )(jQuery);
+
 
 /*
  * jQuery Mobile Framework: "controlgroup" plugin - corner-rounding for groups of buttons, checks, radios, etc
@@ -5031,7 +5046,7 @@
               .addClass("ui-btn-up-" + ($list.jqmData("counttheme") || this.options.countTheme) + " ui-btn-corner-all").end()
               .find("h1, h2, h3, h4, h5, h6").addClass("ui-li-heading").end()
               .find("p, dl").addClass("ui-li-desc").end()
-              .find("img:first-child:eq(0)").addClass("ui-li-thumb").each(
+              .find(">img:eq(0), .ui-link-inherit>img:eq(0)").addClass("ui-li-thumb").each(
               function() {
                 item.addClass($(this).is(".ui-li-icon") ? "ui-li-has-icon" : "ui-li-has-thumb");
               }).end()
@@ -5175,7 +5190,7 @@
                   .prepend("<span class='ui-li-dec'>" + (counter++) + ". </span>");
         }
 
-        item.add(item.find(".ui-btn-inner")).addClass(itemClass);
+        item.add(item.children(".ui-btn-inner")).addClass(itemClass);
 
         if (!create) {
           self._itemApply($list, item);
@@ -5246,6 +5261,7 @@
 
   $.mobile.listview.prototype.options.filter = false;
   $.mobile.listview.prototype.options.filterPlaceholder = "Filter items...";
+  $.mobile.listview.prototype.options.filterTheme = "c";
 
   $(":jqmData(role='listview')").live("listviewcreate", function() {
     var list = $(this),
@@ -5255,7 +5271,7 @@
       return;
     }
 
-    var wrapper = $("<form>", { "class": "ui-listview-filter ui-bar-c", "role": "search" }),
+    var wrapper = $("<form>", { "class": "ui-listview-filter ui-bar-" + listview.options.filterTheme, "role": "search" }),
 
             search = $("<input>", {
               placeholder: listview.options.filterPlaceholder
@@ -5387,6 +5403,9 @@
                   .attr("data-" + $.mobile.ns + "transition", ( active.transition || $.mobile.defaultDialogTransition ))
                   .attr("data-" + $.mobile.ns + "direction", "reverse");
         }
+      })
+              .bind("pagehide", function() {
+        $(this).find("." + $.mobile.activeBtnClass).removeClass($.mobile.activeBtnClass);
       });
     },
 

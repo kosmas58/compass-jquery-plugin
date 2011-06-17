@@ -43,6 +43,9 @@
                   .attr("data-" + $.mobile.ns + "transition", ( active.transition || $.mobile.defaultDialogTransition ))
                   .attr("data-" + $.mobile.ns + "direction", "reverse");
         }
+      })
+              .bind("pagehide", function() {
+        $(this).find("." + $.mobile.activeBtnClass).removeClass($.mobile.activeBtnClass);
       });
     },
 

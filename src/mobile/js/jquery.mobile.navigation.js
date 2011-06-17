@@ -492,6 +492,16 @@
   //enable cross-domain page support
   $.mobile.allowCrossDomainPages = false;
 
+  //return the original document url
+  $.mobile.getDocumentUrl = function(asParsedObject) {
+    return asParsedObject ? $.extend({}, documentUrl) : documentUrl.href;
+  };
+
+  //return the original document base url
+  $.mobile.getDocumentBase = function(asParsedObject) {
+    return asParsedObject ? $.extend({}, documentBase) : documentBase.href;
+  };
+
   // Load a page into the DOM.
   $.mobile.loadPage = function(url, options) {
     // This function uses deferred notifications to let callers
@@ -673,7 +683,7 @@
     type: "get",
     data: undefined,
     reloadPage: false,
-    role: "page",
+    role: undefined, // By default we rely on the role defined by the @data-role attribute.
     showLoadMsg: true,
     pageContainer: undefined
   };
@@ -782,7 +792,7 @@
     //
     // XXX_jblas: We need to remove this at some point when we allow for transitions
     //            to the same page.
-    if (active && active.page[0] === toPage[0]) {
+    if (fromPage && fromPage[0] === toPage[0]) {
       isPageTransitioning = false;
       mpc.trigger("changepage");
       return;
@@ -876,7 +886,7 @@
     reverse: false,
     changeHash: true,
     fromHashChange: false,
-    role: "page",
+    role: undefined, // By default we rely on the role defined by the @data-role attribute.
     duplicateCachedPage: undefined,
     pageContainer: undefined
   };
@@ -1028,7 +1038,7 @@
                     $link.jqmData("back"),
 
       //this may need to be more specific as we use data-rel more
-            role = $link.attr("data-" + $.mobile.ns + "rel") || "page";
+            role = $link.attr("data-" + $.mobile.ns + "rel") || undefined;
 
     $.mobile.changePage(href, { transition: transition, reverse: reverse, role: role });
     event.preventDefault();
@@ -1080,7 +1090,8 @@
 
     //if to is defined, load it
     if (to) {
-      $.mobile.changePage(( path.isPath(to) ? "" : "#" ) + to, { transition: transition, changeHash: false, fromHashChange: true });
+      to = ( typeof to === "string" && !path.isPath(to) ) ? ( '#' + to ) : to;
+      $.mobile.changePage(to, { transition: transition, changeHash: false, fromHashChange: true });
     }
     //there's no hash, go to the first page in the dom
     else {

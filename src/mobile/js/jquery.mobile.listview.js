@@ -38,7 +38,7 @@
               .addClass("ui-btn-up-" + ($list.jqmData("counttheme") || this.options.countTheme) + " ui-btn-corner-all").end()
               .find("h1, h2, h3, h4, h5, h6").addClass("ui-li-heading").end()
               .find("p, dl").addClass("ui-li-desc").end()
-              .find("img:first-child:eq(0)").addClass("ui-li-thumb").each(
+              .find(">img:eq(0), .ui-link-inherit>img:eq(0)").addClass("ui-li-thumb").each(
               function() {
                 item.addClass($(this).is(".ui-li-icon") ? "ui-li-has-icon" : "ui-li-has-thumb");
               }).end()
@@ -182,7 +182,7 @@
                   .prepend("<span class='ui-li-dec'>" + (counter++) + ". </span>");
         }
 
-        item.add(item.find(".ui-btn-inner")).addClass(itemClass);
+        item.add(item.children(".ui-btn-inner")).addClass(itemClass);
 
         if (!create) {
           self._itemApply($list, item);

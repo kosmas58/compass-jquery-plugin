@@ -137,6 +137,7 @@
     right: 10px;
     top: .4em; }
   .ui-title {
+    min-height: 1.1em;
     text-align: center;
     font-size: 16px;
     display: block;
@@ -148,6 +149,7 @@
     outline: 0 !important; } }
 
 .ui-footer .ui-title {
+  min-height: 1.1em;
   text-align: center;
   font-size: 16px;
   display: block;
