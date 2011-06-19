@@ -265,7 +265,7 @@ var DTNodeStatus_Ok = 0;
        * </li>
        */
 //		this.tree.logDebug("%s.render(%s)", this, useEffects);
-      // ---
+        // ---
       var tree = this.tree,
               parent = this.parent,
               data = this.data,
@@ -347,11 +347,11 @@ var DTNodeStatus_Ok = 0;
                 + (this.bExpanded ? "e" : "c")
                 + (data.isLazy && this.childList === null ? "d" : "")
                 + (isLastSib ? "l" : "")
-                );
+        );
         cnList.push(cn.combinedIconPrefix
                 + (this.bExpanded ? "e" : "c")
                 + (data.isFolder ? "f" : "")
-                );
+        );
         this.span.className = cnList.join(" ");
 
         // TODO: we should not set this in the <span> tag also, if we set it here:
@@ -401,6 +401,9 @@ var DTNodeStatus_Ok = 0;
     },
 
     getChildren: function() {
+      if (this.hasChildren() === undefined) {
+        return undefined; // Lazy node: unloaded, currently loading, or load error
+      }
       return this.childList;
     },
 
@@ -503,7 +506,10 @@ var DTNodeStatus_Ok = 0;
         return;
       }
       cmp = cmp || function(a, b) {
-        return a.data.title === b.data.title ? 0 : a.data.title > b.data.title ? 1 : -1;
+//			return a.data.title === b.data.title ? 0 : a.data.title > b.data.title ? 1 : -1;
+        var x = a.data.title.toLowerCase(),
+                y = b.data.title.toLowerCase();
+        return x === y ? 0 : x > y ? 1 : -1;
       };
       cl.sort(cmp);
       if (deep) {
@@ -1671,6 +1677,11 @@ var DTNodeStatus_Ok = 0;
           if (options.postProcess) {
             data = options.postProcess.call(this, data, this.dataType);
           }
+          // Process ASPX WebMethod JSON object inside "d" property
+          // http://code.google.com/p/dynatree/issues/detail?id=202
+          else if (data && data.hasOwnProperty("d")) {
+            data = data.d;
+          }
           if (!$.isArray(data) || data.length !== 0) {
             self.addChild(data, null);
           }
@@ -2400,7 +2411,8 @@ var DTNodeStatus_Ok = 0;
                 $liA = $li.find(">a:first"),
                 title,
                 href = null,
-                target = null;
+                target = null,
+                tooltip;
         if ($liSpan.length) {
           // If a <li><span> tag is specified, use it literally.
           title = $liSpan.html();
@@ -2408,6 +2420,7 @@ var DTNodeStatus_Ok = 0;
           title = $liA.html();
           href = $liA.attr("href");
           target = $liA.attr("target");
+          tooltip = $liA.attr("title");
         } else {
           // If only a <li> tag is specified, use the trimmed string up to
           // the next child <ul> tag.
@@ -2423,6 +2436,7 @@ var DTNodeStatus_Ok = 0;
         // Parse node options from ID, title and class attributes
         var data = {
           title: title,
+          tooltip: tooltip,
           isFolder: $li.hasClass("folder"),
           isLazy: $li.hasClass("lazy"),
           expand: $li.hasClass("expanded"),
@@ -2436,7 +2450,7 @@ var DTNodeStatus_Ok = 0;
           data.target = target;
         }
         if ($li.attr("title")) {
-          data.tooltip = $li.attr("title");
+          data.tooltip = $li.attr("title"); // overrides <a title='...'>
         }
         if ($li.attr("id")) {
           data.key = $li.attr("id");

@@ -213,9 +213,9 @@
         groupOpSelect
                 .append(str)
                 .bind('change', function() {
-          group.groupOp = $(groupOpSelect).val();
-          that.onchange(); // signals that the filter has changed
-        });
+                  group.groupOp = $(groupOpSelect).val();
+                  that.onchange(); // signals that the filter has changed
+                });
 
         // button for adding a new subgroup
         var inputAddSubgroup = "<span></span>";
@@ -327,7 +327,7 @@
           for (i = 0; i < group.rules.length; i++) {
             table.append(
                     this.createTableRowForRule(group.rules[i], group)
-                    );
+            );
           }
         }
 
@@ -514,9 +514,9 @@
         $(ruleDataInput)
                 .addClass("input-elm")
                 .bind('change', function() {
-          rule.data = $(this).val();
-          that.onchange(); // signals that the filter has changed
-        });
+                  rule.data = $(this).val();
+                  that.onchange(); // signals that the filter has changed
+                });
 
         // create action container
         var ruleDeleteTd = $("<td></td>");

@@ -45,9 +45,9 @@
                 .appendTo($.mobile.pageContainer)
           //position at y center (if scrollTop supported), above the activeBtn (if defined), or just 100px from top
                 .css({
-                       top: $.support.scrollTop && $(window).scrollTop() + $(window).height() / 2 ||
-                               activeBtn.length && activeBtn.offset().top || 100
-                     });
+                  top: $.support.scrollTop && $(window).scrollTop() + $(window).height() / 2 ||
+                          activeBtn.length && activeBtn.offset().top || 100
+                });
       }
 
       $html.addClass("ui-loading");
@@ -100,6 +100,16 @@
       }
     }
   });
+
+  //check which scrollTop value should be used by scrolling to 1 immediately
+  //then check what the scroll top is. Android will report 0... others 1
+  //note that this initial scroll won't hide the address bar. It's just for the check.
+  window.scrollTo(0, 1);
+
+  //if defaultHomeScroll hasn't been set yet, see if scrollTop is 1
+  //it should be 1 in most browsers, but android treats 1 as 0 (for hiding addr bar)
+  //so if it's 1, use 0 from now on
+  $.mobile.defaultHomeScroll = ( !$.support.scrollTop || $(window).scrollTop() === 1 ) ? 0 : 1;
 
   //dom-ready inits
   $($.mobile.initializePage);

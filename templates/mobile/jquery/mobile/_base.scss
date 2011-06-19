@@ -60,10 +60,15 @@
 
 /*orientations from js are available */
 
-.portrait, .landscape {
-  min-height: 100%;
+.portrait {
+  min-height: 420px;
   .ui-page {
-    min-height: 100%; } }
+    min-height: 420px; } }
+
+.landscape {
+  min-height: 300px;
+  .ui-page {
+    min-height: 300px; } }
 
 /* loading screen */
 

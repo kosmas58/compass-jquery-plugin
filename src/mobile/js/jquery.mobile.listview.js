@@ -43,9 +43,9 @@
                 item.addClass($(this).is(".ui-li-icon") ? "ui-li-has-icon" : "ui-li-has-thumb");
               }).end()
               .find(".ui-li-aside").each(function() {
-        var $this = $(this);
-        $this.prependTo($this.parent()); //shift aside to front for css float
-      });
+                var $this = $(this);
+                $this.prependTo($this.parent()); //shift aside to front for css float
+              });
     },
 
     _removeCorners: function(li) {
@@ -75,67 +75,65 @@
                 itemClass = "ui-li";
 
         // If we're creating the element, we update it regardless
-        if (!create && item.hasClass("ui-li")) {
-          continue;
-        }
+        if (create || !item.hasClass("ui-li")) {
+          var itemTheme = item.jqmData("theme") || o.theme,
+                  a = item.children("a");
 
-        var itemTheme = item.jqmData("theme") || o.theme,
-                a = item.children("a");
+          if (a.length) {
+            var icon = item.jqmData("icon");
 
-        if (a.length) {
-          var icon = item.jqmData("icon");
-
-          item
-                  .buttonMarkup({
-                                  wrapperEls: "div",
-                                  shadow: false,
-                                  corners: false,
-                                  iconpos: "right",
-                                  icon: a.length > 1 || icon === false ? false : icon || "arrow-r",
-                                  theme: itemTheme
-                                });
-
-          a.first().addClass("ui-link-inherit");
-
-          if (a.length > 1) {
-            itemClass += " ui-li-has-alt";
-
-            var last = a.last(),
-                    splittheme = listsplittheme || last.jqmData("theme") || o.splitTheme;
-
-            last
-                    .appendTo(item)
-                    .attr("title", last.text())
-                    .addClass("ui-li-link-alt")
-                    .empty()
+            item
                     .buttonMarkup({
-                                    shadow: false,
-                                    corners: false,
-                                    theme: itemTheme,
-                                    icon: false,
-                                    iconpos: false
-                                  })
-                    .find(".ui-btn-inner")
-                    .append($("<span />").buttonMarkup({
-              shadow: true,
-              corners: true,
-              theme: splittheme,
-              iconpos: "notext",
-              icon: listspliticon || last.jqmData("icon") || o.splitIcon
-            }));
+              wrapperEls: "div",
+              shadow: false,
+              corners: false,
+              iconpos: "right",
+              icon: a.length > 1 || icon === false ? false : icon || "arrow-r",
+              theme: itemTheme
+            });
+
+            a.first().addClass("ui-link-inherit");
+
+            if (a.length > 1) {
+              itemClass += " ui-li-has-alt";
+
+              var last = a.last(),
+                      splittheme = listsplittheme || last.jqmData("theme") || o.splitTheme;
+
+              last
+                      .appendTo(item)
+                      .attr("title", last.text())
+                      .addClass("ui-li-link-alt")
+                      .empty()
+                      .buttonMarkup({
+                        shadow: false,
+                        corners: false,
+                        theme: itemTheme,
+                        icon: false,
+                        iconpos: false
+                      })
+                      .find(".ui-btn-inner")
+                      .append($("<span />").buttonMarkup({
+                shadow: true,
+                corners: true,
+                theme: splittheme,
+                iconpos: "notext",
+                icon: listspliticon || last.jqmData("icon") || o.splitIcon
+              }));
+            }
+
+          } else if (item.jqmData("role") === "list-divider") {
+            itemClass += " ui-li-divider ui-btn ui-bar-" + dividertheme;
+            item.attr("role", "heading");
+
+            //reset counter when a divider heading is encountered
+            if (counter) {
+              counter = 1;
+            }
+
+          } else {
+            itemClass += " ui-li-static ui-body-" + itemTheme;
           }
-
-        } else if (item.jqmData("role") === "list-divider") {
-          itemClass += " ui-li-divider ui-btn ui-bar-" + dividertheme;
-          item.attr("role", "heading");
-
-          //reset counter when a divider heading is encountered
-          if (counter) {
-            counter = 1;
-          }
-
-        } else {
-          itemClass += " ui-li-static ui-body-" + itemTheme;
         }
 
 

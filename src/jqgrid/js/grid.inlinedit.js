@@ -188,7 +188,7 @@
                           function(i, selected) {
                             selectedText[i] = $(selected).text();
                           }
-                          );
+                  );
                   tmp2[nm] = selectedText.join(",");
                 }
                 if (cm.formatter && cm.formatter == 'select') {

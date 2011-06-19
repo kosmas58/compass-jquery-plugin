@@ -385,20 +385,34 @@
 
   //function for transitioning between two existing pages
   function transitionPages(toPage, fromPage, transition, reverse) {
-    $.mobile.silentScroll();
 
     //get current scroll distance
-    var currScroll = $window.scrollTop();
+    var currScroll = $window.scrollTop(),
+            toScroll = toPage.data("lastScroll") || $.mobile.defaultHomeScroll;
+
+    //if scrolled down, scroll to top
+    if (currScroll) {
+      window.scrollTo(0, $.mobile.defaultHomeScroll);
+    }
+
+    //if the Y location we're scrolling to is less than 10px, let it go for sake of smoothness
+    if (toScroll < $.mobile.minScrollBack) {
+      toScroll = 0;
+    }
 
     if (fromPage) {
       //set as data for returning to that spot
       fromPage
+              .height(screen.height + currScroll)
               .jqmData("lastScroll", currScroll)
               .jqmData("lastClicked", $activeClickedLink);
+
       //trigger before show/hide events
       fromPage.data("page")._trigger("beforehide", null, { nextPage: toPage });
     }
-    toPage.data("page")._trigger("beforeshow", null, { prevPage: fromPage || $("") });
+    toPage
+            .height(screen.height + toScroll)
+            .data("page")._trigger("beforeshow", null, { prevPage: fromPage || $("") });
 
     //clear page loader
     $.mobile.hidePageLoadingMsg();
@@ -410,22 +424,47 @@
             promise = th(transition, reverse, toPage, fromPage);
 
     promise.done(function() {
+      //reset toPage height bac
+      toPage.height("");
+
       //jump to top or prev scroll, sometimes on iOS the page has not rendered yet.
-      $.mobile.silentScroll(toPage.jqmData("lastScroll") || 0);
-      $(document).one("silentscroll", function() {
+      if (toScroll) {
+        $.mobile.silentScroll(toScroll);
+        $(document).one("silentscroll", function() {
+          reFocus(toPage);
+        });
+      }
+      else {
         reFocus(toPage);
-      });
+      }
 
       //trigger show/hide events
       if (fromPage) {
-        fromPage.data("page")._trigger("hide", null, { nextPage: toPage });
+        fromPage.height("").data("page")._trigger("hide", null, { nextPage: toPage });
       }
+
       //trigger pageshow, define prevPage as either fromPage or empty jQuery obj
       toPage.data("page")._trigger("show", null, { prevPage: fromPage || $("") });
+
+      resetActivePageHeight();
 
     });
 
     return promise;
+  }
+
+  ;
+
+  //simply set the active page's minimum height to screen height, depending on orientation
+  function resetActivePageHeight() {
+    var orientation = jQuery.event.special.orientationchange.orientation(),
+            port = orientation === "portrait",
+            winMin = port ? 480 : 320,
+            screenHeight = port ? screen.height : screen.width,
+            winHeight = Math.max(winMin, $(window).height()),
+            pageMin = Math.min(screenHeight, winHeight);
+
+    $(".ui-page-active").css("min-height", pageMin);
   }
 
   //shared page enhancements
@@ -668,8 +707,8 @@
                   .appendTo(settings.pageContainer)
                   .delay(800)
                   .fadeOut(400, function() {
-            $(this).remove();
-          });
+                    $(this).remove();
+                  });
         }
 
         deferred.reject(absUrl, options);
@@ -753,21 +792,21 @@
     if (typeof toPage == "string") {
       $.mobile.loadPage(toPage, settings)
               .done(function(url, options, newPage, dupCachedPage) {
-        isPageTransitioning = false;
-        options.duplicateCachedPage = dupCachedPage;
-        $.mobile.changePage(newPage, options);
-      })
+                isPageTransitioning = false;
+                options.duplicateCachedPage = dupCachedPage;
+                $.mobile.changePage(newPage, options);
+              })
               .fail(function(url, options) {
-        // XXX_jblas: Fire off changepagefailed notificaiton.
-        isPageTransitioning = false;
+                // XXX_jblas: Fire off changepagefailed notificaiton.
+                isPageTransitioning = false;
 
-        //clear out the active button state
-        removeActiveLinkClass(true);
+                //clear out the active button state
+                removeActiveLinkClass(true);
 
-        //release transition lock so navigation is free again
-        releasePageTransitionLock();
-        settings.pageContainer.trigger("changepagefailed");
-      });
+                //release transition lock so navigation is free again
+                releasePageTransitionLock();
+                settings.pageContainer.trigger("changepagefailed");
+              });
       return;
     }
 
@@ -864,21 +903,21 @@
 
     transitionPages(toPage, fromPage, settings.transition, settings.reverse)
             .done(function() {
-      removeActiveLinkClass();
+              removeActiveLinkClass();
 
-      //if there's a duplicateCachedPage, remove it from the DOM now that it's hidden
-      if (settings.duplicateCachedPage) {
-        settings.duplicateCachedPage.remove();
-      }
+              //if there's a duplicateCachedPage, remove it from the DOM now that it's hidden
+              if (settings.duplicateCachedPage) {
+                settings.duplicateCachedPage.remove();
+              }
 
-      //remove initial build class (only present on first pageshow)
-      $html.removeClass("ui-mobile-rendering");
+              //remove initial build class (only present on first pageshow)
+              $html.removeClass("ui-mobile-rendering");
 
-      releasePageTransitionLock();
+              releasePageTransitionLock();
 
-      // Let listeners know we're all done changing the current page.
-      mpc.trigger("changepage");
-    });
+              // Let listeners know we're all done changing the current page.
+              mpc.trigger("changepage");
+            });
   };
 
   $.mobile.changePage.defaults = {
@@ -912,14 +951,14 @@
 
     $.mobile.changePage(
             url,
-    {
-      type:    type.length && type.toLowerCase() || "get",
-      data:    $this.serialize(),
-      transition:  $this.jqmData("transition"),
-      direction:  $this.jqmData("direction"),
-      reloadPage:  true
-    }
-            );
+            {
+              type:    type.length && type.toLowerCase() || "get",
+              data:    $this.serialize(),
+              transition:  $this.jqmData("transition"),
+              direction:  $this.jqmData("direction"),
+              reloadPage:  true
+            }
+    );
     event.preventDefault();
   });
 
@@ -952,24 +991,37 @@
     if (link) {
       if (path.parseUrl(link.getAttribute("href") || "#").hash !== "#") {
         $(link).closest(".ui-btn").not(".ui-disabled").addClass($.mobile.activeBtnClass);
+        $("." + $.mobile.activePageClass + " .ui-btn").not(link).blur();
       }
     }
   });
 
-
   //click routing - direct to HTTP or Ajax, accordingly
-  $(document).bind("click", function(event) {
+  $(document).bind("vclick click", function(event) {
     var link = findClosestLink(event.target);
     if (!link) {
       return;
     }
 
-    var $link = $(link);
+    var $link = $(link),
+      //remove active link class if external (then it won't be there if you come back)
+            httpCleanup = function() {
+              window.setTimeout(function() {
+                removeActiveLinkClass(true);
+              }, 200);
+            };
 
     //if there's a data-rel=back attr, go back in history
     if ($link.is(":jqmData(rel='back')")) {
       window.history.back();
       return false;
+    }
+
+    //if ajax is disabled, exit early
+    if (!$.mobile.ajaxEnabled) {
+      httpCleanup();
+      //use default click handling
+      return;
     }
 
     var baseUrl = getClosestBaseUrl($link),
@@ -1020,12 +1072,8 @@
 
     $activeClickedLink = $link.closest(".ui-btn");
 
-    if (isExternal || !$.mobile.ajaxEnabled) {
-      //remove active link class if external (then it won't be there if you come back)
-      window.setTimeout(function() {
-        removeActiveLinkClass(true);
-      }, 200);
-
+    if (isExternal) {
+      httpCleanup();
       //use default click handling
       return;
     }
@@ -1098,5 +1146,8 @@
       $.mobile.changePage($.mobile.firstPage, { transition: transition, changeHash: false, fromHashChange: true });
     }
   });
+
+  //set page min-heights to be device specific
+  $(document).bind("pagecreate orientationchange", resetActivePageHeight);
 
 })(jQuery);

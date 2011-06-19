@@ -304,10 +304,10 @@
         }
         if ($.fn.sortable) {
           opts = $.extend({
-            "cursor":"move",
-            "axis" : "y",
-            "items": ".jqgrow"
-          },
+                    "cursor":"move",
+                    "axis" : "y",
+                    "items": ".jqgrow"
+                  },
                   opts || {});
           if (opts.start && $.isFunction(opts.start)) {
             opts._start_ = opts.start;

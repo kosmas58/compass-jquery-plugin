@@ -2625,26 +2625,26 @@
                 grid.dragStart(ci, e, getOffset(ci));
                 return false;
               }).click(function(e) {
-        if (ts.p.disableClick) {
-          ts.p.disableClick = false;
-          return false;
-        }
-        var s = "th>div.ui-jqgrid-sortable",r,d;
-        if (!ts.p.viewsortcols[2]) {
-          s = "th>div>span>span.ui-grid-ico-sort";
-        }
-        var t = $(e.target).closest(s);
-        if (t.length != 1) {
-          return;
-        }
-        var ci = $.jgrid.getCellIndex(this);
-        if (!ts.p.viewsortcols[2]) {
-          r = true;
-          d = t.attr("sort");
-        }
-        sortData($('div', this)[0].id, ci, r, d);
-        return false;
-      });
+                if (ts.p.disableClick) {
+                  ts.p.disableClick = false;
+                  return false;
+                }
+                var s = "th>div.ui-jqgrid-sortable",r,d;
+                if (!ts.p.viewsortcols[2]) {
+                  s = "th>div>span>span.ui-grid-ico-sort";
+                }
+                var t = $(e.target).closest(s);
+                if (t.length != 1) {
+                  return;
+                }
+                var ci = $.jgrid.getCellIndex(this);
+                if (!ts.p.viewsortcols[2]) {
+                  r = true;
+                  d = t.attr("sort");
+                }
+                sortData($('div', this)[0].id, ci, r, d);
+                return false;
+              });
       if (ts.p.sortable && $.fn.sortable) {
         try {
           $(ts).jqGrid("sortableColumns", thr);
@@ -2698,10 +2698,10 @@
                   }
                   return false;
                 }).bind('mouseout', function(e) {
-          ptr = $(e.target).closest("tr.jqgrow");
-          $(ptr).removeClass("ui-state-hover");
-          return false;
-        });
+                  ptr = $(e.target).closest("tr.jqgrow");
+                  $(ptr).removeClass("ui-state-hover");
+                  return false;
+                });
       }
       var ri,ci;
       $(ts).before(grid.hDiv).click(
@@ -2768,52 +2768,52 @@
                 return this;
                 //}
               }).bind('reloadGrid', function(e, opts) {
-        if (ts.p.treeGrid === true) {
-          ts.p.datatype = ts.p.treedatatype;
-        }
-        if (opts && opts.current) {
-          ts.grid.selectionPreserver(ts);
-        }
-        if (ts.p.datatype == "local") {
-          $(ts).jqGrid("resetSelection");
-          if (ts.p.data.length) {
-            refreshIndex();
-          }
-        }
-        else if (!ts.p.treeGrid) {
-          ts.p.selrow = null;
-          if (ts.p.multiselect) {
-            ts.p.selarrrow = [];
-            $('#cb_' + $.jgrid.jqID(ts.p.id), ts.grid.hDiv).attr("checked", false);
-          }
-          ts.p.savedRow = [];
-        }
-        if (ts.p.scroll) {
-          emptyRows(ts.grid.bDiv, true, false);
-        }
-        if (opts && opts.page) {
-          var page = opts.page;
-          if (page > ts.p.lastpage) {
-            page = ts.p.lastpage;
-          }
-          if (page < 1) {
-            page = 1;
-          }
-          ts.p.page = page;
-          if (ts.grid.prevRowHeight) {
-            ts.grid.bDiv.scrollTop = (page - 1) * ts.grid.prevRowHeight * ts.p.rowNum;
-          } else {
-            ts.grid.bDiv.scrollTop = 0;
-          }
-        }
-        if (ts.grid.prevRowHeight && ts.p.scroll) {
-          delete ts.p.lastpage;
-          ts.grid.populateVisible();
-        } else {
-          ts.grid.populate();
-        }
-        return false;
-      });
+                if (ts.p.treeGrid === true) {
+                  ts.p.datatype = ts.p.treedatatype;
+                }
+                if (opts && opts.current) {
+                  ts.grid.selectionPreserver(ts);
+                }
+                if (ts.p.datatype == "local") {
+                  $(ts).jqGrid("resetSelection");
+                  if (ts.p.data.length) {
+                    refreshIndex();
+                  }
+                }
+                else if (!ts.p.treeGrid) {
+                  ts.p.selrow = null;
+                  if (ts.p.multiselect) {
+                    ts.p.selarrrow = [];
+                    $('#cb_' + $.jgrid.jqID(ts.p.id), ts.grid.hDiv).attr("checked", false);
+                  }
+                  ts.p.savedRow = [];
+                }
+                if (ts.p.scroll) {
+                  emptyRows(ts.grid.bDiv, true, false);
+                }
+                if (opts && opts.page) {
+                  var page = opts.page;
+                  if (page > ts.p.lastpage) {
+                    page = ts.p.lastpage;
+                  }
+                  if (page < 1) {
+                    page = 1;
+                  }
+                  ts.p.page = page;
+                  if (ts.grid.prevRowHeight) {
+                    ts.grid.bDiv.scrollTop = (page - 1) * ts.grid.prevRowHeight * ts.p.rowNum;
+                  } else {
+                    ts.grid.bDiv.scrollTop = 0;
+                  }
+                }
+                if (ts.grid.prevRowHeight && ts.p.scroll) {
+                  delete ts.p.lastpage;
+                  ts.grid.populateVisible();
+                } else {
+                  ts.grid.populate();
+                }
+                return false;
+              });
       if ($.isFunction(this.p.ondblClickRow)) {
         $(this).dblclick(function(e) {
           td = e.target;
@@ -2994,11 +2994,11 @@
       }
       $(grid.hDiv).after(grid.bDiv)
               .mousemove(function (e) {
-        if (grid.resizing) {
-          grid.dragMove(e);
-          return false;
-        }
-      });
+                if (grid.resizing) {
+                  grid.dragMove(e);
+                  return false;
+                }
+              });
       $(".ui-jqgrid-labels", grid.hDiv).bind("selectstart", function () {
         return false;
       });
@@ -3906,11 +3906,21 @@
             }
             if (mathopr) {
               switch (mathopr.toLowerCase()) {
-                case 'sum': ret = sum; break;
-                case 'avg': ret = sum / ln; break;
-                case 'count': ret = ln; break;
-                case 'min': ret = min; break;
-                case 'max': ret = max; break;
+                case 'sum':
+                  ret = sum;
+                  break;
+                case 'avg':
+                  ret = sum / ln;
+                  break;
+                case 'count':
+                  ret = ln;
+                  break;
+                case 'min':
+                  ret = min;
+                  break;
+                case 'max':
+                  ret = max;
+                  break;
               }
             }
           }

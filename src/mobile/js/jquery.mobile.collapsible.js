@@ -38,21 +38,21 @@
               .wrapInner('<a href="#" class="ui-collapsible-heading-toggle"></a>')
               .find("a:eq(0)")
               .buttonMarkup({
-                              shadow: !collapsibleParent.length,
-                              corners: false,
-                              iconPos: "left",
-                              icon: "plus",
-                              theme: o.theme
-                            })
+                shadow: !collapsibleParent.length,
+                corners: false,
+                iconPos: "left",
+                icon: "plus",
+                theme: o.theme
+              })
               .find(".ui-icon")
               .removeAttr("class")
               .buttonMarkup({
-                              shadow: true,
-                              corners: true,
-                              iconPos: "notext",
-                              icon: "plus",
-                              theme: o.iconTheme
-                            });
+                shadow: true,
+                corners: true,
+                iconPos: "notext",
+                icon: "plus",
+                theme: o.iconTheme
+              });
 
       if (! collapsibleParent.length) {
         collapsibleHeading
@@ -93,22 +93,22 @@
 
       })
               .bind("expand", function(event) {
-        if (! event.isDefaultPrevented()) {
-          event.preventDefault();
-          collapsibleHeading
-                  .removeClass("ui-collapsible-heading-collapsed")
-                  .find(".ui-collapsible-heading-status").text(o.collapseCueText);
+                if (! event.isDefaultPrevented()) {
+                  event.preventDefault();
+                  collapsibleHeading
+                          .removeClass("ui-collapsible-heading-collapsed")
+                          .find(".ui-collapsible-heading-status").text(o.collapseCueText);
 
-          collapsibleHeading.find(".ui-icon").removeClass("ui-icon-plus").addClass("ui-icon-minus");
-          collapsibleContent.removeClass("ui-collapsible-content-collapsed").attr("aria-hidden", false);
+                  collapsibleHeading.find(".ui-icon").removeClass("ui-icon-plus").addClass("ui-icon-minus");
+                  collapsibleContent.removeClass("ui-collapsible-content-collapsed").attr("aria-hidden", false);
 
-          if (collapsibleContain.jqmData("collapsible-last")) {
-            collapsibleHeading
-                    .find("a:eq(0), .ui-btn-inner")
-                    .removeClass("ui-corner-bottom");
-          }
-        }
-      })
+                  if (collapsibleContain.jqmData("collapsible-last")) {
+                    collapsibleHeading
+                            .find("a:eq(0), .ui-btn-inner")
+                            .removeClass("ui-corner-bottom");
+                  }
+                }
+              })
               .trigger(o.collapsed ? "collapse" : "expand");
 
 
@@ -118,12 +118,12 @@
                 .jqmData("collapsiblebound", true)
                 .bind("expand", function(event) {
 
-          $(event.target)
-                  .closest(".ui-collapsible-contain")
-                  .siblings(".ui-collapsible-contain")
-                  .trigger("collapse");
+                  $(event.target)
+                          .closest(".ui-collapsible-contain")
+                          .siblings(".ui-collapsible-contain")
+                          .trigger("collapse");
 
-        });
+                });
 
 
         var set = collapsibleParent.find(":jqmData(role='collapsible'):first");

@@ -40,14 +40,14 @@
                       .appendTo(slider)
                       .buttonMarkup({corners: true, theme: theme, shadow: true})
                       .attr({
-                              'role': 'slider',
-                              'aria-valuemin': min,
-                              'aria-valuemax': max,
-                              'aria-valuenow': val(),
-                              'aria-valuetext': val(),
-                              'title': val(),
-                              'aria-labelledby': labelID
-                            });
+                        'role': 'slider',
+                        'aria-valuemin': min,
+                        'aria-valuemax': max,
+                        'aria-valuenow': val(),
+                        'aria-valuetext': val(),
+                        'title': val(),
+                        'aria-labelledby': labelID
+                      });
 
       $.extend(this, {
         slider: slider,
@@ -76,14 +76,14 @@
       control
               .addClass((cType == 'input') ? 'ui-slider-input' : 'ui-slider-switch')
               .change(function() {
-        self.refresh(val(), true);
-      })
+                self.refresh(val(), true);
+              })
               .keyup(function() { // necessary?
-        self.refresh(val(), true, true);
-      })
+                self.refresh(val(), true, true);
+              })
               .blur(function() {
-        self.refresh(val(), true);
-      });
+                self.refresh(val(), true);
+              });
 
       // prevent screen drag when slider activated
       $(document).bind("vmousemove", function(event) {
@@ -106,25 +106,25 @@
       slider
               .add(document)
               .bind("vmouseup", function() {
-        if (self.dragging) {
-          self.dragging = false;
-          if (cType === "select") {
-            if (self.beforeStart === control[0].selectedIndex) {
-              //tap occurred, but value didn't change. flip it!
-              self.refresh(self.beforeStart === 0 ? 1 : 0);
-            }
-            var curval = val();
-            var snapped = Math.round(curval / (max - min) * 100);
-            handle
-                    .addClass("ui-slider-handle-snapping")
-                    .css("left", snapped + "%")
-                    .animationComplete(function() {
-              handle.removeClass("ui-slider-handle-snapping");
-            });
-          }
-          return false;
-        }
-      });
+                if (self.dragging) {
+                  self.dragging = false;
+                  if (cType === "select") {
+                    if (self.beforeStart === control[0].selectedIndex) {
+                      //tap occurred, but value didn't change. flip it!
+                      self.refresh(self.beforeStart === 0 ? 1 : 0);
+                    }
+                    var curval = val();
+                    var snapped = Math.round(curval / (max - min) * 100);
+                    handle
+                            .addClass("ui-slider-handle-snapping")
+                            .css("left", snapped + "%")
+                            .animationComplete(function() {
+                              handle.removeClass("ui-slider-handle-snapping");
+                            });
+                  }
+                  return false;
+                }
+              });
 
       slider.insertAfter(control);
 
@@ -183,11 +183,11 @@
         }
       })// remove active mark
               .keyup(function(event) {
-        if (self._keySliding) {
-          self._keySliding = false;
-          $(this).removeClass("ui-state-active");
-        }
-      });
+                if (self._keySliding) {
+                  self._keySliding = false;
+                  $(this).removeClass("ui-state-active");
+                }
+              });
 
       this.refresh();
     },

@@ -16,10 +16,9 @@
               themeclass;
 
       if (!theme) {
-        var themedParent = this.element.closest("[class*='ui-bar-'],[class*='ui-body-']");
-        theme = themedParent.length ?
-                /ui-(bar|body)-([a-z])/.exec(themedParent.attr("class"))[2] :
-                "c";
+        var themedParent = this.element.closest("[class*='ui-bar-'],[class*='ui-body-']"),
+                themeLetter = themedParent.length && /ui-(bar|body)-([a-z])/.exec(themedParent.attr("class")),
+                theme = themeLetter && themeLetter[2] || "c";
       }
 
       themeclass = " ui-body-" + theme;
@@ -35,11 +34,11 @@
         focusedEl = input.wrap('<div class="ui-input-search ui-shadow-inset ui-btn-corner-all ui-btn-shadow ui-icon-searchfield' + themeclass + '"></div>').parent();
         var clearbtn = $('<a href="#" class="ui-input-clear" title="clear text">clear text</a>')
                 .tap(function(e) {
-          input.val('').focus();
-          input.trigger('change');
-          clearbtn.addClass('ui-input-clear-hidden');
-          e.preventDefault();
-        })
+                  input.val('').focus();
+                  input.trigger('change');
+                  clearbtn.addClass('ui-input-clear-hidden');
+                  e.preventDefault();
+                })
                 .appendTo(focusedEl)
                 .buttonMarkup({icon: 'delete', iconpos: 'notext', corners:true, shadow:true});
 
@@ -65,8 +64,8 @@
         focusedEl.addClass('ui-focus');
       })
               .blur(function() {
-        focusedEl.removeClass('ui-focus');
-      });
+                focusedEl.removeClass('ui-focus');
+              });
 
       //autogrow
       if (input.is('textarea')) {

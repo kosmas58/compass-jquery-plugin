@@ -287,7 +287,7 @@
                   function() {
                     $(this).removeClass('ui-state-hover');
                   }
-                  );
+          );
         }
       });
     },
@@ -416,7 +416,7 @@
                           function(i, selected) {
                             selectedText[i] = $(selected).text();
                           }
-                          );
+                  );
                   extpost[this.name] = selectedText.join(",");
                   break;
                 case "password":
@@ -888,7 +888,7 @@
           if (ret[0] === false) {
             $("#FormError>td", "#" + frmtb).html(ret[1]);
             $("#FormError", "#" + frmtb).show();
-            // return;
+            // return; 
           }
         }
 
@@ -1140,12 +1140,12 @@
             $("a.ui-jqdialog-titlebar-close span", "#" + IDs.themodal).removeClass("jqmClose");
             $("a.ui-jqdialog-titlebar-close", "#" + IDs.themodal).unbind("click")
                     .click(function() {
-              if (!checkUpdates()) {
-                return false;
-              }
-              $.jgrid.hideModal("#" + IDs.themodal, {gb:"#gbox_" + gID,jqm:p.jqModal,onClose: rp_ge.onClose});
-              return false;
-            });
+                      if (!checkUpdates()) {
+                        return false;
+                      }
+                      $.jgrid.hideModal("#" + IDs.themodal, {gb:"#gbox_" + gID,jqm:p.jqModal,onClose: rp_ge.onClose});
+                      return false;
+                    });
           }
           p.saveicon = $.extend([true,"left","ui-icon-disk"], p.saveicon);
           p.closeicon = $.extend([true,"left","ui-icon-close"], p.closeicon);
@@ -1224,7 +1224,7 @@
                   function() {
                     $(this).removeClass('ui-state-hover');
                   }
-                  );
+          );
           $("#sData", "#" + frmtb + "_2").click(function(e) {
             postdata = {};
             extpost = {};
@@ -1598,7 +1598,7 @@
                   function() {
                     $(this).removeClass('ui-state-hover');
                   }
-                  );
+          );
           focusaref();
           $("#cData", "#" + frmtb + "_2").click(function(e) {
             $.jgrid.hideModal("#" + IDs.themodal, {gb:"#gbox_" + gID,jqm:p.jqModal, onClose: p.onClose});
@@ -1721,7 +1721,7 @@
           var dh = isNaN(p.dataheight) ? p.dataheight : p.dataheight + "px";
           var tbl = "<div id='" + dtbl + "' class='formdata' style='width:100%;overflow:auto;position:relative;height:" + dh + ";'>";
           tbl += "<table class='DelTable'><tbody>";
-          // error data
+          // error data 
           tbl += "<tr id='DelError' style='display:none'><td class='ui-state-error'></td></tr>";
           tbl += "<tr id='DelData' style='display:none'><td >" + rowids + "</td></tr>";
           tbl += "<tr><td class=\"delmsg\" style=\"white-space:pre;\">" + p.msg + "</td></tr><tr><td >&#160;</td></tr>";
@@ -1750,7 +1750,7 @@
                   function() {
                     $(this).removeClass('ui-state-hover');
                   }
-                  );
+          );
           p.delicon = $.extend([true,"left","ui-icon-scissors"], p.delicon);
           p.cancelicon = $.extend([true,"left","ui-icon-cancel"], p.cancelicon);
           if (p.delicon[0] === true) {
@@ -1976,7 +1976,7 @@
                     function () {
                       $(this).removeClass("ui-state-hover");
                     }
-                    );
+            );
             tbd = null;
           }
           if (o.edit) {
@@ -2011,7 +2011,7 @@
                     function () {
                       $(this).removeClass("ui-state-hover");
                     }
-                    );
+            );
             tbd = null;
           }
           if (o.view) {
@@ -2046,7 +2046,7 @@
                     function () {
                       $(this).removeClass("ui-state-hover");
                     }
-                    );
+            );
             tbd = null;
           }
           if (o.del) {
@@ -2089,7 +2089,7 @@
                     function () {
                       $(this).removeClass("ui-state-hover");
                     }
-                    );
+            );
             tbd = null;
           }
           if (o.add || o.edit || o.del || o.view) {
@@ -2117,7 +2117,7 @@
                     function () {
                       $(this).removeClass("ui-state-hover");
                     }
-                    );
+            );
             if (pSearch.showOnLoad && pSearch.showOnLoad === true)
               $(tbd, navtbl).click();
             tbd = null;
@@ -2170,7 +2170,7 @@
                     function () {
                       $(this).removeClass("ui-state-hover");
                     }
-                    );
+            );
             tbd = null;
           }
           tdw = $(".ui-jqgrid").css("font-size") || "11px";
@@ -2234,13 +2234,13 @@
           $(tbd, findnav)
                   .attr("title", p.title || "")
                   .click(function(e) {
-            if (!$(this).hasClass('ui-state-disabled')) {
-              if ($.isFunction(p.onClickButton)) {
-                p.onClickButton.call($t, e);
-              }
-            }
-            return false;
-          })
+                    if (!$(this).hasClass('ui-state-disabled')) {
+                      if ($.isFunction(p.onClickButton)) {
+                        p.onClickButton.call($t, e);
+                      }
+                    }
+                    return false;
+                  })
                   .hover(
                   function () {
                     if (!$(this).hasClass('ui-state-disabled')) {
@@ -2250,7 +2250,7 @@
                   function () {
                     $(this).removeClass("ui-state-hover");
                   }
-                  );
+          );
         }
       });
     },

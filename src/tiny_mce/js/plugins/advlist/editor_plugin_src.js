@@ -9,159 +9,153 @@
  */
 
 (function() {
-    var each = tinymce.each;
+	var each = tinymce.each;
 
-    tinymce.create('tinymce.plugins.AdvListPlugin', {
-        init : function(ed, url) {
-            var t = this;
+	tinymce.create('tinymce.plugins.AdvListPlugin', {
+		init : function(ed, url) {
+			var t = this;
 
-            t.editor = ed;
+			t.editor = ed;
 
-            function buildFormats(str) {
-                var formats = [];
+			function buildFormats(str) {
+				var formats = [];
 
-                each(str.split(/,/), function(type) {
-                    formats.push({
-                        title : 'advlist.' + (type == 'default' ? 'def' : type.replace(/-/g, '_')),
-                        styles : {
-                            listStyleType : type == 'default' ? '' : type
-                        }
-                    });
-                });
+				each(str.split(/,/), function(type) {
+					formats.push({
+						title : 'advlist.' + (type == 'default' ? 'def' : type.replace(/-/g, '_')),
+						styles : {
+							listStyleType : type == 'default' ? '' : type
+						}
+					});
+				});
 
-                return formats;
-            }
+				return formats;
+			};
 
-            ;
+			// Setup number formats from config or default
+			t.numlist = ed.getParam("advlist_number_styles") || buildFormats("default,lower-alpha,lower-greek,lower-roman,upper-alpha,upper-roman");
+			t.bullist = ed.getParam("advlist_bullet_styles") || buildFormats("default,circle,disc,square");
 
-            // Setup number formats from config or default
-            t.numlist = ed.getParam("advlist_number_styles") || buildFormats("default,lower-alpha,lower-greek,lower-roman,upper-alpha,upper-roman");
-            t.bullist = ed.getParam("advlist_bullet_styles") || buildFormats("default,circle,disc,square");
+			if (tinymce.isIE && /MSIE [2-7]/.test(navigator.userAgent))
+				t.isIE7 = true;
+		},
 
-            if (tinymce.isIE && /MSIE [2-7]/.test(navigator.userAgent))
-                t.isIE7 = true;
-        },
+		createControl: function(name, cm) {
+			var t = this, btn, format;
 
-        createControl: function(name, cm) {
-            var t = this, btn, format;
+			if (name == 'numlist' || name == 'bullist') {
+				// Default to first item if it's a default item
+				if (t[name][0].title == 'advlist.def')
+					format = t[name][0];
 
-            if (name == 'numlist' || name == 'bullist') {
-                // Default to first item if it's a default item
-                if (t[name][0].title == 'advlist.def')
-                    format = t[name][0];
+				function hasFormat(node, format) {
+					var state = true;
 
-                function hasFormat(node, format) {
-                    var state = true;
+					each(format.styles, function(value, name) {
+						// Format doesn't match
+						if (t.editor.dom.getStyle(node, name) != value) {
+							state = false;
+							return false;
+						}
+					});
 
-                    each(format.styles, function(value, name) {
-                        // Format doesn't match
-                        if (t.editor.dom.getStyle(node, name) != value) {
-                            state = false;
-                            return false;
-                        }
-                    });
+					return state;
+				};
 
-                    return state;
-                }
+				function applyListFormat() {
+					var list, ed = t.editor, dom = ed.dom, sel = ed.selection;
 
-                ;
+					// Check for existing list element
+					list = dom.getParent(sel.getNode(), 'ol,ul');
 
-                function applyListFormat() {
-                    var list, ed = t.editor, dom = ed.dom, sel = ed.selection;
+					// Switch/add list type if needed
+					if (!list || list.nodeName == (name == 'bullist' ? 'OL' : 'UL') || hasFormat(list, format))
+						ed.execCommand(name == 'bullist' ? 'InsertUnorderedList' : 'InsertOrderedList');
 
-                    // Check for existing list element
-                    list = dom.getParent(sel.getNode(), 'ol,ul');
+					// Append styles to new list element
+					if (format) {
+						list = dom.getParent(sel.getNode(), 'ol,ul');
+						if (list) {
+							dom.setStyles(list, format.styles);
+							list.removeAttribute('data-mce-style');
+						}
+					}
+					ed.focus();
+				};
 
-                    // Switch/add list type if needed
-                    if (!list || list.nodeName == (name == 'bullist' ? 'OL' : 'UL') || hasFormat(list, format))
-                        ed.execCommand(name == 'bullist' ? 'InsertUnorderedList' : 'InsertOrderedList');
+				btn = cm.createSplitButton(name, {
+					title : 'advanced.' + name + '_desc',
+					'class' : 'mce_' + name,
+					onclick : function() {
+						applyListFormat();
+					}
+				});
 
-                    // Append styles to new list element
-                    if (format) {
-                        list = dom.getParent(sel.getNode(), 'ol,ul');
-                        if (list) {
-                            dom.setStyles(list, format.styles);
-                            list.removeAttribute('data-mce-style');
-                        }
-                    }
-                    ed.focus();
-                }
+				btn.onRenderMenu.add(function(btn, menu) {
+					menu.onShowMenu.add(function() {
+						var dom = t.editor.dom, list = dom.getParent(t.editor.selection.getNode(), 'ol,ul'), fmtList;
 
-                ;
+						if (list || format) {
+							fmtList = t[name];
 
-                btn = cm.createSplitButton(name, {
-                    title : 'advanced.' + name + '_desc',
-                    'class' : 'mce_' + name,
-                    onclick : function() {
-                        applyListFormat();
-                    }
-                });
+							// Unselect existing items
+							each(menu.items, function(item) {
+								var state = true;
 
-                btn.onRenderMenu.add(function(btn, menu) {
-                    menu.onShowMenu.add(function() {
-                        var dom = t.editor.dom, list = dom.getParent(t.editor.selection.getNode(), 'ol,ul'), fmtList;
+								item.setSelected(0);
 
-                        if (list || format) {
-                            fmtList = t[name];
+								if (list && !item.isDisabled()) {
+									each(fmtList, function(fmt) {
+										if (fmt.id == item.id) {
+											if (!hasFormat(list, fmt)) {
+												state = false;
+												return false;
+											}
+										}
+									});
 
-                            // Unselect existing items
-                            each(menu.items, function(item) {
-                                var state = true;
+									if (state)
+										item.setSelected(1);
+								}
+							});
 
-                                item.setSelected(0);
+							// Select the current format
+							if (!list)
+								menu.items[format.id].setSelected(1);
+						}
+					});
 
-                                if (list && !item.isDisabled()) {
-                                    each(fmtList, function(fmt) {
-                                        if (fmt.id == item.id) {
-                                            if (!hasFormat(list, fmt)) {
-                                                state = false;
-                                                return false;
-                                            }
-                                        }
-                                    });
+					menu.add({id : t.editor.dom.uniqueId(), title : 'advlist.types', 'class' : 'mceMenuItemTitle', titleItem: true}).setDisabled(1);
 
-                                    if (state)
-                                        item.setSelected(1);
-                                }
-                            });
+					each(t[name], function(item) {
+						// IE<8 doesn't support lower-greek, skip it
+						if (t.isIE7 && item.styles.listStyleType == 'lower-greek')
+							return;
 
-                            // Select the current format
-                            if (!list)
-                                menu.items[format.id].setSelected(1);
-                        }
-                    });
+						item.id = t.editor.dom.uniqueId();
 
-                    menu.add({id : t.editor.dom.uniqueId(), title : 'advlist.types', 'class' : 'mceMenuItemTitle', titleItem: true}).setDisabled(1);
+						menu.add({id : item.id, title : item.title, onclick : function() {
+							format = item;
+							applyListFormat();
+						}});
+					});
+				});
 
-                    each(t[name], function(item) {
-                        // IE<8 doesn't support lower-greek, skip it
-                        if (t.isIE7 && item.styles.listStyleType == 'lower-greek')
-                            return;
+				return btn;
+			}
+		},
 
-                        item.id = t.editor.dom.uniqueId();
+		getInfo : function() {
+			return {
+				longname : 'Advanced lists',
+				author : 'Moxiecode Systems AB',
+				authorurl : 'http://tinymce.moxiecode.com',
+				infourl : 'http://wiki.moxiecode.com/index.php/TinyMCE:Plugins/advlist',
+				version : tinymce.majorVersion + "." + tinymce.minorVersion
+			};
+		}
+	});
 
-                        menu.add({id : item.id, title : item.title, onclick : function() {
-                            format = item;
-                            applyListFormat();
-                        }});
-                    });
-                });
-
-                return btn;
-            }
-        },
-
-        getInfo : function() {
-            return {
-                longname : 'Advanced lists',
-                author : 'Moxiecode Systems AB',
-                authorurl : 'http://tinymce.moxiecode.com',
-                infourl : 'http://wiki.moxiecode.com/index.php/TinyMCE:Plugins/advlist',
-                version : tinymce.majorVersion + "." + tinymce.minorVersion
-            };
-        }
-    });
-
-    // Register plugin
-    tinymce.PluginManager.add('advlist', tinymce.plugins.AdvListPlugin);
+	// Register plugin
+	tinymce.PluginManager.add('advlist', tinymce.plugins.AdvListPlugin);
 })();

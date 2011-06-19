@@ -328,9 +328,9 @@
             // When Iframe has completely loaded, initialize the history and
             // start polling.
                   .one('load', function() {
-            iframe_src || history_set(get_fragment());
-            poll();
-          })
+                    iframe_src || history_set(get_fragment());
+                    poll();
+                  })
 
             // Load Iframe src if specified, otherwise nothing.
                   .attr('src', iframe_src || 'javascript:0')

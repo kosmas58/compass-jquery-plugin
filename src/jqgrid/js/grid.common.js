@@ -65,8 +65,8 @@
       $(mh).append("<span class='ui-jqdialog-title'>" + p.caption + "</span>");
       var ahr = $("<a href='javascript:void(0)' class='ui-jqdialog-titlebar-close ui-corner-all'></a>")
               .hover(function() {
-        ahr.addClass('ui-state-hover');
-      },
+                ahr.addClass('ui-state-hover');
+              },
               function() {
                 ahr.removeClass('ui-state-hover');
               })
@@ -267,14 +267,14 @@
       } catch (e) {
       }
       this.createModal({
-        themodal:'info_dialog',
-        modalhead:'info_head',
-        modalcontent:'info_content',
-        scrollelm: 'infocnt'},
+                themodal:'info_dialog',
+                modalhead:'info_head',
+                modalcontent:'info_content',
+                scrollelm: 'infocnt'},
               cnt,
               mopt,
               '', '', true
-              );
+      );
       // attach onclick after inserting into the dom
       if (buttstr) {
         $.each(mopt.buttons, function(i) {
@@ -295,7 +295,7 @@
               function() {
                 $(this).removeClass('ui-state-hover');
               }
-              );
+      );
       if ($.isFunction(mopt.beforeOpen)) {
         mopt.beforeOpen();
       }

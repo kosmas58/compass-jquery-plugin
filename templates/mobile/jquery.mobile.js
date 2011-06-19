@@ -402,7 +402,8 @@
   $(document).bind("mobileinit.htmlclass", function() {
     /* bind to orientationchange and resize
      to add classes to HTML element for min/max breakpoints and orientation */
-    $window.bind("orientationchange.htmlclass resize.htmlclass", function(event) {
+    var ev = $.support.orientation;
+    $window.bind("orientationchange.htmlclass throttledResize.htmlclass", function(event) {
       //add orientation class to HTML element on flip/resize.
       if (event.orientation) {
         $html.removeClass("portrait landscape").addClass(event.orientation);
@@ -959,7 +960,7 @@
 (function($, undefined) {
 
 // add new event shortcuts
-  $.each("touchstart touchmove touchend orientationchange tap taphold swipe swipeleft swiperight scrollstart scrollstop".split(" "), function(i, name) {
+  $.each("touchstart touchmove touchend orientationchange throttledresize tap taphold swipe swipeleft swiperight scrollstart scrollstop".split(" "), function(i, name) {
     $.fn[ name ] = function(fn) {
       return fn ? this.bind(name, fn) : this.trigger(name);
     };
@@ -1097,19 +1098,19 @@
         $this
                 .bind(touchMoveEvent, moveHandler)
                 .one(touchStopEvent, function(event) {
-          $this.unbind(touchMoveEvent, moveHandler);
-          if (start && stop) {
-            if (stop.time - start.time < 1000 &&
-                    Math.abs(start.coords[0] - stop.coords[0]) > 30 &&
-                    Math.abs(start.coords[1] - stop.coords[1]) < 75) {
-              start.origin
-                      .trigger("swipe")
+                  $this.unbind(touchMoveEvent, moveHandler);
+                  if (start && stop) {
+                    if (stop.time - start.time < 1000 &&
+                            Math.abs(start.coords[0] - stop.coords[0]) > 30 &&
+                            Math.abs(start.coords[1] - stop.coords[1]) < 75) {
+                      start.origin
+                              .trigger("swipe")
 
-                      .trigger(start.coords[0] > stop.coords[0] ? "swipeleft" : "swiperight");
-            }
-          }
-          start = stop = undefined;
-        });
+                              .trigger(start.coords[0] > stop.coords[0] ? "swipeleft" : "swiperight");
+                    }
+                  }
+                  start = stop = undefined;
+                });
       });
     }
   };
@@ -1135,7 +1136,7 @@
 
         // Because the orientationchange event doesn't exist, simulate the
         // event by testing window dimensions on resize.
-        win.bind("resize", handler);
+        win.bind("throttledresize", handler);
       },
       teardown: function() {
         // If the event is not supported natively, return false so that
@@ -1146,7 +1147,7 @@
 
         // Because the orientationchange event doesn't exist, unbind the
         // resize event handler.
-        win.unbind("resize", handler);
+        win.unbind("throttledresize", handler);
       },
       add: function(handleObj) {
         // Save a reference to the bound event handler.
@@ -1179,12 +1180,47 @@
 
     // Get the current page orientation. This method is exposed publicly, should it
     // be needed, as jQuery.event.special.orientationchange.orientation()
-    special_event.orientation = get_orientation = function() {
+    $.event.special.orientationchange.orientation = get_orientation = function() {
       var elem = document.documentElement;
       return elem && elem.clientWidth / elem.clientHeight < 1.1 ? "portrait" : "landscape";
     };
 
   })(jQuery);
+
+
+// throttled resize event
+  (function() {
+    $.event.special.throttledresize = {
+      setup: function() {
+        $(this).bind("resize", handler);
+      },
+      teardown: function() {
+        $(this).unbind("resize", handler);
+      }
+    };
+
+    var throttle = 250,
+            handler = function() {
+              curr = ( new Date() ).getTime();
+              diff = curr - lastCall;
+              if (diff >= throttle) {
+                lastCall = curr;
+                $(this).trigger("throttledresize");
+              }
+              else {
+                if (heldCall) {
+                  clearTimeout(heldCall);
+                }
+                //promise a held call will still execute
+                heldCall = setTimeout(handler, throttle - diff);
+              }
+            },
+            lastCall = 0,
+            heldCall,
+            curr,
+            diff;
+  })();
+
 
   $.each({
     scrollstop: "scrollstart",
@@ -1532,9 +1568,9 @@
             // When Iframe has completely loaded, initialize the history and
             // start polling.
                   .one('load', function() {
-            iframe_src || history_set(get_fragment());
-            poll();
-          })
+                    iframe_src || history_set(get_fragment());
+                    poll();
+                  })
 
             // Load Iframe src if specified, otherwise nothing.
                   .attr('src', iframe_src || 'javascript:0')
@@ -1860,6 +1896,9 @@
     //set default page transition - 'none' for no transitions
     defaultPageTransition: "slide",
 
+    //minimum scroll distance that will be remembered when returning to a page
+    minScrollBack: screen.height / 2,
+
     //set default dialog transition - 'none' for no transitions
     defaultDialogTransition: "pop",
 
@@ -1914,7 +1953,10 @@
 
     //scroll page vertically: scroll to 0 to hide iOS address bar, or pass a Y value
     silentScroll: function(ypos) {
-      ypos = ypos || 0;
+      if ($.type(ypos) !== "number") {
+        ypos = $.mobile.defaultHomeScroll;
+      }
+
       // prevent scrollstart and scrollstop events
       $.event.special.scrollstart.enabled = false;
 
@@ -2370,20 +2412,34 @@
 
   //function for transitioning between two existing pages
   function transitionPages(toPage, fromPage, transition, reverse) {
-    $.mobile.silentScroll();
 
     //get current scroll distance
-    var currScroll = $window.scrollTop();
+    var currScroll = $window.scrollTop(),
+            toScroll = toPage.data("lastScroll") || $.mobile.defaultHomeScroll;
+
+    //if scrolled down, scroll to top
+    if (currScroll) {
+      window.scrollTo(0, $.mobile.defaultHomeScroll);
+    }
+
+    //if the Y location we're scrolling to is less than 10px, let it go for sake of smoothness
+    if (toScroll < $.mobile.minScrollBack) {
+      toScroll = 0;
+    }
 
     if (fromPage) {
       //set as data for returning to that spot
       fromPage
+              .height(screen.height + currScroll)
               .jqmData("lastScroll", currScroll)
               .jqmData("lastClicked", $activeClickedLink);
+
       //trigger before show/hide events
       fromPage.data("page")._trigger("beforehide", null, { nextPage: toPage });
     }
-    toPage.data("page")._trigger("beforeshow", null, { prevPage: fromPage || $("") });
+    toPage
+            .height(screen.height + toScroll)
+            .data("page")._trigger("beforeshow", null, { prevPage: fromPage || $("") });
 
     //clear page loader
     $.mobile.hidePageLoadingMsg();
@@ -2395,22 +2451,47 @@
             promise = th(transition, reverse, toPage, fromPage);
 
     promise.done(function() {
+      //reset toPage height bac
+      toPage.height("");
+
       //jump to top or prev scroll, sometimes on iOS the page has not rendered yet.
-      $.mobile.silentScroll(toPage.jqmData("lastScroll") || 0);
-      $(document).one("silentscroll", function() {
+      if (toScroll) {
+        $.mobile.silentScroll(toScroll);
+        $(document).one("silentscroll", function() {
+          reFocus(toPage);
+        });
+      }
+      else {
         reFocus(toPage);
-      });
+      }
 
       //trigger show/hide events
       if (fromPage) {
-        fromPage.data("page")._trigger("hide", null, { nextPage: toPage });
+        fromPage.height("").data("page")._trigger("hide", null, { nextPage: toPage });
       }
+
       //trigger pageshow, define prevPage as either fromPage or empty jQuery obj
       toPage.data("page")._trigger("show", null, { prevPage: fromPage || $("") });
+
+      resetActivePageHeight();
 
     });
 
     return promise;
+  }
+
+  ;
+
+  //simply set the active page's minimum height to screen height, depending on orientation
+  function resetActivePageHeight() {
+    var orientation = jQuery.event.special.orientationchange.orientation(),
+            port = orientation === "portrait",
+            winMin = port ? 480 : 320,
+            screenHeight = port ? screen.height : screen.width,
+            winHeight = Math.max(winMin, $(window).height()),
+            pageMin = Math.min(screenHeight, winHeight);
+
+    $(".ui-page-active").css("min-height", pageMin);
   }
 
   //shared page enhancements
@@ -2653,8 +2734,8 @@
                   .appendTo(settings.pageContainer)
                   .delay(800)
                   .fadeOut(400, function() {
-            $(this).remove();
-          });
+                    $(this).remove();
+                  });
         }
 
         deferred.reject(absUrl, options);
@@ -2738,21 +2819,21 @@
     if (typeof toPage == "string") {
       $.mobile.loadPage(toPage, settings)
               .done(function(url, options, newPage, dupCachedPage) {
-        isPageTransitioning = false;
-        options.duplicateCachedPage = dupCachedPage;
-        $.mobile.changePage(newPage, options);
-      })
+                isPageTransitioning = false;
+                options.duplicateCachedPage = dupCachedPage;
+                $.mobile.changePage(newPage, options);
+              })
               .fail(function(url, options) {
-        // XXX_jblas: Fire off changepagefailed notificaiton.
-        isPageTransitioning = false;
+                // XXX_jblas: Fire off changepagefailed notificaiton.
+                isPageTransitioning = false;
 
-        //clear out the active button state
-        removeActiveLinkClass(true);
+                //clear out the active button state
+                removeActiveLinkClass(true);
 
-        //release transition lock so navigation is free again
-        releasePageTransitionLock();
-        settings.pageContainer.trigger("changepagefailed");
-      });
+                //release transition lock so navigation is free again
+                releasePageTransitionLock();
+                settings.pageContainer.trigger("changepagefailed");
+              });
       return;
     }
 
@@ -2849,21 +2930,21 @@
 
     transitionPages(toPage, fromPage, settings.transition, settings.reverse)
             .done(function() {
-      removeActiveLinkClass();
+              removeActiveLinkClass();
 
-      //if there's a duplicateCachedPage, remove it from the DOM now that it's hidden
-      if (settings.duplicateCachedPage) {
-        settings.duplicateCachedPage.remove();
-      }
+              //if there's a duplicateCachedPage, remove it from the DOM now that it's hidden
+              if (settings.duplicateCachedPage) {
+                settings.duplicateCachedPage.remove();
+              }
 
-      //remove initial build class (only present on first pageshow)
-      $html.removeClass("ui-mobile-rendering");
+              //remove initial build class (only present on first pageshow)
+              $html.removeClass("ui-mobile-rendering");
 
-      releasePageTransitionLock();
+              releasePageTransitionLock();
 
-      // Let listeners know we're all done changing the current page.
-      mpc.trigger("changepage");
-    });
+              // Let listeners know we're all done changing the current page.
+              mpc.trigger("changepage");
+            });
   };
 
   $.mobile.changePage.defaults = {
@@ -2897,14 +2978,14 @@
 
     $.mobile.changePage(
             url,
-    {
-      type:    type.length && type.toLowerCase() || "get",
-      data:    $this.serialize(),
-      transition:  $this.jqmData("transition"),
-      direction:  $this.jqmData("direction"),
-      reloadPage:  true
-    }
-            );
+            {
+              type:    type.length && type.toLowerCase() || "get",
+              data:    $this.serialize(),
+              transition:  $this.jqmData("transition"),
+              direction:  $this.jqmData("direction"),
+              reloadPage:  true
+            }
+    );
     event.preventDefault();
   });
 
@@ -2937,24 +3018,37 @@
     if (link) {
       if (path.parseUrl(link.getAttribute("href") || "#").hash !== "#") {
         $(link).closest(".ui-btn").not(".ui-disabled").addClass($.mobile.activeBtnClass);
+        $("." + $.mobile.activePageClass + " .ui-btn").not(link).blur();
       }
     }
   });
 
-
   //click routing - direct to HTTP or Ajax, accordingly
-  $(document).bind("click", function(event) {
+  $(document).bind("vclick click", function(event) {
     var link = findClosestLink(event.target);
     if (!link) {
       return;
     }
 
-    var $link = $(link);
+    var $link = $(link),
+      //remove active link class if external (then it won't be there if you come back)
+            httpCleanup = function() {
+              window.setTimeout(function() {
+                removeActiveLinkClass(true);
+              }, 200);
+            };
 
     //if there's a data-rel=back attr, go back in history
     if ($link.is(":jqmData(rel='back')")) {
       window.history.back();
       return false;
+    }
+
+    //if ajax is disabled, exit early
+    if (!$.mobile.ajaxEnabled) {
+      httpCleanup();
+      //use default click handling
+      return;
     }
 
     var baseUrl = getClosestBaseUrl($link),
@@ -3005,12 +3099,8 @@
 
     $activeClickedLink = $link.closest(".ui-btn");
 
-    if (isExternal || !$.mobile.ajaxEnabled) {
-      //remove active link class if external (then it won't be there if you come back)
-      window.setTimeout(function() {
-        removeActiveLinkClass(true);
-      }, 200);
-
+    if (isExternal) {
+      httpCleanup();
       //use default click handling
       return;
     }
@@ -3083,6 +3173,9 @@
       $.mobile.changePage($.mobile.firstPage, { transition: transition, changeHash: false, fromHashChange: true });
     }
   });
+
+  //set page min-heights to be device specific
+  $(document).bind("pagecreate orientationchange", resetActivePageHeight);
 
 })(jQuery);
 
@@ -3196,21 +3289,21 @@
     $(function() {
       $(document)
               .bind("vmousedown.toolbar", function(event) {
-        if (touchToggleEnabled) {
-          stateBefore = currentstate;
-        }
-      })
+                if (touchToggleEnabled) {
+                  stateBefore = currentstate;
+                }
+              })
               .bind("vclick.toolbar", function(event) {
-        if (touchToggleEnabled) {
-          if ($(event.target).closest(ignoreTargets).length) {
-            return;
-          }
-          if (!scrollTriggered) {
-            $.fixedToolbars.toggle(stateBefore);
-            stateBefore = null;
-          }
-        }
-      })
+                if (touchToggleEnabled) {
+                  if ($(event.target).closest(ignoreTargets).length) {
+                    return;
+                  }
+                  if (!scrollTriggered) {
+                    $.fixedToolbars.toggle(stateBefore);
+                    stateBefore = null;
+                  }
+                }
+              })
               .bind('silentscroll.toolbar', showEventCallback);
 
       /*
@@ -3244,16 +3337,16 @@
         }
       })
               .bind('scrollstop.toolbar', function(event) {
-        if ($(event.target).closest(ignoreTargets).length) {
-          return;
-        }
-        scrollTriggered = false;
-        if (autoHideMode) {
-          autoHideMode = false;
-          $.fixedToolbars.startShowTimer();
-        }
-        stateBefore = null;
-      });
+                if ($(event.target).closest(ignoreTargets).length) {
+                  return;
+                }
+                scrollTriggered = false;
+                if (autoHideMode) {
+                  autoHideMode = false;
+                  $.fixedToolbars.startShowTimer();
+                }
+                stateBefore = null;
+              });
 
       $(window).bind('resize.toolbar', showEventCallback);
     });
@@ -3463,10 +3556,10 @@
 
       label
               .buttonMarkup({
-                              theme: this.options.theme,
-                              icon: this.element.parents(":jqmData(type='horizontal')").length ? undefined : uncheckedicon,
-                              shadow: false
-                            });
+        theme: this.options.theme,
+        icon: this.element.parents(":jqmData(type='horizontal')").length ? undefined : uncheckedicon,
+        shadow: false
+      });
 
       // wrap the input + label in a div
       input
@@ -3503,29 +3596,29 @@
 
       input
               .bind({
-                      vmousedown: function() {
-                        this._cacheVals();
-                      },
+        vmousedown: function() {
+          this._cacheVals();
+        },
 
-                      vclick: function() {
-                        // adds checked attribute to checked input when keyboard is used
-                        if ($(this).is(":checked")) {
-                          $(this).prop("checked", true);
-                          self._getInputSet().not($(this)).prop('checked', false);
-                        } else {
-                          $(this).prop("checked", false);
-                        }
-                        self._updateAll();
-                      },
+        vclick: function() {
+          // adds checked attribute to checked input when keyboard is used
+          if ($(this).is(":checked")) {
+            $(this).prop("checked", true);
+            self._getInputSet().not($(this)).prop('checked', false);
+          } else {
+            $(this).prop("checked", false);
+          }
+          self._updateAll();
+        },
 
-                      focus: function() {
-                        label.addClass("ui-focus");
-                      },
+        focus: function() {
+          label.addClass("ui-focus");
+        },
 
-                      blur: function() {
-                        label.removeClass("ui-focus");
-                      }
-                    });
+        blur: function() {
+          label.removeClass("ui-focus");
+        }
+      });
 
       this.refresh();
 
@@ -3607,10 +3700,9 @@
               themeclass;
 
       if (!theme) {
-        var themedParent = this.element.closest("[class*='ui-bar-'],[class*='ui-body-']");
-        theme = themedParent.length ?
-                /ui-(bar|body)-([a-z])/.exec(themedParent.attr("class"))[2] :
-                "c";
+        var themedParent = this.element.closest("[class*='ui-bar-'],[class*='ui-body-']"),
+                themeLetter = themedParent.length && /ui-(bar|body)-([a-z])/.exec(themedParent.attr("class")),
+                theme = themeLetter && themeLetter[2] || "c";
       }
 
       themeclass = " ui-body-" + theme;
@@ -3626,11 +3718,11 @@
         focusedEl = input.wrap('<div class="ui-input-search ui-shadow-inset ui-btn-corner-all ui-btn-shadow ui-icon-searchfield' + themeclass + '"></div>').parent();
         var clearbtn = $('<a href="#" class="ui-input-clear" title="clear text">clear text</a>')
                 .tap(function(e) {
-          input.val('').focus();
-          input.trigger('change');
-          clearbtn.addClass('ui-input-clear-hidden');
-          e.preventDefault();
-        })
+                  input.val('').focus();
+                  input.trigger('change');
+                  clearbtn.addClass('ui-input-clear-hidden');
+                  e.preventDefault();
+                })
                 .appendTo(focusedEl)
                 .buttonMarkup({icon: 'delete', iconpos: 'notext', corners:true, shadow:true});
 
@@ -3656,8 +3748,8 @@
         focusedEl.addClass('ui-focus');
       })
               .blur(function() {
-        focusedEl.removeClass('ui-focus');
-      });
+                focusedEl.removeClass('ui-focus');
+              });
 
       //autogrow
       if (input.is('textarea')) {
@@ -3740,14 +3832,14 @@
                       .text($(select[0].options.item(selectedIndex)).text())
                       .insertBefore(select)
                       .buttonMarkup({
-                                      theme: o.theme,
-                                      icon: o.icon,
-                                      iconpos: o.iconpos,
-                                      inline: o.inline,
-                                      corners: o.corners,
-                                      shadow: o.shadow,
-                                      iconshadow: o.iconshadow
-                                    }),
+                        theme: o.theme,
+                        icon: o.icon,
+                        iconpos: o.iconpos,
+                        inline: o.inline,
+                        corners: o.corners,
+                        shadow: o.shadow,
+                        iconshadow: o.iconshadow
+                      }),
 
         //multi select or not
               isMultiple = self.isMultiple = select[0].multiple;
@@ -3871,21 +3963,21 @@
         select
                 .appendTo(button)
                 .bind("vmousedown", function(e) {
-          //add active class to button
-          button.addClass($.mobile.activeBtnClass);
-        })
+                  //add active class to button
+                  button.addClass($.mobile.activeBtnClass);
+                })
                 .bind("focus vmouseover", function() {
-          button.trigger("vmouseover");
-        })
+                  button.trigger("vmouseover");
+                })
                 .bind("vmousemove", function() {
-          //remove active class on scroll/touchmove
-          button.removeClass($.mobile.activeBtnClass);
-        })
+                  //remove active class on scroll/touchmove
+                  button.removeClass($.mobile.activeBtnClass);
+                })
                 .bind("change blur vmouseout", function() {
-          button
-                  .trigger("vmouseout")
-                  .removeClass($.mobile.activeBtnClass);
-        });
+                  button
+                          .trigger("vmouseout")
+                          .removeClass($.mobile.activeBtnClass);
+                });
 
 
       } else {
@@ -3896,9 +3988,9 @@
         select
                 .attr("tabindex", "-1")
                 .focus(function() {
-          $(this).blur();
-          button.focus();
-        });
+                  $(this).blur();
+                  button.focus();
+                });
 
         //button events
         button
@@ -3914,89 +4006,89 @@
         list
                 .attr("role", "listbox")
                 .delegate(".ui-li>a", "focusin", function() {
-          $(this).attr("tabindex", "0");
-        })
+                  $(this).attr("tabindex", "0");
+                })
                 .delegate(".ui-li>a", "focusout", function() {
-          $(this).attr("tabindex", "-1");
-        })
+                  $(this).attr("tabindex", "-1");
+                })
                 .delegate("li:not(.ui-disabled, .ui-li-divider)", "vclick", function(event) {
 
-          // index of option tag to be selected
-          var oldIndex = select[0].selectedIndex,
-                  newIndex = list.find("li:not(.ui-li-divider)").index(this),
-                  option = self.optionElems.eq(newIndex)[0];
+                  // index of option tag to be selected
+                  var oldIndex = select[0].selectedIndex,
+                          newIndex = list.find("li:not(.ui-li-divider)").index(this),
+                          option = self.optionElems.eq(newIndex)[0];
 
-          // toggle selected status on the tag for multi selects
-          option.selected = isMultiple ? !option.selected : true;
+                  // toggle selected status on the tag for multi selects
+                  option.selected = isMultiple ? !option.selected : true;
 
-          // toggle checkbox class for multiple selects
-          if (isMultiple) {
-            $(this)
-                    .find('.ui-icon')
-                    .toggleClass('ui-icon-checkbox-on', option.selected)
-                    .toggleClass('ui-icon-checkbox-off', !option.selected);
-          }
+                  // toggle checkbox class for multiple selects
+                  if (isMultiple) {
+                    $(this)
+                            .find('.ui-icon')
+                            .toggleClass('ui-icon-checkbox-on', option.selected)
+                            .toggleClass('ui-icon-checkbox-off', !option.selected);
+                  }
 
-          // trigger change if value changed
-          if (isMultiple || oldIndex !== newIndex) {
-            select.trigger("change");
-          }
+                  // trigger change if value changed
+                  if (isMultiple || oldIndex !== newIndex) {
+                    select.trigger("change");
+                  }
 
-          //hide custom select for single selects only
-          if (!isMultiple) {
-            self.close();
-          }
+                  //hide custom select for single selects only
+                  if (!isMultiple) {
+                    self.close();
+                  }
 
-          event.preventDefault();
-        })
+                  event.preventDefault();
+                })
           //keyboard events for menu items
                 .keydown(function(e) {
-          var target = $(e.target),
-                  li = target.closest("li");
+                  var target = $(e.target),
+                          li = target.closest("li");
 
-          // switch logic based on which key was pressed
-          switch (e.keyCode) {
-            // up or left arrow keys
-            case 38:
-              var prev = li.prev();
+                  // switch logic based on which key was pressed
+                  switch (e.keyCode) {
+                    // up or left arrow keys
+                    case 38:
+                      var prev = li.prev();
 
-              // if there's a previous option, focus it
-              if (prev.length) {
-                target
-                        .blur()
-                        .attr("tabindex", "-1");
+                      // if there's a previous option, focus it
+                      if (prev.length) {
+                        target
+                                .blur()
+                                .attr("tabindex", "-1");
 
-                prev.find("a").first().focus();
-              }
+                        prev.find("a").first().focus();
+                      }
 
-              return false;
-              break;
+                      return false;
+                      break;
 
-            // down or right arrow keys
-            case 40:
-              var next = li.next();
+                    // down or right arrow keys
+                    case 40:
+                      var next = li.next();
 
-              // if there's a next option, focus it
-              if (next.length) {
-                target
-                        .blur()
-                        .attr("tabindex", "-1");
+                      // if there's a next option, focus it
+                      if (next.length) {
+                        target
+                                .blur()
+                                .attr("tabindex", "-1");
 
-                next.find("a").first().focus();
-              }
+                        next.find("a").first().focus();
+                      }
 
-              return false;
-              break;
+                      return false;
+                      break;
 
-            // if enter or space is pressed, trigger click
-            case 13:
-            case 32:
-              target.trigger("vclick");
+                    // if enter or space is pressed, trigger click
+                    case 13:
+                    case 32:
+                      target.trigger("vclick");
 
-              return false;
-              break;
-          }
-        });
+                      return false;
+                      break;
+                  }
+                });
 
         //events on "screen" overlay
         screen.bind("vclick", function(event) {
@@ -4102,17 +4194,17 @@
       self.button
               .find(".ui-btn-text")
               .text(function() {
-        if (!isMultiple) {
-          return selected.text();
-        }
+                if (!isMultiple) {
+                  return selected.text();
+                }
 
-        return selected.length ?
-                selected.map(
-                        function() {
-                          return $(this).text();
-                        }).get().join(', ') :
-                self.placeholder;
-      });
+                return selected.length ?
+                        selected.map(
+                                function() {
+                                  return $(this).text();
+                                }).get().join(', ') :
+                        self.placeholder;
+              });
 
       // multiple count inside button
       if (isMultiple) {
@@ -4125,18 +4217,18 @@
                 .removeClass($.mobile.activeBtnClass)
                 .attr('aria-selected', false)
                 .each(function(i) {
-          if ($.inArray(i, indicies) > -1) {
-            var item = $(this).addClass($.mobile.activeBtnClass);
+                  if ($.inArray(i, indicies) > -1) {
+                    var item = $(this).addClass($.mobile.activeBtnClass);
 
-            // aria selected attr
-            item.find('a').attr('aria-selected', true);
+                    // aria selected attr
+                    item.find('a').attr('aria-selected', true);
 
-            // multiple selects: add the "on" checkbox state to the icon
-            if (isMultiple) {
-              item.find('.ui-icon').removeClass('ui-icon-checkbox-off').addClass('ui-icon-checkbox-on');
-            }
-          }
-        });
+                    // multiple selects: add the "on" checkbox state to the icon
+                    if (isMultiple) {
+                      item.find('.ui-icon').removeClass('ui-icon-checkbox-off').addClass('ui-icon-checkbox-on');
+                    }
+                  }
+                });
       }
     },
 
@@ -4228,9 +4320,9 @@
                 .append(self.list)
                 .removeClass("ui-selectmenu-hidden")
                 .css({
-                       top: newtop,
-                       left: newleft
-                     })
+                  top: newtop,
+                  left: newleft
+                })
                 .addClass("in");
 
         focusMenuItem();
@@ -4453,14 +4545,14 @@
       this.button = $("<div></div>")
               .text($el.text() || $el.val())
               .buttonMarkup({
-                              theme: o.theme,
-                              icon: o.icon,
-                              iconpos: o.iconpos,
-                              inline: o.inline,
-                              corners: o.corners,
-                              shadow: o.shadow,
-                              iconshadow: o.iconshadow
-                            })
+                theme: o.theme,
+                icon: o.icon,
+                iconpos: o.iconpos,
+                inline: o.inline,
+                corners: o.corners,
+                shadow: o.shadow,
+                iconshadow: o.iconshadow
+              })
               .insertBefore($el)
               .append($el.addClass('ui-btn-hidden'));
 
@@ -4469,7 +4561,7 @@
       if (type !== 'button' && type !== 'reset') {
         $el.bind("vclick", function() {
           var $buttonPlaceholder = $("<input>",
-          {type: "hidden", name: $el.attr("name"), value: $el.attr("value")})
+                  {type: "hidden", name: $el.attr("name"), value: $el.attr("value")})
                   .insertBefore($el);
 
           //bind to doc to remove after submit handling
@@ -4547,14 +4639,14 @@
                       .appendTo(slider)
                       .buttonMarkup({corners: true, theme: theme, shadow: true})
                       .attr({
-                              'role': 'slider',
-                              'aria-valuemin': min,
-                              'aria-valuemax': max,
-                              'aria-valuenow': val(),
-                              'aria-valuetext': val(),
-                              'title': val(),
-                              'aria-labelledby': labelID
-                            });
+                        'role': 'slider',
+                        'aria-valuemin': min,
+                        'aria-valuemax': max,
+                        'aria-valuenow': val(),
+                        'aria-valuetext': val(),
+                        'title': val(),
+                        'aria-labelledby': labelID
+                      });
 
       $.extend(this, {
         slider: slider,
@@ -4583,14 +4675,14 @@
       control
               .addClass((cType == 'input') ? 'ui-slider-input' : 'ui-slider-switch')
               .change(function() {
-        self.refresh(val(), true);
-      })
+                self.refresh(val(), true);
+              })
               .keyup(function() { // necessary?
-        self.refresh(val(), true, true);
-      })
+                self.refresh(val(), true, true);
+              })
               .blur(function() {
-        self.refresh(val(), true);
-      });
+                self.refresh(val(), true);
+              });
 
       // prevent screen drag when slider activated
       $(document).bind("vmousemove", function(event) {
@@ -4613,25 +4705,25 @@
       slider
               .add(document)
               .bind("vmouseup", function() {
-        if (self.dragging) {
-          self.dragging = false;
-          if (cType === "select") {
-            if (self.beforeStart === control[0].selectedIndex) {
-              //tap occurred, but value didn't change. flip it!
-              self.refresh(self.beforeStart === 0 ? 1 : 0);
-            }
-            var curval = val();
-            var snapped = Math.round(curval / (max - min) * 100);
-            handle
-                    .addClass("ui-slider-handle-snapping")
-                    .css("left", snapped + "%")
-                    .animationComplete(function() {
-              handle.removeClass("ui-slider-handle-snapping");
-            });
-          }
-          return false;
-        }
-      });
+                if (self.dragging) {
+                  self.dragging = false;
+                  if (cType === "select") {
+                    if (self.beforeStart === control[0].selectedIndex) {
+                      //tap occurred, but value didn't change. flip it!
+                      self.refresh(self.beforeStart === 0 ? 1 : 0);
+                    }
+                    var curval = val();
+                    var snapped = Math.round(curval / (max - min) * 100);
+                    handle
+                            .addClass("ui-slider-handle-snapping")
+                            .css("left", snapped + "%")
+                            .animationComplete(function() {
+                              handle.removeClass("ui-slider-handle-snapping");
+                            });
+                  }
+                  return false;
+                }
+              });
 
       slider.insertAfter(control);
 
@@ -4690,11 +4782,11 @@
         }
       })// remove active mark
               .keyup(function(event) {
-        if (self._keySliding) {
-          self._keySliding = false;
-          $(this).removeClass("ui-state-active");
-        }
-      });
+                if (self._keySliding) {
+                  self._keySliding = false;
+                  $(this).removeClass("ui-state-active");
+                }
+              });
 
       this.refresh();
     },
@@ -4836,21 +4928,21 @@
               .wrapInner('<a href="#" class="ui-collapsible-heading-toggle"></a>')
               .find("a:eq(0)")
               .buttonMarkup({
-                              shadow: !collapsibleParent.length,
-                              corners: false,
-                              iconPos: "left",
-                              icon: "plus",
-                              theme: o.theme
-                            })
+                shadow: !collapsibleParent.length,
+                corners: false,
+                iconPos: "left",
+                icon: "plus",
+                theme: o.theme
+              })
               .find(".ui-icon")
               .removeAttr("class")
               .buttonMarkup({
-                              shadow: true,
-                              corners: true,
-                              iconPos: "notext",
-                              icon: "plus",
-                              theme: o.iconTheme
-                            });
+                shadow: true,
+                corners: true,
+                iconPos: "notext",
+                icon: "plus",
+                theme: o.iconTheme
+              });
 
       if (! collapsibleParent.length) {
         collapsibleHeading
@@ -4891,22 +4983,22 @@
 
       })
               .bind("expand", function(event) {
-        if (! event.isDefaultPrevented()) {
-          event.preventDefault();
-          collapsibleHeading
-                  .removeClass("ui-collapsible-heading-collapsed")
-                  .find(".ui-collapsible-heading-status").text(o.collapseCueText);
+                if (! event.isDefaultPrevented()) {
+                  event.preventDefault();
+                  collapsibleHeading
+                          .removeClass("ui-collapsible-heading-collapsed")
+                          .find(".ui-collapsible-heading-status").text(o.collapseCueText);
 
-          collapsibleHeading.find(".ui-icon").removeClass("ui-icon-plus").addClass("ui-icon-minus");
-          collapsibleContent.removeClass("ui-collapsible-content-collapsed").attr("aria-hidden", false);
+                  collapsibleHeading.find(".ui-icon").removeClass("ui-icon-plus").addClass("ui-icon-minus");
+                  collapsibleContent.removeClass("ui-collapsible-content-collapsed").attr("aria-hidden", false);
 
-          if (collapsibleContain.jqmData("collapsible-last")) {
-            collapsibleHeading
-                    .find("a:eq(0), .ui-btn-inner")
-                    .removeClass("ui-corner-bottom");
-          }
-        }
-      })
+                  if (collapsibleContain.jqmData("collapsible-last")) {
+                    collapsibleHeading
+                            .find("a:eq(0), .ui-btn-inner")
+                            .removeClass("ui-corner-bottom");
+                  }
+                }
+              })
               .trigger(o.collapsed ? "collapse" : "expand");
 
 
@@ -4916,12 +5008,12 @@
                 .jqmData("collapsiblebound", true)
                 .bind("expand", function(event) {
 
-          $(event.target)
-                  .closest(".ui-collapsible-contain")
-                  .siblings(".ui-collapsible-contain")
-                  .trigger("collapse");
+                  $(event.target)
+                          .closest(".ui-collapsible-contain")
+                          .siblings(".ui-collapsible-contain")
+                          .trigger("collapse");
 
-        });
+                });
 
 
         var set = collapsibleParent.find(":jqmData(role='collapsible'):first");
@@ -5051,9 +5143,9 @@
                 item.addClass($(this).is(".ui-li-icon") ? "ui-li-has-icon" : "ui-li-has-thumb");
               }).end()
               .find(".ui-li-aside").each(function() {
-        var $this = $(this);
-        $this.prependTo($this.parent()); //shift aside to front for css float
-      });
+                var $this = $(this);
+                $this.prependTo($this.parent()); //shift aside to front for css float
+              });
     },
 
     _removeCorners: function(li) {
@@ -5083,67 +5175,65 @@
                 itemClass = "ui-li";
 
         // If we're creating the element, we update it regardless
-        if (!create && item.hasClass("ui-li")) {
-          continue;
-        }
+        if (create || !item.hasClass("ui-li")) {
+          var itemTheme = item.jqmData("theme") || o.theme,
+                  a = item.children("a");
 
-        var itemTheme = item.jqmData("theme") || o.theme,
-                a = item.children("a");
+          if (a.length) {
+            var icon = item.jqmData("icon");
 
-        if (a.length) {
-          var icon = item.jqmData("icon");
-
-          item
-                  .buttonMarkup({
-                                  wrapperEls: "div",
-                                  shadow: false,
-                                  corners: false,
-                                  iconpos: "right",
-                                  icon: a.length > 1 || icon === false ? false : icon || "arrow-r",
-                                  theme: itemTheme
-                                });
-
-          a.first().addClass("ui-link-inherit");
-
-          if (a.length > 1) {
-            itemClass += " ui-li-has-alt";
-
-            var last = a.last(),
-                    splittheme = listsplittheme || last.jqmData("theme") || o.splitTheme;
-
-            last
-                    .appendTo(item)
-                    .attr("title", last.text())
-                    .addClass("ui-li-link-alt")
-                    .empty()
+            item
                     .buttonMarkup({
-                                    shadow: false,
-                                    corners: false,
-                                    theme: itemTheme,
-                                    icon: false,
-                                    iconpos: false
-                                  })
-                    .find(".ui-btn-inner")
-                    .append($("<span />").buttonMarkup({
-              shadow: true,
-              corners: true,
-              theme: splittheme,
-              iconpos: "notext",
-              icon: listspliticon || last.jqmData("icon") || o.splitIcon
-            }));
+              wrapperEls: "div",
+              shadow: false,
+              corners: false,
+              iconpos: "right",
+              icon: a.length > 1 || icon === false ? false : icon || "arrow-r",
+              theme: itemTheme
+            });
+
+            a.first().addClass("ui-link-inherit");
+
+            if (a.length > 1) {
+              itemClass += " ui-li-has-alt";
+
+              var last = a.last(),
+                      splittheme = listsplittheme || last.jqmData("theme") || o.splitTheme;
+
+              last
+                      .appendTo(item)
+                      .attr("title", last.text())
+                      .addClass("ui-li-link-alt")
+                      .empty()
+                      .buttonMarkup({
+                        shadow: false,
+                        corners: false,
+                        theme: itemTheme,
+                        icon: false,
+                        iconpos: false
+                      })
+                      .find(".ui-btn-inner")
+                      .append($("<span />").buttonMarkup({
+                shadow: true,
+                corners: true,
+                theme: splittheme,
+                iconpos: "notext",
+                icon: listspliticon || last.jqmData("icon") || o.splitIcon
+              }));
+            }
+
+          } else if (item.jqmData("role") === "list-divider") {
+            itemClass += " ui-li-divider ui-btn ui-bar-" + dividertheme;
+            item.attr("role", "heading");
+
+            //reset counter when a divider heading is encountered
+            if (counter) {
+              counter = 1;
+            }
+
+          } else {
+            itemClass += " ui-li-static ui-body-" + itemTheme;
           }
-
-        } else if (item.jqmData("role") === "list-divider") {
-          itemClass += " ui-li-divider ui-btn ui-bar-" + dividertheme;
-          item.attr("role", "heading");
-
-          //reset counter when a divider heading is encountered
-          if (counter) {
-            counter = 1;
-          }
-
-        } else {
-          itemClass += " ui-li-static ui-body-" + itemTheme;
         }
 
 
@@ -5280,72 +5370,72 @@
                     .jqmData('lastval', "")
                     .bind("keyup change", function() {
 
-              var val = this.value.toLowerCase(),
-                      listItems = null,
-                      lastval = $(this).jqmData('lastval') + "";
+                      var val = this.value.toLowerCase(),
+                              listItems = null,
+                              lastval = $(this).jqmData('lastval') + "";
 
-              //change val as lastval for next execution
-              $(this).jqmData('lastval', val);
+                      //change val as lastval for next execution
+                      $(this).jqmData('lastval', val);
 
-              change = val.replace(new RegExp("^" + lastval), "");
+                      change = val.replace(new RegExp("^" + lastval), "");
 
-              if (val.length < lastval.length || change.length != ( val.length - lastval.length )) {
+                      if (val.length < lastval.length || change.length != ( val.length - lastval.length )) {
 
-                //removed chars or pasted something totaly different, check all items
-                listItems = list.children();
-              } else {
+                        //removed chars or pasted something totaly different, check all items
+                        listItems = list.children();
+                      } else {
 
-                //only chars added, not removed, only use visible subset
-                listItems = list.children(':not(.ui-screen-hidden)');
-              }
+                        //only chars added, not removed, only use visible subset
+                        listItems = list.children(':not(.ui-screen-hidden)');
+                      }
 
-              if (val) {
+                      if (val) {
 
-                // This handles hiding regular rows without the text we search for
-                // and any list dividers without regular rows shown under it
-                var item,
-                        childItems = false,
-                        itemtext = "";
+                        // This handles hiding regular rows without the text we search for
+                        // and any list dividers without regular rows shown under it
+                        var item,
+                                childItems = false,
+                                itemtext = "";
 
-                for (var i = listItems.length - 1; i >= 0; i--) {
-                  item = $(listItems[i]);
-                  itemtext = item.jqmData('filtertext') || item.text();
+                        for (var i = listItems.length - 1; i >= 0; i--) {
+                          item = $(listItems[i]);
+                          itemtext = item.jqmData('filtertext') || item.text();
 
-                  if (item.is("li:jqmData(role=list-divider)")) {
+                          if (item.is("li:jqmData(role=list-divider)")) {
 
-                    item.toggleClass('ui-filter-hidequeue', !childItems);
+                            item.toggleClass('ui-filter-hidequeue', !childItems);
 
-                    // New bucket!
-                    childItems = false;
+                            // New bucket!
+                            childItems = false;
 
-                  } else if (itemtext.toLowerCase().indexOf(val) === -1) {
+                          } else if (itemtext.toLowerCase().indexOf(val) === -1) {
 
-                    //mark to be hidden
-                    item.toggleClass('ui-filter-hidequeue', true);
-                  } else {
+                            //mark to be hidden
+                            item.toggleClass('ui-filter-hidequeue', true);
+                          } else {
 
-                    // There's a shown item in the bucket
-                    childItems = true;
-                  }
-                }
+                            // There's a shown item in the bucket
+                            childItems = true;
+                          }
+                        }
 
-                // show items, not marked to be hidden
-                listItems
-                        .filter(':not(.ui-filter-hidequeue)')
-                        .toggleClass('ui-screen-hidden', false);
+                        // show items, not marked to be hidden
+                        listItems
+                                .filter(':not(.ui-filter-hidequeue)')
+                                .toggleClass('ui-screen-hidden', false);
 
-                // hide items, marked to be hidden
-                listItems
-                        .filter('.ui-filter-hidequeue')
-                        .toggleClass('ui-screen-hidden', true)
-                        .toggleClass('ui-filter-hidequeue', false);
+                        // hide items, marked to be hidden
+                        listItems
+                                .filter('.ui-filter-hidequeue')
+                                .toggleClass('ui-screen-hidden', true)
+                                .toggleClass('ui-filter-hidequeue', false);
 
-              } else {
+                      } else {
 
-                //filtervalue is empty => show all
-                listItems.toggleClass('ui-screen-hidden', false);
-              }
-            })
+                        //filtervalue is empty => show all
+                        listItems.toggleClass('ui-screen-hidden', false);
+                      }
+                    })
                     .appendTo(wrapper)
                     .textinput();
 
@@ -5405,8 +5495,8 @@
         }
       })
               .bind("pagehide", function() {
-        $(this).find("." + $.mobile.activeBtnClass).removeClass($.mobile.activeBtnClass);
-      });
+                $(this).find("." + $.mobile.activeBtnClass).removeClass($.mobile.activeBtnClass);
+              });
     },
 
     //close method goes back in history
@@ -5446,10 +5536,10 @@
 
       $navbtns
               .buttonMarkup({
-                              corners:  false,
-                              shadow:    false,
-                              iconpos:  iconpos
-                            });
+        corners:  false,
+        shadow:    false,
+        iconpos:  iconpos
+      });
 
       $navbar.delegate("a", "vclick", function(event) {
         $navbtns.not(".ui-state-persist").removeClass($.mobile.activeBtnClass);
@@ -5560,9 +5650,9 @@
                 .appendTo($.mobile.pageContainer)
           //position at y center (if scrollTop supported), above the activeBtn (if defined), or just 100px from top
                 .css({
-                       top: $.support.scrollTop && $(window).scrollTop() + $(window).height() / 2 ||
-                               activeBtn.length && activeBtn.offset().top || 100
-                     });
+                  top: $.support.scrollTop && $(window).scrollTop() + $(window).height() / 2 ||
+                          activeBtn.length && activeBtn.offset().top || 100
+                });
       }
 
       $html.addClass("ui-loading");
@@ -5616,6 +5706,16 @@
     }
   });
 
+  //check which scrollTop value should be used by scrolling to 1 immediately
+  //then check what the scroll top is. Android will report 0... others 1
+  //note that this initial scroll won't hide the address bar. It's just for the check.
+  window.scrollTo(0, 1);
+
+  //if defaultHomeScroll hasn't been set yet, see if scrollTop is 1
+  //it should be 1 in most browsers, but android treats 1 as 0 (for hiding addr bar)
+  //so if it's 1, use 0 from now on
+  $.mobile.defaultHomeScroll = ( !$.support.scrollTop || $(window).scrollTop() === 1 ) ? 0 : 1;
+
   //dom-ready inits
   $($.mobile.initializePage);
 
@@ -5647,16 +5747,17 @@
     //menu items
     $.each(themes, function(i) {
       $('<li><a href="#" data-' + $.mobile.ns + 'rel="back">' + themes[ i ].charAt(0).toUpperCase() + themes[ i ].substr(1) + '</a></li>')
-              .click(function() {
-        addTheme(themes[i]);
-        return false;
-      })
+              .bind("vclick", function() {
+                addTheme(themes[i]);
+                menuPage.dialog("close");
+                return false;
+              })
               .appendTo(menu);
     });
 
     //remover, adder
     function addTheme(theme) {
-      $('head').append('<link rel=\'stylesheet\' href=\'' + themesDir + theme + '.css\' />');
+      $('head').append('<link rel=\'stylesheet\' href=\'' + themesDir + theme + '/\' />');
     }
 
     //create page, listview

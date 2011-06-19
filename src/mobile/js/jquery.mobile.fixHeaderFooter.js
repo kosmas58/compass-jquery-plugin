@@ -60,21 +60,21 @@
     $(function() {
       $(document)
               .bind("vmousedown.toolbar", function(event) {
-        if (touchToggleEnabled) {
-          stateBefore = currentstate;
-        }
-      })
+                if (touchToggleEnabled) {
+                  stateBefore = currentstate;
+                }
+              })
               .bind("vclick.toolbar", function(event) {
-        if (touchToggleEnabled) {
-          if ($(event.target).closest(ignoreTargets).length) {
-            return;
-          }
-          if (!scrollTriggered) {
-            $.fixedToolbars.toggle(stateBefore);
-            stateBefore = null;
-          }
-        }
-      })
+                if (touchToggleEnabled) {
+                  if ($(event.target).closest(ignoreTargets).length) {
+                    return;
+                  }
+                  if (!scrollTriggered) {
+                    $.fixedToolbars.toggle(stateBefore);
+                    stateBefore = null;
+                  }
+                }
+              })
               .bind('silentscroll.toolbar', showEventCallback);
 
       /*
@@ -108,16 +108,16 @@
         }
       })
               .bind('scrollstop.toolbar', function(event) {
-        if ($(event.target).closest(ignoreTargets).length) {
-          return;
-        }
-        scrollTriggered = false;
-        if (autoHideMode) {
-          autoHideMode = false;
-          $.fixedToolbars.startShowTimer();
-        }
-        stateBefore = null;
-      });
+                if ($(event.target).closest(ignoreTargets).length) {
+                  return;
+                }
+                scrollTriggered = false;
+                if (autoHideMode) {
+                  autoHideMode = false;
+                  $.fixedToolbars.startShowTimer();
+                }
+                stateBefore = null;
+              });
 
       $(window).bind('resize.toolbar', showEventCallback);
     });

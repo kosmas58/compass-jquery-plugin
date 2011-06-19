@@ -38,10 +38,10 @@
 
       label
               .buttonMarkup({
-                              theme: this.options.theme,
-                              icon: this.element.parents(":jqmData(type='horizontal')").length ? undefined : uncheckedicon,
-                              shadow: false
-                            });
+        theme: this.options.theme,
+        icon: this.element.parents(":jqmData(type='horizontal')").length ? undefined : uncheckedicon,
+        shadow: false
+      });
 
       // wrap the input + label in a div
       input
@@ -78,29 +78,29 @@
 
       input
               .bind({
-                      vmousedown: function() {
-                        this._cacheVals();
-                      },
+        vmousedown: function() {
+          this._cacheVals();
+        },
 
-                      vclick: function() {
-                        // adds checked attribute to checked input when keyboard is used
-                        if ($(this).is(":checked")) {
-                          $(this).prop("checked", true);
-                          self._getInputSet().not($(this)).prop('checked', false);
-                        } else {
-                          $(this).prop("checked", false);
-                        }
-                        self._updateAll();
-                      },
+        vclick: function() {
+          // adds checked attribute to checked input when keyboard is used
+          if ($(this).is(":checked")) {
+            $(this).prop("checked", true);
+            self._getInputSet().not($(this)).prop('checked', false);
+          } else {
+            $(this).prop("checked", false);
+          }
+          self._updateAll();
+        },
 
-                      focus: function() {
-                        label.addClass("ui-focus");
-                      },
+        focus: function() {
+          label.addClass("ui-focus");
+        },
 
-                      blur: function() {
-                        label.removeClass("ui-focus");
-                      }
-                    });
+        blur: function() {
+          label.removeClass("ui-focus");
+        }
+      });
 
       this.refresh();
 

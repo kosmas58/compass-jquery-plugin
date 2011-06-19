@@ -179,7 +179,7 @@
                         function(i, selected) {
                           selectedText[i] = $(selected).text();
                         }
-                        );
+                );
                 v2 = selectedText.join(",");
               }
               if (cm.formatter) {
@@ -440,50 +440,50 @@
         $("#" + $t.p.knv)
                 .focus()
                 .keydown(function (e) {
-          kdir = e.keyCode;
-          if ($t.p.direction == "rtl") {
-            if (kdir == 37) {
-              kdir = 39;
-            }
-            else if (kdir == 39) {
-              kdir = 37;
-            }
-          }
-          switch (kdir) {
-            case 38:
-              if ($t.p.iRow - 1 > 0) {
-                scrollGrid($t.p.iRow - 1, $t.p.iCol, 'vu');
-                $($t).jqGrid("editCell", $t.p.iRow - 1, $t.p.iCol, false);
-              }
-              break;
-            case 40 :
-              if ($t.p.iRow + 1 <= $t.rows.length - 1) {
-                scrollGrid($t.p.iRow + 1, $t.p.iCol, 'vd');
-                $($t).jqGrid("editCell", $t.p.iRow + 1, $t.p.iCol, false);
-              }
-              break;
-            case 37 :
-              if ($t.p.iCol - 1 >= 0) {
-                i = findNextVisible($t.p.iCol - 1, 'lft');
-                scrollGrid($t.p.iRow, i, 'h');
-                $($t).jqGrid("editCell", $t.p.iRow, i, false);
-              }
-              break;
-            case 39 :
-              if ($t.p.iCol + 1 <= $t.p.colModel.length - 1) {
-                i = findNextVisible($t.p.iCol + 1, 'rgt');
-                scrollGrid($t.p.iRow, i, 'h');
-                $($t).jqGrid("editCell", $t.p.iRow, i, false);
-              }
-              break;
-            case 13:
-              if (parseInt($t.p.iCol, 10) >= 0 && parseInt($t.p.iRow, 10) >= 0) {
-                $($t).jqGrid("editCell", $t.p.iRow, $t.p.iCol, true);
-              }
-              break;
-          }
-          return false;
-        });
+                  kdir = e.keyCode;
+                  if ($t.p.direction == "rtl") {
+                    if (kdir == 37) {
+                      kdir = 39;
+                    }
+                    else if (kdir == 39) {
+                      kdir = 37;
+                    }
+                  }
+                  switch (kdir) {
+                    case 38:
+                      if ($t.p.iRow - 1 > 0) {
+                        scrollGrid($t.p.iRow - 1, $t.p.iCol, 'vu');
+                        $($t).jqGrid("editCell", $t.p.iRow - 1, $t.p.iCol, false);
+                      }
+                      break;
+                    case 40 :
+                      if ($t.p.iRow + 1 <= $t.rows.length - 1) {
+                        scrollGrid($t.p.iRow + 1, $t.p.iCol, 'vd');
+                        $($t).jqGrid("editCell", $t.p.iRow + 1, $t.p.iCol, false);
+                      }
+                      break;
+                    case 37 :
+                      if ($t.p.iCol - 1 >= 0) {
+                        i = findNextVisible($t.p.iCol - 1, 'lft');
+                        scrollGrid($t.p.iRow, i, 'h');
+                        $($t).jqGrid("editCell", $t.p.iRow, i, false);
+                      }
+                      break;
+                    case 39 :
+                      if ($t.p.iCol + 1 <= $t.p.colModel.length - 1) {
+                        i = findNextVisible($t.p.iCol + 1, 'rgt');
+                        scrollGrid($t.p.iRow, i, 'h');
+                        $($t).jqGrid("editCell", $t.p.iRow, i, false);
+                      }
+                      break;
+                    case 13:
+                      if (parseInt($t.p.iCol, 10) >= 0 && parseInt($t.p.iRow, 10) >= 0) {
+                        $($t).jqGrid("editCell", $t.p.iRow, $t.p.iCol, true);
+                      }
+                      break;
+                  }
+                  return false;
+                });
         function scrollGrid(iR, iC, tp) {
           if (tp.substr(0, 1) == 'v') {
             var ch = $($t.grid.bDiv)[0].clientHeight,

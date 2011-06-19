@@ -27,10 +27,10 @@
 
       $navbtns
               .buttonMarkup({
-                              corners:  false,
-                              shadow:    false,
-                              iconpos:  iconpos
-                            });
+        corners:  false,
+        shadow:    false,
+        iconpos:  iconpos
+      });
 
       $navbar.delegate("a", "vclick", function(event) {
         $navbtns.not(".ui-state-persist").removeClass($.mobile.activeBtnClass);

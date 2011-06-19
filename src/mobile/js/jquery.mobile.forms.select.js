@@ -49,14 +49,14 @@
                       .text($(select[0].options.item(selectedIndex)).text())
                       .insertBefore(select)
                       .buttonMarkup({
-                                      theme: o.theme,
-                                      icon: o.icon,
-                                      iconpos: o.iconpos,
-                                      inline: o.inline,
-                                      corners: o.corners,
-                                      shadow: o.shadow,
-                                      iconshadow: o.iconshadow
-                                    }),
+                        theme: o.theme,
+                        icon: o.icon,
+                        iconpos: o.iconpos,
+                        inline: o.inline,
+                        corners: o.corners,
+                        shadow: o.shadow,
+                        iconshadow: o.iconshadow
+                      }),
 
         //multi select or not
               isMultiple = self.isMultiple = select[0].multiple;
@@ -180,21 +180,21 @@
         select
                 .appendTo(button)
                 .bind("vmousedown", function(e) {
-          //add active class to button
-          button.addClass($.mobile.activeBtnClass);
-        })
+                  //add active class to button
+                  button.addClass($.mobile.activeBtnClass);
+                })
                 .bind("focus vmouseover", function() {
-          button.trigger("vmouseover");
-        })
+                  button.trigger("vmouseover");
+                })
                 .bind("vmousemove", function() {
-          //remove active class on scroll/touchmove
-          button.removeClass($.mobile.activeBtnClass);
-        })
+                  //remove active class on scroll/touchmove
+                  button.removeClass($.mobile.activeBtnClass);
+                })
                 .bind("change blur vmouseout", function() {
-          button
-                  .trigger("vmouseout")
-                  .removeClass($.mobile.activeBtnClass);
-        });
+                  button
+                          .trigger("vmouseout")
+                          .removeClass($.mobile.activeBtnClass);
+                });
 
 
       } else {
@@ -205,9 +205,9 @@
         select
                 .attr("tabindex", "-1")
                 .focus(function() {
-          $(this).blur();
-          button.focus();
-        });
+                  $(this).blur();
+                  button.focus();
+                });
 
         //button events
         button
@@ -223,89 +223,89 @@
         list
                 .attr("role", "listbox")
                 .delegate(".ui-li>a", "focusin", function() {
-          $(this).attr("tabindex", "0");
-        })
+                  $(this).attr("tabindex", "0");
+                })
                 .delegate(".ui-li>a", "focusout", function() {
-          $(this).attr("tabindex", "-1");
-        })
+                  $(this).attr("tabindex", "-1");
+                })
                 .delegate("li:not(.ui-disabled, .ui-li-divider)", "vclick", function(event) {
 
-          // index of option tag to be selected
-          var oldIndex = select[0].selectedIndex,
-                  newIndex = list.find("li:not(.ui-li-divider)").index(this),
-                  option = self.optionElems.eq(newIndex)[0];
+                  // index of option tag to be selected
+                  var oldIndex = select[0].selectedIndex,
+                          newIndex = list.find("li:not(.ui-li-divider)").index(this),
+                          option = self.optionElems.eq(newIndex)[0];
 
-          // toggle selected status on the tag for multi selects
-          option.selected = isMultiple ? !option.selected : true;
+                  // toggle selected status on the tag for multi selects
+                  option.selected = isMultiple ? !option.selected : true;
 
-          // toggle checkbox class for multiple selects
-          if (isMultiple) {
-            $(this)
-                    .find('.ui-icon')
-                    .toggleClass('ui-icon-checkbox-on', option.selected)
-                    .toggleClass('ui-icon-checkbox-off', !option.selected);
-          }
+                  // toggle checkbox class for multiple selects
+                  if (isMultiple) {
+                    $(this)
+                            .find('.ui-icon')
+                            .toggleClass('ui-icon-checkbox-on', option.selected)
+                            .toggleClass('ui-icon-checkbox-off', !option.selected);
+                  }
 
-          // trigger change if value changed
-          if (isMultiple || oldIndex !== newIndex) {
-            select.trigger("change");
-          }
+                  // trigger change if value changed
+                  if (isMultiple || oldIndex !== newIndex) {
+                    select.trigger("change");
+                  }
 
-          //hide custom select for single selects only
-          if (!isMultiple) {
-            self.close();
-          }
+                  //hide custom select for single selects only
+                  if (!isMultiple) {
+                    self.close();
+                  }
 
-          event.preventDefault();
-        })
+                  event.preventDefault();
+                })
           //keyboard events for menu items
                 .keydown(function(e) {
-          var target = $(e.target),
-                  li = target.closest("li");
+                  var target = $(e.target),
+                          li = target.closest("li");
 
-          // switch logic based on which key was pressed
-          switch (e.keyCode) {
-            // up or left arrow keys
-            case 38:
-              var prev = li.prev();
+                  // switch logic based on which key was pressed
+                  switch (e.keyCode) {
+                    // up or left arrow keys
+                    case 38:
+                      var prev = li.prev();
 
-              // if there's a previous option, focus it
-              if (prev.length) {
-                target
-                        .blur()
-                        .attr("tabindex", "-1");
+                      // if there's a previous option, focus it
+                      if (prev.length) {
+                        target
+                                .blur()
+                                .attr("tabindex", "-1");
 
-                prev.find("a").first().focus();
-              }
+                        prev.find("a").first().focus();
+                      }
 
-              return false;
-              break;
+                      return false;
+                      break;
 
-            // down or right arrow keys
-            case 40:
-              var next = li.next();
+                    // down or right arrow keys
+                    case 40:
+                      var next = li.next();
 
-              // if there's a next option, focus it
-              if (next.length) {
-                target
-                        .blur()
-                        .attr("tabindex", "-1");
+                      // if there's a next option, focus it
+                      if (next.length) {
+                        target
+                                .blur()
+                                .attr("tabindex", "-1");
 
-                next.find("a").first().focus();
-              }
+                        next.find("a").first().focus();
+                      }
 
-              return false;
-              break;
+                      return false;
+                      break;
 
-            // if enter or space is pressed, trigger click
-            case 13:
-            case 32:
-              target.trigger("vclick");
+                    // if enter or space is pressed, trigger click
+                    case 13:
+                    case 32:
+                      target.trigger("vclick");
 
-              return false;
-              break;
-          }
-        });
+                      return false;
+                      break;
+                  }
+                });
 
         //events on "screen" overlay
         screen.bind("vclick", function(event) {
@@ -411,17 +411,17 @@
       self.button
               .find(".ui-btn-text")
               .text(function() {
-        if (!isMultiple) {
-          return selected.text();
-        }
+                if (!isMultiple) {
+                  return selected.text();
+                }
 
-        return selected.length ?
-                selected.map(
-                        function() {
-                          return $(this).text();
-                        }).get().join(', ') :
-                self.placeholder;
-      });
+                return selected.length ?
+                        selected.map(
+                                function() {
+                                  return $(this).text();
+                                }).get().join(', ') :
+                        self.placeholder;
+              });
 
       // multiple count inside button
       if (isMultiple) {
@@ -434,18 +434,18 @@
                 .removeClass($.mobile.activeBtnClass)
                 .attr('aria-selected', false)
                 .each(function(i) {
-          if ($.inArray(i, indicies) > -1) {
-            var item = $(this).addClass($.mobile.activeBtnClass);
+                  if ($.inArray(i, indicies) > -1) {
+                    var item = $(this).addClass($.mobile.activeBtnClass);
 
-            // aria selected attr
-            item.find('a').attr('aria-selected', true);
+                    // aria selected attr
+                    item.find('a').attr('aria-selected', true);
 
-            // multiple selects: add the "on" checkbox state to the icon
-            if (isMultiple) {
-              item.find('.ui-icon').removeClass('ui-icon-checkbox-off').addClass('ui-icon-checkbox-on');
-            }
-          }
-        });
+                    // multiple selects: add the "on" checkbox state to the icon
+                    if (isMultiple) {
+                      item.find('.ui-icon').removeClass('ui-icon-checkbox-off').addClass('ui-icon-checkbox-on');
+                    }
+                  }
+                });
       }
     },
 
@@ -537,9 +537,9 @@
                 .append(self.list)
                 .removeClass("ui-selectmenu-hidden")
                 .css({
-                       top: newtop,
-                       left: newleft
-                     })
+                  top: newtop,
+                  left: newleft
+                })
                 .addClass("in");
 
         focusMenuItem();

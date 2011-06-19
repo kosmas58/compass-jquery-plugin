@@ -23,14 +23,14 @@
       this.button = $("<div></div>")
               .text($el.text() || $el.val())
               .buttonMarkup({
-                              theme: o.theme,
-                              icon: o.icon,
-                              iconpos: o.iconpos,
-                              inline: o.inline,
-                              corners: o.corners,
-                              shadow: o.shadow,
-                              iconshadow: o.iconshadow
-                            })
+                theme: o.theme,
+                icon: o.icon,
+                iconpos: o.iconpos,
+                inline: o.inline,
+                corners: o.corners,
+                shadow: o.shadow,
+                iconshadow: o.iconshadow
+              })
               .insertBefore($el)
               .append($el.addClass('ui-btn-hidden'));
 
@@ -39,7 +39,7 @@
       if (type !== 'button' && type !== 'reset') {
         $el.bind("vclick", function() {
           var $buttonPlaceholder = $("<input>",
-          {type: "hidden", name: $el.attr("name"), value: $el.attr("value")})
+                  {type: "hidden", name: $el.attr("name"), value: $el.attr("value")})
                   .insertBefore($el);
 
           //bind to doc to remove after submit handling

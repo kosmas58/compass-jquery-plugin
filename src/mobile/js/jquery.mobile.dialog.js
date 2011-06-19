@@ -45,8 +45,8 @@
         }
       })
               .bind("pagehide", function() {
-        $(this).find("." + $.mobile.activeBtnClass).removeClass($.mobile.activeBtnClass);
-      });
+                $(this).find("." + $.mobile.activeBtnClass).removeClass($.mobile.activeBtnClass);
+              });
     },
 
     //close method goes back in history
