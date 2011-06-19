@@ -1,5 +1,5 @@
 /*
- * jQuery UI CSS Framework 1.8.13
+ * jQuery UI CSS Framework 1.8.14
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -83,7 +83,7 @@
 
 
 /*
- * jQuery UI Accordion 1.8.13
+ * jQuery UI Accordion 1.8.14
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -137,7 +137,7 @@
 
 
 /*
- * jQuery UI Autocomplete 1.8.13
+ * jQuery UI Autocomplete 1.8.14
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -156,7 +156,7 @@
 /* without this, the menu expands to 100% in IE6 */
 
 /*
- * jQuery UI Menu 1.8.13
+ * jQuery UI Menu 1.8.14
  *
  * Copyright 2010, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -196,7 +196,7 @@
 
 
 /*
- * jQuery UI Button 1.8.13
+ * jQuery UI Button 1.8.14
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -292,7 +292,7 @@ button.ui-button::-moz-focus-inner {
 
 
 /*
- * jQuery UI Datepicker 1.8.13
+ * jQuery UI Datepicker 1.8.14
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -426,7 +426,8 @@ button.ui-button::-moz-focus-inner {
 
 .ui-datepicker-row-break {
   clear: both;
-  width: 100%; }
+  width: 100%;
+  font-size: 0em; }
 
 /* RTL support */
 .ui-datepicker-rtl {
@@ -491,7 +492,7 @@ button.ui-button::-moz-focus-inner {
 
 
 /*
- * jQuery UI Dialog 1.8.13
+ * jQuery UI Dialog 1.8.14
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -627,7 +628,7 @@ button.ui-button::-moz-focus-inner {
 
 
 /*
- * jQuery UI Progressbar 1.8.13
+ * jQuery UI Progressbar 1.8.14
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -645,7 +646,7 @@ button.ui-button::-moz-focus-inner {
 
 
 /*
- * jQuery UI Resizable 1.8.13
+ * jQuery UI Resizable 1.8.14
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -660,11 +661,7 @@ button.ui-button::-moz-focus-inner {
   position: absolute;
   font-size: 0.1px;
   z-index: 99999;
-  display: block;
-  /* http://bugs.jqueryui.com/ticket/7233
-   - Resizable: resizable handles fail to work in IE if transparent and content overlaps
-  */
-  background-image: url(data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=); }
+  display: block; }
 
 .ui-resizable-disabled .ui-resizable-handle, .ui-resizable-autohide .ui-resizable-handle {
   display: none; }
@@ -727,7 +724,7 @@ button.ui-button::-moz-focus-inner {
 
 
 /*
- * jQuery UI Selectable 1.8.13
+ * jQuery UI Selectable 1.8.14
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -854,7 +851,7 @@ button.ui-button::-moz-focus-inner {
 
 
 /*
- * jQuery UI Slider 1.8.13
+ * jQuery UI Slider 1.8.14
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -919,7 +916,7 @@ button.ui-button::-moz-focus-inner {
 
 
 /*
- * jQuery UI Tabs 1.8.13
+ * jQuery UI Tabs 1.8.14
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -974,7 +971,7 @@ button.ui-button::-moz-focus-inner {
 
 
 /*
-* jQuery UI CSS Framework 1.8.13
+* jQuery UI CSS Framework 1.8.14
 *
 * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
 * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -1642,62 +1639,29 @@ button.ui-button::-moz-focus-inner {
 ----------------------------------*/
 
 /* Corner radius */
-.ui-corner-tl {
+.ui-corner-all, .ui-corner-top, .ui-corner-left, .ui-corner-tl {
   -moz-border-radius-topleft: $ui_cornerRadius;
   -webkit-border-top-left-radius: $ui_cornerRadius;
+  -khtml-border-top-left-radius: $ui_cornerRadius;
   border-top-left-radius: $ui_cornerRadius; }
 
-.ui-corner-tr {
+.ui-corner-all, .ui-corner-top, .ui-corner-right, .ui-corner-tr {
   -moz-border-radius-topright: $ui_cornerRadius;
   -webkit-border-top-right-radius: $ui_cornerRadius;
+  -khtml-border-top-right-radius: $ui_cornerRadius;
   border-top-right-radius: $ui_cornerRadius; }
 
-.ui-corner-bl {
+.ui-corner-all, .ui-corner-bottom, .ui-corner-left, .ui-corner-bl {
   -moz-border-radius-bottomleft: $ui_cornerRadius;
   -webkit-border-bottom-left-radius: $ui_cornerRadius;
+  -khtml-border-bottom-left-radius: $ui_cornerRadius;
   border-bottom-left-radius: $ui_cornerRadius; }
 
-.ui-corner-br {
+.ui-corner-all, .ui-corner-bottom, .ui-corner-right, .ui-corner-br {
   -moz-border-radius-bottomright: $ui_cornerRadius;
   -webkit-border-bottom-right-radius: $ui_cornerRadius;
+  -khtml-border-bottom-right-radius: $ui_cornerRadius;
   border-bottom-right-radius: $ui_cornerRadius; }
-
-.ui-corner-top {
-  -moz-border-radius-topleft: $ui_cornerRadius;
-  -webkit-border-top-left-radius: $ui_cornerRadius;
-  border-top-left-radius: $ui_cornerRadius;
-  -moz-border-radius-topright: $ui_cornerRadius;
-  -webkit-border-top-right-radius: $ui_cornerRadius;
-  border-top-right-radius: $ui_cornerRadius; }
-
-.ui-corner-bottom {
-  -moz-border-radius-bottomleft: $ui_cornerRadius;
-  -webkit-border-bottom-left-radius: $ui_cornerRadius;
-  border-bottom-left-radius: $ui_cornerRadius;
-  -moz-border-radius-bottomright: $ui_cornerRadius;
-  -webkit-border-bottom-right-radius: $ui_cornerRadius;
-  border-bottom-right-radius: $ui_cornerRadius; }
-
-.ui-corner-right {
-  -moz-border-radius-topright: $ui_cornerRadius;
-  -webkit-border-top-right-radius: $ui_cornerRadius;
-  border-top-right-radius: $ui_cornerRadius;
-  -moz-border-radius-bottomright: $ui_cornerRadius;
-  -webkit-border-bottom-right-radius: $ui_cornerRadius;
-  border-bottom-right-radius: $ui_cornerRadius; }
-
-.ui-corner-left {
-  -moz-border-radius-topleft: $ui_cornerRadius;
-  -webkit-border-top-left-radius: $ui_cornerRadius;
-  border-top-left-radius: $ui_cornerRadius;
-  -moz-border-radius-bottomleft: $ui_cornerRadius;
-  -webkit-border-bottom-left-radius: $ui_cornerRadius;
-  border-bottom-left-radius: $ui_cornerRadius; }
-
-.ui-corner-all {
-  -moz-border-radius: $ui_cornerRadius;
-  -webkit-border-radius: $ui_cornerRadius;
-  border-radius: $ui_cornerRadius; }
 
 /* Overlays */
 .ui-widget-overlay {
@@ -1712,6 +1676,7 @@ button.ui-button::-moz-focus-inner {
   opacity: $ui_bgShadowOpacity;
   filter: $ui_bgShadowFilter;
   -moz-border-radius: $ui_cornerRadiusShadow;
+  -khtml-border-radius: $ui_cornerRadiusShadow;
   -webkit-border-radius: $ui_cornerRadiusShadow;
   border-radius: $ui_cornerRadiusShadow; }
 

@@ -1,5 +1,5 @@
 /*
- * jQuery UI Effects Transfer 1.8.13
+ * jQuery UI Effects Transfer 1.8.14
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -28,17 +28,17 @@
                       .appendTo(document.body)
                       .addClass(o.options.className)
                       .css({
-                             top: startPosition.top,
-                             left: startPosition.left,
-                             height: elem.innerHeight(),
-                             width: elem.innerWidth(),
-                             position: 'absolute'
-                           })
+                        top: startPosition.top,
+                        left: startPosition.left,
+                        height: elem.innerHeight(),
+                        width: elem.innerWidth(),
+                        position: 'absolute'
+                      })
                       .animate(animation, o.duration, o.options.easing, function() {
-                transfer.remove();
-                (o.callback && o.callback.apply(elem[0], arguments));
-                elem.dequeue();
-              });
+                        transfer.remove();
+                        (o.callback && o.callback.apply(elem[0], arguments));
+                        elem.dequeue();
+                      });
     });
   };
 

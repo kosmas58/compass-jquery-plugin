@@ -1,5 +1,5 @@
 /*
- * jQuery UI Effects Highlight 1.8.13
+ * jQuery UI Effects Highlight 1.8.14
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -29,21 +29,21 @@
       elem
               .show()
               .css({
-                     backgroundImage: 'none',
-                     backgroundColor: o.options.color || '#ffff99'
-                   })
+                backgroundImage: 'none',
+                backgroundColor: o.options.color || '#ffff99'
+              })
               .animate(animation, {
-                                    queue: false,
-                                    duration: o.duration,
-                                    easing: o.options.easing,
-                                    complete: function() {
-                                      (mode == 'hide' && elem.hide());
-                                      $.effects.restore(elem, props);
-                                      (mode == 'show' && !$.support.opacity && this.style.removeAttribute('filter'));
-                                      (o.callback && o.callback.apply(this, arguments));
-                                      elem.dequeue();
-                                    }
-                                  });
+                queue: false,
+                duration: o.duration,
+                easing: o.options.easing,
+                complete: function() {
+                  (mode == 'hide' && elem.hide());
+                  $.effects.restore(elem, props);
+                  (mode == 'show' && !$.support.opacity && this.style.removeAttribute('filter'));
+                  (o.callback && o.callback.apply(this, arguments));
+                  elem.dequeue();
+                }
+              });
     });
   };
 

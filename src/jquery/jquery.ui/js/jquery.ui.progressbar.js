@@ -1,5 +1,5 @@
 /*
- * jQuery UI Progressbar 1.8.13
+ * jQuery UI Progressbar 1.8.14
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -25,11 +25,11 @@
       this.element
               .addClass("ui-progressbar ui-widget ui-widget-content ui-corner-all")
               .attr({
-                      role: "progressbar",
-                      "aria-valuemin": this.min,
-                      "aria-valuemax": this.options.max,
-                      "aria-valuenow": this._value()
-                    });
+                role: "progressbar",
+                "aria-valuemin": this.min,
+                "aria-valuemax": this.options.max,
+                "aria-valuenow": this._value()
+              });
 
       this.valueDiv = $("<div class='ui-progressbar-value ui-widget-header ui-corner-left'></div>")
               .appendTo(this.element);
@@ -103,7 +103,7 @@
   });
 
   $.extend($.ui.progressbar, {
-    version: "1.8.13"
+    version: "1.8.14"
   });
 
 })(jQuery);

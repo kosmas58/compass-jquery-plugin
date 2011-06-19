@@ -1,5 +1,5 @@
 /*
- * jQuery UI Effects Shake 1.8.13
+ * jQuery UI Effects Shake 1.8.14
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -47,10 +47,10 @@
       ;
       el.animate(animation1, speed, o.options.easing).
               animate(animation, speed / 2, o.options.easing, function() { // Last shake
-        $.effects.restore(el, props);
-        $.effects.removeWrapper(el); // Restore
-        if (o.callback) o.callback.apply(this, arguments); // Callback
-      });
+                $.effects.restore(el, props);
+                $.effects.removeWrapper(el); // Restore
+                if (o.callback) o.callback.apply(this, arguments); // Callback
+              });
       el.queue('fx', function() {
         el.dequeue();
       });

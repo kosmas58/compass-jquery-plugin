@@ -75,9 +75,9 @@
       $('label[for="' + this.element.attr('id') + '"]')
               .attr('for', this.ids[0])
               .bind('click.selectmenu', function() {
-        self.newelement[0].focus();
-        return false;
-      });
+                self.newelement[0].focus();
+                return false;
+              });
 
       // click toggle for menu visibility
       this.newelement
@@ -93,57 +93,57 @@
         return false;
       })
               .bind('click.selectmenu', function() {
-        return false;
-      })
+                return false;
+              })
               .bind("keydown.selectmenu", function(event) {
-        var ret = false;
-        switch (event.keyCode) {
-          case $.ui.keyCode.ENTER:
-            ret = true;
-            break;
-          case $.ui.keyCode.SPACE:
-            self._toggle(event);
-            break;
-          case $.ui.keyCode.UP:
-            if (event.altKey) {
-              self.open(event);
-            } else {
-              self._moveSelection(-1);
-            }
-            break;
-          case $.ui.keyCode.DOWN:
-            if (event.altKey) {
-              self.open(event);
-            } else {
-              self._moveSelection(1);
-            }
-            break;
-          case $.ui.keyCode.LEFT:
-            self._moveSelection(-1);
-            break;
-          case $.ui.keyCode.RIGHT:
-            self._moveSelection(1);
-            break;
-          case $.ui.keyCode.TAB:
-            ret = true;
-            break;
-          default:
-            ret = true;
-            self._typeAhead(event.keyCode, 'mouseup');
-            break;
-        }
-        return ret;
-      })
+                var ret = false;
+                switch (event.keyCode) {
+                  case $.ui.keyCode.ENTER:
+                    ret = true;
+                    break;
+                  case $.ui.keyCode.SPACE:
+                    self._toggle(event);
+                    break;
+                  case $.ui.keyCode.UP:
+                    if (event.altKey) {
+                      self.open(event);
+                    } else {
+                      self._moveSelection(-1);
+                    }
+                    break;
+                  case $.ui.keyCode.DOWN:
+                    if (event.altKey) {
+                      self.open(event);
+                    } else {
+                      self._moveSelection(1);
+                    }
+                    break;
+                  case $.ui.keyCode.LEFT:
+                    self._moveSelection(-1);
+                    break;
+                  case $.ui.keyCode.RIGHT:
+                    self._moveSelection(1);
+                    break;
+                  case $.ui.keyCode.TAB:
+                    ret = true;
+                    break;
+                  default:
+                    ret = true;
+                    self._typeAhead(event.keyCode, 'mouseup');
+                    break;
+                }
+                return ret;
+              })
               .bind('mouseover.selectmenu focus.selectmenu', function() {
-        if (!o.disabled) {
-          $(this).addClass(self.widgetBaseClass + '-focus ui-state-hover');
-        }
-      })
+                if (!o.disabled) {
+                  $(this).addClass(self.widgetBaseClass + '-focus ui-state-hover');
+                }
+              })
               .bind('mouseout.selectmenu blur.selectmenu', function() {
-        if (!o.disabled) {
-          $(this).removeClass(self.widgetBaseClass + '-focus ui-state-hover');
-        }
-      });
+                if (!o.disabled) {
+                  $(this).removeClass(self.widgetBaseClass + '-focus ui-state-hover');
+                }
+              });
 
       // document click closes menu
       $(document).bind("mousedown.selectmenu", function(event) {
@@ -158,10 +158,10 @@
         // FIXME: newelement can be null under unclear circumstances in IE8
         // TODO not sure if this is still a problem (fnagel 20.03.11)
               .bind("focus.selectmenu", function() {
-        if (self.newelement) {
-          self.newelement[0].focus();
-        }
-      });
+                if (self.newelement) {
+                  self.newelement[0].focus();
+                }
+              });
 
       // original selectmenu width
       var selectWidth = this.element.width();
@@ -246,17 +246,17 @@
       this.element
               .find('option')
               .each(function() {
-        selectOptionData.push({
-          value: $(this).attr('value'),
-          text: self._formatText($(this).text()),
-          selected: $(this).attr('selected'),
-          disabled: $(this).attr('disabled'),
-          classes: $(this).attr('class'),
-          typeahead: $(this).attr('typeahead'),
-          parentOptGroup: $(this).parent('optgroup'),
-          bgImage: o.bgImage.call($(this))
-        });
-      });
+                selectOptionData.push({
+                  value: $(this).attr('value'),
+                  text: self._formatText($(this).text()),
+                  selected: $(this).attr('selected'),
+                  disabled: $(this).attr('disabled'),
+                  classes: $(this).attr('class'),
+                  typeahead: $(this).attr('typeahead'),
+                  parentOptGroup: $(this).parent('optgroup'),
+                  bgImage: o.bgImage.call($(this))
+                });
+              });
 
       // active state class is only used in popup style
       var activeClass = (self.options.style == "popup") ? " ui-state-active" : "";
@@ -271,34 +271,34 @@
                 .addClass(selectOptionData[i].classes)
                 .data('optionClasses', selectOptionData[i].classes || '')
                 .bind("mouseup.selectmenu", function(event) {
-          if (self._safemouseup && !self._disabled(event.currentTarget) && !self._disabled($(event.currentTarget).parents("ul>li." + self.widgetBaseClass + "-group "))) {
-            var changed = $(this).data('index') != self._selectedIndex();
-            self.index($(this).data('index'));
-            self.select(event);
-            if (changed) {
-              self.change(event);
-            }
-            self.close(event, true);
-          }
-          return false;
-        })
+                  if (self._safemouseup && !self._disabled(event.currentTarget) && !self._disabled($(event.currentTarget).parents("ul>li." + self.widgetBaseClass + "-group "))) {
+                    var changed = $(this).data('index') != self._selectedIndex();
+                    self.index($(this).data('index'));
+                    self.select(event);
+                    if (changed) {
+                      self.change(event);
+                    }
+                    self.close(event, true);
+                  }
+                  return false;
+                })
                 .bind("click.selectmenu", function() {
-          return false;
-        })
+                  return false;
+                })
                 .bind('mouseover.selectmenu focus.selectmenu', function(e) {
-          // no hover if diabled
-          if (!$(e.currentTarget).hasClass(self.namespace + '-state-disabled')) {
-            self._selectedOptionLi().addClass(activeClass);
-            self._focusedOptionLi().removeClass(self.widgetBaseClass + '-item-focus ui-state-hover');
-            $(this).removeClass('ui-state-active').addClass(self.widgetBaseClass + '-item-focus ui-state-hover');
-          }
-        })
+                  // no hover if diabled
+                  if (!$(e.currentTarget).hasClass(self.namespace + '-state-disabled')) {
+                    self._selectedOptionLi().addClass(activeClass);
+                    self._focusedOptionLi().removeClass(self.widgetBaseClass + '-item-focus ui-state-hover');
+                    $(this).removeClass('ui-state-active').addClass(self.widgetBaseClass + '-item-focus ui-state-hover');
+                  }
+                })
                 .bind('mouseout.selectmenu blur.selectmenu', function() {
-          if ($(this).is(self._selectedOptionLi().selector)) {
-            $(this).addClass(activeClass);
-          }
-          $(this).removeClass(self.widgetBaseClass + '-item-focus ui-state-hover');
-        });
+                  if ($(this).is(self._selectedOptionLi().selector)) {
+                    $(this).addClass(activeClass);
+                  }
+                  $(this).removeClass(self.widgetBaseClass + '-item-focus ui-state-hover');
+                });
 
         // optgroup or not...
         if (selectOptionData[i].parentOptGroup.length) {
@@ -770,7 +770,7 @@
               this._selectedOptionLi()
                       .find('a:eq(0)')
                       .html()
-              );
+      );
 
       this.list.attr('aria-activedescendant', activeID);
     },
@@ -784,15 +784,15 @@
       }
       this.list
               .css({
-                     zIndex: this.element.zIndex()
-                   })
+        zIndex: this.element.zIndex()
+      })
               .position({
-                          // set options for position plugin
-                          of: o.positionOptions.of || this.newelement,
-                          my: o.positionOptions.my,
-                          at: o.positionOptions.at,
-                          offset: o.positionOptions.offset || _offset
-                        });
+                // set options for position plugin
+                of: o.positionOptions.of || this.newelement,
+                my: o.positionOptions.my,
+                at: o.positionOptions.at,
+                offset: o.positionOptions.offset || _offset
+              });
     }
   });
 

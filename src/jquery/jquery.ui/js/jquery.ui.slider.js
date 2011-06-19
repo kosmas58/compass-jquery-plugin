@@ -1,5 +1,5 @@
 /*
- * jQuery UI Slider 1.8.13
+ * jQuery UI Slider 1.8.14
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -88,26 +88,26 @@
 
       this.handles.add(this.range).filter("a")
               .click(function(event) {
-        event.preventDefault();
-      })
+                event.preventDefault();
+              })
               .hover(function() {
-        if (!o.disabled) {
-          $(this).addClass("ui-state-hover");
-        }
-      }, function() {
-        $(this).removeClass("ui-state-hover");
-      })
+                if (!o.disabled) {
+                  $(this).addClass("ui-state-hover");
+                }
+              }, function() {
+                $(this).removeClass("ui-state-hover");
+              })
               .focus(function() {
-        if (!o.disabled) {
-          $(".ui-slider .ui-state-focus").removeClass("ui-state-focus");
-          $(this).addClass("ui-state-focus");
-        } else {
-          $(this).blur();
-        }
-      })
+                if (!o.disabled) {
+                  $(".ui-slider .ui-state-focus").removeClass("ui-state-focus");
+                  $(this).addClass("ui-state-focus");
+                } else {
+                  $(this).blur();
+                }
+              })
               .blur(function() {
-        $(this).removeClass("ui-state-focus");
-      });
+                $(this).removeClass("ui-state-focus");
+              });
 
       this.handles.each(function(i) {
         $(this).data("index.ui-slider-handle", i);
@@ -189,16 +189,16 @@
 
       })
               .keyup(function(event) {
-        var index = $(this).data("index.ui-slider-handle");
+                var index = $(this).data("index.ui-slider-handle");
 
-        if (self._keySliding) {
-          self._keySliding = false;
-          self._stop(event, index);
-          self._change(event, index);
-          $(this).removeClass("ui-state-active");
-        }
+                if (self._keySliding) {
+                  self._keySliding = false;
+                  self._stop(event, index);
+                  self._change(event, index);
+                  $(this).removeClass("ui-state-active");
+                }
 
-      });
+              });
 
       this._refreshValue();
 
@@ -660,7 +660,7 @@
   });
 
   $.extend($.ui.slider, {
-    version: "1.8.13"
+    version: "1.8.14"
   });
 
 }(jQuery));
