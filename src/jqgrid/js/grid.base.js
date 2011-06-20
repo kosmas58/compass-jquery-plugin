@@ -2,12 +2,12 @@
 // @compilation_level SIMPLE_OPTIMIZATIONS
 
 /**
- * @license jqGrid  4.1  - jQuery Grid
+ * @license jqGrid  4.1.1  - jQuery Grid
  * Copyright (c) 2008, Tony Tomov, tony@trirand.com
  * Dual licensed under the MIT and GPL licenses
  * http://www.opensource.org/licenses/mit-license.php
  * http://www.gnu.org/licenses/gpl-2.0.html
- * Date: 2011-06-14
+ * Date: 2011-06-19
  */
 //jsHint options
 /*global document, window, jQuery, DOMParser, ActiveXObject $ */
@@ -3955,7 +3955,7 @@
         $t.p.lastpage = 0;
         $t.p.reccount = 0;
         $t.p.data = [];
-        $t.p_index = {};
+        $t.p._index = {};
         $t.updatepager(true, false);
       });
     },

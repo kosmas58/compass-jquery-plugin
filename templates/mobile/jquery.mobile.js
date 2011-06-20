@@ -1890,6 +1890,11 @@
     //automatically handle clicks and form submissions through Ajax, when same-domain
     ajaxEnabled: true,
 
+    //When enabled, clicks and taps that result in Ajax page changes will happen slightly sooner on touch devices.
+    //Also, it will prevent the address bar from appearing on platforms like iOS during page transitions.
+    //This option has no effect on non-touch devices, but enabling it may interfere with jQuery plugins that bind to click events
+    useFastClick: true,
+
     //automatically load and show pages based on location.hash
     hashListeningEnabled: true,
 
@@ -2414,8 +2419,9 @@
   function transitionPages(toPage, fromPage, transition, reverse) {
 
     //get current scroll distance
-    var currScroll = $window.scrollTop(),
-            toScroll = toPage.data("lastScroll") || $.mobile.defaultHomeScroll;
+    var currScroll = $.support.scrollTop ? $window.scrollTop() : true,
+            toScroll = toPage.data("lastScroll") || $.mobile.defaultHomeScroll,
+            screenHeight = getScreenHeight();
 
     //if scrolled down, scroll to top
     if (currScroll) {
@@ -2430,7 +2436,7 @@
     if (fromPage) {
       //set as data for returning to that spot
       fromPage
-              .height(screen.height + currScroll)
+              .height(screenHeight + currScroll)
               .jqmData("lastScroll", currScroll)
               .jqmData("lastClicked", $activeClickedLink);
 
@@ -2438,7 +2444,7 @@
       fromPage.data("page")._trigger("beforehide", null, { nextPage: toPage });
     }
     toPage
-            .height(screen.height + toScroll)
+            .height(screenHeight + toScroll)
             .data("page")._trigger("beforeshow", null, { prevPage: fromPage || $("") });
 
     //clear page loader
@@ -2472,9 +2478,6 @@
 
       //trigger pageshow, define prevPage as either fromPage or empty jQuery obj
       toPage.data("page")._trigger("show", null, { prevPage: fromPage || $("") });
-
-      resetActivePageHeight();
-
     });
 
     return promise;
@@ -2483,15 +2486,20 @@
   ;
 
   //simply set the active page's minimum height to screen height, depending on orientation
-  function resetActivePageHeight() {
+  function getScreenHeight() {
     var orientation = jQuery.event.special.orientationchange.orientation(),
             port = orientation === "portrait",
             winMin = port ? 480 : 320,
-            screenHeight = port ? screen.height : screen.width,
+            screenHeight = port ? screen.availHeight : screen.availWidth,
             winHeight = Math.max(winMin, $(window).height()),
             pageMin = Math.min(screenHeight, winHeight);
 
-    $(".ui-page-active").css("min-height", pageMin);
+    return pageMin;
+  }
+
+  //simply set the active page's minimum height to screen height, depending on orientation
+  function resetActivePageHeight() {
+    $("." + $.mobile.activePageClass).css("min-height", getScreenHeight());
   }
 
   //shared page enhancements
@@ -3023,8 +3031,13 @@
     }
   });
 
-  //click routing - direct to HTTP or Ajax, accordingly
-  $(document).bind("vclick click", function(event) {
+  // click routing - direct to HTTP or Ajax, accordingly
+  // TODO: most of the time, vclick will be all we need for fastClick bulletproofing.
+  // However, it seems that in Android 2.1, a click event
+  // will occasionally arrive independently of the bound vclick
+  // binding to click as well seems to help in this edge case
+  // we'll dig into this further in the next release cycle
+  $(document).bind($.mobile.useFastClick ? "vclick click" : "click", function(event) {
     var link = findClosestLink(event.target);
     if (!link) {
       return;
@@ -3175,7 +3188,8 @@
   });
 
   //set page min-heights to be device specific
-  $(document).bind("pagecreate orientationchange", resetActivePageHeight);
+  $(document).bind("pageshow", resetActivePageHeight);
+  $(window).bind("throttledresize", resetActivePageHeight);
 
 })(jQuery);
 
@@ -5706,22 +5720,24 @@
     }
   });
 
-  //check which scrollTop value should be used by scrolling to 1 immediately
+  //check which scrollTop value should be used by scrolling to 1 immediately at domready
   //then check what the scroll top is. Android will report 0... others 1
   //note that this initial scroll won't hide the address bar. It's just for the check.
-  window.scrollTo(0, 1);
+  $(function() {
+    window.scrollTo(0, 1);
 
-  //if defaultHomeScroll hasn't been set yet, see if scrollTop is 1
-  //it should be 1 in most browsers, but android treats 1 as 0 (for hiding addr bar)
-  //so if it's 1, use 0 from now on
-  $.mobile.defaultHomeScroll = ( !$.support.scrollTop || $(window).scrollTop() === 1 ) ? 0 : 1;
+    //if defaultHomeScroll hasn't been set yet, see if scrollTop is 1
+    //it should be 1 in most browsers, but android treats 1 as 0 (for hiding addr bar)
+    //so if it's 1, use 0 from now on
+    $.mobile.defaultHomeScroll = ( !$.support.scrollTop || $(window).scrollTop() === 1 ) ? 0 : 1;
 
-  //dom-ready inits
-  $($.mobile.initializePage);
+    //dom-ready inits
+    $($.mobile.initializePage);
 
-  //window load event
-  //hide iOS browser chrome on load
-  $window.load($.mobile.silentScroll);
+    //window load event
+    //hide iOS browser chrome on load
+    $window.load($.mobile.silentScroll);
+  });
 })(jQuery, this);
 
 

@@ -770,7 +770,8 @@ Built by David Kaneda and maintained by Jonathan Stark.
   opacity: 0;
   cursor: pointer;
   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
-  filter: alpha(opacity = 0); }
+  filter: alpha(opacity = 0);
+  background: transparent; }
 
 /*
 * jQuery Mobile Framework
