@@ -451,8 +451,6 @@
     return promise;
   }
 
-  ;
-
   //simply set the active page's minimum height to screen height, depending on orientation
   function getScreenHeight() {
     var orientation = jQuery.event.special.orientationchange.orientation(),
@@ -944,8 +942,8 @@
     }
 
     var type = $this.attr("method"),
-            url = path.makeUrlAbsolute($this.attr("action"), getClosestBaseUrl($this));
-    target = $this.attr("target");
+            url = path.makeUrlAbsolute($this.attr("action"), getClosestBaseUrl($this)),
+            target = $this.attr("target");
 
     //external submits use regular HTTP
     if (path.isExternal(url) || target) {

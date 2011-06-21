@@ -1,5 +1,5 @@
 /*!
- * jQuery UI Widget 1.0a4.1
+ * jQuery UI Widget 1.0b1
  *
  * Copyright 2010, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -1856,7 +1856,7 @@
 
 
 /*!
- * jQuery Mobile v1.0a4.1
+ * jQuery Mobile v1.0b1
  * http://jquerymobile.com/
  *
  * Copyright 2010, jQuery Project
@@ -2483,8 +2483,6 @@
     return promise;
   }
 
-  ;
-
   //simply set the active page's minimum height to screen height, depending on orientation
   function getScreenHeight() {
     var orientation = jQuery.event.special.orientationchange.orientation(),
@@ -2976,8 +2974,8 @@
     }
 
     var type = $this.attr("method"),
-            url = path.makeUrlAbsolute($this.attr("action"), getClosestBaseUrl($this));
-    target = $this.attr("target");
+            url = path.makeUrlAbsolute($this.attr("action"), getClosestBaseUrl($this)),
+            target = $this.attr("target");
 
     //external submits use regular HTTP
     if (path.isExternal(url) || target) {
@@ -3195,7 +3193,7 @@
 
 
 /*!
- * jQuery Mobile v1.0a4.1
+ * jQuery Mobile v1.0b1
  * http://jquerymobile.com/
  *
  * Copyright 2010, jQuery Project
@@ -3277,8 +3275,8 @@
             toolbarSelector = '.ui-header-fixed:first, .ui-footer-fixed:not(.ui-footer-duplicate):last',
             stickyFooter, //for storing quick references to duplicate footers
             supportTouch = $.support.touch,
-            touchStartEvent = supportTouch ? "touchstart.toolbar" : "mousedown.toolbar",
-            touchStopEvent = supportTouch ? "touchend.toolbar" : "mouseup.toolbar",
+            touchStartEvent = supportTouch ? "touchstart" : "mousedown",
+            touchStopEvent = supportTouch ? "touchend" : "mouseup",
             stateBefore = null,
             scrollTriggered = false,
             touchToggleEnabled = true;
@@ -3302,12 +3300,12 @@
 
     $(function() {
       $(document)
-              .bind("vmousedown.toolbar", function(event) {
+              .bind("vmousedown", function(event) {
                 if (touchToggleEnabled) {
                   stateBefore = currentstate;
                 }
               })
-              .bind("vclick.toolbar", function(event) {
+              .bind("vclick", function(event) {
                 if (touchToggleEnabled) {
                   if ($(event.target).closest(ignoreTargets).length) {
                     return;
@@ -3318,7 +3316,7 @@
                   }
                 }
               })
-              .bind('silentscroll.toolbar', showEventCallback);
+              .bind('silentscroll', showEventCallback);
 
       /*
        The below checks first for a $(document).scrollTop() value, and if zero, binds scroll events to $(window) instead. If the scrollTop value is actually zero, both will return zero anyway.
@@ -3331,7 +3329,7 @@
        */
 
       (( $(document).scrollTop() == 0 ) ? $(window) : $(document))
-              .bind('scrollstart.toolbar', function(event) {
+              .bind('scrollstart', function(event) {
         scrollTriggered = true;
         if (stateBefore == null) {
           stateBefore = currentstate;
@@ -3350,7 +3348,7 @@
           }
         }
       })
-              .bind('scrollstop.toolbar', function(event) {
+              .bind('scrollstop', function(event) {
                 if ($(event.target).closest(ignoreTargets).length) {
                   return;
                 }
@@ -3362,11 +3360,11 @@
                 stateBefore = null;
               });
 
-      $(window).bind('resize.toolbar', showEventCallback);
+      $(window).bind('resize', showEventCallback);
     });
 
     //before page is shown, check for duplicate footer
-    $('.ui-page').live('pagebeforeshow.toolbar', function(event, ui) {
+    $('.ui-page').live('pagebeforeshow', function(event, ui) {
       var page = $(event.target),
               footer = page.find(":jqmData(role='footer')"),
               id = footer.data('id'),
@@ -3381,7 +3379,7 @@
     });
 
     //after page is shown, append footer to new page
-    $('.ui-page').live('pageshow.toolbar', function(event, ui) {
+    $('.ui-page').live('pageshow', function(event, ui) {
       var $this = $(this);
 
       if (stickyFooter && stickyFooter.length) {
@@ -5618,7 +5616,7 @@
 })(jQuery);
 
 /*!
- * jQuery Mobile v1.0a4.1
+ * jQuery Mobile v1.0b1
  * http://jquerymobile.com/
  *
  * Copyright 2010, jQuery Project
