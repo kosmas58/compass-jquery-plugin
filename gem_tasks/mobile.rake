@@ -79,7 +79,7 @@ namespace :build do
       manifest.print "javascript 'jquery.mobile.js'\n"
 
       open File.join(MOBILE_DEST_TEMPLATES, 'jquery.mobile.min.js'), 'w' do |f|
-        f.print compress_js(scripts, "yui")
+        f.print compress_js(scripts, "google")
       end
       manifest.print "javascript 'jquery.mobile.min.js'\n"
 
