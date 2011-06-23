@@ -44,7 +44,9 @@ all_scripts = [
     'js/jquery.mobile.navbar.js',
     'js/jquery.mobile.grid.js',
     'js/jquery.mobile.init.js',
-    'js/jquery.mobile.themeswitcher.js'
+    'js/jquery.mobile.themeswitcher.js',
+    'js/jquery.easing.1.3.js',
+    'js/jquery.mobile.scrollview.js'
 ].collect { |filename| File.read(File.join(MOBILE_SRC, filename)) }.join "\n\n"
 
 namespace :build do
@@ -101,7 +103,8 @@ namespace :build do
           'jquery.mobile.forms.select.css',
           'jquery.mobile.forms.textinput.css',
           'jquery.mobile.listview.css',
-          'jquery.mobile.forms.slider.css'
+          'jquery.mobile.forms.slider.css',
+          'jquery.mobile.scrollview.css'
       ].collect { |filename| File.read(File.join(MOBILE_SRC_THEMES, 'default', filename)) }.join "\n\n"
 
       FileUtils.mkdir_p(MOBILE_DEST_THEMES)

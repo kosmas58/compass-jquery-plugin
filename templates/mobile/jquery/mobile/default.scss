@@ -327,13 +327,8 @@
   background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #fceda7), color-stop(1, #fadb4e));
   -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#fceda7', EndColorStr='#fadb4e')";
   font-family: Helvetica, Arial, sans-serif;
-  input, select, textarea {
-    font-family: Helvetica, Arial, sans-serif; } }
-
-.ui-bar-d button {
-  font-family: Helvetica, Arial, sans-serif; }
-
-.ui-bar-e {
+  input, select, textarea, button {
+    font-family: Helvetica, Arial, sans-serif; }
   .ui-link-inherit {
     color: #333; }
   .ui-link {
