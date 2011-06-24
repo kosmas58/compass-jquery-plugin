@@ -16,8 +16,14 @@
         //filter works though.
               label = input.closest("form,fieldset,:jqmData(role='page')").find("label").filter('[for="' + input[0].id + '"]'),
               inputtype = input.attr("type"),
-              checkedicon = "ui-icon-" + inputtype + "-on",
-              uncheckedicon = "ui-icon-" + inputtype + "-off";
+              checkedState = inputtype + "-on",
+              uncheckedState = inputtype + "-off",
+              icon = input.parents(":jqmData(type='horizontal')").length ? undefined : uncheckedState,
+              activeBtn = icon ? "" : " " + $.mobile.activeBtnClass,
+              checkedClass = "ui-" + checkedState + activeBtn,
+              uncheckedClass = "ui-" + uncheckedState,
+              checkedicon = "ui-icon-" + checkedState,
+              uncheckedicon = "ui-icon-" + uncheckedState;
 
       if (inputtype != "checkbox" && inputtype != "radio") {
         return;
@@ -27,6 +33,8 @@
       $.extend(this, {
         label      : label,
         inputtype    : inputtype,
+        checkedClass    : checkedClass,
+        uncheckedClass  : uncheckedClass,
         checkedicon    : checkedicon,
         uncheckedicon  : uncheckedicon
       });
@@ -39,7 +47,7 @@
       label
               .buttonMarkup({
         theme: this.options.theme,
-        icon: this.element.parents(":jqmData(type='horizontal')").length ? undefined : uncheckedicon,
+        icon: icon,
         shadow: false
       });
 
@@ -137,11 +145,11 @@
       // input[0].checked expando doesn't always report the proper value
       // for checked='checked'
       if ($(input[0]).prop('checked')) {
-        label.addClass($.mobile.activeBtnClass);
+        label.addClass(this.checkedClass).removeClass(this.uncheckedClass);
         icon.addClass(this.checkedicon).removeClass(this.uncheckedicon);
 
       } else {
-        label.removeClass($.mobile.activeBtnClass);
+        label.removeClass(this.checkedClass).addClass(this.uncheckedClass);
         icon.removeClass(this.checkedicon).addClass(this.uncheckedicon);
       }
 
