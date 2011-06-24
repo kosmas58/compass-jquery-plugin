@@ -87,10 +87,10 @@
 
        */
 
-      (( $(document).scrollTop() == 0 ) ? $(window) : $(document))
+      (( $(document).scrollTop() === 0 ) ? $(window) : $(document))
               .bind('scrollstart', function(event) {
         scrollTriggered = true;
-        if (stateBefore == null) {
+        if (stateBefore === null) {
           stateBefore = currentstate;
         }
 
