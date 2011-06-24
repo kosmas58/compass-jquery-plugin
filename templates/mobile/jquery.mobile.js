@@ -2188,7 +2188,9 @@
             convertUrlToDataUrl: function(absUrl) {
               var u = path.parseUrl(absUrl);
               if (path.isEmbeddedPage(u)) {
-                return u.hash.replace(/^#/, "");
+                // For embedded pages, remove the dialog hash key as in getFilePath(),
+                // otherwise the Data Url won't match the id of the embedded Page.
+                return u.hash.split(dialogHashKey)[0].replace(/^#/, "");
               } else if (path.isSameDomain(u, documentBase)) {
                 return u.hrefNoHash.replace(documentBase.domain, "");
               }
@@ -3329,10 +3331,10 @@
 
        */
 
-      (( $(document).scrollTop() == 0 ) ? $(window) : $(document))
+      (( $(document).scrollTop() === 0 ) ? $(window) : $(document))
               .bind('scrollstart', function(event) {
         scrollTriggered = true;
-        if (stateBefore == null) {
+        if (stateBefore === null) {
           stateBefore = currentstate;
         }
 
