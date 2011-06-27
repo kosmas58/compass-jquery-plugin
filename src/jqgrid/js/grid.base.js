@@ -2284,7 +2284,7 @@
                     $("tr th:eq(" + idxcol + ") span.s-ico", thd).show();
                   }
                 }
-                index = index.substring(5);
+                index = index.substring(5 + ts.p.is.length + 1); // bad to be changed!?!
                 ts.p.sortname = ts.p.colModel[idxcol].index || index;
                 so = ts.p.sortorder;
                 if ($.isFunction(ts.p.onSortCol)) {
