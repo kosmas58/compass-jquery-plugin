@@ -2106,7 +2106,7 @@ $.widget( "mobile.page", $.mobile.widget, {
 				}
 		
 				relPath = relPath || "";
-				absPath = absPath ? absPath.replace( /^\/|\/?[^\/]*$/g, "" ) : "";
+				absPath = absPath ? absPath.replace( /^\/|(\/[^\/]*|[^\/]+)$/g, "" ) : "";
 		
 				var absStack = absPath ? absPath.split( "/" ) : [],
 					relStack = relPath.split( "/" );
