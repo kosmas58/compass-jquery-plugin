@@ -76,8 +76,8 @@ if (jQuery)( function() {
                         $(menu).find('LI.hover').removeClass('hover');
                         $(this).parent().addClass('hover');
                       }).mouseout(function() {
-                $(menu).find('LI.hover').removeClass('hover');
-              });
+                        $(menu).find('LI.hover').removeClass('hover');
+                      });
 
               // Keyboard
               $(document).keypress(function(e) {

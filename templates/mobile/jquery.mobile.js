@@ -268,20 +268,27 @@ $.Widget.prototype = {
 * Dual licensed under the MIT or GPL Version 2 licenses.
 * http://jquery.org/license
 */
-(function($, undefined ) {
+
+(function( $, undefined ) {
 
 $.widget( "mobile.widget", {
 	_getCreateOptions: function() {
+
 		var elem = this.element,
 			options = {};
+
 		$.each( this.options, function( option ) {
+
 			var value = elem.jqmData( option.replace( /[A-Z]/g, function( c ) {
-				return "-" + c.toLowerCase();
-			} ) );
+							return "-" + c.toLowerCase();
+						})
+					);
+
 			if ( value !== undefined ) {
 				options[ option ] = value;
 			}
 		});
+
 		return options;
 	}
 });
@@ -539,12 +546,12 @@ if ( !$.support.boxShadow  ){
 // The current version exposes the following virtual events to jQuery bind methods:
 // "vmouseover vmousedown vmousemove vmouseup vclick vmouseout vmousecancel"
 
-(function($, window, document, undefined) {
+(function( $, window, document, undefined ) {
 
 var dataPropertyName = "virtualMouseBindings",
 	touchTargetPropertyName = "virtualTouchID",
-	virtualEventNames = "vmouseover vmousedown vmousemove vmouseup vclick vmouseout vmousecancel".split(" "),
-	touchEventProps = "clientX clientY pageX pageY screenX screenY".split(" "),
+	virtualEventNames = "vmouseover vmousedown vmousemove vmouseup vclick vmouseout vmousecancel".split( " " ),
+	touchEventProps = "clientX clientY pageX pageY screenX screenY".split( " " ),
 	activeDocHandlers = {},
 	resetTimerID = 0,
 	startX = 0,
@@ -554,7 +561,7 @@ var dataPropertyName = "virtualMouseBindings",
 	blockMouseTriggers = false,
 	blockTouchTriggers = false,
 	eventCaptureSupported = $.support.eventCapture,
-	$document = $(document),
+	$document = $( document ),
 	nextTouchID = 1,
 	lastTouchID = 0;
 
@@ -564,42 +571,45 @@ $.vmouse = {
 	resetTimerDuration: 1500
 };
 
-function getNativeEvent(event)
-{
-	while (event && typeof event.originalEvent !== "undefined") {
+function getNativeEvent( event ) {
+
+	while ( event && typeof event.originalEvent !== "undefined" ) {
 		event = event.originalEvent;
 	}
 	return event;
 }
 
-function createVirtualEvent(event, eventType)
-{
-	var t = event.type;
+function createVirtualEvent( event, eventType ) {
+
+	var t = event.type,
+		oe, props, ne, prop, ct, touch, i, j;
+
 	event = $.Event(event);
 	event.type = eventType;
-	
-	var oe = event.originalEvent;
-	var props = $.event.props;
-	
+
+	oe = event.originalEvent;
+	props = $.event.props;
+
 	// copy original event properties over to the new event
 	// this would happen if we could call $.event.fix instead of $.Event
 	// but we don't have a way to force an event to be fixed multiple times
-	if (oe) {
-		for ( var i = props.length, prop; i; ) {
+	if ( oe ) {
+		for ( i = props.length, prop; i; ) {
 			prop = props[ --i ];
-			event[prop] = oe[prop];
+			event[ prop ] = oe[ prop ];
 		}
 	}
-	
-	if (t.search(/^touch/) !== -1){
-		var ne = getNativeEvent(oe),
-			t = ne.touches,
-			ct = ne.changedTouches,
-			touch = (t && t.length) ? t[0] : ((ct && ct.length) ? ct[0] : undefined);
-		if (touch){
-			for (var i = 0, len = touchEventProps.length; i < len; i++){
-				var prop = touchEventProps[i];
-				event[prop] = touch[prop];
+
+	if ( t.search(/^touch/) !== -1 ) {
+		ne = getNativeEvent( oe );
+		t = ne.touches;
+		ct = ne.changedTouches;
+		touch = ( t && t.length ) ? t[0] : ( (ct && ct.length) ? ct[ 0 ] : undefined );
+
+		if ( touch ) {
+			for ( j = 0, len = touchEventProps.length; j < len; j++){
+				prop = touchEventProps[ j ];
+				event[ prop ] = touch[ prop ];
 			}
 		}
 	}
@@ -607,14 +617,18 @@ function createVirtualEvent(event, eventType)
 	return event;
 }
 
-function getVirtualBindingFlags(element)
-{
-	var flags = {};
-	while (element){
-		var b = $.data(element, dataPropertyName);
-		for (var k in b) {
-			if (b[k]){
-				flags[k] = flags.hasVirtualBinding = true;
+function getVirtualBindingFlags( element ) {
+
+	var flags = {},
+		b, k;
+
+	while ( element ) {
+
+		b = $.data( element, dataPropertyName );
+
+		for (  k in b ) {
+			if ( b[ k ] ) {
+				flags[ k ] = flags.hasVirtualBinding = true;
 			}
 		}
 		element = element.parentNode;
@@ -622,11 +636,13 @@ function getVirtualBindingFlags(element)
 	return flags;
 }
 
-function getClosestElementWithVirtualBinding(element, eventType)
-{
-	while (element){
-		var b = $.data(element, dataPropertyName);
-		if (b && (!eventType || b[eventType])) {
+function getClosestElementWithVirtualBinding( element, eventType ) {
+	var b;
+	while ( element ) {
+
+		b = $.data( element, dataPropertyName );
+
+		if ( b && ( !eventType || b[ eventType ] ) ) {
 			return element;
 		}
 		element = element.parentNode;
@@ -634,18 +650,15 @@ function getClosestElementWithVirtualBinding(element, eventType)
 	return null;
 }
 
-function enableTouchBindings()
-{
+function enableTouchBindings() {
 	blockTouchTriggers = false;
 }
 
-function disableTouchBindings()
-{
+function disableTouchBindings() {
 	blockTouchTriggers = true;
 }
 
-function enableMouseBindings()
-{
+function enableMouseBindings() {
 	lastTouchID = 0;
 	clickBlockList.length = 0;
 	blockMouseTriggers = false;
@@ -655,148 +668,158 @@ function enableMouseBindings()
 	disableTouchBindings();
 }
 
-function disableMouseBindings()
-{
+function disableMouseBindings() {
 	// When mouse bindings are disabled, our
 	// touch bindings are enabled.
 	enableTouchBindings();
 }
 
-function startResetTimer()
-{
+function startResetTimer() {
 	clearResetTimer();
 	resetTimerID = setTimeout(function(){
 		resetTimerID = 0;
 		enableMouseBindings();
-	}, $.vmouse.resetTimerDuration);
+	}, $.vmouse.resetTimerDuration );
 }
 
-function clearResetTimer()
-{
-	if (resetTimerID){
-		clearTimeout(resetTimerID);
+function clearResetTimer() {
+	if ( resetTimerID ){
+		clearTimeout( resetTimerID );
 		resetTimerID = 0;
 	}
 }
 
-function triggerVirtualEvent(eventType, event, flags)
-{
-	var defaultPrevented = false;
+function triggerVirtualEvent( eventType, event, flags ) {
+	var defaultPrevented = false,
+		ve;
 
-	if ((flags && flags[eventType]) || (!flags && getClosestElementWithVirtualBinding(event.target, eventType))) {
-		var ve = createVirtualEvent(event, eventType);
-		$(event.target).trigger(ve);
+	if ( ( flags && flags[ eventType ] ) ||
+				( !flags && getClosestElementWithVirtualBinding( event.target, eventType ) ) ) {
+
+		ve = createVirtualEvent( event, eventType );
+
+		$( event.target).trigger( ve );
+
 		defaultPrevented = ve.isDefaultPrevented();
 	}
 
 	return defaultPrevented;
 }
 
-function mouseEventCallback(event)
-{
+function mouseEventCallback( event ) {
 	var touchID = $.data(event.target, touchTargetPropertyName);
-	if (!blockMouseTriggers && (!lastTouchID || lastTouchID !== touchID)){
-		triggerVirtualEvent("v" + event.type, event);
+
+	if ( !blockMouseTriggers && ( !lastTouchID || lastTouchID !== touchID ) ){
+		triggerVirtualEvent( "v" + event.type, event );
 	}
 }
 
-function handleTouchStart(event)
-{
-	var touches = getNativeEvent(event).touches;
-	if (touches && touches.length === 1){
-		var target = event.target,
-			flags = getVirtualBindingFlags(target);
-	
-		if (flags.hasVirtualBinding){
+function handleTouchStart( event ) {
+
+	var touches = getNativeEvent( event ).touches,
+		target, flags;
+
+	if ( touches && touches.length === 1 ) {
+
+		target = event.target;
+		flags = getVirtualBindingFlags( target );
+
+		if ( flags.hasVirtualBinding ) {
+
 			lastTouchID = nextTouchID++;
-			$.data(target, touchTargetPropertyName, lastTouchID);
-	
+			$.data( target, touchTargetPropertyName, lastTouchID );
+
 			clearResetTimer();
-			
+
 			disableMouseBindings();
 			didScroll = false;
-			
-			var t = getNativeEvent(event).touches[0];
+
+			var t = getNativeEvent( event ).touches[ 0 ];
 			startX = t.pageX;
 			startY = t.pageY;
-		
-			triggerVirtualEvent("vmouseover", event, flags);
-			triggerVirtualEvent("vmousedown", event, flags);
+
+			triggerVirtualEvent( "vmouseover", event, flags );
+			triggerVirtualEvent( "vmousedown", event, flags );
 		}
 	}
 }
 
-function handleScroll(event)
-{
-	if (blockTouchTriggers){
+function handleScroll( event ) {
+	if ( blockTouchTriggers ) {
 		return;
 	}
 
-	if (!didScroll){
-		triggerVirtualEvent("vmousecancel", event, getVirtualBindingFlags(event.target));
+	if ( !didScroll ) {
+		triggerVirtualEvent( "vmousecancel", event, getVirtualBindingFlags( event.target ) );
 	}
 
 	didScroll = true;
 	startResetTimer();
 }
 
-function handleTouchMove(event)
-{
-	if (blockTouchTriggers){
+function handleTouchMove( event ) {
+	if ( blockTouchTriggers ) {
 		return;
 	}
 
-	var t = getNativeEvent(event).touches[0];
-
-	var didCancel = didScroll,
+	var t = getNativeEvent( event ).touches[ 0 ],
+		didCancel = didScroll,
 		moveThreshold = $.vmouse.moveDistanceThreshold;
-	didScroll = didScroll
-		|| (Math.abs(t.pageX - startX) > moveThreshold || Math.abs(t.pageY - startY) > moveThreshold);
+		didScroll = didScroll ||
+			( Math.abs(t.pageX - startX) > moveThreshold ||
+				Math.abs(t.pageY - startY) > moveThreshold ),
+		flags = getVirtualBindingFlags( event.target );
 
-	var flags = getVirtualBindingFlags(event.target);
-	if (didScroll && !didCancel){
-		triggerVirtualEvent("vmousecancel", event, flags);
+	if ( didScroll && !didCancel ) {
+		triggerVirtualEvent( "vmousecancel", event, flags );
 	}
-	triggerVirtualEvent("vmousemove", event, flags);
+
+	triggerVirtualEvent( "vmousemove", event, flags );
 	startResetTimer();
 }
 
-function handleTouchEnd(event)
-{
-	if (blockTouchTriggers){
+function handleTouchEnd( event ) {
+	if ( blockTouchTriggers ) {
 		return;
 	}
 
 	disableTouchBindings();
 
-	var flags = getVirtualBindingFlags(event.target);
-	triggerVirtualEvent("vmouseup", event, flags);
-	if (!didScroll){
-		if (triggerVirtualEvent("vclick", event, flags)){
+	var flags = getVirtualBindingFlags( event.target ),
+		t;
+	triggerVirtualEvent( "vmouseup", event, flags );
+
+	if ( !didScroll ) {
+		if ( triggerVirtualEvent( "vclick", event, flags ) ) {
 			// The target of the mouse events that follow the touchend
 			// event don't necessarily match the target used during the
 			// touch. This means we need to rely on coordinates for blocking
 			// any click that is generated.
-			var t = getNativeEvent(event).changedTouches[0];
-			clickBlockList.push({ touchID: lastTouchID, x: t.clientX, y: t.clientY });
+			t = getNativeEvent( event ).changedTouches[ 0 ];
+			clickBlockList.push({
+				touchID: lastTouchID,
+				x: t.clientX,
+				y: t.clientY
+			});
 
 			// Prevent any mouse events that follow from triggering
 			// virtual event notifications.
 			blockMouseTriggers = true;
 		}
 	}
-	triggerVirtualEvent("vmouseout", event, flags);
+	triggerVirtualEvent( "vmouseout", event, flags);
 	didScroll = false;
-	
+
 	startResetTimer();
 }
 
-function hasVirtualBindings(ele)
-{
-	var bindings = $.data(ele, dataPropertyName), k;
-	if (bindings){
-		for (k in bindings){
-			if (bindings[k]){
+function hasVirtualBindings( ele ) {
+	var bindings = $.data( ele, dataPropertyName ),
+		k;
+
+	if ( bindings ) {
+		for ( k in bindings ) {
+			if ( bindings[ k ] ) {
 				return true;
 			}
 		}
@@ -806,49 +829,49 @@ function hasVirtualBindings(ele)
 
 function dummyMouseHandler(){}
 
-function getSpecialEventObject(eventType)
-{
-	var realType = eventType.substr(1);
+function getSpecialEventObject( eventType ) {
+	var realType = eventType.substr( 1 );
+
 	return {
-		setup: function(data, namespace) {
+		setup: function( data, namespace ) {
 			// If this is the first virtual mouse binding for this element,
 			// add a bindings object to its data.
 
-			if (!hasVirtualBindings(this)){
-				$.data(this, dataPropertyName, {});
+			if ( !hasVirtualBindings( this ) ) {
+				$.data( this, dataPropertyName, {});
 			}
 
 			// If setup is called, we know it is the first binding for this
 			// eventType, so initialize the count for the eventType to zero.
-
-			var bindings = $.data(this, dataPropertyName);
-			bindings[eventType] = true;
+			var bindings = $.data( this, dataPropertyName );
+			bindings[ eventType ] = true;
 
 			// If this is the first virtual mouse event for this type,
 			// register a global handler on the document.
 
-			activeDocHandlers[eventType] = (activeDocHandlers[eventType] || 0) + 1;
-			if (activeDocHandlers[eventType] === 1){
-				$document.bind(realType, mouseEventCallback);
+			activeDocHandlers[ eventType ] = ( activeDocHandlers[ eventType ] || 0 ) + 1;
+
+			if ( activeDocHandlers[ eventType ] === 1 ) {
+				$document.bind( realType, mouseEventCallback );
 			}
 
 			// Some browsers, like Opera Mini, won't dispatch mouse/click events
 			// for elements unless they actually have handlers registered on them.
 			// To get around this, we register dummy handlers on the elements.
 
-			$(this).bind(realType, dummyMouseHandler);
+			$( this ).bind( realType, dummyMouseHandler );
 
 			// For now, if event capture is not supported, we rely on mouse handlers.
-			if (eventCaptureSupported){
+			if ( eventCaptureSupported ) {
 				// If this is the first virtual mouse binding for the document,
 				// register our touchstart handler on the document.
-	
-				activeDocHandlers["touchstart"] = (activeDocHandlers["touchstart"] || 0) + 1;
-				if (activeDocHandlers["touchstart"] === 1) {
-					$document.bind("touchstart", handleTouchStart)
 
-						.bind("touchend", handleTouchEnd)
-					
+				activeDocHandlers[ "touchstart" ] = ( activeDocHandlers[ "touchstart" ] || 0) + 1;
+
+				if (activeDocHandlers[ "touchstart" ] === 1) {
+					$document.bind( "touchstart", handleTouchStart )
+						.bind( "touchend", handleTouchEnd )
+
 						// On touch platforms, touching the screen and then dragging your finger
 						// causes the window content to scroll after some distance threshold is
 						// exceeded. On these platforms, a scroll prevents a click event from being
@@ -858,56 +881,58 @@ function getSpecialEventObject(eventType)
 						// events until *AFTER* the user lifts their finger (touchend). This means
 						// we need to watch both scroll and touchmove events to figure out whether
 						// or not a scroll happenens before the touchend event is fired.
-					
-						.bind("touchmove", handleTouchMove)
-						.bind("scroll", handleScroll);			
+
+						.bind( "touchmove", handleTouchMove )
+						.bind( "scroll", handleScroll );
 				}
 			}
 		},
 
-		teardown: function(data, namespace) {
+		teardown: function( data, namespace ) {
 			// If this is the last virtual binding for this eventType,
 			// remove its global handler from the document.
 
-			--activeDocHandlers[eventType];
-			if (!activeDocHandlers[eventType]){
-				$document.unbind(realType, mouseEventCallback);
+			--activeDocHandlers[ eventType ];
+
+			if ( !activeDocHandlers[ eventType ] ) {
+				$document.unbind( realType, mouseEventCallback );
 			}
 
-			if (eventCaptureSupported){
+			if ( eventCaptureSupported ) {
 				// If this is the last virtual mouse binding in existence,
 				// remove our document touchstart listener.
-	
-				--activeDocHandlers["touchstart"];
-				if (!activeDocHandlers["touchstart"]) {
-					$document.unbind("touchstart", handleTouchStart)
-						.unbind("touchmove", handleTouchMove)
-						.unbind("touchend", handleTouchEnd)
-						.unbind("scroll", handleScroll);
+
+				--activeDocHandlers[ "touchstart" ];
+
+				if ( !activeDocHandlers[ "touchstart" ] ) {
+					$document.unbind( "touchstart", handleTouchStart )
+						.unbind( "touchmove", handleTouchMove )
+						.unbind( "touchend", handleTouchEnd )
+						.unbind( "scroll", handleScroll );
 				}
 			}
 
-			var $this = $(this),
-				bindings = $.data(this, dataPropertyName);
+			var $this = $( this ),
+				bindings = $.data( this, dataPropertyName );
 
 			// teardown may be called when an element was
 			// removed from the DOM. If this is the case,
 			// jQuery core may have already stripped the element
 			// of any data bindings so we need to check it before
 			// using it.
-			if (bindings){
-				bindings[eventType] = false;
+			if ( bindings ) {
+				bindings[ eventType ] = false;
 			}
 
 			// Unregister the dummy event handler.
 
-			$this.unbind(realType, dummyMouseHandler);
+			$this.unbind( realType, dummyMouseHandler );
 
 			// If this is the last virtual mouse binding on the
 			// element, remove the binding data from the element.
 
-			if (!hasVirtualBindings(this)){
-				$this.removeData(dataPropertyName);
+			if ( !hasVirtualBindings( this ) ) {
+				$this.removeData( dataPropertyName );
 			}
 		}
 	};
@@ -915,21 +940,23 @@ function getSpecialEventObject(eventType)
 
 // Expose our custom events to the jQuery bind/unbind mechanism.
 
-for (var i = 0; i < virtualEventNames.length; i++){
-	$.event.special[virtualEventNames[i]] = getSpecialEventObject(virtualEventNames[i]);
+for ( var i = 0; i < virtualEventNames.length; i++ ){
+	$.event.special[ virtualEventNames[ i ] ] = getSpecialEventObject( virtualEventNames[ i ] );
 }
 
 // Add a capture click handler to block clicks.
 // Note that we require event capture support for this so if the device
 // doesn't support it, we punt for now and rely solely on mouse events.
-if (eventCaptureSupported){
-	document.addEventListener("click", function(e){
-		var cnt = clickBlockList.length;
-		var target = e.target;
-		if (cnt) {
-			var x = e.clientX,
-				y = e.clientY,
-				threshold = $.vmouse.clickDistanceThreshold;
+if ( eventCaptureSupported ) {
+	document.addEventListener( "click", function( e ){
+		var cnt = clickBlockList.length,
+			target = e.target,
+			x, y, ele, i, o, touchID;
+
+		if ( cnt ) {
+			x = e.clientX;
+			y = e.clientY;
+			threshold = $.vmouse.clickDistanceThreshold;
 
 			// The idea here is to run through the clickBlockList to see if
 			// the current click event is in the proximity of one of our
@@ -957,13 +984,16 @@ if (eventCaptureSupported){
 			// mouse/click handler on one of its ancestors, the target will be the
 			// innermost child of the touched element, even if that child is no where
 			// near the point of touch.
-			
-			var ele = target;
-			while (ele) {
-				for (var i = 0; i < cnt; i++) {
-					var o = clickBlockList[i],
-						touchID = 0;
-					if ((ele === target && Math.abs(o.x - x) < threshold && Math.abs(o.y - y) < threshold) || $.data(ele, touchTargetPropertyName) === o.touchID){
+
+			ele = target;
+
+			while ( ele ) {
+				for ( i = 0; i < cnt; i++ ) {
+					o = clickBlockList[ i ];
+					touchID = 0;
+
+					if ( ( ele === target && Math.abs( o.x - x ) < threshold && Math.abs( o.y - y ) < threshold ) ||
+								$.data( ele, touchTargetPropertyName ) === o.touchID ) {
 						// XXX: We may want to consider removing matches from the block list
 						//      instead of waiting for the reset timer to fire.
 						e.preventDefault();
@@ -976,7 +1006,7 @@ if (eventCaptureSupported){
 		}
 	}, true);
 }
-})(jQuery, window, document);
+})( jQuery, window, document );
 
 
 /*
@@ -1830,15 +1860,15 @@ $.widget( "mobile.page", $.mobile.widget, {
 	_typeAttributeRegex: /\s+type=["']?\w+['"]?/,
 
 	_enhanceControls: function() {
-		var o = this.options, self = this,
-			$this = $( this ),
-			type, optType,
+		var o = this.options,
+			self = this,
 			allControls, nonNativeControls, textInputs;
 
 		// degrade inputs to avoid poorly implemented native functionality
 		this.element.find( "input" ).not(this.keepNative).each(function() {
-			type = this.getAttribute( "type" );
-			optType = o.degradeInputs[ type ] || "text";
+			var $this = $( this ),
+				type = this.getAttribute( "type" ),
+				optType = o.degradeInputs[ type ] || "text";
 
 			if ( o.degradeInputs[ type ] ) {
 				$this.replaceWith(
@@ -3303,29 +3333,45 @@ if ( $.mobile.defaultTransitionHandler === $.mobile.noneTransitionHandler ) {
 * Dual licensed under the MIT or GPL Version 2 licenses.
 * http://jquery.org/license
 */
-(function($, undefined ) {
-$.fn.fixHeaderFooter = function(options){
-	if( !$.support.scrollTop ){ return this; }
-	
-	return this.each(function(){
-		var $this = $(this);
-		
-		if( $this.jqmData('fullscreen') ){ $this.addClass('ui-page-fullscreen'); }
-		$this.find( ".ui-header:jqmData(position='fixed')" ).addClass('ui-header-fixed ui-fixed-inline fade'); //should be slidedown
-		$this.find( ".ui-footer:jqmData(position='fixed')" ).addClass('ui-footer-fixed ui-fixed-inline fade'); //should be slideup		
+
+(function( $, undefined ) {
+
+$.fn.fixHeaderFooter = function( options ) {
+
+	if ( !$.support.scrollTop ) {
+		return this;
+	}
+
+	return this.each(function() {
+		var $this = $( this );
+
+		if ( $this.jqmData( "fullscreen" ) ) {
+			$this.addClass( "ui-page-fullscreen" );
+		}
+
+		// Should be slidedown
+		$this.find( ".ui-header:jqmData(position='fixed')" ).addClass( "ui-header-fixed ui-fixed-inline fade" );
+
+		// Should be slideup
+		$this.find( ".ui-footer:jqmData(position='fixed')" ).addClass( "ui-footer-fixed ui-fixed-inline fade" );
 	});
 };
 
-//single controller for all showing,hiding,toggling		
-$.fixedToolbars = (function(){
-	if( !$.support.scrollTop ){ return; }
-	var currentstate = 'inline',
+//single controller for all showing,hiding,toggling
+$.fixedToolbars = (function() {
+
+	if ( !$.support.scrollTop ) {
+		return;
+	}
+
+	var currentstate = "inline",
 		autoHideMode = false,
 		showDelay = 100,
 		delayTimer,
-		ignoreTargets = 'a,input,textarea,select,button,label,.ui-header-fixed,.ui-footer-fixed',
-		toolbarSelector = '.ui-header-fixed:first, .ui-footer-fixed:not(.ui-footer-duplicate):last',
-		stickyFooter, //for storing quick references to duplicate footers
+		ignoreTargets = "a,input,textarea,select,button,label,.ui-header-fixed,.ui-footer-fixed",
+		toolbarSelector = ".ui-header-fixed:first, .ui-footer-fixed:not(.ui-footer-duplicate):last",
+		//for storing quick references to duplicate footers
+		stickyFooter,
 		supportTouch = $.support.touch,
 		touchStartEvent = supportTouch ? "touchstart" : "mousedown",
 		touchStopEvent = supportTouch ? "touchend" : "mouseup",
@@ -3333,7 +3379,7 @@ $.fixedToolbars = (function(){
 		scrollTriggered = false,
         touchToggleEnabled = true;
 
-	function showEventCallback(event) {
+	function showEventCallback( event ) {
 		// An event that affects the dimensions of the visual viewport has
 		// been triggered. If the header and/or footer for the current page are in overlay
 		// mode, we want to hide them, and then fire off a timer to show them at a later
@@ -3343,103 +3389,125 @@ $.fixedToolbars = (function(){
 		//
 		// If we are in autoHideMode, we don't do anything because we know the scroll
 		// callbacks for the plugin will fire off a show when the scrolling has stopped.
-		if (!autoHideMode && currentstate == 'overlay') {
-			if (!delayTimer)
-				$.fixedToolbars.hide(true);
+		if ( !autoHideMode && currentstate === "overlay" ) {
+			if ( !delayTimer ) {
+				$.fixedToolbars.hide( true );
+			}
+
 			$.fixedToolbars.startShowTimer();
 		}
 	}
 
 	$(function() {
-		$(document)
-			.bind( "vmousedown",function(event){
-				if( touchToggleEnabled ) {
+		var $document = $( document ),
+			$window = $(window);
+
+		$document
+			.bind( "vmousedown", function( event ) {
+				if ( touchToggleEnabled ) {
 					stateBefore = currentstate;
 				}
 			})
-			.bind( "vclick",function(event){
-				if( touchToggleEnabled ) {
-					if( $(event.target).closest(ignoreTargets).length ){ return; }
-					if( !scrollTriggered ){
-						$.fixedToolbars.toggle(stateBefore);
+			.bind( "vclick", function( event) {
+				if ( touchToggleEnabled ) {
+
+					if ( $(event.target).closest( ignoreTargets ).length ) {
+						return;
+					}
+
+					if ( !scrollTriggered ) {
+						$.fixedToolbars.toggle( stateBefore );
 						stateBefore = null;
 					}
 				}
 			})
-			.bind('silentscroll', showEventCallback);
+			.bind( "silentscroll", showEventCallback );
 
-/*		
-		The below checks first for a $(document).scrollTop() value, and if zero, binds scroll events to $(window) instead. If the scrollTop value is actually zero, both will return zero anyway.
 
-		Works with $(document), not $(window) : Opera Mobile (WinMO phone; kinda broken anyway)
-		Works with $(window), not $(document) : IE 7/8
-		Works with either $(window) or $(document) : Chrome, FF 3.6/4, Android 1.6/2.1, iOS
-		Needs work either way : BB5, Opera Mobile (iOS)
+		// The below checks first for a $(document).scrollTop() value, and if zero, binds scroll events to $(window) instead.
+		// If the scrollTop value is actually zero, both will return zero anyway.
+		//
+		// Works with $(document), not $(window) : Opera Mobile (WinMO phone; kinda broken anyway)
+		// Works with $(window), not $(document) : IE 7/8
+		// Works with either $(window) or $(document) : Chrome, FF 3.6/4, Android 1.6/2.1, iOS
+		// Needs work either way : BB5, Opera Mobile (iOS)
 
-*/
+		( ( $document.scrollTop() === 0 ) ? $window : $document )
+			.bind( "scrollstart", function( event ) {
 
-		(( $(document).scrollTop() === 0 ) ? $(window) : $(document))
-			.bind('scrollstart',function(event){
 				scrollTriggered = true;
-				if(stateBefore === null){ stateBefore = currentstate; }
+
+				if ( stateBefore === null ) {
+					stateBefore = currentstate;
+				}
 
 				// We only enter autoHideMode if the headers/footers are in
 				// an overlay state or the show timer was started. If the
 				// show timer is set, clear it so the headers/footers don't
 				// show up until after we're done scrolling.
-				var isOverlayState = stateBefore == 'overlay';
+				var isOverlayState = stateBefore == "overlay";
+
 				autoHideMode = isOverlayState || !!delayTimer;
-				if (autoHideMode){
+
+				if ( autoHideMode ) {
 					$.fixedToolbars.clearShowTimer();
-					if (isOverlayState) {
-						$.fixedToolbars.hide(true);
+
+					if ( isOverlayState ) {
+						$.fixedToolbars.hide( true );
 					}
 				}
 			})
-			.bind('scrollstop',function(event){
-				if( $(event.target).closest(ignoreTargets).length ){ return; }
+			.bind( "scrollstop", function( event ) {
+
+				if ( $( event.target ).closest( ignoreTargets ).length ) {
+					return;
+				}
+
 				scrollTriggered = false;
-				if (autoHideMode) {
-					autoHideMode = false;
+
+				if ( autoHideMode ) {
 					$.fixedToolbars.startShowTimer();
+					autoHideMode = false;
 				}
 				stateBefore = null;
 			});
 
-			$(window).bind('resize', showEventCallback);
-	});
-		
-	//before page is shown, check for duplicate footer
-	$('.ui-page').live('pagebeforeshow', function(event, ui){
-		var page = $(event.target),
-			footer = page.find( ":jqmData(role='footer')" ),
-			id = footer.data('id'),
-			prevPage = ui.prevPage,
-			prevFooter = prevPage && prevPage.find( ":jqmData(role='footer')" ),
-			prevFooterMatches = prevFooter.length && prevFooter.jqmData( "id" ) === id;
-		
-		if( id && prevFooterMatches ){
-			stickyFooter = footer;
-			setTop( stickyFooter.removeClass( "fade in out" ).appendTo( $.mobile.pageContainer ) );
-		}
+			$window.bind( "resize", showEventCallback );
 	});
 
-	//after page is shown, append footer to new page
-	$('.ui-page').live('pageshow', function(event, ui){
-		var $this = $(this);
-		
-		if( stickyFooter && stickyFooter.length ){	
-			
-			setTimeout(function(){
-				setTop( stickyFooter.appendTo( $this ).addClass("fade") );
-				stickyFooter = null;
-			}, 500);	
-		}
-		
-		$.fixedToolbars.show(true, this);	
-	});
-    
-    //When a collapsiable is hidden or shown we need to trigger the fixed toolbar to reposition itself (#1635)
+	// 1. Before page is shown, check for duplicate footer
+	// 2. After page is shown, append footer to new page
+	$( ".ui-page" )
+		.live( "pagebeforeshow", function( event, ui ) {
+
+			var page = $( event.target ),
+				footer = page.find( ":jqmData(role='footer')" ),
+				id = footer.data( "id" ),
+				prevPage = ui.prevPage,
+				prevFooter = prevPage && prevPage.find( ":jqmData(role='footer')" ),
+				prevFooterMatches = prevFooter.length && prevFooter.jqmData( "id" ) === id;
+
+			if ( id && prevFooterMatches ) {
+				stickyFooter = footer;
+				setTop( stickyFooter.removeClass( "fade in out" ).appendTo( $.mobile.pageContainer ) );
+			}
+		})
+		.live( "pageshow", function( event, ui ) {
+
+			var $this = $( this );
+
+			if ( stickyFooter && stickyFooter.length ) {
+
+				setTimeout(function() {
+					setTop( stickyFooter.appendTo( $this ).addClass( "fade" ) );
+					stickyFooter = null;
+				}, 500);
+			}
+
+			$.fixedToolbars.show( true, this );
+		});
+
+	//When a collapsiable is hidden or shown we need to trigger the fixed toolbar to reposition itself (#1635)
 	$( ".ui-collapsible-contain" ).live( "collapse expand", showEventCallback );
 
 	// element.getBoundingClientRect() is broken in iOS 3.2.1 on the iPad. The
@@ -3450,118 +3518,159 @@ $.fixedToolbars = (function(){
 	//
 	// TODO: We'll need to get rid of getOffsetTop() once a fix gets folded into core.
 
-	function getOffsetTop(ele) {
-		var top = 0;
-		if (ele) {
-			var op = ele.offsetParent, body = document.body;
+	function getOffsetTop( ele ) {
+		var top = 0,
+			op;
+
+		if ( ele ) {
+			op = ele.offsetParent, body = document.body;
 			top = ele.offsetTop;
-			while (ele && ele != body) {
+
+			while ( ele && ele != body ) {
 				top += ele.scrollTop || 0;
-				if (ele == op){
+
+				if ( ele == op ) {
 					top += op.offsetTop;
 					op = ele.offsetParent;
 				}
+
 				ele = ele.parentNode;
 			}
 		}
 		return top;
 	}
 
-	function setTop(el){
+	function setTop( el ) {
 		var fromTop = $(window).scrollTop(),
-			thisTop = getOffsetTop(el[0]), // el.offset().top returns the wrong value on iPad iOS 3.2.1, call our workaround instead.
-			thisCSStop = el.css('top') == 'auto' ? 0 : parseFloat(el.css('top')),
+			thisTop = getOffsetTop( el[ 0 ] ), // el.offset().top returns the wrong value on iPad iOS 3.2.1, call our workaround instead.
+			thisCSStop = el.css( "top" ) == "auto" ? 0 : parseFloat(el.css( "top" )),
 			screenHeight = window.innerHeight,
 			thisHeight = el.outerHeight(),
-			useRelative = el.parents('.ui-page:not(.ui-page-fullscreen)').length,
+			useRelative = el.parents( ".ui-page:not(.ui-page-fullscreen)" ).length,
 			relval;
-		if( el.is('.ui-header-fixed') ){
+
+		if ( el.is( ".ui-header-fixed" ) ) {
+
 			relval = fromTop - thisTop + thisCSStop;
-			if( relval < thisTop){ relval = 0; }
-			return el.css('top', ( useRelative ) ? relval : fromTop);
+
+			if ( relval < thisTop) {
+				relval = 0;
+			}
+
+			return el.css( "top", useRelative ? relval : fromTop );
 		}
 		else{
-			//relval = -1 * (thisTop - (fromTop + screenHeight) + thisCSStop + thisHeight);
-			//if( relval > thisTop ){ relval = 0; }
-			relval = fromTop + screenHeight - thisHeight - (thisTop - thisCSStop);
-			return el.css('top', ( useRelative ) ? relval : fromTop + screenHeight - thisHeight );
+			// relval = -1 * (thisTop - (fromTop + screenHeight) + thisCSStop + thisHeight);
+			// if ( relval > thisTop ) { relval = 0; }
+			relval = fromTop + screenHeight - thisHeight - (thisTop - thisCSStop );
+
+			return el.css( "top", useRelative ? relval : fromTop + screenHeight - thisHeight );
 		}
 	}
 
-	//exposed methods
+	// Exposed methods
 	return {
-		show: function(immediately, page){
+
+		show: function( immediately, page ) {
+
 			$.fixedToolbars.clearShowTimer();
-			currentstate = 'overlay';
-			var $ap = page ? $(page) : ($.mobile.activePage ? $.mobile.activePage : $(".ui-page-active"));
-			return $ap.children( toolbarSelector ).each(function(){
-				var el = $(this),
-					fromTop = $(window).scrollTop(),
-					thisTop = getOffsetTop(el[0]), // el.offset().top returns the wrong value on iPad iOS 3.2.1, call our workaround instead.
+
+			currentstate = "overlay";
+
+			var $ap = page ? $( page ) :
+								( $.mobile.activePage ? $.mobile.activePage :
+									$( ".ui-page-active" ) );
+
+			return $ap.children( toolbarSelector ).each(function() {
+
+				var el = $( this ),
+					fromTop = $( window ).scrollTop(),
+					thisTop = getOffsetTop( el[ 0 ] ), // el.offset().top returns the wrong value on iPad iOS 3.2.1, call our workaround instead.
 					screenHeight = window.innerHeight,
 					thisHeight = el.outerHeight(),
-					alreadyVisible = (el.is('.ui-header-fixed') && fromTop <= thisTop + thisHeight) || (el.is('.ui-footer-fixed') && thisTop <= fromTop + screenHeight);	
-				
-				//add state class
-				el.addClass('ui-fixed-overlay').removeClass('ui-fixed-inline');	
-					
-				if( !alreadyVisible && !immediately ){
-					el.animationComplete(function(){
-						el.removeClass('in');
-					}).addClass('in');
+					alreadyVisible = ( el.is( ".ui-header-fixed" ) && fromTop <= thisTop + thisHeight ) ||
+														( el.is( ".ui-footer-fixed" ) && thisTop <= fromTop + screenHeight );
+
+				// Add state class
+				el.addClass( "ui-fixed-overlay" ).removeClass( "ui-fixed-inline" );
+
+				if ( !alreadyVisible && !immediately ) {
+					el.animationComplete(function() {
+						el.removeClass( "in" );
+					}).addClass( "in" );
 				}
 				setTop(el);
-			});	
+			});
 		},
-		hide: function(immediately){
-			currentstate = 'inline';
-			var $ap = $.mobile.activePage ? $.mobile.activePage : $(".ui-page-active");
-			return $ap.children( toolbarSelector ).each(function(){
-				var el = $(this);
 
-				var thisCSStop = el.css('top'); thisCSStop = thisCSStop == 'auto' ? 0 : parseFloat(thisCSStop);
-				
-				//add state class
-				el.addClass('ui-fixed-inline').removeClass('ui-fixed-overlay');
-				
-				if (thisCSStop < 0 || (el.is('.ui-header-fixed') && thisCSStop != 0))
-				{
-					if(immediately){
-						el.css('top',0);
-					}
-					else{
-						if( el.css('top') !== 'auto' && parseFloat(el.css('top')) !== 0 ){
-							var classes = 'out reverse';
-							el.animationComplete(function(){
-								el.removeClass(classes);
-								el.css('top',0);
-							}).addClass(classes);	
+		hide: function( immediately ) {
+
+			currentstate = "inline";
+
+			var $ap = $.mobile.activePage ? $.mobile.activePage :
+									$( ".ui-page-active" );
+
+			return $ap.children( toolbarSelector ).each(function() {
+
+				var el = $(this),
+					thisCSStop = el.css( "top" ),
+					classes;
+
+				thisCSStop = thisCSStop == "auto" ? 0 :
+											parseFloat(thisCSStop);
+
+				// Add state class
+				el.addClass( "ui-fixed-inline" ).removeClass( "ui-fixed-overlay" );
+
+				if ( thisCSStop < 0 || ( el.is( ".ui-header-fixed" ) && thisCSStop !== 0 ) ) {
+
+					if ( immediately ) {
+						el.css( "top", 0);
+					} else {
+
+						if ( el.css( "top" ) !== "auto" && parseFloat( el.css( "top" ) ) !== 0 ) {
+
+							classes = "out reverse";
+
+							el.animationComplete(function() {
+								el.removeClass( classes ).css( "top", 0 );
+							}).addClass( classes );
 						}
 					}
 				}
 			});
 		},
-		startShowTimer: function(){
+
+		startShowTimer: function() {
+
 			$.fixedToolbars.clearShowTimer();
+
 			var args = $.makeArray(arguments);
-			delayTimer = setTimeout(function(){
+
+			delayTimer = setTimeout(function() {
 				delayTimer = undefined;
-				$.fixedToolbars.show.apply(null, args);
+				$.fixedToolbars.show.apply( null, args );
 			}, showDelay);
 		},
+
 		clearShowTimer: function() {
-			if (delayTimer) {
-				clearTimeout(delayTimer);
+			if ( delayTimer ) {
+				clearTimeout( delayTimer );
 			}
 			delayTimer = undefined;
 		},
-		toggle: function(from){
-			if(from){ currentstate = from; }
-			return (currentstate == 'overlay') ? $.fixedToolbars.hide() : $.fixedToolbars.show();
+
+		toggle: function( from ) {
+			if ( from ) {
+				currentstate = from;
+			}
+			return ( currentstate === "overlay" ) ? $.fixedToolbars.hide() :
+								$.fixedToolbars.show();
 		},
-        setTouchToggleEnabled: function(enabled) {
-            touchToggleEnabled = enabled;
-        }
+
+		setTouchToggleEnabled: function(enabled) {
+			touchToggleEnabled = enabled;
+		}
 	};
 })();
 

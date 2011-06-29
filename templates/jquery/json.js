@@ -27,20 +27,36 @@ if (!this.JSON)this.JSON = {};
     var d,g,j = f,e,b = c[a];
     if (b && typeof b === "object" && typeof b.toJSON === "function")b = b.toJSON(a);
     if (typeof i === "function")b = i.call(c, a, b);
-    switch (typeof b) {case "string":return p(b);case "number":return isFinite(b) ? String(b) : "null";case "boolean":case "null":return String(b);case "object":if (!b)return"null";f += l;e = [];if (Object.prototype.toString.apply(b) === "[object Array]") {
-      g = b.length;
-      for (a = 0; a < g; a += 1)e[a] = m(a, b) || "null";
-      c = e.length === 0 ? "[]" : f ? "[\n" + f + e.join(",\n" + f) + "\n" + j + "]" : "[" + e.join(",") + "]";
-      f = j;
-      return c
-    }if (i && typeof i === "object") {
-      g = i.length;
-      for (a = 0; a < g; a += 1) {
-        d = i[a];
-        if (typeof d === "string")if (c =
-                m(d, b))e.push(p(d) + (f ? ": " : ":") + c)
-      }
-    } else for (d in b)if (Object.hasOwnProperty.call(b, d))if (c = m(d, b))e.push(p(d) + (f ? ": " : ":") + c);c = e.length === 0 ? "{}" : f ? "{\n" + f + e.join(",\n" + f) + "\n" + j + "}" : "{" + e.join(",") + "}";f = j;return c
+    switch (typeof b) {
+      case "string":
+        return p(b);
+      case "number":
+        return isFinite(b) ? String(b) : "null";
+      case "boolean":
+      case "null":
+        return String(b);
+      case "object":
+        if (!b)return"null";
+        f += l;
+        e = [];
+        if (Object.prototype.toString.apply(b) === "[object Array]") {
+          g = b.length;
+          for (a = 0; a < g; a += 1)e[a] = m(a, b) || "null";
+          c = e.length === 0 ? "[]" : f ? "[\n" + f + e.join(",\n" + f) + "\n" + j + "]" : "[" + e.join(",") + "]";
+          f = j;
+          return c
+        }
+        if (i && typeof i === "object") {
+          g = i.length;
+          for (a = 0; a < g; a += 1) {
+            d = i[a];
+            if (typeof d === "string")if (c =
+                    m(d, b))e.push(p(d) + (f ? ": " : ":") + c)
+          }
+        } else for (d in b)if (Object.hasOwnProperty.call(b, d))if (c = m(d, b))e.push(p(d) + (f ? ": " : ":") + c);
+        c = e.length === 0 ? "{}" : f ? "{\n" + f + e.join(",\n" + f) + "\n" + j + "}" : "{" + e.join(",") + "}";
+        f = j;
+        return c
     }
   }
 
@@ -50,7 +66,7 @@ if (!this.JSON)this.JSON = {};
     if (typeof d === "number")for (g = 0; g < d; g += 1)l += " "; else if (typeof d === "string")l = d;
     if ((i = c) && typeof c !== "function" && (typeof c !== "object" || typeof c.length !== "number"))throw new Error("JSON.stringify");
     return m("",
-    {"":a})
+            {"":a})
   };
   if (typeof JSON.parse !== "function")JSON.parse = function(a, c) {
     function d(g, j) {

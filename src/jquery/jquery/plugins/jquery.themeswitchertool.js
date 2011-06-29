@@ -32,7 +32,7 @@ $.fn.themeswitcher = function(settings) {
             }
             return false;
           }
-          );
+  );
 
   //menu events (mouseout didn't work...)
   switcherpane.hover(
@@ -43,7 +43,7 @@ $.fn.themeswitcher = function(settings) {
               $(this).spHide();
             }
           }
-          );
+  );
 
   //show/hide panel functions
   $.fn.spShow = function() {
@@ -130,13 +130,13 @@ $.fn.themeswitcher = function(settings) {
               $(this).css(button_default);
             }
           }
-          )
+  )
           .find('.jquery-ui-themeswitcher-icon').css({
-                                                       'float': 'right',
-                                                       width: '16px',
-                                                       height: '16px',
-                                                       background: 'image_url("jquery/ui/themeSwitcher/icon_color_arrow.gif") 50% 50% no-repeat'
-                                                     });
+            'float': 'right',
+            width: '16px',
+            height: '16px',
+            background: 'image_url("jquery/ui/themeSwitcher/icon_color_arrow.gif") 50% 50% no-repeat'
+          });
   //pane css
   switcherpane.css({
     position: 'absolute',
@@ -156,12 +156,12 @@ $.fn.themeswitcher = function(settings) {
     width: options.width - 6//minus must match left and right padding
   })
           .find('ul').css({
-                            listStyle: 'none',
-                            margin: '0',
-                            padding: '0',
-                            overflow: 'auto',
-                            height: options.height
-                          }).end()
+            listStyle: 'none',
+            margin: '0',
+            padding: '0',
+            overflow: 'auto',
+            height: options.height
+          }).end()
           .find('li').hover(
           function() {
             $(this).css({
@@ -177,32 +177,32 @@ $.fn.themeswitcher = function(settings) {
               cursor: 'auto'
             });
           }
-          ).css({
-                  width: options.width - 30,
-                  height: '',
-                  padding: '2px',
-                  margin: '1px',
-                  border: '1px solid #111',
-                  '-moz-border-radius': '4px',
-                  clear: 'left',
-                  'float': 'left'
-                }).end()
+  ).css({
+            width: options.width - 30,
+            height: '',
+            padding: '2px',
+            margin: '1px',
+            border: '1px solid #111',
+            '-moz-border-radius': '4px',
+            clear: 'left',
+            'float': 'left'
+          }).end()
           .find('a').css({
-                           color: '#aaa',
-                           textDecoration: 'none',
-                           'float': 'left',
-                           width: '100%',
-                           outline: '0'
-                         }).end()
+            color: '#aaa',
+            textDecoration: 'none',
+            'float': 'left',
+            width: '100%',
+            outline: '0'
+          }).end()
           .find('img').css({
-                             'float': 'left',
-                             border: '1px solid #333',
-                             margin: '0 2px'
-                           }).end()
+            'float': 'left',
+            border: '1px solid #333',
+            margin: '0 2px'
+          }).end()
           .find('.themeName').css({
-                                    'float': 'left',
-                                    margin: '3px 0'
-                                  }).end();
+            'float': 'left',
+            margin: '3px 0'
+          }).end();
 
   $(this).append(button);
   $('body').append(switcherpane);
