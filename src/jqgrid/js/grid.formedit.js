@@ -21,6 +21,7 @@
         beforeShowSearch: null,
         afterShowSearch : null,
         onInitializeSearch: null,
+        afterRedraw : null,
         closeAfterSearch : false,
         closeAfterReset: false,
         closeOnEscape : false,
@@ -31,7 +32,7 @@
         left: 0,
         jqModal : true,
         modal: false,
-        resize : false,
+        resize : true,
         width: 450,
         height: 'auto',
         dataheight: 'auto',
@@ -83,12 +84,6 @@
               p.afterShowSearch($("#" + fid));
             }
           }
-        }
-
-        function hideButtons() {
-          $(".add-rule", "#" + fid).hide();
-          $(".delete-rule", "#" + fid).hide();
-          $(".opsel", "#" + fid).hide();
         }
 
         if ($("#" + IDs.themodal).html() !== null) {
@@ -158,6 +153,8 @@
             errorcheck : p.errorcheck,
             sopt: p.sopt,
             groupButton : p.multipleGroup,
+            ruleButtons : p.multipleSearch,
+            afterRedraw : p.afterRedraw,
             _gridsopt : $.jgrid.search.odata,
             onChange : function(sp) {
               if (this.p.showQuery) {
@@ -177,9 +174,7 @@
               return false;
             });
           }
-          if (p.multipleSearch === false) {
-            hideButtons();
-          }
+          if (p.multipleGroup === true) p.multipleSearch = true;
           if ($.isFunction(p.onInitializeSearch)) {
             p.onInitializeSearch($("#" + fid));
           }
@@ -270,9 +265,6 @@
             $.extend($t.p.postData, sdata);
             if ($.isFunction(p.onReset)) {
               p.onReset();
-            }
-            if (p.multipleSearch === false) {
-              hideButtons();
             }
             $($t).trigger("reloadGrid", [
               {page:1}
@@ -690,6 +682,7 @@
               }
             }
           }
+          setNulls();
           if (ret[0]) {
             if ($.isFunction(rp_ge.onclickSubmit)) {
               onCS = rp_ge.onclickSubmit(rp_ge, postdata) || {};
@@ -926,8 +919,6 @@
               $("#" + frmgr).data("disabled", true);
               $(".confirm", "#" + IDs.themodal).show();
               stat = false;
-            } else {
-              setNulls();
             }
           }
           return stat;
@@ -1234,7 +1225,6 @@
             //ret[1] - msg if not succes
             //ret[2] - the id  that will be set if reload after submit false
             getFormData();
-            setNulls();
             if (postdata[$t.p.id + "_id"] == "_empty") {
               postIt();
             }

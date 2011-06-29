@@ -96,7 +96,7 @@
                 minus = grp.minusicon,
                 plus = grp.plusicon,
                 tar = $("#" + hid),
-                r = tar[0].nextSibling,
+                r = tar.length ? tar[0].nextSibling : null,
                 tarspan = $("#" + hid + " span." + "tree-wrap-" + $t.p.direction),
                 collapsed = false;
         if (tarspan.hasClass(minus)) {

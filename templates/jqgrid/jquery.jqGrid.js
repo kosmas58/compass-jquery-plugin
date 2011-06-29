@@ -4079,19 +4079,19 @@
                   o.onRightKey.call($t, $t.p.selrow);
                 }
               }
-              return false;
+              //return false;
             }
             //check if enter was pressed on a grid or treegrid node
             else if (event.keyCode === 13) {
               if ($.isFunction(o.onEnter)) {
                 o.onEnter.call($t, $t.p.selrow);
               }
-              return false;
+              //return false;
             } else if (event.keyCode === 32) {
               if ($.isFunction(o.onSpace)) {
                 o.onSpace.call($t, $t.p.selrow);
               }
-              return false;
+              //return false;
             }
           }
         });
@@ -7489,6 +7489,7 @@ var xmlJsonClass = {
         beforeShowSearch: null,
         afterShowSearch : null,
         onInitializeSearch: null,
+        afterRedraw : null,
         closeAfterSearch : false,
         closeAfterReset: false,
         closeOnEscape : false,
@@ -7499,7 +7500,7 @@ var xmlJsonClass = {
         left: 0,
         jqModal : true,
         modal: false,
-        resize : false,
+        resize : true,
         width: 450,
         height: 'auto',
         dataheight: 'auto',
@@ -7551,12 +7552,6 @@ var xmlJsonClass = {
               p.afterShowSearch($("#" + fid));
             }
           }
-        }
-
-        function hideButtons() {
-          $(".add-rule", "#" + fid).hide();
-          $(".delete-rule", "#" + fid).hide();
-          $(".opsel", "#" + fid).hide();
         }
 
         if ($("#" + IDs.themodal).html() !== null) {
@@ -7626,6 +7621,8 @@ var xmlJsonClass = {
             errorcheck : p.errorcheck,
             sopt: p.sopt,
             groupButton : p.multipleGroup,
+            ruleButtons : p.multipleSearch,
+            afterRedraw : p.afterRedraw,
             _gridsopt : $.jgrid.search.odata,
             onChange : function(sp) {
               if (this.p.showQuery) {
@@ -7645,9 +7642,7 @@ var xmlJsonClass = {
               return false;
             });
           }
-          if (p.multipleSearch === false) {
-            hideButtons();
-          }
+          if (p.multipleGroup === true) p.multipleSearch = true;
           if ($.isFunction(p.onInitializeSearch)) {
             p.onInitializeSearch($("#" + fid));
           }
@@ -7738,9 +7733,6 @@ var xmlJsonClass = {
             $.extend($t.p.postData, sdata);
             if ($.isFunction(p.onReset)) {
               p.onReset();
-            }
-            if (p.multipleSearch === false) {
-              hideButtons();
             }
             $($t).trigger("reloadGrid", [
               {page:1}
@@ -8158,6 +8150,7 @@ var xmlJsonClass = {
               }
             }
           }
+          setNulls();
           if (ret[0]) {
             if ($.isFunction(rp_ge.onclickSubmit)) {
               onCS = rp_ge.onclickSubmit(rp_ge, postdata) || {};
@@ -8394,8 +8387,6 @@ var xmlJsonClass = {
               $("#" + frmgr).data("disabled", true);
               $(".confirm", "#" + IDs.themodal).show();
               stat = false;
-            } else {
-              setNulls();
             }
           }
           return stat;
@@ -8702,7 +8693,6 @@ var xmlJsonClass = {
             //ret[1] - msg if not succes
             //ret[2] - the id  that will be set if reload after submit false
             getFormData();
-            setNulls();
             if (postdata[$t.p.id + "_id"] == "_empty") {
               postIt();
             }
@@ -11911,7 +11901,7 @@ var xmlJsonClass = {
                 minus = grp.minusicon,
                 plus = grp.plusicon,
                 tar = $("#" + hid),
-                r = tar[0].nextSibling,
+                r = tar.length ? tar[0].nextSibling : null,
                 tarspan = $("#" + hid + " span." + "tree-wrap-" + $t.p.direction),
                 collapsed = false;
         if (tarspan.hasClass(minus)) {
