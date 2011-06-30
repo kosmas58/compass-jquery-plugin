@@ -1964,11 +1964,6 @@ $.widget( "mobile.page", $.mobile.widget, {
 		// Automatically handle clicks and form submissions through Ajax, when same-domain
 		ajaxEnabled: true,
 
-		// When enabled, clicks and taps that result in Ajax page changes will happen slightly sooner on touch devices.
-		// Also, it will prevent the address bar from appearing on platforms like iOS during page transitions.
-		// This option has no effect on non-touch devices, but enabling it may interfere with jQuery plugins that bind to click events
-		useFastClick: true,
-
 		// Automatically load and show pages based on location.hash
 		hashListeningEnabled: true,
 
@@ -3124,7 +3119,7 @@ $.widget( "mobile.page", $.mobile.widget, {
 		});
 
 		// click routing - direct to HTTP or Ajax, accordingly
-		$( document ).bind( $.mobile.useFastClick ? "vclick" : "click", function( event ) {
+		$( document ).bind( "click", function( event ) {
 			var link = findClosestLink( event.target );
 			if ( !link ) {
 				return;
@@ -4468,6 +4463,8 @@ $.widget( "mobile.selectmenu", $.mobile.widget, {
 				$( window ).one( "silentscroll", function() {
 					focusMenuItem();
 				});
+
+				self.isOpen = true;
 			});
 
 			self.menuType = "page";
@@ -4521,12 +4518,10 @@ $.widget( "mobile.selectmenu", $.mobile.widget, {
 				.addClass( "in" );
 
 			focusMenuItem();
-		}
 
-		// wait before the dialog can be closed
-		setTimeout(function() {
-		 	self.isOpen = true;
-		}, 400);
+			// duplicate with value set in page show for dialog sized selects
+			self.isOpen = true;
+		}
 	},
 
 	close: function() {
