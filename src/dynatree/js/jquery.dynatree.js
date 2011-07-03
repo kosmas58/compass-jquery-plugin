@@ -271,7 +271,8 @@ var DTNodeStatus_Ok = 0;
               data = this.data,
               opts = tree.options,
               cn = opts.classNames,
-              isLastSib = this.isLastSibling();
+              isLastSib = this.isLastSibling(),
+              firstTime = false;
 
       if (!parent && !this.ul) {
         // Root node has only a <ul>
@@ -285,6 +286,7 @@ var DTNodeStatus_Ok = 0;
       } else if (parent) {
         // Create <li><span /> </li>
         if (! this.li) {
+          firstTime = true;
           this.li = document.createElement("li");
           this.li.dtnode = this;
           if (data.key && opts.generateIds) {
@@ -357,9 +359,13 @@ var DTNodeStatus_Ok = 0;
         // TODO: we should not set this in the <span> tag also, if we set it here:
         this.li.className = isLastSib ? cn.lastsib : "";
 
+        // Allow tweaking, binding, after node was created for the first time
+        if (firstTime && opts.onCreate) {
+          opts.onCreate.call(tree, this, this.span);
+        }
         // Hide children, if node is collapsed
 //			this.ul.style.display = ( this.bExpanded || !parent ) ? "" : "none";
-        // Allow tweaking, binding, ...
+        // Allow tweaking after node state was rendered
         if (opts.onRender) {
           opts.onRender.call(tree, this, this.span);
         }
@@ -822,16 +828,59 @@ var DTNodeStatus_Ok = 0;
         $(this.span).removeClass(this.tree.options.classNames.partsel);
       }
     },
+    /**
+     * Fix selection and partsel status, of parent nodes, according to current status of
+     * end nodes.
+     */
+    _updatePartSelectionState: function() {
+      var sel;
+      // Return `true` or `false` for end nodes and remove part-sel flag
+      if (! this.hasChildren()) {
+        sel = (this.bSelected && !this.data.unselectable && !this.data.isStatusNode);
+        this._setSubSel(false);
+        return sel;
+      }
+      // Return `true`, `false`, or `undefined` for parent nodes
+      var i, l,
+              cl = this.childList,
+              allSelected = true,
+              allDeselected = true;
+      for (i = 0,l = cl.length; i < l; i++) {
+        var n = cl[i],
+                s = n._updatePartSelectionState();
+        if (s !== false) {
+          allDeselected = false;
+        }
+        if (s !== true) {
+          allSelected = false;
+        }
+      }
+      if (allSelected) {
+        sel = true;
+      } else if (allDeselected) {
+        sel = false;
+      } else {
+        sel = undefined;
+      }
+      this._setSubSel(sel === undefined);
+      this.bSelected = (sel === true);
+      return sel;
+    },
 
+    /**
+     * Fix selection status, after this node was (de)selected in multi-hier mode.
+     * This includes (de)selecting all children.
+     */
     _fixSelectionState: function() {
-      // fix selection status, for multi-hier mode
 //		this.tree.logDebug("_fixSelectionState(%o) - %o", this.bSelected, this);
       var p, i, l;
       if (this.bSelected) {
         // Select all children
         this.visit(function(node) {
           node.parent._setSubSel(true);
-          node._select(true, false, false);
+          if (!node.data.unselectable) {
+            node._select(true, false, false);
+          }
         });
         // Select parents, if all children are selected
         p = this.parent;
@@ -840,7 +889,7 @@ var DTNodeStatus_Ok = 0;
           var allChildsSelected = true;
           for (i = 0,l = p.childList.length; i < l; i++) {
             var n = p.childList[i];
-            if (!n.bSelected && !n.data.isStatusNode) {
+            if (!n.bSelected && !n.data.isStatusNode && !n.data.unselectable) {
               allChildsSelected = false;
               break;
             }
@@ -1016,6 +1065,10 @@ var DTNodeStatus_Ok = 0;
       if (opts.onExpand) {
         opts.onExpand.call(this.tree, bExpand, this);
       }
+    },
+
+    isExpanded: function() {
+      return this.bExpanded;
     },
 
     expand: function(flag) {
@@ -1478,9 +1531,9 @@ var DTNodeStatus_Ok = 0;
        * Internal function to add one single DynatreeNode as a child.
        *
        */
-      var tree = this.tree;
-      var opts = tree.options;
-      var pers = tree.persistence;
+      var tree = this.tree,
+              opts = tree.options,
+              pers = tree.persistence;
 
 //		tree.logDebug("%s._addChildNode(%o)", this, dtnode);
 
@@ -1504,7 +1557,6 @@ var DTNodeStatus_Ok = 0;
           throw "<beforeNode> must be a child of <this>";
         }
         this.childList.splice(iBefore, 0, dtnode);
-//			alert(this.childList);
       } else {
         // Append node
         this.childList.push(dtnode);
@@ -1518,10 +1570,10 @@ var DTNodeStatus_Ok = 0;
       if (opts.persist && pers.cookiesFound && isInitializing) {
         // Init status from cookies
 //			tree.logDebug("init from cookie, pa=%o, dk=%o", pers.activeKey, dtnode.data.key);
-        if (pers.activeKey == dtnode.data.key) {
+        if (pers.activeKey === dtnode.data.key) {
           tree.activeNode = dtnode;
         }
-        if (pers.focusedKey == dtnode.data.key) {
+        if (pers.focusedKey === dtnode.data.key) {
           tree.focusNode = dtnode;
         }
         dtnode.bExpanded = ($.inArray(dtnode.data.key, pers.expandedKeyList) >= 0);
@@ -1781,14 +1833,14 @@ var DTNodeStatus_Ok = 0;
         }
       } else {
         targetParent.childList = [ this ];
-        // Parent has no <ul> tag yet:
-        if (!targetParent.ul) {
-          // This is the parent's first child: create UL tag
-          // (Hidden, because it will be
-          targetParent.ul = document.createElement("ul");
-          targetParent.ul.style.display = "none";
-          targetParent.li.appendChild(targetParent.ul);
-        }
+      }
+      // Parent has no <ul> tag yet:
+      if (!targetParent.ul) {
+        // This is the parent's first child: create UL tag
+        // (Hidden, because it will be
+        targetParent.ul = document.createElement("ul");
+        targetParent.ul.style.display = "none";
+        targetParent.li.appendChild(targetParent.ul);
       }
       // Add to target DOM parent
       targetParent.ul.appendChild(this.li);
@@ -1978,6 +2030,7 @@ var DTNodeStatus_Ok = 0;
 // --- Static members ----------------------------------------------------------
 
   DynaTree.version = "$Version:$";
+
   /*
    DynaTree._initTree = function() {
    };
@@ -2119,6 +2172,10 @@ var DTNodeStatus_Ok = 0;
       }
 
       this._checkConsistency();
+      // Fix part-sel flags
+      if (opts.selectMode == 3) {
+        root._updatePartSelectionState();
+      }
       // Render html markup
       this.logDebug("Dynatree._load(): render nodes...");
       this.enableUpdate(prevFlag);
@@ -2768,7 +2825,7 @@ var DTNodeStatus_Ok = 0;
     _create: function() {
       var opts = this.options;
       if (opts.debugLevel >= 1) {
-        logMsg("Dynatree._create(): version='%s', debugLevel=%o.", DynaTree.version, this.options.debugLevel);
+        logMsg("Dynatree._create(): version='%s', debugLevel=%o.", $.ui.dynatree.version, this.options.debugLevel);
       }
       // The widget framework supplies this.element and this.options.
       this.options.event += ".dynatree"; // namespace event
@@ -2901,6 +2958,31 @@ var DTNodeStatus_Ok = 0;
     $.ui.dynatree.getter = "getTree getRoot getActiveNode getSelectedNodes";
   }
 
+  /*******************************************************************************
+   * Tools in ui.dynatree namespace
+   */
+  $.ui.dynatree.version = "$Version:$";
+
+  /**
+   * Return a DynaTreeNode object for a given DOM element
+   */
+  $.ui.dynatree.getNode = function(el) {
+    if (el instanceof DynaTreeNode) {
+      return el; // el already was a DynaTreeNode
+    }
+    // TODO: for some reason $el.parents("[dtnode]") does not work (jQuery 1.6.1)
+    // maybe, because dtnode is a property, not an attribute
+    var $el = el.selector === undefined ? $(el) : el,
+//		parent = $el.closest("[dtnode]"),
+            parent = $el.parents("[dtnode]").first(),
+            node;
+    if (typeof parent.prop == "function") {
+      node = parent.prop("dtnode");
+    } else { // pre jQuery 1.6
+      node = parent.attr("dtnode");
+    }
+    return node;
+  }
 
   /*******************************************************************************
    * Plugin default options:
@@ -2943,6 +3025,7 @@ var DTNodeStatus_Ok = 0;
     onExpand: null, // Callback(flag, dtnode) when a node is expanded/collapsed.
     onLazyRead: null, // Callback(dtnode) when a lazy node is expanded for the first time.
     onCustomRender: null, // Callback(dtnode) before a node is rendered. Return a HTML string to override.
+    onCreate: null, // Callback(dtnode, nodeSpan) after a node was rendered for the first time.
     onRender: null, // Callback(dtnode, nodeSpan) after a node was rendered.
 
     // Drag'n'drop support
