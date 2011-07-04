@@ -7476,6 +7476,7 @@ var xmlJsonClass = {
    * http://www.gnu.org/licenses/gpl-2.0.html
    **/
   /*global xmlJsonClass, jQuery, $  */
+  var rp_ge_arr = {};
   $.jgrid.extend({
     searchGrid : function (p) {
       p = $.extend({
@@ -7797,7 +7798,8 @@ var xmlJsonClass = {
         serializeEditData : null,
         viewPagerButtons : true
       }, $.jgrid.edit, p || {});
-      var rp_ge = p;
+      rp_ge_arr[$(this)[0].p.id] = p;
+      var rp_ge = rp_ge_arr[$(this)[0].p.id];
       return this.each(function() {
         var $t = this;
         if (!$t.grid || !rowid) {
@@ -9133,7 +9135,8 @@ var xmlJsonClass = {
         serializeDelData : null,
         useDataProxy : false
       }, $.jgrid.del, p || {});
-      var rp_ge = p;
+      rp_ge_arr[$(this)[0].p.id] = p;
+      var rp_ge = rp_ge_arr[$(this)[0].p.id];
       return this.each(function() {
         var $t = this;
         if (!$t.grid) {
