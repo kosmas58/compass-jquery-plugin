@@ -45,7 +45,7 @@
 			parseUrl: function( url ) {
 				// If we're passed an object, we'll assume that it is
 				// a parsed url object and just return it back to the caller.
-				if ( typeof url === "object" ) {
+				if ( $.type( url ) === "object" ) {
 					return url;
 				}
 
@@ -86,10 +86,10 @@
 				if ( relPath && relPath.charAt( 0 ) === "/" ) {
 					return relPath;
 				}
-		
+
 				relPath = relPath || "";
 				absPath = absPath ? absPath.replace( /^\/|(\/[^\/]*|[^\/]+)$/g, "" ) : "";
-		
+
 				var absStack = absPath ? absPath.split( "/" ) : [],
 					relStack = relPath.split( "/" );
 				for ( var i = 0; i < relStack.length; i++ ) {
@@ -132,7 +132,7 @@
 				if ( !path.isRelativeUrl( relUrl ) ) {
 					return relUrl;
 				}
-		
+
 				var relObj = path.parseUrl( relUrl ),
 					absObj = path.parseUrl( absUrl ),
 					protocol = relObj.protocol || absObj.protocol,
@@ -141,7 +141,7 @@
 					pathname = path.makePathAbsolute( relObj.pathname || absObj.filename, absObj.pathname ),
 					search = relObj.search || ( !hasPath && absObj.search ) || "",
 					hash = relObj.hash;
-		
+
 				return protocol + "//" + authority + pathname + search + hash;
 			},
 
@@ -387,29 +387,29 @@
 
 	//function for transitioning between two existing pages
 	function transitionPages( toPage, fromPage, transition, reverse ) {
-		
+
 		//get current scroll distance
 		var currScroll = $.support.scrollTop ? $window.scrollTop() : true,
 			toScroll	= toPage.data( "lastScroll" ) || $.mobile.defaultHomeScroll,
 			screenHeight = getScreenHeight();
-		
+
 		//if scrolled down, scroll to top
 		if( currScroll ){
 			window.scrollTo( 0, $.mobile.defaultHomeScroll );
 		}
-		
+
 		//if the Y location we're scrolling to is less than 10px, let it go for sake of smoothness
 		if( toScroll < $.mobile.minScrollBack ){
 			toScroll = 0;
 		}
-		
+
 		if( fromPage ) {
 			//set as data for returning to that spot
 			fromPage
 				.height( screenHeight + currScroll )
 				.jqmData( "lastScroll", currScroll )
 				.jqmData( "lastClicked", $activeClickedLink );
-				
+
 			//trigger before show/hide events
 			fromPage.data( "page" )._trigger( "beforehide", null, { nextPage: toPage } );
 		}
@@ -429,28 +429,28 @@
 		promise.done(function() {
 			//reset toPage height bac
 			toPage.height( "" );
-			
+
 			//jump to top or prev scroll, sometimes on iOS the page has not rendered yet.
 			if( toScroll ){
 				$.mobile.silentScroll( toScroll );
 				$( document ).one( "silentscroll", function() { reFocus( toPage ); } );
 			}
 			else{
-				reFocus( toPage ); 
+				reFocus( toPage );
 			}
 
 			//trigger show/hide events
 			if( fromPage ) {
 				fromPage.height("").data( "page" )._trigger( "hide", null, { nextPage: toPage } );
 			}
-			
+
 			//trigger pageshow, define prevPage as either fromPage or empty jQuery obj
 			toPage.data( "page" )._trigger( "show", null, { prevPage: fromPage || $( "" ) } );
 		});
 
 		return promise;
 	}
-	
+
 	//simply set the active page's minimum height to screen height, depending on orientation
 	function getScreenHeight(){
 		var orientation 	= jQuery.event.special.orientationchange.orientation(),
@@ -462,7 +462,7 @@
 
 		return pageMin;
 	}
-	
+
 	//simply set the active page's minimum height to screen height, depending on orientation
 	function resetActivePageHeight(){
 		$( "." + $.mobile.activePageClass ).css( "min-height", getScreenHeight() );
@@ -612,16 +612,19 @@
 			$.mobile.showPageLoadingMsg();
 		}
 
-		// Load the new page.
-		$.ajax({
-			url: fileUrl,
-			type: settings.type,
-			data: settings.data,
-			dataType: "html",
-			success: function( html ) {
-				//pre-parse html to check for a data-url,
-				//use it as the new fileUrl, base path, etc
-				var all = $( "<div></div>" ),
+		if ( !( $.mobile.allowCrossDomainPages || path.isSameDomain( documentUrl, absUrl ) ) ) {
+			deferred.reject( absUrl, options );
+		} else {
+			// Load the new page.
+			$.ajax({
+				url: fileUrl,
+				type: settings.type,
+				data: settings.data,
+				dataType: "html",
+				success: function( html ) {
+					//pre-parse html to check for a data-url,
+					//use it as the new fileUrl, base path, etc
+					var all = $( "<div></div>" ),
 
 						//page title regexp
 						newPageTitle = html.match( /<title[^>]*>([^<]*)/ ) && RegExp.$1,
@@ -631,90 +634,91 @@
 						dataUrlRegex = new RegExp( "\\bdata-" + $.mobile.ns + "url=[\"']?([^\"'>]*)[\"']?" );
 
 
-				// data-url must be provided for the base tag so resource requests can be directed to the
-				// correct url. loading into a temprorary element makes these requests immediately
-				if( pageElemRegex.test( html )
-						&& RegExp.$1
-						&& dataUrlRegex.test( RegExp.$1 )
-						&& RegExp.$1 ) {
-					url = fileUrl = path.getFilePath( RegExp.$1 );
-				}
+					// data-url must be provided for the base tag so resource requests can be directed to the
+					// correct url. loading into a temprorary element makes these requests immediately
+					if( pageElemRegex.test( html )
+							&& RegExp.$1
+							&& dataUrlRegex.test( RegExp.$1 )
+							&& RegExp.$1 ) {
+						url = fileUrl = path.getFilePath( RegExp.$1 );
+					}
 
-				if ( base ) {
-					base.set( fileUrl );
-				}
+					if ( base ) {
+						base.set( fileUrl );
+					}
 
-				//workaround to allow scripts to execute when included in page divs
-				all.get( 0 ).innerHTML = html;
-				page = all.find( ":jqmData(role='page'), :jqmData(role='dialog')" ).first();
+					//workaround to allow scripts to execute when included in page divs
+					all.get( 0 ).innerHTML = html;
+					page = all.find( ":jqmData(role='page'), :jqmData(role='dialog')" ).first();
 
-				if ( newPageTitle && !page.jqmData( "title" ) ) {
-					page.jqmData( "title", newPageTitle );
-				}
+					if ( newPageTitle && !page.jqmData( "title" ) ) {
+						page.jqmData( "title", newPageTitle );
+					}
 
-				//rewrite src and href attrs to use a base url
-				if( !$.support.dynamicBaseTag ) {
-					var newPath = path.get( fileUrl );
-					page.find( "[src], link[href], a[rel='external'], :jqmData(ajax='false'), a[target]" ).each(function() {
-						var thisAttr = $( this ).is( '[href]' ) ? 'href' :
-								$(this).is('[src]') ? 'src' : 'action',
-							thisUrl = $( this ).attr( thisAttr );
+					//rewrite src and href attrs to use a base url
+					if( !$.support.dynamicBaseTag ) {
+						var newPath = path.get( fileUrl );
+						page.find( "[src], link[href], a[rel='external'], :jqmData(ajax='false'), a[target]" ).each(function() {
+							var thisAttr = $( this ).is( '[href]' ) ? 'href' :
+									$(this).is('[src]') ? 'src' : 'action',
+								thisUrl = $( this ).attr( thisAttr );
 
-						// XXX_jblas: We need to fix this so that it removes the document
-						//            base URL, and then prepends with the new page URL.
-						//if full path exists and is same, chop it - helps IE out
-						thisUrl = thisUrl.replace( location.protocol + '//' + location.host + location.pathname, '' );
+							// XXX_jblas: We need to fix this so that it removes the document
+							//            base URL, and then prepends with the new page URL.
+							//if full path exists and is same, chop it - helps IE out
+							thisUrl = thisUrl.replace( location.protocol + '//' + location.host + location.pathname, '' );
 
-						if( !/^(\w+:|#|\/)/.test( thisUrl ) ) {
-							$( this ).attr( thisAttr, newPath + thisUrl );
-						}
-					});
-				}
-
-				//append to page and enhance
-				page
-					.attr( "data-" + $.mobile.ns + "url", path.convertUrlToDataUrl( fileUrl ) )
-					.appendTo( settings.pageContainer );
-
-				enhancePage( page, settings.role );
-
-				// Enhancing the page may result in new dialogs/sub pages being inserted
-				// into the DOM. If the original absUrl refers to a sub-page, that is the
-				// real page we are interested in.
-				if ( absUrl.indexOf( "&" + $.mobile.subPageUrlKey ) > -1 ) {
-					page = settings.pageContainer.children( ":jqmData(url='" + dataUrl + "')" );
-				}
-
-				// Remove loading message.
-				if ( settings.showLoadMsg ) {
-					$.mobile.hidePageLoadingMsg();
-				}
-
-				deferred.resolve( absUrl, options, page, dupCachedPage );
-			},
-			error: function() {
-				//set base back to current path
-				if( base ) {
-					base.set( path.get() );
-				}
-
-				// Remove loading message.
-				if ( settings.showLoadMsg ) {
-					$.mobile.hidePageLoadingMsg();
-
-					//show error message
-					$( "<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all'><h1>"+ $.mobile.pageLoadErrorMessage +"</h1></div>" )
-						.css({ "display": "block", "opacity": 0.96, "top": $window.scrollTop() + 100 })
-						.appendTo( settings.pageContainer )
-						.delay( 800 )
-						.fadeOut( 400, function() {
-							$( this ).remove();
+							if( !/^(\w+:|#|\/)/.test( thisUrl ) ) {
+								$( this ).attr( thisAttr, newPath + thisUrl );
+							}
 						});
-				}
+					}
 
-				deferred.reject( absUrl, options );
-			}
-		});
+					//append to page and enhance
+					page
+						.attr( "data-" + $.mobile.ns + "url", path.convertUrlToDataUrl( fileUrl ) )
+						.appendTo( settings.pageContainer );
+
+					enhancePage( page, settings.role );
+
+					// Enhancing the page may result in new dialogs/sub pages being inserted
+					// into the DOM. If the original absUrl refers to a sub-page, that is the
+					// real page we are interested in.
+					if ( absUrl.indexOf( "&" + $.mobile.subPageUrlKey ) > -1 ) {
+						page = settings.pageContainer.children( ":jqmData(url='" + dataUrl + "')" );
+					}
+
+					// Remove loading message.
+					if ( settings.showLoadMsg ) {
+						$.mobile.hidePageLoadingMsg();
+					}
+
+					deferred.resolve( absUrl, options, page, dupCachedPage );
+				},
+				error: function() {
+					//set base back to current path
+					if( base ) {
+						base.set( path.get() );
+					}
+
+					// Remove loading message.
+					if ( settings.showLoadMsg ) {
+						$.mobile.hidePageLoadingMsg();
+
+						//show error message
+						$( "<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all'><h1>"+ $.mobile.pageLoadErrorMessage +"</h1></div>" )
+							.css({ "display": "block", "opacity": 0.96, "top": $window.scrollTop() + 100 })
+							.appendTo( settings.pageContainer )
+							.delay( 800 )
+							.fadeOut( 400, function() {
+								$( this ).remove();
+							});
+					}
+
+					deferred.reject( absUrl, options );
+				}
+			});
+		}
 
 		return deferred.promise();
 	};
@@ -901,17 +905,17 @@
 		transitionPages( toPage, fromPage, settings.transition, settings.reverse )
 			.done(function() {
 				removeActiveLinkClass();
-	
+
 				//if there's a duplicateCachedPage, remove it from the DOM now that it's hidden
 				if ( settings.duplicateCachedPage ) {
 					settings.duplicateCachedPage.remove();
 				}
-	
+
 				//remove initial build class (only present on first pageshow)
 				$html.removeClass( "ui-mobile-rendering" );
-	
+
 				releasePageTransitionLock();
-	
+
 				// Let listeners know we're all done changing the current page.
 				mpc.trigger( "changepage" );
 			});
@@ -952,12 +956,12 @@
 
 		return path.makeUrlAbsolute( url, base);
 	}
-	
-	
+
+
 	//The following event bindings should be bound after mobileinit has been triggered
 	//the following function is called in the init file
 	$.mobile._registerInternalEvents = function(){
-		
+
 		//bind to form submit events, handle with Ajax
 		$( "form" ).live('submit', function( event ) {
 			var $this = $( this );
@@ -1036,14 +1040,14 @@
 				window.history.back();
 				return false;
 			}
-		
+
 			//if ajax is disabled, exit early
 			if( !$.mobile.ajaxEnabled ){
 				httpCleanup();
 				//use default click handling
 				return;
 			}
-		
+
 			var baseUrl = getClosestBaseUrl( $link ),
 
 				//get href, if defined, otherwise default to empty hash
@@ -1160,11 +1164,11 @@
 				$.mobile.changePage( $.mobile.firstPage, { transition: transition, changeHash: false, fromHashChange: true } );
 			}
 		});
-		
+
 		//set page min-heights to be device specific
 		$( document ).bind( "pageshow", resetActivePageHeight );
 		$( window ).bind( "throttledresize", resetActivePageHeight );
-	
-	};//_registerInternalEvents callback	
+
+	};//_registerInternalEvents callback
 
 })( jQuery );
