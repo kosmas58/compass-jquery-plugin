@@ -476,8 +476,10 @@
       }
 
       // Insert the new tokens
-      insert_token(item);
-      checkTokenLimit();
+      if (settings.tokenLimit == null || token_count < settings.tokenLimit) {
+        insert_token(item);
+        checkTokenLimit();
+      }
 
       // Clear input box
       input_box.val("");
