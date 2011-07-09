@@ -276,6 +276,7 @@
             o.aftersavefunc.call($t, rowid, resp);
           }
           success = true;
+          $(ind).unbind("keydown");
         } else {
           $("#lui_" + $t.p.id).show();
           if ($t.p.restful) {
@@ -323,6 +324,7 @@
                     o.aftersavefunc.call($t, rowid, res);
                   }
                   success = true;
+                  $(ind).unbind("keydown");
                 } else {
                   if ($.isFunction(o.errorfunc)) {
                     o.errorfunc.call($t, rowid, res, stat);
@@ -351,7 +353,6 @@
             }
           }, $.jgrid.ajaxOptions, $t.p.ajaxRowOptions || {}));
         }
-        $(ind).unbind("keydown");
       }
       return success;
     },

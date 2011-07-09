@@ -2729,11 +2729,9 @@
                   if ($(ptr).attr("class") !== "subgrid") {
                     $(ptr).addClass("ui-state-hover");
                   }
-                  return false;
                 }).bind('mouseout', function(e) {
                   ptr = $(e.target).closest("tr.jqgrow");
                   $(ptr).removeClass("ui-state-hover");
-                  return false;
                 });
       }
       var ri,ci;
@@ -6751,6 +6749,7 @@ var xmlJsonClass = {
       filter: null,
       columns: [],
       onChange : null,
+      afterRedraw : null,
       checkValues : null,
       error: false,
       errmsg : "",
@@ -6779,7 +6778,8 @@ var xmlJsonClass = {
       stropts : ['eq', 'ne', 'bw', 'bn', 'ew', 'en', 'cn', 'nc', 'nu', 'nn', 'in', 'ni'],
       _gridsopt : [], // grid translated strings, do not tuch
       groupOps : ["AND", "OR"],
-      groupButton : true
+      groupButton : true,
+      ruleButtons : true
     }, arg || {});
     return this.each(function() {
       if (this.filter) {
@@ -6877,13 +6877,16 @@ var xmlJsonClass = {
         return $.isFunction(this.p.onChange) ? this.p.onChange.call(this, this.p) : false;
       };
       /*
-       * Redrow the filter every time when new field is added/deleted
+       * Redraw the filter every time when new field is added/deleted
        * and field is  changed
        */
       this.reDraw = function() {
         $("table.group:first", this).remove();
         var t = this.createTableForGroup(p.filter, null);
         $(this).append(t);
+        if ($.isFunction(this.p.afterRedraw)) {
+          this.p.afterRedraw.call(this, this.p);
+        }
       };
       /*
        * Creates a grouping data for the filter
@@ -6907,23 +6910,24 @@ var xmlJsonClass = {
         var th = $("<th colspan='5' align='left'></th>");
         tr.append(th);
 
-        // dropdown for: choosing group operator type
-        var groupOpSelect = $("<select class='opsel'></select>");
-        th.append(groupOpSelect);
-        // populate dropdown with all posible group operators: or, and
-        var str = "", selected;
-        for (i = 0; i < p.groupOps.length; i++) {
-          selected = group.groupOp === that.p.groupOps[i] ? " selected='selected'" : "";
-          str += "<option value='" + that.p.groupOps[i] + "'" + selected + ">" + that.p.groupOps[i] + "</option>";
+        if (this.p.ruleButtons === true) {
+          // dropdown for: choosing group operator type
+          var groupOpSelect = $("<select class='opsel'></select>");
+          th.append(groupOpSelect);
+          // populate dropdown with all posible group operators: or, and
+          var str = "", selected;
+          for (i = 0; i < p.groupOps.length; i++) {
+            selected = group.groupOp === that.p.groupOps[i] ? " selected='selected'" : "";
+            str += "<option value='" + that.p.groupOps[i] + "'" + selected + ">" + that.p.groupOps[i] + "</option>";
+          }
+
+          groupOpSelect
+                  .append(str)
+                  .bind('change', function() {
+                    group.groupOp = $(groupOpSelect).val();
+                    that.onchange(); // signals that the filter has changed
+                  });
         }
-
-        groupOpSelect
-                .append(str)
-                .bind('change', function() {
-                  group.groupOp = $(groupOpSelect).val();
-                  that.onchange(); // signals that the filter has changed
-                });
-
         // button for adding a new subgroup
         var inputAddSubgroup = "<span></span>";
         if (this.p.groupButton) {
@@ -6946,50 +6950,51 @@ var xmlJsonClass = {
           });
         }
         th.append(inputAddSubgroup);
-
-        // button for adding a new rule
-        var inputAddRule = $("<input type='button' value='+' title='Add rule' class='add-rule ui-add'/>"), cm;
-        inputAddRule.bind('click', function() {
-          //if(!group) { group = {};}
-          if (group.rules === undefined) {
-            group.rules = [];
-          }
-          for (i = 0; i < that.p.columns.length; i++) {
-            // but show only serchable and serchhidden = true fields
-            var searchable = (typeof that.p.columns[i].search === 'undefined') ? true : that.p.columns[i].search ,
-                    hidden = (that.p.columns[i].hidden === true),
-                    ignoreHiding = (that.p.columns[i].searchoptions.searchhidden === true);
-            if ((ignoreHiding && searchable) || (searchable && !hidden)) {
-              cm = that.p.columns[i];
-              break;
+        if (this.p.ruleButtons === true) {
+          // button for adding a new rule
+          var inputAddRule = $("<input type='button' value='+' title='Add rule' class='add-rule ui-add'/>"), cm;
+          inputAddRule.bind('click', function() {
+            //if(!group) { group = {};}
+            if (group.rules === undefined) {
+              group.rules = [];
             }
-          }
-          var opr;
-          if (cm.searchoptions.sopt) {
-            opr = cm.searchoptions.sopt;
-          }
-          else if (that.p.sopt) {
-            opr = that.p.sopt;
-          }
-          else if (cm.searchtype === 'string') {
-            opr = that.p.stropts;
-          }
-          else {
-            opr = that.p.numopts;
-          }
+            for (i = 0; i < that.p.columns.length; i++) {
+              // but show only serchable and serchhidden = true fields
+              var searchable = (typeof that.p.columns[i].search === 'undefined') ? true : that.p.columns[i].search ,
+                      hidden = (that.p.columns[i].hidden === true),
+                      ignoreHiding = (that.p.columns[i].searchoptions.searchhidden === true);
+              if ((ignoreHiding && searchable) || (searchable && !hidden)) {
+                cm = that.p.columns[i];
+                break;
+              }
+            }
+            var opr;
+            if (cm.searchoptions.sopt) {
+              opr = cm.searchoptions.sopt;
+            }
+            else if (that.p.sopt) {
+              opr = that.p.sopt;
+            }
+            else if (cm.searchtype === 'string') {
+              opr = that.p.stropts;
+            }
+            else {
+              opr = that.p.numopts;
+            }
 
-          group.rules.push({
-            field: cm.name,
-            op: opr[0],
-            data: ""
-          }); // adding a new rule
+            group.rules.push({
+              field: cm.name,
+              op: opr[0],
+              data: ""
+            }); // adding a new rule
 
-          that.reDraw(); // the html has changed, force reDraw
-          // for the moment no change have been made to the rule, so
-          // this will not trigger onchange event
-          return false;
-        });
-        th.append(inputAddRule);
+            that.reDraw(); // the html has changed, force reDraw
+            // for the moment no change have been made to the rule, so
+            // this will not trigger onchange event
+            return false;
+          });
+          th.append(inputAddRule);
+        }
 
         // button for delete the group
         if (parentgroup !== null) { // ignore the first group
@@ -7230,24 +7235,25 @@ var xmlJsonClass = {
         tr.append(ruleDeleteTd);
 
         // create button for: delete rule
-        var ruleDeleteInput = $("<input type='button' value='-' title='Delete rule' class='delete-rule ui-del'/>");
-        ruleDeleteTd.append(ruleDeleteInput);
-        //$(ruleDeleteInput).html("").height(20).width(30).button({icons: {  primary: "ui-icon-minus", text:false}});
-        ruleDeleteInput.bind('click', function() {
-          // remove rule from group
-          for (i = 0; i < group.rules.length; i++) {
-            if (group.rules[i] === rule) {
-              group.rules.splice(i, 1);
-              break;
+        if (this.p.ruleButtons === true) {
+          var ruleDeleteInput = $("<input type='button' value='-' title='Delete rule' class='delete-rule ui-del'/>");
+          ruleDeleteTd.append(ruleDeleteInput);
+          //$(ruleDeleteInput).html("").height(20).width(30).button({icons: {  primary: "ui-icon-minus", text:false}});
+          ruleDeleteInput.bind('click', function() {
+            // remove rule from group
+            for (i = 0; i < group.rules.length; i++) {
+              if (group.rules[i] === rule) {
+                group.rules.splice(i, 1);
+                break;
+              }
             }
-          }
 
-          that.reDraw(); // the html has changed, force reDraw
+            that.reDraw(); // the html has changed, force reDraw
 
-          that.onchange(); // signals that the filter has changed
-          return false;
-        });
-
+            that.onchange(); // signals that the filter has changed
+            return false;
+          });
+        }
         return tr;
       };
 
@@ -7476,7 +7482,7 @@ var xmlJsonClass = {
    * http://www.gnu.org/licenses/gpl-2.0.html
    **/
   /*global xmlJsonClass, jQuery, $  */
-  var rp_ge_arr = {};
+  var rp_ge = {};
   $.jgrid.extend({
     searchGrid : function (p) {
       p = $.extend({
@@ -7798,8 +7804,7 @@ var xmlJsonClass = {
         serializeEditData : null,
         viewPagerButtons : true
       }, $.jgrid.edit, p || {});
-      rp_ge_arr[$(this)[0].p.id] = p;
-      var rp_ge = rp_ge_arr[$(this)[0].p.id];
+      rp_ge[$(this)[0].p.id] = p;
       return this.each(function() {
         var $t = this;
         if (!$t.grid || !rowid) {
@@ -7808,18 +7813,18 @@ var xmlJsonClass = {
         var gID = $t.p.id,
                 frmgr = "FrmGrid_" + gID,frmtb = "TblGrid_" + gID,
                 IDs = {themodal:'editmod' + gID,modalhead:'edithd' + gID,modalcontent:'editcnt' + gID, scrollelm : frmgr},
-                onBeforeShow = $.isFunction(rp_ge.beforeShowForm) ? rp_ge.beforeShowForm : false,
-                onAfterShow = $.isFunction(rp_ge.afterShowForm) ? rp_ge.afterShowForm : false,
-                onBeforeInit = $.isFunction(rp_ge.beforeInitData) ? rp_ge.beforeInitData : false,
-                onInitializeForm = $.isFunction(rp_ge.onInitializeForm) ? rp_ge.onInitializeForm : false,
+                onBeforeShow = $.isFunction(rp_ge[$t.p.id].beforeShowForm) ? rp_ge[$t.p.id].beforeShowForm : false,
+                onAfterShow = $.isFunction(rp_ge[$t.p.id].afterShowForm) ? rp_ge[$t.p.id].afterShowForm : false,
+                onBeforeInit = $.isFunction(rp_ge[$t.p.id].beforeInitData) ? rp_ge[$t.p.id].beforeInitData : false,
+                onInitializeForm = $.isFunction(rp_ge[$t.p.id].onInitializeForm) ? rp_ge[$t.p.id].onInitializeForm : false,
                 copydata = null,
                 showFrm = true,
                 maxCols = 1, maxRows = 0,  postdata, extpost, newData, diff;
         if (rowid === "new") {
           rowid = "_empty";
-          p.caption = rp_ge.addCaption;
+          p.caption = rp_ge[$t.p.id].addCaption;
         } else {
-          p.caption = rp_ge.editCaption;
+          p.caption = rp_ge[$t.p.id].editCaption;
         }
         if (p.recreateForm === true && $("#" + IDs.themodal).html() !== null) {
           $("#" + IDs.themodal).remove();
@@ -7952,8 +7957,8 @@ var xmlJsonClass = {
               if (tmp === "" && this.edittype == "select") {
                 tmp = $("option:eq(0)", elc).text();
               }
-              if (rp_ge.checkOnSubmit || rp_ge.checkOnUpdate) {
-                rp_ge._savedData[nm] = tmp;
+              if (rp_ge[$t.p.id].checkOnSubmit || rp_ge[$t.p.id].checkOnUpdate) {
+                rp_ge[$t.p.id]._savedData[nm] = tmp;
               }
               $(elc).addClass("FormElement");
               if (this.edittype == 'text' || this.edittype == 'textarea') {
@@ -7981,8 +7986,8 @@ var xmlJsonClass = {
             var idrow = $("<tr class='FormData' style='display:none'><td class='CaptionTD'></td><td colspan='" + (maxcols * 2 - 1) + "' class='DataTD'><input class='FormElement' id='id_g' type='text' name='" + obj.p.id + "_id' value='" + rowid + "'/></td></tr>");
             idrow[0].rp = cnt + 999;
             $(tb).append(idrow);
-            if (rp_ge.checkOnSubmit || rp_ge.checkOnUpdate) {
-              rp_ge._savedData[obj.p.id + "_id"] = rowid;
+            if (rp_ge[$t.p.id].checkOnSubmit || rp_ge[$t.p.id].checkOnUpdate) {
+              rp_ge[$t.p.id]._savedData[obj.p.id + "_id"] = rowid;
             }
           }
           return retpos;
@@ -7990,9 +7995,9 @@ var xmlJsonClass = {
 
         function fillData(rowid, obj, fmid) {
           var nm,cnt = 0,tmp, fld,opt,vl,vlc;
-          if (rp_ge.checkOnSubmit || rp_ge.checkOnUpdate) {
-            rp_ge._savedData = {};
-            rp_ge._savedData[obj.p.id + "_id"] = rowid;
+          if (rp_ge[$t.p.id].checkOnSubmit || rp_ge[$t.p.id].checkOnUpdate) {
+            rp_ge[$t.p.id]._savedData = {};
+            rp_ge[$t.p.id]._savedData[obj.p.id + "_id"] = rowid;
           }
           var cm = obj.p.colModel;
           if (rowid == '_empty') {
@@ -8027,8 +8032,8 @@ var xmlJsonClass = {
                     fld.val(vl);
                   }
                 }
-                if (rp_ge.checkOnSubmit === true || rp_ge.checkOnUpdate) {
-                  rp_ge._savedData[nm] = vl;
+                if (rp_ge[$t.p.id].checkOnSubmit === true || rp_ge[$t.p.id].checkOnUpdate) {
+                  rp_ge[$t.p.id]._savedData[nm] = vl;
                 }
               }
             });
@@ -8055,8 +8060,8 @@ var xmlJsonClass = {
               if ($t.p.autoencode) {
                 tmp = $.jgrid.htmlDecode(tmp);
               }
-              if (rp_ge.checkOnSubmit === true || rp_ge.checkOnUpdate) {
-                rp_ge._savedData[nm] = tmp;
+              if (rp_ge[$t.p.id].checkOnSubmit === true || rp_ge[$t.p.id].checkOnUpdate) {
+                rp_ge[$t.p.id]._savedData[nm] = tmp;
               }
               nm = $.jgrid.jqID(nm);
               switch (cm[i].edittype) {
@@ -8138,8 +8143,8 @@ var xmlJsonClass = {
 
         function postIt() {
           var copydata, ret = [true,"",""], onCS = {}, opers = $t.p.prmNames, idname, oper, key, selr;
-          if ($.isFunction(rp_ge.beforeCheckValues)) {
-            var retvals = rp_ge.beforeCheckValues(postdata, $("#" + frmgr), postdata[$t.p.id + "_id"] == "_empty" ? opers.addoper : opers.editoper);
+          if ($.isFunction(rp_ge[$t.p.id].beforeCheckValues)) {
+            var retvals = rp_ge[$t.p.id].beforeCheckValues(postdata, $("#" + frmgr), postdata[$t.p.id + "_id"] == "_empty" ? opers.addoper : opers.editoper);
             if (retvals && typeof(retvals) === 'object') {
               postdata = retvals;
             }
@@ -8154,16 +8159,16 @@ var xmlJsonClass = {
           }
           setNulls();
           if (ret[0]) {
-            if ($.isFunction(rp_ge.onclickSubmit)) {
-              onCS = rp_ge.onclickSubmit(rp_ge, postdata) || {};
+            if ($.isFunction(rp_ge[$t.p.id].onclickSubmit)) {
+              onCS = rp_ge[$t.p.id].onclickSubmit(rp_ge[$t.p.id], postdata) || {};
             }
-            if ($.isFunction(rp_ge.beforeSubmit)) {
-              ret = rp_ge.beforeSubmit(postdata, $("#" + frmgr));
+            if ($.isFunction(rp_ge[$t.p.id].beforeSubmit)) {
+              ret = rp_ge[$t.p.id].beforeSubmit(postdata, $("#" + frmgr));
             }
           }
 
-          if (ret[0] && !rp_ge.processing) {
-            rp_ge.processing = true;
+          if (ret[0] && !rp_ge[$t.p.id].processing) {
+            rp_ge[$t.p.id].processing = true;
             $("#sData", "#" + frmtb + "_2").addClass('ui-state-active');
             oper = opers.oper;
             idname = opers.id;
@@ -8201,22 +8206,22 @@ var xmlJsonClass = {
             }
 
             var ajaxOptions = $.extend({
-              url: rp_ge.url ? rp_ge.url : $($t).jqGrid('getGridParam', 'editurl'),
-              type: rp_ge.mtype,
-              data: $.isFunction(rp_ge.serializeEditData) ? rp_ge.serializeEditData(postdata) : postdata,
+              url: rp_ge[$t.p.id].url ? rp_ge[$t.p.id].url : $($t).jqGrid('getGridParam', 'editurl'),
+              type: rp_ge[$t.p.id].mtype,
+              data: $.isFunction(rp_ge[$t.p.id].serializeEditData) ? rp_ge[$t.p.id].serializeEditData(postdata) : postdata,
               complete:function(data, Status) {
                 if (Status != "success") {
                   ret[0] = false;
-                  if ($.isFunction(rp_ge.errorTextFormat)) {
-                    ret[1] = rp_ge.errorTextFormat(data);
+                  if ($.isFunction(rp_ge[$t.p.id].errorTextFormat)) {
+                    ret[1] = rp_ge[$t.p.id].errorTextFormat(data);
                   } else {
                     ret[1] = Status + " Status: '" + data.statusText + "'. Error code: " + data.status;
                   }
                 } else {
                   // data is posted successful
                   // execute aftersubmit with the returned data from server
-                  if ($.isFunction(rp_ge.afterSubmit)) {
-                    ret = rp_ge.afterSubmit(data, postdata);
+                  if ($.isFunction(rp_ge[$t.p.id].afterSubmit)) {
+                    ret = rp_ge[$t.p.id].afterSubmit(data, postdata);
                   }
                 }
                 if (ret[0] === false) {
@@ -8238,7 +8243,7 @@ var xmlJsonClass = {
                       postdata[n] = $.jgrid.htmlDecode(v);
                     });
                   }
-                  rp_ge.reloadAfterSubmit = rp_ge.reloadAfterSubmit && $t.p.datatype != "local";
+                  rp_ge[$t.p.id].reloadAfterSubmit = rp_ge[$t.p.id].reloadAfterSubmit && $t.p.datatype != "local";
                   // the action is add
                   if (postdata[oper] == opers.addoper) {
                     //id processing
@@ -8247,8 +8252,8 @@ var xmlJsonClass = {
                       ret[2] = $.jgrid.randId();
                     }
                     postdata[idname] = ret[2];
-                    if (rp_ge.closeAfterAdd) {
-                      if (rp_ge.reloadAfterSubmit) {
+                    if (rp_ge[$t.p.id].closeAfterAdd) {
+                      if (rp_ge[$t.p.id].reloadAfterSubmit) {
                         $($t).trigger("reloadGrid");
                       }
                       else {
@@ -8259,9 +8264,9 @@ var xmlJsonClass = {
                           $($t).jqGrid("setSelection", ret[2]);
                         }
                       }
-                      $.jgrid.hideModal("#" + IDs.themodal, {gb:"#gbox_" + gID,jqm:p.jqModal,onClose: rp_ge.onClose});
-                    } else if (rp_ge.clearAfterAdd) {
-                      if (rp_ge.reloadAfterSubmit) {
+                      $.jgrid.hideModal("#" + IDs.themodal, {gb:"#gbox_" + gID,jqm:p.jqModal,onClose: rp_ge[$t.p.id].onClose});
+                    } else if (rp_ge[$t.p.id].clearAfterAdd) {
+                      if (rp_ge[$t.p.id].reloadAfterSubmit) {
                         $($t).trigger("reloadGrid");
                       }
                       else {
@@ -8273,7 +8278,7 @@ var xmlJsonClass = {
                       }
                       fillData("_empty", $t, frmgr);
                     } else {
-                      if (rp_ge.reloadAfterSubmit) {
+                      if (rp_ge[$t.p.id].reloadAfterSubmit) {
                         $($t).trigger("reloadGrid");
                       }
                       else {
@@ -8286,9 +8291,9 @@ var xmlJsonClass = {
                     }
                   } else {
                     // the action is update
-                    if (rp_ge.reloadAfterSubmit) {
+                    if (rp_ge[$t.p.id].reloadAfterSubmit) {
                       $($t).trigger("reloadGrid");
-                      if (!rp_ge.closeAfterEdit) {
+                      if (!rp_ge[$t.p.id].closeAfterEdit) {
                         setTimeout(function() {
                           $($t).jqGrid("setSelection", postdata[idname]);
                         }, 1000);
@@ -8300,47 +8305,47 @@ var xmlJsonClass = {
                         $($t).jqGrid("setRowData", postdata[idname], postdata);
                       }
                     }
-                    if (rp_ge.closeAfterEdit) {
-                      $.jgrid.hideModal("#" + IDs.themodal, {gb:"#gbox_" + gID,jqm:p.jqModal,onClose: rp_ge.onClose});
+                    if (rp_ge[$t.p.id].closeAfterEdit) {
+                      $.jgrid.hideModal("#" + IDs.themodal, {gb:"#gbox_" + gID,jqm:p.jqModal,onClose: rp_ge[$t.p.id].onClose});
                     }
                   }
-                  if ($.isFunction(rp_ge.afterComplete)) {
+                  if ($.isFunction(rp_ge[$t.p.id].afterComplete)) {
                     copydata = data;
                     setTimeout(function() {
-                      rp_ge.afterComplete(copydata, postdata, $("#" + frmgr));
+                      rp_ge[$t.p.id].afterComplete(copydata, postdata, $("#" + frmgr));
                       copydata = null;
                     }, 500);
                   }
-                  if (rp_ge.checkOnSubmit || rp_ge.checkOnUpdate) {
+                  if (rp_ge[$t.p.id].checkOnSubmit || rp_ge[$t.p.id].checkOnUpdate) {
                     $("#" + frmgr).data("disabled", false);
-                    if (rp_ge._savedData[$t.p.id + "_id"] != "_empty") {
-                      for (var key in rp_ge._savedData) {
+                    if (rp_ge[$t.p.id]._savedData[$t.p.id + "_id"] != "_empty") {
+                      for (var key in rp_ge[$t.p.id]._savedData) {
                         if (postdata[key]) {
-                          rp_ge._savedData[key] = postdata[key];
+                          rp_ge[$t.p.id]._savedData[key] = postdata[key];
                         }
                       }
                     }
                   }
                 }
-                rp_ge.processing = false;
+                rp_ge[$t.p.id].processing = false;
                 $("#sData", "#" + frmtb + "_2").removeClass('ui-state-active');
                 try {
                   $(':input:visible', "#" + frmgr)[0].focus();
                 } catch (e) {
                 }
               }
-            }, $.jgrid.ajaxOptions, rp_ge.ajaxEditOptions);
+            }, $.jgrid.ajaxOptions, rp_ge[$t.p.id].ajaxEditOptions);
 
-            if (!ajaxOptions.url && !rp_ge.useDataProxy) {
+            if (!ajaxOptions.url && !rp_ge[$t.p.id].useDataProxy) {
               if ($.isFunction($t.p.dataProxy)) {
-                rp_ge.useDataProxy = true;
+                rp_ge[$t.p.id].useDataProxy = true;
               } else {
                 ret[0] = false;
                 ret[1] += " " + $.jgrid.errors.nourl;
               }
             }
             if (ret[0]) {
-              if (rp_ge.useDataProxy) {
+              if (rp_ge[$t.p.id].useDataProxy) {
                 $t.p.dataProxy.call($t, ajaxOptions, "set_" + $t.p.id);
               }
               else {
@@ -8351,7 +8356,7 @@ var xmlJsonClass = {
           if (ret[0] === false) {
             $("#FormError>td", "#" + frmtb).html(ret[1]);
             $("#FormError", "#" + frmtb).show();
-            // return; 
+            // return;
           }
         }
 
@@ -8379,12 +8384,12 @@ var xmlJsonClass = {
         function checkUpdates() {
           var stat = true;
           $("#FormError", "#" + frmtb).hide();
-          if (rp_ge.checkOnUpdate) {
+          if (rp_ge[$t.p.id].checkOnUpdate) {
             postdata = {};
             extpost = {};
             getFormData();
             newData = $.extend({}, postdata, extpost);
-            diff = compareData(newData, rp_ge._savedData);
+            diff = compareData(newData, rp_ge[$t.p.id]._savedData);
             if (diff) {
               $("#" + frmgr).data("disabled", true);
               $(".confirm", "#" + IDs.themodal).show();
@@ -8438,14 +8443,14 @@ var xmlJsonClass = {
           restoreInline();
           $(".ui-jqdialog-title", "#" + IDs.modalhead).html(p.caption);
           $("#FormError", "#" + frmtb).hide();
-          if (rp_ge.topinfo) {
-            $(".topinfo", "#" + frmtb + "_2").html(rp_ge.topinfo);
+          if (rp_ge[$t.p.id].topinfo) {
+            $(".topinfo", "#" + frmtb + "_2").html(rp_ge[$t.p.id].topinfo);
             $(".tinfo", "#" + frmtb + "_2").show();
           } else {
             $(".tinfo", "#" + frmtb + "_2").hide();
           }
-          if (rp_ge.bottominfo) {
-            $(".bottominfo", "#" + frmtb + "_2").html(rp_ge.bottominfo);
+          if (rp_ge[$t.p.id].bottominfo) {
+            $(".bottominfo", "#" + frmtb + "_2").html(rp_ge[$t.p.id].bottominfo);
             $(".binfo", "#" + frmtb + "_2").show();
           } else {
             $(".binfo", "#" + frmtb + "_2").hide();
@@ -8453,13 +8458,13 @@ var xmlJsonClass = {
           // filldata
           fillData(rowid, $t, frmgr);
           ///
-          if (rowid == "_empty" || !rp_ge.viewPagerButtons) {
+          if (rowid == "_empty" || !rp_ge[$t.p.id].viewPagerButtons) {
             $("#pData, #nData", "#" + frmtb + "_2").hide();
           } else {
             $("#pData, #nData", "#" + frmtb + "_2").show();
           }
-          if (rp_ge.processing === true) {
-            rp_ge.processing = false;
+          if (rp_ge[$t.p.id].processing === true) {
+            rp_ge[$t.p.id].processing = false;
             $("#sData", "#" + frmtb + "_2").removeClass('ui-state-active');
           }
           if ($("#" + frmgr).data("disabled") === true) {
@@ -8469,14 +8474,14 @@ var xmlJsonClass = {
           if (onBeforeShow) {
             onBeforeShow($("#" + frmgr));
           }
-          $("#" + IDs.themodal).data("onClose", rp_ge.onClose);
+          $("#" + IDs.themodal).data("onClose", rp_ge[$t.p.id].onClose);
           $.jgrid.viewModal("#" + IDs.themodal, {gbox:"#gbox_" + gID,jqm:p.jqModal, jqM: false, overlay: p.overlay, modal:p.modal});
           if (!closeovrl) {
             $(".jqmOverlay").click(function() {
               if (!checkUpdates()) {
                 return false;
               }
-              $.jgrid.hideModal("#" + IDs.themodal, {gb:"#gbox_" + gID,jqm:p.jqModal, onClose: rp_ge.onClose});
+              $.jgrid.hideModal("#" + IDs.themodal, {gb:"#gbox_" + gID,jqm:p.jqModal, onClose: rp_ge[$t.p.id].onClose});
               return false;
             });
           }
@@ -8507,7 +8512,7 @@ var xmlJsonClass = {
           flr[0].rp = 0;
           $(tbl).append(flr);
           //topinfo
-          flr = $("<tr style='display:none' class='tinfo'><td class='topinfo' colspan='" + (maxCols * 2) + "'>" + rp_ge.topinfo + "</td></tr>");
+          flr = $("<tr style='display:none' class='tinfo'><td class='topinfo' colspan='" + (maxCols * 2) + "'>" + rp_ge[$t.p.id].topinfo + "</td></tr>");
           flr[0].rp = 0;
           $(tbl).append(flr);
           // set the id.
@@ -8523,7 +8528,7 @@ var xmlJsonClass = {
                   bS = "<a href='javascript:void(0)' id='sData' class='fm-button ui-state-default ui-corner-all'>" + p.bSubmit + "</a>",
                   bC = "<a href='javascript:void(0)' id='cData' class='fm-button ui-state-default ui-corner-all'>" + p.bCancel + "</a>";
           var bt = "<table border='0' cellspacing='0' cellpadding='0' class='EditTable' id='" + frmtb + "_2'><tbody><tr><td colspan='2'><hr class='ui-widget-content' style='margin:1px'/></td></tr><tr id='Act_Buttons'><td class='navButton'>" + (rtlb ? bN + bP : bP + bN) + "</td><td class='EditButton'>" + bS + bC + "</td></tr>";
-          bt += "<tr style='display:none' class='binfo'><td class='bottominfo' colspan='2'>" + rp_ge.bottominfo + "</td></tr>";
+          bt += "<tr style='display:none' class='binfo'><td class='bottominfo' colspan='2'>" + rp_ge[$t.p.id].bottominfo + "</td></tr>";
           bt += "</tbody></table>";
           if (maxRows > 0) {
             var sd = [];
@@ -8555,10 +8560,10 @@ var xmlJsonClass = {
             $("#pData, #nData", "#" + frmtb + "_2").css("float", "right");
             $(".EditButton", "#" + frmtb + "_2").css("text-align", "left");
           }
-          if (rp_ge.topinfo) {
+          if (rp_ge[$t.p.id].topinfo) {
             $(".tinfo", "#" + frmtb + "_2").show();
           }
-          if (rp_ge.bottominfo) {
+          if (rp_ge[$t.p.id].bottominfo) {
             $(".binfo", "#" + frmtb + "_2").show();
           }
           tms = null;
@@ -8568,7 +8573,7 @@ var xmlJsonClass = {
             if ($("#" + frmgr).data("disabled") === true) {
               return false;
             }//??
-            if (rp_ge.savekey[0] === true && e.which == rp_ge.savekey[1]) { // save
+            if (rp_ge[$t.p.id].savekey[0] === true && e.which == rp_ge[$t.p.id].savekey[1]) { // save
               if (wkey.tagName != "TEXTAREA") {
                 $("#sData", "#" + frmtb + "_2").trigger("click");
                 return false;
@@ -8579,19 +8584,19 @@ var xmlJsonClass = {
                 return false;
               }
               if (cle) {
-                $.jgrid.hideModal(this, {gb:p.gbox,jqm:p.jqModal, onClose: rp_ge.onClose});
+                $.jgrid.hideModal(this, {gb:p.gbox,jqm:p.jqModal, onClose: rp_ge[$t.p.id].onClose});
               }
               return false;
             }
-            if (rp_ge.navkeys[0] === true) {
+            if (rp_ge[$t.p.id].navkeys[0] === true) {
               if ($("#id_g", "#" + frmtb).val() == "_empty") {
                 return true;
               }
-              if (e.which == rp_ge.navkeys[1]) { //up
+              if (e.which == rp_ge[$t.p.id].navkeys[1]) { //up
                 $("#pData", "#" + frmtb + "_2").trigger("click");
                 return false;
               }
-              if (e.which == rp_ge.navkeys[2]) { //down
+              if (e.which == rp_ge[$t.p.id].navkeys[2]) { //down
                 $("#nData", "#" + frmtb + "_2").trigger("click");
                 return false;
               }
@@ -8604,7 +8609,7 @@ var xmlJsonClass = {
                       if (!checkUpdates()) {
                         return false;
                       }
-                      $.jgrid.hideModal("#" + IDs.themodal, {gb:"#gbox_" + gID,jqm:p.jqModal,onClose: rp_ge.onClose});
+                      $.jgrid.hideModal("#" + IDs.themodal, {gb:"#gbox_" + gID,jqm:p.jqModal,onClose: rp_ge[$t.p.id].onClose});
                       return false;
                     });
           }
@@ -8619,7 +8624,7 @@ var xmlJsonClass = {
             $("#cData", "#" + frmtb + "_2").addClass(p.closeicon[1] == "right" ? 'fm-button-icon-right' : 'fm-button-icon-left')
                     .append("<span class='ui-icon " + p.closeicon[2] + "'></span>");
           }
-          if (rp_ge.checkOnSubmit || rp_ge.checkOnUpdate) {
+          if (rp_ge[$t.p.id].checkOnSubmit || rp_ge[$t.p.id].checkOnUpdate) {
             bS = "<a href='javascript:void(0)' id='sNew' class='fm-button ui-state-default ui-corner-all' style='z-index:1002'>" + p.bYes + "</a>";
             bN = "<a href='javascript:void(0)' id='nNew' class='fm-button ui-state-default ui-corner-all' style='z-index:1002'>" + p.bNo + "</a>";
             bC = "<a href='javascript:void(0)' id='cNew' class='fm-button ui-state-default ui-corner-all' style='z-index:1002'>" + p.bExit + "</a>";
@@ -8648,7 +8653,7 @@ var xmlJsonClass = {
             $("#cNew", "#" + IDs.themodal).click(function() {
               $(".confirm", "#" + IDs.themodal).hide();
               $("#" + frmgr).data("disabled", false);
-              $.jgrid.hideModal("#" + IDs.themodal, {gb:"#gbox_" + gID,jqm:p.jqModal,onClose: rp_ge.onClose});
+              $.jgrid.hideModal("#" + IDs.themodal, {gb:"#gbox_" + gID,jqm:p.jqModal,onClose: rp_ge[$t.p.id].onClose});
               return false;
             });
           }
@@ -8656,7 +8661,7 @@ var xmlJsonClass = {
           if (onInitializeForm) {
             onInitializeForm($("#" + frmgr));
           }
-          if (rowid == "_empty" || !rp_ge.viewPagerButtons) {
+          if (rowid == "_empty" || !rp_ge[$t.p.id].viewPagerButtons) {
             $("#pData,#nData", "#" + frmtb + "_2").hide();
           } else {
             $("#pData,#nData", "#" + frmtb + "_2").show();
@@ -8664,14 +8669,14 @@ var xmlJsonClass = {
           if (onBeforeShow) {
             onBeforeShow($("#" + frmgr));
           }
-          $("#" + IDs.themodal).data("onClose", rp_ge.onClose);
+          $("#" + IDs.themodal).data("onClose", rp_ge[$t.p.id].onClose);
           $.jgrid.viewModal("#" + IDs.themodal, {gbox:"#gbox_" + gID,jqm:p.jqModal, overlay: p.overlay,modal:p.modal});
           if (!closeovrl) {
             $(".jqmOverlay").click(function() {
               if (!checkUpdates()) {
                 return false;
               }
-              $.jgrid.hideModal("#" + IDs.themodal, {gb:"#gbox_" + gID,jqm:p.jqModal, onClose: rp_ge.onClose});
+              $.jgrid.hideModal("#" + IDs.themodal, {gb:"#gbox_" + gID,jqm:p.jqModal, onClose: rp_ge[$t.p.id].onClose});
               return false;
             });
           }
@@ -8700,7 +8705,7 @@ var xmlJsonClass = {
             }
             else if (p.checkOnSubmit === true) {
               newData = $.extend({}, postdata, extpost);
-              diff = compareData(newData, rp_ge._savedData);
+              diff = compareData(newData, rp_ge[$t.p.id]._savedData);
               if (diff) {
                 $("#" + frmgr).data("disabled", true);
                 $(".confirm", "#" + IDs.themodal).show();
@@ -8716,7 +8721,7 @@ var xmlJsonClass = {
             if (!checkUpdates()) {
               return false;
             }
-            $.jgrid.hideModal("#" + IDs.themodal, {gb:"#gbox_" + gID,jqm:p.jqModal,onClose: rp_ge.onClose});
+            $.jgrid.hideModal("#" + IDs.themodal, {gb:"#gbox_" + gID,jqm:p.jqModal,onClose: rp_ge[$t.p.id].onClose});
             return false;
           });
           $("#nData", "#" + frmtb + "_2").click(function(e) {
@@ -9135,8 +9140,7 @@ var xmlJsonClass = {
         serializeDelData : null,
         useDataProxy : false
       }, $.jgrid.del, p || {});
-      rp_ge_arr[$(this)[0].p.id] = p;
-      var rp_ge = rp_ge_arr[$(this)[0].p.id];
+      rp_ge[$(this)[0].p.id] = p;
       return this.each(function() {
         var $t = this;
         if (!$t.grid) {
@@ -9145,9 +9149,9 @@ var xmlJsonClass = {
         if (!rowids) {
           return;
         }
-        var onBeforeShow = $.isFunction(p.beforeShowForm),
-                onAfterShow = $.isFunction(p.afterShowForm),
-                onBeforeInit = $.isFunction(p.beforeInitData) ? p.beforeInitData : false,
+        var onBeforeShow = $.isFunction(rp_ge[$t.p.id].beforeShowForm),
+                onAfterShow = $.isFunction(rp_ge[$t.p.id].afterShowForm),
+                onBeforeInit = $.isFunction(rp_ge[$t.p.id].beforeInitData) ? rp_ge[$t.p.id].beforeInitData : false,
                 gID = $t.p.id, onCS = {},
                 showFrm = true,
                 dtbl = "DelTbl_" + gID,postd, idname, opers, oper,
@@ -9167,25 +9171,25 @@ var xmlJsonClass = {
           }
           $("#DelData>td", "#" + dtbl).text(rowids);
           $("#DelError", "#" + dtbl).hide();
-          if (rp_ge.processing === true) {
-            rp_ge.processing = false;
+          if (rp_ge[$t.p.id].processing === true) {
+            rp_ge[$t.p.id].processing = false;
             $("#dData", "#" + dtbl).removeClass('ui-state-active');
           }
           if (onBeforeShow) {
-            p.beforeShowForm($("#" + dtbl));
+            rp_ge[$t.p.id].beforeShowForm($("#" + dtbl));
           }
-          $.jgrid.viewModal("#" + IDs.themodal, {gbox:"#gbox_" + gID,jqm:p.jqModal,jqM: false, overlay: p.overlay, modal:p.modal});
+          $.jgrid.viewModal("#" + IDs.themodal, {gbox:"#gbox_" + gID,jqm:rp_ge[$t.p.id].jqModal,jqM: false, overlay: rp_ge[$t.p.id].overlay, modal:rp_ge[$t.p.id].modal});
           if (onAfterShow) {
-            p.afterShowForm($("#" + dtbl));
+            rp_ge[$t.p.id].afterShowForm($("#" + dtbl));
           }
         } else {
-          var dh = isNaN(p.dataheight) ? p.dataheight : p.dataheight + "px";
+          var dh = isNaN(rp_ge[$t.p.id].dataheight) ? rp_ge[$t.p.id].dataheight : rp_ge[$t.p.id].dataheight + "px";
           var tbl = "<div id='" + dtbl + "' class='formdata' style='width:100%;overflow:auto;position:relative;height:" + dh + ";'>";
           tbl += "<table class='DelTable'><tbody>";
-          // error data 
+          // error data
           tbl += "<tr id='DelError' style='display:none'><td class='ui-state-error'></td></tr>";
           tbl += "<tr id='DelData' style='display:none'><td >" + rowids + "</td></tr>";
-          tbl += "<tr><td class=\"delmsg\" style=\"white-space:pre;\">" + p.msg + "</td></tr><tr><td >&#160;</td></tr>";
+          tbl += "<tr><td class=\"delmsg\" style=\"white-space:pre;\">" + rp_ge[$t.p.id].msg + "</td></tr><tr><td >&#160;</td></tr>";
           // buttons at footer
           tbl += "</tbody></table></div>";
           var bS = "<a href='javascript:void(0)' id='dData' class='fm-button ui-state-default ui-corner-all'>" + p.bSubmit + "</a>",
@@ -9212,8 +9216,8 @@ var xmlJsonClass = {
                     $(this).removeClass('ui-state-hover');
                   }
           );
-          p.delicon = $.extend([true,"left","ui-icon-scissors"], p.delicon);
-          p.cancelicon = $.extend([true,"left","ui-icon-cancel"], p.cancelicon);
+          p.delicon = $.extend([true,"left","ui-icon-scissors"], rp_ge[$t.p.id].delicon);
+          p.cancelicon = $.extend([true,"left","ui-icon-cancel"], rp_ge[$t.p.id].cancelicon);
           if (p.delicon[0] === true) {
             $("#dData", "#" + dtbl + "_2").addClass(p.delicon[1] == "right" ? 'fm-button-icon-right' : 'fm-button-icon-left')
                     .append("<span class='ui-icon " + p.delicon[2] + "'></span>");
@@ -9226,17 +9230,17 @@ var xmlJsonClass = {
             var ret = [true,""];
             onCS = {};
             var postdata = $("#DelData>td", "#" + dtbl).text(); //the pair is name=val1,val2,...
-            if ($.isFunction(p.onclickSubmit)) {
-              onCS = p.onclickSubmit(rp_ge, postdata) || {};
+            if ($.isFunction(rp_ge[$t.p.id].onclickSubmit)) {
+              onCS = rp_ge[$t.p.id].onclickSubmit(rp_ge[$t.p.id], postdata) || {};
             }
-            if ($.isFunction(p.beforeSubmit)) {
-              ret = p.beforeSubmit(postdata);
+            if ($.isFunction(rp_ge[$t.p.id].beforeSubmit)) {
+              ret = rp_ge[$t.p.id].beforeSubmit(postdata);
             }
-            if (ret[0] && !rp_ge.processing) {
-              rp_ge.processing = true;
+            if (ret[0] && !rp_ge[$t.p.id].processing) {
+              rp_ge[$t.p.id].processing = true;
               $(this).addClass('ui-state-active');
               opers = $t.p.prmNames;
-              postd = $.extend({}, rp_ge.delData, onCS);
+              postd = $.extend({}, rp_ge[$t.p.id].delData, onCS);
               oper = opers.oper;
               postd[oper] = opers.deloper;
               idname = opers.id;
@@ -9247,29 +9251,29 @@ var xmlJsonClass = {
               }
 
               var ajaxOptions = $.extend({
-                url: rp_ge.url ? rp_ge.url : $($t).jqGrid('getGridParam', 'editurl'),
-                type: p.mtype,
-                data: $.isFunction(p.serializeDelData) ? p.serializeDelData(postd) : postd,
+                url: rp_ge[$t.p.id].url ? rp_ge[$t.p.id].url : $($t).jqGrid('getGridParam', 'editurl'),
+                type: rp_ge[$t.p.id].mtype,
+                data: $.isFunction(rp_ge[$t.p.id].serializeDelData) ? rp_ge[$t.p.id].serializeDelData(postd) : postd,
                 complete:function(data, Status) {
                   if (Status != "success") {
                     ret[0] = false;
-                    if ($.isFunction(rp_ge.errorTextFormat)) {
-                      ret[1] = rp_ge.errorTextFormat(data);
+                    if ($.isFunction(rp_ge[$t.p.id].errorTextFormat)) {
+                      ret[1] = rp_ge[$t.p.id].errorTextFormat(data);
                     } else {
                       ret[1] = Status + " Status: '" + data.statusText + "'. Error code: " + data.status;
                     }
                   } else {
                     // data is posted successful
                     // execute aftersubmit with the returned data from server
-                    if ($.isFunction(rp_ge.afterSubmit)) {
-                      ret = rp_ge.afterSubmit(data, postd);
+                    if ($.isFunction(rp_ge[$t.p.id].afterSubmit)) {
+                      ret = rp_ge[$t.p.id].afterSubmit(data, postd);
                     }
                   }
                   if (ret[0] === false) {
                     $("#DelError>td", "#" + dtbl).html(ret[1]);
                     $("#DelError", "#" + dtbl).show();
                   } else {
-                    if (rp_ge.reloadAfterSubmit && $t.p.datatype != "local") {
+                    if (rp_ge[$t.p.id].reloadAfterSubmit && $t.p.datatype != "local") {
                       $($t).trigger("reloadGrid");
                     } else {
                       var toarr = [];
@@ -9287,31 +9291,31 @@ var xmlJsonClass = {
                       $t.p.selrow = null;
                       $t.p.selarrrow = [];
                     }
-                    if ($.isFunction(rp_ge.afterComplete)) {
+                    if ($.isFunction(rp_ge[$t.p.id].afterComplete)) {
                       setTimeout(function() {
-                        rp_ge.afterComplete(data, postdata);
+                        rp_ge[$t.p.id].afterComplete(data, postdata);
                       }, 500);
                     }
                   }
-                  rp_ge.processing = false;
+                  rp_ge[$t.p.id].processing = false;
                   $("#dData", "#" + dtbl + "_2").removeClass('ui-state-active');
                   if (ret[0]) {
-                    $.jgrid.hideModal("#" + IDs.themodal, {gb:"#gbox_" + gID,jqm:p.jqModal, onClose: rp_ge.onClose});
+                    $.jgrid.hideModal("#" + IDs.themodal, {gb:"#gbox_" + gID,jqm:p.jqModal, onClose: rp_ge[$t.p.id].onClose});
                   }
                 }
-              }, $.jgrid.ajaxOptions, p.ajaxDelOptions);
+              }, $.jgrid.ajaxOptions, rp_ge[$t.p.id].ajaxDelOptions);
 
 
-              if (!ajaxOptions.url && !rp_ge.useDataProxy) {
+              if (!ajaxOptions.url && !rp_ge[$t.p.id].useDataProxy) {
                 if ($.isFunction($t.p.dataProxy)) {
-                  rp_ge.useDataProxy = true;
+                  rp_ge[$t.p.id].useDataProxy = true;
                 } else {
                   ret[0] = false;
                   ret[1] += " " + $.jgrid.errors.nourl;
                 }
               }
               if (ret[0]) {
-                if (rp_ge.useDataProxy) {
+                if (rp_ge[$t.p.id].useDataProxy) {
                   $t.p.dataProxy.call($t, ajaxOptions, "del_" + $t.p.id);
                 }
                 else {
@@ -9327,18 +9331,18 @@ var xmlJsonClass = {
             return false;
           });
           $("#eData", "#" + dtbl + "_2").click(function(e) {
-            $.jgrid.hideModal("#" + IDs.themodal, {gb:"#gbox_" + gID,jqm:p.jqModal, onClose: rp_ge.onClose});
+            $.jgrid.hideModal("#" + IDs.themodal, {gb:"#gbox_" + gID,jqm:rp_ge[$t.p.id].jqModal, onClose: rp_ge[$t.p.id].onClose});
             return false;
           });
           if (onBeforeShow) {
-            p.beforeShowForm($("#" + dtbl));
+            rp_ge[$t.p.id].beforeShowForm($("#" + dtbl));
           }
-          $.jgrid.viewModal("#" + IDs.themodal, {gbox:"#gbox_" + gID,jqm:p.jqModal, overlay: p.overlay, modal:p.modal});
+          $.jgrid.viewModal("#" + IDs.themodal, {gbox:"#gbox_" + gID,jqm:rp_ge[$t.p.id].jqModal, overlay: rp_ge[$t.p.id].overlay, modal:rp_ge[$t.p.id].modal});
           if (onAfterShow) {
-            p.afterShowForm($("#" + dtbl));
+            rp_ge[$t.p.id].afterShowForm($("#" + dtbl));
           }
         }
-        if (p.closeOnEscape === true) {
+        if (rp_ge[$t.p.id].closeOnEscape === true) {
           setTimeout(function() {
             $(".ui-jqdialog-titlebar-close", "#" + IDs.modalhead).focus();
           }, 0);
@@ -10066,6 +10070,7 @@ var xmlJsonClass = {
             o.aftersavefunc.call($t, rowid, resp);
           }
           success = true;
+          $(ind).unbind("keydown");
         } else {
           $("#lui_" + $t.p.id).show();
           if ($t.p.restful) {
@@ -10113,6 +10118,7 @@ var xmlJsonClass = {
                     o.aftersavefunc.call($t, rowid, res);
                   }
                   success = true;
+                  $(ind).unbind("keydown");
                 } else {
                   if ($.isFunction(o.errorfunc)) {
                     o.errorfunc.call($t, rowid, res, stat);
@@ -10141,7 +10147,6 @@ var xmlJsonClass = {
             }
           }, $.jgrid.ajaxOptions, $t.p.ajaxRowOptions || {}));
         }
-        $(ind).unbind("keydown");
       }
       return success;
     },
@@ -11158,10 +11163,10 @@ var xmlJsonClass = {
             lf = "";
           }
           ldat[expanded] = ((ldat[expanded] == "true" || ldat[expanded] === true) ? true : false) && ldat[loaded];
-          if (ldat[expanded] === true) {
-            twrap += $t.p.treeIcons.minus + " tree-minus treeclick'";
-          } else {
+          if (ldat[expanded] === false) {
             twrap += $t.p.treeIcons.plus + " tree-plus treeclick'";
+          } else {
+            twrap += $t.p.treeIcons.minus + " tree-minus treeclick'";
           }
 
           twrap += "</div></div>";
@@ -11231,6 +11236,9 @@ var xmlJsonClass = {
         $t.p.pgbuttons = false;
         $t.p.pginput = false;
         $t.p.gridview = true;
+        if ($t.p.rowTotal === null) {
+          $t.p.rowNum = 10000;
+        }
         $t.p.multiselect = false;
         $t.p.rowList = [];
         $t.p.expColInd = 0;

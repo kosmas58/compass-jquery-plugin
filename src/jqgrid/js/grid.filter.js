@@ -44,6 +44,7 @@
       filter: null,
       columns: [],
       onChange : null,
+      afterRedraw : null,
       checkValues : null,
       error: false,
       errmsg : "",
@@ -72,7 +73,8 @@
       stropts : ['eq', 'ne', 'bw', 'bn', 'ew', 'en', 'cn', 'nc', 'nu', 'nn', 'in', 'ni'],
       _gridsopt : [], // grid translated strings, do not tuch
       groupOps : ["AND", "OR"],
-      groupButton : true
+      groupButton : true,
+      ruleButtons : true
     }, arg || {});
     return this.each(function() {
       if (this.filter) {
@@ -170,13 +172,16 @@
         return $.isFunction(this.p.onChange) ? this.p.onChange.call(this, this.p) : false;
       };
       /*
-       * Redrow the filter every time when new field is added/deleted
+       * Redraw the filter every time when new field is added/deleted
        * and field is  changed
        */
       this.reDraw = function() {
         $("table.group:first", this).remove();
         var t = this.createTableForGroup(p.filter, null);
         $(this).append(t);
+        if ($.isFunction(this.p.afterRedraw)) {
+          this.p.afterRedraw.call(this, this.p);
+        }
       };
       /*
        * Creates a grouping data for the filter
@@ -200,23 +205,24 @@
         var th = $("<th colspan='5' align='left'></th>");
         tr.append(th);
 
-        // dropdown for: choosing group operator type
-        var groupOpSelect = $("<select class='opsel'></select>");
-        th.append(groupOpSelect);
-        // populate dropdown with all posible group operators: or, and
-        var str = "", selected;
-        for (i = 0; i < p.groupOps.length; i++) {
-          selected = group.groupOp === that.p.groupOps[i] ? " selected='selected'" : "";
-          str += "<option value='" + that.p.groupOps[i] + "'" + selected + ">" + that.p.groupOps[i] + "</option>";
+        if (this.p.ruleButtons === true) {
+          // dropdown for: choosing group operator type
+          var groupOpSelect = $("<select class='opsel'></select>");
+          th.append(groupOpSelect);
+          // populate dropdown with all posible group operators: or, and
+          var str = "", selected;
+          for (i = 0; i < p.groupOps.length; i++) {
+            selected = group.groupOp === that.p.groupOps[i] ? " selected='selected'" : "";
+            str += "<option value='" + that.p.groupOps[i] + "'" + selected + ">" + that.p.groupOps[i] + "</option>";
+          }
+
+          groupOpSelect
+                  .append(str)
+                  .bind('change', function() {
+                    group.groupOp = $(groupOpSelect).val();
+                    that.onchange(); // signals that the filter has changed
+                  });
         }
-
-        groupOpSelect
-                .append(str)
-                .bind('change', function() {
-                  group.groupOp = $(groupOpSelect).val();
-                  that.onchange(); // signals that the filter has changed
-                });
-
         // button for adding a new subgroup
         var inputAddSubgroup = "<span></span>";
         if (this.p.groupButton) {
@@ -239,50 +245,51 @@
           });
         }
         th.append(inputAddSubgroup);
-
-        // button for adding a new rule
-        var inputAddRule = $("<input type='button' value='+' title='Add rule' class='add-rule ui-add'/>"), cm;
-        inputAddRule.bind('click', function() {
-          //if(!group) { group = {};}
-          if (group.rules === undefined) {
-            group.rules = [];
-          }
-          for (i = 0; i < that.p.columns.length; i++) {
-            // but show only serchable and serchhidden = true fields
-            var searchable = (typeof that.p.columns[i].search === 'undefined') ? true : that.p.columns[i].search ,
-                    hidden = (that.p.columns[i].hidden === true),
-                    ignoreHiding = (that.p.columns[i].searchoptions.searchhidden === true);
-            if ((ignoreHiding && searchable) || (searchable && !hidden)) {
-              cm = that.p.columns[i];
-              break;
+        if (this.p.ruleButtons === true) {
+          // button for adding a new rule
+          var inputAddRule = $("<input type='button' value='+' title='Add rule' class='add-rule ui-add'/>"), cm;
+          inputAddRule.bind('click', function() {
+            //if(!group) { group = {};}
+            if (group.rules === undefined) {
+              group.rules = [];
             }
-          }
-          var opr;
-          if (cm.searchoptions.sopt) {
-            opr = cm.searchoptions.sopt;
-          }
-          else if (that.p.sopt) {
-            opr = that.p.sopt;
-          }
-          else if (cm.searchtype === 'string') {
-            opr = that.p.stropts;
-          }
-          else {
-            opr = that.p.numopts;
-          }
+            for (i = 0; i < that.p.columns.length; i++) {
+              // but show only serchable and serchhidden = true fields
+              var searchable = (typeof that.p.columns[i].search === 'undefined') ? true : that.p.columns[i].search ,
+                      hidden = (that.p.columns[i].hidden === true),
+                      ignoreHiding = (that.p.columns[i].searchoptions.searchhidden === true);
+              if ((ignoreHiding && searchable) || (searchable && !hidden)) {
+                cm = that.p.columns[i];
+                break;
+              }
+            }
+            var opr;
+            if (cm.searchoptions.sopt) {
+              opr = cm.searchoptions.sopt;
+            }
+            else if (that.p.sopt) {
+              opr = that.p.sopt;
+            }
+            else if (cm.searchtype === 'string') {
+              opr = that.p.stropts;
+            }
+            else {
+              opr = that.p.numopts;
+            }
 
-          group.rules.push({
-            field: cm.name,
-            op: opr[0],
-            data: ""
-          }); // adding a new rule
+            group.rules.push({
+              field: cm.name,
+              op: opr[0],
+              data: ""
+            }); // adding a new rule
 
-          that.reDraw(); // the html has changed, force reDraw
-          // for the moment no change have been made to the rule, so
-          // this will not trigger onchange event
-          return false;
-        });
-        th.append(inputAddRule);
+            that.reDraw(); // the html has changed, force reDraw
+            // for the moment no change have been made to the rule, so
+            // this will not trigger onchange event
+            return false;
+          });
+          th.append(inputAddRule);
+        }
 
         // button for delete the group
         if (parentgroup !== null) { // ignore the first group
@@ -523,24 +530,25 @@
         tr.append(ruleDeleteTd);
 
         // create button for: delete rule
-        var ruleDeleteInput = $("<input type='button' value='-' title='Delete rule' class='delete-rule ui-del'/>");
-        ruleDeleteTd.append(ruleDeleteInput);
-        //$(ruleDeleteInput).html("").height(20).width(30).button({icons: {  primary: "ui-icon-minus", text:false}});
-        ruleDeleteInput.bind('click', function() {
-          // remove rule from group
-          for (i = 0; i < group.rules.length; i++) {
-            if (group.rules[i] === rule) {
-              group.rules.splice(i, 1);
-              break;
+        if (this.p.ruleButtons === true) {
+          var ruleDeleteInput = $("<input type='button' value='-' title='Delete rule' class='delete-rule ui-del'/>");
+          ruleDeleteTd.append(ruleDeleteInput);
+          //$(ruleDeleteInput).html("").height(20).width(30).button({icons: {  primary: "ui-icon-minus", text:false}});
+          ruleDeleteInput.bind('click', function() {
+            // remove rule from group
+            for (i = 0; i < group.rules.length; i++) {
+              if (group.rules[i] === rule) {
+                group.rules.splice(i, 1);
+                break;
+              }
             }
-          }
 
-          that.reDraw(); // the html has changed, force reDraw
+            that.reDraw(); // the html has changed, force reDraw
 
-          that.onchange(); // signals that the filter has changed
-          return false;
-        });
-
+            that.onchange(); // signals that the filter has changed
+            return false;
+          });
+        }
         return tr;
       };
 

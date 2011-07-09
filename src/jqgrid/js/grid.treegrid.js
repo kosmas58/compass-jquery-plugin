@@ -67,10 +67,10 @@
             lf = "";
           }
           ldat[expanded] = ((ldat[expanded] == "true" || ldat[expanded] === true) ? true : false) && ldat[loaded];
-          if (ldat[expanded] === true) {
-            twrap += $t.p.treeIcons.minus + " tree-minus treeclick'";
-          } else {
+          if (ldat[expanded] === false) {
             twrap += $t.p.treeIcons.plus + " tree-plus treeclick'";
+          } else {
+            twrap += $t.p.treeIcons.minus + " tree-minus treeclick'";
           }
 
           twrap += "</div></div>";
@@ -140,6 +140,9 @@
         $t.p.pgbuttons = false;
         $t.p.pginput = false;
         $t.p.gridview = true;
+        if ($t.p.rowTotal === null) {
+          $t.p.rowNum = 10000;
+        }
         $t.p.multiselect = false;
         $t.p.rowList = [];
         $t.p.expColInd = 0;
