@@ -1126,6 +1126,14 @@ $.event.special.tap = {
 
 // also handles swipeleft, swiperight
 $.event.special.swipe = {
+	scrollSupressionThreshold: 10, // More than this horizontal displacement, and we will suppress scrolling.
+	
+	durationThreshold: 1000, // More time than this, and it isn't a swipe.
+	
+	horizontalDistanceThreshold: 30,  // Swipe horizontal displacement must be more than this.
+	
+	verticalDistanceThreshold: 75,  // Swipe vertical displacement must be less than this.
+
 	setup: function() {
 		var thisObject = this,
 			$this = $( thisObject );
@@ -1155,7 +1163,7 @@ $.event.special.swipe = {
 				};
 
 				// prevent scrolling
-				if ( Math.abs( start.coords[ 0 ] - stop.coords[ 0 ] ) > 10 ) {
+				if ( Math.abs( start.coords[ 0 ] - stop.coords[ 0 ] ) > $.event.special.swipe.scrollSupressionThreshold ) {
 					event.preventDefault();
 				}
 			}
@@ -1165,9 +1173,9 @@ $.event.special.swipe = {
 					$this.unbind( touchMoveEvent, moveHandler );
 
 					if ( start && stop ) {
-						if ( stop.time - start.time < 1000 &&
-								Math.abs( start.coords[ 0 ] - stop.coords[ 0 ] ) > 30 &&
-								Math.abs( start.coords[ 1 ] - stop.coords[ 1 ] ) < 75 ) {
+						if ( stop.time - start.time < $.event.special.swipe.durationThreshold &&
+								Math.abs( start.coords[ 0 ] - stop.coords[ 0 ] ) > $.event.special.swipe.horizontalDistanceThreshold &&
+								Math.abs( start.coords[ 1 ] - stop.coords[ 1 ] ) < $.event.special.swipe.verticalDistanceThreshold ) {
 
 							start.origin.trigger( "swipe" )
 								.trigger( start.coords[0] > stop.coords[ 0 ] ? "swipeleft" : "swiperight" );
@@ -3806,8 +3814,11 @@ $.widget( "mobile.checkboxradio", $.mobile.widget, {
 	},
 
 	//returns either a set of radios with the same name attribute, or a single checkbox
-	_getInputSet: function() {
-		return this.element.closest( "form,fieldset,:jqmData(role='page')" )
+	_getInputSet: function(){
+        if(this.inputtype == "checkbox") {
+            return this.element;
+        }
+        return this.element.closest( "form,fieldset,:jqmData(role='page')" )
 				.find( "input[name='"+ this.element.attr( "name" ) +"'][type='"+ this.inputtype +"']" );
 	},
 
@@ -4076,7 +4087,7 @@ $.widget( "mobile.selectmenu", $.mobile.widget, {
 				screen = $( "<div>", {"class": "ui-selectmenu-screen ui-screen-hidden"})
 							.appendTo( thisPage ),
 
-				listbox = $( "<div>", { "class": "ui-selectmenu ui-selectmenu-hidden ui-overlay-shadow ui-corner-all pop ui-body-" + o.overlayTheme } )
+				listbox = $("<div>", { "class": "ui-selectmenu ui-selectmenu-hidden ui-overlay-shadow ui-corner-all ui-body-" + o.overlayTheme + " " + $.mobile.defaultDialogTransition })
 						.insertAfter(screen),
 
 				list = $( "<ul>", {
@@ -4281,6 +4292,13 @@ $.widget( "mobile.selectmenu", $.mobile.widget, {
 					break;
 				}
 			});
+			
+			// button refocus ensures proper height calculation
+			// by removing the inline style and ensuring page inclusion
+			self.menuPage.bind( "pagehide", function(){
+				self.list.appendTo( self.listbox );
+				self._focusButton();
+			});
 
 			// Events on "screen" overlay
 			screen.bind( "vclick", function( event ) {
@@ -4474,7 +4492,7 @@ $.widget( "mobile.selectmenu", $.mobile.widget, {
 			self.menuType = "page";
 			self.menuPageContent.append( self.list );
 			$.mobile.changePage( self.menuPage, {
-				transition: "pop"
+			   transition: $.mobile.defaultDialogTransition
 			});
 		} else {
 
@@ -4527,6 +4545,13 @@ $.widget( "mobile.selectmenu", $.mobile.widget, {
 			self.isOpen = true;
 		}
 	},
+	
+	_focusButton : function(){
+		var self = this;
+		setTimeout(function() {
+			self.button.focus();
+		}, 40);
+	},
 
 	close: function() {
 		if ( this.options.disabled || !this.isOpen || this.options.nativeMenu ) {
@@ -4535,19 +4560,7 @@ $.widget( "mobile.selectmenu", $.mobile.widget, {
 
 		var self = this;
 
-		function focusButton() {
-			setTimeout(function() {
-				self.button.focus();
-			}, 40);
-
-			self.listbox.removeAttr( "style" ).append( self.list );
-		}
-
 		if ( self.menuType == "page" ) {
-			// button refocus ensures proper height calculation
-			// by removing the inline style and ensuring page inclusion
-			self.menuPage.one( "pagehide", focusButton);
-
 			// doesn't solve the possible issue with calling change page
 			// where the objects don't define data urls which prevents dialog key
 			// stripping - changePage has incoming refactor
@@ -4556,7 +4569,7 @@ $.widget( "mobile.selectmenu", $.mobile.widget, {
 		else{
 			self.screen.addClass( "ui-screen-hidden" );
 			self.listbox.addClass( "ui-selectmenu-hidden" ).removeAttr( "style" ).removeClass( "in" );
-			focusButton();
+			self._focusButton();
 		}
 
 		// allow the dialog to be closed again
@@ -5399,13 +5412,20 @@ $.widget( "mobile.listview", $.mobile.widget, {
 	},
 
 	_removeCorners: function( li, which ) {
-		which = which || [ "top", "bottom" ];
-		var classes = {
-			top: "ui-corner-top ui-corner-tr ui-corner-tl",
-			bottom: "ui-corner-bottom ui-corner-br ui-corner-bl"
-		};
-		li.add( li.find( ".ui-btn-inner, .ui-li-link-alt, .ui-li-thumb" ) )
-			.removeClass( "ui-corner-top ui-corner-bottom ui-corner-br ui-corner-bl ui-corner-tr ui-corner-tl" );
+		var top = "ui-corner-top ui-corner-tr ui-corner-tl",
+			bot = "ui-corner-bottom ui-corner-br ui-corner-bl";
+		
+		li = li.add( li.find( ".ui-btn-inner, .ui-li-link-alt, .ui-li-thumb" ) );
+		
+		if ( which === "top" ) {
+			li.removeClass( top );
+		}
+		else if ( which === "bottom"  ) {
+			li.removeClass( bot );
+		}
+		else {
+			li.removeClass( top + " " + bot );
+		}
 	},
 
 	refresh: function( create ) {
@@ -5521,7 +5541,7 @@ $.widget( "mobile.listview", $.mobile.widget, {
 					if ( item.prev().prev().length ) {
 						self._removeCorners( item.prev() );
 					} else if ( item.prev().length ) {
-						self._removeCorners( item.prev(), ["bottom"] );
+						self._removeCorners( item.prev(), "bottom" );
 					}
 				}
 			}
