@@ -5036,7 +5036,7 @@ $.widget( "mobile.slider", $.mobile.widget, {
 				}
 			});
 
-		this.refresh();
+		this.refresh(undefined, undefined, true);
 	},
 
 	refresh: function( val, isfromControl, preventInputUpdate ) {
