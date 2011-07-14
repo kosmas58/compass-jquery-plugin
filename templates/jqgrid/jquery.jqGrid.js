@@ -6076,6 +6076,7 @@ var xmlJsonClass = {
         toTop: true,
         overlay: 10,
         modal: false,
+        overlayClass : 'ui-widget-overlay',
         onShow: this.showModal,
         onHide: this.closeModal,
         gbox: '',
@@ -7522,7 +7523,7 @@ var xmlJsonClass = {
         onSearch : null,
         onReset : null,
         toTop : true,
-        overlay : 10,
+        overlay : 30,
         columns : [],
         tmplNames : null,
         tmplFilters : null,
@@ -7766,7 +7767,7 @@ var xmlJsonClass = {
         height: 'auto',
         dataheight: 'auto',
         modal: false,
-        overlay : 10,
+        overlay : 30,
         drag: true,
         resize: true,
         url: null,
@@ -8777,7 +8778,7 @@ var xmlJsonClass = {
         height: 'auto',
         dataheight: 'auto',
         modal: false,
-        overlay: 10,
+        overlay: 30,
         drag: true,
         resize: true,
         jqModal: true,
@@ -9117,7 +9118,7 @@ var xmlJsonClass = {
         height: 'auto',
         dataheight : 'auto',
         modal: false,
-        overlay: 10,
+        overlay: 30,
         drag: true,
         resize: true,
         url : '',
@@ -9194,7 +9195,7 @@ var xmlJsonClass = {
           tbl += "</tbody></table></div>";
           var bS = "<a href='javascript:void(0)' id='dData' class='fm-button ui-state-default ui-corner-all'>" + p.bSubmit + "</a>",
                   bC = "<a href='javascript:void(0)' id='eData' class='fm-button ui-state-default ui-corner-all'>" + p.bCancel + "</a>";
-          tbl += "<table cellspacing='0' cellpadding='0' border='0' class='EditTable' id='" + dtbl + "_2'><tbody><tr><td><hr class='ui-widget-content' style='margin:1px'/></td></tr></tr><tr><td class='DelButton EditButton'>" + bS + "&#160;" + bC + "</td></tr></tbody></table>";
+          tbl += "<table cellspacing='0' cellpadding='0' border='0' class='EditTable' id='" + dtbl + "_2'><tbody><tr><td><hr class='ui-widget-content' style='margin:1px'/></td></tr><tr><td class='DelButton EditButton'>" + bS + "&#160;" + bC + "</td></tr></tbody></table>";
           p.gbox = "#gbox_" + gID;
           $.jgrid.createModal(IDs, tbl, p, "#gview_" + $t.p.id, $("#gview_" + $t.p.id)[0]);
 
@@ -11164,12 +11165,12 @@ var xmlJsonClass = {
           }
           ldat[expanded] = ((ldat[expanded] == "true" || ldat[expanded] === true) ? true : false) && ldat[loaded];
           if (ldat[expanded] === false) {
-            twrap += $t.p.treeIcons.plus + " tree-plus treeclick'";
+            twrap += ((ldat[isLeaf] === true) ? "'" : $t.p.treeIcons.plus + " tree-plus treeclick'");
           } else {
-            twrap += $t.p.treeIcons.minus + " tree-minus treeclick'";
+            twrap += ((ldat[isLeaf] === true) ? "'" : $t.p.treeIcons.minus + " tree-minus treeclick'");
           }
 
-          twrap += "</div></div>";
+          twrap += "></div></div>";
           $($t.rows[i].cells[expCol]).wrapInner("<span class='cell-wrapper" + lf + "'></span>").prepend(twrap);
 
           if (curLevel !== parseInt($t.p.tree_root_level, 10)) {

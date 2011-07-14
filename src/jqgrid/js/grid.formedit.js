@@ -48,7 +48,7 @@
         onSearch : null,
         onReset : null,
         toTop : true,
-        overlay : 10,
+        overlay : 30,
         columns : [],
         tmplNames : null,
         tmplFilters : null,
@@ -292,7 +292,7 @@
         height: 'auto',
         dataheight: 'auto',
         modal: false,
-        overlay : 10,
+        overlay : 30,
         drag: true,
         resize: true,
         url: null,
@@ -1303,7 +1303,7 @@
         height: 'auto',
         dataheight: 'auto',
         modal: false,
-        overlay: 10,
+        overlay: 30,
         drag: true,
         resize: true,
         jqModal: true,
@@ -1643,7 +1643,7 @@
         height: 'auto',
         dataheight : 'auto',
         modal: false,
-        overlay: 10,
+        overlay: 30,
         drag: true,
         resize: true,
         url : '',
@@ -1720,7 +1720,7 @@
           tbl += "</tbody></table></div>";
           var bS = "<a href='javascript:void(0)' id='dData' class='fm-button ui-state-default ui-corner-all'>" + p.bSubmit + "</a>",
                   bC = "<a href='javascript:void(0)' id='eData' class='fm-button ui-state-default ui-corner-all'>" + p.bCancel + "</a>";
-          tbl += "<table cellspacing='0' cellpadding='0' border='0' class='EditTable' id='" + dtbl + "_2'><tbody><tr><td><hr class='ui-widget-content' style='margin:1px'/></td></tr></tr><tr><td class='DelButton EditButton'>" + bS + "&#160;" + bC + "</td></tr></tbody></table>";
+          tbl += "<table cellspacing='0' cellpadding='0' border='0' class='EditTable' id='" + dtbl + "_2'><tbody><tr><td><hr class='ui-widget-content' style='margin:1px'/></td></tr><tr><td class='DelButton EditButton'>" + bS + "&#160;" + bC + "</td></tr></tbody></table>";
           p.gbox = "#gbox_" + gID;
           $.jgrid.createModal(IDs, tbl, p, "#gview_" + $t.p.id, $("#gview_" + $t.p.id)[0]);
 
