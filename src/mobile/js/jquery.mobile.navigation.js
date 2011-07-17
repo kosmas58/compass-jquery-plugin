@@ -561,9 +561,15 @@
 			// page is loaded off the network.
 			dupCachedPage = null,
 
+			// determine the current base url
+			findBaseWithDefault = function(){
+				var closestBase = ( $.mobile.activePage && getClosestBaseUrl( $.mobile.activePage ) );
+				return closestBase || documentBase.hrefNoHash;
+			},
+
 			// The absolute version of the URL passed into the function. This
 			// version of the URL may contain dialog/subpage params in it.
-			absUrl = path.makeUrlAbsolute( url, ( $.mobile.activePage && getClosestBaseUrl( $.mobile.activePage ) ) || documentBase.hrefNoHash);
+			absUrl = path.makeUrlAbsolute( url, findBaseWithDefault() );
 
 
 		// If the caller provided data, and we're using "get" request,
@@ -1115,6 +1121,18 @@
 			$.mobile.changePage( href, { transition: transition, reverse: reverse, role: role } );
 			event.preventDefault();
 		});
+		
+		//prefetch pages when anchors with data-prefetch are encountered
+		$( ".ui-page" ).live( "pageshow.prefetch", function(){
+			var urls = [];
+			$( this ).find( "a:jqmData(prefetch)" ).each(function(){
+				var url = $( this ).attr( "href" );
+				if ( url && $.inArray( url, urls ) === -1 ) {
+					urls.push( url );
+					$.mobile.loadPage( url );
+				}
+			});
+		} );
 
 		//hashchange event handler
 		$window.bind( "hashchange", function( e, triggered ) {

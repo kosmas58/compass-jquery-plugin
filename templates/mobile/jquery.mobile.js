@@ -439,7 +439,6 @@ $(function() {
 * jQuery Mobile Framework : support tests
 * Copyright (c) jQuery Project
 * Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
-* Note: Code is in draft form and is subject to change
 */
 
 (function( $, undefined  ) {
@@ -1959,10 +1958,6 @@ $.widget( "mobile.page", $.mobile.widget, {
 		// hash segment before &ui-page= is used to make Ajax request
 		subPageUrlKey: "ui-page",
 
-		// Anchor links with a data-rel, or pages with a	 data-role, that match these selectors will be untrackable in history
-		// (no change in URL, not bookmarkable)
-		nonHistorySelectors: "dialog",
-
 		// Class assigned to page currently in view, and during transitions
 		activePageClass: "ui-page-active",
 
@@ -2669,9 +2664,15 @@ $.widget( "mobile.page", $.mobile.widget, {
 			// page is loaded off the network.
 			dupCachedPage = null,
 
+			// determine the current base url
+			findBaseWithDefault = function(){
+				var closestBase = ( $.mobile.activePage && getClosestBaseUrl( $.mobile.activePage ) );
+				return closestBase || documentBase.hrefNoHash;
+			},
+
 			// The absolute version of the URL passed into the function. This
 			// version of the URL may contain dialog/subpage params in it.
-			absUrl = path.makeUrlAbsolute( url, ( $.mobile.activePage && getClosestBaseUrl( $.mobile.activePage ) ) || documentBase.hrefNoHash);
+			absUrl = path.makeUrlAbsolute( url, findBaseWithDefault() );
 
 
 		// If the caller provided data, and we're using "get" request,
@@ -3223,6 +3224,18 @@ $.widget( "mobile.page", $.mobile.widget, {
 			$.mobile.changePage( href, { transition: transition, reverse: reverse, role: role } );
 			event.preventDefault();
 		});
+		
+		//prefetch pages when anchors with data-prefetch are encountered
+		$( ".ui-page" ).live( "pageshow.prefetch", function(){
+			var urls = [];
+			$( this ).find( "a:jqmData(prefetch)" ).each(function(){
+				var url = $( this ).attr( "href" );
+				if ( url && $.inArray( url, urls ) === -1 ) {
+					urls.push( url );
+					$.mobile.loadPage( url );
+				}
+			});
+		} );
 
 		//hashchange event handler
 		$window.bind( "hashchange", function( e, triggered ) {
@@ -4292,7 +4305,7 @@ $.widget( "mobile.selectmenu", $.mobile.widget, {
 					break;
 				}
 			});
-			
+
 			// button refocus ensures proper height calculation
 			// by removing the inline style and ensuring page inclusion
 			self.menuPage.bind( "pagehide", function(){
@@ -4311,7 +4324,7 @@ $.widget( "mobile.selectmenu", $.mobile.widget, {
 					self.close();
 					return false;
 				}
-			})
+			});
 		}
 	},
 
@@ -4545,7 +4558,7 @@ $.widget( "mobile.selectmenu", $.mobile.widget, {
 			self.isOpen = true;
 		}
 	},
-	
+
 	_focusButton : function(){
 		var self = this;
 		setTimeout(function() {
@@ -5740,7 +5753,6 @@ $( ":jqmData(role='listview')" ).live( "listviewcreate", function() {
 * jQuery Mobile Framework : "dialog" plugin.
 * Copyright (c) jQuery Project
 * Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
-* Note: Code is in draft form and is subject to change
 */
 
 (function( $, window, undefined ) {
@@ -5933,7 +5945,7 @@ $.fn.grid = function( options ) {
 
 	//loading div which appears during Ajax requests
 	//will not appear if $.mobile.loadingMessage is false
-	var $loader = $.mobile.loadingMessage ?		$( "<div class='ui-loader ui-body-a ui-corner-all'>" + "<span class='ui-icon ui-icon-loading spin'></span>" + "<h1>" + $.mobile.loadingMessage + "</h1>" + "</div>" )	: undefined;
+	var $loader = $( "<div class='ui-loader ui-body-a ui-corner-all'><span class='ui-icon ui-icon-loading spin'></span><h1></h1></div>" );
 
 	$.extend($.mobile, {
 		// turn on/off page loading message.
@@ -5942,6 +5954,9 @@ $.fn.grid = function( options ) {
 				var activeBtn = $( "." + $.mobile.activeBtnClass ).first();
 			
 				$loader
+					.find( "h1" )
+						.text( $.mobile.loadingMessage )
+						.end()
 					.appendTo( $.mobile.pageContainer )
 					//position at y center (if scrollTop supported), above the activeBtn (if defined), or just 100px from top
 					.css( {
