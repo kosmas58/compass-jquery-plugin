@@ -73,6 +73,11 @@
 		initializePage: function(){
 			//find present pages
 			var $pages = $( ":jqmData(role='page')" );
+			
+			//if no pages are found, create one with body's inner html
+			if( !$pages.length ){
+				$pages = $( "body" ).wrapInner( "<div data-" + $.mobile.ns + "role='page'></div>" ).children( 0 );
+			}
 
 			//add dialogs, set data-url attrs
 			$pages.add( ":jqmData(role='dialog')" ).each(function(){

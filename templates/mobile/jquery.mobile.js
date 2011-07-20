@@ -2751,6 +2751,9 @@ $.widget( "mobile.page", $.mobile.widget, {
 							&& RegExp.$1 ) {
 						url = fileUrl = path.getFilePath( RegExp.$1 );
 					}
+					else{
+						
+					}
 
 					if ( base ) {
 						base.set( fileUrl );
@@ -2759,6 +2762,11 @@ $.widget( "mobile.page", $.mobile.widget, {
 					//workaround to allow scripts to execute when included in page divs
 					all.get( 0 ).innerHTML = html;
 					page = all.find( ":jqmData(role='page'), :jqmData(role='dialog')" ).first();
+					
+					//if page elem couldn't be found, create one and insert the body element's contents
+					if( !page.length ){
+						page = $( "<div data-" + $.mobile.ns + "role='page'>" + html.split( /<\/?body[^>]*>/gmi )[1] + "</div>" );
+					}
 
 					if ( newPageTitle && !page.jqmData( "title" ) ) {
 						page.jqmData( "title", newPageTitle );
@@ -5985,6 +5993,11 @@ $.fn.grid = function( options ) {
 		initializePage: function(){
 			//find present pages
 			var $pages = $( ":jqmData(role='page')" );
+			
+			//if no pages are found, create one with body's inner html
+			if( !$pages.length ){
+				$pages = $( "body" ).wrapInner( "<div data-" + $.mobile.ns + "role='page'></div>" ).children( 0 );
+			}
 
 			//add dialogs, set data-url attrs
 			$pages.add( ":jqmData(role='dialog')" ).each(function(){

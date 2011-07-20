@@ -2,12 +2,12 @@
 // @compilation_level SIMPLE_OPTIMIZATIONS
 
 /**
- * @license jqGrid  4.1.1  - jQuery Grid
+ * @license jqGrid  4.1.2  - jQuery Grid
  * Copyright (c) 2008, Tony Tomov, tony@trirand.com
  * Dual licensed under the MIT and GPL licenses
  * http://www.opensource.org/licenses/mit-license.php
  * http://www.gnu.org/licenses/gpl-2.0.html
- * Date: 2011-06-19
+ * Date: 2011-07-20
  */
 //jsHint options
 /*global document, window, jQuery, DOMParser, ActiveXObject $ */
@@ -2858,22 +2858,22 @@
           return false;
         });
       }
-//      if ($.isFunction(this.p.onRightClickRow)) {
-//        $(this).bind('contextmenu', function(e) {
-//          td = e.target;
-//          ptr = $(td, ts.rows).closest("tr.jqgrow");
-//          if ($(ptr).length === 0) {
-//            return false;
-//          }
-//          if (!ts.p.multiselect) {
-//            $(ts).jqGrid("setSelection", ptr[0].id, true);
-//          }
-//          ri = ptr[0].rowIndex;
-//          ci = $.jgrid.getCellIndex(td);
-//          ts.p.onRightClickRow.call(ts, $(ptr).attr("id"), ri, ci, e);
-//          return false;
-//        });
-//      }
+     /* if ($.isFunction(this.p.onRightClickRow)) {
+        $(this).bind('contextmenu', function(e) {
+          td = e.target;
+          ptr = $(td, ts.rows).closest("tr.jqgrow");
+          if ($(ptr).length === 0) {
+            return false;
+          }
+          if (!ts.p.multiselect) {
+            $(ts).jqGrid("setSelection", ptr[0].id, true);
+          }
+          ri = ptr[0].rowIndex;
+          ci = $.jgrid.getCellIndex(td);
+          ts.p.onRightClickRow.call(ts, $(ptr).attr("id"), ri, ci, e);
+          return false;
+        });
+      }*/
       grid.bDiv = document.createElement("div");
       if (isMSIE) {
         if (String(ts.p.height).toLowerCase() === "auto") {
