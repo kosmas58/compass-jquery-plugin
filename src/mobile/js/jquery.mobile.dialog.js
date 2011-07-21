@@ -6,25 +6,35 @@
 
 (function( $, window, undefined ) {
 
+//auto self-init widgets
+$( ":jqmData(role='dialog')" ).live( "pagecreate", function(){
+	$( this ).dialog();
+});
+
 $.widget( "mobile.dialog", $.mobile.widget, {
 	options: {
-		closeBtnText: "Close"
+		closeBtnText 	: "Close",
+		theme			: "a"
 	},
 	_create: function() {
-		var $el = this.element;
-
+		var $el = this.element,
+			pageTheme = $el.attr( "class" ).match( /ui-body-[a-z]/ );
+			
+		if( pageTheme.length ){
+			$el.removeClass( pageTheme[ 0 ] );
+		}	
+		
+		$el.addClass( "ui-body-" + this.options.theme );
+		
 		// Class the markup for dialog styling
 		// Set aria role
 		$el.attr( "role", "dialog" )
-			.addClass( "ui-page ui-dialog ui-body-a" )
-			.find( ":jqmData(role=header)" )
+			.addClass( "ui-dialog" )
+			.find( ":jqmData(role='header')" )
 			.addClass( "ui-corner-top ui-overlay-shadow" )
 				.prepend( "<a href='#' data-" + $.mobile.ns + "icon='delete' data-" + $.mobile.ns + "rel='back' data-" + $.mobile.ns + "iconpos='notext'>"+ this.options.closeBtnText + "</a>" )
 			.end()
-			.find( ".ui-content:not([class*='ui-body-'])" )
-				.addClass( 'ui-body-c' )
-			.end()
-			.find( ".ui-content,:jqmData(role='footer')" )
+			.find( ":jqmData(role='content'),:jqmData(role='footer')" )
 				.last()
 				.addClass( "ui-corner-bottom ui-overlay-shadow" );
 
