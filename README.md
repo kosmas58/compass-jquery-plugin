@@ -18,7 +18,7 @@ A Sass-based Meta-Framework for Compass that allows you to mix and match any of 
 * jquery.dynatree.js V1.1.1
 * jquery.ribbon.js
 * jquery.jqGrid.js V4.1.2 (with minor changes to make it RESTful)
-* jquery.tinymce.js V3.4.3.1
+* jquery.tinymce.js V3.4.3.2
 
 and for mobile devices <i>(using pure haml/sass without compass)</i>:
 
