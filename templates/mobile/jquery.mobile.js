@@ -3234,7 +3234,7 @@ $( ":jqmData(role='page'), :jqmData(role='dialog')" ).live( "pagecreate", functi
 (function( $, undefined ) {
 
 //auto self-init widgets
-$( document ).bind( "pagecreate enhance", function( e ){
+$( document ).bind( "pagecreate create", function( e ){
 	$( ":jqmData(role='collapsible')", e.target ).collapsible();
 });
 
@@ -3400,7 +3400,7 @@ $.widget( "mobile.collapsible", $.mobile.widget, {
 (function( $, undefined ) {
 
 //auto self-init widgets
-$( document ).bind( "pagecreate enhance", function( e ){
+$( document ).bind( "pagecreate create", function( e ){
 	$( ":jqmData(role='fieldcontain')", e.target ).fieldcontain();
 });
 
@@ -3474,7 +3474,7 @@ $.fn.grid = function( options ) {
 (function( $, undefined ) {
 
 //auto self-init widgets
-$( document ).bind( "pagecreate enhance", function( e ){
+$( document ).bind( "pagecreate create", function( e ){
 	$( ":jqmData(role='navbar')", e.target ).navbar();
 });
 
@@ -3526,7 +3526,7 @@ $.widget( "mobile.navbar", $.mobile.widget, {
 (function( $, undefined ) {
 
 //auto self-init widgets
-$( document ).bind( "pagecreate enhance", function( e ){
+$( document ).bind( "pagecreate create", function( e ){
 	$( ":jqmData(role='listview')", e.target ).listview();
 });
 
@@ -3906,7 +3906,7 @@ $( ":jqmData(role='listview')" ).live( "listviewcreate", function() {
 
 (function( $, undefined ) {
 
-$( document ).bind( "pagecreate enhance", function( e ){
+$( document ).bind( "pagecreate create", function( e ){
 	$( ":jqmData(role='nojs')", e.target ).addClass( "ui-nojs" );
 	
 });
@@ -3923,7 +3923,7 @@ $( document ).bind( "pagecreate enhance", function( e ){
 (function( $, undefined ) {
 
 //auto self-init widgets
-$( document ).bind( "pagecreate enhance", function( e ){
+$( document ).bind( "pagecreate create", function( e ){
 	$( "input[type='checkbox'],input[type='radio']", e.target )
 		.not( ":jqmData(role='none'), :jqmData(role='nojs')" )
 		.checkboxradio();
@@ -4117,7 +4117,7 @@ $.widget( "mobile.checkboxradio", $.mobile.widget, {
 (function( $, undefined ) {
 
 //auto self-init widgets
-$( document ).bind( "pagecreate enhance", function( e ){
+$( document ).bind( "pagecreate create", function( e ){
 	$( "button, [type='button'], [type='submit'], [type='reset'], [type='image']", e.target )
 		.not( ":jqmData(role='none'), :jqmData(role='nojs')" )
 		.button();
@@ -4209,7 +4209,7 @@ $.widget( "mobile.button", $.mobile.widget, {
 ( function( $, undefined ) {
 
 //auto self-init widgets
-$( document ).bind( "pagecreate enhance", function( e ){
+$( document ).bind( "pagecreate create", function( e ){
 
 	var nativeSel = ":jqmData(role='none'), :jqmData(role='nojs')";
 
@@ -4544,7 +4544,7 @@ $.widget( "mobile.slider", $.mobile.widget, {
 (function( $, undefined ) {
 
 //auto self-init widgets
-$( document ).bind( "pagecreate enhance", function( e ){
+$( document ).bind( "pagecreate create", function( e ){
 	$( "input[type='text'], input[type='search'], input[type='number'], input[type='password'], input[type='email'], input[type='url'], input[type='tel'], textarea", e.target )
 		.not( ":jqmData(role='none'), :jqmData(role='nojs')" )
 		.textinput();
@@ -4677,7 +4677,7 @@ $.widget( "mobile.textinput", $.mobile.widget, {
 (function( $, undefined ) {
 
 //auto self-init widgets
-$( document ).bind( "pagecreate enhance", function( e ){
+$( document ).bind( "pagecreate create", function( e ){
 	$( "select:not(:jqmData(role='slider'))", e.target )
 		.not( ":jqmData(role='none'), :jqmData(role='nojs')" )
 		.selectmenu();
@@ -5423,7 +5423,7 @@ var attachEvents = function() {
 
 //links in bars, or those with  data-role become buttons
 //auto self-init widgets
-$( document ).bind( "pagecreate enhance", function( e ){
+$( document ).bind( "pagecreate create", function( e ){
 
 	$( ":jqmData(role='button'), .ui-bar > a, .ui-header > a, .ui-footer > a", e.target )
 		.not( ".ui-btn, :jqmData(role='none'), :jqmData(role='nojs')" )
@@ -5442,7 +5442,7 @@ $( document ).bind( "pagecreate enhance", function( e ){
 (function( $, undefined ) {
 
 //auto self-init widgets
-$( document ).bind( "pagecreate enhance", function( e ){
+$( document ).bind( "pagecreate create", function( e ){
 	$( ":jqmData(role='controlgroup')", e.target ).controlgroup({ excludeInvisible: false });
 });
 
@@ -5497,7 +5497,7 @@ $.fn.controlgroup = function( options ) {
 
 (function( $, undefined ) {
 
-$( document ).bind( "pagecreate enhance", function( e ){
+$( document ).bind( "pagecreate create", function( e ){
 	
 	//links within content areas
 	$( e.target )
@@ -5519,7 +5519,7 @@ $( document ).bind( "pagecreate enhance", function( e ){
 (function( $, undefined ) {
 	
 //auto self-init widgets
-$( document ).bind( "pagecreate enhance", function( e ){
+$( document ).bind( "pagecreate create", function( e ){
 	
 	if( $( ":jqmData(position='fixed')", e.target ).length ){
 		$( e.target ).each(function(){
