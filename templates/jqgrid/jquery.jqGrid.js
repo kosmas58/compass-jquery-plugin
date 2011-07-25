@@ -2858,7 +2858,7 @@
           return false;
         });
       }
-     /* if ($.isFunction(this.p.onRightClickRow)) {
+      /*if ($.isFunction(this.p.onRightClickRow)) {
         $(this).bind('contextmenu', function(e) {
           td = e.target;
           ptr = $(td, ts.rows).closest("tr.jqgrow");
@@ -4995,6 +4995,9 @@ var xmlJsonClass = {
         xml += ind + "<" + name + ">" + "<![CDATA[" + v + "]]>" + "</" + name + ">";
       }
       else {
+        if (v === undefined) {
+          v = "";
+        }
         if (v.toString() === "\"\"" || v.toString().length === 0) {
           xml += ind + "<" + name + ">__EMPTY_STRING_</" + name + ">";
         }
@@ -8184,7 +8187,7 @@ var xmlJsonClass = {
               }
             }
             delete postdata[$t.p.id + "_id"];
-            postdata = $.extend(postdata, rp_ge.editData, onCS);
+            postdata = $.extend(postdata, rp_ge[$t.p.id].editData, onCS);
             if ($t.p.treeGrid === true) {
               if (postdata[oper] == opers.addoper) {
                 selr = $($t).jqGrid("getGridParam", 'selrow');

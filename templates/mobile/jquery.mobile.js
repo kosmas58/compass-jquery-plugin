@@ -1692,6 +1692,9 @@ $.widget( "mobile.page", $.mobile.widget, {
 
 		// Error response message - appears when an Ajax page request fails
 		pageLoadErrorMessage: "Error Loading Page",
+		
+		//automatically initialize the DOM when it's ready
+		autoInitializePage: true,
 
 		// Support conditions that must be met in order to proceed
 		// default enhanced qualifications are media query support OR IE 7+
@@ -6117,8 +6120,10 @@ $(function() {
 		$.mobile.defaultHomeScroll = ( !$.support.scrollTop || $(window).scrollTop() === 1 ) ? 0 : 1;
 	
 		//dom-ready inits
-		$( $.mobile.initializePage );
-	
+		if( $.mobile.autoInitializePage ){
+			$( $.mobile.initializePage );
+		}
+		
 		//window load event
 		//hide iOS browser chrome on load
 		$window.load( $.mobile.silentScroll );

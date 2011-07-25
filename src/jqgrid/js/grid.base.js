@@ -2858,7 +2858,7 @@
           return false;
         });
       }
-     /* if ($.isFunction(this.p.onRightClickRow)) {
+      /*if ($.isFunction(this.p.onRightClickRow)) {
         $(this).bind('contextmenu', function(e) {
           td = e.target;
           ptr = $(td, ts.rows).closest("tr.jqgrow");
