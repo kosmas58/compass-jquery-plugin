@@ -241,45 +241,55 @@ function dateAddExtention(p_Interval, p_Number) {
 
   p_Number = new Number(p_Number);
   switch (p_Interval.toLowerCase()) {
-    case "yyyy": {// year
+    case "yyyy":
+    {// year
       this.setFullYear(this.getFullYear() + p_Number);
       break;
     }
-    case "q": {        // quarter
+    case "q":
+    {        // quarter
       this.setMonth(this.getMonth() + (p_Number * 3));
       break;
     }
-    case "m": {        // month
+    case "m":
+    {        // month
       this.setMonth(this.getMonth() + p_Number);
       break;
     }
     case "y":        // day of year
     case "d":        // day
-    case "w": {      // weekday
+    case "w":
+    {      // weekday
       this.setDate(this.getDate() + p_Number);
       break;
     }
-    case "ww": {    // week of year
+    case "ww":
+    {    // week of year
       this.setDate(this.getDate() + (p_Number * 7));
       break;
     }
-    case "h": {        // hour
+    case "h":
+    {        // hour
       this.setHours(this.getHours() + p_Number);
       break;
     }
-    case "n": {        // minute
+    case "n":
+    {        // minute
       this.setMinutes(this.getMinutes() + p_Number);
       break;
     }
-    case "s": {        // second
+    case "s":
+    {        // second
       this.setSeconds(this.getSeconds() + p_Number);
       break;
     }
-    case "ms": {        // second
+    case "ms":
+    {        // second
       this.setMilliseconds(this.getMilliseconds() + p_Number);
       break;
     }
-    default: {
+    default:
+    {
 
       //throws an error so that the coder can see why he effed up and
       //a list of elegible letters.

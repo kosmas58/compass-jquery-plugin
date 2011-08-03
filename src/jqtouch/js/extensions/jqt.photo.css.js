@@ -60,11 +60,11 @@
             }, jqc.css || {});
 
     parts[o] = $.extend({
-      width: window.innerWidth,
-      height: window.innerHeight,
-      toolbar: window.innerHeight - toolbarHeight,
-      caption: window.innerHeight - toolbarHeight - toolbarHeight
-    },
+              width: window.innerWidth,
+              height: window.innerHeight,
+              toolbar: window.innerHeight - toolbarHeight,
+              caption: window.innerHeight - toolbarHeight - toolbarHeight
+            },
             jqc[o] || {});
 
     parts.defaults = $.extend({}, parts[o], jqc.defaults || {});
@@ -82,11 +82,11 @@
     $(window).one("orientationchange", function() {
       var o = window.innerWidth < window.innerHeight ? "portrait" : "landscape";
       parts[o] = $.extend({
-        width: window.innerWidth,
-        height: window.innerHeight,
-        toolbar: window.innerHeight - toolbarHeight,
-        caption: window.innerHeight - toolbarHeight - toolbarHeight
-      },
+                width: window.innerWidth,
+                height: window.innerHeight,
+                toolbar: window.innerHeight - toolbarHeight,
+                caption: window.innerHeight - toolbarHeight - toolbarHeight
+              },
               jqc[o] || {});
 
       $(document.createElement("style"))

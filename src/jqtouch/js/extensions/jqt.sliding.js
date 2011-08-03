@@ -91,8 +91,8 @@
       $(function() {
         $('body > *')
                 .each(function() {
-          binder({}, {page: $(this)});
-        });
+                  binder({}, {page: $(this)});
+                });
       });
 
       return {};
@@ -144,10 +144,18 @@
     iSlide.prototype = {
       handleEvent: function(e) {
         switch (e.type) {
-          case 'touchstart': this.onTouchStart(e); break;
-          case 'touchmove': this.onTouchMove(e); break;
-          case 'touchend': this.onTouchEnd(e); break;
-          case 'webkitTransitionEnd': this.onTransitionEnd(e); break;
+          case 'touchstart':
+            this.onTouchStart(e);
+            break;
+          case 'touchmove':
+            this.onTouchMove(e);
+            break;
+          case 'touchend':
+            this.onTouchEnd(e);
+            break;
+          case 'webkitTransitionEnd':
+            this.onTransitionEnd(e);
+            break;
         }
       },
 
@@ -340,10 +348,18 @@
     iSlideHorizontal.prototype = {
       handleEvent: function(e) {
         switch (e.type) {
-          case 'touchstart': this.onTouchStart(e); break;
-          case 'touchmove': this.onTouchMove(e); break;
-          case 'touchend': this.onTouchEnd(e); break;
-          case 'webkitTransitionEnd': this.onTransitionEnd(e); break;
+          case 'touchstart':
+            this.onTouchStart(e);
+            break;
+          case 'touchmove':
+            this.onTouchMove(e);
+            break;
+          case 'touchend':
+            this.onTouchEnd(e);
+            break;
+          case 'webkitTransitionEnd':
+            this.onTransitionEnd(e);
+            break;
         }
       },
 

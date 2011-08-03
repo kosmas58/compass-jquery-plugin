@@ -97,11 +97,11 @@
             }, jqc.css || {});
 
     parts[o] = $.extend({
-      paddingBottom:5,
-      width: window.innerWidth,
-      height: window.innerHeight - toolbarHeight,
-      bottomToolbarHeight: window.innerHeight - (toolbarHeight * 2)
-    },
+              paddingBottom:5,
+              width: window.innerWidth,
+              height: window.innerHeight - toolbarHeight,
+              bottomToolbarHeight: window.innerHeight - (toolbarHeight * 2)
+            },
             jqc[o] || {});
 
     parts.defaults = $.extend({}, parts[o], jqc.defaults || {});
@@ -120,11 +120,11 @@
     $(window).one("orientationchange", function() {
       var o = window.innerWidth < window.innerHeight ? "profile" : "landscape";
       parts[o] = $.extend({
-        paddingBottom:5,
-        width: window.innerWidth,
-        height: window.innerHeight - toolbarHeight,
-        bottomToolbarHeight: window.innerHeight - (toolbarHeight * 2)
-      },
+                paddingBottom:5,
+                width: window.innerWidth,
+                height: window.innerHeight - toolbarHeight,
+                bottomToolbarHeight: window.innerHeight - (toolbarHeight * 2)
+              },
               jqc[o] || {});
 
       $(document.createElement("style"))

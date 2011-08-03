@@ -761,17 +761,17 @@
               // NEED OPTIMIZATION
               self.find('> .' + i + ', *:not(.chain-element) .' + i)
                       .each(function() {
-                var match = $(this);
-                if (match.filter(':input').length) {
-                  match.val(data[i]);
-                }
-                else if (match.filter('img').length) {
-                  match.prop('src', data[i]);
-                }
-                else {
-                  match.html(data[i]);
-                }
-              });
+                        var match = $(this);
+                        if (match.filter(':input').length) {
+                          match.val(data[i]);
+                        }
+                        else if (match.filter('img').length) {
+                          match.prop('src', data[i]);
+                        }
+                        else {
+                          match.html(data[i]);
+                        }
+                      });
             }
           }
         });

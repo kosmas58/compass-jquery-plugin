@@ -57,7 +57,8 @@
               fullScreenClass: 'fullscreen',
               hoverDelay: 50,
               icon: null,
-              icon4: null, // experimental
+              iconPad: null, // available in iOS 4.2 and later.
+              icon4: null, // available in iOS 4.2 and later.
               moveThreshold: 10,
               preloadImages: false,
               pressDelay: 1000,
@@ -89,8 +90,8 @@
             };
 
     function _debug(message) {
-      now = (new Date).getTime();
-      delta = now - lastTime;
+      var now = (new Date).getTime();
+      var delta = now - lastTime;
       lastTime = now;
       if (jQTSettings.debug) {
         if (message) {
@@ -119,8 +120,8 @@
       hist.unshift({
         page: page,
         animation: animation,
-        hash: '#' + page.prop('id'),
-        id: page.prop('id')
+        hash: '#' + page.attr('id'),
+        id: page.attr('id')
       });
     }
 
@@ -138,11 +139,11 @@
 
       // Find the nearest tappable ancestor
       if (!$el.is(touchSelectors.join(', '))) {
-        var $el = $(e.target).closest(touchSelectors.join(', '));
+        $el = $(e.target).closest(touchSelectors.join(', '));
       }
 
       // Prevent default if we found an internal link (relative or absolute)
-      if ($el && $el.prop('href') && !$el.isExternalLink()) {
+      if ($el && $el.attr('href') && !$el.isExternalLink()) {
         _debug('Need to prevent default click behavior');
         e.preventDefault();
       } else {
@@ -253,7 +254,7 @@
 
         fromPage.unselect();
         lastAnimationTime = (new Date()).getTime();
-        setHash(currentPage.prop('id'));
+        setHash(currentPage.attr('id'));
         tapReady = true;
 
         // Trigger custom events
@@ -358,20 +359,16 @@
         ;
       }
 
-      // Set appropriate icon (retina display stuff is experimental)
-      if (jQTSettings.icon || jQTSettings.icon4) {
-        var precomposed, appropriateIcon;
-        if (jQTSettings.icon4 && window.devicePixelRatio && window.devicePixelRatio === 2) {
-          appropriateIcon = jQTSettings.icon4;
-        } else if (jQTSettings.icon) {
-          appropriateIcon = jQTSettings.icon;
-        } else {
-          appropriateIcon = false;
-        }
-        if (appropriateIcon) {
-          precomposed = (jQTSettings.addGlossToIcon) ? '' : '-precomposed';
-          hairExtensions += '<link rel="apple-touch-icon' + precomposed + '" href="' + appropriateIcon + '" />';
-        }
+      // Set appropriate icon (retina display available in iOS 4.2 and later.)
+      var precomposed = (jQTSettings.addGlossToIcon) ? '' : '-precomposed';
+      if (jQTSettings.icon) {
+        hairExtensions += '<link rel="apple-touch-icon' + precomposed + '" href="' + jQTSettings.icon + '" />';
+      }
+      if (jQTSettings.iconPad) {
+        hairExtensions += '<link rel="apple-touch-icon' + precomposed + '" sizes="72x72" href="' + jQTSettings.iconPad + '" />';
+      }
+      if (jQTSettings.icon4) {
+        hairExtensions += '<link rel="apple-touch-icon' + precomposed + '" sizes="114x114" href="' + jQTSettings.icon4 + '" />';
       }
 
       // Set startup screen
@@ -405,12 +402,12 @@
       var targetPage = null;
       $(nodes).each(function(index, node) {
         var $node = $(this);
-        if (!$node.prop('id')) {
-          $node.prop('id', 'page-' + (++newPageCount));
+        if (!$node.attr('id')) {
+          $node.attr('id', 'page-' + (++newPageCount));
         }
 
         // Remove any existing instance
-        $('#' + $node.prop('id')).remove();
+        $('#' + $node.attr('id')).remove();
 
         $body.trigger('pageInserted', {page: $node.appendTo($body)});
 
@@ -473,7 +470,7 @@
             var firstPage = insertPages(data, settings.animation);
             if (firstPage) {
               if (settings.method == 'GET' && jQTSettings.cacheGetRequests === true && settings.$referrer) {
-                settings.$referrer.prop('href', '#' + firstPage.prop('id'));
+                settings.$referrer.attr('href', '#' + firstPage.attr('id'));
               }
               if (settings.callback) {
                 settings.callback(true);
@@ -503,12 +500,12 @@
 
       var $form = (typeof(e) === 'string') ? $(e).eq(0) : (e.target ? $(e.target) : $(e));
 
-      _debug($form.prop('action'));
+      _debug($form.attr('action'));
 
-      if ($form.length && $form.is(jQTSettings.formSelector) && $form.prop('action')) {
-        showPageByHref($form.prop('action'), {
+      if ($form.length && $form.is(jQTSettings.formSelector) && $form.attr('action')) {
+        showPageByHref($form.attr('action'), {
           data: $form.serialize(),
-          method: $form.prop('method') || "POST",
+          method: $form.attr('method') || "POST",
           animation: animations[0] || null,
           callback: callback
         });
@@ -616,14 +613,14 @@
       }
 
       // Make sure we have a tappable element
-      if (!$el.length || !$el.prop('href')) {
+      if (!$el.length || !$el.attr('href')) {
         _debug('Could not find a link related to tapped element');
         return false;
       }
 
       // Init some vars
-      var target = $el.prop('target'),
-              hash = $el.prop('hash'),
+      var target = $el.attr('target'),
+              hash = $el.attr('hash'),
               animation = null;
 
       if ($el.isExternalLink()) {
@@ -640,10 +637,10 @@
 
       } else if (target === '_webapp') {
         // User clicked or tapped an internal link, fullscreen mode
-        window.location = $el.prop('href');
+        window.location = $el.attr('href');
         return false;
 
-      } else if ($el.prop('href') === '#') {
+      } else if ($el.attr('href') === '#') {
         // Allow tap on item with no href
         $el.unselect();
         return true;
@@ -673,7 +670,7 @@
         } else {
           // External href
           $el.addClass('loading active');
-          showPageByHref($el.prop('href'), {
+          showPageByHref($el.attr('href'), {
             animation: animation,
             callback: function() {
               $el.removeClass('loading');
@@ -830,7 +827,7 @@
       // Define public jQuery functions
       $.fn.isExternalLink = function() {
         var $el = $(this);
-        return ($el.prop('target') == '_blank' || $el.prop('rel') == 'external' || $el.is('a[href^="http://maps.google.com"], a[href^="mailto:"], a[href^="tel:"], a[href^="javascript:"], a[href*="youtube.com/v"], a[href*="youtube.com/watch"]'));
+        return ($el.attr('target') == '_blank' || $el.attr('rel') == 'external' || $el.is('a[href^="http://maps.google.com"], a[href^="mailto:"], a[href^="tel:"], a[href^="javascript:"], a[href*="youtube.com/v"], a[href*="youtube.com/watch"]'));
       }
       $.fn.makeActive = function() {
         return $(this).addClass('active');
@@ -904,7 +901,7 @@
       $body = $('#jqt');
       if ($body.length === 0) {
         _log('Could not find an element with the id "jqt", so the body id has been set to "jqt". If you are having any problems, wrapping your panels in a div with the id "jqt" might help.');
-        $body = $('body').prop('id', 'jqt');
+        $body = $('body').attr('id', 'jqt');
       }
 
       // Add some specific css if need be
@@ -939,7 +936,7 @@
 
       // Go to the top of the "current" page
       $(currentPage).addClass('current');
-      initialPageId = $(currentPage).prop('id');
+      initialPageId = $(currentPage).attr('id');
       setHash(initialPageId);
       addPageToHistory(currentPage);
       scrollTo(0, 0);
@@ -2139,45 +2136,55 @@ function dateAddExtention(p_Interval, p_Number) {
 
   p_Number = new Number(p_Number);
   switch (p_Interval.toLowerCase()) {
-    case "yyyy": {// year
+    case "yyyy":
+    {// year
       this.setFullYear(this.getFullYear() + p_Number);
       break;
     }
-    case "q": {        // quarter
+    case "q":
+    {        // quarter
       this.setMonth(this.getMonth() + (p_Number * 3));
       break;
     }
-    case "m": {        // month
+    case "m":
+    {        // month
       this.setMonth(this.getMonth() + p_Number);
       break;
     }
     case "y":        // day of year
     case "d":        // day
-    case "w": {      // weekday
+    case "w":
+    {      // weekday
       this.setDate(this.getDate() + p_Number);
       break;
     }
-    case "ww": {    // week of year
+    case "ww":
+    {    // week of year
       this.setDate(this.getDate() + (p_Number * 7));
       break;
     }
-    case "h": {        // hour
+    case "h":
+    {        // hour
       this.setHours(this.getHours() + p_Number);
       break;
     }
-    case "n": {        // minute
+    case "n":
+    {        // minute
       this.setMinutes(this.getMinutes() + p_Number);
       break;
     }
-    case "s": {        // second
+    case "s":
+    {        // second
       this.setSeconds(this.getSeconds() + p_Number);
       break;
     }
-    case "ms": {        // second
+    case "ms":
+    {        // second
       this.setMilliseconds(this.getMilliseconds() + p_Number);
       break;
     }
-    default: {
+    default:
+    {
 
       //throws an error so that the coder can see why he effed up and
       //a list of elegible letters.
@@ -2347,8 +2354,8 @@ Date.prototype.prevMonth = prevMonth;
     return drop.$elements
             .filter(drop.filter)
             .each(function(i) {
-      drop.data[i] = drop.locate(this);
-    });
+              drop.data[i] = drop.locate(this);
+            });
   };
 
 // SPECIAL EVENT CONFIGURATION
@@ -2724,11 +2731,11 @@ function changeBack(target) {
             }, jqc.css || {});
 
     parts[o] = $.extend({
-      paddingBottom:5,
-      width: window.innerWidth,
-      height: window.innerHeight - toolbarHeight,
-      bottomToolbarHeight: window.innerHeight - (toolbarHeight * 2)
-    },
+              paddingBottom:5,
+              width: window.innerWidth,
+              height: window.innerHeight - toolbarHeight,
+              bottomToolbarHeight: window.innerHeight - (toolbarHeight * 2)
+            },
             jqc[o] || {});
 
     parts.defaults = $.extend({}, parts[o], jqc.defaults || {});
@@ -2747,11 +2754,11 @@ function changeBack(target) {
     $(window).one("orientationchange", function() {
       var o = window.innerWidth < window.innerHeight ? "profile" : "landscape";
       parts[o] = $.extend({
-        paddingBottom:5,
-        width: window.innerWidth,
-        height: window.innerHeight - toolbarHeight,
-        bottomToolbarHeight: window.innerHeight - (toolbarHeight * 2)
-      },
+                paddingBottom:5,
+                width: window.innerWidth,
+                height: window.innerHeight - toolbarHeight,
+                bottomToolbarHeight: window.innerHeight - (toolbarHeight * 2)
+              },
               jqc[o] || {});
 
       $(document.createElement("style"))
@@ -3529,17 +3536,17 @@ function changeBack(target) {
               // NEED OPTIMIZATION
               self.find('> .' + i + ', *:not(.chain-element) .' + i)
                       .each(function() {
-                var match = $(this);
-                if (match.filter(':input').length) {
-                  match.val(data[i]);
-                }
-                else if (match.filter('img').length) {
-                  match.prop('src', data[i]);
-                }
-                else {
-                  match.html(data[i]);
-                }
-              });
+                        var match = $(this);
+                        if (match.filter(':input').length) {
+                          match.val(data[i]);
+                        }
+                        else if (match.filter('img').length) {
+                          match.prop('src', data[i]);
+                        }
+                        else {
+                          match.html(data[i]);
+                        }
+                      });
             }
           }
         });
@@ -5447,15 +5454,15 @@ function changeBack(target) {
           settings.onGestureStart(getScale(e, end_scale), getRotation(e, rotation), e, settings.element);
       })
               .bind('gesturechange', function(e) {
-        if (settings.onGestureChange)
-          settings.onGestureChange(getScale(e, end_scale), getRotation(e, rotation), e, settings.element);
-      })
+                if (settings.onGestureChange)
+                  settings.onGestureChange(getScale(e, end_scale), getRotation(e, rotation), e, settings.element);
+              })
               .bind('gestureend', function(e) {
-        end_scale = e.originalEvent.scale;
-        rotation = (e.originalEvent.rotation + rotation) % 360;
-        if (settings.onGestureEnd)
-          settings.onGestureEnd(getScale(e, end_scale), getRotation(e, rotation), e, settings.element);
-      });
+                end_scale = e.originalEvent.scale;
+                rotation = (e.originalEvent.rotation + rotation) % 360;
+                if (settings.onGestureEnd)
+                  settings.onGestureEnd(getScale(e, end_scale), getRotation(e, rotation), e, settings.element);
+              });
     }
 
     function getRotation(event, current_rotation) {
@@ -5611,8 +5618,8 @@ function changeBack(target) {
       $(function() {
         $(defaults.selector)
                 .each(function() {
-          $(this).scrollHorizontally(defaults.attributesToOptions($(this), defaults.attributes));
-        });
+                  $(this).scrollHorizontally(defaults.attributesToOptions($(this), defaults.attributes));
+                });
       });
 
       return {};
@@ -6194,12 +6201,12 @@ function changeBack(target) {
 
       // Swap in newly download files when update is ready
       cache.addEventListener('updateready', function(e) {
-        // Don't perform "swap" if this is the first cache
-        if (cacheStatusValues[cache.status] != 'idle') {
-          cache.swapCache();
-          console.log('Swapped/updated the Cache Manifest.');
-        }
-      }
+                // Don't perform "swap" if this is the first cache
+                if (cacheStatusValues[cache.status] != 'idle') {
+                  cache.swapCache();
+                  console.log('Swapped/updated the Cache Manifest.');
+                }
+              }
               , false);
 
       // These two functions check for updates to the manifest file
@@ -7055,7 +7062,7 @@ function changeBack(target) {
       sheet.insertRule(
               format(options.parsedClassTemplate, options.parsedClass),
               sheet.cssRules.length
-              );
+      );
     }
 
     options.gallery = $(options.galleryTemplate).appendTo(options.appendTo);
@@ -7068,8 +7075,8 @@ function changeBack(target) {
                     .append(
                     $("<h1></h1>").html(
                             format(options.galleryName, options.defaultIndex + 1, images.length)
-                            )
-                    );
+                    )
+            );
 
     if (options.backLink) {
       toolbar.append(options.backLink);
@@ -7343,18 +7350,18 @@ function changeBack(target) {
 
     $this
             .data("jqt-photo-event", {
-                                       table: table,
-                                       position: {current: position.x, original: position.x},
-                                       target: target.css("webkitTransitionDuration", "0s"),
-                                       options: options,
-                                       slides: table.find(options.slideSelector),
-                                       moved: false,
-                                       x: tt.pageX,
-                                       y: tt.pageY,
-                                       left: current.left || 0,
-                                       top: current.top || 0,
-                                       timeStamp: +new Date
-                                     });
+      table: table,
+      position: {current: position.x, original: position.x},
+      target: target.css("webkitTransitionDuration", "0s"),
+      options: options,
+      slides: table.find(options.slideSelector),
+      moved: false,
+      x: tt.pageX,
+      y: tt.pageY,
+      left: current.left || 0,
+      top: current.top || 0,
+      timeStamp: +new Date
+    });
 
     return true;
   }
@@ -7565,7 +7572,7 @@ function changeBack(target) {
       distance: sqrt(
               pow((tt[1].pageX - tt[0].pageX), 2)
                       + pow((tt[1].pageY - tt[0].pageY), 2)
-              )
+      )
     })
             .find(".image-list")
             .css("webkitTransitionDuration", "0s");//end any transform on this table
@@ -7598,7 +7605,7 @@ function changeBack(target) {
             distance = sqrt(
                     pow((tt[1].pageX - tt[0].pageX), 2) +
                             pow((tt[1].pageY - tt[0].pageY), 2)
-                    ),
+            ),
             difference = distance - original.distance,
             percentChange = (difference / original.distance) / 2,
             current = data.current,
@@ -7617,7 +7624,7 @@ function changeBack(target) {
             (current.scale = (current.scale + (current.scale * percentChange))),
             current.left,
             current.top
-            );
+    );
 
     original.distance = distance;
 
@@ -7842,9 +7849,9 @@ function changeBack(target) {
       options.rearrange(current, last, options);
     })
             .css({
-                   webkitTransitionDuration: duration + "ms",
-                   webkitTransform: format(options.transform, position)
-                 });
+              webkitTransitionDuration: duration + "ms",
+              webkitTransform: format(options.transform, position)
+            });
 
     //update the title of the gallery
     title = $this.find(options.titleSelector);
@@ -7950,27 +7957,27 @@ function changeBack(target) {
             .find(options.imageSelector)
             .filter("[src]")
             .each(function() {
-      var clone = options.blankImage.clone(true),
-              $this = $(this);
+              var clone = options.blankImage.clone(true),
+                      $this = $(this);
 
-      $this.parent().addClass(options.notLoadedClass);
-      $this.replaceWith(clone);
+              $this.parent().addClass(options.notLoadedClass);
+              $this.replaceWith(clone);
 
-      parseImageData($this, clone, options);
-    });
+              parseImageData($this, clone, options);
+            });
 
     current.nextAll().slice(options.maxSlidesAfter)
             .find(options.imageSelector)
             .filter("[src]")
             .each(function() {
-      var clone = options.blankImage.clone(true),
-              $this = $(this);
+              var clone = options.blankImage.clone(true),
+                      $this = $(this);
 
-      $this.parent().addClass(options.notLoadedClass);
-      $this.replaceWith(clone);
+              $this.parent().addClass(options.notLoadedClass);
+              $this.replaceWith(clone);
 
-      parseImageData($this, clone, options);
-    });
+              parseImageData($this, clone, options);
+            });
 
     if (last[0] !== current[0]) {
       resetDimensions(last.find(options.imageSelector));
@@ -8212,7 +8219,7 @@ function changeBack(target) {
                   d.current.scale = d.original.scale,
                   d.current.left = d.original.left,
                   d.current.top = d.original.top
-                  )
+          )
         });
 
         d.current.width = d.original.width;
@@ -8480,8 +8487,8 @@ function changeBack(target) {
       $(function() {
         $('body > *')
                 .each(function() {
-          binder({}, {page: $(this)});
-        });
+                  binder({}, {page: $(this)});
+                });
       });
 
       return {};
@@ -8522,9 +8529,15 @@ function changeBack(target) {
     iScale.prototype = {
       handleEvent: function(e) {
         switch (e.type) {
-          case 'touchstart': return this.onTouchStart(e); break;
-          case 'touchmove': return this.onTouchMove(e); break;
-          case 'touchend': return this.onTouchEnd(e); break;
+          case 'touchstart':
+            return this.onTouchStart(e);
+            break;
+          case 'touchmove':
+            return this.onTouchMove(e);
+            break;
+          case 'touchend':
+            return this.onTouchEnd(e);
+            break;
         }
       },
 
@@ -8554,7 +8567,7 @@ function changeBack(target) {
         this.startDistance = Math.sqrt(
                 Math.pow((e.targetTouches[1].clientX - e.targetTouches[0].clientX), 2)
                         + Math.pow((e.targetTouches[1].clientX - e.targetTouches[0].clientX), 2)
-                );
+        );
 
         return false;
       },
@@ -8572,7 +8585,7 @@ function changeBack(target) {
         var newDistance = Math.sqrt(
                 Math.pow((e.targetTouches[1].clientX - e.targetTouches[0].clientX), 2)
                         + Math.pow((e.targetTouches[1].clientY - e.targetTouches[0].clientY), 2)
-                ),
+        ),
                 difference = newDistance - this.startDistance,
                 percentChange = (difference / this.startDistance) / 2;
 
@@ -9261,13 +9274,13 @@ function changeBack(target) {
 
         $(v.selector)
                 .each(function() {
-          $(this).verticallyScroll(v.attributesToOptions($(this), "vertical", v.attributes));
-        });
+                  $(this).verticallyScroll(v.attributesToOptions($(this), "vertical", v.attributes));
+                });
 
         $(h.selector)
                 .each(function() {
-          $(this).horizontallyScroll(h.attributesToOptions($(this), "horizontal", h.attributes));
-        });
+                  $(this).horizontallyScroll(h.attributesToOptions($(this), "horizontal", h.attributes));
+                });
       });
 
       return {};
@@ -9833,7 +9846,7 @@ function changeBack(target) {
               this.direction == "horizontal" ?
                       0 :
                       Math.round(pos)
-              );
+      );
     },
 
     scrollTo: function (pos, runtime) {
@@ -9996,8 +10009,8 @@ function changeBack(target) {
       $(function() {
         $('body > *')
                 .each(function() {
-          binder({}, {page: $(this)});
-        });
+                  binder({}, {page: $(this)});
+                });
       });
 
       return {};
@@ -10044,10 +10057,18 @@ function changeBack(target) {
     iScroll.prototype = {
       handleEvent: function(e) {
         switch (e.type) {
-          case 'touchstart': this.onTouchStart(e); break;
-          case 'touchmove': this.onTouchMove(e); break;
-          case 'touchend': this.onTouchEnd(e); break;
-          case 'webkitTransitionEnd': this.onTransitionEnd(e); break;
+          case 'touchstart':
+            this.onTouchStart(e);
+            break;
+          case 'touchmove':
+            this.onTouchMove(e);
+            break;
+          case 'touchend':
+            this.onTouchEnd(e);
+            break;
+          case 'webkitTransitionEnd':
+            this.onTransitionEnd(e);
+            break;
         }
       },
 
@@ -10237,10 +10258,18 @@ function changeBack(target) {
     iScrollHorizontal.prototype = {
       handleEvent: function(e) {
         switch (e.type) {
-          case 'touchstart': this.onTouchStart(e); break;
-          case 'touchmove': this.onTouchMove(e); break;
-          case 'touchend': this.onTouchEnd(e); break;
-          case 'webkitTransitionEnd': this.onTransitionEnd(e); break;
+          case 'touchstart':
+            this.onTouchStart(e);
+            break;
+          case 'touchmove':
+            this.onTouchMove(e);
+            break;
+          case 'touchend':
+            this.onTouchEnd(e);
+            break;
+          case 'webkitTransitionEnd':
+            this.onTransitionEnd(e);
+            break;
         }
       },
 
@@ -10472,8 +10501,8 @@ function changeBack(target) {
       $(function() {
         $('body > *')
                 .each(function() {
-          binder({}, {page: $(this)});
-        });
+                  binder({}, {page: $(this)});
+                });
       });
 
       return {};
@@ -10525,10 +10554,18 @@ function changeBack(target) {
     iSlide.prototype = {
       handleEvent: function(e) {
         switch (e.type) {
-          case 'touchstart': this.onTouchStart(e); break;
-          case 'touchmove': this.onTouchMove(e); break;
-          case 'touchend': this.onTouchEnd(e); break;
-          case 'webkitTransitionEnd': this.onTransitionEnd(e); break;
+          case 'touchstart':
+            this.onTouchStart(e);
+            break;
+          case 'touchmove':
+            this.onTouchMove(e);
+            break;
+          case 'touchend':
+            this.onTouchEnd(e);
+            break;
+          case 'webkitTransitionEnd':
+            this.onTransitionEnd(e);
+            break;
         }
       },
 
@@ -10721,10 +10758,18 @@ function changeBack(target) {
     iSlideHorizontal.prototype = {
       handleEvent: function(e) {
         switch (e.type) {
-          case 'touchstart': this.onTouchStart(e); break;
-          case 'touchmove': this.onTouchMove(e); break;
-          case 'touchend': this.onTouchEnd(e); break;
-          case 'webkitTransitionEnd': this.onTransitionEnd(e); break;
+          case 'touchstart':
+            this.onTouchStart(e);
+            break;
+          case 'touchmove':
+            this.onTouchMove(e);
+            break;
+          case 'touchend':
+            this.onTouchEnd(e);
+            break;
+          case 'webkitTransitionEnd':
+            this.onTransitionEnd(e);
+            break;
         }
       },
 
@@ -11196,8 +11241,8 @@ function changeBack(target) {
       $(function() {
         $(defaults.selector)
                 .each(function() {
-          $(this).scrollVertically(defaults.attributesToOptions($(this), defaults.attributes));
-        });
+                  $(this).scrollVertically(defaults.attributesToOptions($(this), defaults.attributes));
+                });
       });
 
       return {};

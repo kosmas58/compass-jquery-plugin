@@ -26,8 +26,8 @@
     return drop.$elements
             .filter(drop.filter)
             .each(function(i) {
-      drop.data[i] = drop.locate(this);
-    });
+              drop.data[i] = drop.locate(this);
+            });
   };
 
 // SPECIAL EVENT CONFIGURATION
