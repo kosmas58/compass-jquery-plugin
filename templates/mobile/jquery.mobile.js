@@ -3342,7 +3342,9 @@ $( ":jqmData(role='page'), :jqmData(role='dialog')" ).live( "pagecreate", functi
 
 		} else if ( role === "content" ) {
 
-			$this.addClass( "ui-body-" + ( theme || pageTheme || o.contentTheme ) );
+			if (theme || o.contentTheme) {
+			    $this.addClass( "ui-body-" + ( theme || o.contentTheme ) );
+			}
 
 			// Add ARIA role
 			$this.attr( "role", "main" );
@@ -3956,6 +3958,9 @@ $( document ).bind( "pagecreate create", function( e ){
 $.mobile.listview.prototype.options.filter = false;
 $.mobile.listview.prototype.options.filterPlaceholder = "Filter items...";
 $.mobile.listview.prototype.options.filterTheme = "c";
+$.mobile.listview.prototype.options.filterCallback = function( text, searchValue ){
+	return text.toLowerCase().indexOf( searchValue ) === -1;
+};
 
 $( ":jqmData(role='listview')" ).live( "listviewcreate", function() {
 
@@ -4016,7 +4021,7 @@ $( ":jqmData(role='listview')" ).live( "listviewcreate", function() {
 						// New bucket!
 						childItems = false;
 
-					} else if ( itemtext.toLowerCase().indexOf( val ) === -1 ) {
+					} else if ( listview.options.filterCallback( itemtext, val ) ) {
 
 						//mark to be hidden
 						item.toggleClass( "ui-filter-hidequeue" , true );
