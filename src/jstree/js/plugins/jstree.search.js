@@ -17,15 +17,15 @@
       if (this._get_settings().search.show_only_matches) {
         this.get_container()
                 .bind("search.jstree", function (e, data) {
-          $(this).children("ul").find("li").hide().removeClass("jstree-last");
-          data.rslt.nodes.parentsUntil(".jstree").andSelf().show()
-                  .filter("ul").each(function () {
-            $(this).children("li:visible").eq(-1).addClass("jstree-last");
-          });
-        })
+                  $(this).children("ul").find("li").hide().removeClass("jstree-last");
+                  data.rslt.nodes.parentsUntil(".jstree").andSelf().show()
+                          .filter("ul").each(function () {
+                            $(this).children("li:visible").eq(-1).addClass("jstree-last");
+                          });
+                })
                 .bind("clear_search.jstree", function () {
-          $(this).children("ul").find("li").css("display", "").end().jstree("clean_node", -1);
-        });
+                  $(this).children("ul").find("li").css("display", "").end().end().jstree("clean_node", -1);
+                });
       }
     },
     defaults : {
@@ -125,4 +125,3 @@
     }
   });
 })(jQuery);
-

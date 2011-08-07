@@ -1,18 +1,18 @@
-/* 
+/*
  * jsTree contextmenu plugin
  */
 (function ($) {
   $.vakata.context = {
     hide_on_mouseleave : false,
 
-    cnt        : $("<div id='vakata-contextmenu' />"),
-    vis        : false,
-    tgt        : false,
-    par        : false,
-    func    : false,
-    data    : false,
-    rtl        : false,
-    show    : function (s, t, x, y, d, p, rtl) {
+    cnt    : $("<div id='vakata-contextmenu' />"),
+    vis    : false,
+    tgt    : false,
+    par    : false,
+    func  : false,
+    data  : false,
+    rtl    : false,
+    show  : function (s, t, x, y, d, p, rtl) {
       $.vakata.context.rtl = !!rtl;
       var html = $.vakata.context.parse(s), h, w;
       if (!html) {
@@ -48,30 +48,30 @@
               .css({ "left" : x, "top" : y })
               .find("li:has(ul)")
               .bind("mouseenter", function (e) {
-        var w = $(document).width(),
-                h = $(document).height(),
-                ul = $(this).children("ul").show();
-        if (w !== $(document).width()) {
-          ul.toggleClass("right");
-        }
-        if (h !== $(document).height()) {
-          ul.toggleClass("bottom");
-        }
-      })
+                var w = $(document).width(),
+                        h = $(document).height(),
+                        ul = $(this).children("ul").show();
+                if (w !== $(document).width()) {
+                  ul.toggleClass("right");
+                }
+                if (h !== $(document).height()) {
+                  ul.toggleClass("bottom");
+                }
+              })
               .bind("mouseleave", function (e) {
-        $(this).children("ul").hide();
-      })
+                $(this).children("ul").hide();
+              })
               .end()
               .css({ "visibility" : "visible" })
               .show();
       $(document).triggerHandler("context_show.vakata");
     },
-    hide    : function () {
+    hide  : function () {
       $.vakata.context.vis = false;
       $.vakata.context.cnt.attr("class", "").css({ "visibility" : "hidden" });
       $(document).triggerHandler("context_hide.vakata");
     },
-    parse    : function (s, is_callback) {
+    parse  : function (s, is_callback) {
       if (!s) {
         return false;
       }
@@ -120,8 +120,9 @@
       $(document).triggerHandler("context_parse.vakata");
       return str.length > 10 ? str : false;
     },
-    exec    : function (i) {
+    exec  : function (i) {
       if ($.isFunction($.vakata.context.func[i])) {
+        // if is string - eval and call it!
         $.vakata.context.func[i].call($.vakata.context.data, $.vakata.context.par);
         return true;
       }
@@ -149,16 +150,16 @@
       e.preventDefault();
     })
             .delegate("a", "mouseup", function (e) {
-      if (!$(this).parent().hasClass("jstree-contextmenu-disabled") && $.vakata.context.exec($(this).attr("rel"))) {
-        $.vakata.context.hide();
-      }
-      else {
-        $(this).blur();
-      }
-    })
+              if (!$(this).parent().hasClass("jstree-contextmenu-disabled") && $.vakata.context.exec($(this).attr("rel"))) {
+                $.vakata.context.hide();
+              }
+              else {
+                $(this).blur();
+              }
+            })
             .delegate("a", "mouseover", function () {
-      $.vakata.context.cnt.find(".vakata-hover").removeClass("vakata-hover");
-    })
+              $.vakata.context.cnt.find(".vakata-hover").removeClass("vakata-hover");
+            })
             .appendTo("body");
     $(document).bind("mousedown", function (e) {
       if ($.vakata.context.vis && !$.contains($.vakata.context.cnt[0], e.target)) {
@@ -168,49 +169,49 @@
     if (typeof $.hotkeys !== "undefined") {
       $(document)
               .bind("keydown", "up", function (e) {
-        if ($.vakata.context.vis) {
-          var o = $.vakata.context.cnt.find("ul:visible").last().children(".vakata-hover").removeClass("vakata-hover").prevAll("li:not(.vakata-separator)").first();
-          if (!o.length) {
-            o = $.vakata.context.cnt.find("ul:visible").last().children("li:not(.vakata-separator)").last();
-          }
-          o.addClass("vakata-hover");
-          e.stopImmediatePropagation();
-          e.preventDefault();
-        }
-      })
+                if ($.vakata.context.vis) {
+                  var o = $.vakata.context.cnt.find("ul:visible").last().children(".vakata-hover").removeClass("vakata-hover").prevAll("li:not(.vakata-separator)").first();
+                  if (!o.length) {
+                    o = $.vakata.context.cnt.find("ul:visible").last().children("li:not(.vakata-separator)").last();
+                  }
+                  o.addClass("vakata-hover");
+                  e.stopImmediatePropagation();
+                  e.preventDefault();
+                }
+              })
               .bind("keydown", "down", function (e) {
-        if ($.vakata.context.vis) {
-          var o = $.vakata.context.cnt.find("ul:visible").last().children(".vakata-hover").removeClass("vakata-hover").nextAll("li:not(.vakata-separator)").first();
-          if (!o.length) {
-            o = $.vakata.context.cnt.find("ul:visible").last().children("li:not(.vakata-separator)").first();
-          }
-          o.addClass("vakata-hover");
-          e.stopImmediatePropagation();
-          e.preventDefault();
-        }
-      })
+                if ($.vakata.context.vis) {
+                  var o = $.vakata.context.cnt.find("ul:visible").last().children(".vakata-hover").removeClass("vakata-hover").nextAll("li:not(.vakata-separator)").first();
+                  if (!o.length) {
+                    o = $.vakata.context.cnt.find("ul:visible").last().children("li:not(.vakata-separator)").first();
+                  }
+                  o.addClass("vakata-hover");
+                  e.stopImmediatePropagation();
+                  e.preventDefault();
+                }
+              })
               .bind("keydown", "right", function (e) {
-        if ($.vakata.context.vis) {
-          $.vakata.context.cnt.find(".vakata-hover").children("ul").show().children("li:not(.vakata-separator)").removeClass("vakata-hover").first().addClass("vakata-hover");
-          e.stopImmediatePropagation();
-          e.preventDefault();
-        }
-      })
+                if ($.vakata.context.vis) {
+                  $.vakata.context.cnt.find(".vakata-hover").children("ul").show().children("li:not(.vakata-separator)").removeClass("vakata-hover").first().addClass("vakata-hover");
+                  e.stopImmediatePropagation();
+                  e.preventDefault();
+                }
+              })
               .bind("keydown", "left", function (e) {
-        if ($.vakata.context.vis) {
-          $.vakata.context.cnt.find(".vakata-hover").children("ul").hide().children(".vakata-separator").removeClass("vakata-hover");
-          e.stopImmediatePropagation();
-          e.preventDefault();
-        }
-      })
+                if ($.vakata.context.vis) {
+                  $.vakata.context.cnt.find(".vakata-hover").children("ul").hide().children(".vakata-separator").removeClass("vakata-hover");
+                  e.stopImmediatePropagation();
+                  e.preventDefault();
+                }
+              })
               .bind("keydown", "esc", function (e) {
-        $.vakata.context.hide();
-        e.preventDefault();
-      })
+                $.vakata.context.hide();
+                e.preventDefault();
+              })
               .bind("keydown", "space", function (e) {
-        $.vakata.context.cnt.find(".vakata-hover").last().children("a").click();
-        e.preventDefault();
-      });
+                $.vakata.context.cnt.find(".vakata-hover").last().children("a").click();
+                e.preventDefault();
+              });
     }
   });
 
@@ -243,27 +244,27 @@
       show_at_node : true,
       items : { // Could be a function that should return an object like this one
         "create" : {
-          "separator_before"    : false,
-          "separator_after"    : true,
-          "label"                : "Create",
-          "action"            : function (obj) {
+          "separator_before"  : false,
+          "separator_after"  : true,
+          "label"        : "Create",
+          "action"      : function (obj) {
             this.create(obj);
           }
         },
         "rename" : {
-          "separator_before"    : false,
-          "separator_after"    : false,
-          "label"                : "Rename",
-          "action"            : function (obj) {
+          "separator_before"  : false,
+          "separator_after"  : false,
+          "label"        : "Rename",
+          "action"      : function (obj) {
             this.rename(obj);
           }
         },
         "remove" : {
-          "separator_before"    : false,
-          "icon"                : false,
-          "separator_after"    : false,
-          "label"                : "Delete",
-          "action"            : function (obj) {
+          "separator_before"  : false,
+          "icon"        : false,
+          "separator_after"  : false,
+          "label"        : "Delete",
+          "action"      : function (obj) {
             if (this.is_selected(obj)) {
               this.remove();
             } else {
@@ -272,35 +273,35 @@
           }
         },
         "ccp" : {
-          "separator_before"    : true,
-          "icon"                : false,
-          "separator_after"    : false,
-          "label"                : "Edit",
-          "action"            : false,
+          "separator_before"  : true,
+          "icon"        : false,
+          "separator_after"  : false,
+          "label"        : "Edit",
+          "action"      : false,
           "submenu" : {
             "cut" : {
-              "separator_before"    : false,
-              "separator_after"    : false,
-              "label"                : "Cut",
-              "action"            : function (obj) {
+              "separator_before"  : false,
+              "separator_after"  : false,
+              "label"        : "Cut",
+              "action"      : function (obj) {
                 this.cut(obj);
               }
             },
             "copy" : {
-              "separator_before"    : false,
-              "icon"                : false,
-              "separator_after"    : false,
-              "label"                : "Copy",
-              "action"            : function (obj) {
+              "separator_before"  : false,
+              "icon"        : false,
+              "separator_after"  : false,
+              "label"        : "Copy",
+              "action"      : function (obj) {
                 this.copy(obj);
               }
             },
             "paste" : {
-              "separator_before"    : false,
-              "icon"                : false,
-              "separator_after"    : false,
-              "label"                : "Paste",
-              "action"            : function (obj) {
+              "separator_before"  : false,
+              "icon"        : false,
+              "separator_after"  : false,
+              "label"        : "Paste",
+              "action"      : function (obj) {
                 this.paste(obj);
               }
             }
@@ -337,4 +338,3 @@
     }
   });
 })(jQuery);
-

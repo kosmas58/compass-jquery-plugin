@@ -1,4 +1,4 @@
-/* 
+/*
  * jsTree languages plugin
  * Adds support for multiple language versions in one tree
  * This basically allows for many titles coexisting in one node, but only one of them being visible at any given time
@@ -152,4 +152,3 @@
     }
   });
 })(jQuery);
-

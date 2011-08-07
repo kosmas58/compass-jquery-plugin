@@ -467,17 +467,17 @@
       }
     },
     defaults : {
-      copy_modifier    : "ctrl",
-      check_timeout    : 100,
-      open_timeout    : 500,
-      drop_target        : ".jstree-drop",
-      drop_check        : function (data) {
+      copy_modifier  : "ctrl",
+      check_timeout  : 100,
+      open_timeout  : 500,
+      drop_target    : ".jstree-drop",
+      drop_check    : function (data) {
         return true;
       },
-      drop_finish        : $.noop,
-      drag_target        : ".jstree-draggable",
-      drag_finish        : $.noop,
-      drag_check        : function (data) {
+      drop_finish    : $.noop,
+      drag_target    : ".jstree-draggable",
+      drag_finish    : $.noop,
+      drag_check    : function (data) {
         return { after : false, before : false, inside : true };
       }
     },
@@ -687,35 +687,35 @@
     $.vakata.css.add_sheet({ str : css_string, title : "jstree" });
     m = $("<div />").attr({ id : "jstree-marker" }).hide().html("&raquo;")
             .bind("mouseleave mouseenter", function (e) {
-      m.hide();
-      ml.hide();
-      e.preventDefault();
-      e.stopImmediatePropagation();
-      return false;
-    })
+              m.hide();
+              ml.hide();
+              e.preventDefault();
+              e.stopImmediatePropagation();
+              return false;
+            })
             .appendTo("body");
     ml = $("<div />").attr({ id : "jstree-marker-line" }).hide()
             .bind("mouseup", function (e) {
-      if (r && r.length) {
-        r.children("a").trigger(e);
-        e.preventDefault();
-        e.stopImmediatePropagation();
-        return false;
-      }
-    })
+              if (r && r.length) {
+                r.children("a").trigger(e);
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                return false;
+              }
+            })
             .bind("mouseleave", function (e) {
-      var rt = $(e.relatedTarget);
-      if (rt.is(".jstree") || rt.closest(".jstree").length === 0) {
-        if (r && r.length) {
-          r.children("a").trigger(e);
-          m.hide();
-          ml.hide();
-          e.preventDefault();
-          e.stopImmediatePropagation();
-          return false;
-        }
-      }
-    })
+              var rt = $(e.relatedTarget);
+              if (rt.is(".jstree") || rt.closest(".jstree").length === 0) {
+                if (r && r.length) {
+                  r.children("a").trigger(e);
+                  m.hide();
+                  ml.hide();
+                  e.preventDefault();
+                  e.stopImmediatePropagation();
+                  return false;
+                }
+              }
+            })
             .appendTo("body");
     $(document).bind("drag_start.vakata", function (e, data) {
       if (data.data.jstree) {
@@ -735,4 +735,3 @@
     });
   });
 })(jQuery);
-

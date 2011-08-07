@@ -41,11 +41,11 @@
       }, this));
     },
     defaults : {
-      save_loaded        : "jstree_load",
-      save_opened        : "jstree_open",
-      save_selected    : "jstree_select",
-      auto_save        : true,
-      cookie_options    : {}
+      save_loaded    : "jstree_load",
+      save_opened    : "jstree_open",
+      save_selected  : "jstree_select",
+      auto_save    : true,
+      cookie_options  : {}
     },
     _fn : {
       save_cookie : function (c) {
@@ -94,4 +94,3 @@
   // include cookies by default
   // $.jstree.defaults.plugins.push("cookies");
 })(jQuery);
-

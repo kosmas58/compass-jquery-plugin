@@ -47,13 +47,13 @@
         }
       }, this))
               .delegate(".jstree-wholerow-span, ins.jstree-icon, li", "click.jstree", function (e) {
-        var n = $(e.currentTarget);
-        if (e.target.tagName === "A" || (e.target.tagName === "INS" && n.closest("li").is(".jstree-open, .jstree-closed"))) {
-          return;
-        }
-        n.closest("li").children("a:visible:eq(0)").click();
-        e.stopImmediatePropagation();
-      })
+                var n = $(e.currentTarget);
+                if (e.target.tagName === "A" || (e.target.tagName === "INS" && n.closest("li").is(".jstree-open, .jstree-closed"))) {
+                  return;
+                }
+                n.closest("li").children("a:visible:eq(0)").click();
+                e.stopImmediatePropagation();
+              })
               .delegate("li", "mouseover.jstree", $.proxy(function (e) {
         e.stopImmediatePropagation();
         if ($(e.currentTarget).children(".jstree-hovered, .jstree-clicked").length) {
@@ -109,7 +109,7 @@
                           function () {
                             this.removeAttribute("id");
                           }).end()
-                  );
+          );
         }
       }
     }
@@ -139,4 +139,3 @@
     $.vakata.css.add_sheet({ str : css_string, title : "jstree" });
   });
 })(jQuery);
-

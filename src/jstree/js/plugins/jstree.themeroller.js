@@ -1,4 +1,4 @@
-/* 
+/*
  * jsTree themeroller plugin
  * Adds support for jQuery UI themes. Include this at the end of your plugins list, also make sure "themes" is not included.
  */
@@ -10,13 +10,13 @@
               .addClass("ui-widget-content")
               .addClass("jstree-themeroller")
               .delegate("a", "mouseenter.jstree", function (e) {
-        if (!$(e.currentTarget).hasClass("jstree-loading")) {
-          $(this).addClass(s.item_h);
-        }
-      })
+                if (!$(e.currentTarget).hasClass("jstree-loading")) {
+                  $(this).addClass(s.item_h);
+                }
+              })
               .delegate("a", "mouseleave.jstree", function () {
-        $(this).removeClass(s.item_h);
-      })
+                $(this).removeClass(s.item_h);
+              })
               .bind("init.jstree", $.proxy(function (e, data) {
         data.inst.get_container().find("> ul > li > .jstree-loading > ins").addClass("ui-icon-refresh");
         this._themeroller(data.inst.get_container().find("> ul > li"));
@@ -124,14 +124,14 @@
       }
     },
     defaults : {
-      "opened"    : "ui-icon-triangle-1-se",
-      "closed"    : "ui-icon-triangle-1-e",
-      "item"        : "ui-state-default",
-      "item_h"    : "ui-state-hover",
-      "item_a"    : "ui-state-active",
-      "item_open"    : "ui-icon-folder-open",
-      "item_clsd"    : "ui-icon-folder-collapsed",
-      "item_leaf"    : "ui-icon-document"
+      "opened"  : "ui-icon-triangle-1-se",
+      "closed"  : "ui-icon-triangle-1-e",
+      "item"    : "ui-state-default",
+      "item_h"  : "ui-state-hover",
+      "item_a"  : "ui-state-active",
+      "item_open"  : "ui-icon-folder-open",
+      "item_clsd"  : "ui-icon-folder-collapsed",
+      "item_leaf"  : "ui-icon-document"
     }
   });
   $(function() {
@@ -142,4 +142,3 @@
     $.vakata.css.add_sheet({ str : css_string, title : "jstree" });
   });
 })(jQuery);
-

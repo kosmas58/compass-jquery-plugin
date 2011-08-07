@@ -1,4 +1,4 @@
-/* 
+/*
  * jsTree JSON plugin
  * The JSON data store. Datastores are build by overriding the `load_node` and `_is_loaded` functions.
  */
@@ -39,7 +39,7 @@
         obj = this._get_node(obj);
         var s = this._get_settings().json_data;
         if (obj && obj !== -1 && s.progressive_unload && ($.isFunction(s.data) || !!s.ajax)) {
-          obj.removeData("jstree-children");
+          obj.removeData("jstree_children");
         }
         return this.__call_old();
       },
@@ -51,12 +51,12 @@
                 };
         obj = this._get_node(obj);
 
-        if (obj && obj !== -1 && (s.progressive_render || s.progressive_unload) && !obj.is(".jstree-open, .jstree-leaf") && obj.children("ul").children("li").length === 0 && obj.data("jstree-children")) {
-          d = this._parse_json(obj.data("jstree-children"), obj);
+        if (obj && obj !== -1 && (s.progressive_render || s.progressive_unload) && !obj.is(".jstree-open, .jstree-leaf") && obj.children("ul").children("li").length === 0 && obj.data("jstree_children")) {
+          d = this._parse_json(obj.data("jstree_children"), obj);
           if (d) {
             obj.append(d);
             if (!s.progressive_unload) {
-              obj.removeData("jstree-children");
+              obj.removeData("jstree_children");
             }
           }
           this.clean_node(obj);
@@ -67,15 +67,16 @@
         }
 
         if (obj && obj !== -1) {
-          if (obj.data("jstree-is-loading")) {
+          if (obj.data("jstree_is_loading")) {
             return;
           }
           else {
-            obj.data("jstree-is-loading", true);
+            obj.data("jstree_is_loading", true);
           }
         }
         switch (!0) {
-          case (!s.data && !s.ajax): throw "Neither data nor ajax settings supplied.";
+          case (!s.data && !s.ajax):
+            throw "Neither data nor ajax settings supplied.";
           // function option added here for easier model integration (also supporting async - see callback)
           case ($.isFunction(s.data)):
             s.data.call(this, obj, $.proxy(function (d) {
@@ -88,7 +89,7 @@
                 }
                 else {
                   obj.children("a.jstree-loading").removeClass("jstree-loading");
-                  obj.removeData("jstree-is-loading");
+                  obj.removeData("jstree_is_loading");
                   if (s.correct_state) {
                     this.correct_state(obj);
                   }
@@ -103,7 +104,7 @@
                 }
                 else {
                   obj.append(d).children("a.jstree-loading").removeClass("jstree-loading");
-                  obj.removeData("jstree-is-loading");
+                  obj.removeData("jstree_is_loading");
                 }
                 this.clean_node(obj);
                 if (s_call) {
@@ -137,7 +138,7 @@
               }
               if (obj != -1 && obj.length) {
                 obj.children("a.jstree-loading").removeClass("jstree-loading");
-                obj.removeData("jstree-is-loading");
+                obj.removeData("jstree_is_loading");
                 if (t === "success" && s.correct_state) {
                   this.correct_state(obj);
                 }
@@ -166,7 +167,7 @@
                 }
                 else {
                   obj.append(d).children("a.jstree-loading").removeClass("jstree-loading");
-                  obj.removeData("jstree-is-loading");
+                  obj.removeData("jstree_is_loading");
                 }
                 this.clean_node(obj);
                 if (s_call) {
@@ -184,7 +185,7 @@
                 }
                 else {
                   obj.children("a.jstree-loading").removeClass("jstree-loading");
-                  obj.removeData("jstree-is-loading");
+                  obj.removeData("jstree_is_loading");
                   if (s.correct_state) {
                     this.correct_state(obj);
                     if (s_call) {
@@ -221,7 +222,7 @@
           return d;
         }
         if (s.progressive_unload && obj && obj !== -1) {
-          obj.data("jstree-children", d);
+          obj.data("jstree_children", d);
         }
         if ($.isArray(js)) {
           d = $();
@@ -294,11 +295,11 @@
           d.prepend("<ins class='jstree-icon'>&#160;</ins>");
           if (js.children) {
             if (s.progressive_render && js.state !== "open") {
-              d.addClass("jstree-closed").data("jstree-children", js.children);
+              d.addClass("jstree-closed").data("jstree_children", js.children);
             }
             else {
               if (s.progressive_unload) {
-                d.data("jstree-children", js.children);
+                d.data("jstree_children", js.children);
               }
               if ($.isArray(js.children) && js.children.length) {
                 tmp = this._parse_json(js.children, obj, true);

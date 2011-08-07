@@ -1,4 +1,4 @@
-/* 
+/*
  * jsTree CRRM plugin
  * Handles creating/renaming/removing/moving nodes by user interaction.
  */
@@ -18,10 +18,10 @@
     defaults : {
       input_width_limit : 200,
       move : {
-        always_copy            : false, // false, true or "multitree"
-        open_onmove            : true,
-        default_position    : "last",
-        check_move            : function (m) {
+        always_copy      : false, // false, true or "multitree"
+        open_onmove      : true,
+        default_position  : "last",
+        check_move      : function (m) {
           return true;
         }
       }
@@ -57,6 +57,7 @@
                             if (v === "") {
                               v = t;
                             }
+                            h1.remove();
                             i.remove(); // rollback purposes
                             this.set_text(obj, t); // rollback purposes
                             this.rename_node(obj, v);
@@ -85,17 +86,17 @@
                             }
                           }
                         })
-                        ).children(".jstree-rename-input");
+                ).children(".jstree-rename-input");
         this.set_text(obj, "");
         h1.css({
-          fontFamily        : h2.css('fontFamily') || '',
-          fontSize        : h2.css('fontSize') || '',
-          fontWeight        : h2.css('fontWeight') || '',
-          fontStyle        : h2.css('fontStyle') || '',
-          fontStretch        : h2.css('fontStretch') || '',
-          fontVariant        : h2.css('fontVariant') || '',
-          letterSpacing    : h2.css('letterSpacing') || '',
-          wordSpacing        : h2.css('wordSpacing') || ''
+          fontFamily    : h2.css('fontFamily') || '',
+          fontSize    : h2.css('fontSize') || '',
+          fontWeight    : h2.css('fontWeight') || '',
+          fontStyle    : h2.css('fontStyle') || '',
+          fontStretch    : h2.css('fontStretch') || '',
+          fontVariant    : h2.css('fontVariant') || '',
+          letterSpacing  : h2.css('letterSpacing') || '',
+          wordSpacing    : h2.css('wordSpacing') || ''
         });
         h2.width(Math.min(h1.text("pW" + h2[0].value).width(), w))[0].select();
       },
@@ -212,4 +213,3 @@
   // include the crr plugin by default
   // $.jstree.defaults.plugins.push("crrm");
 })(jQuery);
-

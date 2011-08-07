@@ -1,4 +1,4 @@
-/* 
+/*
  * jsTree unique plugin
  * Forces different names amongst siblings (still a bit experimental)
  * NOTE: does not check language versions (it will not be possible to have nodes with the same title, even in different languages)
@@ -93,4 +93,3 @@
     }
   });
 })(jQuery);
-

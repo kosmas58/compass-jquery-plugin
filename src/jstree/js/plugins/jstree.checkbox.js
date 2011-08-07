@@ -80,29 +80,20 @@
               else {
                 $t.children(":checkbox").addClass("jstree-real-checkbox");
               }
-              if (c === "jstree-checked") {
-                $t.children(":checkbox").attr("checked", "checked");
+            }
+            if (!ts) {
+              if (c === "jstree-checked" || $t.hasClass("jstree-checked") || $t.children(':checked').length) {
+                $t.find("li").andSelf().addClass("jstree-checked").children(":checkbox").prop("checked", true);
               }
             }
-            if (c === "jstree-checked" && !ts) {
-              $t.find("li").addClass("jstree-checked");
+            else {
+              if ($t.hasClass("jstree-checked") || $t.children(':checked').length) {
+                $t.addClass("jstree-checked").children(":checkbox").prop("checked", true);
+              }
             }
           });
         });
         if (!ts) {
-          if (obj.length === 1 && obj.is("li")) {
-            this._repair_state(obj);
-          }
-          if (obj.is("li")) {
-            obj.each(function () {
-              _this._repair_state(this);
-            });
-          }
-          else {
-            obj.find("> ul > li").each(function () {
-              _this._repair_state(this);
-            });
-          }
           obj.find(".jstree-checked").parent().parent().each(function () {
             _this._repair_state(this);
           });
@@ -119,13 +110,13 @@
           if (state) {
             obj.removeClass("jstree-checked").addClass("jstree-unchecked");
             if (rc) {
-              obj.children(":checkbox").removeAttr("checked");
+              obj.children(":checkbox").prop("checked", false);
             }
           }
           else {
             obj.removeClass("jstree-unchecked").addClass("jstree-checked");
             if (rc) {
-              obj.children(":checkbox").attr("checked", "checked");
+              obj.children(":checkbox").prop("checked", true);
             }
           }
         }
@@ -137,7 +128,7 @@
             }
             coll.removeClass("jstree-checked jstree-undetermined").addClass("jstree-unchecked");
             if (rc) {
-              coll.children(":checkbox").removeAttr("checked");
+              coll.children(":checkbox").prop("checked", false);
             }
           }
           else {
@@ -147,7 +138,7 @@
             }
             coll.removeClass("jstree-unchecked jstree-undetermined").addClass("jstree-checked");
             if (rc) {
-              coll.children(":checkbox").attr("checked", "checked");
+              coll.children(":checkbox").prop("checked", true);
             }
             if (this.data.ui) {
               this.data.ui.last_selected = obj;
@@ -160,14 +151,14 @@
               if ($this.children("ul").children("li.jstree-checked, li.jstree-undetermined").length) {
                 $this.parentsUntil(".jstree", "li").andSelf().removeClass("jstree-checked jstree-unchecked").addClass("jstree-undetermined");
                 if (rc) {
-                  $this.parentsUntil(".jstree", "li").andSelf().children(":checkbox").removeAttr("checked");
+                  $this.parentsUntil(".jstree", "li").andSelf().children(":checkbox").prop("checked", false);
                 }
                 return false;
               }
               else {
                 $this.removeClass("jstree-checked jstree-undetermined").addClass("jstree-unchecked");
                 if (rc) {
-                  $this.children(":checkbox").removeAttr("checked");
+                  $this.children(":checkbox").prop("checked", false);
                 }
               }
             }
@@ -175,14 +166,14 @@
               if ($this.children("ul").children("li.jstree-unchecked, li.jstree-undetermined").length) {
                 $this.parentsUntil(".jstree", "li").andSelf().removeClass("jstree-checked jstree-unchecked").addClass("jstree-undetermined");
                 if (rc) {
-                  $this.parentsUntil(".jstree", "li").andSelf().children(":checkbox").removeAttr("checked");
+                  $this.parentsUntil(".jstree", "li").andSelf().children(":checkbox").prop("checked", false);
                 }
                 return false;
               }
               else {
                 $this.removeClass("jstree-unchecked jstree-undetermined").addClass("jstree-checked");
                 if (rc) {
-                  $this.children(":checkbox").attr("checked", "checked");
+                  $this.children(":checkbox").prop("checked", true);
                 }
               }
             }
@@ -253,6 +244,10 @@
         if (!obj.length) {
           return;
         }
+        if (this._get_settings().checkbox.two_state) {
+          obj.find('li').andSelf().not('.jstree-checked').removeClass('jstree-undetermined').addClass('jstree-unchecked').children(':checkbox').prop('checked', true);
+          return;
+        }
         var rc = this._get_settings().checkbox.real_checkboxes,
                 a = obj.find("> ul > .jstree-checked").length,
                 b = obj.find("> ul > .jstree-undetermined").length,
@@ -271,7 +266,7 @@
         else {
           obj.parentsUntil(".jstree", "li").andSelf().removeClass("jstree-checked jstree-unchecked").addClass("jstree-undetermined");
           if (rc) {
-            obj.parentsUntil(".jstree", "li").andSelf().children(":checkbox").removeAttr("checked");
+            obj.parentsUntil(".jstree", "li").andSelf().children(":checkbox").prop("checked", false);
           }
         }
       },
@@ -280,7 +275,7 @@
           var _this = this,
                   s = this.data.ui.to_select;
           s = $.map($.makeArray(s), function (n) {
-            return "#" + n.toString().replace(/^#/, "").replace(/\\\//g, "/").replace(/\//g, "\\\/").replace(/\\\./g, ".").replace(/\./g, "\\.");
+            return "#" + n.toString().replace(/^#/, "").replace(/\\\//g, "/").replace(/\//g, "\\\/").replace(/\\\./g, ".").replace(/\./g, "\\.").replace(/\:/g, "\\:");
           });
           this.deselect_all();
           $.each(s, function (i, val) {
@@ -308,4 +303,3 @@
     $.vakata.css.add_sheet({ str : css_string, title : "jstree" });
   });
 })(jQuery);
-

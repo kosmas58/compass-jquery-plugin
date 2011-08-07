@@ -1,4 +1,4 @@
-/* 
+/*
  * jsTree XML plugin
  * The XML data store. Datastores are build by overriding the `load_node` and `_is_loaded` functions.
  */
@@ -188,7 +188,16 @@
             '	</li>' +
             '</xsl:template>' +
             '</xsl:stylesheet>'
-  };
+  },
+          escape_xml = function(string) {
+            return string
+                    .toString()
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&apos;');
+          };
   $.jstree.plugin("xml_data", {
     defaults : {
       data : false,
@@ -196,7 +205,8 @@
       xsl : "flat",
       clean_node : false,
       correct_state : true,
-      get_skip_empty : false
+      get_skip_empty : false,
+      get_include_preamble : true
     },
     _fn : {
       load_node : function (obj, s_call, e_call) {
@@ -220,15 +230,16 @@
 
         obj = this._get_node(obj);
         if (obj && obj !== -1) {
-          if (obj.data("jstree-is-loading")) {
+          if (obj.data("jstree_is_loading")) {
             return;
           }
           else {
-            obj.data("jstree-is-loading", true);
+            obj.data("jstree_is_loading", true);
           }
         }
         switch (!0) {
-          case (!s.data && !s.ajax): throw "Neither data nor ajax settings supplied.";
+          case (!s.data && !s.ajax):
+            throw "Neither data nor ajax settings supplied.";
           case ($.isFunction(s.data)):
             s.data.call(this, obj, $.proxy(function (d) {
               this.parse_xml(d, $.proxy(function (d) {
@@ -242,7 +253,7 @@
                     else {
                       obj.children("a.jstree-loading").removeClass("jstree-loading");
                       obj.append(d);
-                      obj.removeData("jstree-is-loading");
+                      obj.removeData("jstree_is_loading");
                     }
                     if (s.clean_node) {
                       this.clean_node(obj);
@@ -254,7 +265,7 @@
                   else {
                     if (obj && obj !== -1) {
                       obj.children("a.jstree-loading").removeClass("jstree-loading");
-                      obj.removeData("jstree-is-loading");
+                      obj.removeData("jstree_is_loading");
                       if (s.correct_state) {
                         this.correct_state(obj);
                         if (s_call) {
@@ -310,7 +321,7 @@
               }
               if (obj !== -1 && obj.length) {
                 obj.children("a.jstree-loading").removeClass("jstree-loading");
-                obj.removeData("jstree-is-loading");
+                obj.removeData("jstree_is_loading");
                 if (t === "success" && s.correct_state) {
                   this.correct_state(obj);
                 }
@@ -344,7 +355,7 @@
                     else {
                       obj.children("a.jstree-loading").removeClass("jstree-loading");
                       obj.append(d);
-                      obj.removeData("jstree-is-loading");
+                      obj.removeData("jstree_is_loading");
                     }
                     if (s.clean_node) {
                       this.clean_node(obj);
@@ -356,7 +367,7 @@
                   else {
                     if (obj && obj !== -1) {
                       obj.children("a.jstree-loading").removeClass("jstree-loading");
-                      obj.removeData("jstree-is-loading");
+                      obj.removeData("jstree_is_loading");
                       if (s.correct_state) {
                         this.correct_state(obj);
                         if (s_call) {
@@ -419,6 +430,9 @@
         a_attr = $.isArray(a_attr) ? a_attr : [ ];
 
         if (!is_callback) {
+          if (s.xml_data.get_include_preamble) {
+            result += '<' + '?xml version="1.0" encoding="UTF-8"?' + '>';
+          }
           result += "<root>";
         }
         obj.each(function () {
@@ -427,7 +441,7 @@
           $.each(li_attr, function (i, v) {
             var t = li.attr(v);
             if (!s.xml_data.get_skip_empty || typeof t !== "undefined") {
-              result += " " + v + "=\"" + (" " + (t || "")).replace(/ jstree[^ ]*/ig, '').replace(/\s+$/ig, " ").replace(/^ /, "").replace(/ $/, "") + "\"";
+              result += " " + v + "=\"" + escape_xml((" " + (t || "")).replace(/ jstree[^ ]*/ig, '').replace(/\s+$/ig, " ").replace(/^ /, "").replace(/ $/, "")) + "\"";
             }
           });
           if (li.hasClass("jstree-open")) {
@@ -437,7 +451,7 @@
             result += " state=\"closed\"";
           }
           if (tp === "flat") {
-            result += " parent_id=\"" + is_callback + "\"";
+            result += " parent_id=\"" + escape_xml(is_callback) + "\"";
           }
           result += ">";
           result += "<content>";
@@ -449,7 +463,7 @@
             if ($.inArray("languages", s.plugins) !== -1) {
               $.each(s.languages, function (k, z) {
                 if (tmp1.hasClass(z)) {
-                  result += " lang=\"" + z + "\"";
+                  result += " lang=\"" + escape_xml(z) + "\"";
                   lang = z;
                   return false;
                 }
@@ -459,15 +473,15 @@
               $.each(a_attr, function (k, z) {
                 var t = tmp1.attr(z);
                 if (!s.xml_data.get_skip_empty || typeof t !== "undefined") {
-                  result += " " + z + "=\"" + (" " + t || "").replace(/ jstree[^ ]*/ig, '').replace(/\s+$/ig, " ").replace(/^ /, "").replace(/ $/, "") + "\"";
+                  result += " " + z + "=\"" + escape_xml((" " + t || "").replace(/ jstree[^ ]*/ig, '').replace(/\s+$/ig, " ").replace(/^ /, "").replace(/ $/, "")) + "\"";
                 }
               });
             }
             if (tmp1.children("ins").get(0).className.replace(/jstree[^ ]*|$/ig, '').replace(/^\s+$/ig, "").length) {
-              result += ' icon="' + tmp1.children("ins").get(0).className.replace(/jstree[^ ]*|$/ig, '').replace(/\s+$/ig, " ").replace(/^ /, "").replace(/ $/, "") + '"';
+              result += ' icon="' + escape_xml(tmp1.children("ins").get(0).className.replace(/jstree[^ ]*|$/ig, '').replace(/\s+$/ig, " ").replace(/^ /, "").replace(/ $/, "")) + '"';
             }
             if (tmp1.children("ins").get(0).style.backgroundImage.length) {
-              result += ' icon="' + tmp1.children("ins").get(0).style.backgroundImage.replace("url(", "").replace(")", "").replace(/'/ig, "").replace(/"/ig, "") + '"';
+              result += ' icon="' + escape_xml(tmp1.children("ins").get(0).style.backgroundImage.replace("url(", "").replace(")", "").replace(/'/ig, "").replace(/"/ig, "")) + '"';
             }
             result += ">";
             result += "<![CDATA[" + _this.get_text(tmp1, lang) + "]]>";

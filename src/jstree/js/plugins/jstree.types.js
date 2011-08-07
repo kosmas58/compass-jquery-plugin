@@ -1,4 +1,4 @@
-/* 
+/*
  * jsTree types plugin
  * Adds support types of nodes
  * You can set an attribute on each li node, that represents its type.
@@ -93,11 +93,11 @@
     },
     defaults : {
       // defines maximum number of root nodes (-1 means unlimited, -2 means disable max_children checking)
-      max_children        : -1,
+      max_children    : -1,
       // defines the maximum depth of the tree (-1 means unlimited, -2 means disable max_depth checking)
-      max_depth            : -1,
+      max_depth      : -1,
       // defines valid node types for the root nodes
-      valid_children        : "all",
+      valid_children    : "all",
 
       // whether to use $.data
       use_data : false,
@@ -107,8 +107,8 @@
       types : {
         // the default type
         "default" : {
-          "max_children"    : -1,
-          "max_depth"        : -1,
+          "max_children"  : -1,
+          "max_depth"    : -1,
           "valid_children": "all"
 
           // Bound functions - you can bind any other function here (using boolean or function)
@@ -271,7 +271,7 @@
             }
           }
           if (s.max_children !== -2 && mc !== -1) {
-            ch = p === -1 ? this.get_container().children("> ul > li").length : p.children("> ul > li").length;
+            ch = p === -1 ? this.get_container().find("> ul > li").length : p.find("> ul > li").length;
             if (ch + 1 > mc) {
               return false;
             }

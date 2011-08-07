@@ -1,4 +1,4 @@
-/* 
+/*
  * jsTree ui plugin
  * This plugins handles selecting/deselecting/hovering/dehovering nodes
  */
@@ -124,7 +124,7 @@
         this.data.ui.to_select = [];
         this.data.ui.selected.each(function () {
           if (this.id) {
-            _this.data.ui.to_select.push("#" + this.id.toString().replace(/^#/, "").replace(/\\\//g, "/").replace(/\//g, "\\\/").replace(/\\\./g, ".").replace(/\./g, "\\."));
+            _this.data.ui.to_select.push("#" + this.id.toString().replace(/^#/, "").replace(/\\\//g, "/").replace(/\//g, "\\\/").replace(/\\\./g, ".").replace(/\./g, "\\.").replace(/\:/g, "\\:"));
           }
         });
         this.__callback(this.data.ui.to_select);
@@ -133,7 +133,7 @@
         var _this = this,
                 s = this.data.ui.to_select;
         s = $.map($.makeArray(s), function (n) {
-          return "#" + n.toString().replace(/^#/, "").replace(/\\\//g, "/").replace(/\//g, "\\\/").replace(/\\\./g, ".").replace(/\./g, "\\.");
+          return "#" + n.toString().replace(/^#/, "").replace(/\\\//g, "/").replace(/\//g, "\\\/").replace(/\\\./g, ".").replace(/\./g, "\\.").replace(/\:/g, "\\:");
         });
         // this.deselect_all(); WHY deselect, breaks plugin state notifier?
         $.each(s, function (i, val) {
