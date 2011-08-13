@@ -43,6 +43,7 @@ all_scripts = [
     'js/jquery.mobile.forms.slider.js',
     'js/jquery.mobile.forms.textinput.js',
     'js/jquery.mobile.forms.select.js',
+    'js/jquery.mobile.forms.select.custom.js',
     'js/jquery.mobile.buttonMarkup.js',
     'js/jquery.mobile.controlGroup.js',
     'js/jquery.mobile.links.js',
