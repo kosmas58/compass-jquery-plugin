@@ -95,7 +95,8 @@ module Gridify
                                'multipleSearch' => true,
                                'multipleGroup'  => search_group.present? && search_group ? true : false,
                                'resize'         => search_resize.present? && search_resize ? true : false,
-                               'closeOnEscape'  => search_close_esc.present? && search_close_esc ? true : false)
+                               'closeOnEscape'  => search_close_esc.present? && search_close_esc ? true : false,
+                               'showQuery'      => search_show_query.present? && search_show_query ? true : false)
       else
         merge_options_defaults(search_button)
       end

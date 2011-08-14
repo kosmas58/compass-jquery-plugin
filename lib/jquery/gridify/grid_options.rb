@@ -79,6 +79,7 @@ module Gridify
                   :search_group,
                   :search_resize,
                   :search_close_esc,
+                  :search_show_query,
                   :search_toolbar, # toggleable search bar, true or :visible, :hidden (other options?)  (nil)
                   :refresh_button,
                   :jqgrid_nav_options, # native jqGrid button options (added to 2nd arg in navGrid method)

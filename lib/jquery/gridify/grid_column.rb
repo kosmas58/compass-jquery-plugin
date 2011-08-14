@@ -32,6 +32,8 @@ module Gridify
                   # visiblity
                   #:always_hidden,          # (false)
                   :sort_type,
+                  :search_type,
+                  :search_rules,
                   :summary_type,
                   :summary_tpl,
                   :hidden # initial hide state (false)
@@ -126,6 +128,8 @@ module Gridify
       vals[:editrules] = validations if editable && validations
 
       vals[:sort_type] = sort_type if sort_type
+      vals[:search_type] = search_type if search_type
+      vals[:search_rules] = search_rules if search_rules
       vals[:summaryType] = summary_type if summary_type
       vals[:summaryTpl] = summary_tpl if summary_tpl
       # and more...
