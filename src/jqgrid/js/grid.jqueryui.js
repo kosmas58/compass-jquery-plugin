@@ -202,7 +202,7 @@
 
           var perm = [];
           //fixedCols.slice(0);
-          $('option[selected]', select).each(function() {
+          $('option:selected', select).each(function() {
             perm.push(parseInt(this.value, 10));
           });
           $.each(perm, function() {
@@ -409,7 +409,7 @@
                 }
               },
               stop :function(ev, ui) {
-                if (ui.helper.dropped) {
+                if (ui.helper.dropped && !opts.dragcopy) {
                   var ids = $(ui.helper).attr("id");
                   $($t).jqGrid('delRowData', ids);
                 }
@@ -499,6 +499,7 @@
             "appendTo" : "#jqgrid_dnd",
             "zIndex": 5000
           },
+          "dragcopy": false,
           "dropbyname" : false,
           "droppos" : "first",
           "autoid" : true,

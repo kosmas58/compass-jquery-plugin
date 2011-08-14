@@ -1725,6 +1725,9 @@
                     if (s > 0) {
                       var result = query.select();
                       query = $.jgrid.from(result);
+                      if (ts.p.ignoreCase) {
+                        query = query.ignoreCase();
+                      }
                     }
                     try {
                       ror = group.rules.length && group.groupOp.toString().toUpperCase() === "OR";
@@ -3564,11 +3567,7 @@
           }
         });
         if (fndh === true) {
-          if ($t.p.shrinkToFit === false) {
-            $($t).jqGrid("setGridWidth", $t.grid.width);
-          } else if ($t.grid.width !== $t.p.tblwidth) {
-            $($t).jqGrid("setGridWidth", $t.p.tblwidth);
-          }
+          $($t).jqGrid("setGridWidth", $t.p.tblwidth);
         }
       });
     },
@@ -3924,7 +3923,7 @@
                   v = parseFloat(val);
                   sum += v;
                   min = Math.min(min, v);
-                  max = Math.max(min, v);
+                  max = Math.max(max, v);
                 }
                 else if (obj) {
                   ret.push({id:$t.rows[i].id,value:val});

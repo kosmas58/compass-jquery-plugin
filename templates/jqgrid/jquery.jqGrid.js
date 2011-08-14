@@ -1725,6 +1725,9 @@
                     if (s > 0) {
                       var result = query.select();
                       query = $.jgrid.from(result);
+                      if (ts.p.ignoreCase) {
+                        query = query.ignoreCase();
+                      }
                     }
                     try {
                       ror = group.rules.length && group.groupOp.toString().toUpperCase() === "OR";
@@ -3564,11 +3567,7 @@
           }
         });
         if (fndh === true) {
-          if ($t.p.shrinkToFit === false) {
-            $($t).jqGrid("setGridWidth", $t.grid.width);
-          } else if ($t.grid.width !== $t.p.tblwidth) {
-            $($t).jqGrid("setGridWidth", $t.p.tblwidth);
-          }
+          $($t).jqGrid("setGridWidth", $t.p.tblwidth);
         }
       });
     },
@@ -3924,7 +3923,7 @@
                   v = parseFloat(val);
                   sum += v;
                   min = Math.min(min, v);
-                  max = Math.max(min, v);
+                  max = Math.max(max, v);
                 }
                 else if (obj) {
                   ret.push({id:$t.rows[i].id,value:val});
@@ -4510,14 +4509,14 @@
                   $.ajax($.extend({
                     url: surl,
                     dataType: "html",
-                    complete: function(res, status) {
+                    success: function(res, status) {
                       if (soptions.buildSelect !== undefined) {
                         var d = soptions.buildSelect(res);
                         if (d) {
                           $(self).append(d);
                         }
                       } else {
-                        $(self).append(res.responseText);
+                        $(self).append(res);
                       }
                       if (soptions.defaultValue) {
                         $("select", self).val(soptions.defaultValue);
@@ -9885,7 +9884,7 @@ var xmlJsonClass = {
                   $(this).append(elc);
                 }
                 //Again IE
-                if (cm[i].edittype == "select" && cm[i].editoptions.multiple === true && $.browser.msie) {
+                if (cm[i].edittype == "select" && typeof(cm[i].editoptions) !== "undefined" && cm[i].editoptions.multiple === true && typeof(cm[i].editoptions.dataUrl) === "undefined" && $.browser.msie) {
                   $(elc).width($(elc).width());
                 }
                 cnt++;
@@ -9972,8 +9971,8 @@ var xmlJsonClass = {
                 break;
               case 'select':
                 if (!cm.editoptions.multiple) {
-                  tmp[nm] = $("select>option:selected", this).val();
-                  tmp2[nm] = $("select>option:selected", this).text();
+                  tmp[nm] = $("select option:selected", this).val();
+                  tmp2[nm] = $("select option:selected", this).text();
                 } else {
                   var sel = $("select", this), selectedText = [];
                   tmp[nm] = $(sel).val();
@@ -9982,7 +9981,7 @@ var xmlJsonClass = {
                   } else {
                     tmp[nm] = "";
                   }
-                  $("select > option:selected", this).each(
+                  $("select option:selected", this).each(
                           function(i, selected) {
                             selectedText[i] = $(selected).text();
                           }
@@ -11895,7 +11894,7 @@ var xmlJsonClass = {
           grp.summaryval[0][itm] = $.extend(true, [], grp.summary[0]);
         }
         if (grp.groupSummary[0]) {
-          $.each(grp.summaryval[0][itm], function(i, n) {
+          $.each(grp.summaryval[0][itm], function() {
             if ($.isFunction(this.st)) {
               this.v = this.st.call($t, this.v, this.nm, record);
             } else {
@@ -11954,7 +11953,6 @@ var xmlJsonClass = {
             }
           }
           tarspan.removeClass(plus).addClass(minus);
-          collapsed = false;
         }
         if ($.isFunction($t.p.onClickGroup)) {
           $t.p.onClickGroup.call($t, hid, collapsed);
@@ -11967,7 +11965,7 @@ var xmlJsonClass = {
       return this.each(function() {
         var $t = this,
                 grp = $t.p.groupingView,
-                str = "", icon = "", hid, pmrtl = "", gv, cp, ii;
+                str = "", icon = "", hid, pmrtl = grp.groupCollapse ? grp.plusicon : grp.minusicon, gv, cp, ii;
         //only one level for now
         if (!grp.groupDataSorted) {
           // ???? TO BE IMPROVED
@@ -11977,12 +11975,6 @@ var xmlJsonClass = {
             grp.sortitems[0].reverse();
             grp.sortnames[0].reverse();
           }
-        }
-        if (grp.groupCollapse) {
-          pmrtl = grp.plusicon;
-        }
-        else {
-          pmrtl = grp.minusicon;
         }
         pmrtl += " tree-wrap-" + $t.p.direction;
         ii = 0;
@@ -12046,7 +12038,7 @@ var xmlJsonClass = {
         str = null;
       });
     },
-    groupingGroupBy : function (name, options, current) {
+    groupingGroupBy : function (name, options) {
       return this.each(function() {
         var $t = this;
         if (typeof(name) == "string") {
@@ -12054,14 +12046,20 @@ var xmlJsonClass = {
         }
         var grp = $t.p.groupingView;
         $t.p.grouping = true;
+
+        //Set default, in case visibilityOnNextGrouping is undefined
+        if (typeof grp.visibiltyOnNextGrouping == "undefined") {
+          grp.visibiltyOnNextGrouping = [];
+        }
+        var i;
         // show previous hidden groups if they are hidden and weren't removed yet
-        for (var i = 0; i < grp.groupField.length; i++) {
+        for (i = 0; i < grp.groupField.length; i++) {
           if (!grp.groupColumnShow[i] && grp.visibiltyOnNextGrouping[i]) {
             $($t).jqGrid('showCol', grp.groupField[i]);
           }
         }
         // set visibility status of current group columns on next grouping
-        for (var i = 0; i < name.length; i++) {
+        for (i = 0; i < name.length; i++) {
           grp.visibiltyOnNextGrouping[i] = $("#" + $t.p.id + "_" + name[i]).is(":visible");
         }
         $t.p.groupingView = $.extend($t.p.groupingView, options || {});
@@ -12542,7 +12540,7 @@ var xmlJsonClass = {
 
           var perm = [];
           //fixedCols.slice(0);
-          $('option[selected]', select).each(function() {
+          $('option:selected', select).each(function() {
             perm.push(parseInt(this.value, 10));
           });
           $.each(perm, function() {
@@ -12749,7 +12747,7 @@ var xmlJsonClass = {
                 }
               },
               stop :function(ev, ui) {
-                if (ui.helper.dropped) {
+                if (ui.helper.dropped && !opts.dragcopy) {
                   var ids = $(ui.helper).attr("id");
                   $($t).jqGrid('delRowData', ids);
                 }
@@ -12839,6 +12837,7 @@ var xmlJsonClass = {
             "appendTo" : "#jqgrid_dnd",
             "zIndex": 5000
           },
+          "dragcopy": false,
           "dropbyname" : false,
           "droppos" : "first",
           "autoid" : true,

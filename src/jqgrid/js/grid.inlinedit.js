@@ -87,7 +87,7 @@
                   $(this).append(elc);
                 }
                 //Again IE
-                if (cm[i].edittype == "select" && cm[i].editoptions.multiple === true && $.browser.msie) {
+                if (cm[i].edittype == "select" && typeof(cm[i].editoptions) !== "undefined" && cm[i].editoptions.multiple === true && typeof(cm[i].editoptions.dataUrl) === "undefined" && $.browser.msie) {
                   $(elc).width($(elc).width());
                 }
                 cnt++;
@@ -174,8 +174,8 @@
                 break;
               case 'select':
                 if (!cm.editoptions.multiple) {
-                  tmp[nm] = $("select>option:selected", this).val();
-                  tmp2[nm] = $("select>option:selected", this).text();
+                  tmp[nm] = $("select option:selected", this).val();
+                  tmp2[nm] = $("select option:selected", this).text();
                 } else {
                   var sel = $("select", this), selectedText = [];
                   tmp[nm] = $(sel).val();
@@ -184,7 +184,7 @@
                   } else {
                     tmp[nm] = "";
                   }
-                  $("select > option:selected", this).each(
+                  $("select option:selected", this).each(
                           function(i, selected) {
                             selectedText[i] = $(selected).text();
                           }
