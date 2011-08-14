@@ -90,8 +90,12 @@ module Gridify
     end
 
     def search_button_options
-      if search_advanced
-        merge_options_defaults(search_advanced, 'multipleSearch' => true)
+      if search_multiple
+        merge_options_defaults(search_multiple,
+                               'multipleSearch' => true,
+                               'multipleGroup'  => search_group.present? && search_group ? true : false,
+                               'resize'         => search_resize.present? && search_resize ? true : false,
+                               'closeOnEscape'  => search_close_esc.present? && search_close_esc ? true : false)
       else
         merge_options_defaults(search_button)
       end
@@ -268,7 +272,7 @@ module Gridify
             'edit' => edit_button.present?,
             'add' => add_button.present?,
             'del' => delete_button.present?,
-            'search' => search_button.present? || search_advanced.present?,
+            'search' => search_button.present? || search_multiple.present?,
             'view' => view_button.present?,
             'refresh' => refresh_button.present?
         }.merge(jqgrid_nav_options||{})

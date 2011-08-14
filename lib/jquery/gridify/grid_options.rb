@@ -75,7 +75,10 @@ module Gridify
                   :edit_button,
                   :delete_button,
                   :search_button, # enable search button and dialog
-                  :search_advanced, # instead of search_button
+                  :search_multiple, # instead of search_button
+                  :search_group,
+                  :search_resize,
+                  :search_close_esc,
                   :search_toolbar, # toggleable search bar, true or :visible, :hidden (other options?)  (nil)
                   :refresh_button,
                   :jqgrid_nav_options, # native jqGrid button options (added to 2nd arg in navGrid method)
