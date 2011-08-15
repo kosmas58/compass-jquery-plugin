@@ -28,9 +28,8 @@
 	border:3px solid #3C769D;
 	width:643px;
 	height:320px;
-	background-image:url(images/bg-editor.png);
-	background-repeat:no-repeat;
-	clear:both; display:block;
+	background:#FFF url(images/bg-editor.png) no-repeat;
+	clear:both;
 	line-height:18px;
 	overflow:auto;
 }
@@ -39,7 +38,7 @@
 	background-color:#FFFFFF;
 	border:1px solid #3C769D;
 	width:99.9%;
-	height:350px;
+	height:300px;
 	margin:5px 0;
 }
 .markItUpFooter {
@@ -92,13 +91,10 @@
 	top:18px; left:0px;	
 	background:#F5F5F5;
 	border:1px solid #3C769D;
-
 	height:inherit;
-	padding:0;
 }
 .markItUpHeader ul ul li {
 	float:none;
-	border:none;
 	border-bottom:1px solid #3C769D;
 }
 .markItUpHeader ul ul .markItUpDropMenu {
@@ -145,9 +141,7 @@
 .bbcode .markItUpEditor {
 	background-image:url(images/bg-editor-bbcode.png);
 }
-.wiki .markItUpEditor {
-	background-image:url(images/bg-editor-wiki.png);
-}
+.wiki .markItUpEditor,
 .dotclear .markItUpEditor {
-	background-image:url(images/bg-editor-dotclear.png);
+	background-image:url(images/bg-editor-wiki.png);
 }
