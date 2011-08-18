@@ -341,7 +341,7 @@
             $(ui.item).css("border-width", "");
             if ($t.p.rownumbers === true) {
               $("td.jqgrid-rownum", $t.rows).each(function(i) {
-                $(this).html(i + 1);
+                $(this).html(i + 1 + (parseInt($t.p.page, 10) - 1) * parseInt($t.p.rowNum, 10));
               });
             }
             if (opts._update_) {

@@ -1226,7 +1226,7 @@
                   ts.p.records = this.textContent || this.text || 0;
                 });
                 $(ts.p.xmlReader.userdata, xml).each(function() {
-                  ts.p.userData[this.getAttribute("name")] = this.textContent || this.text;
+                  ts.p.userData[this.getAttribute("name")] = $(this).text();
                 });
                 var gxml = $(ts.p.xmlReader.root + " " + ts.p.xmlReader.row, xml);
                 if (!gxml) {
@@ -3548,10 +3548,10 @@
         $(this.p.colModel).each(function(i) {
           if ($.inArray(this.name, colname) !== -1 && this.hidden === sw) {
             $("tr", $t.grid.hDiv).each(function() {
-              $(this).children("th:eq(" + i + ")").css("display", show);
+              $(this.cells[i]).css("display", show);
             });
             $($t.rows).each(function(j) {
-              $(this).children("td:eq(" + i + ")").css("display", show);
+              $(this.cells[i]).css("display", show);
             });
             if ($t.p.footerrow) {
               $("tr.footrow td:eq(" + i + ")", $t.grid.sDiv).css("display", show);

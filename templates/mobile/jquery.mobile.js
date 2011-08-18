@@ -2917,7 +2917,8 @@ $.widget( "mobile.page", $.mobile.widget, {
 			var link = findClosestLink( event.target );
 			if ( link ) {
 				if ( path.parseUrl( link.getAttribute( "href" ) || "#" ).hash !== "#" ) {
-					$( link ).closest( ".ui-btn" ).not( ".ui-disabled" ).addClass( $.mobile.activeBtnClass );
+					$activeClickedLink = $( link ).closest( ".ui-btn" ).not( ".ui-disabled" );
+					$activeClickedLink.addClass( $.mobile.activeBtnClass );
 					$( "." + $.mobile.activePageClass + " .ui-btn" ).not( link ).blur();
 				}
 			}
@@ -2994,8 +2995,6 @@ $.widget( "mobile.page", $.mobile.widget, {
 				//TODO overlap in logic from isExternal, rel=external check should be
 				//     moved into more comprehensive isExternalLink
 				isExternal = useDefaultUrlHandling || ( path.isExternal( href ) && !isCrossDomainPageLoad );
-
-			$activeClickedLink = $link.closest( ".ui-btn" );
 
 			if( isExternal ) {
 				httpCleanup();
@@ -3686,7 +3685,7 @@ $.widget( "mobile.listview", $.mobile.widget, {
 			return orig + " ui-listview " + ( t.options.inset ? " ui-listview-inset ui-corner-all ui-shadow " : "" );
 		});
 
-		t.refresh();
+		t.refresh( true );
 	},
 
 	_itemApply: function( $list, item ) {
@@ -3723,7 +3722,7 @@ $.widget( "mobile.listview", $.mobile.widget, {
 		}
 	},
 
-	_refreshCorners: function() {
+	_refreshCorners: function( create ) {
 		var $li,
 			$visibleli,
 			$topli,
@@ -3731,7 +3730,8 @@ $.widget( "mobile.listview", $.mobile.widget, {
 
 		if ( this.options.inset ) {
 			$li = this.element.children( "li" );
-			$visibleli = $li.not( ".ui-screen-hidden" );
+			// at create time the li are not visible yet so we need to rely on .ui-screen-hidden
+			$visibleli = create?$li.not( ".ui-screen-hidden" ):$li.filter( ":visible" );
 			
 			this._removeCorners( $li );
 
@@ -3853,12 +3853,10 @@ $.widget( "mobile.listview", $.mobile.widget, {
 
 			item.add( item.children( ".ui-btn-inner" ) ).addClass( itemClass );
 
-			if ( !create ) {
-				self._itemApply( $list, item );
-			}
+			self._itemApply( $list, item );
 		}
 		
-		this._refreshCorners();
+		this._refreshCorners( create );
 	},
 
 	//create a string for ID/subpage url creation
@@ -4468,7 +4466,7 @@ $.widget( "mobile.slider", $.mobile.widget, {
 
 				var side = !i ? "b":"a",
 					corners = !i ? "right" :"left",
-					theme = !i ? " ui-btn-down-" + trackTheme :" ui-btn-active";
+					theme = !i ? " ui-btn-down-" + trackTheme :( " " + $.mobile.activeBtnClass );
 
 				$( "<div class='ui-slider-labelbg ui-slider-labelbg-" + side + theme + " ui-btn-corner-" + corners + "'></div>" )
 					.prependTo( slider );
@@ -5310,9 +5308,11 @@ $( document ).bind( "pagecreate create", function( e ){
 					// rebind the page remove that was unbound in the open function
 					// to allow for the parent page removal from actions other than the use
 					// of a dialog sized custom select
-					self.thisPage.bind( "pagehide.remove", function() {
-						$(this).remove();
-					});
+					if( !self.thisPage.data("page").options.domCache ){
+						self.thisPage.bind( "pagehide.remove", function() {
+							$(this).remove();
+						});
+					}
 
 					// doesn't solve the possible issue with calling change page
 					// where the objects don't define data urls which prevents dialog key

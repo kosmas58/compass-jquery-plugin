@@ -457,16 +457,14 @@
             }, ajaxso || {}));
           } else if (options.value) {
             var i;
+            if (typeof options.size === 'undefined') {
+              options.size = msl ? 3 : 1;
+            }
             if (msl) {
               ovm = vl.split(",");
               ovm = $.map(ovm, function(n) {
                 return $.trim(n);
               });
-              if (typeof options.size === 'undefined') {
-                options.size = 3;
-              }
-            } else {
-              options.size = 1;
             }
             if (typeof options.value === 'function') {
               options.value = options.value();
@@ -478,8 +476,8 @@
                 sv = so[i].split(":");
                 if (sv.length > 2) {
                   sv[1] = $.map(sv,
-                          function(n, i) {
-                            if (i > 0) {
+                          function(n, ii) {
+                            if (ii > 0) {
                               return n;
                             }
                           }).join(":");

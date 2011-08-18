@@ -1226,7 +1226,7 @@
                   ts.p.records = this.textContent || this.text || 0;
                 });
                 $(ts.p.xmlReader.userdata, xml).each(function() {
-                  ts.p.userData[this.getAttribute("name")] = this.textContent || this.text;
+                  ts.p.userData[this.getAttribute("name")] = $(this).text();
                 });
                 var gxml = $(ts.p.xmlReader.root + " " + ts.p.xmlReader.row, xml);
                 if (!gxml) {
@@ -3548,10 +3548,10 @@
         $(this.p.colModel).each(function(i) {
           if ($.inArray(this.name, colname) !== -1 && this.hidden === sw) {
             $("tr", $t.grid.hDiv).each(function() {
-              $(this).children("th:eq(" + i + ")").css("display", show);
+              $(this.cells[i]).css("display", show);
             });
             $($t.rows).each(function(j) {
-              $(this).children("td:eq(" + i + ")").css("display", show);
+              $(this.cells[i]).css("display", show);
             });
             if ($t.p.footerrow) {
               $("tr.footrow td:eq(" + i + ")", $t.grid.sDiv).css("display", show);
@@ -6345,16 +6345,14 @@ var xmlJsonClass = {
             }, ajaxso || {}));
           } else if (options.value) {
             var i;
+            if (typeof options.size === 'undefined') {
+              options.size = msl ? 3 : 1;
+            }
             if (msl) {
               ovm = vl.split(",");
               ovm = $.map(ovm, function(n) {
                 return $.trim(n);
               });
-              if (typeof options.size === 'undefined') {
-                options.size = 3;
-              }
-            } else {
-              options.size = 1;
             }
             if (typeof options.value === 'function') {
               options.value = options.value();
@@ -6366,8 +6364,8 @@ var xmlJsonClass = {
                 sv = so[i].split(":");
                 if (sv.length > 2) {
                   sv[1] = $.map(sv,
-                          function(n, i) {
-                            if (i > 0) {
+                          function(n, ii) {
+                            if (ii > 0) {
                               return n;
                             }
                           }).join(":");
@@ -12679,7 +12677,7 @@ var xmlJsonClass = {
             $(ui.item).css("border-width", "");
             if ($t.p.rownumbers === true) {
               $("td.jqgrid-rownum", $t.rows).each(function(i) {
-                $(this).html(i + 1);
+                $(this).html(i + 1 + (parseInt($t.p.page, 10) - 1) * parseInt($t.p.rowNum, 10));
               });
             }
             if (opts._update_) {
