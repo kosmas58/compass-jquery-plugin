@@ -237,7 +237,7 @@
 		//urlHistory is purely here to make guesses at whether the back or forward button was clicked
 		//and provide an appropriate transition
 		urlHistory = {
-			// Array of pages that are visited during a single page load. 
+			// Array of pages that are visited during a single page load.
 			// Each has a url and optional transition, title, and pageUrl (which represents the file path, in cases where URL is obscured, such as dialogs)
 			stack: [],
 
@@ -616,18 +616,18 @@
 		}
 
 		if ( settings.showLoadMsg ) {
-			
+
 			// This configurable timeout allows cached pages a brief delay to load without showing a message
 			var loadMsgDelay = setTimeout(function(){
 					$.mobile.showPageLoadingMsg();
 				}, settings.loadMsgDelay ),
-				
+
 				// Shared logic for clearing timeout and removing message.
 				hideMsg = function(){
-					
+
 					// Stop message show timer
 					clearTimeout( loadMsgDelay );
-					
+
 					// Hide loading message
 					$.mobile.hidePageLoadingMsg();
 				};
@@ -745,7 +745,7 @@
 
 					// Remove loading message.
 					if ( settings.showLoadMsg ) {
-						
+
 						// Remove loading message.
 						hideMsg();
 
@@ -917,7 +917,11 @@
 		// for the dialog content to be used in the hash. Instead, we want
 		// to append the dialogHashKey to the url of the current page.
 		if ( isDialog && active ) {
-			url = active.url + dialogHashKey;
+			// on the initial page load active.url is undefined and in that case should
+			// be an empty string. Moving the undefined -> empty string back into
+			// urlHistory.addNew seemed imprudent given undefined better represents
+			// the url state
+			url = ( active.url || "" ) + dialogHashKey;
 		}
 
 		// Set the location hash.
@@ -1216,7 +1220,7 @@
 					urlHistory.directHashChange({	currentUrl: to, isBack: setTo, isForward: setTo	});
 				}
 			}
-			
+
 			//if to is defined, load it
 			if ( to ) {
 				to = ( typeof to === "string" && !path.isPath( to ) ) ? ( '#' + to ) : to;

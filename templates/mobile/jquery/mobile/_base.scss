@@ -1243,7 +1243,7 @@ ol.ui-listview .ui-li-jsnumbering:before {
   padding: 0; }
 
 .ui-li .ui-btn-inner a.ui-link-inherit, .ui-li-static.ui-li {
-  padding: .7em 25px .7em 15px;
+  padding: .7em 15px .7em 15px;
   display: block; }
 
 .ui-li-has-thumb .ui-btn-inner a.ui-link-inherit, .ui-li-static.ui-li-has-thumb {
@@ -1255,6 +1255,12 @@ ol.ui-listview .ui-li-jsnumbering:before {
   padding-left: 40px; }
 
 .ui-li-has-count .ui-btn-inner a.ui-link-inherit, .ui-li-static.ui-li-has-count {
+  padding-right: 45px; }
+
+.ui-li-has-arrow .ui-btn-inner a.ui-link-inherit, .ui-li-static.ui-li-has-arrow {
+  padding-right: 30px; }
+
+.ui-li-has-arrow.ui-li-has-count .ui-btn-inner a.ui-link-inherit, .ui-li-static.ui-li-has-arrow.ui-li-has-count {
   padding-right: 75px; }
 
 .ui-li-heading {
