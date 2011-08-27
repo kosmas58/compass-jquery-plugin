@@ -27,6 +27,7 @@ all_scripts = [
     'js/jquery.mobile.page.js',
     'js/jquery.mobile.core.js',
     'js/jquery.mobile.navigation.js',
+	  'js/jquery.mobile.navigation.pushstate.js',
     'js/jquery.mobile.transition.js',
 	  'js/jquery.mobile.degradeInputs.js',
     'js/jquery.mobile.dialog.js',
