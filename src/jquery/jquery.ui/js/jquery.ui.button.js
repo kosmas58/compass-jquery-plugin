@@ -1,5 +1,5 @@
 /*
- * jQuery UI Button 1.8.15
+ * jQuery UI Button 1.8.16
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -227,7 +227,7 @@
         // we don't search against the document in case the element
         // is disconnected from the DOM
         var ancestor = this.element.parents().filter(":last"),
-                labelSelector = "label[for=" + this.element.attr("id") + "]";
+                labelSelector = "label[for='" + this.element.attr("id") + "']";
         this.buttonElement = ancestor.find(labelSelector);
         if (!this.buttonElement.length) {
           ancestor = ancestor.length ? ancestor.siblings() : this.element.siblings();

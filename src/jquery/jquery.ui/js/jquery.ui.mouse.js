@@ -1,5 +1,5 @@
 /*!
- * jQuery UI Mouse 1.8.15
+ * jQuery UI Mouse 1.8.16
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -11,6 +11,11 @@
  *	jquery.ui.widget.js
  */
 (function($, undefined) {
+
+  var mouseHandled = false;
+  $(document).mouseup(function(e) {
+    mouseHandled = false;
+  });
 
   $.widget("ui.mouse", {
     options: {
@@ -44,11 +49,10 @@
 
     _mouseDown: function(event) {
       // don't let more than one widget handle mouseStart
-      // TODO: figure out why we have to use originalEvent
-      event.originalEvent = event.originalEvent || {};
-      if (event.originalEvent.mouseHandled) {
-        return;
+      if (mouseHandled) {
+        return
       }
+      ;
 
       // we may have missed mouseup (out of window)
       (this._mouseStarted && this._mouseUp(event));
@@ -57,7 +61,9 @@
 
       var self = this,
               btnIsLeft = (event.which == 1),
-              elIsCancel = (typeof this.options.cancel == "string" ? $(event.target).closest(this.options.cancel).length : false);
+        // event.target.nodeName works around a bug in IE 8 with
+        // disabled inputs (#7620)
+              elIsCancel = (typeof this.options.cancel == "string" && event.target.nodeName ? $(event.target).closest(this.options.cancel).length : false);
       if (!btnIsLeft || elIsCancel || !this._mouseCapture(event)) {
         return true;
       }
@@ -94,7 +100,8 @@
               .bind('mouseup.' + this.widgetName, this._mouseUpDelegate);
 
       event.preventDefault();
-      event.originalEvent.mouseHandled = true;
+
+      mouseHandled = true;
       return true;
     },
 

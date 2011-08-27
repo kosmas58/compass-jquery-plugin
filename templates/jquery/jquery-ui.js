@@ -1,5 +1,5 @@
 /*!
- * jQuery UI 1.8.15
+ * jQuery UI 1.8.16
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -18,7 +18,7 @@
   }
 
   $.extend($.ui, {
-    version: "1.8.15",
+    version: "1.8.16",
 
     keyCode: {
       ALT: 18,
@@ -315,7 +315,7 @@
 
 
 /*!
- * jQuery UI Widget 1.8.15
+ * jQuery UI Widget 1.8.16
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -330,7 +330,11 @@
     var _cleanData = $.cleanData;
     $.cleanData = function(elems) {
       for (var i = 0, elem; (elem = elems[i]) != null; i++) {
-        $(elem).triggerHandler("remove");
+        try {
+          $(elem).triggerHandler("remove");
+          // http://bugs.jquery.com/ticket/8235
+        } catch(e) {
+        }
       }
       _cleanData(elems);
     };
@@ -341,7 +345,11 @@
         if (!keepData) {
           if (!selector || $.filter(selector, [ this ]).length) {
             $("*", this).add([ this ]).each(function() {
-              $(this).triggerHandler("remove");
+              try {
+                $(this).triggerHandler("remove");
+                // http://bugs.jquery.com/ticket/8235
+              } catch(e) {
+              }
             });
           }
         }
@@ -581,7 +589,7 @@
 
 
 /*!
- * jQuery UI Mouse 1.8.15
+ * jQuery UI Mouse 1.8.16
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -593,6 +601,11 @@
  *	jquery.ui.widget.js
  */
 (function($, undefined) {
+
+  var mouseHandled = false;
+  $(document).mouseup(function(e) {
+    mouseHandled = false;
+  });
 
   $.widget("ui.mouse", {
     options: {
@@ -626,11 +639,10 @@
 
     _mouseDown: function(event) {
       // don't let more than one widget handle mouseStart
-      // TODO: figure out why we have to use originalEvent
-      event.originalEvent = event.originalEvent || {};
-      if (event.originalEvent.mouseHandled) {
-        return;
+      if (mouseHandled) {
+        return
       }
+      ;
 
       // we may have missed mouseup (out of window)
       (this._mouseStarted && this._mouseUp(event));
@@ -639,7 +651,9 @@
 
       var self = this,
               btnIsLeft = (event.which == 1),
-              elIsCancel = (typeof this.options.cancel == "string" ? $(event.target).closest(this.options.cancel).length : false);
+        // event.target.nodeName works around a bug in IE 8 with
+        // disabled inputs (#7620)
+              elIsCancel = (typeof this.options.cancel == "string" && event.target.nodeName ? $(event.target).closest(this.options.cancel).length : false);
       if (!btnIsLeft || elIsCancel || !this._mouseCapture(event)) {
         return true;
       }
@@ -676,7 +690,8 @@
               .bind('mouseup.' + this.widgetName, this._mouseUpDelegate);
 
       event.preventDefault();
-      event.originalEvent.mouseHandled = true;
+
+      mouseHandled = true;
       return true;
     },
 
@@ -746,7 +761,7 @@
 
 
 /*
- * jQuery UI Accordion 1.8.15
+ * jQuery UI Accordion 1.8.16
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -1265,7 +1280,7 @@
   });
 
   $.extend($.ui.accordion, {
-    version: "1.8.15",
+    version: "1.8.16",
     animations: {
       slide: function(options, additions) {
         options = $.extend({
@@ -1359,7 +1374,7 @@
 
 
 /*
- * jQuery UI Autocomplete 1.8.15
+ * jQuery UI Autocomplete 1.8.16
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -1975,7 +1990,7 @@
 
 
 /*
- * jQuery UI Button 1.8.15
+ * jQuery UI Button 1.8.16
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -2203,7 +2218,7 @@
         // we don't search against the document in case the element
         // is disconnected from the DOM
         var ancestor = this.element.parents().filter(":last"),
-                labelSelector = "label[for=" + this.element.attr("id") + "]";
+                labelSelector = "label[for='" + this.element.attr("id") + "']";
         this.buttonElement = ancestor.find(labelSelector);
         if (!this.buttonElement.length) {
           ancestor = ancestor.length ? ancestor.siblings() : this.element.siblings();
@@ -2393,7 +2408,7 @@
 
 
 /*
- * jQuery UI Datepicker 1.8.15
+ * jQuery UI Datepicker 1.8.16
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -2406,7 +2421,7 @@
  */
 (function($, undefined) {
 
-  $.extend($.ui, { datepicker: { version: "1.8.15" } });
+  $.extend($.ui, { datepicker: { version: "1.8.16" } });
 
   var PROP_NAME = 'datepicker';
   var dpuuid = new Date().getTime();
@@ -3043,6 +3058,7 @@
     },
 
     /* Pop-up the date picker for a given input field.
+     If false returned from beforeShow event handler do not show.
      @param  input  element - the input field attached to the date picker or
      event - if triggered by focus */
     _showDatepicker: function(input) {
@@ -3059,7 +3075,12 @@
         $.datepicker._curInst.dpDiv.stop(true, true);
       }
       var beforeShow = $.datepicker._get(inst, 'beforeShow');
-      extendRemove(inst.settings, (beforeShow ? beforeShow.apply(input, [input, inst]) : {}));
+      var beforeShowSettings = beforeShow ? beforeShow.apply(input, [input, inst]) : {};
+      if (beforeShowSettings === false) {
+        //false
+        return;
+      }
+      extendRemove(inst.settings, beforeShowSettings);
       inst.lastVal = null;
       $.datepicker._lastInput = input;
       $.datepicker._setDateFromField(inst);
@@ -3342,7 +3363,8 @@
       else {
         this._hideDatepicker();
         this._lastInput = inst.input[0];
-        inst.input.focus(); // restore focus
+        if (typeof(inst.input[0]) != 'object')
+          inst.input.focus(); // restore focus
         this._lastInput = null;
       }
     },
@@ -3817,14 +3839,6 @@
       if (inst.input) {
         inst.input.val(clear ? '' : this._formatDate(inst));
       }
-
-      var onSelect = this._get(inst, 'onSelect');
-      if (onSelect) {
-        var dateStr = this._formatDate(inst);
-
-        // trigger custom callback
-        onSelect.apply((inst.input ? inst.input[0] : null), [dateStr, inst]);
-      }
     },
 
     /* Retrieve the date(s) directly. */
@@ -4258,7 +4272,7 @@
   $.datepicker = new Datepicker(); // singleton instance
   $.datepicker.initialized = false;
   $.datepicker.uuid = new Date().getTime();
-  $.datepicker.version = "1.8.15";
+  $.datepicker.version = "1.8.16";
 
 // Workaround for #4055
 // Add another global to avoid noConflict issues with inline event handlers
@@ -4268,7 +4282,7 @@
 
 
 /*
- * jQuery UI Dialog 1.8.15
+ * jQuery UI Dialog 1.8.16
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -4379,7 +4393,7 @@
                 // setting tabIndex makes the div focusable
                 // setting outline to 0 prevents a border on focus in Mozilla
                       .attr('tabIndex', -1).css('outline', 0).keydown(function(event) {
-                        if (options.closeOnEscape && event.keyCode &&
+                        if (options.closeOnEscape && !event.isDefaultPrevented() && event.keyCode &&
                                 event.keyCode === $.ui.keyCode.ESCAPE) {
 
                           self.close(event);
@@ -4973,7 +4987,7 @@
   });
 
   $.extend($.ui.dialog, {
-    version: "1.8.15",
+    version: "1.8.16",
 
     uuid: 0,
     maxZ: 0,
@@ -5021,7 +5035,7 @@
 
         // allow closing by pressing the escape key
         $(document).bind('keydown.dialog-overlay', function(event) {
-          if (dialog.options.closeOnEscape && event.keyCode &&
+          if (dialog.options.closeOnEscape && !event.isDefaultPrevented() && event.keyCode &&
                   event.keyCode === $.ui.keyCode.ESCAPE) {
 
             dialog.close(event);
@@ -5152,7 +5166,7 @@
 
 
 /*
- * jQuery UI Draggable 1.8.15
+ * jQuery UI Draggable 1.8.16
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -5233,15 +5247,17 @@
       if (!this.handle)
         return false;
 
-      $(o.iframeFix === true ? "iframe" : o.iframeFix).each(function() {
-        $('<div class="ui-draggable-iframeFix" style="background: #fff;"></div>')
-                .css({
-                  width: this.offsetWidth + "px", height: this.offsetHeight + "px",
-                  position: "absolute", opacity: "0.001", zIndex: 1000
-                })
-                .css($(this).offset())
-                .appendTo("body");
-      });
+      if (o.iframeFix) {
+        $(o.iframeFix === true ? "iframe" : o.iframeFix).each(function() {
+          $('<div class="ui-draggable-iframeFix" style="background: #fff;"></div>')
+                  .css({
+                    width: this.offsetWidth + "px", height: this.offsetHeight + "px",
+                    position: "absolute", opacity: "0.001", zIndex: 1000
+                  })
+                  .css($(this).offset())
+                  .appendTo("body");
+        });
+      }
 
       return true;
 
@@ -5657,7 +5673,7 @@
   });
 
   $.extend($.ui.draggable, {
-    version: "1.8.15"
+    version: "1.8.16"
   });
 
   $.ui.plugin.add("draggable", "connectToSortable", {
@@ -5985,7 +6001,7 @@
 
 
 /*
- * jQuery UI Droppable 1.8.15
+ * jQuery UI Droppable 1.8.16
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -6137,7 +6153,7 @@
   });
 
   $.extend($.ui.droppable, {
-    version: "1.8.15"
+    version: "1.8.16"
   });
 
   $.ui.intersect = function(draggable, droppable, toleranceMode) {
@@ -6238,7 +6254,7 @@
     },
     dragStart: function(draggable, event) {
       //Listen for scrolling so that if the dragging causes scrolling the position of the droppables can be recalculated (see #5003)
-      draggable.element.parentsUntil("body").bind("scroll.droppable", function() {
+      draggable.element.parents(":not(body,html)").bind("scroll.droppable", function() {
         if (!draggable.options.refreshPositions) $.ui.ddmanager.prepareOffsets(draggable, event);
       });
     },
@@ -6286,7 +6302,7 @@
 
     },
     dragStop: function(draggable, event) {
-      draggable.element.parentsUntil("body").unbind("scroll.droppable");
+      draggable.element.parents(":not(body,html)").unbind("scroll.droppable");
       //Call prepareOffsets one final time since IE does not fire return scroll events when overflow was caused by drag (see #5003)
       if (!draggable.options.refreshPositions) $.ui.ddmanager.prepareOffsets(draggable, event);
     }
@@ -6716,7 +6732,7 @@
 
 
 /*
- * jQuery UI Position 1.8.15
+ * jQuery UI Position 1.8.16
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -6972,7 +6988,7 @@
 
 
 /*
- * jQuery UI Progressbar 1.8.15
+ * jQuery UI Progressbar 1.8.16
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -7076,14 +7092,14 @@
   });
 
   $.extend($.ui.progressbar, {
-    version: "1.8.15"
+    version: "1.8.16"
   });
 
 })(jQuery);
 
 
 /*
- * jQuery UI Resizable 1.8.15
+ * jQuery UI Resizable 1.8.16
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -7636,7 +7652,7 @@
   });
 
   $.extend($.ui.resizable, {
-    version: "1.8.15"
+    version: "1.8.16"
   });
 
   /*
@@ -7943,7 +7959,7 @@
 
 
 /*
- * jQuery UI Selectable 1.8.15
+ * jQuery UI Selectable 1.8.16
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -8212,7 +8228,7 @@
   });
 
   $.extend($.ui.selectable, {
-    version: "1.8.15"
+    version: "1.8.16"
   });
 
 })(jQuery);
@@ -9020,7 +9036,7 @@
 
 
 /*
- * jQuery UI Slider 1.8.15
+ * jQuery UI Slider 1.8.16
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -9681,14 +9697,14 @@
   });
 
   $.extend($.ui.slider, {
-    version: "1.8.15"
+    version: "1.8.16"
   });
 
 }(jQuery));
 
 
 /*
- * jQuery UI Sortable 1.8.15
+ * jQuery UI Sortable 1.8.16
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -10821,14 +10837,14 @@
   });
 
   $.extend($.ui.sortable, {
-    version: "1.8.15"
+    version: "1.8.16"
   });
 
 })(jQuery);
 
 
 /*
- * jQuery UI Tabs 1.8.15
+ * jQuery UI Tabs 1.8.16
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -11530,7 +11546,7 @@
   });
 
   $.extend($.ui.tabs, {
-    version: "1.8.15"
+    version: "1.8.16"
   });
 
   /*
@@ -11591,7 +11607,7 @@
 
 
 /*
- * jQuery UI Effects 1.8.15
+ * jQuery UI Effects 1.8.16
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -11922,7 +11938,7 @@ jQuery.effects || (function($, undefined) {
   /******************************************************************************/
 
   $.extend($.effects, {
-    version: "1.8.15",
+    version: "1.8.16",
 
     // Saves a set of properties in a data storage
     save: function(element, set) {
@@ -11999,9 +12015,16 @@ jQuery.effects || (function($, undefined) {
                         border: 'none',
                         margin: 0,
                         padding: 0
-                      });
+                      }),
+              active = document.activeElement;
 
       element.wrap(wrapper);
+
+      // Fixes #7595 - Elements lose focus when wrapped.
+      if (element[ 0 ] === active || $.contains(element[ 0 ], active)) {
+        $(active).focus();
+      }
+
       wrapper = element.parent(); //Hotfix for jQuery 1.4 since some change in wrap() seems to actually loose the reference to the wrapped element
 
       // transfer positioning properties to the wrapper
@@ -12026,8 +12049,18 @@ jQuery.effects || (function($, undefined) {
     },
 
     removeWrapper: function(element) {
-      if (element.parent().is('.ui-effects-wrapper'))
-        return element.parent().replaceWith(element);
+      var parent,
+              active = document.activeElement;
+
+      if (element.parent().is('.ui-effects-wrapper')) {
+        parent = element.parent().replaceWith(element);
+        // Fixes #7595 - Elements lose focus when wrapped.
+        if (element[ 0 ] === active || $.contains(element[ 0 ], active)) {
+          $(active).focus();
+        }
+        return parent;
+      }
+
       return element;
     },
 
@@ -12399,7 +12432,7 @@ jQuery.effects || (function($, undefined) {
 
 
 /*
- * jQuery UI Effects Blind 1.8.15
+ * jQuery UI Effects Blind 1.8.16
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -12452,7 +12485,7 @@ jQuery.effects || (function($, undefined) {
 
 
 /*
- * jQuery UI Effects Bounce 1.8.15
+ * jQuery UI Effects Bounce 1.8.16
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -12540,7 +12573,7 @@ jQuery.effects || (function($, undefined) {
 
 
 /*
- * jQuery UI Effects Clip 1.8.15
+ * jQuery UI Effects Clip 1.8.16
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -12601,7 +12634,7 @@ jQuery.effects || (function($, undefined) {
 
 
 /*
- * jQuery UI Effects Drop 1.8.15
+ * jQuery UI Effects Drop 1.8.16
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -12655,7 +12688,7 @@ jQuery.effects || (function($, undefined) {
 
 
 /*
- * jQuery UI Effects Explode 1.8.15
+ * jQuery UI Effects Explode 1.8.16
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -12736,7 +12769,7 @@ jQuery.effects || (function($, undefined) {
 
 
 /*
- * jQuery UI Effects Fade 1.8.15
+ * jQuery UI Effects Fade 1.8.16
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -12770,7 +12803,7 @@ jQuery.effects || (function($, undefined) {
 
 
 /*
- * jQuery UI Effects Fold 1.8.15
+ * jQuery UI Effects Fold 1.8.16
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -12830,7 +12863,7 @@ jQuery.effects || (function($, undefined) {
 
 
 /*
- * jQuery UI Effects Highlight 1.8.15
+ * jQuery UI Effects Highlight 1.8.16
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -12882,7 +12915,7 @@ jQuery.effects || (function($, undefined) {
 
 
 /*
- * jQuery UI Effects Pulsate 1.8.15
+ * jQuery UI Effects Pulsate 1.8.16
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -12937,7 +12970,7 @@ jQuery.effects || (function($, undefined) {
 
 
 /*
- * jQuery UI Effects Scale 1.8.15
+ * jQuery UI Effects Scale 1.8.16
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -13139,7 +13172,7 @@ jQuery.effects || (function($, undefined) {
 
 
 /*
- * jQuery UI Effects Shake 1.8.15
+ * jQuery UI Effects Shake 1.8.16
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -13203,7 +13236,7 @@ jQuery.effects || (function($, undefined) {
 
 
 /*
- * jQuery UI Effects Slide 1.8.15
+ * jQuery UI Effects Slide 1.8.16
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -13257,7 +13290,7 @@ jQuery.effects || (function($, undefined) {
 
 
 /*
- * jQuery UI Effects Transfer 1.8.15
+ * jQuery UI Effects Transfer 1.8.16
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
