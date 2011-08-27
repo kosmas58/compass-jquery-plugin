@@ -1,306 +1,308 @@
 /*
-* jQuery Mobile Framework : "listview" plugin
-* Copyright (c) jQuery Project
-* Dual licensed under the MIT or GPL Version 2 licenses.
-* http://jquery.org/license
-*/
+ * jQuery Mobile Framework : "listview" plugin
+ * Copyright (c) jQuery Project
+ * Dual licensed under the MIT or GPL Version 2 licenses.
+ * http://jquery.org/license
+ */
 
-(function( $, undefined ) {
+(function($, undefined) {
 
 //Keeps track of the number of lists per page UID
 //This allows support for multiple nested list in the same page
 //https://github.com/jquery/jquery-mobile/issues/1617
-var listCountPerPage = {};
+  var listCountPerPage = {};
 
-$.widget( "mobile.listview", $.mobile.widget, {
-	options: {
-		theme: "c",
-		countTheme: "c",
-		headerTheme: "b",
-		dividerTheme: "b",
-		splitIcon: "arrow-r",
-		splitTheme: "b",
-		inset: false,
-		initSelector: ":jqmData(role='listview')"
-	},
+  $.widget("mobile.listview", $.mobile.widget, {
+    options: {
+      theme: "c",
+      countTheme: "c",
+      headerTheme: "b",
+      dividerTheme: "b",
+      splitIcon: "arrow-r",
+      splitTheme: "b",
+      inset: false,
+      initSelector: ":jqmData(role='listview')"
+    },
 
-	_create: function() {
-		var t = this;
+    _create: function() {
+      var t = this;
 
-		// create listview markup
-		t.element.addClass(function( i, orig ) {
-			return orig + " ui-listview " + ( t.options.inset ? " ui-listview-inset ui-corner-all ui-shadow " : "" );
-		});
+      // create listview markup
+      t.element.addClass(function(i, orig) {
+        return orig + " ui-listview " + ( t.options.inset ? " ui-listview-inset ui-corner-all ui-shadow " : "" );
+      });
 
-		t.refresh( true );
-	},
+      t.refresh(true);
+    },
 
-	_itemApply: function( $list, item ) {
-		var $countli = item.find( ".ui-li-count" );
-		if ( $countli.length ) {
-			item.addClass( "ui-li-has-count" );
-		}
-		$countli.addClass( "ui-btn-up-" + ( $list.jqmData( "counttheme" ) || this.options.countTheme ) + " ui-btn-corner-all" );
+    _itemApply: function($list, item) {
+      var $countli = item.find(".ui-li-count");
+      if ($countli.length) {
+        item.addClass("ui-li-has-count");
+      }
+      $countli.addClass("ui-btn-up-" + ( $list.jqmData("counttheme") || this.options.countTheme ) + " ui-btn-corner-all");
 
-		// TODO class has to be defined in markup
-		item.find( "h1, h2, h3, h4, h5, h6" ).addClass( "ui-li-heading" ).end()
-			.find( "p, dl" ).addClass( "ui-li-desc" ).end()
-			.find( ">img:eq(0), .ui-link-inherit>img:eq(0)" ).addClass( "ui-li-thumb" ).each(function() {
-				item.addClass( $(this).is( ".ui-li-icon" ) ? "ui-li-has-icon" : "ui-li-has-thumb" );
-			}).end()
-			.find( ".ui-li-aside" ).each(function() {
-				var $this = $(this);
-				$this.prependTo( $this.parent() ); //shift aside to front for css float
-			});
-	},
+      // TODO class has to be defined in markup
+      item.find("h1, h2, h3, h4, h5, h6").addClass("ui-li-heading").end()
+              .find("p, dl").addClass("ui-li-desc").end()
+              .find(">img:eq(0), .ui-link-inherit>img:eq(0)").addClass("ui-li-thumb").each(
+              function() {
+                item.addClass($(this).is(".ui-li-icon") ? "ui-li-has-icon" : "ui-li-has-thumb");
+              }).end()
+              .find(".ui-li-aside").each(function() {
+                var $this = $(this);
+                $this.prependTo($this.parent()); //shift aside to front for css float
+              });
+    },
 
-	_removeCorners: function( li, which ) {
-		var top = "ui-corner-top ui-corner-tr ui-corner-tl",
-			bot = "ui-corner-bottom ui-corner-br ui-corner-bl";
+    _removeCorners: function(li, which) {
+      var top = "ui-corner-top ui-corner-tr ui-corner-tl",
+              bot = "ui-corner-bottom ui-corner-br ui-corner-bl";
 
-		li = li.add( li.find( ".ui-btn-inner, .ui-li-link-alt, .ui-li-thumb" ) );
+      li = li.add(li.find(".ui-btn-inner, .ui-li-link-alt, .ui-li-thumb"));
 
-		if ( which === "top" ) {
-			li.removeClass( top );
-		} else if ( which === "bottom" ) {
-			li.removeClass( bot );
-		} else {
-			li.removeClass( top + " " + bot );
-		}
-	},
+      if (which === "top") {
+        li.removeClass(top);
+      } else if (which === "bottom") {
+        li.removeClass(bot);
+      } else {
+        li.removeClass(top + " " + bot);
+      }
+    },
 
-	_refreshCorners: function( create ) {
-		var $li,
-			$visibleli,
-			$topli,
-			$bottomli;
+    _refreshCorners: function(create) {
+      var $li,
+              $visibleli,
+              $topli,
+              $bottomli;
 
-		if ( this.options.inset ) {
-			$li = this.element.children( "li" );
-			// at create time the li are not visible yet so we need to rely on .ui-screen-hidden
-			$visibleli = create?$li.not( ".ui-screen-hidden" ):$li.filter( ":visible" );
-			
-			this._removeCorners( $li );
+      if (this.options.inset) {
+        $li = this.element.children("li");
+        // at create time the li are not visible yet so we need to rely on .ui-screen-hidden
+        $visibleli = create ? $li.not(".ui-screen-hidden") : $li.filter(":visible");
 
-			// Select the first visible li element
-			$topli = $visibleli.first()
-				.addClass( "ui-corner-top" );
+        this._removeCorners($li);
 
-			$topli.add( $topli.find( ".ui-btn-inner" ) )
-				.find( ".ui-li-link-alt" )
-					.addClass( "ui-corner-tr" )
-				.end()
-				.find( ".ui-li-thumb" )
-					.addClass( "ui-corner-tl" );
+        // Select the first visible li element
+        $topli = $visibleli.first()
+                .addClass("ui-corner-top");
 
-			// Select the last visible li element
-			$bottomli = $visibleli.last()
-				.addClass( "ui-corner-bottom" );
+        $topli.add($topli.find(".ui-btn-inner"))
+                .find(".ui-li-link-alt")
+                .addClass("ui-corner-tr")
+                .end()
+                .find(".ui-li-thumb")
+                .addClass("ui-corner-tl");
 
-			$bottomli.add( $bottomli.find( ".ui-btn-inner" ) )
-				.find( ".ui-li-link-alt" )
-					.addClass( "ui-corner-br" )
-				.end()
-				.find( ".ui-li-thumb" )
-					.addClass( "ui-corner-bl" );
-		}
-	},
+        // Select the last visible li element
+        $bottomli = $visibleli.last()
+                .addClass("ui-corner-bottom");
 
-	refresh: function( create ) {
-		this.parentPage = this.element.closest( ".ui-page" );
-		this._createSubPages();
+        $bottomli.add($bottomli.find(".ui-btn-inner"))
+                .find(".ui-li-link-alt")
+                .addClass("ui-corner-br")
+                .end()
+                .find(".ui-li-thumb")
+                .addClass("ui-corner-bl");
+      }
+    },
 
-		var o = this.options,
-			$list = this.element,
-			self = this,
-			dividertheme = $list.jqmData( "dividertheme" ) || o.dividerTheme,
-			listsplittheme = $list.jqmData( "splittheme" ),
-			listspliticon = $list.jqmData( "spliticon" ),
-			li = $list.children( "li" ),
-			counter = $.support.cssPseudoElement || !$.nodeName( $list[ 0 ], "ol" ) ? 0 : 1,
-			item, itemClass, itemTheme,
-			a, last, splittheme, countParent, icon;
+    refresh: function(create) {
+      this.parentPage = this.element.closest(".ui-page");
+      this._createSubPages();
 
-		if ( counter ) {
-			$list.find( ".ui-li-dec" ).remove();
-		}
+      var o = this.options,
+              $list = this.element,
+              self = this,
+              dividertheme = $list.jqmData("dividertheme") || o.dividerTheme,
+              listsplittheme = $list.jqmData("splittheme"),
+              listspliticon = $list.jqmData("spliticon"),
+              li = $list.children("li"),
+              counter = $.support.cssPseudoElement || !$.nodeName($list[ 0 ], "ol") ? 0 : 1,
+              item, itemClass, itemTheme,
+              a, last, splittheme, countParent, icon;
 
-		for ( var pos = 0, numli = li.length; pos < numli; pos++ ) {
-			item = li.eq( pos );
-			itemClass = "ui-li";
+      if (counter) {
+        $list.find(".ui-li-dec").remove();
+      }
 
-			// If we're creating the element, we update it regardless
-			if ( create || !item.hasClass( "ui-li" ) ) {
-				itemTheme = item.jqmData("theme") || o.theme;
-				a = item.children( "a" );
+      for (var pos = 0, numli = li.length; pos < numli; pos++) {
+        item = li.eq(pos);
+        itemClass = "ui-li";
 
-				if ( a.length ) {
-					icon = item.jqmData("icon");
+        // If we're creating the element, we update it regardless
+        if (create || !item.hasClass("ui-li")) {
+          itemTheme = item.jqmData("theme") || o.theme;
+          a = item.children("a");
 
-					item.buttonMarkup({
-						wrapperEls: "div",
-						shadow: false,
-						corners: false,
-						iconpos: "right",
-						icon: a.length > 1 || icon === false ? false : icon || "arrow-r",
-						theme: itemTheme
-					});
+          if (a.length) {
+            icon = item.jqmData("icon");
 
-					if ( ( icon != false ) && ( a.length == 1 ) ) {
-						item.addClass( "ui-li-has-arrow" );
-					}
+            item.buttonMarkup({
+              wrapperEls: "div",
+              shadow: false,
+              corners: false,
+              iconpos: "right",
+              icon: a.length > 1 || icon === false ? false : icon || "arrow-r",
+              theme: itemTheme
+            });
 
-					a.first().addClass( "ui-link-inherit" );
+            if (( icon != false ) && ( a.length == 1 )) {
+              item.addClass("ui-li-has-arrow");
+            }
 
-					if ( a.length > 1 ) {
-						itemClass += " ui-li-has-alt";
+            a.first().addClass("ui-link-inherit");
 
-						last = a.last();
-						splittheme = listsplittheme || last.jqmData( "theme" ) || o.splitTheme;
+            if (a.length > 1) {
+              itemClass += " ui-li-has-alt";
 
-						last.appendTo(item)
-							.attr( "title", last.text() )
-							.addClass( "ui-li-link-alt" )
-							.empty()
-							.buttonMarkup({
-								shadow: false,
-								corners: false,
-								theme: itemTheme,
-								icon: false,
-								iconpos: false
-							})
-							.find( ".ui-btn-inner" )
-								.append(
-									$( "<span />" ).buttonMarkup({
-										shadow: true,
-										corners: true,
-										theme: splittheme,
-										iconpos: "notext",
-										icon: listspliticon || last.jqmData( "icon" ) || o.splitIcon
-									})
-								);
-					}
-				} else if ( item.jqmData( "role" ) === "list-divider" ) {
+              last = a.last();
+              splittheme = listsplittheme || last.jqmData("theme") || o.splitTheme;
 
-					itemClass += " ui-li-divider ui-btn ui-bar-" + dividertheme;
-					item.attr( "role", "heading" );
+              last.appendTo(item)
+                      .attr("title", last.text())
+                      .addClass("ui-li-link-alt")
+                      .empty()
+                      .buttonMarkup({
+                        shadow: false,
+                        corners: false,
+                        theme: itemTheme,
+                        icon: false,
+                        iconpos: false
+                      })
+                      .find(".ui-btn-inner")
+                      .append(
+                      $("<span />").buttonMarkup({
+                        shadow: true,
+                        corners: true,
+                        theme: splittheme,
+                        iconpos: "notext",
+                        icon: listspliticon || last.jqmData("icon") || o.splitIcon
+                      })
+              );
+            }
+          } else if (item.jqmData("role") === "list-divider") {
 
-					//reset counter when a divider heading is encountered
-					if ( counter ) {
-						counter = 1;
-					}
+            itemClass += " ui-li-divider ui-btn ui-bar-" + dividertheme;
+            item.attr("role", "heading");
 
-				} else {
-					itemClass += " ui-li-static ui-body-" + itemTheme;
-				}
-			}
+            //reset counter when a divider heading is encountered
+            if (counter) {
+              counter = 1;
+            }
 
-			if ( counter && itemClass.indexOf( "ui-li-divider" ) < 0 ) {
-				countParent = item.is( ".ui-li-static:first" ) ? item : item.find( ".ui-link-inherit" );
+          } else {
+            itemClass += " ui-li-static ui-body-" + itemTheme;
+          }
+        }
 
-				countParent.addClass( "ui-li-jsnumbering" )
-					.prepend( "<span class='ui-li-dec'>" + (counter++) + ". </span>" );
-			}
+        if (counter && itemClass.indexOf("ui-li-divider") < 0) {
+          countParent = item.is(".ui-li-static:first") ? item : item.find(".ui-link-inherit");
 
-			item.add( item.children( ".ui-btn-inner" ) ).addClass( itemClass );
+          countParent.addClass("ui-li-jsnumbering")
+                  .prepend("<span class='ui-li-dec'>" + (counter++) + ". </span>");
+        }
 
-			self._itemApply( $list, item );
-		}
-		
-		this._refreshCorners( create );
-	},
+        item.add(item.children(".ui-btn-inner")).addClass(itemClass);
 
-	//create a string for ID/subpage url creation
-	_idStringEscape: function( str ) {
-		return str.replace(/[^a-zA-Z0-9]/g, '-');
-	},
+        self._itemApply($list, item);
+      }
 
-	_createSubPages: function() {
-		var parentList = this.element,
-			parentPage = parentList.closest( ".ui-page" ),
-			parentUrl = parentPage.jqmData( "url" ),
-			parentId = parentUrl || parentPage[ 0 ][ $.expando ],
-			parentListId = parentList.attr( "id" ),
-			o = this.options,
-			dns = "data-" + $.mobile.ns,
-			self = this,
-			persistentFooterID = parentPage.find( ":jqmData(role='footer')" ).jqmData( "id" ),
-			hasSubPages;
+      this._refreshCorners(create);
+    },
 
-		if ( typeof listCountPerPage[ parentId ] === "undefined" ) {
-			listCountPerPage[ parentId ] = -1;
-		}
+    //create a string for ID/subpage url creation
+    _idStringEscape: function(str) {
+      return str.replace(/[^a-zA-Z0-9]/g, '-');
+    },
 
-		parentListId = parentListId || ++listCountPerPage[ parentId ];
+    _createSubPages: function() {
+      var parentList = this.element,
+              parentPage = parentList.closest(".ui-page"),
+              parentUrl = parentPage.jqmData("url"),
+              parentId = parentUrl || parentPage[ 0 ][ $.expando ],
+              parentListId = parentList.attr("id"),
+              o = this.options,
+              dns = "data-" + $.mobile.ns,
+              self = this,
+              persistentFooterID = parentPage.find(":jqmData(role='footer')").jqmData("id"),
+              hasSubPages;
 
-		$( parentList.find( "li>ul, li>ol" ).toArray().reverse() ).each(function( i ) {
-			var self = this,
-				list = $( this ),
-				listId = list.attr( "id" ) || parentListId + "-" + i,
-				parent = list.parent(),
-				nodeEls = $( list.prevAll().toArray().reverse() ),
-				nodeEls = nodeEls.length ? nodeEls : $( "<span>" + $.trim(parent.contents()[ 0 ].nodeValue) + "</span>" ),
-				title = nodeEls.first().text(),//url limits to first 30 chars of text
-				id = ( parentUrl || "" ) + "&" + $.mobile.subPageUrlKey + "=" + listId,
-				theme = list.jqmData( "theme" ) || o.theme,
-				countTheme = list.jqmData( "counttheme" ) || parentList.jqmData( "counttheme" ) || o.countTheme,
-				newPage, anchor;
+      if (typeof listCountPerPage[ parentId ] === "undefined") {
+        listCountPerPage[ parentId ] = -1;
+      }
 
-			//define hasSubPages for use in later removal
-			hasSubPages = true;
+      parentListId = parentListId || ++listCountPerPage[ parentId ];
 
-			newPage = list.detach()
-						.wrap( "<div " + dns + "role='page' " +	dns + "url='" + id + "' " + dns + "theme='" + theme + "' " + dns + "count-theme='" + countTheme + "'><div " + dns + "role='content'></div></div>" )
-						.parent()
-							.before( "<div " + dns + "role='header' " + dns + "theme='" + o.headerTheme + "'><div class='ui-title'>" + title + "</div></div>" )
-							.after( persistentFooterID ? $( "<div " + dns + "role='footer' " + dns + "id='"+ persistentFooterID +"'>") : "" )
-							.parent()
-								.appendTo( $.mobile.pageContainer );
+      $(parentList.find("li>ul, li>ol").toArray().reverse()).each(
+              function(i) {
+                var self = this,
+                        list = $(this),
+                        listId = list.attr("id") || parentListId + "-" + i,
+                        parent = list.parent(),
+                        nodeEls = $(list.prevAll().toArray().reverse()),
+                        nodeEls = nodeEls.length ? nodeEls : $("<span>" + $.trim(parent.contents()[ 0 ].nodeValue) + "</span>"),
+                        title = nodeEls.first().text(),//url limits to first 30 chars of text
+                        id = ( parentUrl || "" ) + "&" + $.mobile.subPageUrlKey + "=" + listId,
+                        theme = list.jqmData("theme") || o.theme,
+                        countTheme = list.jqmData("counttheme") || parentList.jqmData("counttheme") || o.countTheme,
+                        newPage, anchor;
 
-			newPage.page();
+                //define hasSubPages for use in later removal
+                hasSubPages = true;
 
-			anchor = parent.find('a:first');
+                newPage = list.detach()
+                        .wrap("<div " + dns + "role='page' " + dns + "url='" + id + "' " + dns + "theme='" + theme + "' " + dns + "count-theme='" + countTheme + "'><div " + dns + "role='content'></div></div>")
+                        .parent()
+                        .before("<div " + dns + "role='header' " + dns + "theme='" + o.headerTheme + "'><div class='ui-title'>" + title + "</div></div>")
+                        .after(persistentFooterID ? $("<div " + dns + "role='footer' " + dns + "id='" + persistentFooterID + "'>") : "")
+                        .parent()
+                        .appendTo($.mobile.pageContainer);
 
-			if ( !anchor.length ) {
-				anchor = $( "<a/>" ).html( nodeEls || title ).prependTo( parent.empty() );
-			}
+                newPage.page();
 
-			anchor.attr( "href", "#" + id );
+                anchor = parent.find('a:first');
 
-		}).listview();
+                if (!anchor.length) {
+                  anchor = $("<a/>").html(nodeEls || title).prependTo(parent.empty());
+                }
 
-		//on pagehide, remove any nested pages along with the parent page, as long as they aren't active
-		if( hasSubPages && parentPage.data("page").options.domCache === false ){
-			var newRemove = function( e, ui ){
-				var nextPage = ui.nextPage, npURL;
+                anchor.attr("href", "#" + id);
 
-				if( ui.nextPage ){
-					npURL = nextPage.jqmData( "url" );
-					if( npURL.indexOf( parentUrl + "&" + $.mobile.subPageUrlKey ) !== 0 ){
-						self.childPages().remove();
-						parentPage.remove();
-					}
-				}
-			};
+              }).listview();
 
-			// unbind the original page remove and replace with our specialized version
-			parentPage
-				.unbind( "pagehide.remove" )
-				.bind( "pagehide.remove", newRemove);
-		}
-	},
+      //on pagehide, remove any nested pages along with the parent page, as long as they aren't active
+      if (hasSubPages && parentPage.data("page").options.domCache === false) {
+        var newRemove = function(e, ui) {
+          var nextPage = ui.nextPage, npURL;
 
-	// TODO sort out a better way to track sub pages of the listview this is brittle
-	childPages: function(){
-		var parentUrl = this.parentPage.jqmData( "url" );
+          if (ui.nextPage) {
+            npURL = nextPage.jqmData("url");
+            if (npURL.indexOf(parentUrl + "&" + $.mobile.subPageUrlKey) !== 0) {
+              self.childPages().remove();
+              parentPage.remove();
+            }
+          }
+        };
 
-		return $( ":jqmData(url^='"+  parentUrl + "&" + $.mobile.subPageUrlKey +"')");
-	}
-});
+        // unbind the original page remove and replace with our specialized version
+        parentPage
+                .unbind("pagehide.remove")
+                .bind("pagehide.remove", newRemove);
+      }
+    },
+
+    // TODO sort out a better way to track sub pages of the listview this is brittle
+    childPages: function() {
+      var parentUrl = this.parentPage.jqmData("url");
+
+      return $(":jqmData(url^='" + parentUrl + "&" + $.mobile.subPageUrlKey + "')");
+    }
+  });
 
 //auto self-init widgets
-$( document ).bind( "pagecreate create", function( e ){
-	$( $.mobile.listview.prototype.options.initSelector, e.target ).listview();
-});
+  $(document).bind("pagecreate create", function(e) {
+    $($.mobile.listview.prototype.options.initSelector, e.target).listview();
+  });
 
-})( jQuery );
+})(jQuery);

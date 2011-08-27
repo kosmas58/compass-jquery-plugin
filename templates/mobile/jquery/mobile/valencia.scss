@@ -13,7 +13,7 @@
 
 .ui-bar-a {
   font-weight: bold;
-  border: 1px solid       #be7800;
+  border: 1px solid #be7800;
   background: #e99515;
   color: #fff;
   text-shadow: 0 -1px 0px #94440f;
@@ -30,7 +30,7 @@
   background-image: linear-gradient(top, #e9a015, #e98a15); }
 
 .ui-btn-up-a {
-  border: 1px solid       #BD610D;
+  border: 1px solid #BD610D;
   background: #e68510;
   color: #fff;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#ea9e0c), to(#e68510));
@@ -48,7 +48,7 @@
     color: #fff; } }
 
 .ui-btn-hover-a {
-  border: 1px solid       #b77504;
+  border: 1px solid #b77504;
   background: #ed9730;
   color: #fff;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#edab30), to(#ed9730));
@@ -66,7 +66,7 @@
     color: #fff; } }
 
 .ui-btn-down-a {
-  border: 1px solid       #BD610D;
+  border: 1px solid #BD610D;
   background: #BA6E11;
   color: #fff;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#ba8011), to(#ba6e11));
@@ -100,7 +100,7 @@
 
 .ui-body-a {
   font-weight: normal;
-  border: 1px solid       #222;
+  border: 1px solid #222;
   background: #444;
   color: #ddd;
   text-shadow: 0 -1px 0px black;
@@ -132,7 +132,7 @@
 
 .ui-bar-b {
   font-weight: bold;
-  border: 1px solid       #222;
+  border: 1px solid #222;
   background: #333333;
   color: #fff;
   text-shadow: 0 -1px 0px #111111;
@@ -149,7 +149,7 @@
   background-image: linear-gradient(top, #555555, #333333); }
 
 .ui-btn-up-b {
-  border: 1px solid       #232323;
+  border: 1px solid #232323;
   background: #393939;
   color: #eee;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#5e5e5e), to(#393939));
@@ -167,7 +167,7 @@
     color: #eee; } }
 
 .ui-btn-hover-b {
-  border: 1px solid       #232323;
+  border: 1px solid #232323;
   background: #494949;
   color: #fff;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#6e6e6e), to(#494949));
@@ -185,7 +185,7 @@
     color: #fff; } }
 
 .ui-btn-down-b {
-  border: 1px solid       #232323;
+  border: 1px solid #232323;
   background: #292929;
   color: #fff;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#4e4e4e), to(#292929));
@@ -221,10 +221,10 @@
 
 .ui-body-b {
   font-weight: normal;
-  border: 1px solid       #999;
+  border: 1px solid #999;
   background-color: #e5e5e5;
   color: #666;
-  text-shadow: 0 1px 0px  #fff;
+  text-shadow: 0 1px 0px #fff;
   background-image: image_url("jquery/mobile/valencia/texture_075.png");
   font-family: Helvetica, Arial, sans-serif;
   input, select, textarea, button {
@@ -243,10 +243,10 @@
 
 .ui-bar-c {
   font-weight: bold;
-  border: 1px solid       #ccc;
+  border: 1px solid #ccc;
   background: #e5e5e5;
   color: #111;
-  text-shadow: 0 1px 0px  #fff;
+  text-shadow: 0 1px 0px #fff;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#eeeeee), to(#e5e5e5));
   /* Saf4+, Chrome */
   background-image: -webkit-linear-gradient(top, #eeeeee, #e5e5e5);
@@ -267,10 +267,10 @@
   cursor: pointer;
   font-weight: bold;
   text-decoration: none;
-  text-shadow: 0 1px 0px  #fff; }
+  text-shadow: 0 1px 0px #fff; }
 
 .ui-btn-up-c {
-  border: 1px solid       #ccc;
+  border: 1px solid #ccc;
   background: #e5e5e5;
   color: #444;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#eeeeee), to(#e5e5e5));
@@ -288,7 +288,7 @@
     color: #444; } }
 
 .ui-btn-hover-c {
-  border: 1px solid       #ccc;
+  border: 1px solid #ccc;
   background: #f5f5f5;
   color: #222;
   background-image: -webkit-gradient(linear, left top, left bottom, from(white), to(#f5f5f5));
@@ -306,7 +306,7 @@
     color: #222; } }
 
 .ui-btn-down-c {
-  border: 1px solid       #ccc;
+  border: 1px solid #ccc;
   background: #d5d5d5;
   color: #111;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#dddddd), to(#d5d5d5));
@@ -324,9 +324,9 @@
     color: #111; } }
 
 .ui-body-c {
-  border: 1px solid       #ddd;
+  border: 1px solid #ddd;
   color: #333333;
-  text-shadow: 0 1px 0px  #fff;
+  text-shadow: 0 1px 0px #fff;
   background: #fff;
   background-image: image_url("jquery/mobile/valencia/texture_075.png");
   font-family: Helvetica, Arial, sans-serif;
@@ -346,10 +346,10 @@
 
 .ui-bar-d {
   font-weight: bold;
-  border: 1px solid       #ccc;
+  border: 1px solid #ccc;
   background: #cbcbcb;
   color: #666;
-  text-shadow: 0 1px 0px  #fff;
+  text-shadow: 0 1px 0px #fff;
   background-image: -webkit-gradient(linear, center top, center bottom, from(#dddddd), color-stop(5%, #cccccc), color-stop(15%, #bbbbbb), color-stop(95%, #dddddd), to(#cccccc));
   /* Saf4+, Chrome */
   background-image: -webkit-linear-gradient(top, #dddddd 0%, #cccccc 5%, #bbbbbb 15%, #dddddd 95%, #cccccc 100%);
@@ -371,7 +371,7 @@
     color: #2489CE; } }
 
 .ui-btn-up-d {
-  border: 1px solid       #c5c5c5;
+  border: 1px solid #c5c5c5;
   background: #ddd;
   color: #666;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#d5d5d5), to(#dddddd));
@@ -389,7 +389,7 @@
     color: #666; } }
 
 .ui-btn-hover-d {
-  border: 1px solid       #aaa;
+  border: 1px solid #aaa;
   background: #c5c5c5;
   color: #666;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#c5c5c5), to(#cccccc));
@@ -407,7 +407,7 @@
     color: #666; } }
 
 .ui-btn-down-d {
-  border: 1px solid       #999;
+  border: 1px solid #999;
   background: #b5b5b5;
   color: #444;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#b5b5b5), to(#bbbbbb));
@@ -429,14 +429,14 @@
   cursor: pointer;
   font-weight: bold;
   text-decoration: none;
-  text-shadow: 0 1px 0px  #fff; }
+  text-shadow: 0 1px 0px #fff; }
 
 .ui-btn-hover-d, .ui-btn-down-d {
   font-family: Helvetica, Arial, sans-serif;
   cursor: pointer;
   font-weight: bold;
   text-decoration: none;
-  text-shadow: 0 1px 0px  #fff; }
+  text-shadow: 0 1px 0px #fff; }
 
 .ui-body-d {
   font-family: Helvetica, Arial, sans-serif;
@@ -444,9 +444,9 @@
     font-family: Helvetica, Arial, sans-serif; }
   .ui-link-inherit {
     color: #333333; }
-  border: 1px solid       #aaa;
+  border: 1px solid #aaa;
   color: #666;
-  text-shadow: 0 1px 0px  #fff;
+  text-shadow: 0 1px 0px #fff;
   background: #eee;
   background-image: -webkit-gradient(linear, left top, left bottom, from(white), color-stop(15%, #f5f5f5), to(#eeeeee));
   /* Saf4+, Chrome */
@@ -478,10 +478,10 @@
 
 .ui-bar-e {
   font-weight: bold;
-  border: 1px solid       #999;
+  border: 1px solid #999;
   background: #dedede;
   color: #000;
-  text-shadow: 0 1px 0px  #fff;
+  text-shadow: 0 1px 0px #fff;
   background-image: -webkit-gradient(linear, left top, left bottom, from(white), color-stop(50%, #cccccc), color-stop(50%, #b5b5b5), to(#eeeeee));
   /* Saf4+, Chrome */
   background-image: -webkit-linear-gradient(top, white 0%, #cccccc 50%, #b5b5b5 50%, #eeeeee 100%);
@@ -508,10 +508,10 @@
     font-weight: bold; } }
 
 .ui-btn-up-e {
-  border: 1px solid       #999;
+  border: 1px solid #999;
   background: #dfdfdf;
   color: #333;
-  text-shadow: 0 1px 0px  #fff;
+  text-shadow: 0 1px 0px #fff;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#f5f5f5), color-stop(50%, #cccccc), color-stop(50%, #b5b5b5), to(#f5f5f5));
   /* Saf4+, Chrome */
   background-image: -webkit-linear-gradient(top, #f5f5f5 0%, #cccccc 50%, #b5b5b5 50%, #f5f5f5 100%);
@@ -527,10 +527,10 @@
     color: #333; } }
 
 .ui-btn-hover-e {
-  border: 1px solid       #777;
+  border: 1px solid #777;
   background: #e5e5e5;
   color: #333;
-  text-shadow: 0 1px 0px  #fff;
+  text-shadow: 0 1px 0px #fff;
   background-image: -webkit-gradient(linear, left top, left bottom, from(white), color-stop(50%, #dddddd), color-stop(50%, #cccccc), to(white));
   /* Saf4+, Chrome */
   background-image: -webkit-linear-gradient(top, white 0%, #dddddd 50%, #cccccc 50%, white 100%);
@@ -546,7 +546,7 @@
     color: #333; } }
 
 .ui-btn-down-e {
-  border: 1px solid       #888;
+  border: 1px solid #888;
   background: #ccc;
   color: #333;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#dddddd), color-stop(50%, #cccccc), color-stop(50%, #bbbbbb), to(#dddddd));
@@ -568,14 +568,14 @@
   cursor: pointer;
   font-weight: bold;
   text-decoration: none;
-  text-shadow: 0 1px 0px  #fff; }
+  text-shadow: 0 1px 0px #fff; }
 
 .ui-body-e {
   font-weight: normal;
-  border: 1px solid       #aaa;
+  border: 1px solid #aaa;
   background: #ccc;
   color: #111;
-  text-shadow: 0 1px 0px  #fff;
+  text-shadow: 0 1px 0px #fff;
   background-image: image_url("jquery/mobile/valencia/texture_075.png");
   font-family: Helvetica, Arial, sans-serif;
   input, select, textarea, button {
@@ -601,10 +601,10 @@ a.ui-link-inherit {
   font-weight: bold;
   cursor: pointer;
   text-decoration: none;
-  border: 1px solid       #FFBC19;
+  border: 1px solid #FFBC19;
   background: #FFBC19;
   color: #222;
-  text-shadow: 0 1px 0px  #eee;
+  text-shadow: 0 1px 0px #eee;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#ffdc52), to(#ffbc19));
   /* Saf4+, Chrome */
   background-image: -webkit-linear-gradient(top, #ffdc52, #ffbc19);
@@ -622,7 +622,7 @@ a.ui-link-inherit {
 /* button Inner Highlight */
 
 .ui-btn-inner {
-  border-top: 1px solid   #fff;
+  border-top: 1px solid #fff;
   border-color: rgba(255, 255, 255, 0.25); }
 
 /* Container Corner radius */
@@ -717,9 +717,7 @@ a.ui-link-inherit {
 /* HD/"retina" sprite
 -----------------------------------------------------------------------------------------------------------*/
 
-@media only screen and (-webkit-min-device-pixel-ratio: 1.5),
-       only screen and (min--moz-device-pixel-ratio: 1.5),
-       only screen and (min-resolution: 240dpi) {
+@media only screen and (-webkit-min-device-pixel-ratio: 1.5), only screen and (min--moz-device-pixel-ratio: 1.5), only screen and (min-resolution: 240 dpi) {
   .ui-icon-plus, .ui-icon-minus, .ui-icon-delete, .ui-icon-arrow-r, .ui-icon-arrow-l, .ui-icon-arrow-u, .ui-icon-arrow-d, .ui-icon-check, .ui-icon-gear, .ui-icon-refresh, .ui-icon-forward, .ui-icon-back, .ui-icon-grid, .ui-icon-star, .ui-icon-alert, .ui-icon-info, .ui-icon-home, .ui-icon-search, .ui-icon-checkbox-off, .ui-icon-checkbox-on, .ui-icon-radio-off, .ui-icon-radio-on {
     background-image: image_url("jquery/mobile/valencia/icons-36-white.png");
     -moz-background-size: 776px 18px;
