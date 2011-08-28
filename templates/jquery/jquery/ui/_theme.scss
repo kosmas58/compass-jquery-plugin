@@ -759,14 +759,21 @@ button.ui-button::-moz-focus-inner {
 .ui-selectmenu-menu {
   padding: 0;
   margin: 0;
-  list-style: none;
   position: absolute;
   top: 0;
   display: none;
-  overflow: auto;
   z-index: 1005; }
 
 /* z-index: 1005 to make selectmenu work with dialog */
+.ui-selectmenu-menu  ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  position: relative;
+  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden; }
+
 .ui-selectmenu-open {
   display: block; }
 
@@ -792,7 +799,7 @@ button.ui-button::-moz-focus-inner {
   outline: none;
   text-decoration: none; }
 
-.ui-selectmenu-menu li.ui-state-disabled a {
+.ui-selectmenu-menu li.ui-state-disabled a, .ui-state-disabled {
   cursor: default; }
 
 .ui-selectmenu-menu li.ui-selectmenu-hasIcon a,
@@ -848,6 +855,10 @@ button.ui-button::-moz-focus-inner {
 
 * html .ui-selectmenu-menu li a {
   position: relative; }
+
+/* IE7 workaround (opacity disabled) */
+*+html .ui-state-disabled, *+html .ui-state-disabled a {
+  color: silver; }
 
 
 /*
