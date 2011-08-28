@@ -1688,14 +1688,10 @@
     },
 
     _create: function() {
-      var $elem = this.element,
-              o = this.options;
 
-      if (this._trigger("beforeCreate") === false) {
-        return;
-      }
+      this._trigger("beforecreate");
 
-      $elem.addClass("ui-page ui-body-" + o.theme);
+      this.element.addClass("ui-page ui-body-" + this.options.theme);
     }
   });
 
@@ -6538,9 +6534,9 @@
       $pages.add(":jqmData(role='dialog')").each(function() {
         var $this = $(this);
 
-        // unless the data url is already set set it to the id
+        // unless the data url is already set set it to the pathname
         if (!$this.jqmData("url")) {
-          $this.attr("data-" + $.mobile.ns + "url", $this.attr("id"));
+          $this.attr("data-" + $.mobile.ns + "url", $this.attr("id") || location.pathname);
         }
       });
 
