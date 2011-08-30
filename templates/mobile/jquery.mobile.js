@@ -4643,7 +4643,8 @@
         slider: slider,
         handle: handle,
         dragging: false,
-        beforeStart: null
+        beforeStart: null,
+        userModified: false
       });
 
       if (cType == "select") {
@@ -4685,12 +4686,14 @@
       $(document).bind("vmousemove", function(event) {
         if (self.dragging) {
           self.refresh(event);
+          self.userModified = self.userModified || self.beforeStart !== control[0].selectedIndex;
           return false;
         }
       });
 
       slider.bind("vmousedown", function(event) {
         self.dragging = true;
+        self.userModified = false;
 
         if (cType === "select") {
           self.beforeStart = control[0].selectedIndex;
@@ -4707,7 +4710,7 @@
 
                   if (cType === "select") {
 
-                    if (self.beforeStart === control[ 0 ].selectedIndex) {
+                    if (!self.userModified) {
                       //tap occurred, but value didn't change. flip it!
                       self.refresh(!self.beforeStart ? 1 : 0);
                     }
@@ -4898,6 +4901,7 @@
   });
 
 })(jQuery);
+
 
 /*
  * jQuery Mobile Framework : "textinput" plugin for text inputs, textareas
