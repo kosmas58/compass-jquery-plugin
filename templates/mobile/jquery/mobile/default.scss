@@ -789,7 +789,9 @@ a.ui-link-inherit {
   background-position: -684px 50%; }
 
 .ui-icon-checkbox-on {
-  background-position: -648px 50%; }
+  background-position: -648px 50%;
+  background-color: #4596ce;
+  /* NOTE: this hex should match the active state color. It's repeated here for cascade */ }
 
 .ui-icon-radio-off {
   background-position: -756px 50%; }

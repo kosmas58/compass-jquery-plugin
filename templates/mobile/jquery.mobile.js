@@ -1910,7 +1910,7 @@
             //    [15]: ?msg=1234&type=unread
             //    [16]: #msg-content
             //
-            urlParseRE: /^(((([^:\/#\?]+:)?(?:\/\/((?:(([^:@\/#\?]+)(?:\:([^:@\/#\?]+))?)@)?(([^:\/#\?]+)(?:\:([0-9]+))?))?)?)?((\/?(?:[^\/\?#]+\/+)*)([^\?#]*)))?(\?[^#]+)?)(#.*)?/,
+            urlParseRE: /^(((([^:\/#\?]+:)?(?:\/\/((?:(([^:@\/#\?]+)(?:\:([^:@\/#\?]+))?)@)?(([^:\/#\?\]\[]+|\[[^\/\]@#?]+\])(?:\:([0-9]+))?))?)?)?((\/?(?:[^\/\?#]+\/+)*)([^\?#]*)))?(\?[^#]+)?)(#.*)?/,
 
             //Parse a URL into a structure that allows easy access to
             //all of the URL components by name.
@@ -5366,7 +5366,7 @@
                   // index of option tag to be selected
                   var oldIndex = self.select[ 0 ].selectedIndex,
                           newIndex = self.list.find("li:not(.ui-li-divider)").index(this),
-                          option = self.optionElems.eq(newIndex)[ 0 ];
+                          option = self.selectOptions.eq(newIndex)[ 0 ];
 
                   // toggle selected status on the tag for multi selects
                   option.selected = self.isMultiple ? !option.selected : true;
@@ -5464,7 +5464,7 @@
         var self = this,
                 select = this.element,
                 isMultiple = this.isMultiple,
-                options = this.optionElems = select.find("option"),
+                options = this.selectOptions = select.find("option"),
                 selected = this.selected(),
           // return an array of all selected index's
                 indicies = this.selectedIndices();
@@ -5482,7 +5482,7 @@
                 .each(function(i) {
 
                   if ($.inArray(i, indicies) > -1) {
-                    var item = $(this).addClass($.mobile.activeBtnClass);
+                    var item = $(this);
 
                     // Aria selected attr
                     item.find("a").attr("aria-selected", true);
