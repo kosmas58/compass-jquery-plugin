@@ -227,11 +227,13 @@
                     var item = $(this);
 
                     // Aria selected attr
-                    item.find("a").attr("aria-selected", true);
+                    item.attr("aria-selected", true);
 
                     // Multiple selects: add the "on" checkbox state to the icon
                     if (self.isMultiple) {
                       item.find(".ui-icon").removeClass("ui-icon-checkbox-off").addClass("ui-icon-checkbox-on");
+                    } else {
+                      item.addClass($.mobile.activeBtnClass);
                     }
                   }
                 });

@@ -2951,6 +2951,7 @@
       var link = findClosestLink(event.target);
       if (link) {
         if (path.parseUrl(link.getAttribute("href") || "#").hash !== "#") {
+          removeActiveLinkClass(true);
           $activeClickedLink = $(link).closest(".ui-btn").not(".ui-disabled");
           $activeClickedLink.addClass($.mobile.activeBtnClass);
           $("." + $.mobile.activePageClass + " .ui-btn").not(link).blur();
@@ -5485,11 +5486,13 @@
                     var item = $(this);
 
                     // Aria selected attr
-                    item.find("a").attr("aria-selected", true);
+                    item.attr("aria-selected", true);
 
                     // Multiple selects: add the "on" checkbox state to the icon
                     if (self.isMultiple) {
                       item.find(".ui-icon").removeClass("ui-icon-checkbox-off").addClass("ui-icon-checkbox-on");
+                    } else {
+                      item.addClass($.mobile.activeBtnClass);
                     }
                   }
                 });
