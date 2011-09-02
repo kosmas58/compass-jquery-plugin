@@ -9,10 +9,10 @@
 
 .emulator .display-area {
     position: relative;
-    top: 127px;
+    top: 125px;
     width: 800px;
-    height: 1232px;
-    max-height: 1232px;
+    height: 1230px;
+    max-height: 1230px;
     color: #ffffff;
 }
 
