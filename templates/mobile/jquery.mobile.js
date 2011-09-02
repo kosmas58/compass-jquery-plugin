@@ -4713,16 +4713,9 @@
 
                     if (!self.userModified) {
                       //tap occurred, but value didn't change. flip it!
+                      handle.addClass("ui-slider-handle-snapping");
                       self.refresh(!self.beforeStart ? 1 : 0);
                     }
-                    var curval = val();
-                    var snapped = Math.round(curval / ( max - min ) * 100);
-                    handle
-                            .addClass("ui-slider-handle-snapping")
-                            .css("left", snapped + "%")
-                            .animationComplete(function() {
-                              handle.removeClass("ui-slider-handle-snapping");
-                            });
                   }
                   return false;
                 }
@@ -5362,7 +5355,7 @@
                 .delegate(".ui-li>a", "focusout", function() {
                   $(this).attr("tabindex", "-1");
                 })
-                .delegate("li:not(.ui-disabled, .ui-li-divider)", "vclick", function(event) {
+                .delegate("li:not(.ui-disabled, .ui-li-divider)", "click", function(event) {
 
                   // index of option tag to be selected
                   var oldIndex = self.select[ 0 ].selectedIndex,
@@ -5433,7 +5426,7 @@
                     // If enter or space is pressed, trigger click
                     case 13:
                     case 32:
-                      target.trigger("vclick");
+                      target.trigger("click");
 
                       return false;
                       break;

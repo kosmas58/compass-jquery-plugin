@@ -1438,9 +1438,12 @@ div {
     position: absolute;
     top: 1px;
     height: 100%;
-    width: 50%; }
-  &.ui-slider-handle-snapping {
-    -webkit-transition: left 100ms linear; }
+    width: 50%; } }
+
+a.ui-slider-handle-snapping {
+  -webkit-transition: left 100ms linear; }
+
+div {
   &.ui-slider-labelbg {
     position: absolute;
     top: 0;
