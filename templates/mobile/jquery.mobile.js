@@ -642,8 +642,7 @@
   }
 
   function triggerVirtualEvent(eventType, event, flags) {
-    var defaultPrevented = false,
-            ve;
+    var ve;
 
     if (( flags && flags[ eventType ] ) ||
             ( !flags && getClosestElementWithVirtualBinding(event.target, eventType) )) {
@@ -651,18 +650,27 @@
       ve = createVirtualEvent(event, eventType);
 
       $(event.target).trigger(ve);
-
-      defaultPrevented = ve.isDefaultPrevented();
     }
 
-    return defaultPrevented;
+    return ve;
   }
 
   function mouseEventCallback(event) {
     var touchID = $.data(event.target, touchTargetPropertyName);
 
     if (!blockMouseTriggers && ( !lastTouchID || lastTouchID !== touchID )) {
-      triggerVirtualEvent("v" + event.type, event);
+      var ve = triggerVirtualEvent("v" + event.type, event);
+      if (ve) {
+        if (ve.isDefaultPrevented()) {
+          event.preventDefault();
+        }
+        if (ve.isPropagationStopped()) {
+          event.stopPropagation();
+        }
+        if (ve.isImmediatePropagationStopped()) {
+          event.stopImmediatePropagation();
+        }
+      }
     }
   }
 
@@ -742,7 +750,8 @@
     triggerVirtualEvent("vmouseup", event, flags);
 
     if (!didScroll) {
-      if (triggerVirtualEvent("vclick", event, flags)) {
+      var ve = triggerVirtualEvent("vclick", event, flags);
+      if (ve && ve.isDefaultPrevented()) {
         // The target of the mouse events that follow the touchend
         // event don't necessarily match the target used during the
         // touch. This means we need to rely on coordinates for blocking
@@ -1042,16 +1051,19 @@
           return false;
         }
 
-        var touching = true,
-                origTarget = event.target,
+        var origTarget = event.target,
                 origEvent = event.originalEvent,
                 timer;
 
-        function clearTapHandlers() {
-          touching = false;
+        function clearTapTimer() {
           clearTimeout(timer);
+        }
+
+        function clearTapHandlers() {
+          clearTapTimer();
 
           $this.unbind("vclick", clickHandler)
+                  .unbind("vmouseup", clearTapTimer)
                   .unbind("vmousecancel", clearTapHandlers);
         }
 
@@ -1066,12 +1078,11 @@
         }
 
         $this.bind("vmousecancel", clearTapHandlers)
+                .bind("vmouseup", clearTapTimer)
                 .bind("vclick", clickHandler);
 
         timer = setTimeout(function() {
-          if (touching) {
-            triggerCustomEvent(thisObject, "taphold", event);
-          }
+          triggerCustomEvent(thisObject, "taphold", $.Event("taphold"));
         }, 750);
       });
     }

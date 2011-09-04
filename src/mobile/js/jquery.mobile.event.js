@@ -78,16 +78,19 @@
           return false;
         }
 
-        var touching = true,
-                origTarget = event.target,
+        var origTarget = event.target,
                 origEvent = event.originalEvent,
                 timer;
 
-        function clearTapHandlers() {
-          touching = false;
+        function clearTapTimer() {
           clearTimeout(timer);
+        }
+
+        function clearTapHandlers() {
+          clearTapTimer();
 
           $this.unbind("vclick", clickHandler)
+                  .unbind("vmouseup", clearTapTimer)
                   .unbind("vmousecancel", clearTapHandlers);
         }
 
@@ -102,12 +105,11 @@
         }
 
         $this.bind("vmousecancel", clearTapHandlers)
+                .bind("vmouseup", clearTapTimer)
                 .bind("vclick", clickHandler);
 
         timer = setTimeout(function() {
-          if (touching) {
-            triggerCustomEvent(thisObject, "taphold", event);
-          }
+          triggerCustomEvent(thisObject, "taphold", $.Event("taphold"));
         }, 750);
       });
     }
