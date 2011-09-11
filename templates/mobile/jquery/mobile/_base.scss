@@ -3,7 +3,6 @@
 * jQuery Mobile Framework
 * Copyright (c) jQuery Project
 * Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
-* Note: Code is in draft form and is subject to change 
 */
 
 /* some unsets - more probably needed */
@@ -60,10 +59,29 @@
 
 /*orientations from js are available */
 
-.portrait, .landscape {
-  min-height: 100%;
+.portrait {
+  min-height: 420px;
   .ui-page {
-    min-height: 100%; } }
+    min-height: 420px; } }
+
+.landscape {
+  min-height: 300px;
+  .ui-page {
+    min-height: 300px; } }
+
+/* native overflow scrolling */
+
+.ui-page.ui-mobile-touch-overflow, .ui-mobile-touch-overflow.ui-native-fixed .ui-content {
+  overflow: auto;
+  height: 100%;
+  -webkit-overflow-scrolling: touch;
+  -moz-overflow-scrolling: touch;
+  -o-overflow-scrolling: touch;
+  -ms-overflow-scrolling: touch;
+  overflow-scrolling: touch; }
+
+.ui-page.ui-mobile-pre-transition {
+  display: block; }
 
 /* loading screen */
 
@@ -137,6 +155,7 @@
     right: 10px;
     top: .4em; }
   .ui-title {
+    min-height: 1.1em;
     text-align: center;
     font-size: 16px;
     display: block;
@@ -148,6 +167,7 @@
     outline: 0 !important; } }
 
 .ui-footer .ui-title {
+  min-height: 1.1em;
   text-align: center;
   font-size: 16px;
   display: block;
@@ -168,6 +188,39 @@
 
 .ui-page-fullscreen .ui-content {
   padding: 0; }
+
+/* native fixed headers and footers */
+
+.ui-mobile-touch-overflow {
+  &.ui-page {
+    &.ui-native-fixed, &.ui-native-fullscreen {
+      overflow: visible; } }
+  &.ui-native-fixed {
+    .ui-header, .ui-footer {
+      position: fixed;
+      left: 0;
+      right: 0;
+      top: 0;
+      z-index: 200; } }
+  &.ui-page.ui-native-fixed .ui-footer {
+    top: auto;
+    bottom: 0; }
+  &.ui-native-fixed .ui-content {
+    padding-top: 2.5em;
+    padding-bottom: 3em;
+    top: 0;
+    bottom: 0;
+    height: auto;
+    position: absolute; }
+  &.ui-native-fullscreen {
+    .ui-content {
+      padding-top: 0;
+      padding-bottom: 0; }
+    .ui-header, .ui-footer {
+      opacity: .9; } } }
+
+.ui-native-bars-hidden {
+  display: none; }
 
 /* icons sizing */
 
@@ -196,7 +249,8 @@
   -webkit-transform: rotate(360deg);
   -webkit-animation-name: spin;
   -webkit-animation-duration: 1s;
-  -webkit-animation-iteration-count: infinite; }
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-timing-function: linear; }
 
 @-webkit-keyframes spin {
   from {
@@ -668,11 +722,11 @@ Built by David Kaneda and maintained by Jonathan Stark.
 .ui-btn-inner {
   padding: .6em 25px;
   display: block;
-  height: 100%;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
-  position: relative; }
+  position: relative;
+  zoom: 1; }
 
 .ui-header .ui-btn-inner, .ui-footer .ui-btn-inner, .ui-bar .ui-btn-inner {
   padding: .4em 8px .5em; }
@@ -764,7 +818,8 @@ Built by David Kaneda and maintained by Jonathan Stark.
   opacity: 0;
   cursor: pointer;
   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
-  filter: alpha(opacity = 0); }
+  filter: alpha(opacity = 0);
+  background: transparent; }
 
 /*
 * jQuery Mobile Framework
@@ -797,7 +852,7 @@ Built by David Kaneda and maintained by Jonathan Stark.
       padding: 1px 0px 1px 2px;
       text-indent: -9999px;
       .ui-btn-inner {
-        padding: 0; }
+        padding: 10px 0; }
       .ui-icon {
         left: 0;
         margin-top: -10px; } } } }
@@ -951,7 +1006,6 @@ Built by David Kaneda and maintained by Jonathan Stark.
 */
 
 .ui-field-contain {
-  background: none;
   padding: 1.5em 0;
   margin: 0;
   border-bottom-width: 1px;
@@ -992,12 +1046,18 @@ Built by David Kaneda and maintained by Jonathan Stark.
       -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
       filter: alpha(opacity = 0);
       &.ui-select-nativeonly {
-        opacity: 1; } } }
+        opacity: 1;
+        text-indent: 0; } } }
   .ui-btn-icon-right {
     .ui-btn-inner {
       padding-right: 45px; }
     .ui-icon {
       right: 15px; } } }
+
+@-moz-document url-prefix() {
+  .ui-select .ui-btn select {
+    opacity: 0.0001; } }
+
 
 /* labels */
 
@@ -1011,13 +1071,12 @@ label.ui-select {
 /*listbox*/
 
 .ui-select .ui-btn-text, .ui-selectmenu .ui-btn-text {
-  display: inline-block;
+  display: block;
   min-height: 1em; }
 
 .ui-select .ui-btn-text {
   text-overflow: ellipsis;
-  overflow: hidden;
-  display: block; }
+  overflow: hidden; }
 
 .ui-selectmenu {
   position: absolute;
@@ -1231,7 +1290,7 @@ ol.ui-listview .ui-li-jsnumbering:before {
   padding: 0; }
 
 .ui-li .ui-btn-inner a.ui-link-inherit, .ui-li-static.ui-li {
-  padding: .7em 75px .7em 15px;
+  padding: .7em 15px .7em 15px;
   display: block; }
 
 .ui-li-has-thumb .ui-btn-inner a.ui-link-inherit, .ui-li-static.ui-li-has-thumb {
@@ -1241,6 +1300,15 @@ ol.ui-listview .ui-li-jsnumbering:before {
 .ui-li-has-icon .ui-btn-inner a.ui-link-inherit, .ui-li-static.ui-li-has-icon {
   min-height: 20px;
   padding-left: 40px; }
+
+.ui-li-has-count .ui-btn-inner a.ui-link-inherit, .ui-li-static.ui-li-has-count {
+  padding-right: 45px; }
+
+.ui-li-has-arrow .ui-btn-inner a.ui-link-inherit, .ui-li-static.ui-li-has-arrow {
+  padding-right: 30px; }
+
+.ui-li-has-arrow.ui-li-has-count .ui-btn-inner a.ui-link-inherit, .ui-li-static.ui-li-has-arrow.ui-li-has-count {
+  padding-right: 75px; }
 
 .ui-li-heading {
   font-size: 16px;
@@ -1417,9 +1485,12 @@ div {
     position: absolute;
     top: 1px;
     height: 100%;
-    width: 50%; }
-  &.ui-slider-handle-snapping {
-    -webkit-transition: left 100ms linear; }
+    width: 50%; } }
+
+a.ui-slider-handle-snapping {
+  -webkit-transition: left 100ms linear; }
+
+div {
   &.ui-slider-labelbg {
     position: absolute;
     top: 0;
@@ -1464,3 +1535,55 @@ span {
   &.ui-slider-label-b {
     right: -100%;
     margin-left: -1px; } }
+
+@charset "utf-8";
+
+.ui-scrollview-clip, .ui-scrollview-view {}
+
+.ui-scrolllistview .ui-li-divider {
+  z-index: 10; }
+
+.ui-scrollbar {
+  position: absolute;
+  overflow: hidden;
+  opacity: 0;
+  -webkit-transition: opacity 500ms;
+  -moz-transition: opacity 500ms;
+  transition: opacity 500ms; }
+
+.ui-scrollbar-visible {
+  opacity: 1; }
+
+.ui-scrollbar-y {
+  top: 2px;
+  right: 2px;
+  bottom: 8px;
+  width: 5px; }
+
+.ui-scrollbar-x {
+  right: 8px;
+  bottom: 2px;
+  left: 2px;
+  height: 5px; }
+
+.ui-scrollbar-track {
+  position: relative;
+  width: 100%;
+  height: 100%; }
+
+.ui-scrollbar-thumb {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  border-radius: 2px; }
+
+.ui-scrollbar-y .ui-scrollbar-thumb {
+  width: 5px;
+  height: 100%; }
+
+.ui-scrollbar-x .ui-scrollbar-thumb {
+  width: 100%;
+  height: 5px; }

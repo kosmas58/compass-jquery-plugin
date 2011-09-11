@@ -4,13 +4,16 @@
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * http://jquery.org/license
  */
-(function($, undefined) {
+(function($, window, undefined) {
 
 // add new event shortcuts
-  $.each("touchstart touchmove touchend orientationchange tap taphold swipe swipeleft swiperight scrollstart scrollstop".split(" "), function(i, name) {
+  $.each(( "touchstart touchmove touchend orientationchange throttledresize " +
+          "tap taphold swipe swipeleft swiperight scrollstart scrollstop" ).split(" "), function(i, name) {
+
     $.fn[ name ] = function(fn) {
       return fn ? this.bind(name, fn) : this.trigger(name);
     };
+
     $.attrFn[ name ] = true;
   });
 
@@ -29,9 +32,11 @@
 
 // also handles scrollstop
   $.event.special.scrollstart = {
+
     enabled: true,
 
     setup: function() {
+
       var thisObject = this,
               $this = $(thisObject),
               scrolling,
@@ -44,6 +49,7 @@
 
       // iPhone triggers scroll after a small delay; use touchmove instead
       $this.bind(scrollEvent, function(event) {
+
         if (!$.event.special.scrollstart.enabled) {
           return;
         }
@@ -66,40 +72,44 @@
       var thisObject = this,
               $this = $(thisObject);
 
-      $this
-              .bind("vmousedown", function(event) {
+      $this.bind("vmousedown", function(event) {
+
         if (event.which && event.which !== 1) {
           return false;
         }
 
-        var touching = true,
-                origTarget = event.target,
+        var origTarget = event.target,
                 origEvent = event.originalEvent,
                 timer;
 
-        function clearTapHandlers() {
-          touching = false;
+        function clearTapTimer() {
           clearTimeout(timer);
-          $this.unbind("vclick", clickHandler).unbind("vmousecancel", clearTapHandlers);
+        }
+
+        function clearTapHandlers() {
+          clearTapTimer();
+
+          $this.unbind("vclick", clickHandler)
+                  .unbind("vmouseup", clearTapTimer)
+                  .unbind("vmousecancel", clearTapHandlers);
         }
 
         function clickHandler(event) {
           clearTapHandlers();
 
-          /* ONLY trigger a 'tap' event if the start target is
-           * the same as the stop target.
-           */
+          // ONLY trigger a 'tap' event if the start target is
+          // the same as the stop target.
           if (origTarget == event.target) {
             triggerCustomEvent(thisObject, "tap", event);
           }
         }
 
-        $this.bind("vmousecancel", clearTapHandlers).bind("vclick", clickHandler);
+        $this.bind("vmousecancel", clearTapHandlers)
+                .bind("vmouseup", clearTapTimer)
+                .bind("vclick", clickHandler);
 
         timer = setTimeout(function() {
-          if (touching) {
-            triggerCustomEvent(thisObject, "taphold", event);
-          }
+          triggerCustomEvent(thisObject, "taphold", $.Event("taphold"));
         }, 750);
       });
     }
@@ -107,62 +117,68 @@
 
 // also handles swipeleft, swiperight
   $.event.special.swipe = {
+    scrollSupressionThreshold: 10, // More than this horizontal displacement, and we will suppress scrolling.
+
+    durationThreshold: 1000, // More time than this, and it isn't a swipe.
+
+    horizontalDistanceThreshold: 30,  // Swipe horizontal displacement must be more than this.
+
+    verticalDistanceThreshold: 75,  // Swipe vertical displacement must be less than this.
+
     setup: function() {
       var thisObject = this,
               $this = $(thisObject);
 
-      $this
-              .bind(touchStartEvent, function(event) {
+      $this.bind(touchStartEvent, function(event) {
         var data = event.originalEvent.touches ?
-                event.originalEvent.touches[ 0 ] :
-                event,
+                event.originalEvent.touches[ 0 ] : event,
                 start = {
-                  time: (new Date).getTime(),
+                  time: ( new Date() ).getTime(),
                   coords: [ data.pageX, data.pageY ],
                   origin: $(event.target)
                 },
                 stop;
 
         function moveHandler(event) {
+
           if (!start) {
             return;
           }
 
           var data = event.originalEvent.touches ?
-                  event.originalEvent.touches[ 0 ] :
-                  event;
+                  event.originalEvent.touches[ 0 ] : event;
+
           stop = {
-            time: (new Date).getTime(),
+            time: ( new Date() ).getTime(),
             coords: [ data.pageX, data.pageY ]
           };
 
           // prevent scrolling
-          if (Math.abs(start.coords[0] - stop.coords[0]) > 10) {
+          if (Math.abs(start.coords[ 0 ] - stop.coords[ 0 ]) > $.event.special.swipe.scrollSupressionThreshold) {
             event.preventDefault();
           }
         }
 
-        $this
-                .bind(touchMoveEvent, moveHandler)
+        $this.bind(touchMoveEvent, moveHandler)
                 .one(touchStopEvent, function(event) {
-          $this.unbind(touchMoveEvent, moveHandler);
-          if (start && stop) {
-            if (stop.time - start.time < 1000 &&
-                    Math.abs(start.coords[0] - stop.coords[0]) > 30 &&
-                    Math.abs(start.coords[1] - stop.coords[1]) < 75) {
-              start.origin
-                      .trigger("swipe")
+                  $this.unbind(touchMoveEvent, moveHandler);
 
-                      .trigger(start.coords[0] > stop.coords[0] ? "swipeleft" : "swiperight");
-            }
-          }
-          start = stop = undefined;
-        });
+                  if (start && stop) {
+                    if (stop.time - start.time < $.event.special.swipe.durationThreshold &&
+                            Math.abs(start.coords[ 0 ] - stop.coords[ 0 ]) > $.event.special.swipe.horizontalDistanceThreshold &&
+                            Math.abs(start.coords[ 1 ] - stop.coords[ 1 ]) < $.event.special.swipe.verticalDistanceThreshold) {
+
+                      start.origin.trigger("swipe")
+                              .trigger(start.coords[0] > stop.coords[ 0 ] ? "swipeleft" : "swiperight");
+                    }
+                  }
+                  start = stop = undefined;
+                });
       });
     }
   };
 
-  (function($) {
+  (function($, window) {
     // "Cowboy" Ben Alman
 
     var win = $(window),
@@ -183,7 +199,7 @@
 
         // Because the orientationchange event doesn't exist, simulate the
         // event by testing window dimensions on resize.
-        win.bind("resize", handler);
+        win.bind("throttledresize", handler);
       },
       teardown: function() {
         // If the event is not supported natively, return false so that
@@ -194,7 +210,7 @@
 
         // Because the orientationchange event doesn't exist, unbind the
         // resize event handler.
-        win.unbind("resize", handler);
+        win.unbind("throttledresize", handler);
       },
       add: function(handleObj) {
         // Save a reference to the bound event handler.
@@ -227,12 +243,52 @@
 
     // Get the current page orientation. This method is exposed publicly, should it
     // be needed, as jQuery.event.special.orientationchange.orientation()
-    special_event.orientation = get_orientation = function() {
+    $.event.special.orientationchange.orientation = get_orientation = function() {
       var elem = document.documentElement;
       return elem && elem.clientWidth / elem.clientHeight < 1.1 ? "portrait" : "landscape";
     };
 
-  })(jQuery);
+  })(jQuery, window);
+
+
+// throttled resize event
+  (function() {
+
+    $.event.special.throttledresize = {
+      setup: function() {
+        $(this).bind("resize", handler);
+      },
+      teardown: function() {
+        $(this).unbind("resize", handler);
+      }
+    };
+
+    var throttle = 250,
+            handler = function() {
+              curr = ( new Date() ).getTime();
+              diff = curr - lastCall;
+
+              if (diff >= throttle) {
+
+                lastCall = curr;
+                $(this).trigger("throttledresize");
+
+              } else {
+
+                if (heldCall) {
+                  clearTimeout(heldCall);
+                }
+
+                // Promise a held call will still execute
+                heldCall = setTimeout(handler, throttle - diff);
+              }
+            },
+            lastCall = 0,
+            heldCall,
+            curr,
+            diff;
+  })();
+
 
   $.each({
     scrollstop: "scrollstart",
@@ -240,6 +296,7 @@
     swipeleft: "swipe",
     swiperight: "swipe"
   }, function(event, sourceEvent) {
+
     $.event.special[ event ] = {
       setup: function() {
         $(this).bind(sourceEvent, $.noop);
@@ -247,4 +304,4 @@
     };
   });
 
-})(jQuery);
+})(jQuery, this);

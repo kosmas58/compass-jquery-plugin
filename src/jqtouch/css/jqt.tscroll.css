@@ -79,7 +79,7 @@
     min-width: 4px;
     -webkit-transition-property: -webkit-transform, height, width;
     -webkit-border-radius: 3px; /* COLOR VARIANTS */
-/* Default */
+    /* Default */
     border-color: rgba(255, 255, 255, 0.15);
     background: rgba(0, 0, 0, 0.5); /**/
 

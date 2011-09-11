@@ -4,7 +4,9 @@
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * http://jquery.org/license
  */
+
 (function($, undefined) {
+
   $.widget("mobile.button", $.mobile.widget, {
     options: {
       theme: null,
@@ -13,43 +15,51 @@
       inline: null,
       corners: true,
       shadow: true,
-      iconshadow: true
+      iconshadow: true,
+      initSelector: "button, [type='button'], [type='submit'], [type='reset'], [type='image']"
     },
     _create: function() {
       var $el = this.element,
-              o = this.options;
+              o = this.options,
+              type;
 
-      //add ARIA role
+      // Add ARIA role
       this.button = $("<div></div>")
               .text($el.text() || $el.val())
               .buttonMarkup({
-                              theme: o.theme,
-                              icon: o.icon,
-                              iconpos: o.iconpos,
-                              inline: o.inline,
-                              corners: o.corners,
-                              shadow: o.shadow,
-                              iconshadow: o.iconshadow
-                            })
+                theme: o.theme,
+                icon: o.icon,
+                iconpos: o.iconpos,
+                inline: o.inline,
+                corners: o.corners,
+                shadow: o.shadow,
+                iconshadow: o.iconshadow
+              })
               .insertBefore($el)
-              .append($el.addClass('ui-btn-hidden'));
+              .append($el.addClass("ui-btn-hidden"));
 
-      //add hidden input during submit
-      var type = $el.attr('type');
-      if (type !== 'button' && type !== 'reset') {
+      // Add hidden input during submit
+      type = $el.attr("type");
+
+      if (type !== "button" && type !== "reset") {
+
         $el.bind("vclick", function() {
-          var $buttonPlaceholder = $("<input>",
-          {type: "hidden", name: $el.attr("name"), value: $el.attr("value")})
+
+          var $buttonPlaceholder = $("<input>", {
+            type: "hidden",
+            name: $el.attr("name"),
+            value: $el.attr("value")
+          })
                   .insertBefore($el);
 
-          //bind to doc to remove after submit handling
+          // Bind to doc to remove after submit handling
           $(document).submit(function() {
             $buttonPlaceholder.remove();
           });
         });
       }
-      this.refresh();
 
+      this.refresh();
     },
 
     enable: function() {
@@ -65,12 +75,19 @@
     },
 
     refresh: function() {
-      if (this.element.attr('disabled')) {
+      if (this.element.attr("disabled")) {
         this.disable();
-      }
-      else {
+      } else {
         this.enable();
       }
     }
   });
+
+//auto self-init widgets
+  $(document).bind("pagecreate create", function(e) {
+    $($.mobile.button.prototype.options.initSelector, e.target)
+            .not(":jqmData(role='none'), :jqmData(role='nojs')")
+            .button();
+  });
+
 })(jQuery);

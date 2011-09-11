@@ -317,7 +317,7 @@
   // Generate a reusable function that will serve to render a template against data
   function buildTmplFn(markup) {
     return new Function("jQuery", "$item",
-      // Use the variable __ to hold a string array while building the compiled template. (See https://github.com/jquery/jquery-tmpl/issues#issue/10).
+            // Use the variable __ to hold a string array while building the compiled template. (See https://github.com/jquery/jquery-tmpl/issues#issue/10).
             "var $=jQuery,call,__=[],$data=$item.data;" +
 
               // Introduce the data as local variables using with(){}
@@ -359,15 +359,15 @@
                                       "__.push('";
                             }) +
                     "');}return __;"
-            );
+    );
   }
 
   function updateWrapped(options, wrapped) {
     // Build the wrapped content.
     options._wrap = build(options, true,
-      // Suport imperative scenario in which options.wrapped can be set to a selector or an HTML string.
+            // Suport imperative scenario in which options.wrapped can be set to a selector or an HTML string.
             jQuery.isArray(wrapped) ? wrapped : [htmlExpr.test(wrapped) ? wrapped : jQuery(wrapped).html()]
-            ).join("");
+    ).join("");
   }
 
   function unescape(args) {

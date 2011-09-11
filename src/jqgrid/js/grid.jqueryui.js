@@ -202,7 +202,7 @@
 
           var perm = [];
           //fixedCols.slice(0);
-          $('option[selected]', select).each(function() {
+          $('option:selected', select).each(function() {
             perm.push(parseInt(this.value, 10));
           });
           $.each(perm, function() {
@@ -304,10 +304,10 @@
         }
         if ($.fn.sortable) {
           opts = $.extend({
-            "cursor":"move",
-            "axis" : "y",
-            "items": ".jqgrow"
-          },
+                    "cursor":"move",
+                    "axis" : "y",
+                    "items": ".jqgrow"
+                  },
                   opts || {});
           if (opts.start && $.isFunction(opts.start)) {
             opts._start_ = opts.start;
@@ -341,7 +341,7 @@
             $(ui.item).css("border-width", "");
             if ($t.p.rownumbers === true) {
               $("td.jqgrid-rownum", $t.rows).each(function(i) {
-                $(this).html(i + 1);
+                $(this).html(i + 1 + (parseInt($t.p.page, 10) - 1) * parseInt($t.p.rowNum, 10));
               });
             }
             if (opts._update_) {
@@ -409,7 +409,7 @@
                 }
               },
               stop :function(ev, ui) {
-                if (ui.helper.dropped) {
+                if (ui.helper.dropped && !opts.dragcopy) {
                   var ids = $(ui.helper).attr("id");
                   $($t).jqGrid('delRowData', ids);
                 }
@@ -499,6 +499,7 @@
             "appendTo" : "#jqgrid_dnd",
             "zIndex": 5000
           },
+          "dragcopy": false,
           "dropbyname" : false,
           "droppos" : "first",
           "autoid" : true,

@@ -329,8 +329,8 @@
       $(function() {
         $(defaults.selector)
                 .each(function() {
-          $(this).scrollVertically(defaults.attributesToOptions($(this), defaults.attributes));
-        });
+                  $(this).scrollVertically(defaults.attributesToOptions($(this), defaults.attributes));
+                });
       });
 
       return {};

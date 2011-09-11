@@ -1,5 +1,5 @@
 /*
- * jQuery UI Dialog 1.8.13
+ * jQuery UI Dialog 1.8.16
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -105,25 +105,25 @@
                       .hide()
                       .addClass(uiDialogClasses + options.dialogClass)
                       .css({
-                             zIndex: options.zIndex
-                           })
+                        zIndex: options.zIndex
+                      })
                 // setting tabIndex makes the div focusable
                 // setting outline to 0 prevents a border on focus in Mozilla
                       .attr('tabIndex', -1).css('outline', 0).keydown(function(event) {
-                if (options.closeOnEscape && event.keyCode &&
-                        event.keyCode === $.ui.keyCode.ESCAPE) {
+                        if (options.closeOnEscape && !event.isDefaultPrevented() && event.keyCode &&
+                                event.keyCode === $.ui.keyCode.ESCAPE) {
 
-                  self.close(event);
-                  event.preventDefault();
-                }
-              })
+                          self.close(event);
+                          event.preventDefault();
+                        }
+                      })
                       .attr({
-                              role: 'dialog',
-                              'aria-labelledby': titleId
-                            })
+                        role: 'dialog',
+                        'aria-labelledby': titleId
+                      })
                       .mousedown(function(event) {
-                self.moveToTop(false, event);
-              }),
+                        self.moveToTop(false, event);
+                      }),
 
               uiDialogContent = self.element
                       .show()
@@ -139,14 +139,14 @@
                               'ui-widget-header ' +
                               'ui-corner-all ' +
                               'ui-helper-clearfix'
-                      )
+              )
                       .prependTo(uiDialog),
 
               uiDialogTitlebarClose = $('<a href="#"></a>')
                       .addClass(
                       'ui-dialog-titlebar-close ' +
                               'ui-corner-all'
-                      )
+              )
                       .attr('role', 'button')
                       .hover(
                       function() {
@@ -155,24 +155,24 @@
                       function() {
                         uiDialogTitlebarClose.removeClass('ui-state-hover');
                       }
-                      )
+              )
                       .focus(function() {
-                uiDialogTitlebarClose.addClass('ui-state-focus');
-              })
+                        uiDialogTitlebarClose.addClass('ui-state-focus');
+                      })
                       .blur(function() {
-                uiDialogTitlebarClose.removeClass('ui-state-focus');
-              })
+                        uiDialogTitlebarClose.removeClass('ui-state-focus');
+                      })
                       .click(function(event) {
-                self.close(event);
-                return false;
-              })
+                        self.close(event);
+                        return false;
+                      })
                       .appendTo(uiDialogTitlebar),
 
               uiDialogTitlebarCloseText = (self.uiDialogTitlebarCloseText = $('<span></span>'))
                       .addClass(
                       'ui-icon ' +
                               'ui-icon-closethick'
-                      )
+              )
                       .text(options.closeText)
                       .appendTo(uiDialogTitlebarClose),
 
@@ -306,7 +306,7 @@
 
       //Save and then restore scroll since Opera 9.5+ resets when parent z-Index is changed.
       //  http://ui.jquery.com/bugs/ticket/3193
-      saveScroll = { scrollTop: self.element.attr('scrollTop'), scrollLeft: self.element.attr('scrollLeft') };
+      saveScroll = { scrollTop: self.element.scrollTop(), scrollLeft: self.element.scrollLeft() };
       $.ui.dialog.maxZ += 1;
       self.uiDialog.css('z-index', $.ui.dialog.maxZ);
       self.element.attr(saveScroll);
@@ -371,7 +371,7 @@
                       'ui-dialog-buttonpane ' +
                               'ui-widget-content ' +
                               'ui-helper-clearfix'
-                      ),
+              ),
               uiButtonSet = $("<div></div>")
                       .addClass("ui-dialog-buttonset")
                       .appendTo(uiDialogButtonPane);
@@ -391,8 +391,8 @@
                   props;
           var button = $('<button type="button"></button>')
                   .click(function() {
-            props.click.apply(self.element[0], arguments);
-          })
+                    props.click.apply(self.element[0], arguments);
+                  })
                   .appendTo(uiButtonSet);
           // can't use .attr( props, true ) with jQuery 1.3.2.
           $.each(props, function(key, value) {
@@ -704,7 +704,7 @@
   });
 
   $.extend($.ui.dialog, {
-    version: "1.8.13",
+    version: "1.8.16",
 
     uuid: 0,
     maxZ: 0,
@@ -752,7 +752,7 @@
 
         // allow closing by pressing the escape key
         $(document).bind('keydown.dialog-overlay', function(event) {
-          if (dialog.options.closeOnEscape && event.keyCode &&
+          if (dialog.options.closeOnEscape && !event.isDefaultPrevented() && event.keyCode &&
                   event.keyCode === $.ui.keyCode.ESCAPE) {
 
             dialog.close(event);
@@ -767,9 +767,9 @@
       var $el = (this.oldInstances.pop() || $('<div></div>').addClass('ui-widget-overlay'))
               .appendTo(document.body)
               .css({
-                     width: this.width(),
-                     height: this.height()
-                   });
+                width: this.width(),
+                height: this.height()
+              });
 
       if ($.fn.bgiframe) {
         $el.bgiframe();
@@ -807,11 +807,11 @@
         scrollHeight = Math.max(
                 document.documentElement.scrollHeight,
                 document.body.scrollHeight
-                );
+        );
         offsetHeight = Math.max(
                 document.documentElement.offsetHeight,
                 document.body.offsetHeight
-                );
+        );
 
         if (scrollHeight < offsetHeight) {
           return $(window).height() + 'px';
@@ -827,16 +827,16 @@
     width: function() {
       var scrollWidth,
               offsetWidth;
-      // handle IE 6
-      if ($.browser.msie && $.browser.version < 7) {
+      // handle IE
+      if ($.browser.msie) {
         scrollWidth = Math.max(
                 document.documentElement.scrollWidth,
                 document.body.scrollWidth
-                );
+        );
         offsetWidth = Math.max(
                 document.documentElement.offsetWidth,
                 document.body.offsetWidth
-                );
+        );
 
         if (scrollWidth < offsetWidth) {
           return $(window).width() + 'px';
@@ -867,9 +867,9 @@
         width: 0,
         height: 0
       }).css({
-               width: $.ui.dialog.overlay.width(),
-               height: $.ui.dialog.overlay.height()
-             });
+                width: $.ui.dialog.overlay.width(),
+                height: $.ui.dialog.overlay.height()
+              });
     }
   });
 

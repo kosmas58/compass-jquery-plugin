@@ -30,10 +30,8 @@
   border: 3px solid #3C769D;
   width: 643px;
   height: 320px;
-  background-image: image_url("jquery/markitup/skins/markitup/bg-editor.png");
-  background-repeat: no-repeat;
+  background: white image_url("jquery/markitup/skins/markitup/bg-editor.png") no-repeat;
   clear: both;
-  display: block;
   line-height: 18px;
   overflow: auto; }
 
@@ -42,7 +40,7 @@
   background-color: #FFFFFF;
   border: 1px solid #3C769D;
   width: 99.9%;
-  height: 350px;
+  height: 300px;
   margin: 5px 0; }
 
 .markItUpFooter {
@@ -93,10 +91,8 @@
     background: #F5F5F5;
     border: 1px solid #3C769D;
     height: inherit;
-    padding: 0;
     li {
       float: none;
-      border: none;
       border-bottom: 1px solid #3C769D; }
     .markItUpDropMenu {
       background: #f5f5f5 image_url("jquery/markitup/skins/markitup/submenu.png") no-repeat 100% 50%; }
@@ -143,8 +139,5 @@
 .bbcode .markItUpEditor {
   background-image: image_url("jquery/markitup/skins/markitup/bg-editor-bbcode.png"); }
 
-.wiki .markItUpEditor {
+.wiki .markItUpEditor, .dotclear .markItUpEditor {
   background-image: image_url("jquery/markitup/skins/markitup/bg-editor-wiki.png"); }
-
-.dotclear .markItUpEditor {
-  background-image: image_url("jquery/markitup/skins/markitup/bg-editor-dotclear.png"); }

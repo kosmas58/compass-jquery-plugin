@@ -632,16 +632,20 @@
               , minPos, maxPos  // used to set resizing limits
               ;
       switch (pane) {
-        case "north": minPos = d.offsetTop + minSize;
+        case "north":
+          minPos = d.offsetTop + minSize;
           maxPos = d.offsetTop + maxSize;
           break;
-        case "west":  minPos = d.offsetLeft + minSize;
+        case "west":
+          minPos = d.offsetLeft + minSize;
           maxPos = d.offsetLeft + maxSize;
           break;
-        case "south": minPos = d.offsetTop + d.innerHeight - maxSize;
+        case "south":
+          minPos = d.offsetTop + d.innerHeight - maxSize;
           maxPos = d.offsetTop + d.innerHeight - minSize;
           break;
-        case "east":  minPos = d.offsetLeft + d.innerWidth - maxSize;
+        case "east":
+          minPos = d.offsetLeft + d.innerWidth - maxSize;
           maxPos = d.offsetLeft + d.innerWidth - minSize;
           break;
       }
@@ -877,7 +881,7 @@
               function (idx, key) {
                 delete opts.defaults[key];
               } // is OK if key does not exist
-              );
+      );
 
       // now update options.defaults
       $.extend(options.defaults, opts.defaults);
@@ -893,7 +897,7 @@
               function (idx, key) {
                 options.center[key] = o_Center[key];
               }
-              );
+      );
 
       var defs = options.defaults;
 
@@ -940,7 +944,7 @@
                   ;
           // RECREATE the fxSettings[_open|_close] keys using specificity rules
           o[sSettings] = $.extend(
-          {}
+                  {}
                   , fx_all            // effects.slide.all
                   , fx_pane           // effects.slide.west
                   , defs.fxSettings || {}   // options.defaults.fxSettings
@@ -951,7 +955,7 @@
                   , opts.defaults[sSettings] || {} // opts.defaults.fxSettings_open
                   , opts[pane].fxSettings   // opts.west.fxSettings
                   , opts[pane][sSettings] || {} // opts.west.fxSettings_open
-                  );
+          );
           // recalculate fxSpeed according to specificity rules
           o[sSpeed] =
                   opts[pane][sSpeed]    // opts.west.fxSpeed_open
@@ -1039,17 +1043,21 @@
 
         // set css-position to account for container borders & padding
         switch (pane) {
-          case "north":   CSS.top = cDims.top;
+          case "north":
+            CSS.top = cDims.top;
             CSS.left = cDims.left;
             CSS.right = cDims.right;
             break;
-          case "south":   CSS.bottom = cDims.bottom;
+          case "south":
+            CSS.bottom = cDims.bottom;
             CSS.left = cDims.left;
             CSS.right = cDims.right;
             break;
-          case "west":  CSS.left = cDims.left; // top, bottom & height set by sizeMidPanes()
+          case "west":
+            CSS.left = cDims.left; // top, bottom & height set by sizeMidPanes()
             break;
-          case "east":  CSS.right = cDims.right; // ditto
+          case "east":
+            CSS.right = cDims.right; // ditto
             break;
           case "center":  // top, left, width & height set by sizeMidPanes()
         }
@@ -1190,12 +1198,12 @@
                   .css(c.togglers.cssReq)// add base/required styles
                   .attr("title", (isOpen ? o.togglerTip_open : o.togglerTip_closed))
                   .click(function(evt) {
-            toggle(pane);
-            evt.stopPropagation();
-          })
+                    toggle(pane);
+                    evt.stopPropagation();
+                  })
                   .mouseover(function(evt) {
-            evt.stopPropagation();
-          })// prevent resizer event
+                    evt.stopPropagation();
+                  })// prevent resizer event
             // ADD CLASSNAMES - eg: class="toggler toggler-west toggler-west-open"
                   .addClass(tClass + " " + tClass + _pane + " " + tClass + _state + " " + tClass + _pane + _state)
                   .appendTo($R) // append SPAN to resizer DIV
@@ -1305,13 +1313,13 @@
             $(o.maskIframesOnResize === true ? "iframe" : o.maskIframesOnResize).each(function() {
               $('<div class="ui-layout-mask"/>')
                       .css({
-                             background: "#fff"
-                             , opacity:  "0.001"
-                             , zIndex:   9
-                             , position: "absolute"
-                             , width:    this.offsetWidth + "px"
-                             , height:   this.offsetHeight + "px"
-                           })
+                        background: "#fff"
+                        , opacity:  "0.001"
+                        , zIndex:   9
+                        , position: "absolute"
+                        , width:    this.offsetWidth + "px"
+                        , height:   this.offsetHeight + "px"
+                      })
                       .css($(this).offset())// top & left
                       .appendTo(this.parentNode) // put div INSIDE pane to avoid zIndex issues
                       ;
@@ -1342,10 +1350,18 @@
             $R.removeClass(dragClass + " " + dragPaneClass); // remove drag classes
 
             switch (pane) {
-              case "north": resizerPos = dragPos.top; break;
-              case "west":  resizerPos = dragPos.left; break;
-              case "south": resizerPos = cDims.outerHeight - dragPos.top - $R.outerHeight(); break;
-              case "east":  resizerPos = cDims.outerWidth - dragPos.left - $R.outerWidth(); break;
+              case "north":
+                resizerPos = dragPos.top;
+                break;
+              case "west":
+                resizerPos = dragPos.left;
+                break;
+              case "south":
+                resizerPos = cDims.outerHeight - dragPos.top - $R.outerHeight();
+                break;
+              case "east":
+                resizerPos = cDims.outerWidth - dragPos.left - $R.outerWidth();
+                break;
             }
             // remove container margin from resizer position to get the pane size
             newSize = resizerPos - cDims[ c[pane].edge ];
@@ -2048,14 +2064,17 @@
             if (typeof togAlign == "string") {
               switch (togAlign) {
                 case "top":
-                case "left":  offset = 0;
+                case "left":
+                  offset = 0;
                   break;
                 case "bottom":
-                case "right": offset = paneLen - togLen;
+                case "right":
+                  offset = paneLen - togLen;
                   break;
                 case "middle":
                 case "center":
-                default:    offset = Math.floor((paneLen - togLen) / 2); // 'default' catches typos
+                default:
+                  offset = Math.floor((paneLen - togLen) / 2); // 'default' catches typos
               }
             }
             else { // togAlign = number
@@ -2353,9 +2372,9 @@
         $E
                 .attr("title", state[pane].isClosed ? "Open" : "Close")
                 .click(function (evt) {
-          toggle(pane);
-          evt.stopPropagation();
-        })
+                  toggle(pane);
+                  evt.stopPropagation();
+                })
                 ;
     }
 
@@ -2375,9 +2394,9 @@
         $E
                 .attr("title", "Open")
                 .click(function (evt) {
-          open(pane);
-          evt.stopPropagation();
-        })
+                  open(pane);
+                  evt.stopPropagation();
+                })
                 ;
     }
 
@@ -2397,9 +2416,9 @@
         $E
                 .attr("title", "Close")
                 .click(function (evt) {
-          close(pane);
-          evt.stopPropagation();
-        })
+                  close(pane);
+                  evt.stopPropagation();
+                })
                 ;
     }
 

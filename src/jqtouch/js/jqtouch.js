@@ -57,7 +57,8 @@
               fullScreenClass: 'fullscreen',
               hoverDelay: 50,
               icon: null,
-              icon4: null, // experimental
+              iconPad: null, // available in iOS 4.2 and later.
+              icon4: null, // available in iOS 4.2 and later.
               moveThreshold: 10,
               preloadImages: false,
               pressDelay: 1000,
@@ -89,8 +90,8 @@
             };
 
     function _debug(message) {
-      now = (new Date).getTime();
-      delta = now - lastTime;
+      var now = (new Date).getTime();
+      var delta = now - lastTime;
       lastTime = now;
       if (jQTSettings.debug) {
         if (message) {
@@ -119,8 +120,8 @@
       hist.unshift({
         page: page,
         animation: animation,
-        hash: '#' + page.prop('id'),
-        id: page.prop('id')
+        hash: '#' + page.attr('id'),
+        id: page.attr('id')
       });
     }
 
@@ -138,11 +139,11 @@
 
       // Find the nearest tappable ancestor
       if (!$el.is(touchSelectors.join(', '))) {
-        var $el = $(e.target).closest(touchSelectors.join(', '));
+        $el = $(e.target).closest(touchSelectors.join(', '));
       }
 
       // Prevent default if we found an internal link (relative or absolute)
-      if ($el && $el.prop('href') && !$el.isExternalLink()) {
+      if ($el && $el.attr('href') && !$el.isExternalLink()) {
         _debug('Need to prevent default click behavior');
         e.preventDefault();
       } else {
@@ -253,7 +254,7 @@
 
         fromPage.unselect();
         lastAnimationTime = (new Date()).getTime();
-        setHash(currentPage.prop('id'));
+        setHash(currentPage.attr('id'));
         tapReady = true;
 
         // Trigger custom events
@@ -358,20 +359,16 @@
         ;
       }
 
-      // Set appropriate icon (retina display stuff is experimental)
-      if (jQTSettings.icon || jQTSettings.icon4) {
-        var precomposed, appropriateIcon;
-        if (jQTSettings.icon4 && window.devicePixelRatio && window.devicePixelRatio === 2) {
-          appropriateIcon = jQTSettings.icon4;
-        } else if (jQTSettings.icon) {
-          appropriateIcon = jQTSettings.icon;
-        } else {
-          appropriateIcon = false;
-        }
-        if (appropriateIcon) {
-          precomposed = (jQTSettings.addGlossToIcon) ? '' : '-precomposed';
-          hairExtensions += '<link rel="apple-touch-icon' + precomposed + '" href="' + appropriateIcon + '" />';
-        }
+      // Set appropriate icon (retina display available in iOS 4.2 and later.)
+      var precomposed = (jQTSettings.addGlossToIcon) ? '' : '-precomposed';
+      if (jQTSettings.icon) {
+        hairExtensions += '<link rel="apple-touch-icon' + precomposed + '" href="' + jQTSettings.icon + '" />';
+      }
+      if (jQTSettings.iconPad) {
+        hairExtensions += '<link rel="apple-touch-icon' + precomposed + '" sizes="72x72" href="' + jQTSettings.iconPad + '" />';
+      }
+      if (jQTSettings.icon4) {
+        hairExtensions += '<link rel="apple-touch-icon' + precomposed + '" sizes="114x114" href="' + jQTSettings.icon4 + '" />';
       }
 
       // Set startup screen
@@ -405,12 +402,12 @@
       var targetPage = null;
       $(nodes).each(function(index, node) {
         var $node = $(this);
-        if (!$node.prop('id')) {
-          $node.prop('id', 'page-' + (++newPageCount));
+        if (!$node.attr('id')) {
+          $node.attr('id', 'page-' + (++newPageCount));
         }
 
         // Remove any existing instance
-        $('#' + $node.prop('id')).remove();
+        $('#' + $node.attr('id')).remove();
 
         $body.trigger('pageInserted', {page: $node.appendTo($body)});
 
@@ -473,7 +470,7 @@
             var firstPage = insertPages(data, settings.animation);
             if (firstPage) {
               if (settings.method == 'GET' && jQTSettings.cacheGetRequests === true && settings.$referrer) {
-                settings.$referrer.prop('href', '#' + firstPage.prop('id'));
+                settings.$referrer.attr('href', '#' + firstPage.attr('id'));
               }
               if (settings.callback) {
                 settings.callback(true);
@@ -503,12 +500,12 @@
 
       var $form = (typeof(e) === 'string') ? $(e).eq(0) : (e.target ? $(e.target) : $(e));
 
-      _debug($form.prop('action'));
+      _debug($form.attr('action'));
 
-      if ($form.length && $form.is(jQTSettings.formSelector) && $form.prop('action')) {
-        showPageByHref($form.prop('action'), {
+      if ($form.length && $form.is(jQTSettings.formSelector) && $form.attr('action')) {
+        showPageByHref($form.attr('action'), {
           data: $form.serialize(),
-          method: $form.prop('method') || "POST",
+          method: $form.attr('method') || "POST",
           animation: animations[0] || null,
           callback: callback
         });
@@ -616,14 +613,14 @@
       }
 
       // Make sure we have a tappable element
-      if (!$el.length || !$el.prop('href')) {
+      if (!$el.length || !$el.attr('href')) {
         _debug('Could not find a link related to tapped element');
         return false;
       }
 
       // Init some vars
-      var target = $el.prop('target'),
-              hash = $el.prop('hash'),
+      var target = $el.attr('target'),
+              hash = $el.attr('hash'),
               animation = null;
 
       if ($el.isExternalLink()) {
@@ -640,10 +637,10 @@
 
       } else if (target === '_webapp') {
         // User clicked or tapped an internal link, fullscreen mode
-        window.location = $el.prop('href');
+        window.location = $el.attr('href');
         return false;
 
-      } else if ($el.prop('href') === '#') {
+      } else if ($el.attr('href') === '#') {
         // Allow tap on item with no href
         $el.unselect();
         return true;
@@ -673,7 +670,7 @@
         } else {
           // External href
           $el.addClass('loading active');
-          showPageByHref($el.prop('href'), {
+          showPageByHref($el.attr('href'), {
             animation: animation,
             callback: function() {
               $el.removeClass('loading');
@@ -830,7 +827,7 @@
       // Define public jQuery functions
       $.fn.isExternalLink = function() {
         var $el = $(this);
-        return ($el.prop('target') == '_blank' || $el.prop('rel') == 'external' || $el.is('a[href^="http://maps.google.com"], a[href^="mailto:"], a[href^="tel:"], a[href^="javascript:"], a[href*="youtube.com/v"], a[href*="youtube.com/watch"]'));
+        return ($el.attr('target') == '_blank' || $el.attr('rel') == 'external' || $el.is('a[href^="http://maps.google.com"], a[href^="mailto:"], a[href^="tel:"], a[href^="javascript:"], a[href*="youtube.com/v"], a[href*="youtube.com/watch"]'));
       }
       $.fn.makeActive = function() {
         return $(this).addClass('active');
@@ -904,7 +901,7 @@
       $body = $('#jqt');
       if ($body.length === 0) {
         _log('Could not find an element with the id "jqt", so the body id has been set to "jqt". If you are having any problems, wrapping your panels in a div with the id "jqt" might help.');
-        $body = $('body').prop('id', 'jqt');
+        $body = $('body').attr('id', 'jqt');
       }
 
       // Add some specific css if need be
@@ -939,7 +936,7 @@
 
       // Go to the top of the "current" page
       $(currentPage).addClass('current');
-      initialPageId = $(currentPage).prop('id');
+      initialPageId = $(currentPage).attr('id');
       setHash(initialPageId);
       addPageToHistory(currentPage);
       scrollTo(0, 0);

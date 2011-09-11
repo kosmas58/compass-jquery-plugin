@@ -77,7 +77,7 @@ ol.ui-listview .ui-li-jsnumbering:before {
 }
 
 .ui-li .ui-btn-inner a.ui-link-inherit, .ui-li-static.ui-li {
-    padding: .7em 75px .7em 15px;
+    padding: .7em 15px .7em 15px;
     display: block;
 }
 
@@ -89,6 +89,18 @@ ol.ui-listview .ui-li-jsnumbering:before {
 .ui-li-has-icon .ui-btn-inner a.ui-link-inherit, .ui-li-static.ui-li-has-icon {
     min-height: 20px;
     padding-left: 40px;
+}
+
+.ui-li-has-count .ui-btn-inner a.ui-link-inherit, .ui-li-static.ui-li-has-count {
+    padding-right: 45px;
+}
+
+.ui-li-has-arrow .ui-btn-inner a.ui-link-inherit, .ui-li-static.ui-li-has-arrow {
+    padding-right: 30px;
+}
+
+.ui-li-has-arrow.ui-li-has-count .ui-btn-inner a.ui-link-inherit, .ui-li-static.ui-li-has-arrow.ui-li-has-count {
+    padding-right: 75px;
 }
 
 .ui-li-heading {

@@ -645,13 +645,13 @@
 
         $(v.selector)
                 .each(function() {
-          $(this).verticallyScroll(v.attributesToOptions($(this), "vertical", v.attributes));
-        });
+                  $(this).verticallyScroll(v.attributesToOptions($(this), "vertical", v.attributes));
+                });
 
         $(h.selector)
                 .each(function() {
-          $(this).horizontallyScroll(h.attributesToOptions($(this), "horizontal", h.attributes));
-        });
+                  $(this).horizontallyScroll(h.attributesToOptions($(this), "horizontal", h.attributes));
+                });
       });
 
       return {};
@@ -1217,7 +1217,7 @@
               this.direction == "horizontal" ?
                       0 :
                       Math.round(pos)
-              );
+      );
     },
 
     scrollTo: function (pos, runtime) {

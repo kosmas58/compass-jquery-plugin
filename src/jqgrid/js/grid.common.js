@@ -65,8 +65,8 @@
       $(mh).append("<span class='ui-jqdialog-title'>" + p.caption + "</span>");
       var ahr = $("<a href='javascript:void(0)' class='ui-jqdialog-titlebar-close ui-corner-all'></a>")
               .hover(function() {
-        ahr.addClass('ui-state-hover');
-      },
+                ahr.addClass('ui-state-hover');
+              },
               function() {
                 ahr.removeClass('ui-state-hover');
               })
@@ -190,6 +190,7 @@
         toTop: true,
         overlay: 10,
         modal: false,
+        overlayClass : 'ui-widget-overlay',
         onShow: this.showModal,
         onHide: this.closeModal,
         gbox: '',
@@ -267,14 +268,14 @@
       } catch (e) {
       }
       this.createModal({
-        themodal:'info_dialog',
-        modalhead:'info_head',
-        modalcontent:'info_content',
-        scrollelm: 'infocnt'},
+                themodal:'info_dialog',
+                modalhead:'info_head',
+                modalcontent:'info_content',
+                scrollelm: 'infocnt'},
               cnt,
               mopt,
               '', '', true
-              );
+      );
       // attach onclick after inserting into the dom
       if (buttstr) {
         $.each(mopt.buttons, function(i) {
@@ -295,7 +296,7 @@
               function() {
                 $(this).removeClass('ui-state-hover');
               }
-              );
+      );
       if ($.isFunction(mopt.beforeOpen)) {
         mopt.beforeOpen();
       }
@@ -456,16 +457,14 @@
             }, ajaxso || {}));
           } else if (options.value) {
             var i;
+            if (typeof options.size === 'undefined') {
+              options.size = msl ? 3 : 1;
+            }
             if (msl) {
               ovm = vl.split(",");
               ovm = $.map(ovm, function(n) {
                 return $.trim(n);
               });
-              if (typeof options.size === 'undefined') {
-                options.size = 3;
-              }
-            } else {
-              options.size = 1;
             }
             if (typeof options.value === 'function') {
               options.value = options.value();
@@ -477,8 +476,8 @@
                 sv = so[i].split(":");
                 if (sv.length > 2) {
                   sv[1] = $.map(sv,
-                          function(n, i) {
-                            if (i > 0) {
+                          function(n, ii) {
+                            if (ii > 0) {
                               return n;
                             }
                           }).join(":");
@@ -487,13 +486,13 @@
                 ov.setAttribute("role", "option");
                 ov.value = sv[0];
                 ov.innerHTML = sv[1];
+                elem.appendChild(ov);
                 if (!msl && ($.trim(sv[0]) == $.trim(vl) || $.trim(sv[1]) == $.trim(vl))) {
                   ov.selected = "selected";
                 }
                 if (msl && ($.inArray($.trim(sv[1]), ovm) > -1 || $.inArray($.trim(sv[0]), ovm) > -1)) {
                   ov.selected = "selected";
                 }
-                elem.appendChild(ov);
               }
             } else if (typeof options.value === 'object') {
               var oSv = options.value;
@@ -503,13 +502,13 @@
                   ov.setAttribute("role", "option");
                   ov.value = key;
                   ov.innerHTML = oSv[key];
+                  elem.appendChild(ov);
                   if (!msl && ( $.trim(key) == $.trim(vl) || $.trim(oSv[key]) == $.trim(vl))) {
                     ov.selected = "selected";
                   }
                   if (msl && ($.inArray($.trim(oSv[key]), ovm) > -1 || $.inArray($.trim(key), ovm) > -1)) {
                     ov.selected = "selected";
                   }
-                  elem.appendChild(ov);
                 }
               }
             }

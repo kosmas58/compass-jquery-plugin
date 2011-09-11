@@ -1,5 +1,5 @@
 /*
- * jQuery UI Effects Fold 1.8.13
+ * jQuery UI Effects Fold 1.8.16
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -44,12 +44,12 @@
       // Animate
       wrapper.animate(animation1, duration, o.options.easing)
               .animate(animation2, duration, o.options.easing, function() {
-        if (mode == 'hide') el.hide(); // Hide
-        $.effects.restore(el, props);
-        $.effects.removeWrapper(el); // Restore
-        if (o.callback) o.callback.apply(el[0], arguments); // Callback
-        el.dequeue();
-      });
+                if (mode == 'hide') el.hide(); // Hide
+                $.effects.restore(el, props);
+                $.effects.removeWrapper(el); // Restore
+                if (o.callback) o.callback.apply(el[0], arguments); // Callback
+                el.dequeue();
+              });
 
     });
 

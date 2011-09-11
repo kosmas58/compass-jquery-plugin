@@ -67,13 +67,13 @@
             lf = "";
           }
           ldat[expanded] = ((ldat[expanded] == "true" || ldat[expanded] === true) ? true : false) && ldat[loaded];
-          if (ldat[expanded] === true) {
-            twrap += $t.p.treeIcons.minus + " tree-minus treeclick'";
+          if (ldat[expanded] === false) {
+            twrap += ((ldat[isLeaf] === true) ? "'" : $t.p.treeIcons.plus + " tree-plus treeclick'");
           } else {
-            twrap += $t.p.treeIcons.plus + " tree-plus treeclick'";
+            twrap += ((ldat[isLeaf] === true) ? "'" : $t.p.treeIcons.minus + " tree-minus treeclick'");
           }
 
-          twrap += "</div></div>";
+          twrap += "></div></div>";
           $($t.rows[i].cells[expCol]).wrapInner("<span class='cell-wrapper" + lf + "'></span>").prepend(twrap);
 
           if (curLevel !== parseInt($t.p.tree_root_level, 10)) {
@@ -86,40 +86,40 @@
           $($t.rows[i].cells[expCol])
                   .find("div.treeclick")
                   .bind("click", function(e) {
-            var target = e.target || e.srcElement,
-                    ind2 = $(target, $t.rows).closest("tr.jqgrow")[0].id,
-                    pos = $t.p._index[ind2];
-            if (!$t.p.data[pos][isLeaf]) {
-              if ($t.p.data[pos][expanded]) {
-                $($t).jqGrid("collapseRow", $t.p.data[pos]);
-                $($t).jqGrid("collapseNode", $t.p.data[pos]);
-              } else {
-                $($t).jqGrid("expandRow", $t.p.data[pos]);
-                $($t).jqGrid("expandNode", $t.p.data[pos]);
-              }
-            }
-            return false;
-          });
+                    var target = e.target || e.srcElement,
+                            ind2 = $(target, $t.rows).closest("tr.jqgrow")[0].id,
+                            pos = $t.p._index[ind2];
+                    if (!$t.p.data[pos][isLeaf]) {
+                      if ($t.p.data[pos][expanded]) {
+                        $($t).jqGrid("collapseRow", $t.p.data[pos]);
+                        $($t).jqGrid("collapseNode", $t.p.data[pos]);
+                      } else {
+                        $($t).jqGrid("expandRow", $t.p.data[pos]);
+                        $($t).jqGrid("expandNode", $t.p.data[pos]);
+                      }
+                    }
+                    return false;
+                  });
           if ($t.p.ExpandColClick === true) {
             $($t.rows[i].cells[expCol])
                     .find("span.cell-wrapper")
                     .css("cursor", "pointer")
                     .bind("click", function(e) {
-              var target = e.target || e.srcElement,
-                      ind2 = $(target, $t.rows).closest("tr.jqgrow")[0].id,
-                      pos = $t.p._index[ind2];
-              if (!$t.p.data[pos][isLeaf]) {
-                if ($t.p.data[pos][expanded]) {
-                  $($t).jqGrid("collapseRow", $t.p.data[pos]);
-                  $($t).jqGrid("collapseNode", $t.p.data[pos]);
-                } else {
-                  $($t).jqGrid("expandRow", $t.p.data[pos]);
-                  $($t).jqGrid("expandNode", $t.p.data[pos]);
-                }
-              }
-              $($t).jqGrid("setSelection", ind2);
-              return false;
-            });
+                      var target = e.target || e.srcElement,
+                              ind2 = $(target, $t.rows).closest("tr.jqgrow")[0].id,
+                              pos = $t.p._index[ind2];
+                      if (!$t.p.data[pos][isLeaf]) {
+                        if ($t.p.data[pos][expanded]) {
+                          $($t).jqGrid("collapseRow", $t.p.data[pos]);
+                          $($t).jqGrid("collapseNode", $t.p.data[pos]);
+                        } else {
+                          $($t).jqGrid("expandRow", $t.p.data[pos]);
+                          $($t).jqGrid("expandNode", $t.p.data[pos]);
+                        }
+                      }
+                      $($t).jqGrid("setSelection", ind2);
+                      return false;
+                    });
           }
           i++;
         }
@@ -140,6 +140,9 @@
         $t.p.pgbuttons = false;
         $t.p.pginput = false;
         $t.p.gridview = true;
+        if ($t.p.rowTotal === null) {
+          $t.p.rowNum = 10000;
+        }
         $t.p.multiselect = false;
         $t.p.rowList = [];
         $t.p.expColInd = 0;

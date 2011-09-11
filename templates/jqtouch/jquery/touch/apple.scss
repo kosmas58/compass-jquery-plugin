@@ -239,7 +239,7 @@ body {
       input {
         &[type="text"], &[type="password"], &[type="tel"], &[type="number"], &[type="search"], &[type="email"], &[type="url"] {
           color: #777;
-          background: white url('data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==');
+          background: transparent url('data:image/gif;base64,R0lGODlhAQABAIABAP///wAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==');
           border: 0;
           font: normal 17px "Helvetica Neue", Helvetica;
           padding: 0;
@@ -249,7 +249,7 @@ body {
           -webkit-appearance: textarea; } }
       textarea, select {
         color: #777;
-        background: white url('data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==');
+        background: transparent url('data:image/gif;base64,R0lGODlhAQABAIABAP///wAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==');
         border: 0;
         font: normal 17px "Helvetica Neue", Helvetica;
         padding: 0;
