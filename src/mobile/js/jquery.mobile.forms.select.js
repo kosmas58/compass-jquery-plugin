@@ -55,6 +55,10 @@
       }, 40);
     },
 
+    _selectOptions: function() {
+      return this.select.find("option");
+    },
+
     // setup items that are generally necessary for select menu extension
     _preExtension: function() {
       this.select = this.element.wrap("<div class='ui-select'>");
@@ -62,7 +66,6 @@
       this.label = $("label[for='" + this.selectID + "']").addClass("ui-select");
       this.isMultiple = this.select[ 0 ].multiple;
       this.options.theme = this._theme();
-      this.selectOptions = this.select.find("option");
     },
 
     _create: function() {
@@ -153,7 +156,7 @@
     },
 
     selected: function() {
-      return this.selectOptions.filter(":selected");
+      return this._selectOptions().filter(":selected");
     },
 
     selectedIndices: function() {
@@ -161,7 +164,7 @@
 
       return this.selected().map(
               function() {
-                return self.selectOptions.index(this);
+                return self._selectOptions().index(this);
               }).get();
     },
 

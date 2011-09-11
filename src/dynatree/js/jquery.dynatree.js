@@ -539,6 +539,7 @@ var DTNodeStatus_Ok = 0;
             // I've seen exceptions here with loadKeyPath...
             if (this.ul) {
               this.ul.removeChild(firstChild.li);
+              firstChild.li = null; // avoid leaks (issue 215)
             }
           } catch(e) {
           }
@@ -833,6 +834,8 @@ var DTNodeStatus_Ok = 0;
      * end nodes.
      */
     _updatePartSelectionState: function() {
+//		alert("_updatePartSelectionState " + this);
+//		this.tree.logDebug("_updatePartSelectionState() - %o", this);
       var sel;
       // Return `true` or `false` for end nodes and remove part-sel flag
       if (! this.hasChildren()) {
@@ -872,7 +875,8 @@ var DTNodeStatus_Ok = 0;
      * This includes (de)selecting all children.
      */
     _fixSelectionState: function() {
-//		this.tree.logDebug("_fixSelectionState(%o) - %o", this.bSelected, this);
+//		alert("_fixSelectionState " + this);
+//		this.tree.logDebug("_fixSelectionState(%s) - %o", this.bSelected, this);
       var p, i, l;
       if (this.bSelected) {
         // Select all children
@@ -996,6 +1000,10 @@ var DTNodeStatus_Ok = 0;
 
     isSelected: function() {
       return this.bSelected;
+    },
+
+    isLazy: function() {
+      return !!this.data.isLazy;
     },
 
     _loadContent: function() {
@@ -1739,7 +1747,7 @@ var DTNodeStatus_Ok = 0;
           }
           self.tree.phase = "postInit";
           if (orgSuccess) {
-            orgSuccess.call(options, self);
+            orgSuccess.call(options, self, data, textStatus);
           }
           self.tree.logDebug("trigger " + eventType);
           self.tree.$tree.trigger(eventType, [self, true]);
@@ -1915,7 +1923,7 @@ var DTNodeStatus_Ok = 0;
     return ts.toDict();
   };
 // Make available in global scope
-  getDynaTreePersistData = DynaTreeStatus._getTreePersistData;
+  getDynaTreePersistData = DynaTreeStatus._getTreePersistData; // TODO: deprecated
 
 
   DynaTreeStatus.prototype = {
@@ -2173,7 +2181,7 @@ var DTNodeStatus_Ok = 0;
 
       this._checkConsistency();
       // Fix part-sel flags
-      if (opts.selectMode == 3) {
+      if (!isLazy && opts.selectMode == 3) {
         root._updatePartSelectionState();
       }
       // Render html markup
@@ -2197,30 +2205,16 @@ var DTNodeStatus_Ok = 0;
         this.logDebug("Focus on init: %o", this.focusNode);
         this.focusNode.focus();
       }
-      if (!isLazy && opts.onPostInit) {
-        opts.onPostInit.call(this, isReloading, false);
+      if (!isLazy) {
+        if (opts.onPostInit) {
+          opts.onPostInit.call(this, isReloading, false);
+        }
+        if (callback) {
+          callback.call(this, "ok");
+        }
       }
       this.phase = "idle";
     },
-
-//	_setNoUpdate: function(silent) {
-//		// TODO: set options to disable and re-enable updates while loading
-//		var opts = this.options;
-//		var prev = {
-//			fx: opts.fx,
-//			autoFocus: opts.autoFocus,
-//			autoCollapse: opts.autoCollapse };
-//		if(silent === true){
-//			opts.autoFocus = false;
-//			opts.fx = null;
-//			opts.autoCollapse = false;
-//		} else {
-//			opts.autoFocus = silent.autoFocus;
-//			opts.fx = silent.fx;
-//			opts.autoCollapse = silent.autoCollapse;
-//		}
-//		return prev;
-//	},
 
     _reloadAjax: function(callback) {
       // Reload
@@ -2245,27 +2239,33 @@ var DTNodeStatus_Ok = 0;
         ajaxOpts.data.selectedKeyList = pers.selectedKeyList.join(",");
       }
       // Set up onPostInit callback to be called when Ajax returns
-      if (opts.onPostInit) {
-        if (ajaxOpts.success) {
-          this.logWarning("initAjax: success callback is ignored when onPostInit was specified.");
-        }
-        if (ajaxOpts.error) {
-          this.logWarning("initAjax: error callback is ignored when onPostInit was specified.");
-        }
-        var isReloading = pers.isReloading();
-        ajaxOpts.success = function(dtnode) {
-          opts.onPostInit.call(dtnode.tree, isReloading, false);
-          if (callback) {
-            callback.call(dtnode.tree, "ok");
-          }
-        };
-        ajaxOpts.error = function(dtnode) {
-          opts.onPostInit.call(dtnode.tree, isReloading, true);
-          if (callback) {
-            callback.call(dtnode.tree, "error");
-          }
-        };
+      if (ajaxOpts.success) {
+        this.logWarning("initAjax: success callback is ignored; use onPostInit instead.");
       }
+      if (ajaxOpts.error) {
+        this.logWarning("initAjax: error callback is ignored; use onPostInit instead.");
+      }
+      var isReloading = pers.isReloading();
+      ajaxOpts.success = function(dtnode, data, textStatus) {
+        if (opts.selectMode == 3) {
+          dtnode.tree.tnRoot._updatePartSelectionState();
+        }
+        if (opts.onPostInit) {
+          opts.onPostInit.call(dtnode.tree, isReloading, false);
+        }
+        if (callback) {
+          callback.call(dtnode.tree, "ok");
+        }
+      };
+      ajaxOpts.error = function(dtnode, XMLHttpRequest, textStatus, errorThrown) {
+        if (opts.onPostInit) {
+          opts.onPostInit.call(dtnode.tree, isReloading, true, XMLHttpRequest, textStatus, errorThrown);
+        }
+        if (callback) {
+          callback.call(dtnode.tree, "error", XMLHttpRequest, textStatus, errorThrown);
+        }
+      };
+//		}
       this.logDebug("Dynatree._init(): send Ajax request...");
       this.tnRoot.appendAjax(ajaxOpts);
     },
@@ -2541,8 +2541,8 @@ var DTNodeStatus_Ok = 0;
 
     _setDndStatus: function(sourceNode, targetNode, helper, hitMode, accept) {
       // hitMode: 'after', 'before', 'over', 'out', 'start', 'stop'
-      var $source = sourceNode ? $(sourceNode.span) : null;
-      var $target = $(targetNode.span);
+      var $source = sourceNode ? $(sourceNode.span) : null,
+              $target = $(targetNode.span);
       if (!this.$dndMarker) {
         this.$dndMarker = $("<div id='dynatree-drop-marker'></div>")
                 .hide()
@@ -2560,7 +2560,7 @@ var DTNodeStatus_Ok = 0;
 //		this.$dndMarker.attr("class", hitMode);
       if (hitMode === "after" || hitMode === "before" || hitMode === "over") {
 //			$source && $source.addClass("dynatree-drag-source");
-        var pos = $target.position();
+        var pos = $target.offset();
         switch (hitMode) {
           case "before":
             this.$dndMarker.removeClass("dynatree-drop-after dynatree-drop-over");
@@ -2578,7 +2578,18 @@ var DTNodeStatus_Ok = 0;
             $target.addClass("dynatree-drop-target");
             pos.left += 8;
         }
-        this.$dndMarker.css({"left": (pos.left) + "px", "top": (pos.top) + "px" })
+//			logMsg("Creating marker: %o", this.$dndMarker);
+//			logMsg("    $target.offset=%o", $target);
+//			logMsg("    pos/$target.offset=%o", pos);
+//			logMsg("    $target.position=%o", $target.position());
+//			logMsg("    $target.offsetParent=%o, ot:%o", $target.offsetParent(), $target.offsetParent().offset());
+//			logMsg("    $(this.divTree).offset=%o", $(this.divTree).offset());
+//			logMsg("    $(this.divTree).parent=%o", $(this.divTree).parent());
+
+        this.$dndMarker.offset({left: pos.left, top: pos.top})
+                .css({
+                  "z-index": 1000
+                })
                 .show();
 //			helper.addClass("dynatree-drop-hover");
       } else {
@@ -2983,6 +2994,9 @@ var DTNodeStatus_Ok = 0;
     }
     return node;
   }
+
+  /**Return persistence information from cookies.*/
+  $.ui.dynatree.getPersistData = DynaTreeStatus._getTreePersistData;
 
   /*******************************************************************************
    * Plugin default options:

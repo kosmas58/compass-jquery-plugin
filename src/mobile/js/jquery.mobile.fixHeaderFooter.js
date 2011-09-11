@@ -15,7 +15,7 @@
 
   $.fn.fixHeaderFooter = function(options) {
 
-    if (!$.support.scrollTop) {
+    if (!$.support.scrollTop || ( $.support.touchOverflow && $.mobile.touchOverflowEnabled )) {
       return this;
     }
 
@@ -37,7 +37,7 @@
 // single controller for all showing,hiding,toggling
   $.mobile.fixedToolbars = (function() {
 
-    if (!$.support.scrollTop) {
+    if (!$.support.scrollTop || ( $.support.touchOverflow && $.mobile.touchOverflowEnabled )) {
       return;
     }
 
@@ -363,7 +363,7 @@
 
       $(event.target).each(function() {
 
-        if (!$.support.scrollTop) {
+        if (!$.support.scrollTop || ( $.support.touchOverflow && $.mobile.touchOverflowEnabled )) {
           return this;
         }
 

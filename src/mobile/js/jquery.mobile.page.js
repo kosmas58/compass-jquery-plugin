@@ -17,7 +17,9 @@
 
       this._trigger("beforecreate");
 
-      this.element.addClass("ui-page ui-body-" + this.options.theme);
+      this.element
+              .attr("tabindex", "0")
+              .addClass("ui-page ui-body-" + this.options.theme);
     }
   });
 

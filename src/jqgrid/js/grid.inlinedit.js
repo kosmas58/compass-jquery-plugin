@@ -21,7 +21,8 @@
         "aftersavefunc" : aftersavefunc || null,
         "errorfunc": errorfunc || null,
         "afterrestorefunc" : afterrestorefunc || null,
-        "restoreAfterErorr" : true
+        "restoreAfterError" : true,
+        "mtype" : "POST"
       },
               args = $.makeArray(arguments).slice(1), o;
 
@@ -131,7 +132,8 @@
         "aftersavefunc" : aftersavefunc || null,
         "errorfunc": errorfunc || null,
         "afterrestorefunc" : afterrestorefunc || null,
-        "restoreAfterErorr" : true
+        "restoreAfterError" : true,
+        "mtype" : "POST"
       },
               args = $.makeArray(arguments).slice(1), o;
 

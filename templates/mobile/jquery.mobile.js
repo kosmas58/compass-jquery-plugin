@@ -1,7 +1,8 @@
 /*!
- * jQuery UI Widget 1.8.16
+ * jQuery UI Widget 1.0b3pre
+
  *
- * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
+ * Copyright 2010, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * http://jquery.org/license
  *
@@ -14,11 +15,7 @@
     var _cleanData = $.cleanData;
     $.cleanData = function(elems) {
       for (var i = 0, elem; (elem = elems[i]) != null; i++) {
-        try {
-          $(elem).triggerHandler("remove");
-          // http://bugs.jquery.com/ticket/8235
-        } catch(e) {
-        }
+        $(elem).triggerHandler("remove");
       }
       _cleanData(elems);
     };
@@ -29,11 +26,7 @@
         if (!keepData) {
           if (!selector || $.filter(selector, [ this ]).length) {
             $("*", this).add([ this ]).each(function() {
-              try {
-                $(this).triggerHandler("remove");
-                // http://bugs.jquery.com/ticket/8235
-              } catch(e) {
-              }
+              $(this).triggerHandler("remove");
             });
           }
         }
@@ -104,19 +97,15 @@
 
       if (isMethodCall) {
         this.each(function() {
-          var instance = $.data(this, name),
-                  methodValue = instance && $.isFunction(instance[options]) ?
-                          instance[ options ].apply(instance, args) :
-                          instance;
-          // TODO: add this back in 1.9 and use $.error() (see #5972)
-//				if ( !instance ) {
-//					throw "cannot call methods on " + name + " prior to initialization; " +
-//						"attempted to call method '" + options + "'";
-//				}
-//				if ( !$.isFunction( instance[options] ) ) {
-//					throw "no such method '" + options + "' for " + name + " widget instance";
-//				}
-//				var methodValue = instance[ options ].apply( instance, args );
+          var instance = $.data(this, name);
+          if (!instance) {
+            throw "cannot call methods on " + name + " prior to initialization; " +
+                    "attempted to call method '" + options + "'";
+          }
+          if (!$.isFunction(instance[options])) {
+            throw "no such method '" + options + "' for " + name + " widget instance";
+          }
+          var methodValue = instance[ options ].apply(instance, args);
           if (methodValue !== instance && methodValue !== undefined) {
             returnValue = methodValue;
             return false;
@@ -170,7 +159,11 @@
       this._init();
     },
     _getCreateOptions: function() {
-      return $.metadata && $.metadata.get(this.element[0])[ this.widgetName ];
+      var options = {};
+      if ($.metadata) {
+        options = $.metadata.get(element)[ this.widgetName ];
+      }
+      return options;
     },
     _create: function() {
     },
@@ -426,6 +419,7 @@
     pushState: "pushState" in history && "replaceState" in history,
     mediaquery: $.mobile.media("only all"),
     cssPseudoElement: !!propExists("content"),
+    touchOverflow: !!propExists("overflowScrolling"),
     boxShadow: !!propExists("boxShadow") && !bb,
     scrollTop: ( "pageXOffset" in window || "scrollTop" in document.documentElement || "scrollTop" in fakeBody[ 0 ] ) && !webos,
     dynamicBaseTag: baseTagTest(),
@@ -474,7 +468,6 @@
   }
 
 })(jQuery);
-
 
 /*
  * jQuery Mobile Framework : "mouse" plugin
@@ -1702,7 +1695,9 @@
 
       this._trigger("beforecreate");
 
-      this.element.addClass("ui-page ui-body-" + this.options.theme);
+      this.element
+              .attr("tabindex", "0")
+              .addClass("ui-page ui-body-" + this.options.theme);
     }
   });
 
@@ -1748,7 +1743,7 @@
     defaultPageTransition: "slide",
 
     // Minimum scroll distance that will be remembered when returning to a page
-    minScrollBack: screen.height / 2,
+    minScrollBack: 250,
 
     // Set default dialog transition - 'none' for no transitions
     defaultDialogTransition: "pop",
@@ -2099,6 +2094,26 @@
               return ( /^(:?\w+:)/ ).test(url);
             },
 
+            //check if the specified url refers to the first page in the main application document.
+            isFirstPageUrl: function(url) {
+              // We only deal with absolute paths.
+              var u = path.parseUrl(path.makeUrlAbsolute(url, documentBase)),
+
+                // Does the url have the same path as the document?
+                      samePath = u.hrefNoHash === documentUrl.hrefNoHash || ( documentBaseDiffers && u.hrefNoHash === documentBase.hrefNoHash ),
+
+                // Get the first page element.
+                      fp = $.mobile.firstPage,
+
+                // Get the id of the first page element if it has one.
+                      fpId = fp && fp[0] ? fp[0].id : undefined;
+
+              // The url refers to the first page if the path matches the document and
+              // it either has no hash value, or the hash is exactly equal to the id of the
+              // first page element.
+              return samePath && ( !u.hash || u.hash === "#" || ( fpId && u.hash.replace(/^#/, "") === fpId ) );
+            },
+
             isEmbeddedPage: function(url) {
               var u = path.parseUrl(url);
 
@@ -2237,20 +2252,13 @@
 
   //direct focus to the page title, or otherwise first focusable element
   function reFocus(page) {
-    var lastClicked = page.jqmData("lastClicked");
+    var pageTitle = page.find(".ui-title:eq(0)");
 
-    if (lastClicked && lastClicked.length) {
-      lastClicked.focus();
+    if (pageTitle.length) {
+      pageTitle.focus();
     }
     else {
-      var pageTitle = page.find(".ui-title:eq(0)");
-
-      if (pageTitle.length) {
-        pageTitle.focus();
-      }
-      else {
-        page.find(focusable).eq(0).focus();
-      }
+      page.focus();
     }
   }
 
@@ -2269,40 +2277,93 @@
     }
   }
 
+  // Save the last scroll distance per page, before it is hidden
+  var getLastScroll = (function(lastScrollEnabled) {
+    return function() {
+      if (!lastScrollEnabled) {
+        lastScrollEnabled = true;
+        return;
+      }
+
+      lastScrollEnabled = false;
+
+      var active = $.mobile.urlHistory.getActive(),
+              activePage = $(".ui-page-active"),
+              scrollElem = $(window),
+              touchOverflow = $.support.touchOverflow && $.mobile.touchOverflowEnabled;
+
+      if (touchOverflow) {
+        scrollElem = activePage.is(".ui-native-fixed") ? activePage.find(".ui-content") : activePage;
+      }
+
+      if (active) {
+        var lastScroll = scrollElem.scrollTop();
+
+        // Set active page's lastScroll prop.
+        // If the Y location we're scrolling to is less than minScrollBack, let it go.
+        active.lastScroll = lastScroll < $.mobile.minScrollBack ? $.mobile.defaultHomeScroll : lastScroll;
+      }
+    };
+  })(true);
+
+  // to get last scroll, we need to get scrolltop before the page change
+  // using beforechangepage or popstate/hashchange (whichever comes first)
+  $(document).bind("beforechangepage", getLastScroll);
+  $(window).bind($.support.pushState ? "popstate" : "hashchange", getLastScroll);
+
+  // Make the iOS clock quick-scroll work again if we're using native overflow scrolling
+  /*
+   if( $.support.touchOverflow ){
+   if( $.mobile.touchOverflowEnabled ){
+   $( window ).bind( "scrollstop", function(){
+   if( $( this ).scrollTop() === 0 ){
+   $.mobile.activePage.scrollTop( 0 );
+   }
+   });
+   }
+   }
+   */
+
   //function for transitioning between two existing pages
   function transitionPages(toPage, fromPage, transition, reverse) {
 
     //get current scroll distance
-    var currScroll = $.support.scrollTop ? $window.scrollTop() : true,
-            toScroll = toPage.data("lastScroll") || $.mobile.defaultHomeScroll,
+    var active = $.mobile.urlHistory.getActive(),
+            touchOverflow = $.support.touchOverflow && $.mobile.touchOverflowEnabled,
+            toScroll = active.lastScroll || ( touchOverflow ? 0 : $.mobile.defaultHomeScroll ),
             screenHeight = getScreenHeight();
 
-    //if scrolled down, scroll to top
-    if (currScroll) {
-      window.scrollTo(0, $.mobile.defaultHomeScroll);
-    }
-
-    //if the Y location we're scrolling to is less than 10px, let it go for sake of smoothness
-    if (toScroll < $.mobile.minScrollBack) {
-      toScroll = 0;
-    }
+    // Scroll to top, hide addr bar
+    window.scrollTo(0, $.mobile.defaultHomeScroll);
 
     if (fromPage) {
-      //set as data for returning to that spot
-      fromPage
-              .height(screenHeight + currScroll)
-              .jqmData("lastScroll", currScroll)
-              .jqmData("lastClicked", $activeClickedLink);
-
       //trigger before show/hide events
       fromPage.data("page")._trigger("beforehide", null, { nextPage: toPage });
     }
-    toPage
-            .height(screenHeight + toScroll)
-            .data("page")._trigger("beforeshow", null, { prevPage: fromPage || $("") });
+
+    if (!touchOverflow) {
+      toPage.height(screenHeight + toScroll);
+    }
+
+    toPage.data("page")._trigger("beforeshow", null, { prevPage: fromPage || $("") });
 
     //clear page loader
     $.mobile.hidePageLoadingMsg();
+
+    if (touchOverflow && toScroll) {
+
+      toPage.addClass("ui-mobile-pre-transition");
+      // Send focus to page as it is now display: block
+      reFocus(toPage);
+
+      //set page's scrollTop to remembered distance
+      if (toPage.is(".ui-native-fixed")) {
+        toPage.find(".ui-content").scrollTop(toScroll);
+      }
+      else {
+        toPage.scrollTop(toScroll);
+      }
+    }
 
     //find the transition handler for the specified transition. If there
     //isn't one in our transitionHandlers dictionary, use the default one.
@@ -2311,23 +2372,25 @@
             promise = th(transition, reverse, toPage, fromPage);
 
     promise.done(function() {
-      //reset toPage height bac
-      toPage.height("");
-
-      //jump to top or prev scroll, sometimes on iOS the page has not rendered yet.
-      if (toScroll) {
-        $.mobile.silentScroll(toScroll);
-        $(document).one("silentscroll", function() {
-          reFocus(toPage);
-        });
-      }
-      else {
+      //reset toPage height back
+      if (!touchOverflow) {
+        toPage.height("");
+        // Send focus to the newly shown page
         reFocus(toPage);
+      }
+
+      // Jump to top or prev scroll, sometimes on iOS the page has not rendered yet.
+      if (!touchOverflow) {
+        $.mobile.silentScroll(toScroll);
       }
 
       //trigger show/hide events
       if (fromPage) {
-        fromPage.height("").data("page")._trigger("hide", null, { nextPage: toPage });
+        if (!touchOverflow) {
+          fromPage.height("");
+        }
+
+        fromPage.data("page")._trigger("hide", null, { nextPage: toPage });
       }
 
       //trigger pageshow, define prevPage as either fromPage or empty jQuery obj
@@ -2348,6 +2411,8 @@
 
     return pageMin;
   }
+
+  $.mobile.getScreenHeight = getScreenHeight;
 
   //simply set the active page's minimum height to screen height, depending on orientation
   function resetActivePageHeight() {
@@ -2483,6 +2548,12 @@
 
     // Check to see if the page already exists in the DOM.
     page = settings.pageContainer.children(":jqmData(url='" + dataUrl + "')");
+
+    // If we failed to find a page in the DOM, check the URL to see if it
+    // refers to the first page in the application.
+    if (page.length === 0 && $.mobile.firstPage && path.isFirstPageUrl(absUrl)) {
+      page = $($.mobile.firstPage);
+    }
 
     // Reset base to the default document base.
     if (base) {
@@ -2711,16 +2782,38 @@
       return;
     }
 
+    var settings = $.extend({}, $.mobile.changePage.defaults, options);
+
+    // Make sure we have a pageContainer to work with.
+    settings.pageContainer = settings.pageContainer || $.mobile.pageContainer;
+
+    // Make sure we have a fromPage.
+    settings.fromPage = settings.fromPage || $.mobile.activePage;
+
+    var mpc = settings.pageContainer,
+            pbcEvent = new $.Event("pagebeforechange"),
+            triggerData = { toPage: toPage, options: settings };
+
+    // Let listeners know we're about to change the current page.
+    mpc.trigger(pbcEvent, triggerData);
+
+    mpc.trigger("beforechangepage", triggerData); // XXX: DEPRECATED for 1.0
+
+    // If the default behavior is prevented, stop here!
+    if (pbcEvent.isDefaultPrevented()) {
+      return;
+    }
+
+    // We allow "pagebeforechange" observers to modify the toPage in the trigger
+    // data to allow for redirects. Make sure our toPage is updated.
+
+    toPage = triggerData.toPage;
+
     // Set the isPageTransitioning flag to prevent any requests from
     // entering this method while we are in the midst of loading a page
     // or transitioning.
 
     isPageTransitioning = true;
-
-    var settings = $.extend({}, $.mobile.changePage.defaults, options);
-
-    // Make sure we have a pageContainer to work with.
-    settings.pageContainer = settings.pageContainer || $.mobile.pageContainer;
 
     // If the caller passed us a url, call loadPage()
     // to make sure it is loaded into the DOM. We'll listen
@@ -2742,16 +2835,16 @@
 
                 //release transition lock so navigation is free again
                 releasePageTransitionLock();
-                settings.pageContainer.trigger("changepagefailed");
+                settings.pageContainer.trigger("pagechangefailed", triggerData);
+                settings.pageContainer.trigger("changepagefailed", triggerData); // XXX: DEPRECATED for 1.0
               });
       return;
     }
 
     // The caller passed us a real page DOM element. Update our
     // internal state and then trigger a transition to the page.
-    var mpc = settings.pageContainer,
-            fromPage = $.mobile.activePage,
-            url = toPage.jqmData("url"),
+    var fromPage = settings.fromPage,
+            url = ( settings.dataUrl && path.convertUrlToDataUrl(settings.dataUrl) ) || toPage.jqmData("url"),
       // The pageUrl var is usually the same as url, except when url is obscured as a dialog url. pageUrl always contains the file path
             pageUrl = url,
             fileUrl = path.getFilePath(url),
@@ -2761,9 +2854,6 @@
             pageTitle = document.title,
             isDialog = settings.role === "dialog" || toPage.jqmData("role") === "dialog";
 
-    // Let listeners know we're about to change the current page.
-    mpc.trigger("beforechangepage");
-
     // If we are trying to transition to the same page that we are currently on ignore the request.
     // an illegal same page request is defined by the current page being the same as the url, as long as there's history
     // and toPage is not an array or object (those are allowed to be "same")
@@ -2772,7 +2862,8 @@
     //            to the same page.
     if (fromPage && fromPage[0] === toPage[0]) {
       isPageTransitioning = false;
-      mpc.trigger("changepage");
+      mpc.trigger("pagechange", triggerData);
+      mpc.trigger("changepage", triggerData); // XXX: DEPRECATED for 1.0
       return;
     }
 
@@ -2864,7 +2955,9 @@
               releasePageTransitionLock();
 
               // Let listeners know we're all done changing the current page.
-              mpc.trigger("changepage");
+              mpc.trigger("pagechange", triggerData);
+
+              mpc.trigger("changepage", triggerData); // XXX: DEPRECATED for 1.0
             });
   };
 
@@ -2876,7 +2969,9 @@
     role: undefined, // By default we rely on the role defined by the @data-role attribute.
     duplicateCachedPage: undefined,
     pageContainer: undefined,
-    showLoadMsg: true //loading message shows by default when pages are being fetched during changePage
+    showLoadMsg: true, //loading message shows by default when pages are being fetched during changePage
+    dataUrl: undefined,
+    fromPage: undefined
   };
 
   /* Event Bindings - hashchange, submit, and click */
@@ -3258,7 +3353,7 @@
 
           // change the page based on the hash
           $.mobile._handleHashChange(poppedState.hash);
-        });
+        }, 100);
       }
     },
 
@@ -3565,7 +3660,7 @@
     options: {
       expandCueText: " click to expand contents",
       collapseCueText: " click to collapse contents",
-      collapsed: false,
+      collapsed: true,
       heading: ">:header,>legend",
       theme: null,
       iconTheme: "d",
@@ -4277,7 +4372,7 @@
 })(jQuery);
 
 /*
- * jQuery Mobile Framework : "fieldcontain" plugin - simple class additions to make form row separators
+ * jQuery Mobile Framework : "nojs" plugin - class to make elements hidden to A grade browsers
  * Copyright (c) jQuery Project
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * http://jquery.org/license
@@ -5102,6 +5197,10 @@
       }, 40);
     },
 
+    _selectOptions: function() {
+      return this.select.find("option");
+    },
+
     // setup items that are generally necessary for select menu extension
     _preExtension: function() {
       this.select = this.element.wrap("<div class='ui-select'>");
@@ -5109,7 +5208,6 @@
       this.label = $("label[for='" + this.selectID + "']").addClass("ui-select");
       this.isMultiple = this.select[ 0 ].multiple;
       this.options.theme = this._theme();
-      this.selectOptions = this.select.find("option");
     },
 
     _create: function() {
@@ -5200,7 +5298,7 @@
     },
 
     selected: function() {
-      return this.selectOptions.filter(":selected");
+      return this._selectOptions().filter(":selected");
     },
 
     selectedIndices: function() {
@@ -5208,7 +5306,7 @@
 
       return this.selected().map(
               function() {
-                return self.selectOptions.index(this);
+                return self._selectOptions().index(this);
               }).get();
     },
 
@@ -5276,7 +5374,7 @@
             label = widget.label,
             thisPage = widget.select.closest(".ui-page"),
             screen = $("<div>", {"class": "ui-selectmenu-screen ui-screen-hidden"}).appendTo(thisPage),
-            selectOptions = widget.select.find("option"),
+            selectOptions = widget._selectOptions(),
             isMultiple = widget.isMultiple = widget.select[ 0 ].multiple,
             buttonId = selectID + "-button",
             menuId = selectID + "-menu",
@@ -5371,7 +5469,7 @@
                   // index of option tag to be selected
                   var oldIndex = self.select[ 0 ].selectedIndex,
                           newIndex = self.list.find("li:not(.ui-li-divider)").index(this),
-                          option = self.selectOptions.eq(newIndex)[ 0 ];
+                          option = self._selectOptions().eq(newIndex)[ 0 ];
 
                   // toggle selected status on the tag for multi selects
                   option.selected = self.isMultiple ? !option.selected : true;
@@ -5465,16 +5563,26 @@
         });
       },
 
-      refresh: function(forceRebuild) {
+      _isRebuildRequired: function() {
+        var list = this.list.find("li"),
+                options = this._selectOptions();
+
+        // TODO exceedingly naive method to determine difference
+        // ignores value changes etc in favor of a forcedRebuild
+        // from the user in the refresh method
+        return options.text() !== list.text();
+      },
+
+      refresh: function(forceRebuild, foo) {
         var self = this,
                 select = this.element,
                 isMultiple = this.isMultiple,
-                options = this.selectOptions = select.find("option"),
+                options = this._selectOptions(),
                 selected = this.selected(),
           // return an array of all selected index's
                 indicies = this.selectedIndices();
 
-        if (forceRebuild || select[0].options.length != self.list.find("li").length) {
+        if (forceRebuild || this._isRebuildRequired()) {
           self._buildList();
         }
 
@@ -5948,7 +6056,7 @@
 })(jQuery);
 
 /*
- * jQuery Mobile Framework : "fieldcontain" plugin - simple class additions to make form row separators
+ * jQuery Mobile Framework : "links" plugin - simple class additions for links
  * Copyright (c) jQuery Project
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * http://jquery.org/license
@@ -5985,7 +6093,7 @@
 
   $.fn.fixHeaderFooter = function(options) {
 
-    if (!$.support.scrollTop) {
+    if (!$.support.scrollTop || ( $.support.touchOverflow && $.mobile.touchOverflowEnabled )) {
       return this;
     }
 
@@ -6007,7 +6115,7 @@
 // single controller for all showing,hiding,toggling
   $.mobile.fixedToolbars = (function() {
 
-    if (!$.support.scrollTop) {
+    if (!$.support.scrollTop || ( $.support.touchOverflow && $.mobile.touchOverflowEnabled )) {
       return;
     }
 
@@ -6333,7 +6441,7 @@
 
       $(event.target).each(function() {
 
-        if (!$.support.scrollTop) {
+        if (!$.support.scrollTop || ( $.support.touchOverflow && $.mobile.touchOverflowEnabled )) {
           return this;
         }
 
@@ -6351,6 +6459,67 @@
 
       })
 
+    }
+  });
+
+})(jQuery);
+
+
+/*
+ * jQuery Mobile Framework : "fixHeaderFooter" native plugin - Behavior for "fixed" headers,footers, and scrolling inner content
+ * Copyright (c) jQuery Project
+ * Dual licensed under the MIT or GPL Version 2 licenses.
+ * http://jquery.org/license
+ */
+
+(function($, undefined) {
+
+  $.mobile.touchOverflowEnabled = false;
+
+  $(document).bind("pagecreate", function(event) {
+    if ($.support.touchOverflow && $.mobile.touchOverflowEnabled) {
+
+      var $target = $(event.target),
+              scrollStartY = 0;
+
+      if ($target.is(":jqmData(role='page')")) {
+
+        $target.each(function() {
+          var $page = $(this),
+                  $fixies = $page.find(":jqmData(role='header'), :jqmData(role='footer')").filter(":jqmData(position='fixed')"),
+                  fullScreen = $page.jqmData("fullscreen"),
+                  $scrollElem = $fixies.length ? $page.find(".ui-content") : $page;
+
+          $page.addClass("ui-mobile-touch-overflow");
+
+          $scrollElem.bind("scrollstop", function() {
+            if ($scrollElem.scrollTop() > 0) {
+              window.scrollTo(0, $.mobile.defaultHomeScroll);
+            }
+          });
+
+          if ($fixies.length) {
+
+            $page.addClass("ui-native-fixed");
+
+            if (fullScreen) {
+
+              $page.addClass("ui-native-fullscreen");
+
+              $fixies.addClass("fade in");
+
+              $(document).bind("vclick", function() {
+                $fixies
+                        .removeClass("ui-native-bars-hidden")
+                        .toggleClass("in out")
+                        .animationComplete(function() {
+                          $(this).not(".in").addClass("ui-native-bars-hidden");
+                        });
+              });
+            }
+          }
+        });
+      }
     }
   });
 
@@ -6438,7 +6607,7 @@
 
     var ev = $.support.orientation;
 
-    $window.bind("orientationchange.htmlclass throttledResize.htmlclass", function(event) {
+    $window.bind("orientationchange.htmlclass throttledresize.htmlclass", function(event) {
 
       // add orientation class to HTML element on flip/resize.
       if (event.orientation) {
@@ -6550,7 +6719,7 @@
 
         // unless the data url is already set set it to the pathname
         if (!$this.jqmData("url")) {
-          $this.attr("data-" + $.mobile.ns + "url", $this.attr("id") || location.pathname);
+          $this.attr("data-" + $.mobile.ns + "url", $this.attr("id") || location.pathname + location.search);
         }
       });
 

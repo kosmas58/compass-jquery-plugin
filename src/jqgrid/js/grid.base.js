@@ -3200,6 +3200,12 @@
           $("#cb_" + $.jgrid.jqID(t.p.id)).attr("checked", false);
           t.p.selarrrow = [];
         }
+        if (t.p.cellEdit === true) {
+          if (parseInt(t.p.iCol, 10) >= 0 && parseInt(t.p.iRow, 10) >= 0) {
+            $("td:eq(" + t.p.iCol + ")", t.rows[t.p.iRow]).removeClass("edit-cell ui-state-highlight");
+            $(t.rows[t.p.iRow]).removeClass("selected-row ui-state-hover");
+          }
+        }
         t.p.savedRow = [];
       });
     },
@@ -3717,6 +3723,11 @@
               lvc = i;
             }
           });
+
+          if (!lvc) {
+            return;
+          }
+
           cr = 0;
           if (hs) {
             if (nwidth - gw - (initwidth + brd * vc) !== scw) {

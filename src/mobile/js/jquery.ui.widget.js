@@ -1,7 +1,7 @@
 /*!
- * jQuery UI Widget 1.8.16
+ * jQuery UI Widget @VERSION
  *
- * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
+ * Copyright 2010, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * http://jquery.org/license
  *
@@ -14,11 +14,7 @@
     var _cleanData = $.cleanData;
     $.cleanData = function(elems) {
       for (var i = 0, elem; (elem = elems[i]) != null; i++) {
-        try {
-          $(elem).triggerHandler("remove");
-          // http://bugs.jquery.com/ticket/8235
-        } catch(e) {
-        }
+        $(elem).triggerHandler("remove");
       }
       _cleanData(elems);
     };
@@ -29,11 +25,7 @@
         if (!keepData) {
           if (!selector || $.filter(selector, [ this ]).length) {
             $("*", this).add([ this ]).each(function() {
-              try {
-                $(this).triggerHandler("remove");
-                // http://bugs.jquery.com/ticket/8235
-              } catch(e) {
-              }
+              $(this).triggerHandler("remove");
             });
           }
         }
@@ -104,19 +96,15 @@
 
       if (isMethodCall) {
         this.each(function() {
-          var instance = $.data(this, name),
-                  methodValue = instance && $.isFunction(instance[options]) ?
-                          instance[ options ].apply(instance, args) :
-                          instance;
-          // TODO: add this back in 1.9 and use $.error() (see #5972)
-//				if ( !instance ) {
-//					throw "cannot call methods on " + name + " prior to initialization; " +
-//						"attempted to call method '" + options + "'";
-//				}
-//				if ( !$.isFunction( instance[options] ) ) {
-//					throw "no such method '" + options + "' for " + name + " widget instance";
-//				}
-//				var methodValue = instance[ options ].apply( instance, args );
+          var instance = $.data(this, name);
+          if (!instance) {
+            throw "cannot call methods on " + name + " prior to initialization; " +
+                    "attempted to call method '" + options + "'";
+          }
+          if (!$.isFunction(instance[options])) {
+            throw "no such method '" + options + "' for " + name + " widget instance";
+          }
+          var methodValue = instance[ options ].apply(instance, args);
           if (methodValue !== instance && methodValue !== undefined) {
             returnValue = methodValue;
             return false;
@@ -170,7 +158,11 @@
       this._init();
     },
     _getCreateOptions: function() {
-      return $.metadata && $.metadata.get(this.element[0])[ this.widgetName ];
+      var options = {};
+      if ($.metadata) {
+        options = $.metadata.get(element)[ this.widgetName ];
+      }
+      return options;
     },
     _create: function() {
     },

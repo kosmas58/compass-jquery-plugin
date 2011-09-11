@@ -3200,6 +3200,12 @@
           $("#cb_" + $.jgrid.jqID(t.p.id)).attr("checked", false);
           t.p.selarrrow = [];
         }
+        if (t.p.cellEdit === true) {
+          if (parseInt(t.p.iCol, 10) >= 0 && parseInt(t.p.iRow, 10) >= 0) {
+            $("td:eq(" + t.p.iCol + ")", t.rows[t.p.iRow]).removeClass("edit-cell ui-state-highlight");
+            $(t.rows[t.p.iRow]).removeClass("selected-row ui-state-hover");
+          }
+        }
         t.p.savedRow = [];
       });
     },
@@ -3717,6 +3723,11 @@
               lvc = i;
             }
           });
+
+          if (!lvc) {
+            return;
+          }
+
           cr = 0;
           if (hs) {
             if (nwidth - gw - (initwidth + brd * vc) !== scw) {
@@ -5747,19 +5758,19 @@ var xmlJsonClass = {
       return "";
     }
     if (op.editformbutton) {
-      ocl = "onclick=$.fn.fmatter.rowactions('" + rowid + "','" + opts.gid + "','formedit'," + opts.pos + "); onmouseover=jQuery(this).addClass('ui-state-hover'); onmouseout=jQuery(this).removeClass('ui-state-hover'); "
+      ocl = "onclick=jQuery.fn.fmatter.rowactions('" + rowid + "','" + opts.gid + "','formedit'," + opts.pos + "); onmouseover=jQuery(this).addClass('ui-state-hover'); onmouseout=jQuery(this).removeClass('ui-state-hover'); "
       str = str + "<div title='" + $.jgrid.nav.edittitle + "' style='float:left;cursor:pointer;' class='ui-pg-div ui-inline-edit' " + ocl + "><span class='ui-icon ui-icon-pencil'></span></div>";
     } else if (op.editbutton) {
-      ocl = "onclick=$.fn.fmatter.rowactions('" + rowid + "','" + opts.gid + "','edit'," + opts.pos + "); onmouseover=jQuery(this).addClass('ui-state-hover'); onmouseout=jQuery(this).removeClass('ui-state-hover') ";
+      ocl = "onclick=jQuery.fn.fmatter.rowactions('" + rowid + "','" + opts.gid + "','edit'," + opts.pos + "); onmouseover=jQuery(this).addClass('ui-state-hover'); onmouseout=jQuery(this).removeClass('ui-state-hover') ";
       str = str + "<div title='" + $.jgrid.nav.edittitle + "' style='float:left;cursor:pointer;' class='ui-pg-div ui-inline-edit' " + ocl + "><span class='ui-icon ui-icon-pencil'></span></div>";
     }
     if (op.delbutton) {
-      ocl = "onclick=$.fn.fmatter.rowactions('" + rowid + "','" + opts.gid + "','del'," + opts.pos + "); onmouseover=jQuery(this).addClass('ui-state-hover'); onmouseout=jQuery(this).removeClass('ui-state-hover'); ";
+      ocl = "onclick=jQuery.fn.fmatter.rowactions('" + rowid + "','" + opts.gid + "','del'," + opts.pos + "); onmouseover=jQuery(this).addClass('ui-state-hover'); onmouseout=jQuery(this).removeClass('ui-state-hover'); ";
       str = str + "<div title='" + $.jgrid.nav.deltitle + "' style='float:left;margin-left:5px;' class='ui-pg-div ui-inline-del' " + ocl + "><span class='ui-icon ui-icon-trash'></span></div>";
     }
-    ocl = "onclick=$.fn.fmatter.rowactions('" + rowid + "','" + opts.gid + "','save'," + opts.pos + "); onmouseover=jQuery(this).addClass('ui-state-hover'); onmouseout=jQuery(this).removeClass('ui-state-hover'); ";
+    ocl = "onclick=jQuery.fn.fmatter.rowactions('" + rowid + "','" + opts.gid + "','save'," + opts.pos + "); onmouseover=jQuery(this).addClass('ui-state-hover'); onmouseout=jQuery(this).removeClass('ui-state-hover'); ";
     str = str + "<div title='" + $.jgrid.edit.bSubmit + "' style='float:left;display:none' class='ui-pg-div ui-inline-save' " + ocl + "><span class='ui-icon ui-icon-disk'></span></div>";
-    ocl = "onclick=$.fn.fmatter.rowactions('" + rowid + "','" + opts.gid + "','cancel'," + opts.pos + "); onmouseover=jQuery(this).addClass('ui-state-hover'); onmouseout=jQuery(this).removeClass('ui-state-hover'); ";
+    ocl = "onclick=jQuery.fn.fmatter.rowactions('" + rowid + "','" + opts.gid + "','cancel'," + opts.pos + "); onmouseover=jQuery(this).addClass('ui-state-hover'); onmouseout=jQuery(this).removeClass('ui-state-hover'); ";
     str = str + "<div title='" + $.jgrid.edit.bCancel + "' style='float:left;display:none;margin-left:5px;' class='ui-pg-div ui-inline-cancel' " + ocl + "><span class='ui-icon ui-icon-cancel'></span></div>";
     return "<div style='margin-left:8px;'>" + str + "</div>";
   };
@@ -5882,6 +5893,7 @@ var xmlJsonClass = {
     }
   };
 })(jQuery);
+
 
 ;
 (function($) {
@@ -6371,13 +6383,13 @@ var xmlJsonClass = {
                 ov.setAttribute("role", "option");
                 ov.value = sv[0];
                 ov.innerHTML = sv[1];
+                elem.appendChild(ov);
                 if (!msl && ($.trim(sv[0]) == $.trim(vl) || $.trim(sv[1]) == $.trim(vl))) {
                   ov.selected = "selected";
                 }
                 if (msl && ($.inArray($.trim(sv[1]), ovm) > -1 || $.inArray($.trim(sv[0]), ovm) > -1)) {
                   ov.selected = "selected";
                 }
-                elem.appendChild(ov);
               }
             } else if (typeof options.value === 'object') {
               var oSv = options.value;
@@ -6387,13 +6399,13 @@ var xmlJsonClass = {
                   ov.setAttribute("role", "option");
                   ov.value = key;
                   ov.innerHTML = oSv[key];
+                  elem.appendChild(ov);
                   if (!msl && ( $.trim(key) == $.trim(vl) || $.trim(oSv[key]) == $.trim(vl))) {
                     ov.selected = "selected";
                   }
                   if (msl && ($.inArray($.trim(oSv[key]), ovm) > -1 || $.inArray($.trim(key), ovm) > -1)) {
                     ov.selected = "selected";
                   }
-                  elem.appendChild(ov);
                 }
               }
             }
@@ -7104,7 +7116,7 @@ var xmlJsonClass = {
             op = that.p.numopts;
           }
           // operators
-          var s = "",so = "";
+          var s = "", so = 0;
           aoprs = [];
           $.each(that.p.ops, function() {
             aoprs.push(this.name)
@@ -7112,16 +7124,20 @@ var xmlJsonClass = {
           for (i = 0; i < op.length; i++) {
             ina = $.inArray(op[i], aoprs);
             if (ina !== -1) {
-              so = "";
-              if (i === 0) {
+              if (so === 0) {
                 rule.op = that.p.ops[ina].name;
-                so = " selected='selected'";
               }
-              s += "<option value='" + that.p.ops[ina].name + "'" + so + ">" + that.p.ops[ina].description + "</option>";
+              s += "<option value='" + that.p.ops[ina].name + "'>" + that.p.ops[ina].description + "</option>";
+              so++;
             }
           }
           $(".selectopts", trpar).empty().append(s);
-
+          $(".selectopts", trpar)[0].selectedIndex = 0;
+          if ($.browser.msie && $.browser.version < 9) {
+            var sw = parseInt($("select.selectopts", trpar)[0].offsetWidth) + 1;
+            $(".selectopts", trpar).width(sw);
+            $(".selectopts", trpar).css("width", "auto");
+          }
           // data
           $(".data", trpar).empty().append(elm);
           $(".input-elm", trpar).bind('change', function() {
@@ -8079,7 +8095,7 @@ var xmlJsonClass = {
                     return $.trim(n);
                   });
                   $("#" + nm + " option", "#" + fmid).each(function(j) {
-                    if (!cm[i].editoptions.multiple && (opv[0] == $.trim($(this).text()) || opv[0] == $.trim($(this).val()))) {
+                    if (!cm[i].editoptions.multiple && ($.trim(tmp) == $.trim($(this).text()) || opv[0] == $.trim($(this).text()) || opv[0] == $.trim($(this).val()))) {
                       this.selected = true;
                     } else if (cm[i].editoptions.multiple) {
                       if ($.inArray($.trim($(this).text()), opv) > -1 || $.inArray($.trim($(this).val()), opv) > -1) {
@@ -8529,7 +8545,7 @@ var xmlJsonClass = {
           bt += "<tr style='display:none' class='binfo'><td class='bottominfo' colspan='2'>" + rp_ge[$t.p.id].bottominfo + "</td></tr>";
           bt += "</tbody></table>";
           if (maxRows > 0) {
-            var sd = [];
+            var sd = [], div = {};
             $.each($(tbl)[0].rows, function(i, r) {
               sd[i] = r;
             });
@@ -8543,8 +8559,9 @@ var xmlJsonClass = {
               return 0;
             });
             $.each(sd, function(index, row) {
-              $('tbody', tbl).append(row);
+              div.html += row;
             });
+            $('tbody', tbl).append(div.html);
           }
           p.gbox = "#gbox_" + gID;
           var cle = false;
@@ -9366,29 +9383,38 @@ var xmlJsonClass = {
         closeOnEscape : true,
         beforeRefresh : null,
         afterRefresh : null,
-        cloneToTop : false
+        cloneToTop : false,
+        alertwidth : 200,
+        alertheight : 'auto',
+        alerttop: null,
+        alertleft: null,
+        alertzIndex : null
       }, $.jgrid.nav, o || {});
       return this.each(function() {
         if (this.nav) {
           return;
         }
         var alertIDs = {themodal:'alertmod',modalhead:'alerthd',modalcontent:'alertcnt'},
-                $t = this, vwidth, vheight, twd, tdw;
+                $t = this, twd, tdw;
         if (!$t.grid || typeof elem != 'string') {
           return;
         }
         if ($("#" + alertIDs.themodal).html() === null) {
-          if (typeof window.innerWidth != 'undefined') {
-            vwidth = window.innerWidth;
-            vheight = window.innerHeight;
-          } else if (typeof document.documentElement != 'undefined' && typeof document.documentElement.clientWidth != 'undefined' && document.documentElement.clientWidth !== 0) {
-            vwidth = document.documentElement.clientWidth;
-            vheight = document.documentElement.clientHeight;
-          } else {
-            vwidth = 1024;
-            vheight = 768;
+          if (!o.alerttop && !o.alertleft) {
+            if (typeof window.innerWidth != 'undefined') {
+              o.alertleft = window.innerWidth;
+              o.alerttop = window.innerHeight;
+            } else if (typeof document.documentElement != 'undefined' && typeof document.documentElement.clientWidth != 'undefined' && document.documentElement.clientWidth !== 0) {
+              o.alertleft = document.documentElement.clientWidth;
+              o.alerttop = document.documentElement.clientHeight;
+            } else {
+              o.alertleft = 1024;
+              o.alerttop = 768;
+            }
+            o.alertleft = o.alertleft / 2 - parseInt(o.alertwidth, 10) / 2;
+            o.alerttop = o.alerttop / 2 - 25;
           }
-          $.jgrid.createModal(alertIDs, "<div>" + o.alerttext + "</div><span tabindex='0'><span tabindex='-1' id='jqg_alrt'></span></span>", {gbox:"#gbox_" + $t.p.id,jqModal:true,drag:true,resize:true,caption:o.alertcap,top:vheight / 2 - 25,left:vwidth / 2 - 100,width:200,height:'auto',closeOnEscape:o.closeOnEscape}, "", "", true);
+          $.jgrid.createModal(alertIDs, "<div>" + o.alerttext + "</div><span tabindex='0'><span tabindex='-1' id='jqg_alrt'></span></span>", {gbox:"#gbox_" + $t.p.id,jqModal:true,drag:true,resize:true,caption:o.alertcap,top:o.alerttop,left:o.alertleft,width:o.alertwidth,height: o.alertheight,closeOnEscape:o.closeOnEscape, zIndex: o.alertzIndex}, "", "", true);
         }
         var clone = 1;
         if (o.cloneToTop && $t.p.toppager) {
@@ -9813,7 +9839,8 @@ var xmlJsonClass = {
         "aftersavefunc" : aftersavefunc || null,
         "errorfunc": errorfunc || null,
         "afterrestorefunc" : afterrestorefunc || null,
-        "restoreAfterErorr" : true
+        "restoreAfterError" : true,
+        "mtype" : "POST"
       },
               args = $.makeArray(arguments).slice(1), o;
 
@@ -9923,7 +9950,8 @@ var xmlJsonClass = {
         "aftersavefunc" : aftersavefunc || null,
         "errorfunc": errorfunc || null,
         "afterrestorefunc" : afterrestorefunc || null,
-        "restoreAfterErorr" : true
+        "restoreAfterError" : true,
+        "mtype" : "POST"
       },
               args = $.makeArray(arguments).slice(1), o;
 
