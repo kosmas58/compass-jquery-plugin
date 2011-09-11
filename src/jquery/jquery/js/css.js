@@ -6,8 +6,7 @@ var ralpha = /alpha\([^)]*\)/i,
 	rupper = /([A-Z]|^ms)/g,
 	rnumpx = /^-?\d+(?:px)?$/i,
 	rnum = /^-?\d/,
-	rrelNum = /^[+\-]=/,
-	rrelNumFilter = /[^+\-\.\de]+/g,
+	rrelNum = /^([\-+])=([\-+.\de]+)/,
 
 	cssShow = { position: "absolute", visibility: "hidden", display: "block" },
 	cssWidth = [ "Left", "Right" ],
@@ -84,16 +83,16 @@ jQuery.extend({
 		if ( value !== undefined ) {
 			type = typeof value;
 
-			// Make sure that NaN and null values aren't set. See: #7116
-			if ( type === "number" && isNaN( value ) || value == null ) {
-				return;
-			}
-
 			// convert relative number strings (+= or -=) to relative numbers. #7345
-			if ( type === "string" && rrelNum.test( value ) ) {
-				value = +value.replace( rrelNumFilter, "" ) + parseFloat( jQuery.css( elem, name ) );
+			if ( type === "string" && (ret = rrelNum.exec( value )) ) {
+				value = ( +( ret[1] + 1) * +ret[2] ) + parseFloat( jQuery.css( elem, name ) );
 				// Fixes bug #9237
 				type = "number";
+			}
+
+			// Make sure that NaN and null values aren't set. See: #7116
+			if ( value == null || type === "number" && isNaN( value ) ) {
+				return;
 			}
 
 			// If a number was passed in, add 'px' to the (except for certain CSS properties)
@@ -211,18 +210,29 @@ if ( !jQuery.support.opacity ) {
 
 		set: function( elem, value ) {
 			var style = elem.style,
-				currentStyle = elem.currentStyle;
+				currentStyle = elem.currentStyle,
+				opacity = jQuery.isNaN( value ) ? "" : "alpha(opacity=" + value * 100 + ")",
+				filter = currentStyle && currentStyle.filter || style.filter || "";
 
 			// IE has trouble with opacity if it does not have layout
 			// Force it by setting the zoom level
 			style.zoom = 1;
 
-			// Set the alpha filter to set the opacity
-			var opacity = jQuery.isNaN( value ) ?
-				"" :
-				"alpha(opacity=" + value * 100 + ")",
-				filter = currentStyle && currentStyle.filter || style.filter || "";
+			// if setting opacity to 1, and no other filters exist - attempt to remove filter attribute #6652
+			if ( value >= 1 && jQuery.trim( filter.replace( ralpha, "" ) ) === "" ) {
 
+				// Setting style.filter to null, "" & " " still leave "filter:" in the cssText
+				// if "filter:" is present at all, clearType is disabled, we want to avoid this
+				// style.removeAttribute is IE Only, but so apparently is this code path...
+				style.removeAttribute( "filter" );
+
+				// if there there is no filter style applied in a css rule, we are done
+				if ( currentStyle && !currentStyle.filter ) {
+					return;
+				}
+			}
+
+			// otherwise, set new filter values
 			style.filter = ralpha.test( filter ) ?
 				filter.replace( ralpha, opacity ) :
 				filter + " " + opacity;

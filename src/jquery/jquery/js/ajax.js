@@ -5,9 +5,9 @@ var r20 = /%20/g,
 	rCRLF = /\r?\n/g,
 	rhash = /#.*$/,
 	rheaders = /^(.*?):[ \t]*([^\r\n]*)\r?$/mg, // IE leaves an \r character at EOL
-	rinput = /^(?:color|date|datetime|email|hidden|month|number|password|range|search|tel|text|time|url|week)$/i,
+	rinput = /^(?:color|date|datetime|datetime-local|email|hidden|month|number|password|range|search|tel|text|time|url|week)$/i,
 	// #7653, #8125, #8152: local protocol detection
-	rlocalProtocol = /^(?:about|app|app\-storage|.+\-extension|file|widget):$/,
+	rlocalProtocol = /^(?:about|app|app\-storage|.+\-extension|file|res|widget):$/,
 	rnoContent = /^(?:GET|HEAD)$/,
 	rprotocol = /^\/\//,
 	rquery = /\?/,
@@ -42,7 +42,10 @@ var r20 = /%20/g,
 	ajaxLocation,
 
 	// Document location segments
-	ajaxLocParts;
+	ajaxLocParts,
+	
+	// Avoid comment-prolog char sequence (#10098); must appease lint and evade compression
+	allTypes = ["*/"] + ["*"];
 
 // #8138, IE may throw an exception when accessing
 // a field from window.location if document.domain has been set
@@ -133,6 +136,22 @@ function inspectPrefiltersOrTransports( structure, options, originalOptions, jqX
 	// unnecessary when only executing (prefilters)
 	// but it'll be ignored by the caller in that case
 	return selection;
+}
+
+// A special extend for ajax options
+// that takes "flat" options (not to be deep extended)
+// Fixes #9887
+function ajaxExtend( target, src ) {
+	var key, deep,
+		flatOptions = jQuery.ajaxSettings.flatOptions || {};
+	for( key in src ) {
+		if ( src[ key ] !== undefined ) {
+			( flatOptions[ key ] ? target : ( deep || ( deep = {} ) ) )[ key ] = src[ key ];
+		}
+	}
+	if ( deep ) {
+		jQuery.extend( true, target, deep );
+	}
 }
 
 jQuery.fn.extend({
@@ -278,23 +297,16 @@ jQuery.extend({
 	// Creates a full fledged settings object into target
 	// with both ajaxSettings and settings fields.
 	// If target is omitted, writes into ajaxSettings.
-	ajaxSetup: function ( target, settings ) {
-		if ( !settings ) {
-			// Only one parameter, we extend ajaxSettings
-			settings = target;
-			target = jQuery.extend( true, jQuery.ajaxSettings, settings );
+	ajaxSetup: function( target, settings ) {
+		if ( settings ) {
+			// Building a settings object
+			ajaxExtend( target, jQuery.ajaxSettings );
 		} else {
-			// target was provided, we extend into it
-			jQuery.extend( true, target, jQuery.ajaxSettings, settings );
+			// Extending ajaxSettings
+			settings = target;
+			target = jQuery.ajaxSettings;
 		}
-		// Flatten fields we don't want deep extended
-		for( var field in { context: 1, url: 1 } ) {
-			if ( field in settings ) {
-				target[ field ] = settings[ field ];
-			} else if( field in jQuery.ajaxSettings ) {
-				target[ field ] = jQuery.ajaxSettings[ field ];
-			}
-		}
+		ajaxExtend( target, settings );
 		return target;
 	},
 
@@ -322,7 +334,7 @@ jQuery.extend({
 			html: "text/html",
 			text: "text/plain",
 			json: "application/json, text/javascript",
-			"*": "*/*"
+			"*": allTypes
 		},
 
 		contents: {
@@ -352,6 +364,15 @@ jQuery.extend({
 
 			// Parse text as xml
 			"text xml": jQuery.parseXML
+		},
+
+		// For options that shouldn't be deep extended:
+		// you can add your own custom options here if
+		// and when you create one that shouldn't be
+		// deep extended (see ajaxExtend)
+		flatOptions: {
+			context: true,
+			url: true
 		}
 	},
 
@@ -462,7 +483,7 @@ jQuery.extend({
 		// Callback for when everything is done
 		// It is defined here because jslint complains if it is declared
 		// at the end of the function (which would be more logical and readable)
-		function done( status, statusText, responses, headers ) {
+		function done( status, nativeStatusText, responses, headers ) {
 
 			// Called once
 			if ( state === 2 ) {
@@ -485,11 +506,12 @@ jQuery.extend({
 			responseHeadersString = headers || "";
 
 			// Set readyState
-			jqXHR.readyState = status ? 4 : 0;
+			jqXHR.readyState = status > 0 ? 4 : 0;
 
 			var isSuccess,
 				success,
 				error,
+				statusText = nativeStatusText,
 				response = responses ? ajaxHandleResponses( s, jqXHR, responses ) : undefined,
 				lastModified,
 				etag;
@@ -541,7 +563,7 @@ jQuery.extend({
 
 			// Set data for the fake xhr object
 			jqXHR.status = status;
-			jqXHR.statusText = statusText;
+			jqXHR.statusText = "" + ( nativeStatusText || statusText );
 
 			// Success/Error
 			if ( isSuccess ) {
@@ -563,7 +585,7 @@ jQuery.extend({
 			completeDeferred.resolveWith( callbackContext, [ jqXHR, statusText ] );
 
 			if ( fireGlobals ) {
-				globalEventContext.trigger( "ajaxComplete", [ jqXHR, s] );
+				globalEventContext.trigger( "ajaxComplete", [ jqXHR, s ] );
 				// Handle the global AJAX counter
 				if ( !( --jQuery.active ) ) {
 					jQuery.event.trigger( "ajaxStop" );
@@ -644,6 +666,8 @@ jQuery.extend({
 			// If data is available, append data to url
 			if ( s.data ) {
 				s.url += ( rquery.test( s.url ) ? "&" : "?" ) + s.data;
+				// #9682: remove data so that it's not used in an eventual retry
+				delete s.data;
 			}
 
 			// Get ifModifiedKey before adding the anti-cache parameter
@@ -681,7 +705,7 @@ jQuery.extend({
 		jqXHR.setRequestHeader(
 			"Accept",
 			s.dataTypes[ 0 ] && s.accepts[ s.dataTypes[0] ] ?
-				s.accepts[ s.dataTypes[0] ] + ( s.dataTypes[ 0 ] !== "*" ? ", */*; q=0.01" : "" ) :
+				s.accepts[ s.dataTypes[0] ] + ( s.dataTypes[ 0 ] !== "*" ? ", " + allTypes + "; q=0.01" : "" ) :
 				s.accepts[ "*" ]
 		);
 
@@ -727,7 +751,7 @@ jQuery.extend({
 				transport.send( requestHeaders, done );
 			} catch (e) {
 				// Propagate exception as error if not done
-				if ( status < 2 ) {
+				if ( state < 2 ) {
 					done( -1, e );
 				// Simply rethrow otherwise
 				} else {

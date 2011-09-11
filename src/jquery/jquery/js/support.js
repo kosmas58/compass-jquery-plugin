@@ -24,7 +24,8 @@ jQuery.support = (function() {
 
 	// Preliminary tests
 	div.setAttribute("className", "t");
-	div.innerHTML = "   <link/><table></table><a href='/a' style='top:1px;float:left;opacity:.55;'>a</a><input type='checkbox'/>";
+	div.innerHTML = "   <link><table></table><a href='/a' style='top:1px;float:left;opacity:.55;'>a</a><input type=checkbox>";
+
 
 	all = div.getElementsByTagName( "*" );
 	a = div.getElementsByTagName( "a" )[ 0 ];
@@ -146,13 +147,14 @@ jQuery.support = (function() {
 		width: 0,
 		height: 0,
 		border: 0,
-		margin: 0
+		margin: 0,
+		background: "none"
 	};
 	if ( body ) {
 		jQuery.extend( testElementStyle, {
 			position: "absolute",
-			left: -1000,
-			top: -1000
+			left: "-1000px",
+			top: "-1000px"
 		});
 	}
 	for ( i in testElementStyle ) {
