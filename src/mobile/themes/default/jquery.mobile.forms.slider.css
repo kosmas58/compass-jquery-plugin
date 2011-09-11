@@ -68,7 +68,7 @@ div.ui-slider-inneroffset {
     width: 50%;
 }
 
-div.ui-slider-handle-snapping {
+a.ui-slider-handle-snapping {
     -webkit-transition: left 100ms linear;
 }
 

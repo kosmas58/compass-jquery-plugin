@@ -845,11 +845,11 @@ var TouchScroll = (function() {
         e: Math.round(Math.max(
                 scrollbarTrackSizes.e * containerSize.e / scrollerSize.e,
                 config.scrollHandleMinSize
-                )),
+        )),
         f: Math.round(Math.max(
                 scrollbarTrackSizes.f * containerSize.f / scrollerSize.f,
                 config.scrollHandleMinSize
-                ))
+        ))
       };
       scrollbars.handles.e.style.width = scrollbars.sizes.e + "px";
       scrollbars.handles.f.style.height = scrollbars.sizes.f + "px";
@@ -920,7 +920,7 @@ var TouchScroll = (function() {
                       -lastEventOffset.e,
                       -lastEventOffset.f,
                       0
-                      ),
+              ),
               isScrolling = this._isScrolling,
               doScroll = isScrolling;
 
@@ -985,7 +985,7 @@ var TouchScroll = (function() {
                 event.metaKey,
                 event.button,
                 null// relatedTarget
-                );
+        );
         node.dispatchEvent(clickEvent);
       } else if (this._isScrolling) {
         var moveSpec = this._getLastMove();
@@ -1321,7 +1321,7 @@ var TouchScroll = (function() {
       var duration = Math.log(
               config.flicking.minSpeed /
                       pixelsPerMilisecond
-              ) /
+      ) /
               Math.log(config.flicking.friction);
 
       return duration > 0 ? Math.round(duration) : 0;
@@ -1435,7 +1435,7 @@ var TouchScroll = (function() {
           var bounceFactor = Math.min(
                   config.elasticity.factorFlick,
                   config.elasticity.max / Math.abs(bounce)
-                  );
+          );
 
           bounceTransform[axis] += bounce * bounceFactor;
           var bounceDuration = (1 - timeFraction) * duration * bounceFactor;

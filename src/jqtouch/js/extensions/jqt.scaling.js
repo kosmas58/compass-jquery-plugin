@@ -44,8 +44,8 @@
       $(function() {
         $('body > *')
                 .each(function() {
-          binder({}, {page: $(this)});
-        });
+                  binder({}, {page: $(this)});
+                });
       });
 
       return {};
@@ -86,9 +86,15 @@
     iScale.prototype = {
       handleEvent: function(e) {
         switch (e.type) {
-          case 'touchstart': return this.onTouchStart(e); break;
-          case 'touchmove': return this.onTouchMove(e); break;
-          case 'touchend': return this.onTouchEnd(e); break;
+          case 'touchstart':
+            return this.onTouchStart(e);
+            break;
+          case 'touchmove':
+            return this.onTouchMove(e);
+            break;
+          case 'touchend':
+            return this.onTouchEnd(e);
+            break;
         }
       },
 
@@ -118,7 +124,7 @@
         this.startDistance = Math.sqrt(
                 Math.pow((e.targetTouches[1].clientX - e.targetTouches[0].clientX), 2)
                         + Math.pow((e.targetTouches[1].clientX - e.targetTouches[0].clientX), 2)
-                );
+        );
 
         return false;
       },
@@ -136,7 +142,7 @@
         var newDistance = Math.sqrt(
                 Math.pow((e.targetTouches[1].clientX - e.targetTouches[0].clientX), 2)
                         + Math.pow((e.targetTouches[1].clientY - e.targetTouches[0].clientY), 2)
-                ),
+        ),
                 difference = newDistance - this.startDistance,
                 percentChange = (difference / this.startDistance) / 2;
 

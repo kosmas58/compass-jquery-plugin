@@ -831,7 +831,7 @@
       sheet.insertRule(
               format(options.parsedClassTemplate, options.parsedClass),
               sheet.cssRules.length
-              );
+      );
     }
 
     options.gallery = $(options.galleryTemplate).appendTo(options.appendTo);
@@ -844,8 +844,8 @@
                     .append(
                     $("<h1></h1>").html(
                             format(options.galleryName, options.defaultIndex + 1, images.length)
-                            )
-                    );
+                    )
+            );
 
     if (options.backLink) {
       toolbar.append(options.backLink);
@@ -1119,18 +1119,18 @@
 
     $this
             .data("jqt-photo-event", {
-                                       table: table,
-                                       position: {current: position.x, original: position.x},
-                                       target: target.css("webkitTransitionDuration", "0s"),
-                                       options: options,
-                                       slides: table.find(options.slideSelector),
-                                       moved: false,
-                                       x: tt.pageX,
-                                       y: tt.pageY,
-                                       left: current.left || 0,
-                                       top: current.top || 0,
-                                       timeStamp: +new Date
-                                     });
+      table: table,
+      position: {current: position.x, original: position.x},
+      target: target.css("webkitTransitionDuration", "0s"),
+      options: options,
+      slides: table.find(options.slideSelector),
+      moved: false,
+      x: tt.pageX,
+      y: tt.pageY,
+      left: current.left || 0,
+      top: current.top || 0,
+      timeStamp: +new Date
+    });
 
     return true;
   }
@@ -1341,7 +1341,7 @@
       distance: sqrt(
               pow((tt[1].pageX - tt[0].pageX), 2)
                       + pow((tt[1].pageY - tt[0].pageY), 2)
-              )
+      )
     })
             .find(".image-list")
             .css("webkitTransitionDuration", "0s");//end any transform on this table
@@ -1374,7 +1374,7 @@
             distance = sqrt(
                     pow((tt[1].pageX - tt[0].pageX), 2) +
                             pow((tt[1].pageY - tt[0].pageY), 2)
-                    ),
+            ),
             difference = distance - original.distance,
             percentChange = (difference / original.distance) / 2,
             current = data.current,
@@ -1393,7 +1393,7 @@
             (current.scale = (current.scale + (current.scale * percentChange))),
             current.left,
             current.top
-            );
+    );
 
     original.distance = distance;
 
@@ -1618,9 +1618,9 @@
       options.rearrange(current, last, options);
     })
             .css({
-                   webkitTransitionDuration: duration + "ms",
-                   webkitTransform: format(options.transform, position)
-                 });
+              webkitTransitionDuration: duration + "ms",
+              webkitTransform: format(options.transform, position)
+            });
 
     //update the title of the gallery
     title = $this.find(options.titleSelector);
@@ -1726,27 +1726,27 @@
             .find(options.imageSelector)
             .filter("[src]")
             .each(function() {
-      var clone = options.blankImage.clone(true),
-              $this = $(this);
+              var clone = options.blankImage.clone(true),
+                      $this = $(this);
 
-      $this.parent().addClass(options.notLoadedClass);
-      $this.replaceWith(clone);
+              $this.parent().addClass(options.notLoadedClass);
+              $this.replaceWith(clone);
 
-      parseImageData($this, clone, options);
-    });
+              parseImageData($this, clone, options);
+            });
 
     current.nextAll().slice(options.maxSlidesAfter)
             .find(options.imageSelector)
             .filter("[src]")
             .each(function() {
-      var clone = options.blankImage.clone(true),
-              $this = $(this);
+              var clone = options.blankImage.clone(true),
+                      $this = $(this);
 
-      $this.parent().addClass(options.notLoadedClass);
-      $this.replaceWith(clone);
+              $this.parent().addClass(options.notLoadedClass);
+              $this.replaceWith(clone);
 
-      parseImageData($this, clone, options);
-    });
+              parseImageData($this, clone, options);
+            });
 
     if (last[0] !== current[0]) {
       resetDimensions(last.find(options.imageSelector));
@@ -1988,7 +1988,7 @@
                   d.current.scale = d.original.scale,
                   d.current.left = d.original.left,
                   d.current.top = d.original.top
-                  )
+          )
         });
 
         d.current.width = d.original.width;

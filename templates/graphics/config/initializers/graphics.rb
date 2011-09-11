@@ -10,4 +10,4 @@ ActionView::Helpers::AssetTagHelper.register_javascript_expansion :highcharts_gr
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :highcharts_blue => ['highcharts/dark-blue.min']
 ActionView::Helpers::AssetTagHelper.register_javascript_expansion :highcharts_green => ['highcharts/dark-green.min']
 ActionView::Helpers::AssetTagHelper.register_stylesheet_expansion :highslide => ['compiled/jquery/highslide.css']
-ActionView::Helpers::AssetTagHelper.register_javascript_expansion :highslide => ['highcharts/highslide-full.min', 'highcharts/highslide-config']
+ActionView::Helpers::AssetTagHelper.register_javascript_expansion :highslide => ['highcharts/highslide.min', 'highcharts/highslide-config.min']

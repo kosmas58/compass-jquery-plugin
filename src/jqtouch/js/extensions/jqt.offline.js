@@ -70,12 +70,12 @@
 
       // Swap in newly download files when update is ready
       cache.addEventListener('updateready', function(e) {
-        // Don't perform "swap" if this is the first cache
-        if (cacheStatusValues[cache.status] != 'idle') {
-          cache.swapCache();
-          console.log('Swapped/updated the Cache Manifest.');
-        }
-      }
+                // Don't perform "swap" if this is the first cache
+                if (cacheStatusValues[cache.status] != 'idle') {
+                  cache.swapCache();
+                  console.log('Swapped/updated the Cache Manifest.');
+                }
+              }
               , false);
 
       // These two functions check for updates to the manifest file

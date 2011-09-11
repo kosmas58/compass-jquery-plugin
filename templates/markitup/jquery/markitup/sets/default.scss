@@ -5,7 +5,7 @@
 // By Jay Salvat - http://markitup.jaysalvat.com/
 // ------------------------------------------------------------------*/
 
-.markitup {
+.markItUp {
   .markItUpButton1 a {
     background-image: image_url("jquery/markitup/sets/default/bold.png"); }
   .markItUpButton2 a {
@@ -13,10 +13,14 @@
   .markItUpButton3 a {
     background-image: image_url("jquery/markitup/sets/default/stroke.png"); }
   .markItUpButton4 a {
-    background-image: image_url("jquery/markitup/sets/default/picture.png"); }
+    background-image: image_url("jquery/markitup/sets/default/list-bullet.png"); }
   .markItUpButton5 a {
-    background-image: image_url("jquery/markitup/sets/default/link.png"); }
+    background-image: image_url("jquery/markitup/sets/default/list-numeric.png"); }
   .markItUpButton6 a {
+    background-image: image_url("jquery/markitup/sets/default/picture.png"); }
+  .markItUpButton7 a {
+    background-image: image_url("jquery/markitup/sets/default/link.png"); }
+  .markItUpButton8 a {
     background-image: image_url("jquery/markitup/sets/default/clean.png"); }
   .preview a {
     background-image: image_url("jquery/markitup/sets/default/preview.png"); } }

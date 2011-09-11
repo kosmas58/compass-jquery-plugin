@@ -391,14 +391,14 @@
                   $.ajax($.extend({
                     url: surl,
                     dataType: "html",
-                    complete: function(res, status) {
+                    success: function(res, status) {
                       if (soptions.buildSelect !== undefined) {
                         var d = soptions.buildSelect(res);
                         if (d) {
                           $(self).append(d);
                         }
                       } else {
-                        $(self).append(res.responseText);
+                        $(self).append(res);
                       }
                       if (soptions.defaultValue) {
                         $("select", self).val(soptions.defaultValue);

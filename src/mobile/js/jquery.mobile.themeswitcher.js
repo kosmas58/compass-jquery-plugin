@@ -20,10 +20,11 @@
     //menu items
     $.each(themes, function(i) {
       $('<li><a href="#" data-' + $.mobile.ns + 'rel="back">' + themes[ i ].charAt(0).toUpperCase() + themes[ i ].substr(1) + '</a></li>')
-              .click(function() {
-        addTheme(themes[i]);
-        return false;
-      })
+              .bind("vclick", function() {
+                addTheme(themes[i]);
+                menuPage.dialog("close");
+                return false;
+              })
               .appendTo(menu);
     });
 

@@ -26,15 +26,15 @@
           settings.onGestureStart(getScale(e, end_scale), getRotation(e, rotation), e, settings.element);
       })
               .bind('gesturechange', function(e) {
-        if (settings.onGestureChange)
-          settings.onGestureChange(getScale(e, end_scale), getRotation(e, rotation), e, settings.element);
-      })
+                if (settings.onGestureChange)
+                  settings.onGestureChange(getScale(e, end_scale), getRotation(e, rotation), e, settings.element);
+              })
               .bind('gestureend', function(e) {
-        end_scale = e.originalEvent.scale;
-        rotation = (e.originalEvent.rotation + rotation) % 360;
-        if (settings.onGestureEnd)
-          settings.onGestureEnd(getScale(e, end_scale), getRotation(e, rotation), e, settings.element);
-      });
+                end_scale = e.originalEvent.scale;
+                rotation = (e.originalEvent.rotation + rotation) % 360;
+                if (settings.onGestureEnd)
+                  settings.onGestureEnd(getScale(e, end_scale), getRotation(e, rotation), e, settings.element);
+              });
     }
 
     function getRotation(event, current_rotation) {

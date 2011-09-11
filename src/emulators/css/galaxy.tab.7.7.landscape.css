@@ -1,0 +1,21 @@
+.emulator {
+    background: image_url("emulators/galaxy.tab.7.7.landscape.png") no-repeat;
+    width: 1544px;
+    height: 1050px;
+    -moz-transform-origin: 0 0;
+    -o-transform-origin: 0 0;
+    -webkit-transform-origin: 0 0;
+}
+
+.emulator .display-area {
+    position: relative;
+    top: 125px;
+    width: 1280px;
+    height: 752px;
+    max-height: 752px;
+    color: #ffffff;
+}
+
+.emulator .display-area a {
+    color: #ff5500;
+}

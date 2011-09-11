@@ -55,8 +55,8 @@
               .css({position:'absolute', zIndex:'500'})
               .appendTo('body')
               .bind('click', function(e) {
-        e.stopPropagation();
-      });
+                e.stopPropagation();
+              });
     }
     if (!shadow) {
       shadow = $('<div></div>')
@@ -98,7 +98,7 @@
             function() {
               $(this).css(cur.itemStyle);
             }
-            ).find('img').css({verticalAlign:'middle',paddingRight:'2px'});
+    ).find('img').css({verticalAlign:'middle',paddingRight:'2px'});
 
     // Send the content to the menu
     menu.html(content);

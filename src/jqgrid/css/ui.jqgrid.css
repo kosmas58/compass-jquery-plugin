@@ -698,10 +698,6 @@ tr.ui-search-toolbar select {
 }
 
 /* moda dialog */
-.jqmOverlay {
-    background-color: #000;
-}
-
 * iframe.jqm {
     position: absolute;
     top: 0;

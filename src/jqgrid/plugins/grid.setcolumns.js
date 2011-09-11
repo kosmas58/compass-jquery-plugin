@@ -128,7 +128,7 @@
                   function() {
                     $(this).removeClass('ui-state-hover');
                   }
-                  );
+          );
           if (onBeforeShow) {
             p.beforeShowForm($("#" + dtbl));
           }

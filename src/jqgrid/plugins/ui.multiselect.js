@@ -263,18 +263,18 @@
       })
         // make draggable
               .each(function() {
-        $(this).parent().draggable({
-          connectToSortable: 'ul.selected',
-          helper: function() {
-            var selectedItem = that._cloneWithData($(this)).width($(this).width() - 50);
-            selectedItem.width($(this).width());
-            return selectedItem;
-          },
-          appendTo: '.ui-multiselect',
-          containment: '.ui-multiselect',
-          revert: 'invalid'
-        });
-      });
+                $(this).parent().draggable({
+                  connectToSortable: 'ul.selected',
+                  helper: function() {
+                    var selectedItem = that._cloneWithData($(this)).width($(this).width() - 50);
+                    selectedItem.width($(this).width());
+                    return selectedItem;
+                  },
+                  appendTo: '.ui-multiselect',
+                  containment: '.ui-multiselect',
+                  revert: 'invalid'
+                });
+              });
     },
     _registerRemoveEvents: function(elements) {
       var that = this;
@@ -292,15 +292,15 @@
         $(this).addClass('ui-state-active');
       })
               .blur(function() {
-        $(this).removeClass('ui-state-active');
-      })
+                $(this).removeClass('ui-state-active');
+              })
               .keypress(function(e) {
-        if (e.keyCode == 13)
-          return false;
-      })
+                if (e.keyCode == 13)
+                  return false;
+              })
               .keyup(function() {
-        that._filter.apply(this, [that.availableList]);
-      });
+                that._filter.apply(this, [that.availableList]);
+              });
     }
   });
 

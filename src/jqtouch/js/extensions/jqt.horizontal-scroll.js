@@ -134,8 +134,8 @@
       $(function() {
         $(defaults.selector)
                 .each(function() {
-          $(this).scrollHorizontally(defaults.attributesToOptions($(this), defaults.attributes));
-        });
+                  $(this).scrollHorizontally(defaults.attributesToOptions($(this), defaults.attributes));
+                });
       });
 
       return {};

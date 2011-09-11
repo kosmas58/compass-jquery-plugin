@@ -1,5 +1,5 @@
 /*!
- * jQuery UI Mouse 1.8.13
+ * jQuery UI Mouse 1.8.16
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -13,7 +13,7 @@
 (function($, undefined) {
 
   var mouseHandled = false;
-  $(document).mousedown(function(e) {
+  $(document).mouseup(function(e) {
     mouseHandled = false;
   });
 
@@ -31,12 +31,12 @@
         return self._mouseDown(event);
       })
               .bind('click.' + this.widgetName, function(event) {
-        if (true === $.data(event.target, self.widgetName + '.preventClickEvent')) {
-          $.removeData(event.target, self.widgetName + '.preventClickEvent');
-          event.stopImmediatePropagation();
-          return false;
-        }
-      });
+                if (true === $.data(event.target, self.widgetName + '.preventClickEvent')) {
+                  $.removeData(event.target, self.widgetName + '.preventClickEvent');
+                  event.stopImmediatePropagation();
+                  return false;
+                }
+              });
 
       this.started = false;
     },
@@ -61,7 +61,9 @@
 
       var self = this,
               btnIsLeft = (event.which == 1),
-              elIsCancel = (typeof this.options.cancel == "string" ? $(event.target).parents().add(event.target).filter(this.options.cancel).length : false);
+        // event.target.nodeName works around a bug in IE 8 with
+        // disabled inputs (#7620)
+              elIsCancel = (typeof this.options.cancel == "string" && event.target.nodeName ? $(event.target).closest(this.options.cancel).length : false);
       if (!btnIsLeft || elIsCancel || !this._mouseCapture(event)) {
         return true;
       }
@@ -145,7 +147,7 @@
       return (Math.max(
               Math.abs(this._mouseDownEvent.pageX - event.pageX),
               Math.abs(this._mouseDownEvent.pageY - event.pageY)
-              ) >= this.options.distance
+      ) >= this.options.distance
               );
     },
 

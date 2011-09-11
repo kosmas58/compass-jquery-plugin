@@ -10,6 +10,7 @@ GANTTVIEW_SRC_SCRIPTS = GANTTVIEW_SRC + "/*.js"
 HIGHCHARTS_SRC = File.join(GRAPHICS_SRC, 'highcharts')
 high_scripts = [
     'js/highcharts.js',
+    'js/highstock.js',
     'js/exporting.js'
 ].collect { |filename| File.read(File.join(HIGHCHARTS_SRC, filename)) }.join "\n\n"
 HIGHCHARTS_SRC_THEMES = File.join(HIGHCHARTS_SRC, 'themes')

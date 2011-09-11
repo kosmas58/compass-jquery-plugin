@@ -46,6 +46,7 @@
   };
 
   function getNativeEvent(event) {
+
     while (event && typeof event.originalEvent !== "undefined") {
       event = event.originalEvent;
     }
@@ -53,32 +54,36 @@
   }
 
   function createVirtualEvent(event, eventType) {
-    var t = event.type;
+
+    var t = event.type,
+            oe, props, ne, prop, ct, touch, i, j;
+
     event = $.Event(event);
     event.type = eventType;
 
-    var oe = event.originalEvent;
-    var props = $.event.props;
+    oe = event.originalEvent;
+    props = $.event.props;
 
     // copy original event properties over to the new event
     // this would happen if we could call $.event.fix instead of $.Event
     // but we don't have a way to force an event to be fixed multiple times
     if (oe) {
-      for (var i = props.length, prop; i;) {
+      for (i = props.length,prop; i;) {
         prop = props[ --i ];
-        event[prop] = oe[prop];
+        event[ prop ] = oe[ prop ];
       }
     }
 
     if (t.search(/^touch/) !== -1) {
-      var ne = getNativeEvent(oe),
-              t = ne.touches,
-              ct = ne.changedTouches,
-              touch = (t && t.length) ? t[0] : ((ct && ct.length) ? ct[0] : undefined);
+      ne = getNativeEvent(oe);
+      t = ne.touches;
+      ct = ne.changedTouches;
+      touch = ( t && t.length ) ? t[0] : ( (ct && ct.length) ? ct[ 0 ] : undefined );
+
       if (touch) {
-        for (var i = 0, len = touchEventProps.length; i < len; i++) {
-          var prop = touchEventProps[i];
-          event[prop] = touch[prop];
+        for (j = 0,len = touchEventProps.length; j < len; j++) {
+          prop = touchEventProps[ j ];
+          event[ prop ] = touch[ prop ];
         }
       }
     }
@@ -87,12 +92,17 @@
   }
 
   function getVirtualBindingFlags(element) {
-    var flags = {};
+
+    var flags = {},
+            b, k;
+
     while (element) {
-      var b = $.data(element, dataPropertyName);
-      for (var k in b) {
-        if (b[k]) {
-          flags[k] = flags.hasVirtualBinding = true;
+
+      b = $.data(element, dataPropertyName);
+
+      for (k in b) {
+        if (b[ k ]) {
+          flags[ k ] = flags.hasVirtualBinding = true;
         }
       }
       element = element.parentNode;
@@ -101,9 +111,12 @@
   }
 
   function getClosestElementWithVirtualBinding(element, eventType) {
+    var b;
     while (element) {
-      var b = $.data(element, dataPropertyName);
-      if (b && (!eventType || b[eventType])) {
+
+      b = $.data(element, dataPropertyName);
+
+      if (b && ( !eventType || b[ eventType ] )) {
         return element;
       }
       element = element.parentNode;
@@ -151,31 +164,50 @@
   }
 
   function triggerVirtualEvent(eventType, event, flags) {
-    var defaultPrevented = false;
+    var ve;
 
-    if ((flags && flags[eventType]) || (!flags && getClosestElementWithVirtualBinding(event.target, eventType))) {
-      var ve = createVirtualEvent(event, eventType);
+    if (( flags && flags[ eventType ] ) ||
+            ( !flags && getClosestElementWithVirtualBinding(event.target, eventType) )) {
+
+      ve = createVirtualEvent(event, eventType);
+
       $(event.target).trigger(ve);
-      defaultPrevented = ve.isDefaultPrevented();
     }
 
-    return defaultPrevented;
+    return ve;
   }
 
   function mouseEventCallback(event) {
     var touchID = $.data(event.target, touchTargetPropertyName);
-    if (!blockMouseTriggers && (!lastTouchID || lastTouchID !== touchID)) {
-      triggerVirtualEvent("v" + event.type, event);
+
+    if (!blockMouseTriggers && ( !lastTouchID || lastTouchID !== touchID )) {
+      var ve = triggerVirtualEvent("v" + event.type, event);
+      if (ve) {
+        if (ve.isDefaultPrevented()) {
+          event.preventDefault();
+        }
+        if (ve.isPropagationStopped()) {
+          event.stopPropagation();
+        }
+        if (ve.isImmediatePropagationStopped()) {
+          event.stopImmediatePropagation();
+        }
+      }
     }
   }
 
   function handleTouchStart(event) {
-    var touches = getNativeEvent(event).touches;
+
+    var touches = getNativeEvent(event).touches,
+            target, flags;
+
     if (touches && touches.length === 1) {
-      var target = event.target,
-              flags = getVirtualBindingFlags(target);
+
+      target = event.target;
+      flags = getVirtualBindingFlags(target);
 
       if (flags.hasVirtualBinding) {
+
         lastTouchID = nextTouchID++;
         $.data(target, touchTargetPropertyName, lastTouchID);
 
@@ -184,7 +216,7 @@
         disableMouseBindings();
         didScroll = false;
 
-        var t = getNativeEvent(event).touches[0];
+        var t = getNativeEvent(event).touches[ 0 ];
         startX = t.pageX;
         startY = t.pageY;
 
@@ -212,17 +244,18 @@
       return;
     }
 
-    var t = getNativeEvent(event).touches[0];
-
-    var didCancel = didScroll,
+    var t = getNativeEvent(event).touches[ 0 ],
+            didCancel = didScroll,
             moveThreshold = $.vmouse.moveDistanceThreshold;
-    didScroll = didScroll
-            || (Math.abs(t.pageX - startX) > moveThreshold || Math.abs(t.pageY - startY) > moveThreshold);
+    didScroll = didScroll ||
+            ( Math.abs(t.pageX - startX) > moveThreshold ||
+                    Math.abs(t.pageY - startY) > moveThreshold ),
+            flags = getVirtualBindingFlags(event.target);
 
-    var flags = getVirtualBindingFlags(event.target);
     if (didScroll && !didCancel) {
       triggerVirtualEvent("vmousecancel", event, flags);
     }
+
     triggerVirtualEvent("vmousemove", event, flags);
     startResetTimer();
   }
@@ -234,16 +267,23 @@
 
     disableTouchBindings();
 
-    var flags = getVirtualBindingFlags(event.target);
+    var flags = getVirtualBindingFlags(event.target),
+            t;
     triggerVirtualEvent("vmouseup", event, flags);
+
     if (!didScroll) {
-      if (triggerVirtualEvent("vclick", event, flags)) {
+      var ve = triggerVirtualEvent("vclick", event, flags);
+      if (ve && ve.isDefaultPrevented()) {
         // The target of the mouse events that follow the touchend
         // event don't necessarily match the target used during the
         // touch. This means we need to rely on coordinates for blocking
         // any click that is generated.
-        var t = getNativeEvent(event).changedTouches[0];
-        clickBlockList.push({ touchID: lastTouchID, x: t.clientX, y: t.clientY });
+        t = getNativeEvent(event).changedTouches[ 0 ];
+        clickBlockList.push({
+          touchID: lastTouchID,
+          x: t.clientX,
+          y: t.clientY
+        });
 
         // Prevent any mouse events that follow from triggering
         // virtual event notifications.
@@ -257,10 +297,12 @@
   }
 
   function hasVirtualBindings(ele) {
-    var bindings = $.data(ele, dataPropertyName), k;
+    var bindings = $.data(ele, dataPropertyName),
+            k;
+
     if (bindings) {
       for (k in bindings) {
-        if (bindings[k]) {
+        if (bindings[ k ]) {
           return true;
         }
       }
@@ -273,6 +315,7 @@
 
   function getSpecialEventObject(eventType) {
     var realType = eventType.substr(1);
+
     return {
       setup: function(data, namespace) {
         // If this is the first virtual mouse binding for this element,
@@ -284,15 +327,15 @@
 
         // If setup is called, we know it is the first binding for this
         // eventType, so initialize the count for the eventType to zero.
-
         var bindings = $.data(this, dataPropertyName);
-        bindings[eventType] = true;
+        bindings[ eventType ] = true;
 
         // If this is the first virtual mouse event for this type,
         // register a global handler on the document.
 
-        activeDocHandlers[eventType] = (activeDocHandlers[eventType] || 0) + 1;
-        if (activeDocHandlers[eventType] === 1) {
+        activeDocHandlers[ eventType ] = ( activeDocHandlers[ eventType ] || 0 ) + 1;
+
+        if (activeDocHandlers[ eventType ] === 1) {
           $document.bind(realType, mouseEventCallback);
         }
 
@@ -307,10 +350,10 @@
           // If this is the first virtual mouse binding for the document,
           // register our touchstart handler on the document.
 
-          activeDocHandlers["touchstart"] = (activeDocHandlers["touchstart"] || 0) + 1;
-          if (activeDocHandlers["touchstart"] === 1) {
-            $document.bind("touchstart", handleTouchStart)
+          activeDocHandlers[ "touchstart" ] = ( activeDocHandlers[ "touchstart" ] || 0) + 1;
 
+          if (activeDocHandlers[ "touchstart" ] === 1) {
+            $document.bind("touchstart", handleTouchStart)
                     .bind("touchend", handleTouchEnd)
 
               // On touch platforms, touching the screen and then dragging your finger
@@ -333,8 +376,9 @@
         // If this is the last virtual binding for this eventType,
         // remove its global handler from the document.
 
-        --activeDocHandlers[eventType];
-        if (!activeDocHandlers[eventType]) {
+        --activeDocHandlers[ eventType ];
+
+        if (!activeDocHandlers[ eventType ]) {
           $document.unbind(realType, mouseEventCallback);
         }
 
@@ -342,8 +386,9 @@
           // If this is the last virtual mouse binding in existence,
           // remove our document touchstart listener.
 
-          --activeDocHandlers["touchstart"];
-          if (!activeDocHandlers["touchstart"]) {
+          --activeDocHandlers[ "touchstart" ];
+
+          if (!activeDocHandlers[ "touchstart" ]) {
             $document.unbind("touchstart", handleTouchStart)
                     .unbind("touchmove", handleTouchMove)
                     .unbind("touchend", handleTouchEnd)
@@ -360,7 +405,7 @@
         // of any data bindings so we need to check it before
         // using it.
         if (bindings) {
-          bindings[eventType] = false;
+          bindings[ eventType ] = false;
         }
 
         // Unregister the dummy event handler.
@@ -380,7 +425,7 @@
 // Expose our custom events to the jQuery bind/unbind mechanism.
 
   for (var i = 0; i < virtualEventNames.length; i++) {
-    $.event.special[virtualEventNames[i]] = getSpecialEventObject(virtualEventNames[i]);
+    $.event.special[ virtualEventNames[ i ] ] = getSpecialEventObject(virtualEventNames[ i ]);
   }
 
 // Add a capture click handler to block clicks.
@@ -388,12 +433,14 @@
 // doesn't support it, we punt for now and rely solely on mouse events.
   if (eventCaptureSupported) {
     document.addEventListener("click", function(e) {
-      var cnt = clickBlockList.length;
-      var target = e.target;
+      var cnt = clickBlockList.length,
+              target = e.target,
+              x, y, ele, i, o, touchID;
+
       if (cnt) {
-        var x = e.clientX,
-                y = e.clientY,
-                threshold = $.vmouse.clickDistanceThreshold;
+        x = e.clientX;
+        y = e.clientY;
+        threshold = $.vmouse.clickDistanceThreshold;
 
         // The idea here is to run through the clickBlockList to see if
         // the current click event is in the proximity of one of our
@@ -422,12 +469,15 @@
         // innermost child of the touched element, even if that child is no where
         // near the point of touch.
 
-        var ele = target;
+        ele = target;
+
         while (ele) {
-          for (var i = 0; i < cnt; i++) {
-            var o = clickBlockList[i],
-                    touchID = 0;
-            if ((ele === target && Math.abs(o.x - x) < threshold && Math.abs(o.y - y) < threshold) || $.data(ele, touchTargetPropertyName) === o.touchID) {
+          for (i = 0; i < cnt; i++) {
+            o = clickBlockList[ i ];
+            touchID = 0;
+
+            if (( ele === target && Math.abs(o.x - x) < threshold && Math.abs(o.y - y) < threshold ) ||
+                    $.data(ele, touchTargetPropertyName) === o.touchID) {
               // XXX: We may want to consider removing matches from the block list
               //      instead of waiting for the reset timer to fire.
               e.preventDefault();
