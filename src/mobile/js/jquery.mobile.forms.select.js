@@ -201,6 +201,11 @@
       this.setButtonCount();
     },
 
+    // open and close preserved in native selects
+    // to simplify users code when looping over selects
+    open: $.noop,
+    close: $.noop,
+
     disable: function() {
       this._setDisabled(true);
       this.button.addClass("ui-disabled");
