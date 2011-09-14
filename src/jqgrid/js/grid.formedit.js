@@ -90,7 +90,13 @@
         if ($("#" + IDs.themodal).html() !== null) {
           showFilter();
         } else {
-          var fil = $("<span><div id='" + fid + "' class='searchFilter' style='overflow:auto'></div></span>").insertBefore("#gview_" + $t.p.id);
+          var fil = $("<div><div id='" + fid + "' class='searchFilter' style='overflow:auto'></div></div>").insertBefore("#gview_" + $t.p.id),
+                  align = "left", butleft = "";
+          if ($t.p.direction == "rtl") {
+            align = "right";
+            butleft = " style='text-align:left'";
+            fil.attr("dir", "rtl");
+          }
           if ($.isFunction(p.onInitializeSearch)) {
             p.onInitializeSearch($("#" + fid));
           }
@@ -145,7 +151,7 @@
             tmpl += "</select>";
           }
 
-          bt = "<table class='EditTable' style='border:0px none;margin-top:5px' id='" + fid + "_2'><tbody><tr><td colspan='2'><hr class='ui-widget-content' style='margin:1px'/></td></tr><tr><td class='EditButton' style='text-align:left'>" + bC + tmpl + "</td><td class='EditButton'>" + bQ + bS + "</td></tr></tbody></table>";
+          bt = "<table class='EditTable' style='border:0px none;margin-top:5px' id='" + fid + "_2'><tbody><tr><td colspan='2'><hr class='ui-widget-content' style='margin:1px'/></td></tr><tr><td class='EditButton' style='text-align:" + align + "'>" + bC + tmpl + "</td><td class='EditButton' " + butleft + ">" + bQ + bS + "</td></tr></tbody></table>";
 
           $("#" + fid).jqFilter({
             columns : columns,
@@ -161,7 +167,8 @@
               if (this.p.showQuery) {
                 $('.query', this).html(this.toUserFriendlyString());
               }
-            }
+            },
+            direction : $t.p.direction
           });
           fil.append(bt);
           if (found && p.tmplFilters && p.tmplFilters.length) {
@@ -179,6 +186,7 @@
           if ($.isFunction(p.onInitializeSearch)) {
             p.onInitializeSearch($("#" + fid));
           }
+          p.gbox = "#gbox_" + fid;
           if (p.layer)
             $.jgrid.createModal(IDs, fil, p, "#gview_" + $t.p.id, $("#gbox_" + $t.p.id)[0], "#" + p.layer, {position: "relative"});
           else

@@ -2011,13 +2011,17 @@
                             ts.p.datatype = "local";
                           }
                           data = null;
-                          endReq();
+                          if (npage === 1) {
+                            endReq();
+                          }
                         },
                         error:function(xhr, st, err) {
                           if ($.isFunction(ts.p.loadError)) {
                             ts.p.loadError.call(ts, xhr, st, err);
                           }
-                          endReq();
+                          if (npage === 1) {
+                            endReq();
+                          }
                           xhr = null;
                         },
                         beforeSend: function(xhr) {
@@ -3418,7 +3422,7 @@
               nm = cm.name;
               lcdata[nm] = cm.formatter && typeof(cm.formatter) === 'string' && cm.formatter == 'date' ? $.unformat.date(data[nm], cm) : data[nm];
               v = t.formatter(rowid, $.jgrid.getAccessor(data, nm), i, data, 'edit');
-              prp = t.formatCol(i, 1, v, rowid, data, true);
+              prp = t.formatCol(i, 1, v, data, rowid, true);
               row += "<td role=\"gridcell\" aria-describedby=\"" + t.p.id + "_" + nm + "\" " + prp + ">" + v + "</td>";
             }
             row = "<tr id=\"" + rowid + "\" role=\"row\" tabindex=\"-1\" class=\"ui-widget-content jqgrow ui-row-" + t.p.direction + " " + cna + "\">" + row + "</tr>";
