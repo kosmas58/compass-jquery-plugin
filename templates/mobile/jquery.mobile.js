@@ -3319,6 +3319,12 @@
       return url;
     },
 
+    // TODO sort out a single barrier to hashchange functionality
+    nextHashChangePrevented: function(value) {
+      $.mobile.urlHistory.ignoreNextHashChange = value;
+      self.onHashChangeDisabled = value;
+    },
+
     // on hash change we want to clean up the url
     // NOTE this takes place *after* the vanilla navigation hash change
     // handling has taken place and set the state of the DOM
@@ -3328,7 +3334,10 @@
               isPath = $.mobile.path.isPath(hash);
       hash = isPath ? hash.replace("#", "") : hash;
 
-      self.hashchangeFired = true;
+      // disable this hash change
+      if (self.onHashChangeDisabled) {
+        return;
+      }
 
       // propulate the hash when its not available
       state = self.state();
@@ -3362,13 +3371,13 @@
       // or forward popstate
       if (poppedState) {
         // disable any hashchange triggered by the browser
-        $.mobile.urlHistory.ignoreNextHashChange = true;
+        self.nextHashChangePrevented(true);
 
         // defer our manual hashchange until after the browser fired
         // version has come and gone
         setTimeout(function() {
           // make sure that the manual hash handling takes place
-          $.mobile.urlHistory.ignoreNextHashChange = false;
+          self.nextHashChangePrevented(false);
 
           // change the page based on the hash
           $.mobile._handleHashChange(poppedState.hash);
@@ -3689,9 +3698,10 @@
 
       var $el = this.element,
               o = this.options,
-              collapsibleContain = $el.addClass("ui-collapsible-contain"),
+              expandedCls = "ui-btn-up-" + (o.theme || "c"),
+              collapsible = $el.addClass("ui-collapsible"),
               collapsibleHeading = $el.find(o.heading).eq(0),
-              collapsibleContent = collapsibleContain.wrapInner("<div class='ui-collapsible-content'></div>").find(".ui-collapsible-content"),
+              collapsibleContent = collapsible.wrapInner("<div class='ui-collapsible-content'></div>").find(".ui-collapsible-content"),
               collapsibleParent = $el.closest(":jqmData(role='collapsible-set')").addClass("ui-collapsible-set");
 
       // Replace collapsibleHeading if it's a legend
@@ -3709,7 +3719,7 @@
               .wrapInner("<a href='#' class='ui-collapsible-heading-toggle'></a>")
               .find("a:eq(0)")
               .buttonMarkup({
-                shadow: !collapsibleParent.length,
+                shadow: false,
                 corners: false,
                 iconPos: "left",
                 icon: "plus",
@@ -3727,12 +3737,10 @@
 
       if (!collapsibleParent.length) {
         collapsibleHeading
-                .find("a:eq(0)")
-                .addClass("ui-corner-all")
-                .find(".ui-btn-inner")
-                .addClass("ui-corner-all");
+                .find("a:eq(0), .ui-btn-inner")
+                .addClass("ui-corner-top ui-corner-bottom");
       } else {
-        if (collapsibleContain.jqmData("collapsible-last")) {
+        if (collapsible.jqmData("collapsible-last")) {
           collapsibleHeading
                   .find("a:eq(0), .ui-btn-inner")
                   .addClass("ui-corner-bottom");
@@ -3740,52 +3748,35 @@
       }
 
       //events
-      collapsibleContain
-              .bind("collapse", function(event) {
-        if (! event.isDefaultPrevented() &&
-                $(event.target).closest(".ui-collapsible-contain").is(collapsibleContain)) {
+      collapsible
+              .bind("expand collapse", function(event) {
+        if (!event.isDefaultPrevented()) {
 
           event.preventDefault();
 
+          var isCollapse = ( event.type === "collapse" );
+
           collapsibleHeading
-                  .addClass("ui-collapsible-heading-collapsed")
+                  .toggleClass("ui-collapsible-heading-collapsed", isCollapse)
                   .find(".ui-collapsible-heading-status")
                   .text(o.expandCueText)
                   .end()
                   .find(".ui-icon")
-                  .removeClass("ui-icon-minus")
-                  .addClass("ui-icon-plus");
+                  .toggleClass("ui-icon-minus", !isCollapse)
+                  .toggleClass("ui-icon-plus", isCollapse);
 
-          collapsibleContent.addClass("ui-collapsible-content-collapsed").attr("aria-hidden", true);
+          collapsible.toggleClass("ui-collapsible-collapsed", isCollapse);
+          collapsibleContent.toggleClass("ui-collapsible-content-collapsed", isCollapse).attr("aria-hidden", isCollapse);
+          collapsibleContent.toggleClass(expandedCls, !isCollapse);
 
-          if (collapsibleContain.jqmData("collapsible-last")) {
+          if (!collapsibleParent.length || collapsible.jqmData("collapsible-last")) {
             collapsibleHeading
                     .find("a:eq(0), .ui-btn-inner")
-                    .addClass("ui-corner-bottom");
+                    .toggleClass("ui-corner-bottom", isCollapse);
+            collapsibleContent.toggleClass("ui-corner-bottom", !isCollapse);
           }
         }
       })
-              .bind("expand", function(event) {
-                if (!event.isDefaultPrevented()) {
-
-                  event.preventDefault();
-
-                  collapsibleHeading
-                          .removeClass("ui-collapsible-heading-collapsed")
-                          .find(".ui-collapsible-heading-status").text(o.collapseCueText);
-
-                  collapsibleHeading.find(".ui-icon").removeClass("ui-icon-plus").addClass("ui-icon-minus");
-
-                  collapsibleContent.removeClass("ui-collapsible-content-collapsed").attr("aria-hidden", false);
-
-                  if (collapsibleContain.jqmData("collapsible-last")) {
-
-                    collapsibleHeading
-                            .find("a:eq(0), .ui-btn-inner")
-                            .removeClass("ui-corner-bottom");
-                  }
-                }
-              })
               .trigger(o.collapsed ? "collapse" : "expand");
 
       // Close others in a set
@@ -3796,8 +3787,8 @@
                 .bind("expand", function(event) {
 
                   $(event.target)
-                          .closest(".ui-collapsible-contain")
-                          .siblings(".ui-collapsible-contain")
+                          .closest(".ui-collapsible")
+                          .siblings(".ui-collapsible")
                           .trigger("collapse");
 
                 });
@@ -3810,7 +3801,12 @@
                 .find(".ui-btn-inner")
                 .addClass("ui-corner-top");
 
-        set.last().jqmData("collapsible-last", true);
+        set.last()
+                .jqmData("collapsible-last", true)
+                .find("a:eq(0)")
+                .addClass("ui-corner-bottom")
+                .find(".ui-btn-inner")
+                .addClass("ui-corner-bottom");
       }
 
       collapsibleHeading
@@ -3819,7 +3815,7 @@
         var type = collapsibleHeading.is(".ui-collapsible-heading-collapsed") ?
                 "expand" : "collapse";
 
-        collapsibleContain.trigger(type);
+        collapsible.trigger(type);
 
         event.preventDefault();
       });

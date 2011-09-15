@@ -827,7 +827,7 @@ Built by David Kaneda and maintained by Jonathan Stark.
 * Dual licensed under the MIT (MIT-LICENSE.txt) or GPL (GPL-LICENSE.txt) licenses.
 */
 
-.ui-collapsible-contain {
+.ui-collapsible {
   margin: .5em 0; }
 
 .ui-collapsible-heading {
@@ -863,14 +863,21 @@ Built by David Kaneda and maintained by Jonathan Stark.
 
 .ui-collapsible-content {
   display: block;
-  padding: 10px 0 10px 8px; }
+  margin: 0 -8px;
+  padding: 10px 16px;
+  border-top: none;
+  /* Overrides ui-btn-up-* */
+  background-image: none;
+  /* Overrides ui-btn-up-* */
+  font-weight: normal;
+  /* Overrides ui-btn-up-* */ }
 
 .ui-collapsible-content-collapsed {
   display: none; }
 
 .ui-collapsible-set {
   margin: .5em 0;
-  .ui-collapsible-contain {
+  .ui-collapsible {
     margin: -1px 0 0; } }
 
 /*
