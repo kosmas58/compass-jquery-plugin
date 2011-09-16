@@ -1,13 +1,13 @@
 /**
  * @license
- * jQuery Tools 1.2.5 Dateinput - <input type="date" /> for humans
+ * jQuery Tools 1.2.6 Dateinput - <input type="date" /> for humans
  *
  * NO COPYRIGHTS OR LICENSES. DO WHAT YOU LIKE.
  *
  * http://flowplayer.org/tools/form/dateinput/
  *
  * Since: Mar 2010
- * Date: Fri Sep 16 19:25:37 +0200 2011
+ * Date: Fri Sep 16 19:42:50 +0200 2011
  */
 (function($, undefined) {
 
@@ -15,7 +15,7 @@
    preserve today highlighted
    */
 
-  $.tools = $.tools || {version: '1.2.5'};
+  $.tools = $.tools || {version: '1.2.6'};
 
   var instances = [],
           tool,
@@ -842,19 +842,19 @@
 
 /**
  * @license
- * jQuery Tools 1.2.5 Overlay - Overlay base. Extend it.
+ * jQuery Tools 1.2.6 Overlay - Overlay base. Extend it.
  *
  * NO COPYRIGHTS OR LICENSES. DO WHAT YOU LIKE.
  *
  * http://flowplayer.org/tools/overlay/
  *
  * Since: March 2008
- * Date: Fri Sep 16 19:25:37 +0200 2011
+ * Date: Fri Sep 16 19:42:50 +0200 2011
  */
 (function($) {
 
   // static constructs
-  $.tools = $.tools || {version: '1.2.5'};
+  $.tools = $.tools || {version: '1.2.6'};
 
   $.tools.overlay = {
 
@@ -1161,14 +1161,14 @@
 
 /**
  * @license
- * jQuery Tools 1.2.5 / Overlay Apple effect.
+ * jQuery Tools 1.2.6 / Overlay Apple effect.
  *
  * NO COPYRIGHTS OR LICENSES. DO WHAT YOU LIKE.
  *
  * http://flowplayer.org/tools/overlay/apple.html
  *
  * Since: July 2009
- * Date: Fri Sep 16 19:25:37 +0200 2011
+ * Date: Fri Sep 16 19:42:50 +0200 2011
  */
 (function($) {
 
@@ -1321,18 +1321,18 @@
 
 /**
  * @license
- * jQuery Tools 1.2.5 Rangeinput - HTML5 <input type="range" /> for humans
+ * jQuery Tools 1.2.6 Rangeinput - HTML5 <input type="range" /> for humans
  *
  * NO COPYRIGHTS OR LICENSES. DO WHAT YOU LIKE.
  *
  * http://flowplayer.org/tools/rangeinput/
  *
  * Since: Mar 2010
- * Date: Fri Sep 16 19:25:37 +0200 2011
+ * Date: Fri Sep 16 19:42:50 +0200 2011
  */
 (function($) {
 
-  $.tools = $.tools || {version: '1.2.5'};
+  $.tools = $.tools || {version: '1.2.6'};
 
   var tool;
 
@@ -1819,19 +1819,19 @@
 
 /**
  * @license
- * jQuery Tools 1.2.5 Scrollable - New wave UI design
+ * jQuery Tools 1.2.6 Scrollable - New wave UI design
  *
  * NO COPYRIGHTS OR LICENSES. DO WHAT YOU LIKE.
  *
  * http://flowplayer.org/tools/scrollable.html
  *
  * Since: March 2008
- * Date: Fri Sep 16 19:25:37 +0200 2011
+ * Date: Fri Sep 16 19:42:50 +0200 2011
  */
 (function($) {
 
   // static constructs
-  $.tools = $.tools || {version: '1.2.5'};
+  $.tools = $.tools || {version: '1.2.6'};
 
   $.tools.scrollable = {
 
@@ -2224,14 +2224,14 @@
 
 /**
  * @license
- * jQuery Tools 1.2.5 / Scrollable Autoscroll
+ * jQuery Tools 1.2.6 / Scrollable Autoscroll
  *
  * NO COPYRIGHTS OR LICENSES. DO WHAT YOU LIKE.
  *
  * http://flowplayer.org/tools/scrollable/autoscroll.html
  *
  * Since: September 2009
- * Date: Fri Sep 16 19:25:37 +0200 2011
+ * Date: Fri Sep 16 19:42:50 +0200 2011
  */
 (function($) {
 
@@ -2326,14 +2326,14 @@
 
 /**
  * @license
- * jQuery Tools 1.2.5 / Scrollable Navigator
+ * jQuery Tools 1.2.6 / Scrollable Navigator
  *
  * NO COPYRIGHTS OR LICENSES. DO WHAT YOU LIKE.
  *
  * http://flowplayer.org/tools/scrollable/navigator.html
  *
  * Since: September 2009
- * Date: Fri Sep 16 19:25:37 +0200 2011
+ * Date: Fri Sep 16 19:42:50 +0200 2011
  */
 (function($) {
 
@@ -2478,19 +2478,19 @@
 
 /**
  * @license
- * jQuery Tools 1.2.5 Tabs- The basics of UI design.
+ * jQuery Tools 1.2.6 Tabs- The basics of UI design.
  *
  * NO COPYRIGHTS OR LICENSES. DO WHAT YOU LIKE.
  *
  * http://flowplayer.org/tools/tabs/
  *
  * Since: November 2008
- * Date: Fri Sep 16 19:25:37 +0200 2011
+ * Date: Fri Sep 16 19:42:50 +0200 2011
  */
 (function($) {
 
   // static constructs
-  $.tools = $.tools || {version: '1.2.5'};
+  $.tools = $.tools || {version: '1.2.6'};
 
   $.tools.tabs = {
 
@@ -2817,14 +2817,14 @@
 
 /**
  * @license
- * jQuery Tools 1.2.5 Slideshow - Extend it.
+ * jQuery Tools 1.2.6 Slideshow - Extend it.
  *
  * NO COPYRIGHTS OR LICENSES. DO WHAT YOU LIKE.
  *
  * http://flowplayer.org/tools/tabs/slideshow.html
  *
  * Since: September 2009
- * Date: Fri Sep 16 19:25:37 +0200 2011
+ * Date: Fri Sep 16 19:42:50 +0200 2011
  */
 (function($) {
 
@@ -3020,19 +3020,19 @@
 
 /**
  * @license
- * jQuery Tools 1.2.5 / Expose - Dim the lights
+ * jQuery Tools 1.2.6 / Expose - Dim the lights
  *
  * NO COPYRIGHTS OR LICENSES. DO WHAT YOU LIKE.
  *
  * http://flowplayer.org/tools/toolbox/expose.html
  *
  * Since: Mar 2010
- * Date: Fri Sep 16 19:25:37 +0200 2011
+ * Date: Fri Sep 16 19:42:50 +0200 2011
  */
 (function($) {
 
   // static constructs
-  $.tools = $.tools || {version: '1.2.5'};
+  $.tools = $.tools || {version: '1.2.6'};
 
   var tool;
 
@@ -3252,14 +3252,14 @@
 
 /**
  * @license
- * jQuery Tools 1.2.5 / Flashembed - New wave Flash embedding
+ * jQuery Tools 1.2.6 / Flashembed - New wave Flash embedding
  *
  * NO COPYRIGHTS OR LICENSES. DO WHAT YOU LIKE.
  *
  * http://flowplayer.org/tools/toolbox/flashembed.html
  *
  * Since : March 2008
- * Date  : Fri Sep 16 19:25:37 +0200 2011
+ * Date  : Fri Sep 16 19:42:50 +0200 2011
  */
 (function() {
 
@@ -3548,7 +3548,7 @@
   if (JQUERY) {
 
     // tools version number
-    jQuery.tools = jQuery.tools || {version: '1.2.5'};
+    jQuery.tools = jQuery.tools || {version: '1.2.6'};
 
     jQuery.tools.flashembed = {
       conf: GLOBAL_OPTS
@@ -3567,20 +3567,20 @@
 
 /**
  * @license
- * jQuery Tools 1.2.5 History "Back button for AJAX apps"
+ * jQuery Tools 1.2.6 History "Back button for AJAX apps"
  *
  * NO COPYRIGHTS OR LICENSES. DO WHAT YOU LIKE.
  *
  * http://flowplayer.org/tools/toolbox/history.html
  *
  * Since: Mar 2010
- * Date: Fri Sep 16 19:25:37 +0200 2011
+ * Date: Fri Sep 16 19:42:50 +0200 2011
  */
 (function($) {
 
   var hash, iframe, links, inited;
 
-  $.tools = $.tools || {version: '1.2.5'};
+  $.tools = $.tools || {version: '1.2.6'};
 
   $.tools.history = {
 
@@ -3682,7 +3682,7 @@
 
 /**
  * @license
- * jQuery Tools 1.2.5 Mousewheel
+ * jQuery Tools 1.2.6 Mousewheel
  *
  * NO COPYRIGHTS OR LICENSES. DO WHAT YOU LIKE.
  *
@@ -3693,7 +3693,7 @@
  * http://threedubmedia.com
  *
  * Since: Mar 2010
- * Date: Fri Sep 16 19:25:37 +0200 2011
+ * Date: Fri Sep 16 19:42:50 +0200 2011
  */
 (function($) {
 
@@ -3749,18 +3749,18 @@
 
 /**
  * @license
- * jQuery Tools 1.2.5 Tooltip - UI essentials
+ * jQuery Tools 1.2.6 Tooltip - UI essentials
  *
  * NO COPYRIGHTS OR LICENSES. DO WHAT YOU LIKE.
  *
  * http://flowplayer.org/tools/tooltip/
  *
  * Since: November 2008
- * Date: Fri Sep 16 19:25:37 +0200 2011
+ * Date: Fri Sep 16 19:42:50 +0200 2011
  */
 (function($) {
   // static constructs
-  $.tools = $.tools || {version: '1.2.5'};
+  $.tools = $.tools || {version: '1.2.6'};
 
   $.tools.tooltip = {
 
@@ -4143,14 +4143,14 @@
 
 /**
  * @license
- * jQuery Tools 1.2.5 / Tooltip Dynamic Positioning
+ * jQuery Tools 1.2.6 / Tooltip Dynamic Positioning
  *
  * NO COPYRIGHTS OR LICENSES. DO WHAT YOU LIKE.
  *
  * http://flowplayer.org/tools/tooltip/dynamic.html
  *
  * Since: July 2009
- * Date: Fri Sep 16 19:25:37 +0200 2011
+ * Date: Fri Sep 16 19:42:50 +0200 2011
  */
 (function($) {
 
@@ -4323,14 +4323,14 @@
 
 /**
  * @license
- * jQuery Tools 1.2.5 / Tooltip Slide Effect
+ * jQuery Tools 1.2.6 / Tooltip Slide Effect
  *
  * NO COPYRIGHTS OR LICENSES. DO WHAT YOU LIKE.
  *
  * http://flowplayer.org/tools/tooltip/slide.html
  *
  * Since: September 2009
- * Date: Fri Sep 16 19:25:37 +0200 2011
+ * Date: Fri Sep 16 19:42:50 +0200 2011
  */
 (function($) {
 
@@ -4407,19 +4407,19 @@
 
 /**
  * @license
- * jQuery Tools Validator 1.2.5 - HTML5 is here. Now use it.
+ * jQuery Tools Validator 1.2.6 - HTML5 is here. Now use it.
  *
  * NO COPYRIGHTS OR LICENSES. DO WHAT YOU LIKE.
  *
  * http://flowplayer.org/tools/form/validator/
  *
  * Since: Mar 2010
- * Date: Fri Sep 16 19:25:37 +0200 2011
+ * Date: Fri Sep 16 19:42:50 +0200 2011
  */
 /*jslint evil: true */
 (function($) {
 
-  $.tools = $.tools || {version: '1.2.5'};
+  $.tools = $.tools || {version: '1.2.6'};
 
   // globals
   var typeRe = /\[type=([a-z]+)\]/,
