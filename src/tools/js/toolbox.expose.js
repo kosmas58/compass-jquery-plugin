@@ -49,7 +49,7 @@
       return [
         window.innerWidth || // ie7+
                 document.documentElement.clientWidth || // ie6
-                document.body.clientWidth,                     // ie6 quirks mode
+                document.body.clientWidth,           // ie6 quirks mode
         d - w < 20 ? w : d
       ];
     }

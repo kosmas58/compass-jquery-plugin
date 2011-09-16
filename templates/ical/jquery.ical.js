@@ -435,10 +435,18 @@ var AnyTime =
                 str += 'th';
               else {
                 switch (t.charAt(t.length - 1)) {
-                  case '1': str += 'st'; break;
-                  case '2': str += 'nd'; break;
-                  case '3': str += 'rd'; break;
-                  default: str += 'th'; break;
+                  case '1':
+                    str += 'st';
+                    break;
+                  case '2':
+                    str += 'nd';
+                    break;
+                  case '3':
+                    str += 'rd';
+                    break;
+                  default:
+                    str += 'th';
+                    break;
                 }
               }
               break;
@@ -3665,7 +3673,7 @@ AnyTime.utcLabel[840] = [
 
 /**
  * @preserve
- * FullCalendar v1.5.1
+ * FullCalendar v1.5.2
  * http://arshaw.com/fullcalendar/
  *
  * Use fullcalendar.css for basic styling.
@@ -3676,7 +3684,7 @@ AnyTime.utcLabel[840] = [
  * Dual licensed under the MIT and GPL licenses, located in
  * MIT-LICENSE.txt and GPL-LICENSE.txt respectively.
  *
- * Date: Sat Apr 9 14:09:51 2011 -0700
+ * Date: Sun Aug 21 22:06:09 2011 -0700
  *
  */
 
@@ -3775,7 +3783,7 @@ AnyTime.utcLabel[840] = [
   };
 
 
-  var fc = $.fullCalendar = { version: "1.5.1" };
+  var fc = $.fullCalendar = { version: "1.5.2" };
   var fcViews = fc.views = {};
 
 
@@ -3818,7 +3826,7 @@ AnyTime.utcLabel[840] = [
             defaults,
             (options.isRTL || options.isRTL === undefined && defaults.isRTL) ? rtlDefaults : {},
             options
-            );
+    );
 
 
     this.each(function(i, _element) {
@@ -4003,7 +4011,7 @@ AnyTime.utcLabel[840] = [
                           $("<div class='fc-view fc-view-" + newViewName + "' style='position:absolute'/>")
                                   .appendTo(content),
                   t // the calendar object
-                  );
+          );
         }
 
         if (oldView) {
@@ -4298,7 +4306,7 @@ AnyTime.utcLabel[840] = [
         return options[name].apply(
                 thisObj || _element,
                 Array.prototype.slice.call(arguments, 2)
-                );
+        );
       }
     }
 
@@ -4309,22 +4317,22 @@ AnyTime.utcLabel[840] = [
     if (options.droppable) {
       $(document)
               .bind('dragstart', function(ev, ui) {
-        var _e = ev.target;
-        var e = $(_e);
-        if (!e.parents('.fc').length) { // not already inside a calendar
-          var accept = options.dropAccept;
-          if ($.isFunction(accept) ? accept.call(_e, e) : e.is(accept)) {
-            _dragElement = _e;
-            currentView.dragStart(_dragElement, ev, ui);
-          }
-        }
-      })
+                var _e = ev.target;
+                var e = $(_e);
+                if (!e.parents('.fc').length) { // not already inside a calendar
+                  var accept = options.dropAccept;
+                  if ($.isFunction(accept) ? accept.call(_e, e) : e.is(accept)) {
+                    _dragElement = _e;
+                    currentView.dragStart(_dragElement, ev, ui);
+                  }
+                }
+              })
               .bind('dragstop', function(ev, ui) {
-        if (_dragElement) {
-          currentView.dragStop(_dragElement, ev, ui);
-          _dragElement = null;
-        }
-      });
+                if (_dragElement) {
+                  currentView.dragStop(_dragElement, ev, ui);
+                  _dragElement = null;
+                }
+              });
     }
 
 
@@ -4359,7 +4367,7 @@ AnyTime.utcLabel[840] = [
                         .append(renderSection('left'))
                         .append(renderSection('center'))
                         .append(renderSection('right'))
-                );
+        );
         return element;
       }
     }
@@ -4414,7 +4422,7 @@ AnyTime.utcLabel[840] = [
                                 "<span class='fc-button-effect'><span></span></span>" +
                                 "</span>" +
                                 "</span>"
-                        );
+                );
                 if (button) {
                   button
                           .click(function() {
@@ -4423,14 +4431,14 @@ AnyTime.utcLabel[840] = [
                     }
                   })
                           .mousedown(function() {
-                    button
-                            .not('.' + tm + '-state-active')
-                            .not('.' + tm + '-state-disabled')
-                            .addClass(tm + '-state-down');
-                  })
+                            button
+                                    .not('.' + tm + '-state-active')
+                                    .not('.' + tm + '-state-disabled')
+                                    .addClass(tm + '-state-down');
+                          })
                           .mouseup(function() {
-                    button.removeClass(tm + '-state-down');
-                  })
+                            button.removeClass(tm + '-state-down');
+                          })
                           .hover(
                           function() {
                             button
@@ -4443,7 +4451,7 @@ AnyTime.utcLabel[840] = [
                                     .removeClass(tm + '-state-hover')
                                     .removeClass(tm + '-state-down');
                           }
-                          )
+                  )
                           .appendTo(e);
                   if (!prevButton) {
                     button.addClass(tm + '-corner-left');
@@ -5042,7 +5050,7 @@ AnyTime.utcLabel[840] = [
       return null;
     }
     var date = new Date(m[1], 0, 1);
-    if (ignoreTimezone || !m[14]) {
+    if (ignoreTimezone || !m[13]) {
       var check = new Date(m[1], 0, 1, 9, 0);
       if (m[3]) {
         date.setMonth(m[3] - 1);
@@ -5071,16 +5079,18 @@ AnyTime.utcLabel[840] = [
               m[1],
               m[3] ? m[3] - 1 : 0,
               m[5] || 1
-              );
+      );
       date.setUTCHours(
               m[7] || 0,
               m[8] || 0,
               m[10] || 0,
               m[12] ? Number("0." + m[12]) * 1000 : 0
-              );
-      var offset = Number(m[16]) * 60 + (m[18] ? Number(m[18]) : 0);
-      offset *= m[15] == '-' ? 1 : -1;
-      date = new Date(+date + (offset * 60 * 1000));
+      );
+      if (m[14]) {
+        var offset = Number(m[16]) * 60 + (m[18] ? Number(m[18]) : 0);
+        offset *= m[15] == '-' ? 1 : -1;
+        date = new Date(+date + (offset * 60 * 1000));
+      }
     }
     return date;
   }
@@ -5198,76 +5208,76 @@ AnyTime.utcLabel[840] = [
 
 
   var dateFormatters = {
-    s    : function(d) {
+    s  : function(d) {
       return d.getSeconds()
     },
-    ss    : function(d) {
+    ss  : function(d) {
       return zeroPad(d.getSeconds())
     },
-    m    : function(d) {
+    m  : function(d) {
       return d.getMinutes()
     },
-    mm    : function(d) {
+    mm  : function(d) {
       return zeroPad(d.getMinutes())
     },
-    h    : function(d) {
+    h  : function(d) {
       return d.getHours() % 12 || 12
     },
-    hh    : function(d) {
+    hh  : function(d) {
       return zeroPad(d.getHours() % 12 || 12)
     },
-    H    : function(d) {
+    H  : function(d) {
       return d.getHours()
     },
-    HH    : function(d) {
+    HH  : function(d) {
       return zeroPad(d.getHours())
     },
-    d    : function(d) {
+    d  : function(d) {
       return d.getDate()
     },
-    dd    : function(d) {
+    dd  : function(d) {
       return zeroPad(d.getDate())
     },
-    ddd    : function(d, o) {
+    ddd  : function(d, o) {
       return o.dayNamesShort[d.getDay()]
     },
     dddd: function(d, o) {
       return o.dayNames[d.getDay()]
     },
-    M    : function(d) {
+    M  : function(d) {
       return d.getMonth() + 1
     },
-    MM    : function(d) {
+    MM  : function(d) {
       return zeroPad(d.getMonth() + 1)
     },
-    MMM    : function(d, o) {
+    MMM  : function(d, o) {
       return o.monthNamesShort[d.getMonth()]
     },
     MMMM: function(d, o) {
       return o.monthNames[d.getMonth()]
     },
-    yy    : function(d) {
+    yy  : function(d) {
       return (d.getFullYear() + '').substring(2)
     },
     yyyy: function(d) {
       return d.getFullYear()
     },
-    t    : function(d) {
+    t  : function(d) {
       return d.getHours() < 12 ? 'a' : 'p'
     },
-    tt    : function(d) {
+    tt  : function(d) {
       return d.getHours() < 12 ? 'am' : 'pm'
     },
-    T    : function(d) {
+    T  : function(d) {
       return d.getHours() < 12 ? 'A' : 'P'
     },
-    TT    : function(d) {
+    TT  : function(d) {
       return d.getHours() < 12 ? 'AM' : 'PM'
     },
-    u    : function(d) {
+    u  : function(d) {
       return formatDate(d, "yyyy-MM-dd'T'HH:mm:ss'Z'")
     },
-    S    : function(d) {
+    S  : function(d) {
       var date = d.getDate();
       if (date > 10 && date < 20) {
         return 'th';
@@ -5551,8 +5561,8 @@ AnyTime.utcLabel[840] = [
             .attr('unselectable', 'on')
             .css('MozUserSelect', 'none')
             .bind('selectstart.ui', function() {
-      return false;
-    });
+              return false;
+            });
   }
 
 
@@ -5731,7 +5741,7 @@ AnyTime.utcLabel[840] = [
               visStart,
               addDays(cloneDate(visEnd), -1),
               opt('titleFormat')
-              );
+      );
       t.start = start;
       t.end = end;
       t.visStart = visStart;
@@ -6041,7 +6051,7 @@ AnyTime.utcLabel[840] = [
           setMinHeight(
                   cell.find('> div'),
                   (i == rowCnt - 1 ? rowHeightLast : rowHeight) - vsides(cell)
-                  );
+          );
         }
       });
 
@@ -6099,7 +6109,7 @@ AnyTime.utcLabel[840] = [
           }
           dayBind(
                   renderCellOverlay(i, colStart, i, colEnd - 1)
-                  );
+          );
         }
         addDays(rowStart, 7);
         addDays(rowEnd, 7);
@@ -6375,7 +6385,7 @@ AnyTime.utcLabel[840] = [
               renderDayOverlay(
                       addDays(cloneDate(event.start), dayDelta),
                       addDays(exclEndDay(event), dayDelta)
-                      );
+              );
             } else {
               //setOverflowHidden(false);
               dayDelta = 0;
@@ -6434,7 +6444,7 @@ AnyTime.utcLabel[840] = [
               visStart,
               addDays(cloneDate(visEnd), -1),
               opt('titleFormat')
-              );
+      );
       t.start = start;
       t.end = end;
       t.visStart = visStart;
@@ -6748,7 +6758,7 @@ AnyTime.utcLabel[840] = [
                 "<div class='fc-agenda-divider " + headerClass + "'>" +
                         "<div class='fc-agenda-divider-inner'/>" +
                         "</div>"
-                );
+        );
 
       } else {
 
@@ -6834,7 +6844,7 @@ AnyTime.utcLabel[840] = [
       var bodyHeight = Math.min(// total body height, including borders
               height - headHeight, // when scrollbars
               slotTable.height() + allDayHeight + 1 // when no scrollbars. +1 for bottom border
-              );
+      );
 
       dayBodyFirstCellStretcher
               .height(bodyHeight - vsides(dayBodyFirstCell));
@@ -6860,10 +6870,10 @@ AnyTime.utcLabel[840] = [
               axisFirstCells
                       .width('')
                       .each(function(i, _cell) {
-                axisWidth = Math.max(axisWidth, $(_cell).outerWidth());
-              }),
+                        axisWidth = Math.max(axisWidth, $(_cell).outerWidth());
+                      }),
               axisWidth
-              );
+      );
 
       var slotTableWidth = slotScroller[0].clientWidth; // needs to be done after axisWidth (for IE7)
       //slotTable.width(slotTableWidth);
@@ -6967,7 +6977,7 @@ AnyTime.utcLabel[840] = [
       if (startCol < endCol) {
         dayBind(
                 renderCellOverlay(0, startCol, 0, endCol - 1)
-                );
+        );
       }
     }
 
@@ -6993,7 +7003,7 @@ AnyTime.utcLabel[840] = [
           rect.height = bottom - top;
           slotBind(
                   renderOverlay(rect, slotContent)
-                  );
+          );
         }
         addDays(dayStart, 1);
         addDays(dayEnd, 1);
@@ -7111,7 +7121,7 @@ AnyTime.utcLabel[840] = [
       }
       return Math.max(0, Math.round(
               slotTop - 1 + slotHeight * ((minutes % slotMinutes) / slotMinutes)
-              ));
+      ));
     }
 
 
@@ -7187,15 +7197,15 @@ AnyTime.utcLabel[840] = [
               rect.isStart = true; // conside rect a "seg" now
               rect.isEnd = true;   //
               selectionHelper = $(slotSegHtml(
-              {
-                title: '',
-                start: startDate,
-                end: endDate,
-                className: ['fc-select-helper'],
-                editable: false
-              },
+                      {
+                        title: '',
+                        start: startDate,
+                        end: endDate,
+                        className: ['fc-select-helper'],
+                        editable: false
+                      },
                       rect
-                      ));
+              ));
               selectionHelper.css('opacity', opt('dragOpacity'));
             }
             if (selectionHelper) {
@@ -7509,10 +7519,10 @@ AnyTime.utcLabel[840] = [
             eventElement.remove();
             eventElement = $(triggerRes)
                     .css({
-                           position: 'absolute',
-                           top: seg.top,
-                           left: seg.left
-                         })
+                      position: 'absolute',
+                      top: seg.top,
+                      left: seg.left
+                    })
                     .appendTo(slotSegmentContainer);
           }
           seg.element = eventElement;
@@ -7674,7 +7684,7 @@ AnyTime.utcLabel[840] = [
                 renderDayOverlay(
                         addDays(cloneDate(event.start), dayDelta),
                         addDays(exclEndDay(event), dayDelta)
-                        );
+                );
                 resetElement();
               } else {
                 // mouse is over bottom slots
@@ -7687,8 +7697,8 @@ AnyTime.utcLabel[840] = [
                             slotHeight * Math.round(
                                     (event.end ? ((event.end - event.start) / MINUTE_MS) : opt('defaultEventMinutes'))
                                             / opt('slotMinutes')
-                                    )
-                            );
+                            )
+                    );
                     eventElement.draggable('option', 'grid', [colWidth, 1]);
                     allDay = false;
                   }
@@ -7781,7 +7791,7 @@ AnyTime.utcLabel[840] = [
                 renderDayOverlay(
                         addDays(cloneDate(event.start), dayDelta),
                         addDays(exclEndDay(event), dayDelta)
-                        );
+                );
               } else {
                 // on slots
                 resetElement();
@@ -7863,8 +7873,8 @@ AnyTime.utcLabel[840] = [
                             (!slotDelta && !event.end) ? null : // no change, so don't display time range
                                     addMinutes(eventEnd(event), opt('slotMinutes') * slotDelta),
                             opt('timeFormat')
-                            )
-                    );
+                    )
+            );
             prevSlotDelta = slotDelta;
           }
         },
@@ -7955,7 +7965,7 @@ AnyTime.utcLabel[840] = [
       return calendar.trigger.apply(
               calendar,
               [name, thisObj || t].concat(Array.prototype.slice.call(arguments, 2), [t])
-              );
+      );
     }
 
 
@@ -8043,7 +8053,7 @@ AnyTime.utcLabel[840] = [
               function(ev) {
                 trigger('eventMouseout', this, event, ev);
               }
-              );
+      );
       // TODO: don't fire eventMouseover/eventMouseout *while* dragging is occuring (on subject element)
       // TODO: same for resizing
     }
@@ -8092,7 +8102,7 @@ AnyTime.utcLabel[840] = [
               },
               ev,
               ui
-              );
+      );
       reportEventChange(eventId);
     }
 
@@ -8113,7 +8123,7 @@ AnyTime.utcLabel[840] = [
               },
               ev,
               ui
-              );
+      );
       reportEventChange(eventId);
     }
 
@@ -8376,9 +8386,9 @@ AnyTime.utcLabel[840] = [
           if (triggerRes && triggerRes !== true) {
             triggerRes = $(triggerRes)
                     .css({
-                           position: 'absolute',
-                           left: seg.left
-                         });
+                      position: 'absolute',
+                      left: seg.left
+                    });
             element.replaceWith(triggerRes);
             element = triggerRes;
           }
@@ -8545,12 +8555,12 @@ AnyTime.utcLabel[840] = [
         ev.preventDefault();
       })
               .click(function(ev) {
-        if (isResizing) {
-          ev.preventDefault(); // prevent link from being visited (only method that worked in IE6)
-          ev.stopImmediatePropagation(); // prevent fullcalendar eventClick handler from being called
-          // (eventElementHandlers needs to be bound after resizableDayEvent)
-        }
-      });
+                if (isResizing) {
+                  ev.preventDefault(); // prevent link from being visited (only method that worked in IE6)
+                  ev.stopImmediatePropagation(); // prevent fullcalendar eventClick handler from being called
+                  // (eventElementHandlers needs to be bound after resizableDayEvent)
+                }
+              });
 
       handle.mousedown(function(ev) {
         if (ev.which != 1) {
@@ -8884,14 +8894,15 @@ AnyTime.utcLabel[840] = [
 
 })(jQuery);
 
+
 /*
- * FullCalendar v1.5.1 Google Calendar Plugin
+ * FullCalendar v1.5.2 Google Calendar Plugin
  *
  * Copyright (c) 2011 Adam Shaw
  * Dual licensed under the MIT and GPL licenses, located in
  * MIT-LICENSE.txt and GPL-LICENSE.txt respectively.
  *
- * Date: Sat Apr 9 14:09:51 2011 -0700
+ * Date: Sun Aug 21 22:06:09 2011 -0700
  *
  */
 

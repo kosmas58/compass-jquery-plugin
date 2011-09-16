@@ -49,7 +49,9 @@
               navi = conf.navi.jquery ? conf.navi : find(api.getRoot(), conf.navi),
               buttons = api.getNaviButtons(),
               cls = conf.activeClass,
-              history = conf.history && $.fn.history;
+              hashed = conf.history && !!history.pushState,
+              size = api.getConf().size;
+
 
       // @deprecated stuff
       if (api) {
@@ -61,14 +63,22 @@
       };
 
 
+      if (hashed) {
+        history.pushState({i: 0});
+
+        $(window).bind("popstate", function(evt) {
+          var s = evt.originalEvent.state;
+          if (s) {
+            api.seekTo(s.i);
+          }
+        });
+      }
+
       function doClick(el, i, e) {
         api.seekTo(i);
-        if (history) {
-          if (location.hash) {
-            location.hash = el.attr("href").replace("#", "");
-          }
-        } else {
-          return e.preventDefault();
+        e.preventDefault();
+        if (hashed) {
+          history.pushState({i: i});
         }
       }
 
@@ -78,11 +88,9 @@
 
       function addItem(i) {
 
-        var item = $("<" + (conf.naviItem || 'a') + "/>").click(
-                function(e) {
-                  doClick($(this), i, e);
-
-                }).attr("href", "#" + i);
+        var item = $("<" + (conf.naviItem || 'a') + "/>").click(function(e) {
+          doClick($(this), i, e);
+        });
 
         // index number / id attribute
         if (i === 0) {
@@ -109,7 +117,7 @@
 
       } else {
         $.each(api.getItems(), function(i) {
-          addItem(i);
+          if (i % size == 0) addItem(i);
         });
       }
 
@@ -117,33 +125,21 @@
       api.onBeforeSeek(function(e, index) {
         setTimeout(function() {
           if (!e.isDefaultPrevented()) {
-            var el = els().eq(index);
-            if (!e.isDefaultPrevented() && el.length) {
-              els().removeClass(cls).eq(index).addClass(cls);
+            var i = index / size,
+                    el = els().eq(i);
+
+            if (el.length) {
+              els().removeClass(cls).eq(i).addClass(cls);
             }
           }
         }, 1);
       });
 
-      function doHistory(evt, hash) {
-        var el = els().eq(hash.replace("#", ""));
-        if (!el.length) {
-          el = els().filter("[href=" + hash + "]");
-        }
-        el.click();
-      }
-
       // new item being added
       api.onAddItem(function(e, item) {
-        item = addItem(api.getItems().index(item));
-        if (history) {
-          item.history(doHistory);
-        }
+        var i = api.getItems().index(item);
+        if (i % size == 0) addItem(i);
       });
-
-      if (history) {
-        els().history(doHistory);
-      }
 
     });
 

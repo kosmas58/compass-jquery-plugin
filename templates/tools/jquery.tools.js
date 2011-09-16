@@ -7,9 +7,9 @@
  * http://flowplayer.org/tools/form/dateinput/
  *
  * Since: Mar 2010
- * Date: Sun Sep 11 11:35:24 +0200 2011
+ * Date: Fri Sep 16 19:25:37 +0200 2011
  */
-(function($) {
+(function($, undefined) {
 
   /* TODO:
    preserve today highlighted
@@ -36,7 +36,9 @@
       firstDay: 0, // The first day of the week, Sun = 0, Mon = 1, ...
       min: undefined,
       max: undefined,
-      trigger: false,
+      trigger: 0,
+      toggle: 0,
+      editable: 0,
 
       css: {
 
@@ -78,10 +80,10 @@
   };
 
   tool.localize("en", {
-    months:          'January,February,March,April,May,June,July,August,September,October,November,December',
+    months:      'January,February,March,April,May,June,July,August,September,October,November,December',
     shortMonths: 'Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec',
-    days:          'Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday',
-    shortDays:      'Sun,Mon,Tue,Wed,Thu,Fri,Sat'
+    days:      'Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday',
+    shortDays:    'Sun,Mon,Tue,Wed,Thu,Fri,Sat'
   });
 
 
@@ -90,7 +92,7 @@
 
   // @return amount of days in certain month
   function dayAm(year, month) {
-    return 32 - new Date(year, month, 32).getDate();
+    return new Date(year, month + 1, 0).getDate();
   }
 
   function zeropad(val, len) {
@@ -146,7 +148,7 @@
 
   function parseDate(val) {
 
-    if (!val) {
+    if (val === undefined) {
       return;
     }
     if (val.constructor == Date) {
@@ -162,7 +164,7 @@
       }
 
       // invalid offset
-      if (!/^-?\d+$/.test(val)) {
+      if (!(/^-?\d+$/).test(val)) {
         return;
       }
 
@@ -170,7 +172,7 @@
       val = integer(val);
     }
 
-    var date = new Date();
+    var date = new Date;
     date.setDate(date.getDate() + val);
     return date;
   }
@@ -182,7 +184,8 @@
 
     // variables
     var self = this,
-            now = new Date(),
+            now = new Date,
+            yearNow = now.getFullYear(),
             css = conf.css,
             labels = LABELS[conf.lang],
             root = $("#" + css.root),
@@ -193,7 +196,8 @@
             value = input.attr("data-value") || conf.value || input.val(),
             min = input.attr("min") || conf.min,
             max = input.attr("max") || conf.max,
-            opened;
+            opened,
+            original;
 
     // zero min is not undefined
     if (min === 0) {
@@ -202,8 +206,9 @@
 
     // use sane values for value, min & max
     value = parseDate(value) || now;
-    min = parseDate(min || conf.yearRange[0] * 365);
-    max = parseDate(max || conf.yearRange[1] * 365);
+
+    min = parseDate(min || new Date(yearNow + conf.yearRange[0], 1, 1));
+    max = parseDate(max || new Date(yearNow + conf.yearRange[1] + 1, 1, -1));
 
 
     // check that language exists
@@ -213,14 +218,16 @@
 
     // Replace built-in date input: NOTE: input.attr("type", "text") throws exception by the browser
     if (input.attr("type") == 'date') {
-      var tmp = $("<input/>");
+      var original = input.clone(),
+              def = original.wrap("<div/>").parent().html(),
+              clone = $(def.replace(/type/i, "type=text data-orig-type"));
 
-      $.each("class,disabled,id,maxlength,name,readonly,required,size,style,tabindex,title,value".split(","), function(i, attr) {
-        tmp.attr(attr, input.attr(attr));
-      });
-      input.replaceWith(tmp);
-      input = tmp;
+      if (conf.value) clone.val(conf.value);   // jquery 1.6.2 val(undefined) will clear val()
+
+      input.replaceWith(clone);
+      input = clone;
     }
+
     input.addClass(css.input);
 
     var fire = input.add(self);
@@ -266,7 +273,7 @@
     if (conf.trigger) {
       trigger = $("<a/>").attr("href", "#").addClass(css.trigger).click(
               function(e) {
-                self.show();
+                conf.toggle ? self.toggle() : self.show();
                 return e.preventDefault();
               }).insertAfter(input);
     }
@@ -289,9 +296,9 @@
       currDay = date.getDate();
 
 
-      // change
+      // beforChange
       e = e || $.Event("api");
-      e.type = "change";
+      e.type = "beforeChange";
 
       fire.trigger(e, [date]);
       if (e.isDefaultPrevented()) {
@@ -300,6 +307,10 @@
 
       // formatting
       input.val(format(date, conf.format, conf.lang));
+
+      // change
+      e.type = "change";
+      fire.trigger(e);
 
       // store value into input
       input.data("date", date);
@@ -330,8 +341,8 @@
           return self.hide(e);
         }
 
-        // esc key
-        if (key == 27) {
+        // esc or tab key
+        if (key == 27 || key == 9) {
           return self.hide(e);
         }
 
@@ -417,8 +428,11 @@
 
     $.extend(self, {
 
-//{{{  show
 
+      /**
+       *   @public
+       *   Show the calendar
+       */
       show: function(e) {
 
         if (input.attr("readonly") || input.attr("disabled") || opened) {
@@ -491,22 +505,27 @@
 
         return self;
       },
-//}}}
 
-
-//{{{  setValue
-
+      /**
+       *   @public
+       *
+       *   Set the value of the dateinput
+       */
       setValue: function(year, month, day) {
 
-        var date = integer(month) >= -1 ?
-                new Date(integer(year), integer(month), integer(day || 1)) : year || value
-                ;
+        var date = integer(month) >= -1 ? new Date(integer(year), integer(month), integer(day == undefined || isNaN(day) ? 1 : day)) :
+                year || value;
 
         if (date < min) {
           date = min;
         }
         else if (date > max) {
           date = max;
+        }
+
+        // date given as ISO string
+        if (typeof year == 'string') {
+          date = parseDate(year);
         }
 
         year = date.getFullYear();
@@ -530,6 +549,7 @@
 
         currMonth = month;
         currYear = year;
+        currDay = day;
 
         // variables
         var tmp = new Date(year, month, 1 - conf.firstDay), begin = tmp.getDay(),
@@ -543,7 +563,7 @@
           // month selector
           monthSelector.empty();
           $.each(labels.months, function(i, m) {
-            if (min < new Date(year, i + 1, -1) && max > new Date(year, i, 0)) {
+            if (min < new Date(year, i + 1, 1) && max > new Date(year, i, 0)) {
               monthSelector.append($("<option/>").html(m).attr("value", i));
             }
           });
@@ -553,7 +573,7 @@
           var yearNow = now.getFullYear();
 
           for (var i = yearNow + conf.yearRange[0]; i < yearNow + conf.yearRange[1]; i++) {
-            if (min <= new Date(i + 1, -1, 1) && max > new Date(i, 0, 0)) {
+            if (min < new Date(i + 1, 0, 1) && max > new Date(i, 0, 0)) {
               yearSelector.append($("<option/>").text(i));
             }
           }
@@ -666,11 +686,24 @@
       },
 
       addMonth: function(amount) {
-        return this.setValue(currYear, currMonth + (amount || 1), currDay);
+        var targetMonth = currMonth + (amount || 1),
+                daysInTargetMonth = dayAm(currYear, targetMonth),
+                targetDay = currDay <= daysInTargetMonth ? currDay : daysInTargetMonth;
+
+        return this.setValue(currYear, targetMonth, targetDay);
       },
 
       addYear: function(amount) {
         return this.setValue(currYear + (amount || 1), currMonth, currDay);
+      },
+
+      destroy: function() {
+        input.add(document).unbind("click.d").unbind("keydown.d");
+        root.add(trigger).remove();
+        input.removeData("dateinput").removeClass(css.input);
+        if (original) {
+          input.replaceWith(original);
+        }
       },
 
       hide: function(e) {
@@ -695,6 +728,10 @@
         }
 
         return self;
+      },
+
+      toggle: function() {
+        return self.isOpen() ? self.hide() : self.show();
       },
 
       getConf: function() {
@@ -736,22 +773,24 @@
       };
     });
 
+    if (!conf.editable) {
 
-    // show dateinput & assign keyboard shortcuts
-    input.bind("focus click", self.show).keydown(function(e) {
+      // show dateinput & assign keyboard shortcuts
+      input.bind("focus.d click.d", self.show).keydown(function(e) {
 
-      var key = e.keyCode;
+        var key = e.keyCode;
 
-      // open dateinput with navigation keyw
-      if (!opened && $(KEYS).index(key) >= 0) {
-        self.show(e);
-        return e.preventDefault();
-      }
+        // open dateinput with navigation keyw
+        if (!opened && $(KEYS).index(key) >= 0) {
+          self.show(e);
+          return e.preventDefault();
+        }
 
-      // allow tab
-      return e.shiftKey || e.ctrlKey || e.altKey || key == 9 ? true : e.preventDefault();
+        // allow tab
+        return e.shiftKey || e.ctrlKey || e.altKey || key == 9 ? true : e.preventDefault();
 
-    });
+      });
+    }
 
     // initial value
     if (parseDate(input.val())) {
@@ -810,7 +849,7 @@
  * http://flowplayer.org/tools/overlay/
  *
  * Since: March 2008
- * Date: Sun Sep 11 11:35:24 +0200 2011
+ * Date: Fri Sep 16 19:25:37 +0200 2011
  */
 (function($) {
 
@@ -849,10 +888,10 @@
   // the default effect. nice and easy!
   $.tools.overlay.addEffect('default',
 
-    /*
-     onLoad/onClose functions must be called otherwise none of the
-     user supplied callback methods won't be called
-     */
+          /*
+           onLoad/onClose functions must be called otherwise none of the
+           user supplied callback methods won't be called
+           */
           function(pos, onLoad) {
 
             var conf = this.getConf(),
@@ -869,7 +908,7 @@
           }, function(onClose) {
             this.getOverlay().fadeOut(this.getConf().closeSpeed, onClose);
           }
-          );
+  );
 
 
   function Overlay(trigger, conf) {
@@ -893,7 +932,7 @@
       maskConf.closeOnClick = maskConf.closeOnEsc = false;
     }
 
-    // get overlay and triggerr
+    // get overlay and trigger
     var jq = conf.target || trigger.attr("rel");
     overlay = jq ? $(jq) : null || trigger;
 
@@ -1129,7 +1168,7 @@
  * http://flowplayer.org/tools/overlay/apple.html
  *
  * Since: July 2009
- * Date: Sun Sep 11 11:35:24 +0200 2011
+ * Date: Fri Sep 16 19:25:37 +0200 2011
  */
 (function($) {
 
@@ -1289,7 +1328,7 @@
  * http://flowplayer.org/tools/rangeinput/
  *
  * Since: Mar 2010
- * Date: Sun Sep 11 11:35:24 +0200 2011
+ * Date: Fri Sep 16 19:25:37 +0200 2011
  */
 (function($) {
 
@@ -1301,8 +1340,8 @@
 
     conf: {
       min: 0,
-      max: 100,        // as defined in the standard
-      step: 'any',     // granularity of the value. a non-zero float or int (or "any")
+      max: 100,    // as defined in the standard
+      step: 'any',   // granularity of the value. a non-zero float or int (or "any")
       steps: 0,
       value: 0,
       precision: undefined,
@@ -1313,10 +1352,10 @@
 
       // set to null if not needed
       css: {
-        input:        'range',
-        slider:         'slider',
-        progress:     'progress',
-        handle:         'handle'
+        input:    'range',
+        slider:     'slider',
+        progress:   'progress',
+        handle:     'handle'
       }
 
     }
@@ -1434,9 +1473,9 @@
             css = conf.css,
             root = $("<div><div/><a href='#'/></div>").data("rangeinput", self),
             vertical,
-            value,            // current value
-            origo,            // handle's start point
-            len,                // length of the range
+            value,      // current value
+            origo,      // handle's start point
+            len,        // length of the range
             pos;				// current position of the handle
 
     // create range
@@ -1467,13 +1506,12 @@
 
     // Replace built-in range input (type attribute cannot be changed)
     if (input.attr("type") == 'range') {
-      var tmp = $("<input/>");
-      $.each("class,disabled,id,maxlength,name,readonly,required,size,style,tabindex,title,value".split(","), function(i, attr) {
-        tmp.attr(attr, input.attr(attr));
-      });
-      tmp.val(conf.value);
-      input.replaceWith(tmp);
-      input = tmp;
+      var def = input.clone().wrap("<div/>").parent().html(),
+              clone = $(def.replace(/type/i, "type=text data-orig-type"));
+
+      clone.val(conf.value);
+      input.replaceWith(clone);
+      input = clone;
     }
 
     input.addClass(css.input);
@@ -1555,7 +1593,7 @@
       if (vertical) {
         handle.animate({top: x}, speed, callback);
         if (conf.progress) {
-          progress.animate({height: len - x + handle.width() / 2}, speed);
+          progress.animate({height: len - x + handle.height() / 2}, speed);
         }
 
       } else {
@@ -1666,8 +1704,8 @@
               }
 
             }).click(function(e) {
-      return e.preventDefault();
-    });
+              return e.preventDefault();
+            });
 
     // clicking
     root.click(function(e) {
@@ -1675,7 +1713,7 @@
         return e.preventDefault();
       }
       init();
-      var fix = handle.width() / 2;
+      var fix = vertical ? handle.height() / 2 : handle.width() / 2;
       slide(e, vertical ? len - origo - fix + e.pageY : e.pageX - origo - fix);
     });
 
@@ -1788,7 +1826,7 @@
  * http://flowplayer.org/tools/scrollable.html
  *
  * Since: March 2008
- * Date: Sun Sep 11 11:35:24 +0200 2011
+ * Date: Fri Sep 16 19:25:37 +0200 2011
  */
 (function($) {
 
@@ -1804,12 +1842,13 @@
       disabledClass: 'disabled',
       easing: 'swing',
       initialIndex: 0,
-      item: null,
+      item: '> *',
       items: '.items',
       keyboard: true,
       mousewheel: false,
       next: '.next',
       prev: '.prev',
+      size: 1,
       speed: 400,
       vertical: false,
       touch: true,
@@ -1851,6 +1890,12 @@
       itemWrap = $(conf.items, root);
     }
 
+
+    // in this version circular not supported when size > 1
+    if (conf.size > 1) {
+      conf.circular = false;
+    }
+
     // methods
     $.extend(self, {
 
@@ -1879,7 +1924,7 @@
       },
 
       getItems: function() {
-        return itemWrap.children(conf.item).not("." + conf.clonedClass);
+        return itemWrap.find(conf.item).not("." + conf.clonedClass);
       },
 
       move: function(offset, time) {
@@ -1887,11 +1932,11 @@
       },
 
       next: function(time) {
-        return self.move(1, time);
+        return self.move(conf.size, time);
       },
 
       prev: function(time) {
-        return self.move(-1, time);
+        return self.move(-conf.size, time);
       },
 
       begin: function(time) {
@@ -1912,9 +1957,11 @@
 
         if (!conf.circular) {
           itemWrap.append(item);
+          next.removeClass("disabled");
+
         } else {
-          itemWrap.children("." + conf.clonedClass + ":last").before(item);
-          itemWrap.children("." + conf.clonedClass + ":first").replaceWith(item.clone().addClass(conf.clonedClass));
+          itemWrap.children().last().before(item);
+          itemWrap.children().first().replaceWith(item.clone().addClass(conf.clonedClass));
         }
 
         fire.trigger("onAddItem", [item]);
@@ -2001,7 +2048,6 @@
 
       self.onBeforeSeek(function(e, i, time) {
 
-
         if (e.isDefaultPrevented()) {
           return;
         }
@@ -2025,20 +2071,44 @@
       });
 
       // seek over the cloned item
-      self.seekTo(0, 0, function() {
+
+      // if the scrollable is hidden the calculations for seekTo position
+      // will be incorrect (eg, if the scrollable is inside an overlay).
+      // ensure the elements are shown, calculate the correct position,
+      // then re-hide the elements. This must be done synchronously to
+      // prevent the hidden elements being shown to the user.
+
+      // See: https://github.com/jquerytools/jquerytools/issues#issue/87
+
+      var hidden_parents = root.parents().add(root).filter(function () {
+        if ($(this).css('display') === 'none') {
+          return true;
+        }
       });
+      if (hidden_parents.length) {
+        hidden_parents.show();
+        self.seekTo(0, 0, function() {
+        });
+        hidden_parents.hide();
+      }
+      else {
+        self.seekTo(0, 0, function() {
+        });
+      }
+
     }
 
     // next/prev buttons
-    var prev = find(root, conf.prev).click(function() {
+    var prev = find(root, conf.prev).click(function(e) {
+      e.stopPropagation();
       self.prev();
     }),
-            next = find(root, conf.next).click(function() {
+            next = find(root, conf.next).click(function(e) {
+              e.stopPropagation();
               self.next();
             });
 
-    if (!conf.circular && self.getSize() > 1) {
-
+    if (!conf.circular) {
       self.onBeforeSeek(function(e, i) {
         setTimeout(function() {
           if (!e.isDefaultPrevented()) {
@@ -2051,6 +2121,10 @@
       if (!conf.initialIndex) {
         prev.addClass(conf.disabledClass);
       }
+    }
+
+    if (self.getSize() < 2) {
+      prev.add(next).addClass(conf.disabledClass);
     }
 
     // mousewheel support
@@ -2092,7 +2166,7 @@
       $(document).bind("keydown.scrollable", function(evt) {
 
         // skip certain conditions
-        if (!conf.keyboard || evt.altKey || evt.ctrlKey || $(evt.target).is(":input")) {
+        if (!conf.keyboard || evt.altKey || evt.ctrlKey || evt.metaKey || $(evt.target).is(":input")) {
           return;
         }
 
@@ -2157,7 +2231,7 @@
  * http://flowplayer.org/tools/scrollable/autoscroll.html
  *
  * Since: September 2009
- * Date: Sun Sep 11 11:35:24 +0200 2011
+ * Date: Fri Sep 16 19:25:37 +0200 2011
  */
 (function($) {
 
@@ -2183,13 +2257,25 @@
 
     this.each(function() {
 
-      var api = $(this).data("scrollable");
+      var api = $(this).data("scrollable"),
+              root = api.getRoot(),
+        // interval stuff
+              timer, stopped = false;
+
+      /**
+       *
+       *   Function to run autoscroll through event binding rather than setInterval
+       *   Fixes this bug: http://flowplayer.org/tools/forum/25/72029
+       */
+      function scroll() {
+        timer = setTimeout(function() {
+          api.next();
+        }, opts.interval);
+      }
+
       if (api) {
         ret = api;
       }
-
-      // interval stuff
-      var timer, stopped = true;
 
       api.play = function() {
 
@@ -2200,26 +2286,29 @@
 
         stopped = false;
 
-        // construct new timer
-        timer = setInterval(function() {
-          api.next();
-        }, opts.interval);
-
+        root.bind('onSeek', scroll);
+        scroll();
       };
 
       api.pause = function() {
-        timer = clearInterval(timer);
+        timer = clearTimeout(timer);  // clear any queued items immediately
+        root.unbind('onSeek', scroll);
+      };
+
+      // resume playing if not stopped
+      api.resume = function() {
+        stopped || api.play();
       };
 
       // when stopped - mouseover won't restart
       api.stop = function() {
-        api.pause();
         stopped = true;
+        api.pause();
       };
 
       /* when mouse enters, autoscroll stops */
       if (opts.autopause) {
-        api.getRoot().add(api.getNaviButtons()).hover(api.pause, api.play);
+        root.add(api.getNaviButtons()).hover(api.pause, api.resume);
       }
 
       if (opts.autoplay) {
@@ -2244,7 +2333,7 @@
  * http://flowplayer.org/tools/scrollable/navigator.html
  *
  * Since: September 2009
- * Date: Sun Sep 11 11:35:24 +0200 2011
+ * Date: Fri Sep 16 19:25:37 +0200 2011
  */
 (function($) {
 
@@ -2286,7 +2375,9 @@
               navi = conf.navi.jquery ? conf.navi : find(api.getRoot(), conf.navi),
               buttons = api.getNaviButtons(),
               cls = conf.activeClass,
-              history = conf.history && $.fn.history;
+              hashed = conf.history && !!history.pushState,
+              size = api.getConf().size;
+
 
       // @deprecated stuff
       if (api) {
@@ -2298,14 +2389,22 @@
       };
 
 
+      if (hashed) {
+        history.pushState({i: 0});
+
+        $(window).bind("popstate", function(evt) {
+          var s = evt.originalEvent.state;
+          if (s) {
+            api.seekTo(s.i);
+          }
+        });
+      }
+
       function doClick(el, i, e) {
         api.seekTo(i);
-        if (history) {
-          if (location.hash) {
-            location.hash = el.attr("href").replace("#", "");
-          }
-        } else {
-          return e.preventDefault();
+        e.preventDefault();
+        if (hashed) {
+          history.pushState({i: i});
         }
       }
 
@@ -2315,11 +2414,9 @@
 
       function addItem(i) {
 
-        var item = $("<" + (conf.naviItem || 'a') + "/>").click(
-                function(e) {
-                  doClick($(this), i, e);
-
-                }).attr("href", "#" + i);
+        var item = $("<" + (conf.naviItem || 'a') + "/>").click(function(e) {
+          doClick($(this), i, e);
+        });
 
         // index number / id attribute
         if (i === 0) {
@@ -2346,7 +2443,7 @@
 
       } else {
         $.each(api.getItems(), function(i) {
-          addItem(i);
+          if (i % size == 0) addItem(i);
         });
       }
 
@@ -2354,33 +2451,21 @@
       api.onBeforeSeek(function(e, index) {
         setTimeout(function() {
           if (!e.isDefaultPrevented()) {
-            var el = els().eq(index);
-            if (!e.isDefaultPrevented() && el.length) {
-              els().removeClass(cls).eq(index).addClass(cls);
+            var i = index / size,
+                    el = els().eq(i);
+
+            if (el.length) {
+              els().removeClass(cls).eq(i).addClass(cls);
             }
           }
         }, 1);
       });
 
-      function doHistory(evt, hash) {
-        var el = els().eq(hash.replace("#", ""));
-        if (!el.length) {
-          el = els().filter("[href=" + hash + "]");
-        }
-        el.click();
-      }
-
       // new item being added
       api.onAddItem(function(e, item) {
-        item = addItem(api.getItems().index(item));
-        if (history) {
-          item.history(doHistory);
-        }
+        var i = api.getItems().index(item);
+        if (i % size == 0) addItem(i);
       });
-
-      if (history) {
-        els().history(doHistory);
-      }
 
     });
 
@@ -2400,7 +2485,7 @@
  * http://flowplayer.org/tools/tabs/
  *
  * Since: November 2008
- * Date: Sun Sep 11 11:35:24 +0200 2011
+ * Date: Fri Sep 16 19:25:37 +0200 2011
  */
 (function($) {
 
@@ -2418,6 +2503,10 @@
       initialIndex: 0,
       event: 'click',
       rotate: false,
+
+      // slide effect
+      slideUpSpeed: 400,
+      slideDownSpeed: 400,
 
       // 1.2
       history: false
@@ -2459,8 +2548,10 @@
 
     // for basic accordions
     slide: function(i, done) {
-      this.getPanes().slideUp(200);
-      this.getPanes().eq(i).slideDown(400, done);
+      var conf = this.getConf();
+
+      this.getPanes().slideUp(conf.slideUpSpeed);
+      this.getPanes().eq(i).slideDown(conf.slideDownSpeed, done);
     },
 
     /**
@@ -2471,31 +2562,58 @@
     }
   };
 
-  var w;
-
   /**
    * Horizontal accordion
    *
    * @deprecated will be replaced with a more robust implementation
    */
+
+  var
+          /**
+           *   @type {Boolean}
+           *
+           *   Mutex to control horizontal animation
+           *   Disables clicking of tabs while animating
+           *   They mess up otherwise as currentPane gets set *after* animation is done
+           */
+                  animating,
+          /**
+           *   @type {Number}
+           *
+           *   Initial width of tab panes
+           */
+                  w;
+
   $.tools.tabs.addEffect("horizontal", function(i, done) {
+    if (animating) return;    // don't allow other animations
+
+    var nextPane = this.getPanes().eq(i),
+            currentPane = this.getCurrentPane();
 
     // store original width of a pane into memory
-    if (!w) {
-      w = this.getPanes().eq(0).width();
-    }
+    w || ( w = this.getPanes().eq(0).width() );
+    animating = true;
 
-    // set current pane's width to zero
-    this.getCurrentPane().animate({width: 0}, function() {
-      $(this).hide();
+    nextPane.show(); // hidden by default
+
+    // animate current pane's width to zero
+    // animate next pane's width at the same time for smooth animation
+    currentPane.animate({width: 0}, {
+      step: function(now) {
+        nextPane.css("width", w - now);
+      },
+      complete: function() {
+        $(this).hide();
+        done.call();
+        animating = false;
+      }
     });
-
-    // grow opened pane to it's original width
-    this.getPanes().eq(i).animate({width: w}, function() {
-      $(this).show();
+    // Dirty hack...  onLoad, currentPant will be empty and nextPane will be the first pane
+    // If this is the case, manually run callback since the animation never occured, and reset animating
+    if (!currentPane.length) {
       done.call();
-    });
-
+      animating = false;
+    }
   });
 
 
@@ -2564,14 +2682,13 @@
 
         // call the effect
         effects[conf.effect].call(self, i, function() {
-
+          current = i;
           // onClick callback
           e.type = "onClick";
           trigger.trigger(e, [i]);
         });
 
         // default behaviour
-        current = i;
         tabs.removeClass(conf.current);
         tab.addClass(conf.current);
 
@@ -2707,7 +2824,7 @@
  * http://flowplayer.org/tools/tabs/slideshow.html
  *
  * Since: September 2009
- * Date: Sun Sep 11 11:35:24 +0200 2011
+ * Date: Fri Sep 16 19:25:37 +0200 2011
  */
 (function($) {
 
@@ -2735,7 +2852,6 @@
             timer,
             stopped = true;
 
-
     // next / prev buttons
     function find(query) {
       var el = $(query);
@@ -2750,6 +2866,15 @@
       tabs.prev();
     });
 
+    /**
+     *
+     *   Similar fix for autoscroll animation queue problem
+     */
+    function next() {
+      timer = setTimeout(function() {
+        tabs.next();
+      }, conf.interval);
+    }
 
     // extend the Tabs API with slideshow methods
     $.extend(self, {
@@ -2777,13 +2902,13 @@
           return self;
         }
 
-
-        // construct new timer
-        timer = setInterval(tabs.next, conf.interval);
         stopped = false;
 
         // onPlay
         fire.trigger("onPlay");
+
+        fire.bind('onClick', next);
+        next();
 
         return self;
       },
@@ -2801,12 +2926,19 @@
           return self;
         }
 
-        timer = clearInterval(timer);
+        timer = clearTimeout(timer);
 
         // onPause
         fire.trigger("onPause");
 
+        fire.unbind('onClick', next);
+
         return self;
+      },
+
+      // resume playing if not stopped
+      resume: function() {
+        stopped || self.play();
       },
 
       // when stopped - mouseover won't restart
@@ -2834,11 +2966,7 @@
 
     /* when mouse enters, slideshow stops */
     if (conf.autopause) {
-      tabs.getTabs().add(nextButton).add(prevButton).add(tabs.getPanes()).hover(self.pause, function() {
-        if (!stopped) {
-          self.play();
-        }
-      });
+      tabs.getTabs().add(nextButton).add(prevButton).add(tabs.getPanes()).hover(self.pause, self.resume);
     }
 
     if (conf.autoplay) {
@@ -2899,7 +3027,7 @@
  * http://flowplayer.org/tools/toolbox/expose.html
  *
  * Since: Mar 2010
- * Date: Sun Sep 11 11:35:24 +0200 2011
+ * Date: Fri Sep 16 19:25:37 +0200 2011
  */
 (function($) {
 
@@ -2941,7 +3069,7 @@
       return [
         window.innerWidth || // ie7+
                 document.documentElement.clientWidth || // ie6
-                document.body.clientWidth,                     // ie6 quirks mode
+                document.body.clientWidth,           // ie6 quirks mode
         d - w < 20 ? w : d
       ];
     }
@@ -3131,7 +3259,7 @@
  * http://flowplayer.org/tools/toolbox/flashembed.html
  *
  * Since : March 2008
- * Date  : Sun Sep 11 11:35:24 +0200 2011
+ * Date  : Fri Sep 16 19:25:37 +0200 2011
  */
 (function() {
 
@@ -3255,7 +3383,7 @@
           obj = obj.replace(new RegExp('(["\\\\])', 'g'), '\\$1');
 
           // flash does not handle %- characters well. transforms "50%" to "50pct" (a dirty hack, I admit)
-          obj = obj.replace(/^\s?(\d+\.?\d+)%/, "$1pct");
+          obj = obj.replace(/^\s?(\d+\.?\d*)%/, "$1pct");
           return '"' + obj + '"';
 
         case 'array':
@@ -3325,7 +3453,7 @@
         for (var k in conf) {
           if (conf[k]) {
             var val = conf[k];
-            vars += k + '=' + (/function|object/.test(typeof val) ? f.asString(val) : val) + '&';
+            vars += k + '=' + encodeURIComponent(/function|object/.test(typeof val) ? f.asString(val) : val) + '&';
           }
         }
         vars = vars.slice(0, -1);
@@ -3428,7 +3556,7 @@
 
     jQuery.fn.flashembed = function(opts, conf) {
       return this.each(function() {
-        $(this).data("flashembed", flashembed(this, opts, conf));
+        jQuery(this).data("flashembed", flashembed(this, opts, conf));
       });
     };
   }
@@ -3446,7 +3574,7 @@
  * http://flowplayer.org/tools/toolbox/history.html
  *
  * Since: Mar 2010
- * Date: Sun Sep 11 11:35:24 +0200 2011
+ * Date: Fri Sep 16 19:25:37 +0200 2011
  */
 (function($) {
 
@@ -3468,14 +3596,14 @@
         // create iframe that is constantly checked for hash changes
         if (!iframe) {
           iframe = $("<iframe/>").attr("src", "javascript:false;").hide().get(0);
-          $("body").append(iframe);
+          $("body").prepend(iframe);
 
           setInterval(function() {
             var idoc = iframe.contentWindow.document,
                     h = idoc.location.hash;
 
             if (hash !== h) {
-              $.event.trigger("hash", h);
+              $(window).trigger("hash", h);
             }
           }, 100);
 
@@ -3488,7 +3616,7 @@
         setInterval(function() {
           var h = location.hash;
           if (h !== hash) {
-            $.event.trigger("hash", h);
+            $(window).trigger("hash", h);
           }
         }, 100);
       }
@@ -3565,7 +3693,7 @@
  * http://threedubmedia.com
  *
  * Since: Mar 2010
- * Date: Sun Sep 11 11:35:24 +0200 2011
+ * Date: Fri Sep 16 19:25:37 +0200 2011
  */
 (function($) {
 
@@ -3628,7 +3756,7 @@
  * http://flowplayer.org/tools/tooltip/
  *
  * Since: November 2008
- * Date: Sun Sep 11 11:35:24 +0200 2011
+ * Date: Fri Sep 16 19:25:37 +0200 2011
  */
 (function($) {
   // static constructs
@@ -3645,6 +3773,7 @@
       delay: 30,
       opacity: 1,
       tip: 0,
+      fadeIE: false, // enables fade effect in IE
 
       // 'top', 'bottom', 'right', 'left', 'center'
       position: ['top', 'center'],
@@ -3654,10 +3783,10 @@
 
       // type to event mapping
       events: {
-        def:             "mouseenter,mouseleave",
-        input:         "focus,blur",
-        widget:        "focus mouseenter,blur mouseleave",
-        tooltip:        "mouseenter,mouseleave"
+        def:       "mouseenter,mouseleave",
+        input:     "focus,blur",
+        widget:    "focus mouseenter,blur mouseleave",
+        tooltip:    "mouseenter,mouseleave"
       },
 
       // 1.2
@@ -3673,29 +3802,42 @@
 
   var effects = {
     toggle: [
-            function(done) {
-              var conf = this.getConf(), tip = this.getTip(), o = conf.opacity;
-              if (o < 1) {
-                tip.css({opacity: o});
-              }
-              tip.show();
-              done.call();
-            },
+      function(done) {
+        var conf = this.getConf(), tip = this.getTip(), o = conf.opacity;
+        if (o < 1) {
+          tip.css({opacity: o});
+        }
+        tip.show();
+        done.call();
+      },
 
-            function(done) {
-              this.getTip().hide();
-              done.call();
-            }
+      function(done) {
+        this.getTip().hide();
+        done.call();
+      }
     ],
 
     fade: [
-            function(done) {
-              var conf = this.getConf();
-              this.getTip().fadeTo(conf.fadeInSpeed, conf.opacity, done);
-            },
-            function(done) {
-              this.getTip().fadeOut(this.getConf().fadeOutSpeed, done);
-            }
+      function(done) {
+        var conf = this.getConf();
+        if (!$.browser.msie || conf.fadeIE) {
+          this.getTip().fadeTo(conf.fadeInSpeed, conf.opacity, done);
+        }
+        else {
+          this.getTip().show();
+          done();
+        }
+      },
+      function(done) {
+        var conf = this.getConf();
+        if (!$.browser.msie || conf.fadeIE) {
+          this.getTip().fadeOut(conf.fadeOutSpeed, done);
+        }
+        else {
+          this.getTip().hide();
+          done();
+        }
+      }
     ]
   };
 
@@ -3787,17 +3929,17 @@
 
               // trigger --> hide
             }).bind(evt[1], function(e) {
-      clearTimeout(pretimer);
-      if (conf.delay) {
-        timer = setTimeout(function() {
-          self.hide(e);
-        }, conf.delay);
+              clearTimeout(pretimer);
+              if (conf.delay) {
+                timer = setTimeout(function() {
+                  self.hide(e);
+                }, conf.delay);
 
-      } else {
-        self.hide(e);
-      }
+              } else {
+                self.hide(e);
+              }
 
-    });
+            });
 
 
     // remove default title
@@ -3855,7 +3997,7 @@
         }
 
         // onBeforeShow
-        e = e || $.Event();
+        e = $.Event();
         e.type = "onBeforeShow";
         fire.trigger(e, [pos]);
         if (e.isDefaultPrevented()) {
@@ -3884,13 +4026,13 @@
 
         if (!tip.data("__set")) {
 
-          tip.bind(event[0], function() {
+          tip.unbind(event[0]).bind(event[0], function() {
             clearTimeout(timer);
             clearTimeout(pretimer);
           });
 
           if (event[1] && !trigger.is("input:not(:checkbox, :radio), textarea")) {
-            tip.bind(event[1], function(e) {
+            tip.unbind(event[1]).bind(event[1], function(e) {
 
               // being moved to the trigger element
               if (e.relatedTarget != trigger[0]) {
@@ -3899,7 +4041,8 @@
             });
           }
 
-          tip.data("__set", true);
+          // bind agein for if same tip element
+          if (!conf.tip) tip.data("__set", true);
         }
 
         return self;
@@ -3912,7 +4055,7 @@
         }
 
         // onBeforeHide
-        e = e || $.Event();
+        e = $.Event();
         e.type = "onBeforeHide";
         fire.trigger(e);
         if (e.isDefaultPrevented()) {
@@ -4007,7 +4150,7 @@
  * http://flowplayer.org/tools/tooltip/dynamic.html
  *
  * Since: July 2009
- * Date: Sun Sep 11 11:35:24 +0200 2011
+ * Date: Fri Sep 16 19:25:37 +0200 2011
  */
 (function($) {
 
@@ -4038,10 +4181,10 @@
     var bottom = w.height() + w.scrollTop();
 
     return [
-      el.offset().top <= w.scrollTop(),                         // top
-      right <= el.offset().left + el.width(),                // right
-      bottom <= el.offset().top + el.height(),            // bottom
-      w.scrollLeft() >= el.offset().left                     // left
+      el.offset().top <= w.scrollTop(),             // top
+      right <= el.offset().left + el.width(),        // right
+      bottom <= el.offset().top + el.height(),      // bottom
+      w.scrollLeft() >= el.offset().left           // left
     ];
   }
 
@@ -4069,7 +4212,9 @@
 
     conf = $.extend({}, t.dynamic.conf, conf);
 
-    var cls = conf.classNames.split(/\s/), orig;
+    var confOrigin = $.extend(true, {}, conf),
+            cls = conf.classNames.split(/\s/),
+            orig;
 
     this.each(function() {
 
@@ -4106,8 +4251,10 @@
           left: pos.left
         }).show();
 
-        // now let's see for hidden edges
-        var crop = getCropping(tip);
+        var conf = $.extend(true, {}, confOrigin),
+
+          // now let's see for hidden edges
+                crop = getCropping(tip);
 
         // possibly alter the configuration
         if (!isVisible(crop)) {
@@ -4183,7 +4330,7 @@
  * http://flowplayer.org/tools/tooltip/slide.html
  *
  * Since: September 2009
- * Date: Sun Sep 11 11:35:24 +0200 2011
+ * Date: Fri Sep 16 19:25:37 +0200 2011
  */
 (function($) {
 
@@ -4211,7 +4358,7 @@
   /* default effect: "slide"  */
   t.addEffect("slide",
 
-    // show effect
+          // show effect
           function(done) {
 
             // variables
@@ -4230,7 +4377,7 @@
             tip.show().animate(params, conf.slideInSpeed, done);
           },
 
-    // hide effect
+          // hide effect
           function(done) {
 
             // variables
@@ -4252,7 +4399,7 @@
               done.call();
             });
           }
-          );
+  );
 
 })(jQuery);	
 		
@@ -4267,7 +4414,7 @@
  * http://flowplayer.org/tools/form/validator/
  *
  * Since: Mar 2010
- * Date: Sun Sep 11 11:35:24 +0200 2011
+ * Date: Fri Sep 16 19:25:37 +0200 2011
  */
 /*jslint evil: true */
 (function($) {
@@ -4287,23 +4434,23 @@
   v = $.tools.validator = {
 
     conf: {
-      grouped: false,                 // show all error messages at once inside the container
-      effect: 'default',            // show/hide effect for error message. only 'default' is built-in
-      errorClass: 'invalid',        // input field class name in case of validation error
+      grouped: false,         // show all error messages at once inside the container
+      effect: 'default',      // show/hide effect for error message. only 'default' is built-in
+      errorClass: 'invalid',    // input field class name in case of validation error
 
       // when to check for validity?
-      inputEvent: null,                // change, blur, keyup, null
+      inputEvent: null,        // change, blur, keyup, null
       errorInputEvent: 'keyup',  // change, blur, keyup, null
       formEvent: 'submit',       // submit, null
 
-      lang: 'en',                        // default language for error messages
+      lang: 'en',            // default language for error messages
       message: '<div/>',
       messageAttr: 'data-message', // name of the attribute for overridden error message
-      messageClass: 'error',        // error message element's class name
+      messageClass: 'error',    // error message element's class name
       offset: [0, 0],
       position: 'center right',
-      singleError: false,             // validate all inputs at once
-      speed: 'normal'                // message's fade-in speed
+      singleError: false,       // validate all inputs at once
+      speed: 'normal'        // message's fade-in speed
     },
 
 
@@ -4415,58 +4562,58 @@
     'default' : [
 
       // show errors function
-            function(errs) {
+      function(errs) {
 
-              var conf = this.getConf();
+        var conf = this.getConf();
 
-              // loop errors
-              $.each(errs, function(i, err) {
+        // loop errors
+        $.each(errs, function(i, err) {
 
-                // add error class
-                var input = err.input;
-                input.addClass(conf.errorClass);
+          // add error class
+          var input = err.input;
+          input.addClass(conf.errorClass);
 
-                // get handle to the error container
-                var msg = input.data("msg.el");
+          // get handle to the error container
+          var msg = input.data("msg.el");
 
-                // create it if not present
-                if (!msg) {
-                  msg = $(conf.message).addClass(conf.messageClass).appendTo(document.body);
-                  input.data("msg.el", msg);
-                }
+          // create it if not present
+          if (!msg) {
+            msg = $(conf.message).addClass(conf.messageClass).appendTo(document.body);
+            input.data("msg.el", msg);
+          }
 
-                // clear the container
-                msg.css({visibility: 'hidden'}).find("p").remove();
+          // clear the container
+          msg.css({visibility: 'hidden'}).find("p").remove();
 
-                // populate messages
-                $.each(err.messages, function(i, m) {
-                  $("<p/>").html(m).appendTo(msg);
-                });
+          // populate messages
+          $.each(err.messages, function(i, m) {
+            $("<p/>").html(m).appendTo(msg);
+          });
 
-                // make sure the width is not full body width so it can be positioned correctly
-                if (msg.outerWidth() == msg.parent().width()) {
-                  msg.add(msg.find("p")).css({display: 'inline'});
-                }
+          // make sure the width is not full body width so it can be positioned correctly
+          if (msg.outerWidth() == msg.parent().width()) {
+            msg.add(msg.find("p")).css({display: 'inline'});
+          }
 
-                // insert into correct position (relative to the field)
-                var pos = getPosition(input, msg, conf);
+          // insert into correct position (relative to the field)
+          var pos = getPosition(input, msg, conf);
 
-                msg.css({ visibility: 'visible', position: 'absolute', top: pos.top, left: pos.left })
-                        .fadeIn(conf.speed);
-              });
+          msg.css({ visibility: 'visible', position: 'absolute', top: pos.top, left: pos.left })
+                  .fadeIn(conf.speed);
+        });
 
 
-              // hide errors function
-            }, function(inputs) {
+        // hide errors function
+      }, function(inputs) {
 
-              var conf = this.getConf();
-              inputs.removeClass(conf.errorClass).each(function() {
-                var msg = $(this).data("msg.el");
-                if (msg) {
-                  msg.css({visibility: 'hidden'});
-                }
-              });
-            }
+        var conf = this.getConf();
+        inputs.removeClass(conf.errorClass).each(function() {
+          var msg = $(this).data("msg.el");
+          if (msg) {
+            msg.css({visibility: 'hidden'});
+          }
+        });
+      }
     ]
   };
 
@@ -4502,7 +4649,7 @@
     return numRe.test(v);
   });
 
-  v.fn("[max]", "Please enter a value smaller than $1", function(el, v) {
+  v.fn("[max]", "Please enter a value no larger than $1", function(el, v) {
 
     // skip empty values and dateinputs
     if (v === '' || dateInput && el.is(":date")) {
@@ -4513,7 +4660,7 @@
     return parseFloat(v) <= parseFloat(max) ? true : [max];
   });
 
-  v.fn("[min]", "Please enter a value larger than $1", function(el, v) {
+  v.fn("[min]", "Please enter a value of at least $1", function(el, v) {
 
     // skip empty values and dateinputs
     if (v === '' || dateInput && el.is(":date")) {
@@ -4545,6 +4692,9 @@
 
     // make sure there are input fields available
     inputs = inputs.not(":button, :image, :reset, :submit");
+
+    // Prevent default Firefox validation
+    form.attr("novalidate", "novalidate");
 
     // utility function
     function pushMessage(to, matcher, returnValue) {
@@ -4805,6 +4955,9 @@
         if (!self.checkValidity(null, e)) {
           return e.preventDefault();
         }
+        // Reset event type and target
+        e.target = form;
+        e.type = conf.formEvent;
       });
     }
 

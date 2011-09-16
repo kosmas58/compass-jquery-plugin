@@ -38,10 +38,10 @@
     var bottom = w.height() + w.scrollTop();
 
     return [
-      el.offset().top <= w.scrollTop(),                         // top
-      right <= el.offset().left + el.width(),                // right
-      bottom <= el.offset().top + el.height(),            // bottom
-      w.scrollLeft() >= el.offset().left                     // left
+      el.offset().top <= w.scrollTop(),             // top
+      right <= el.offset().left + el.width(),        // right
+      bottom <= el.offset().top + el.height(),      // bottom
+      w.scrollLeft() >= el.offset().left           // left
     ];
   }
 
@@ -69,7 +69,9 @@
 
     conf = $.extend({}, t.dynamic.conf, conf);
 
-    var cls = conf.classNames.split(/\s/), orig;
+    var confOrigin = $.extend(true, {}, conf),
+            cls = conf.classNames.split(/\s/),
+            orig;
 
     this.each(function() {
 
@@ -106,8 +108,10 @@
           left: pos.left
         }).show();
 
-        // now let's see for hidden edges
-        var crop = getCropping(tip);
+        var conf = $.extend(true, {}, confOrigin),
+
+          // now let's see for hidden edges
+                crop = getCropping(tip);
 
         // possibly alter the configuration
         if (!isVisible(crop)) {

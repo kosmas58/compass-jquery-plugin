@@ -24,6 +24,7 @@
       delay: 30,
       opacity: 1,
       tip: 0,
+      fadeIE: false, // enables fade effect in IE
 
       // 'top', 'bottom', 'right', 'left', 'center'
       position: ['top', 'center'],
@@ -33,10 +34,10 @@
 
       // type to event mapping
       events: {
-        def:             "mouseenter,mouseleave",
-        input:         "focus,blur",
-        widget:        "focus mouseenter,blur mouseleave",
-        tooltip:        "mouseenter,mouseleave"
+        def:       "mouseenter,mouseleave",
+        input:     "focus,blur",
+        widget:    "focus mouseenter,blur mouseleave",
+        tooltip:    "mouseenter,mouseleave"
       },
 
       // 1.2
@@ -52,29 +53,42 @@
 
   var effects = {
     toggle: [
-            function(done) {
-              var conf = this.getConf(), tip = this.getTip(), o = conf.opacity;
-              if (o < 1) {
-                tip.css({opacity: o});
-              }
-              tip.show();
-              done.call();
-            },
+      function(done) {
+        var conf = this.getConf(), tip = this.getTip(), o = conf.opacity;
+        if (o < 1) {
+          tip.css({opacity: o});
+        }
+        tip.show();
+        done.call();
+      },
 
-            function(done) {
-              this.getTip().hide();
-              done.call();
-            }
+      function(done) {
+        this.getTip().hide();
+        done.call();
+      }
     ],
 
     fade: [
-            function(done) {
-              var conf = this.getConf();
-              this.getTip().fadeTo(conf.fadeInSpeed, conf.opacity, done);
-            },
-            function(done) {
-              this.getTip().fadeOut(this.getConf().fadeOutSpeed, done);
-            }
+      function(done) {
+        var conf = this.getConf();
+        if (!$.browser.msie || conf.fadeIE) {
+          this.getTip().fadeTo(conf.fadeInSpeed, conf.opacity, done);
+        }
+        else {
+          this.getTip().show();
+          done();
+        }
+      },
+      function(done) {
+        var conf = this.getConf();
+        if (!$.browser.msie || conf.fadeIE) {
+          this.getTip().fadeOut(conf.fadeOutSpeed, done);
+        }
+        else {
+          this.getTip().hide();
+          done();
+        }
+      }
     ]
   };
 
@@ -166,17 +180,17 @@
 
               // trigger --> hide
             }).bind(evt[1], function(e) {
-      clearTimeout(pretimer);
-      if (conf.delay) {
-        timer = setTimeout(function() {
-          self.hide(e);
-        }, conf.delay);
+              clearTimeout(pretimer);
+              if (conf.delay) {
+                timer = setTimeout(function() {
+                  self.hide(e);
+                }, conf.delay);
 
-      } else {
-        self.hide(e);
-      }
+              } else {
+                self.hide(e);
+              }
 
-    });
+            });
 
 
     // remove default title
@@ -234,7 +248,7 @@
         }
 
         // onBeforeShow
-        e = e || $.Event();
+        e = $.Event();
         e.type = "onBeforeShow";
         fire.trigger(e, [pos]);
         if (e.isDefaultPrevented()) {
@@ -263,13 +277,13 @@
 
         if (!tip.data("__set")) {
 
-          tip.bind(event[0], function() {
+          tip.unbind(event[0]).bind(event[0], function() {
             clearTimeout(timer);
             clearTimeout(pretimer);
           });
 
           if (event[1] && !trigger.is("input:not(:checkbox, :radio), textarea")) {
-            tip.bind(event[1], function(e) {
+            tip.unbind(event[1]).bind(event[1], function(e) {
 
               // being moved to the trigger element
               if (e.relatedTarget != trigger[0]) {
@@ -278,7 +292,8 @@
             });
           }
 
-          tip.data("__set", true);
+          // bind agein for if same tip element
+          if (!conf.tip) tip.data("__set", true);
         }
 
         return self;
@@ -291,7 +306,7 @@
         }
 
         // onBeforeHide
-        e = e || $.Event();
+        e = $.Event();
         e.type = "onBeforeHide";
         fire.trigger(e);
         if (e.isDefaultPrevented()) {

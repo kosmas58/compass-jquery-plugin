@@ -9,7 +9,7 @@
  * Since: Mar 2010
  * Date: @DATE
  */
-(function($) {
+(function($, undefined) {
 
   /* TODO:
    preserve today highlighted
@@ -36,7 +36,9 @@
       firstDay: 0, // The first day of the week, Sun = 0, Mon = 1, ...
       min: undefined,
       max: undefined,
-      trigger: false,
+      trigger: 0,
+      toggle: 0,
+      editable: 0,
 
       css: {
 
@@ -78,10 +80,10 @@
   };
 
   tool.localize("en", {
-    months:          'January,February,March,April,May,June,July,August,September,October,November,December',
+    months:      'January,February,March,April,May,June,July,August,September,October,November,December',
     shortMonths: 'Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec',
-    days:          'Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday',
-    shortDays:      'Sun,Mon,Tue,Wed,Thu,Fri,Sat'
+    days:      'Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday',
+    shortDays:    'Sun,Mon,Tue,Wed,Thu,Fri,Sat'
   });
 
 
@@ -90,7 +92,7 @@
 
   // @return amount of days in certain month
   function dayAm(year, month) {
-    return 32 - new Date(year, month, 32).getDate();
+    return new Date(year, month + 1, 0).getDate();
   }
 
   function zeropad(val, len) {
@@ -146,7 +148,7 @@
 
   function parseDate(val) {
 
-    if (!val) {
+    if (val === undefined) {
       return;
     }
     if (val.constructor == Date) {
@@ -162,7 +164,7 @@
       }
 
       // invalid offset
-      if (!/^-?\d+$/.test(val)) {
+      if (!(/^-?\d+$/).test(val)) {
         return;
       }
 
@@ -170,7 +172,7 @@
       val = integer(val);
     }
 
-    var date = new Date();
+    var date = new Date;
     date.setDate(date.getDate() + val);
     return date;
   }
@@ -182,7 +184,8 @@
 
     // variables
     var self = this,
-            now = new Date(),
+            now = new Date,
+            yearNow = now.getFullYear(),
             css = conf.css,
             labels = LABELS[conf.lang],
             root = $("#" + css.root),
@@ -193,7 +196,8 @@
             value = input.attr("data-value") || conf.value || input.val(),
             min = input.attr("min") || conf.min,
             max = input.attr("max") || conf.max,
-            opened;
+            opened,
+            original;
 
     // zero min is not undefined
     if (min === 0) {
@@ -202,8 +206,9 @@
 
     // use sane values for value, min & max
     value = parseDate(value) || now;
-    min = parseDate(min || conf.yearRange[0] * 365);
-    max = parseDate(max || conf.yearRange[1] * 365);
+
+    min = parseDate(min || new Date(yearNow + conf.yearRange[0], 1, 1));
+    max = parseDate(max || new Date(yearNow + conf.yearRange[1] + 1, 1, -1));
 
 
     // check that language exists
@@ -213,14 +218,16 @@
 
     // Replace built-in date input: NOTE: input.attr("type", "text") throws exception by the browser
     if (input.attr("type") == 'date') {
-      var tmp = $("<input/>");
+      var original = input.clone(),
+              def = original.wrap("<div/>").parent().html(),
+              clone = $(def.replace(/type/i, "type=text data-orig-type"));
 
-      $.each("class,disabled,id,maxlength,name,readonly,required,size,style,tabindex,title,value".split(","), function(i, attr) {
-        tmp.attr(attr, input.attr(attr));
-      });
-      input.replaceWith(tmp);
-      input = tmp;
+      if (conf.value) clone.val(conf.value);   // jquery 1.6.2 val(undefined) will clear val()
+
+      input.replaceWith(clone);
+      input = clone;
     }
+
     input.addClass(css.input);
 
     var fire = input.add(self);
@@ -266,7 +273,7 @@
     if (conf.trigger) {
       trigger = $("<a/>").attr("href", "#").addClass(css.trigger).click(
               function(e) {
-                self.show();
+                conf.toggle ? self.toggle() : self.show();
                 return e.preventDefault();
               }).insertAfter(input);
     }
@@ -289,9 +296,9 @@
       currDay = date.getDate();
 
 
-      // change
+      // beforChange
       e = e || $.Event("api");
-      e.type = "change";
+      e.type = "beforeChange";
 
       fire.trigger(e, [date]);
       if (e.isDefaultPrevented()) {
@@ -300,6 +307,10 @@
 
       // formatting
       input.val(format(date, conf.format, conf.lang));
+
+      // change
+      e.type = "change";
+      fire.trigger(e);
 
       // store value into input
       input.data("date", date);
@@ -330,8 +341,8 @@
           return self.hide(e);
         }
 
-        // esc key
-        if (key == 27) {
+        // esc or tab key
+        if (key == 27 || key == 9) {
           return self.hide(e);
         }
 
@@ -417,8 +428,11 @@
 
     $.extend(self, {
 
-//{{{  show
 
+      /**
+       *   @public
+       *   Show the calendar
+       */
       show: function(e) {
 
         if (input.attr("readonly") || input.attr("disabled") || opened) {
@@ -491,22 +505,27 @@
 
         return self;
       },
-//}}}
 
-
-//{{{  setValue
-
+      /**
+       *   @public
+       *
+       *   Set the value of the dateinput
+       */
       setValue: function(year, month, day) {
 
-        var date = integer(month) >= -1 ?
-                new Date(integer(year), integer(month), integer(day || 1)) : year || value
-                ;
+        var date = integer(month) >= -1 ? new Date(integer(year), integer(month), integer(day == undefined || isNaN(day) ? 1 : day)) :
+                year || value;
 
         if (date < min) {
           date = min;
         }
         else if (date > max) {
           date = max;
+        }
+
+        // date given as ISO string
+        if (typeof year == 'string') {
+          date = parseDate(year);
         }
 
         year = date.getFullYear();
@@ -530,6 +549,7 @@
 
         currMonth = month;
         currYear = year;
+        currDay = day;
 
         // variables
         var tmp = new Date(year, month, 1 - conf.firstDay), begin = tmp.getDay(),
@@ -543,7 +563,7 @@
           // month selector
           monthSelector.empty();
           $.each(labels.months, function(i, m) {
-            if (min < new Date(year, i + 1, -1) && max > new Date(year, i, 0)) {
+            if (min < new Date(year, i + 1, 1) && max > new Date(year, i, 0)) {
               monthSelector.append($("<option/>").html(m).attr("value", i));
             }
           });
@@ -553,7 +573,7 @@
           var yearNow = now.getFullYear();
 
           for (var i = yearNow + conf.yearRange[0]; i < yearNow + conf.yearRange[1]; i++) {
-            if (min <= new Date(i + 1, -1, 1) && max > new Date(i, 0, 0)) {
+            if (min < new Date(i + 1, 0, 1) && max > new Date(i, 0, 0)) {
               yearSelector.append($("<option/>").text(i));
             }
           }
@@ -666,11 +686,24 @@
       },
 
       addMonth: function(amount) {
-        return this.setValue(currYear, currMonth + (amount || 1), currDay);
+        var targetMonth = currMonth + (amount || 1),
+                daysInTargetMonth = dayAm(currYear, targetMonth),
+                targetDay = currDay <= daysInTargetMonth ? currDay : daysInTargetMonth;
+
+        return this.setValue(currYear, targetMonth, targetDay);
       },
 
       addYear: function(amount) {
         return this.setValue(currYear + (amount || 1), currMonth, currDay);
+      },
+
+      destroy: function() {
+        input.add(document).unbind("click.d").unbind("keydown.d");
+        root.add(trigger).remove();
+        input.removeData("dateinput").removeClass(css.input);
+        if (original) {
+          input.replaceWith(original);
+        }
       },
 
       hide: function(e) {
@@ -695,6 +728,10 @@
         }
 
         return self;
+      },
+
+      toggle: function() {
+        return self.isOpen() ? self.hide() : self.show();
       },
 
       getConf: function() {
@@ -736,22 +773,24 @@
       };
     });
 
+    if (!conf.editable) {
 
-    // show dateinput & assign keyboard shortcuts
-    input.bind("focus click", self.show).keydown(function(e) {
+      // show dateinput & assign keyboard shortcuts
+      input.bind("focus.d click.d", self.show).keydown(function(e) {
 
-      var key = e.keyCode;
+        var key = e.keyCode;
 
-      // open dateinput with navigation keyw
-      if (!opened && $(KEYS).index(key) >= 0) {
-        self.show(e);
-        return e.preventDefault();
-      }
+        // open dateinput with navigation keyw
+        if (!opened && $(KEYS).index(key) >= 0) {
+          self.show(e);
+          return e.preventDefault();
+        }
 
-      // allow tab
-      return e.shiftKey || e.ctrlKey || e.altKey || key == 9 ? true : e.preventDefault();
+        // allow tab
+        return e.shiftKey || e.ctrlKey || e.altKey || key == 9 ? true : e.preventDefault();
 
-    });
+      });
+    }
 
     // initial value
     if (parseDate(input.val())) {

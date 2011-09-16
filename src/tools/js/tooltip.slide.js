@@ -35,7 +35,7 @@
   /* default effect: "slide"  */
   t.addEffect("slide",
 
-    // show effect
+          // show effect
           function(done) {
 
             // variables
@@ -54,7 +54,7 @@
             tip.show().animate(params, conf.slideInSpeed, done);
           },
 
-    // hide effect
+          // hide effect
           function(done) {
 
             // variables
@@ -76,7 +76,7 @@
               done.call();
             });
           }
-          );
+  );
 
 })(jQuery);	
 		

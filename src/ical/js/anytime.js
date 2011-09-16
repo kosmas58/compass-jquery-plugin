@@ -435,10 +435,18 @@ var AnyTime =
                 str += 'th';
               else {
                 switch (t.charAt(t.length - 1)) {
-                  case '1': str += 'st'; break;
-                  case '2': str += 'nd'; break;
-                  case '3': str += 'rd'; break;
-                  default: str += 'th'; break;
+                  case '1':
+                    str += 'st';
+                    break;
+                  case '2':
+                    str += 'nd';
+                    break;
+                  case '3':
+                    str += 'rd';
+                    break;
+                  default:
+                    str += 'th';
+                    break;
                 }
               }
               break;

@@ -19,8 +19,8 @@
 
     conf: {
       min: 0,
-      max: 100,        // as defined in the standard
-      step: 'any',     // granularity of the value. a non-zero float or int (or "any")
+      max: 100,    // as defined in the standard
+      step: 'any',   // granularity of the value. a non-zero float or int (or "any")
       steps: 0,
       value: 0,
       precision: undefined,
@@ -31,10 +31,10 @@
 
       // set to null if not needed
       css: {
-        input:        'range',
-        slider:         'slider',
-        progress:     'progress',
-        handle:         'handle'
+        input:    'range',
+        slider:     'slider',
+        progress:   'progress',
+        handle:     'handle'
       }
 
     }
@@ -152,9 +152,9 @@
             css = conf.css,
             root = $("<div><div/><a href='#'/></div>").data("rangeinput", self),
             vertical,
-            value,            // current value
-            origo,            // handle's start point
-            len,                // length of the range
+            value,      // current value
+            origo,      // handle's start point
+            len,        // length of the range
             pos;				// current position of the handle
 
     // create range
@@ -185,13 +185,12 @@
 
     // Replace built-in range input (type attribute cannot be changed)
     if (input.attr("type") == 'range') {
-      var tmp = $("<input/>");
-      $.each("class,disabled,id,maxlength,name,readonly,required,size,style,tabindex,title,value".split(","), function(i, attr) {
-        tmp.attr(attr, input.attr(attr));
-      });
-      tmp.val(conf.value);
-      input.replaceWith(tmp);
-      input = tmp;
+      var def = input.clone().wrap("<div/>").parent().html(),
+              clone = $(def.replace(/type/i, "type=text data-orig-type"));
+
+      clone.val(conf.value);
+      input.replaceWith(clone);
+      input = clone;
     }
 
     input.addClass(css.input);
@@ -273,7 +272,7 @@
       if (vertical) {
         handle.animate({top: x}, speed, callback);
         if (conf.progress) {
-          progress.animate({height: len - x + handle.width() / 2}, speed);
+          progress.animate({height: len - x + handle.height() / 2}, speed);
         }
 
       } else {
@@ -384,8 +383,8 @@
               }
 
             }).click(function(e) {
-      return e.preventDefault();
-    });
+              return e.preventDefault();
+            });
 
     // clicking
     root.click(function(e) {
@@ -393,7 +392,7 @@
         return e.preventDefault();
       }
       init();
-      var fix = handle.width() / 2;
+      var fix = vertical ? handle.height() / 2 : handle.width() / 2;
       slide(e, vertical ? len - origo - fix + e.pageY : e.pageX - origo - fix);
     });
 

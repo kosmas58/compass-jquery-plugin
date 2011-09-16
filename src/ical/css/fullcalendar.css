@@ -1,11 +1,11 @@
 /*
- * FullCalendar v1.5.1 Stylesheet
+ * FullCalendar v1.5.2 Stylesheet
  *
  * Copyright (c) 2011 Adam Shaw
  * Dual licensed under the MIT and GPL licenses, located in
  * MIT-LICENSE.txt and GPL-LICENSE.txt respectively.
  *
- * Date: Sat Apr 9 14:09:51 2011 -0700
+ * Date: Sun Aug 21 22:06:09 2011 -0700
  *
  */
 
@@ -117,18 +117,18 @@ html .fc,
 
 .fc-widget-header, /* <th>, usually */
 .fc-widget-content {
-/* <td>, usually */
+    /* <td>, usually */
     border: 1px solid #ccc;
 }
 
 .fc-state-highlight {
-/* <td> today cell */
-/* TODO: add .fc-today to <th> */
+    /* <td> today cell */
+    /* TODO: add .fc-today to <th> */
     background: #ffc;
 }
 
 .fc-cell-overlay {
-/* semi-transparent rectangle while dragging */
+    /* semi-transparent rectangle while dragging */
     background: #9cf;
     opacity: .2;
     filter: alpha(opacity = 20); /* for IE */
@@ -144,7 +144,7 @@ html .fc,
 }
 
 .fc-state-default {
-/* non-theme */
+    /* non-theme */
     border-style: solid;
     border-width: 1px 0;
 }
@@ -156,7 +156,7 @@ html .fc,
 }
 
 .fc-state-default .fc-button-inner {
-/* non-theme */
+    /* non-theme */
     border-style: solid;
     border-width: 0 1px;
 }
@@ -294,7 +294,7 @@ a.fc-event {
 }
 
 .fc .ui-resizable-handle {
-/*** TODO: don't use ui-resizable anymore, change class ***/
+    /*** TODO: don't use ui-resizable anymore, change class ***/
     display: block;
     position: absolute;
     z-index: 99999;
@@ -563,7 +563,7 @@ table.fc-border-separate {
 }
 
 .fc-event-vert .fc-event-bg {
-/* makes the event lighter w/ a semi-transparent overlay  */
+    /* makes the event lighter w/ a semi-transparent overlay  */
     position: absolute;
     z-index: 1;
     top: 0;
@@ -595,7 +595,7 @@ table.fc-border-separate {
 }
 
 .fc-agenda .ui-resizable-resizing {
-/* TODO: better selector */
+    /* TODO: better selector */
     _overflow: hidden;
 }
 	

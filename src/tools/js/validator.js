@@ -27,23 +27,23 @@
   v = $.tools.validator = {
 
     conf: {
-      grouped: false,                 // show all error messages at once inside the container
-      effect: 'default',            // show/hide effect for error message. only 'default' is built-in
-      errorClass: 'invalid',        // input field class name in case of validation error
+      grouped: false,         // show all error messages at once inside the container
+      effect: 'default',      // show/hide effect for error message. only 'default' is built-in
+      errorClass: 'invalid',    // input field class name in case of validation error
 
       // when to check for validity?
-      inputEvent: null,                // change, blur, keyup, null
+      inputEvent: null,        // change, blur, keyup, null
       errorInputEvent: 'keyup',  // change, blur, keyup, null
       formEvent: 'submit',       // submit, null
 
-      lang: 'en',                        // default language for error messages
+      lang: 'en',            // default language for error messages
       message: '<div/>',
       messageAttr: 'data-message', // name of the attribute for overridden error message
-      messageClass: 'error',        // error message element's class name
+      messageClass: 'error',    // error message element's class name
       offset: [0, 0],
       position: 'center right',
-      singleError: false,             // validate all inputs at once
-      speed: 'normal'                // message's fade-in speed
+      singleError: false,       // validate all inputs at once
+      speed: 'normal'        // message's fade-in speed
     },
 
 
@@ -155,58 +155,58 @@
     'default' : [
 
       // show errors function
-            function(errs) {
+      function(errs) {
 
-              var conf = this.getConf();
+        var conf = this.getConf();
 
-              // loop errors
-              $.each(errs, function(i, err) {
+        // loop errors
+        $.each(errs, function(i, err) {
 
-                // add error class
-                var input = err.input;
-                input.addClass(conf.errorClass);
+          // add error class
+          var input = err.input;
+          input.addClass(conf.errorClass);
 
-                // get handle to the error container
-                var msg = input.data("msg.el");
+          // get handle to the error container
+          var msg = input.data("msg.el");
 
-                // create it if not present
-                if (!msg) {
-                  msg = $(conf.message).addClass(conf.messageClass).appendTo(document.body);
-                  input.data("msg.el", msg);
-                }
+          // create it if not present
+          if (!msg) {
+            msg = $(conf.message).addClass(conf.messageClass).appendTo(document.body);
+            input.data("msg.el", msg);
+          }
 
-                // clear the container
-                msg.css({visibility: 'hidden'}).find("p").remove();
+          // clear the container
+          msg.css({visibility: 'hidden'}).find("p").remove();
 
-                // populate messages
-                $.each(err.messages, function(i, m) {
-                  $("<p/>").html(m).appendTo(msg);
-                });
+          // populate messages
+          $.each(err.messages, function(i, m) {
+            $("<p/>").html(m).appendTo(msg);
+          });
 
-                // make sure the width is not full body width so it can be positioned correctly
-                if (msg.outerWidth() == msg.parent().width()) {
-                  msg.add(msg.find("p")).css({display: 'inline'});
-                }
+          // make sure the width is not full body width so it can be positioned correctly
+          if (msg.outerWidth() == msg.parent().width()) {
+            msg.add(msg.find("p")).css({display: 'inline'});
+          }
 
-                // insert into correct position (relative to the field)
-                var pos = getPosition(input, msg, conf);
+          // insert into correct position (relative to the field)
+          var pos = getPosition(input, msg, conf);
 
-                msg.css({ visibility: 'visible', position: 'absolute', top: pos.top, left: pos.left })
-                        .fadeIn(conf.speed);
-              });
+          msg.css({ visibility: 'visible', position: 'absolute', top: pos.top, left: pos.left })
+                  .fadeIn(conf.speed);
+        });
 
 
-              // hide errors function
-            }, function(inputs) {
+        // hide errors function
+      }, function(inputs) {
 
-              var conf = this.getConf();
-              inputs.removeClass(conf.errorClass).each(function() {
-                var msg = $(this).data("msg.el");
-                if (msg) {
-                  msg.css({visibility: 'hidden'});
-                }
-              });
-            }
+        var conf = this.getConf();
+        inputs.removeClass(conf.errorClass).each(function() {
+          var msg = $(this).data("msg.el");
+          if (msg) {
+            msg.css({visibility: 'hidden'});
+          }
+        });
+      }
     ]
   };
 
@@ -242,7 +242,7 @@
     return numRe.test(v);
   });
 
-  v.fn("[max]", "Please enter a value smaller than $1", function(el, v) {
+  v.fn("[max]", "Please enter a value no larger than $1", function(el, v) {
 
     // skip empty values and dateinputs
     if (v === '' || dateInput && el.is(":date")) {
@@ -253,7 +253,7 @@
     return parseFloat(v) <= parseFloat(max) ? true : [max];
   });
 
-  v.fn("[min]", "Please enter a value larger than $1", function(el, v) {
+  v.fn("[min]", "Please enter a value of at least $1", function(el, v) {
 
     // skip empty values and dateinputs
     if (v === '' || dateInput && el.is(":date")) {
@@ -285,6 +285,9 @@
 
     // make sure there are input fields available
     inputs = inputs.not(":button, :image, :reset, :submit");
+
+    // Prevent default Firefox validation
+    form.attr("novalidate", "novalidate");
 
     // utility function
     function pushMessage(to, matcher, returnValue) {
@@ -545,6 +548,9 @@
         if (!self.checkValidity(null, e)) {
           return e.preventDefault();
         }
+        // Reset event type and target
+        e.target = form;
+        e.type = conf.formEvent;
       });
     }
 

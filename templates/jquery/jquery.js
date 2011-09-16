@@ -11,7 +11,7 @@
  * Copyright 2011, The Dojo Foundation
  * Released under the MIT, BSD, and GPL Licenses.
  *
- * Date: Fri Sep 16 14:15:12 +0200 2011
+ * Date: Fri Sep 16 19:24:16 +0200 2011
  */
 (function(window, undefined) {
 

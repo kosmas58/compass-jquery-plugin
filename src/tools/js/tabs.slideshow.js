@@ -35,7 +35,6 @@
             timer,
             stopped = true;
 
-
     // next / prev buttons
     function find(query) {
       var el = $(query);
@@ -50,6 +49,15 @@
       tabs.prev();
     });
 
+    /**
+     *
+     *   Similar fix for autoscroll animation queue problem
+     */
+    function next() {
+      timer = setTimeout(function() {
+        tabs.next();
+      }, conf.interval);
+    }
 
     // extend the Tabs API with slideshow methods
     $.extend(self, {
@@ -77,13 +85,13 @@
           return self;
         }
 
-
-        // construct new timer
-        timer = setInterval(tabs.next, conf.interval);
         stopped = false;
 
         // onPlay
         fire.trigger("onPlay");
+
+        fire.bind('onClick', next);
+        next();
 
         return self;
       },
@@ -101,12 +109,19 @@
           return self;
         }
 
-        timer = clearInterval(timer);
+        timer = clearTimeout(timer);
 
         // onPause
         fire.trigger("onPause");
 
+        fire.unbind('onClick', next);
+
         return self;
+      },
+
+      // resume playing if not stopped
+      resume: function() {
+        stopped || self.play();
       },
 
       // when stopped - mouseover won't restart
@@ -134,11 +149,7 @@
 
     /* when mouse enters, slideshow stops */
     if (conf.autopause) {
-      tabs.getTabs().add(nextButton).add(prevButton).add(tabs.getPanes()).hover(self.pause, function() {
-        if (!stopped) {
-          self.play();
-        }
-      });
+      tabs.getTabs().add(nextButton).add(prevButton).add(tabs.getPanes()).hover(self.pause, self.resume);
     }
 
     if (conf.autoplay) {

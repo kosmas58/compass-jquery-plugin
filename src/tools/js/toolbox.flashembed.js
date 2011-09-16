@@ -131,7 +131,7 @@
           obj = obj.replace(new RegExp('(["\\\\])', 'g'), '\\$1');
 
           // flash does not handle %- characters well. transforms "50%" to "50pct" (a dirty hack, I admit)
-          obj = obj.replace(/^\s?(\d+\.?\d+)%/, "$1pct");
+          obj = obj.replace(/^\s?(\d+\.?\d*)%/, "$1pct");
           return '"' + obj + '"';
 
         case 'array':
@@ -201,7 +201,7 @@
         for (var k in conf) {
           if (conf[k]) {
             var val = conf[k];
-            vars += k + '=' + (/function|object/.test(typeof val) ? f.asString(val) : val) + '&';
+            vars += k + '=' + encodeURIComponent(/function|object/.test(typeof val) ? f.asString(val) : val) + '&';
           }
         }
         vars = vars.slice(0, -1);
@@ -304,7 +304,7 @@
 
     jQuery.fn.flashembed = function(opts, conf) {
       return this.each(function() {
-        $(this).data("flashembed", flashembed(this, opts, conf));
+        jQuery(this).data("flashembed", flashembed(this, opts, conf));
       });
     };
   }

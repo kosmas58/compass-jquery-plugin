@@ -46,10 +46,10 @@
   // the default effect. nice and easy!
   $.tools.overlay.addEffect('default',
 
-    /*
-     onLoad/onClose functions must be called otherwise none of the
-     user supplied callback methods won't be called
-     */
+          /*
+           onLoad/onClose functions must be called otherwise none of the
+           user supplied callback methods won't be called
+           */
           function(pos, onLoad) {
 
             var conf = this.getConf(),
@@ -66,7 +66,7 @@
           }, function(onClose) {
             this.getOverlay().fadeOut(this.getConf().closeSpeed, onClose);
           }
-          );
+  );
 
 
   function Overlay(trigger, conf) {
@@ -90,7 +90,7 @@
       maskConf.closeOnClick = maskConf.closeOnEsc = false;
     }
 
-    // get overlay and triggerr
+    // get overlay and trigger
     var jq = conf.target || trigger.attr("rel");
     overlay = jq ? $(jq) : null || trigger;
 
