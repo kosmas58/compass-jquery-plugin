@@ -18,7 +18,7 @@
 
 (function($) {
 
-  var menu, shadow, trigger, content, hash, currentTarget;
+ 	var menu, shadow, trigger, content, hash, currentTarget;
   var defaults = {
     menuStyle: {
       listStyle: 'none',
@@ -46,23 +46,23 @@
     shadow : true,
     onContextMenu: null,
     onShowMenu: null
-  };
+ 	};
 
   $.fn.contextMenu = function(id, options) {
     if (!menu) {                                      // Create singleton menu
       menu = $('<div id="jqContextMenu"></div>')
-              .hide()
-              .css({position:'absolute', zIndex:'500'})
-              .appendTo('body')
-              .bind('click', function(e) {
-                e.stopPropagation();
-              });
+               .hide()
+               .css({position:'absolute', zIndex:'500'})
+               .appendTo('body')
+               .bind('click', function(e) {
+                 e.stopPropagation();
+               });
     }
     if (!shadow) {
       shadow = $('<div></div>')
-              .css({backgroundColor:'#000',position:'absolute',opacity:0.2,zIndex:499})
-              .appendTo('body')
-              .hide();
+                 .css({backgroundColor:'#000',position:'absolute',opacity:0.2,zIndex:499})
+                 .appendTo('body')
+                 .hide();
     }
     hash = hash || [];
     hash.push({
@@ -90,33 +90,33 @@
 
   function display(index, trigger, e, options) {
     var cur = hash[index];
-    content = $('#' + cur.id).find('ul:first').clone(true);
+    content = $('#'+cur.id).find('ul:first').clone(true);
     content.css(cur.menuStyle).find('li').css(cur.itemStyle).hover(
-            function() {
-              $(this).css(cur.itemHoverStyle);
-            },
-            function() {
-              $(this).css(cur.itemStyle);
-            }
+      function() {
+        $(this).css(cur.itemHoverStyle);
+      },
+      function(){
+        $(this).css(cur.itemStyle);
+      }
     ).find('img').css({verticalAlign:'middle',paddingRight:'2px'});
 
     // Send the content to the menu
     menu.html(content);
 
     // if there's an onShowMenu, run it now -- must run after content has been added
-    // if you try to alter the content variable before the menu.html(), IE6 has issues
-    // updating the content
+		// if you try to alter the content variable before the menu.html(), IE6 has issues
+		// updating the content
     if (!!cur.onShowMenu) menu = cur.onShowMenu(e, menu);
 
     $.each(cur.bindings, function(id, func) {
-      $('#' + id, menu).bind('click', function(e) {
+      $('#'+id, menu).bind('click', function(e) {
         hide();
         func(trigger, currentTarget);
       });
     });
 
     menu.css({'left':e[cur.eventPosX],'top':e[cur.eventPosY]}).show();
-    if (cur.shadow) shadow.css({width:menu.width(),height:menu.height(),left:e.pageX + 2,top:e.pageY + 2}).show();
+    if (cur.shadow) shadow.css({width:menu.width(),height:menu.height(),left:e.pageX+2,top:e.pageY+2}).show();
     $(document).one('click', hide);
   }
 

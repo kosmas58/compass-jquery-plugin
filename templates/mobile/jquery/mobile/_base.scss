@@ -69,9 +69,22 @@
   .ui-page {
     min-height: 300px; } }
 
+/* on ios4, setting focus on the page element causes flashing during transitions when there is an outline, so we turn off outlines */
+
+.ui-page {
+  outline: none;
+  &.ui-mobile-touch-overflow {
+    overflow: auto;
+    height: 100%;
+    -webkit-overflow-scrolling: touch;
+    -moz-overflow-scrolling: touch;
+    -o-overflow-scrolling: touch;
+    -ms-overflow-scrolling: touch;
+    overflow-scrolling: touch; } }
+
 /* native overflow scrolling */
 
-.ui-page.ui-mobile-touch-overflow, .ui-mobile-touch-overflow.ui-native-fixed .ui-content {
+.ui-mobile-touch-overflow.ui-native-fixed .ui-content {
   overflow: auto;
   height: 100%;
   -webkit-overflow-scrolling: touch;
@@ -1126,6 +1139,7 @@ label.ui-select {
 
 @media all and (min-width: 450px) {
   label.ui-select {
+    vertical-align: top;
     display: inline-block;
     width: 20%;
     margin: 0 2% 0 0; }
@@ -1408,6 +1422,9 @@ ol.ui-listview .ui-li-jsnumbering:before {
     right: 50%;
     margin-right: -9px; } }
 
+.ui-listview * .ui-btn-inner > .ui-btn > .ui-btn-inner {
+  border-top: 0px; }
+
 .ui-listview-filter {
   border-width: 0;
   overflow: hidden;
@@ -1469,6 +1486,7 @@ a.ui-slider-handle {
 
 @media all and (min-width: 480px) {
   label.ui-slider {
+    vertical-align: top;
     display: inline-block;
     width: 20%;
     margin: 0 2% 0 0; }

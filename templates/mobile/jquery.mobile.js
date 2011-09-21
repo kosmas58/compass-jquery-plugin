@@ -1,6 +1,5 @@
 /*!
- * jQuery UI Widget 1.0b3pre
-
+ * jQuery UI Widget 1.0rc1pre
  *
  * Copyright 2010, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -422,9 +421,7 @@
     touchOverflow: !!propExists("overflowScrolling"),
     boxShadow: !!propExists("boxShadow") && !bb,
     scrollTop: ( "pageXOffset" in window || "scrollTop" in document.documentElement || "scrollTop" in fakeBody[ 0 ] ) && !webos,
-    dynamicBaseTag: baseTagTest(),
-    // TODO: This is a weak test. We may want to beef this up later.
-    eventCapture: "addEventListener" in document
+    dynamicBaseTag: baseTagTest()
   });
 
   fakeBody.remove();
@@ -505,7 +502,7 @@
           clickBlockList = [],
           blockMouseTriggers = false,
           blockTouchTriggers = false,
-          eventCaptureSupported = $.support.eventCapture,
+          eventCaptureSupported = "addEventListener" in document,
           $document = $(document),
           nextTouchID = 1,
           lastTouchID = 0;
@@ -1711,8 +1708,7 @@
 
 
 /*!
- * jQuery Mobile v1.0b3pre
-
+ * jQuery Mobile v1.0rc1pre
  * http://jquerymobile.com/
  *
  * Copyright 2010, jQuery Project
@@ -2312,8 +2308,8 @@
   })(true);
 
   // to get last scroll, we need to get scrolltop before the page change
-  // using beforechangepage or popstate/hashchange (whichever comes first)
-  $(document).bind("beforechangepage", getLastScroll);
+  // using pagebeforechange or popstate/hashchange (whichever comes first)
+  $(document).bind("pagebeforechange", getLastScroll);
   $(window).bind($.support.pushState ? "popstate" : "hashchange", getLastScroll);
 
   // Make the iOS clock quick-scroll work again if we're using native overflow scrolling
@@ -2450,19 +2446,11 @@
     }
   };
 
-  //update location.hash, with or without triggering hashchange event
-  //TODO - deprecate this one at 1.0
-  $.mobile.updateHash = path.set;
-
   //expose path object on $.mobile
   $.mobile.path = path;
 
   //expose base object on $.mobile
   $.mobile.base = base;
-
-  //url stack, useful when plugins need to be aware of previous pages viewed
-  //TODO: deprecate this one at 1.0
-  $.mobile.urlstack = urlHistory.stack;
 
   //history stack
   $.mobile.urlHistory = urlHistory;
@@ -2746,43 +2734,6 @@
 
   // Show a specific page in the page container.
   $.mobile.changePage = function(toPage, options) {
-    // XXX: REMOVE_BEFORE_SHIPPING_1.0
-    // This is temporary code that makes changePage() compatible with previous alpha versions.
-    if (typeof options !== "object") {
-      var opts = null;
-
-      // Map old-style call signature for form submit to the new options object format.
-      if (typeof toPage === "object" && toPage.url && toPage.type) {
-        opts = {
-          type: toPage.type,
-          data: toPage.data,
-          forcePageLoad: true
-        };
-        toPage = toPage.url;
-      }
-
-      // The arguments passed into the function need to be re-mapped
-      // to the new options object format.
-      var len = arguments.length;
-      if (len > 1) {
-        var argNames = [ "transition", "reverse", "changeHash", "fromHashChange" ], i;
-        for (i = 1; i < len; i++) {
-          var a = arguments[ i ];
-          if (typeof a !== "undefined") {
-            opts = opts || {};
-            opts[ argNames[ i - 1 ] ] = a;
-          }
-        }
-      }
-
-      // If an options object was created, then we know changePage() was called
-      // with an old signature.
-      if (opts) {
-        return $.mobile.changePage(toPage, opts);
-      }
-    }
-    // XXX: REMOVE_BEFORE_SHIPPING_1.0
-
     // If we are in the midst of a transition, queue the current request.
     // We'll call changePage() once we're done with the current transition to
     // service the request.
@@ -2805,8 +2756,6 @@
 
     // Let listeners know we're about to change the current page.
     mpc.trigger(pbcEvent, triggerData);
-
-    mpc.trigger("beforechangepage", triggerData); // XXX: DEPRECATED for 1.0
 
     // If the default behavior is prevented, stop here!
     if (pbcEvent.isDefaultPrevented()) {
@@ -2836,7 +2785,6 @@
                 $.mobile.changePage(newPage, options);
               })
               .fail(function(url, options) {
-                // XXX_jblas: Fire off changepagefailed notificaiton.
                 isPageTransitioning = false;
 
                 //clear out the active button state
@@ -2845,7 +2793,6 @@
                 //release transition lock so navigation is free again
                 releasePageTransitionLock();
                 settings.pageContainer.trigger("pagechangefailed", triggerData);
-                settings.pageContainer.trigger("changepagefailed", triggerData); // XXX: DEPRECATED for 1.0
               });
       return;
     }
@@ -2872,7 +2819,6 @@
     if (fromPage && fromPage[0] === toPage[0]) {
       isPageTransitioning = false;
       mpc.trigger("pagechange", triggerData);
-      mpc.trigger("changepage", triggerData); // XXX: DEPRECATED for 1.0
       return;
     }
 
@@ -2965,8 +2911,6 @@
 
               // Let listeners know we're all done changing the current page.
               mpc.trigger("pagechange", triggerData);
-
-              mpc.trigger("changepage", triggerData); // XXX: DEPRECATED for 1.0
             });
   };
 
@@ -3104,17 +3048,17 @@
         return false;
       }
 
-      //if ajax is disabled, exit early
-      if (!$.mobile.ajaxEnabled) {
-        httpCleanup();
-        //use default click handling
-        return;
-      }
-
       var baseUrl = getClosestBaseUrl($link),
 
         //get href, if defined, otherwise default to empty hash
               href = path.makeUrlAbsolute($link.attr("href") || "#", baseUrl);
+
+      //if ajax is disabled, exit early
+      if (!$.mobile.ajaxEnabled && !path.isEmbeddedPage(href)) {
+        httpCleanup();
+        //use default click handling
+        return;
+      }
 
       // XXX_jblas: Ideally links to application pages should be specified as
       //            an url to the application document with a hash that is either
@@ -3227,7 +3171,7 @@
             }
           });
 
-          // prevent changepage
+          // prevent changePage()
           return;
         } else {
           // if the current active page is a dialog and we're navigating
@@ -3420,8 +3364,7 @@
 })(jQuery, this);
 
 /*!
- * jQuery Mobile v1.0b3pre
-
+ * jQuery Mobile v1.0rc1pre
  * http://jquerymobile.com/
  *
  * Copyright 2010, jQuery Project
@@ -6477,9 +6420,6 @@
     };
   })();
 
-// TODO - Deprecated namepace on $. Remove in a later release
-  $.fixedToolbars = $.mobile.fixedToolbars;
-
 //auto self-init widgets
   $(document).bind("pagecreate create", function(event) {
 
@@ -6678,8 +6618,7 @@
 })(jQuery);
 
 /*!
- * jQuery Mobile v1.0b3pre
-
+ * jQuery Mobile v1.0rc1pre
  * http://jquerymobile.com/
  *
  * Copyright 2010, jQuery Project
@@ -6738,15 +6677,6 @@
 
     hidePageLoadingMsg: function() {
       $html.removeClass("ui-loading");
-    },
-
-    // XXX: deprecate for 1.0
-    pageLoading: function (done) {
-      if (done) {
-        $.mobile.hidePageLoadingMsg();
-      } else {
-        $.mobile.showPageLoadingMsg();
-      }
     },
 
     // find and enhance the pages in the dom and transition to the first page.

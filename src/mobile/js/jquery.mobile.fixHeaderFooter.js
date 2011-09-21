@@ -353,9 +353,6 @@
     };
   })();
 
-// TODO - Deprecated namepace on $. Remove in a later release
-  $.fixedToolbars = $.mobile.fixedToolbars;
-
 //auto self-init widgets
   $(document).bind("pagecreate create", function(event) {
 

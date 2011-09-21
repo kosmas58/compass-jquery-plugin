@@ -44,6 +44,7 @@ a.ui-slider-handle .ui-btn-inner {
 
 @media all and (min-width: 480px) {
     label.ui-slider {
+        vertical-align: top;
         display: inline-block;
         width: 20%;
         margin: 0 2% 0 0;

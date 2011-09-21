@@ -34,7 +34,7 @@
           clickBlockList = [],
           blockMouseTriggers = false,
           blockTouchTriggers = false,
-          eventCaptureSupported = $.support.eventCapture,
+          eventCaptureSupported = "addEventListener" in document,
           $document = $(document),
           nextTouchID = 1,
           lastTouchID = 0;

@@ -113,6 +113,7 @@ label.ui-select {
 
 @media all and (min-width: 450px) {
     label.ui-select {
+        vertical-align: top;
         display: inline-block;
         width: 20%;
         margin: 0 2% 0 0;
