@@ -12,7 +12,8 @@
               o = $.extend({}, $.fn.buttonMarkup.defaults, {
                 icon: el.jqmData("icon"),
                 iconpos: el.jqmData("iconpos"),
-                theme: el.jqmData("theme")
+                theme: el.jqmData("theme"),
+                inline: el.jqmData("inline")
               }, options),
 
         // Classes Defined
@@ -81,6 +82,7 @@
     corners: true,
     shadow: true,
     iconshadow: true,
+    inline: false,
     wrapperEls: "span"
   };
 

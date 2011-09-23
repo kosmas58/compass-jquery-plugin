@@ -2571,6 +2571,11 @@
       settings.data = undefined;
     }
 
+    // If the caller is using a "post" request, reloadPage must be true
+    if (settings.data && settings.type === "post") {
+      settings.reloadPage = true;
+    }
+
     // The absolute version of the URL minus any dialog/subpage params.
     // In otherwords the real URL of the page to be loaded.
     var fileUrl = path.getFilePath(absUrl),
@@ -5902,7 +5907,8 @@
               o = $.extend({}, $.fn.buttonMarkup.defaults, {
                 icon: el.jqmData("icon"),
                 iconpos: el.jqmData("iconpos"),
-                theme: el.jqmData("theme")
+                theme: el.jqmData("theme"),
+                inline: el.jqmData("inline")
               }, options),
 
         // Classes Defined
@@ -5971,6 +5977,7 @@
     corners: true,
     shadow: true,
     iconshadow: true,
+    inline: false,
     wrapperEls: "span"
   };
 
