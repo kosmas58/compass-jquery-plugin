@@ -286,13 +286,17 @@
       }
 
       if (!preventInputUpdate) {
+        var valueChanged = false;
+
         // update control"s value
         if (cType === "input") {
+          valueChanged = control.val() !== newval;
           control.val(newval);
         } else {
+          valueChanged = control[ 0 ].selectedIndex !== newval;
           control[ 0 ].selectedIndex = newval;
         }
-        if (!isfromControl) {
+        if (!isfromControl && valueChanged) {
           control.trigger("change");
         }
       }

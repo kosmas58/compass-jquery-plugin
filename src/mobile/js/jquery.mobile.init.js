@@ -86,6 +86,10 @@
       // define page container
       $.mobile.pageContainer = $pages.first().parent().addClass("ui-mobile-viewport");
 
+      // alert listeners that the pagecontainer has been determined for binding
+      // to events triggered on it
+      $window.trigger("pagecontainercreate");
+
       // cue page loading message
       $.mobile.showPageLoadingMsg();
 

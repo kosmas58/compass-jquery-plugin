@@ -399,38 +399,80 @@
   }
 
   // Save the last scroll distance per page, before it is hidden
-  var getLastScroll = (function(lastScrollEnabled) {
-    return function() {
-      if (!lastScrollEnabled) {
-        lastScrollEnabled = true;
-        return;
-      }
+  var setLastScrollEnabled = true,
+          firstScrollElem, getScrollElem, setLastScroll, delayedSetLastScroll;
 
-      lastScrollEnabled = false;
+  getScrollElem = function() {
+    var scrollElem = $window, activePage,
+            touchOverflow = $.support.touchOverflow && $.mobile.touchOverflowEnabled;
 
-      var active = $.mobile.urlHistory.getActive(),
-              activePage = $(".ui-page-active"),
-              scrollElem = $(window),
-              touchOverflow = $.support.touchOverflow && $.mobile.touchOverflowEnabled;
+    if (touchOverflow) {
+      activePage = $(".ui-page-active");
+      scrollElem = activePage.is(".ui-native-fixed") ? activePage.find(".ui-content") : activePage;
+    }
 
-      if (touchOverflow) {
-        scrollElem = activePage.is(".ui-native-fixed") ? activePage.find(".ui-content") : activePage;
-      }
+    return scrollElem;
+  };
 
-      if (active) {
-        var lastScroll = scrollElem.scrollTop();
+  setLastScroll = function(scrollElem) {
+    // this barrier prevents setting the scroll value based on the browser
+    // scrolling the window based on a hashchange
+    if (!setLastScrollEnabled) {
+      return;
+    }
 
-        // Set active page's lastScroll prop.
-        // If the Y location we're scrolling to is less than minScrollBack, let it go.
-        active.lastScroll = lastScroll < $.mobile.minScrollBack ? $.mobile.defaultHomeScroll : lastScroll;
-      }
-    };
-  })(true);
+    var active = $.mobile.urlHistory.getActive();
 
-  // to get last scroll, we need to get scrolltop before the page change
-  // using pagebeforechange or popstate/hashchange (whichever comes first)
-  $(document).bind("pagebeforechange", getLastScroll);
-  $(window).bind($.support.pushState ? "popstate" : "hashchange", getLastScroll);
+    if (active) {
+      var lastScroll = scrollElem.scrollTop();
+
+      // Set active page's lastScroll prop.
+      // If the location we're scrolling to is less than minScrollBack, let it go.
+      active.lastScroll = lastScroll < $.mobile.minScrollBack ? $.mobile.defaultHomeScroll : lastScroll;
+    }
+  };
+
+  // bind to scrollstop to gather scroll position. The delay allows for the hashchange
+  // event to fire and disable scroll recording in the case where the browser scrolls
+  // to the hash targets location (sometimes the top of the page). once pagechange fires
+  // getLastScroll is again permitted to operate
+  delayedSetLastScroll = function() {
+    setTimeout(setLastScroll, 100, $(this));
+  };
+
+  // disable an scroll setting when a hashchange has been fired, this only works
+  // because the recording of the scroll position is delayed for 100ms after
+  // the browser might have changed the position because of the hashchange
+  $window.bind($.support.pushState ? "popstate" : "hashchange", function() {
+    setLastScrollEnabled = false;
+  });
+
+  // handle initial hashchange from chrome :(
+  $window.one($.support.pushState ? "popstate" : "hashchange", function() {
+    setLastScrollEnabled = true;
+  });
+
+  // wait until the mobile page container has been determined to bind to pagechange
+  $window.one("pagecontainercreate", function() {
+    // once the page has changed, re-enable the scroll recording
+    $.mobile.pageContainer.bind("pagechange", function() {
+      var scrollElem = getScrollElem();
+
+      setLastScrollEnabled = true;
+
+      // remove any binding that previously existed on the get scroll
+      // which may or may not be different than the scroll element determined for
+      // this page previously
+      scrollElem.unbind("scrollstop", delayedSetLastScroll);
+
+      // determine and bind to the current scoll element which may be the window
+      // or in the case of touch overflow the element with touch overflow
+      scrollElem.bind("scrollstop", delayedSetLastScroll);
+    });
+  });
+
+  // bind to scrollstop for the first page as "pagechange" won't be fired in that case
+  getScrollElem().bind("scrollstop", delayedSetLastScroll);
 
   // Make the iOS clock quick-scroll work again if we're using native overflow scrolling
   /*
@@ -742,9 +784,6 @@
                   && dataUrlRegex.test(RegExp.$1)
                   && RegExp.$1) {
             url = fileUrl = path.getFilePath(RegExp.$1);
-          }
-          else {
-
           }
 
           if (base) {

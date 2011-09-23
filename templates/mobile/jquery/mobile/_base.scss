@@ -745,16 +745,20 @@ Built by David Kaneda and maintained by Jonathan Stark.
   padding: .4em 8px .5em; }
 
 .ui-btn-icon-notext {
-  display: inline-block;
   width: 20px;
   height: 20px;
   padding: 2px 1px 2px 3px;
   text-indent: -9999px;
   .ui-btn-inner {
-    padding: 0; }
-  .ui-btn-text {
-    position: absolute;
-    left: -999px; } }
+    padding: 0; } }
+
+.ui-btn-text {
+  position: relative;
+  z-index: 1; }
+
+.ui-btn-icon-notext .ui-btn-text {
+  position: absolute;
+  left: -999px; }
 
 .ui-btn-icon-left .ui-btn-inner {
   padding-left: 33px; }
@@ -799,7 +803,8 @@ Built by David Kaneda and maintained by Jonathan Stark.
   left: 10px; }
 
 .ui-btn-icon-right .ui-icon {
-  right: 10px; }
+  right: 10px;
+  z-index: 0; }
 
 .ui-header .ui-btn-icon-left .ui-icon, .ui-footer .ui-btn-icon-left .ui-icon, .ui-bar .ui-btn-icon-left .ui-icon {
   left: 4px; }
@@ -930,9 +935,9 @@ Built by David Kaneda and maintained by Jonathan Stark.
   padding: 0;
   .ui-btn, .ui-checkbox, .ui-radio {
     display: inline-block;
-    margin: 0 -5px 0 0; }
+    margin: 0 -1px 0 0; }
   .ui-checkbox, .ui-radio {
-    display: inline; }
+    float: left; }
   .ui-checkbox .ui-btn, .ui-radio .ui-btn, .ui-checkbox:last-child, .ui-radio:last-child, .ui-controlgroup-last {
     margin-right: 0; } }
 
