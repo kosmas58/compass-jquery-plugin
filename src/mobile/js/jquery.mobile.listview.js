@@ -274,7 +274,7 @@
       // on pagehide, remove any nested pages along with the parent page, as long as they aren't active
       // and aren't embedded
       if (hasSubPages &&
-              parentPage.is("jqmData(external-page='true')") &&
+              parentPage.is(":jqmData(external-page='true')") &&
               parentPage.data("page").options.domCache === false) {
 
         var newRemove = function(e, ui) {

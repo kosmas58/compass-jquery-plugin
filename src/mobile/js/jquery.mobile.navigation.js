@@ -424,7 +424,7 @@
     var active = $.mobile.urlHistory.getActive();
 
     if (active) {
-      var lastScroll = scrollElem.scrollTop();
+      var lastScroll = scrollElem && scrollElem.scrollTop();
 
       // Set active page's lastScroll prop.
       // If the location we're scrolling to is less than minScrollBack, let it go.
@@ -579,6 +579,10 @@
 
   //simply set the active page's minimum height to screen height, depending on orientation
   function resetActivePageHeight() {
+    // Don't apply this height in touch overflow enabled mode
+    if ($.support.touchOverflow && $.mobile.touchOverflowEnabled) {
+      return;
+    }
     $("." + $.mobile.activePageClass).css("min-height", getScreenHeight());
   }
 
@@ -648,6 +652,19 @@
   //return the original document base url
   $.mobile.getDocumentBase = function(asParsedObject) {
     return asParsedObject ? $.extend({}, documentBase) : documentBase.href;
+  };
+
+  $.mobile._bindPageRemove = function() {
+    var page = $(this);
+
+    // when dom caching is not enabled or the page is embedded bind to remove the page on hide
+    if (!page.data("page").options.domCache
+            && page.is(":jqmData(external-page='true')")) {
+
+      page.bind('pagehide.remove', function() {
+        $(this).removeWithDependents();
+      });
+    }
   };
 
   // Load a page into the DOM.
@@ -740,6 +757,18 @@
         return deferred.promise();
       }
       dupCachedPage = page;
+    }
+
+    var mpc = settings.pageContainer,
+            pblEvent = new $.Event("pagebeforeload"),
+            triggerData = { url: url, absUrl: absUrl, dataUrl: dataUrl, deferred: deferred, options: settings };
+
+    // Let listeners know we're about to load a page.
+    mpc.trigger(pblEvent, triggerData);
+
+    // If the default behavior is prevented, stop here!
+    if (pblEvent.isDefaultPrevented()) {
+      return deferred.promise();
     }
 
     if (settings.showLoadMsg) {
@@ -837,15 +866,7 @@
                   .appendTo(settings.pageContainer);
 
           // wait for page creation to leverage options defined on widget
-          page.one('pagecreate', function() {
-
-            // when dom caching is not enabled bind to remove the page on hide
-            if (!page.data("page").options.domCache) {
-              page.bind("pagehide.remove", function() {
-                $(this).remove();
-              });
-            }
-          });
+          page.one('pagecreate', $.mobile._bindPageRemove);
 
           enhancePage(page, settings.role);
 
@@ -863,12 +884,31 @@
             hideMsg();
           }
 
+          // Add the page reference to our triggerData.
+          triggerData.page = page;
+
+          // Let listeners know the page loaded successfully.
+          settings.pageContainer.trigger("pageload", triggerData);
+
           deferred.resolve(absUrl, options, page, dupCachedPage);
         },
         error: function() {
           //set base back to current path
           if (base) {
             base.set(path.get());
+          }
+
+          var plfEvent = new $.Event("pageloadfailed");
+
+          // Let listeners know the page load failed.
+          settings.pageContainer.trigger(plfEvent, triggerData);
+
+          // If the default behavior is prevented, stop here!
+          // Note that it is the responsibility of the listener/handler
+          // that called preventDefault(), to resolve/reject the
+          // deferred object within the triggerData.
+          if (plfEvent.isDefaultPrevented()) {
+            return;
           }
 
           // Remove loading message.

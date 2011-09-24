@@ -1860,6 +1860,27 @@
     return $.removeData(elem, $.mobile.nsNormalize(prop));
   };
 
+  $.fn.removeWithDependents = function() {
+    $.removeWithDependents(this);
+  };
+
+  $.removeWithDependents = function(elem) {
+    var $elem = $(elem);
+
+    ( $elem.jqmData('dependents') || $() ).remove();
+    $elem.remove();
+  };
+
+  $.fn.addDependents = function(newDependents) {
+    $.addDependents($(this), newDependents);
+  };
+
+  $.addDependents = function(elem, newDependents) {
+    var dependents = $(elem).jqmData('dependents') || $();
+
+    $(elem).jqmData('dependents', $.merge(dependents, newDependents));
+  };
+
   // Monkey-patching Sizzle to filter the :jqmData selector
   var oldFind = $.find;
 
@@ -2308,7 +2329,7 @@
     var active = $.mobile.urlHistory.getActive();
 
     if (active) {
-      var lastScroll = scrollElem.scrollTop();
+      var lastScroll = scrollElem && scrollElem.scrollTop();
 
       // Set active page's lastScroll prop.
       // If the location we're scrolling to is less than minScrollBack, let it go.
@@ -2463,6 +2484,10 @@
 
   //simply set the active page's minimum height to screen height, depending on orientation
   function resetActivePageHeight() {
+    // Don't apply this height in touch overflow enabled mode
+    if ($.support.touchOverflow && $.mobile.touchOverflowEnabled) {
+      return;
+    }
     $("." + $.mobile.activePageClass).css("min-height", getScreenHeight());
   }
 
@@ -2532,6 +2557,19 @@
   //return the original document base url
   $.mobile.getDocumentBase = function(asParsedObject) {
     return asParsedObject ? $.extend({}, documentBase) : documentBase.href;
+  };
+
+  $.mobile._bindPageRemove = function() {
+    var page = $(this);
+
+    // when dom caching is not enabled or the page is embedded bind to remove the page on hide
+    if (!page.data("page").options.domCache
+            && page.is(":jqmData(external-page='true')")) {
+
+      page.bind('pagehide.remove', function() {
+        $(this).removeWithDependents();
+      });
+    }
   };
 
   // Load a page into the DOM.
@@ -2624,6 +2662,18 @@
         return deferred.promise();
       }
       dupCachedPage = page;
+    }
+
+    var mpc = settings.pageContainer,
+            pblEvent = new $.Event("pagebeforeload"),
+            triggerData = { url: url, absUrl: absUrl, dataUrl: dataUrl, deferred: deferred, options: settings };
+
+    // Let listeners know we're about to load a page.
+    mpc.trigger(pblEvent, triggerData);
+
+    // If the default behavior is prevented, stop here!
+    if (pblEvent.isDefaultPrevented()) {
+      return deferred.promise();
     }
 
     if (settings.showLoadMsg) {
@@ -2721,15 +2771,7 @@
                   .appendTo(settings.pageContainer);
 
           // wait for page creation to leverage options defined on widget
-          page.one('pagecreate', function() {
-
-            // when dom caching is not enabled bind to remove the page on hide
-            if (!page.data("page").options.domCache) {
-              page.bind("pagehide.remove", function() {
-                $(this).remove();
-              });
-            }
-          });
+          page.one('pagecreate', $.mobile._bindPageRemove);
 
           enhancePage(page, settings.role);
 
@@ -2747,12 +2789,31 @@
             hideMsg();
           }
 
+          // Add the page reference to our triggerData.
+          triggerData.page = page;
+
+          // Let listeners know the page loaded successfully.
+          settings.pageContainer.trigger("pageload", triggerData);
+
           deferred.resolve(absUrl, options, page, dupCachedPage);
         },
         error: function() {
           //set base back to current path
           if (base) {
             base.set(path.get());
+          }
+
+          var plfEvent = new $.Event("pageloadfailed");
+
+          // Let listeners know the page load failed.
+          settings.pageContainer.trigger(plfEvent, triggerData);
+
+          // If the default behavior is prevented, stop here!
+          // Note that it is the responsibility of the listener/handler
+          // that called preventDefault(), to resolve/reject the
+          // deferred object within the triggerData.
+          if (plfEvent.isDefaultPrevented()) {
+            return;
           }
 
           // Remove loading message.
@@ -3513,10 +3574,13 @@
               optType = o.degradeInputs[ type ] || "text";
 
       if (o.degradeInputs[ type ]) {
-        $this.replaceWith(
-                $("<div>").html($this.clone()).html()
-                        .replace(/\s+type=["']?\w+['"]?/, " type=\"" + optType + "\" data-" + $.mobile.ns + "type=\"" + type + "\" ")
-        );
+        var html = $("<div>").html($this.clone()).html(),
+          // In IE browsers, the type sometimes doesn't exist in the cloned markup, so we replace the closing tag instead
+                hasType = html.indexOf(" type=") > -1,
+                findstr = hasType ? /\s+type=["']?\w+['"]?/ : /\/?>/,
+                repstr = " type=\"" + optType + "\" data-" + $.mobile.ns + "type=\"" + type + "\"" + ( hasType ? "" : ">" );
+
+        $this.replaceWith(html.replace(findstr, repstr));
       }
     });
 
@@ -3539,8 +3603,10 @@
       initSelector  : ":jqmData(role='dialog')"
     },
     _create: function() {
-      var $el = this.element,
-              pageTheme = $el.attr("class").match(/ui-body-[a-z]/);
+      var self = this,
+              $el = this.element,
+              pageTheme = $el.attr("class").match(/ui-body-[a-z]/),
+              headerCloseButton = $("<a href='#' data-" + $.mobile.ns + "icon='delete' data-" + $.mobile.ns + "iconpos='notext'>" + this.options.closeBtnText + "</a>");
 
       if (pageTheme.length) {
         $el.removeClass(pageTheme[ 0 ]);
@@ -3554,11 +3620,18 @@
               .addClass("ui-dialog")
               .find(":jqmData(role='header')")
               .addClass("ui-corner-top ui-overlay-shadow")
-              .prepend("<a href='#' data-" + $.mobile.ns + "icon='delete' data-" + $.mobile.ns + "rel='back' data-" + $.mobile.ns + "iconpos='notext'>" + this.options.closeBtnText + "</a>")
+              .prepend(headerCloseButton)
               .end()
               .find(":jqmData(role='content'),:jqmData(role='footer')")
               .last()
               .addClass("ui-corner-bottom ui-overlay-shadow");
+
+      // this must be an anonymous function so that select menu dialogs can replace
+      // the close method. This is a change from previously just defining data-rel=back
+      // on the button and letting nav handle it
+      headerCloseButton.bind("vclick", function() {
+        self.close();
+      });
 
       /* bind events
        - clicks and submits should use the closing transition that the dialog opened with
@@ -4247,7 +4320,7 @@
       // on pagehide, remove any nested pages along with the parent page, as long as they aren't active
       // and aren't embedded
       if (hasSubPages &&
-              parentPage.is("jqmData(external-page='true')") &&
+              parentPage.is(":jqmData(external-page='true')") &&
               parentPage.data("page").options.domCache === false) {
 
         var newRemove = function(e, ui) {
@@ -4639,7 +4712,9 @@
     _create: function() {
       var $el = this.element,
               o = this.options,
-              type;
+              type,
+              name,
+              $buttonPlaceholder;
 
       // Add ARIA role
       this.button = $("<div></div>")
@@ -4656,24 +4731,26 @@
               .insertBefore($el)
               .append($el.addClass("ui-btn-hidden"));
 
-      // Add hidden input during submit
       type = $el.attr("type");
+      name = $el.attr("name");
 
-      if (type !== "button" && type !== "reset") {
-
+      // Add hidden input during submit if input type="submit" has a name.
+      if (type !== "button" && type !== "reset" && name) {
         $el.bind("vclick", function() {
+          // Add hidden input if it doesn’t already exist.
+          if ($buttonPlaceholder === undefined) {
+            $buttonPlaceholder = $("<input>", {
+              type: "hidden",
+              name: $el.attr("name"),
+              value: $el.attr("value")
+            })
+                    .insertBefore($el);
 
-          var $buttonPlaceholder = $("<input>", {
-            type: "hidden",
-            name: $el.attr("name"),
-            value: $el.attr("value")
-          })
-                  .insertBefore($el);
-
-          // Bind to doc to remove after submit handling
-          $(document).submit(function() {
-            $buttonPlaceholder.remove();
-          });
+            // Bind to doc to remove after submit handling
+            $(document).submit(function() {
+              $buttonPlaceholder.remove();
+            });
+          }
         });
       }
 
@@ -5052,7 +5129,7 @@
   $.widget("mobile.textinput", $.mobile.widget, {
     options: {
       theme: null,
-      initSelector: "input[type='text'], input[type='search'], :jqmData(type='search'), input[type='number'], :jqmData(type='number'), input[type='password'], input[type='email'], input[type='url'], input[type='tel'], textarea"
+      initSelector: "input[type='text'], input[type='search'], :jqmData(type='search'), input[type='number'], :jqmData(type='number'), input[type='password'], input[type='email'], input[type='url'], input[type='tel'], textarea, input:not([type])"
     },
 
     _create: function() {
@@ -5593,6 +5670,20 @@
         self.menuPage.bind("pagehide", function() {
           self.list.appendTo(self.listbox);
           self._focusButton();
+
+          // TODO centralize page removal binding / handling in the page plugin.
+          // Suggestion from @jblas to do refcounting
+          //
+          // TODO extremely confusing dependency on the open method where the pagehide.remove
+          // bindings are stripped to prevent the parent page from disappearing. The way
+          // we're keeping pages in the DOM right now sucks
+          //
+          // rebind the page remove that was unbound in the open function
+          // to allow for the parent page removal from actions other than the use
+          // of a dialog sized custom select
+          //
+          // doing this here provides for the back button on the custom select dialog
+          $.mobile._bindPageRemove.call(self.thisPage);
         });
 
         // Events on "screen" overlay
@@ -5607,6 +5698,10 @@
             return false;
           }
         });
+
+        // track this dependency so that when the parent page
+        // is removed on pagehide it will also remove the menupage
+        self.thisPage.addDependents(this.menuPage);
       },
 
       _isRebuildRequired: function() {
@@ -5664,18 +5759,6 @@
         var self = this;
 
         if (self.menuType == "page") {
-          // TODO centralize page removal binding / handling in the page plugin.
-          // Suggestion from @jblas to do refcounting
-          //
-          // rebind the page remove that was unbound in the open function
-          // to allow for the parent page removal from actions other than the use
-          // of a dialog sized custom select
-          if (!self.thisPage.data("page").options.domCache) {
-            self.thisPage.bind("pagehide.remove", function() {
-              $(self).remove();
-            });
-          }
-
           // doesn't solve the possible issue with calling change page
           // where the objects don't define data urls which prevents dialog key
           // stripping - changePage has incoming refactor
@@ -5699,7 +5782,10 @@
         var self = this,
                 menuHeight = self.list.parent().outerHeight(),
                 menuWidth = self.list.parent().outerWidth(),
-                scrollTop = $(window).scrollTop(),
+                activePage = $(".ui-page-active"),
+                tOverflow = $.support.touchOverflow && $.mobile.touchOverflowEnabled,
+                tScrollElem = activePage.is(".ui-native-fixed") ? activePage.find(".ui-content") : activePage;
+        scrollTop = tOverflow ? tScrollElem.scrollTop() : $(window).scrollTop(),
                 btnOffset = self.button.offset().top,
                 screenHeight = window.innerHeight,
                 screenWidth = window.innerWidth;
