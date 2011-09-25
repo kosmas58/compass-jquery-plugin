@@ -314,6 +314,7 @@ jQuery Plugins included:
 * Steven Wittens for [Farbtastic Colorpicker plugin][30]
 * Adam Shaw for [FullCalendar][31]
 * Moxiecode Systems AB for [TinyMCE][40]
+* Jerome Etienne for [jquery.qrcode][45]
 
 
 Other stuff included:
@@ -383,4 +384,5 @@ Copyright &copy; 2009-2011 Kosmas Schuetz. See LICENSE for details.
   [41]: http://github.com/loopj/jquery-tokeninput
   [42]: http://http://www.highcharts.com
   [43]: http://github.com/scottjehl/jQuery-Media-Helpers
-  [44]: https://github.com/markitup/1.x
+  [44]: http://github.com/markitup/1.x
+  [45]: http://github.com/jeromeetienne/jquery-qrcode

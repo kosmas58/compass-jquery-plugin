@@ -19,8 +19,13 @@ HIGHCHARTS_SRC_IMAGES = File.join(HIGHCHARTS_SRC, 'images')
 
 HIGHSLIDE_SRC_IMAGES = File.join(HIGHCHARTS_SRC_IMAGES, 'graphics')
 
-SPARKLINES_SRC_SCRIPTS = File.join(GRAPHICS_SRC, 'sparklines') + "/*.js"
+QRCODE_SRC = File.join(GRAPHICS_SRC, 'qrcode')
+qrcode_scripts = [
+    'js/qrcode.js',
+    'js/jquery.qrcode.js'
+].collect { |filename| File.read(File.join(QRCODE_SRC, filename)) }.join "\n\n"
 
+SPARKLINES_SRC_SCRIPTS = File.join(GRAPHICS_SRC, 'sparklines') + "/*.js"
 
 GRAPHICS_DEST_TEMPLATES = File.join(GEM_ROOT, 'templates', 'graphics')
 GRAPHICS_DEST_CONFIG = File.join(GRAPHICS_DEST_TEMPLATES, 'config', 'initializers')
@@ -148,6 +153,17 @@ namespace :build do
         FileUtils.cp(File.join(src_dir, image), dest_dir)
         manifest.print "image 'jquery/highcharts/graphics/outlines/#{image}'\n"
       end
+
+      # QRCode
+      open File.join(GRAPHICS_DEST_TEMPLATES, 'jquery.qrcode.js'), 'w' do |f|
+        f.print concat_files(qrcode_scripts)
+      end
+      manifest.print "javascript 'jquery.qrcode.js'\n"
+
+      open File.join(GRAPHICS_DEST_TEMPLATES, 'jquery.qrcode.min.js'), 'w' do |f|
+        f.print compress_js(qrcode_scripts, "google")
+      end
+      manifest.print "javascript 'jquery.qrcode.min.js'\n"
     end
   end
 end
