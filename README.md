@@ -302,6 +302,7 @@ jQuery Plugins included:
 * Brandon Aaron and Fabrizio Balliano for [jQuery Mousewheel Plugin][35]
 * Yehuda Katz for [jQuery Offline Plugin][34]
 * Andreas Eberhard for [jQuery PngFix Plugin][22] (for IE)
+* Jerome Etienne for [jQuery Code plugin][45]
 * "Cowboy" Ben Alman for [jQuery replaceText Plugin][36]
 * Mikael Soederstroem for [jQuery Ribbon Plugin][23]
 * Gareth Watts from Splunk Inc for [jQuery Sparklines plugin][24]
@@ -314,8 +315,6 @@ jQuery Plugins included:
 * Steven Wittens for [Farbtastic Colorpicker plugin][30]
 * Adam Shaw for [FullCalendar][31]
 * Moxiecode Systems AB for [TinyMCE][40]
-* Jerome Etienne for [jquery.qrcode][45]
-
 
 Other stuff included:
 ---------------------
