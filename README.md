@@ -200,7 +200,7 @@ To use the javascripts include:
 Graphics
 --------
 
-Use compass to install the jquery.ganttView, jquery.highcharts and jquery.sparklines javascript libraries into your project.
+Use compass to install the jquery.ganttView, jquery.highcharts, jquery.qrcode and jquery.sparklines javascript libraries into your project.
 
 <pre>compass install [-r jquery] jquery/graphics <project name></pre>
 
