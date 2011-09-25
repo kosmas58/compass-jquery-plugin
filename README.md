@@ -384,4 +384,5 @@ Copyright &copy; 2009-2011 Kosmas Schuetz. See LICENSE for details.
   [42]: http://http://www.highcharts.com
   [43]: http://github.com/scottjehl/jQuery-Media-Helpers
   [44]: http://github.com/markitup/1.x
-  [45]: http://github.com/jeromeetienne/jquery-qrcode
+  [45]: http://jeromeetienne.github.com/jquery-qrcode/
+  
