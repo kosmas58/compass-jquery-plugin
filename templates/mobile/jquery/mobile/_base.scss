@@ -80,9 +80,7 @@
     -moz-overflow-scrolling: touch;
     -o-overflow-scrolling: touch;
     -ms-overflow-scrolling: touch;
-    overflow-scrolling: touch;
-    /* some level of transform keeps elements from blinking out of visibility on iOS */
-    -webkit-transform: rotateY(0); } }
+    overflow-scrolling: touch; } }
 
 /* native overflow scrolling */
 
@@ -93,12 +91,17 @@
   -moz-overflow-scrolling: touch;
   -o-overflow-scrolling: touch;
   -ms-overflow-scrolling: touch;
-  overflow-scrolling: touch;
-  /* some level of transform keeps elements from blinking out of visibility on iOS */
-  -webkit-transform: rotateY(0); }
+  overflow-scrolling: touch; }
 
-.ui-page.ui-mobile-pre-transition {
-  display: block; }
+.ui-page {
+  &.ui-mobile-touch-overflow {
+    /* some level of transform keeps elements from blinking out of visibility on iOS */
+    -webkit-transform: rotateY(0);
+    * {
+      /* some level of transform keeps elements from blinking out of visibility on iOS */
+      -webkit-transform: rotateY(0); } }
+  &.ui-mobile-pre-transition {
+    display: block; } }
 
 /* loading screen */
 
