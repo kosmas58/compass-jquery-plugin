@@ -244,11 +244,11 @@
           }
           return success;
         }
+        var idname, opers, oper;
+        opers = $t.p.prmNames;
+        oper = opers.oper;
+        idname = opers.id;
         if (tmp) {
-          var idname, opers, oper;
-          opers = $t.p.prmNames;
-          oper = opers.oper;
-          idname = opers.id;
           tmp[oper] = opers.editoper;
           tmp[idname] = rowid;
           if (typeof($t.p.inlineData) == 'undefined') {

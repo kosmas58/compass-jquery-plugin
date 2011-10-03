@@ -35,9 +35,19 @@ textarea.ui-input-text {
 .ui-input-search {
     padding: 0 30px;
     width: 77%;
-    background-position: 8px 50%;
-    background-repeat: no-repeat;
+    background-image: none;
     position: relative;
+}
+
+.ui-icon-searchfield:after {
+    position: absolute;
+    left: 7px;
+    top: 50%;
+    margin-top: -9px;
+    content: "";
+    width: 18px;
+    height: 18px;
+    opacity: .5;
 }
 
 .ui-input-search input.ui-input-text {

@@ -695,7 +695,7 @@
           setNulls();
           if (ret[0]) {
             if ($.isFunction(rp_ge[$t.p.id].onclickSubmit)) {
-              onCS = rp_ge[$t.p.id].onclickSubmit(rp_ge[$t.p.id], postdata) || {};
+              onCS = rp_ge[$t.p.id].onclickSubmit(rp_ge[$t.p.id], postdata) || {}
             }
             if ($.isFunction(rp_ge[$t.p.id].beforeSubmit)) {
               ret = rp_ge[$t.p.id].beforeSubmit(postdata, $("#" + frmgr));
@@ -740,11 +740,13 @@
               rp_ge.url = postdata.id == "_empty" ? $t.p.url : $t.p.url + "/" + postdata.id;
             }
 
+            postdata[idname] = $.jgrid.stripPref($t.p.idPrefix, postdata[idname]);
             var ajaxOptions = $.extend({
               url: rp_ge[$t.p.id].url ? rp_ge[$t.p.id].url : $($t).jqGrid('getGridParam', 'editurl'),
               type: rp_ge[$t.p.id].mtype,
               data: $.isFunction(rp_ge[$t.p.id].serializeEditData) ? rp_ge[$t.p.id].serializeEditData(postdata) : postdata,
               complete:function(data, Status) {
+                postdata[idname] = $t.p.idPrefix + postdata[idname];
                 if (Status != "success") {
                   ret[0] = false;
                   if ($.isFunction(rp_ge[$t.p.id].errorTextFormat)) {
@@ -881,9 +883,22 @@
             }
             if (ret[0]) {
               if (rp_ge[$t.p.id].useDataProxy) {
-                $t.p.dataProxy.call($t, ajaxOptions, "set_" + $t.p.id);
-              }
-              else {
+                var dpret = $t.p.dataProxy.call($t, ajaxOptions, "set_" + $t.p.id);
+                if (typeof(dpret) == "undefined") {
+                  dpret = [true, ""];
+                }
+                if (dpret[0] === false) {
+                  ret[0] = false;
+                  ret[1] = dpret[1] || "Error deleting the selected row!"
+                } else {
+                  if (ajaxOptions.data.oper == opers.addoper && rp_ge[$t.p.id].closeAfterAdd) {
+                    $.jgrid.hideModal("#" + IDs.themodal, {gb:"#gbox_" + gID,jqm:p.jqModal, onClose: rp_ge[$t.p.id].onClose});
+                  }
+                  if (ajaxOptions.data.oper == opers.editoper && rp_ge[$t.p.id].closeAfterEdit) {
+                    $.jgrid.hideModal("#" + IDs.themodal, {gb:"#gbox_" + gID,jqm:p.jqModal, onClose: rp_ge[$t.p.id].onClose});
+                  }
+                }
+              } else {
                 $.ajax(ajaxOptions);
               }
             }
@@ -1331,10 +1346,6 @@
         if (!$t.grid || !rowid) {
           return;
         }
-        if (!p.imgpath) {
-          p.imgpath = $t.p.imgpath;
-        }
-        // I hate to rewrite code, but ...
         var gID = $t.p.id,
                 frmgr = "ViewGrid_" + gID , frmtb = "ViewTbl_" + gID,
                 IDs = {themodal:'viewmod' + gID,modalhead:'viewhd' + gID,modalcontent:'viewcnt' + gID, scrollelm : frmgr},
@@ -1767,7 +1778,7 @@
             onCS = {};
             var postdata = $("#DelData>td", "#" + dtbl).text(); //the pair is name=val1,val2,...
             if ($.isFunction(rp_ge[$t.p.id].onclickSubmit)) {
-              onCS = rp_ge[$t.p.id].onclickSubmit(rp_ge[$t.p.id], postdata) || {};
+              onCS = rp_ge[$t.p.id].onclickSubmit(rp_ge[$t.p.id], postdata) || {}
             }
             if ($.isFunction(rp_ge[$t.p.id].beforeSubmit)) {
               ret = rp_ge[$t.p.id].beforeSubmit(postdata);
@@ -1780,7 +1791,13 @@
               oper = opers.oper;
               postd[oper] = opers.deloper;
               idname = opers.id;
-              postd[idname] = postdata;
+              postdata = postdata.split(",");
+              for (var pk in postdata) {
+                if (postdata.hasOwnProperty(pk)) {
+                  postdata[pk] = $.jgrid.stripPref($t.p.idPrefix, postdata[pk]);
+                }
+              }
+              postd[idname] = postdata.join();
               if ($t.p.restful) {
                 p.mtype = "DELETE";
                 rp_ge.url = $t.p.url + "/" + postdata;
@@ -1816,12 +1833,12 @@
                       toarr = postdata.split(",");
                       if ($t.p.treeGrid === true) {
                         try {
-                          $($t).jqGrid("delTreeNode", toarr[0]);
+                          $($t).jqGrid("delTreeNode", $t.p.idPrefix + toarr[0]);
                         } catch(e) {
                         }
                       } else {
                         for (var i = 0; i < toarr.length; i++) {
-                          $($t).jqGrid("delRowData", toarr[i]);
+                          $($t).jqGrid("delRowData", $t.p.idPrefix + toarr[i]);
                         }
                       }
                       $t.p.selrow = null;
@@ -1852,7 +1869,16 @@
               }
               if (ret[0]) {
                 if (rp_ge[$t.p.id].useDataProxy) {
-                  $t.p.dataProxy.call($t, ajaxOptions, "del_" + $t.p.id);
+                  var dpret = $t.p.dataProxy.call($t, ajaxOptions, "del_" + $t.p.id);
+                  if (typeof(dpret) == "undefined") {
+                    dpret = [true, ""];
+                  }
+                  if (dpret[0] === false) {
+                    ret[0] = false;
+                    ret[1] = dpret[1] || "Error deleting the selected row!"
+                  } else {
+                    $.jgrid.hideModal("#" + IDs.themodal, {gb:"#gbox_" + gID,jqm:p.jqModal, onClose: rp_ge[$t.p.id].onClose});
+                  }
                 }
                 else {
                   $.ajax(ajaxOptions);

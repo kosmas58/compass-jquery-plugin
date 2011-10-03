@@ -18,7 +18,7 @@
 
               $to.add($from).removeClass("out in reverse " + name);
 
-              if ($from) {
+              if ($from && $from[ 0 ] !== $to[ 0 ]) {
                 $from.removeClass($.mobile.activePageClass);
               }
 

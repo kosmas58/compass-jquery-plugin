@@ -258,7 +258,7 @@
                   opers = $t.p.prmNames;
                   idname = opers.id;
                   oper = opers.oper;
-                  postdata[idname] = $t.rows[iRow].id;
+                  postdata[idname] = $.jgrid.stripPref($t.p.idPrefix, $t.rows[iRow].id);
                   postdata[oper] = opers.editoper;
                   postdata = $.extend(addpost, postdata);
                   $("#lui_" + $t.p.id).show();

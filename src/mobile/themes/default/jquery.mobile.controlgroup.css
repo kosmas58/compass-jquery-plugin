@@ -42,14 +42,14 @@
     padding: 0;
 }
 
-.ui-controlgroup-horizontal .ui-btn,
-.ui-controlgroup-horizontal .ui-checkbox, .ui-controlgroup-horizontal .ui-radio {
+.ui-controlgroup-horizontal .ui-btn {
     display: inline-block;
-    margin: 0 -1px 0 0;
+    margin: 0 -5px 0 0;
 }
 
 .ui-controlgroup-horizontal .ui-checkbox, .ui-controlgroup-horizontal .ui-radio {
     float: left;
+    margin: 0 -1px 0 0;
 }
 
 .ui-controlgroup-horizontal .ui-checkbox .ui-btn, .ui-controlgroup-horizontal .ui-radio .ui-btn,

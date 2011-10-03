@@ -385,6 +385,14 @@
         return v;
       }
     },
+    stripPref : function (pref, id) {
+      var obj = Object.prototype.toString.call(pref).slice(8, -1);
+      if (obj == "String" || obj == "Number") {
+        pref = String(pref);
+        id = pref != "" ? String(id).replace(String(pref), "") : id;
+      }
+      return id;
+    },
     stringToDoc : function (xmlString) {
       var xmlDoc;
       if (typeof xmlString !== 'string') {
@@ -1053,6 +1061,7 @@
         loadBeforeSend: null,
         afterInsertRow: null,
         beforeRequest: null,
+        beforeProcessing : null,
         onHeaderClick: null,
         viewrecords: false,
         loadonce: false,
@@ -1111,7 +1120,8 @@
         grouping : false,
         groupingView : {groupField:[],groupOrder:[], groupText:[],groupColumnShow:[],groupSummary:[], showSummaryOnHide: false, sortitems:[], sortnames:[], groupDataSorted : false, summary:[],summaryval:[], plusicon: 'ui-icon-circlesmall-plus', minusicon: 'ui-icon-circlesmall-minus'},
         ignoreCase : false,
-        cmTemplate : {}
+        cmTemplate : {},
+        idPrefix : ""
       }, $.jgrid.defaults, pin || {});
       var grid = {
         headers:[],
@@ -1577,6 +1587,7 @@
                   while (j < gl) {
                     xmlr = gxml[j];
                     rid = getId(xmlr, br + j);
+                    rid = ts.p.idPrefix + rid;
                     altr = rcnt === 0 ? 0 : rcnt + 1;
                     cn1 = (altr + j) % 2 == 1 ? cn : '';
                     rowData.push("<tr" + hiderow + " id=\"" + rid + "\" tabindex=\"-1\" role=\"row\" class =\"ui-widget-content jqgrow ui-row-" + ts.p.direction + "" + cn1 + "\">");
@@ -1691,6 +1702,7 @@
                   while (ir < gl) {
                     xmlr = gxml[ir];
                     rid = getId(xmlr, ir);
+                    rid = ts.p.idPrefix + rid;
                     if (ts.p.xmlReader.repeatitems) {
                       if (!F) {
                         F = orderedCols(gi + si + ni);
@@ -1793,6 +1805,7 @@
                       }
                     }
                   }
+                  idr = ts.p.idPrefix + idr;
                   altr = rcnt === 1 ? 0 : rcnt;
                   cn1 = (altr + i) % 2 == 1 ? cn : '';
                   rowData.push("<tr" + hiderow + " id=\"" + idr + "\" tabindex=\"-1\" role=\"row\" class= \"ui-widget-content jqgrow ui-row-" + ts.p.direction + "" + cn1 + "\">");
@@ -1909,6 +1922,7 @@
                       }
                     }
                     if (cur) {
+                      idr = ts.p.idPrefix + idr;
                       if (dReader.repeatitems) {
                         if (dReader.cell) {
                           cur = $.jgrid.getAccessor(cur, dReader.cell);
@@ -2312,7 +2326,13 @@
                     return;
                   }
                   else if ($.isFunction(ts.p.beforeRequest)) {
-                    ts.p.beforeRequest.call(ts);
+                    var bfr = ts.p.beforeRequest.call(ts);
+                    if (bfr === undefined) {
+                      bfr = true;
+                    }
+                    if (bfr === false) {
+                      return;
+                    }
                   }
                   dt = ts.p.datatype.toLowerCase();
                   switch (dt) {
@@ -2325,7 +2345,10 @@
                         type:ts.p.mtype,
                         dataType: dt ,
                         data: $.isFunction(ts.p.serializeGridData) ? ts.p.serializeGridData.call(ts, ts.p.postData) : ts.p.postData,
-                        success:function(data, st) {
+                        success:function(data, st, xhr) {
+                          if ($.isFunction(ts.p.beforeProcessing)) {
+                            ts.p.beforeProcessing.call(ts, data, st, xhr);
+                          }
                           if (dt === "xml") {
                             addXmlData(data, ts.grid.bDiv, rcnt, npage > 1, adjust);
                           }
@@ -3216,21 +3239,21 @@
         });
       }
       /*if ($.isFunction(this.p.onRightClickRow)) {
-       $(this).bind('contextmenu', function(e) {
-       td = e.target;
-       ptr = $(td, ts.rows).closest("tr.jqgrow");
-       if ($(ptr).length === 0) {
-       return false;
-       }
-       if (!ts.p.multiselect) {
-       $(ts).jqGrid("setSelection", ptr[0].id, true);
-       }
-       ri = ptr[0].rowIndex;
-       ci = $.jgrid.getCellIndex(td);
-       ts.p.onRightClickRow.call(ts, $(ptr).attr("id"), ri, ci, e);
-       return false;
-       });
-       }*/
+        $(this).bind('contextmenu', function(e) {
+          td = e.target;
+          ptr = $(td, ts.rows).closest("tr.jqgrow");
+          if ($(ptr).length === 0) {
+            return false;
+          }
+          if (!ts.p.multiselect) {
+            $(ts).jqGrid("setSelection", ptr[0].id, true);
+          }
+          ri = ptr[0].rowIndex;
+          ci = $.jgrid.getCellIndex(td);
+          ts.p.onRightClickRow.call(ts, $(ptr).attr("id"), ri, ci, e);
+          return false;
+        });
+      }*/
       grid.bDiv = document.createElement("div");
       if (isMSIE) {
         if (String(ts.p.height).toLowerCase() === "auto") {
@@ -3757,6 +3780,7 @@
               }
               cna = t.p.altRows === true ? (t.rows.length - 1) % 2 === 0 ? cn : "" : "";
             }
+            rowid = t.p.idPrefix + rowid;
             if (ni) {
               prp = t.formatCol(0, 1, '', null, rowid, true);
               row += "<td role=\"gridcell\" aria-describedby=\"" + t.p.id + "_rn\" class=\"ui-state-default jqgrid-rownum\" " + prp + ">0</td>";
@@ -8637,7 +8661,7 @@ var xmlJsonClass = {
           setNulls();
           if (ret[0]) {
             if ($.isFunction(rp_ge[$t.p.id].onclickSubmit)) {
-              onCS = rp_ge[$t.p.id].onclickSubmit(rp_ge[$t.p.id], postdata) || {};
+              onCS = rp_ge[$t.p.id].onclickSubmit(rp_ge[$t.p.id], postdata) || {}
             }
             if ($.isFunction(rp_ge[$t.p.id].beforeSubmit)) {
               ret = rp_ge[$t.p.id].beforeSubmit(postdata, $("#" + frmgr));
@@ -8682,11 +8706,13 @@ var xmlJsonClass = {
               rp_ge.url = postdata.id == "_empty" ? $t.p.url : $t.p.url + "/" + postdata.id;
             }
 
+            postdata[idname] = $.jgrid.stripPref($t.p.idPrefix, postdata[idname]);
             var ajaxOptions = $.extend({
               url: rp_ge[$t.p.id].url ? rp_ge[$t.p.id].url : $($t).jqGrid('getGridParam', 'editurl'),
               type: rp_ge[$t.p.id].mtype,
               data: $.isFunction(rp_ge[$t.p.id].serializeEditData) ? rp_ge[$t.p.id].serializeEditData(postdata) : postdata,
               complete:function(data, Status) {
+                postdata[idname] = $t.p.idPrefix + postdata[idname];
                 if (Status != "success") {
                   ret[0] = false;
                   if ($.isFunction(rp_ge[$t.p.id].errorTextFormat)) {
@@ -8823,9 +8849,22 @@ var xmlJsonClass = {
             }
             if (ret[0]) {
               if (rp_ge[$t.p.id].useDataProxy) {
-                $t.p.dataProxy.call($t, ajaxOptions, "set_" + $t.p.id);
-              }
-              else {
+                var dpret = $t.p.dataProxy.call($t, ajaxOptions, "set_" + $t.p.id);
+                if (typeof(dpret) == "undefined") {
+                  dpret = [true, ""];
+                }
+                if (dpret[0] === false) {
+                  ret[0] = false;
+                  ret[1] = dpret[1] || "Error deleting the selected row!"
+                } else {
+                  if (ajaxOptions.data.oper == opers.addoper && rp_ge[$t.p.id].closeAfterAdd) {
+                    $.jgrid.hideModal("#" + IDs.themodal, {gb:"#gbox_" + gID,jqm:p.jqModal, onClose: rp_ge[$t.p.id].onClose});
+                  }
+                  if (ajaxOptions.data.oper == opers.editoper && rp_ge[$t.p.id].closeAfterEdit) {
+                    $.jgrid.hideModal("#" + IDs.themodal, {gb:"#gbox_" + gID,jqm:p.jqModal, onClose: rp_ge[$t.p.id].onClose});
+                  }
+                }
+              } else {
                 $.ajax(ajaxOptions);
               }
             }
@@ -9273,10 +9312,6 @@ var xmlJsonClass = {
         if (!$t.grid || !rowid) {
           return;
         }
-        if (!p.imgpath) {
-          p.imgpath = $t.p.imgpath;
-        }
-        // I hate to rewrite code, but ...
         var gID = $t.p.id,
                 frmgr = "ViewGrid_" + gID , frmtb = "ViewTbl_" + gID,
                 IDs = {themodal:'viewmod' + gID,modalhead:'viewhd' + gID,modalcontent:'viewcnt' + gID, scrollelm : frmgr},
@@ -9709,7 +9744,7 @@ var xmlJsonClass = {
             onCS = {};
             var postdata = $("#DelData>td", "#" + dtbl).text(); //the pair is name=val1,val2,...
             if ($.isFunction(rp_ge[$t.p.id].onclickSubmit)) {
-              onCS = rp_ge[$t.p.id].onclickSubmit(rp_ge[$t.p.id], postdata) || {};
+              onCS = rp_ge[$t.p.id].onclickSubmit(rp_ge[$t.p.id], postdata) || {}
             }
             if ($.isFunction(rp_ge[$t.p.id].beforeSubmit)) {
               ret = rp_ge[$t.p.id].beforeSubmit(postdata);
@@ -9722,7 +9757,13 @@ var xmlJsonClass = {
               oper = opers.oper;
               postd[oper] = opers.deloper;
               idname = opers.id;
-              postd[idname] = postdata;
+              postdata = postdata.split(",");
+              for (var pk in postdata) {
+                if (postdata.hasOwnProperty(pk)) {
+                  postdata[pk] = $.jgrid.stripPref($t.p.idPrefix, postdata[pk]);
+                }
+              }
+              postd[idname] = postdata.join();
               if ($t.p.restful) {
                 p.mtype = "DELETE";
                 rp_ge.url = $t.p.url + "/" + postdata;
@@ -9758,12 +9799,12 @@ var xmlJsonClass = {
                       toarr = postdata.split(",");
                       if ($t.p.treeGrid === true) {
                         try {
-                          $($t).jqGrid("delTreeNode", toarr[0]);
+                          $($t).jqGrid("delTreeNode", $t.p.idPrefix + toarr[0]);
                         } catch(e) {
                         }
                       } else {
                         for (var i = 0; i < toarr.length; i++) {
-                          $($t).jqGrid("delRowData", toarr[i]);
+                          $($t).jqGrid("delRowData", $t.p.idPrefix + toarr[i]);
                         }
                       }
                       $t.p.selrow = null;
@@ -9794,7 +9835,16 @@ var xmlJsonClass = {
               }
               if (ret[0]) {
                 if (rp_ge[$t.p.id].useDataProxy) {
-                  $t.p.dataProxy.call($t, ajaxOptions, "del_" + $t.p.id);
+                  var dpret = $t.p.dataProxy.call($t, ajaxOptions, "del_" + $t.p.id);
+                  if (typeof(dpret) == "undefined") {
+                    dpret = [true, ""];
+                  }
+                  if (dpret[0] === false) {
+                    ret[0] = false;
+                    ret[1] = dpret[1] || "Error deleting the selected row!"
+                  } else {
+                    $.jgrid.hideModal("#" + IDs.themodal, {gb:"#gbox_" + gID,jqm:p.jqModal, onClose: rp_ge[$t.p.id].onClose});
+                  }
                 }
                 else {
                   $.ajax(ajaxOptions);
@@ -10525,11 +10575,11 @@ var xmlJsonClass = {
           }
           return success;
         }
+        var idname, opers, oper;
+        opers = $t.p.prmNames;
+        oper = opers.oper;
+        idname = opers.id;
         if (tmp) {
-          var idname, opers, oper;
-          opers = $t.p.prmNames;
-          oper = opers.oper;
-          idname = opers.id;
           tmp[oper] = opers.editoper;
           tmp[idname] = rowid;
           if (typeof($t.p.inlineData) == 'undefined') {
@@ -10941,7 +10991,7 @@ var xmlJsonClass = {
                   opers = $t.p.prmNames;
                   idname = opers.id;
                   oper = opers.oper;
-                  postdata[idname] = $t.rows[iRow].id;
+                  postdata[idname] = $.jgrid.stripPref($t.p.idPrefix, $t.rows[iRow].id);
                   postdata[oper] = opers.editoper;
                   postdata = $.extend(addpost, postdata);
                   $("#lui_" + $t.p.id).show();

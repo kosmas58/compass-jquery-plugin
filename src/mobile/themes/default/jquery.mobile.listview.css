@@ -197,6 +197,7 @@ ol.ui-listview .ui-li-jsnumbering:before {
     right: 0;
     margin: 0;
     padding: 0;
+    z-index: 2;
 }
 
 .ui-li-link-alt .ui-btn {
@@ -206,11 +207,16 @@ ol.ui-listview .ui-li-jsnumbering:before {
     top: 50%;
     margin: -11px 0 0 0;
     border-bottom-width: 1px;
+    z-index: -1;
 }
 
 .ui-li-link-alt .ui-btn-inner {
     padding: 0;
-    position: static;
+    height: 100%;
+    position: absolute;
+    width: 100%;
+    top: 0;
+    left: 0;
 }
 
 .ui-li-link-alt .ui-btn .ui-icon {

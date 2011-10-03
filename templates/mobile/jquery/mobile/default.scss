@@ -348,7 +348,7 @@
   background: #fdfdfd;
   font-weight: bold;
   color: #111111;
-  text-shadow: 0 1px 1 p white;
+  text-shadow: 0 1px 1px white;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#eeeeee), to(#fdfdfd));
   /* Saf4+, Chrome */
   background-image: -webkit-linear-gradient(top, #eeeeee, #fdfdfd);
@@ -729,7 +729,7 @@ a.ui-link-inherit {
 /* Icons
 -----------------------------------------------------------------------------------------------------------*/
 
-.ui-icon {
+.ui-icon, .ui-icon-searchfield:after {
   background: #666666;
   background: rgba(0, 0, 0, 0.4);
   background-image: image_url("jquery/mobile/default/icons-18-white.png");
@@ -751,7 +751,7 @@ a.ui-link-inherit {
 -----------------------------------------------------------------------------------------------------------*/
 
 @media only screen and (-webkit-min-device-pixel-ratio: 1.5), only screen and (min--moz-device-pixel-ratio: 1.5), only screen and (min-resolution: 240 dpi) {
-  .ui-icon-plus, .ui-icon-minus, .ui-icon-delete, .ui-icon-arrow-r, .ui-icon-arrow-l, .ui-icon-arrow-u, .ui-icon-arrow-d, .ui-icon-check, .ui-icon-gear, .ui-icon-refresh, .ui-icon-forward, .ui-icon-back, .ui-icon-grid, .ui-icon-star, .ui-icon-alert, .ui-icon-info, .ui-icon-home, .ui-icon-search, .ui-icon-checkbox-off, .ui-icon-checkbox-on, .ui-icon-radio-off, .ui-icon-radio-on {
+  .ui-icon-plus, .ui-icon-minus, .ui-icon-delete, .ui-icon-arrow-r, .ui-icon-arrow-l, .ui-icon-arrow-u, .ui-icon-arrow-d, .ui-icon-check, .ui-icon-gear, .ui-icon-refresh, .ui-icon-forward, .ui-icon-back, .ui-icon-grid, .ui-icon-star, .ui-icon-alert, .ui-icon-info, .ui-icon-home, .ui-icon-search, .ui-icon-searchfield:after, .ui-icon-checkbox-off, .ui-icon-checkbox-on, .ui-icon-radio-off, .ui-icon-radio-on {
     background-image: image_url("jquery/mobile/default/icons-36-white.png");
     -moz-background-size: 776px 18px;
     -o-background-size: 776px 18px;
@@ -820,7 +820,7 @@ a.ui-link-inherit {
 .ui-icon-home {
   background-position: -576px 50%; }
 
-.ui-icon-search {
+.ui-icon-search, .ui-icon-searchfield:after {
   background-position: -612px 50%; }
 
 .ui-icon-checkbox-off {
@@ -848,10 +848,6 @@ a.ui-link-inherit {
 .ui-checkbox-on .ui-icon, .ui-radio-on .ui-icon {
   background-color: #4596ce;
   /* NOTE: this hex should match the active state color. It's repeated here for cascade */ }
-
-.ui-icon-searchfield {
-  background-image: image_url("jquery/mobile/default/icon-search-black.png");
-  background-size: 16px 16px; }
 
 /* loading icon */
 

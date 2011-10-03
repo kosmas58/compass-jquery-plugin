@@ -45,7 +45,7 @@
         }
       }
 
-      collapsibleContent.addClass(( o.contentTheme ) ? ( "ui-btn-up-" + o.contentTheme ) : "");
+      collapsibleContent.addClass(( o.contentTheme ) ? ( "ui-body-" + o.contentTheme ) : "");
 
       collapsibleHeading
         //drop heading in before content
@@ -61,7 +61,7 @@
                 iconPos: "left",
                 icon: "plus",
                 theme: o.theme
-              })
+              });
 
       if (!collapsibleSet.length) {
         collapsibleHeading
@@ -140,7 +140,7 @@
               .trigger(o.collapsed ? "collapse" : "expand");
 
       collapsibleHeading
-              .bind("vclick", function(event) {
+              .bind("click", function(event) {
 
         var type = collapsibleHeading.is(".ui-collapsible-heading-collapsed") ?
                 "expand" : "collapse";

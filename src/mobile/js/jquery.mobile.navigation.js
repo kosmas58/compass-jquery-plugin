@@ -134,8 +134,8 @@
               var relObj = path.parseUrl(relUrl),
                       absObj = path.parseUrl(absUrl),
                       protocol = relObj.protocol || absObj.protocol,
-                      doubleSlash = relObj.protocol ? relObj.doubleSlash : ( relObj.doubleSlash || absObj.doubleSlash );
-              authority = relObj.authority || absObj.authority,
+                      doubleSlash = relObj.protocol ? relObj.doubleSlash : ( relObj.doubleSlash || absObj.doubleSlash ),
+                      authority = relObj.authority || absObj.authority,
                       hasPath = relObj.pathname !== "",
                       pathname = path.makePathAbsolute(relObj.pathname || absObj.filename, absObj.pathname),
                       search = relObj.search || ( !hasPath && absObj.search ) || "",
@@ -662,7 +662,14 @@
             && page.is(":jqmData(external-page='true')")) {
 
       page.bind('pagehide.remove', function() {
-        $(this).removeWithDependents();
+        var $this = $(this),
+                prEvent = new $.Event("pageremove");
+
+        $this.trigger(prEvent);
+
+        if (!prEvent.isDefaultPrevented()) {
+          $this.removeWithDependents();
+        }
       });
     }
   };
@@ -730,14 +737,14 @@
     // reference to an embedded page. If so, it may have been dynamically
     // injected by a developer, in which case it would be lacking a data-url
     // attribute and in need of enhancement.
-    if (page.length === 0 && !path.isPath(dataUrl)) {
+    if (page.length === 0 && dataUrl && !path.isPath(dataUrl)) {
       page = settings.pageContainer.children("#" + dataUrl)
               .attr("data-" + $.mobile.ns + "url", dataUrl)
     }
 
     // If we failed to find a page in the DOM, check the URL to see if it
     // refers to the first page in the application.
-    if (page.length === 0 && $.mobile.firstPage && path.isFirstPageUrl(absUrl)) {
+    if (page.length === 0 && $.mobile.firstPage && path.isFirstPageUrl(fileUrl)) {
       page = $($.mobile.firstPage);
     }
 
@@ -807,7 +814,7 @@
                   newPageTitle = html.match(/<title[^>]*>([^<]*)/) && RegExp.$1,
 
             // TODO handle dialogs again
-                  pageElemRegex = new RegExp(".*(<[^>]+\\bdata-" + $.mobile.ns + "role=[\"']?page[\"']?[^>]*>).*"),
+                  pageElemRegex = new RegExp("(<[^>]+\\bdata-" + $.mobile.ns + "role=[\"']?page[\"']?[^>]*>)"),
                   dataUrlRegex = new RegExp("\\bdata-" + $.mobile.ns + "url=[\"']?([^\"'>]*)[\"']?");
 
 

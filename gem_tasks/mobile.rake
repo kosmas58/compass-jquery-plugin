@@ -50,7 +50,6 @@ all_scripts = [
     'js/jquery.mobile.links.js',
     'js/jquery.mobile.fixHeaderFooter.js',
     'js/jquery.mobile.fixHeaderFooter.native.js',
-    'js/jquery.mobile.media.classes.js',
     'js/jquery.mobile.init.js',
     'js/jquery.mobile.themeswitcher.js',
     'js/jquery.easing.1.3.js',

@@ -57,18 +57,6 @@
   display: block;
   overflow: visible; }
 
-/*orientations from js are available */
-
-.portrait {
-  min-height: 420px;
-  .ui-page {
-    min-height: 420px; } }
-
-.landscape {
-  min-height: 300px;
-  .ui-page {
-    min-height: 300px; } }
-
 /* on ios4, setting focus on the page element causes flashing during transitions when there is an outline, so we turn off outlines */
 
 .ui-page {
@@ -288,50 +276,50 @@ Built by David Kaneda and maintained by Jonathan Stark.
   -webkit-animation-duration: 350ms; }
 
 .slide {
-  &.in {
-    -webkit-transform: translateX(0);
-    -webkit-animation-name: slideinfromright; }
   &.out {
     -webkit-transform: translateX(-100%);
     -webkit-animation-name: slideouttoleft; }
-  &.in.reverse {
+  &.in {
     -webkit-transform: translateX(0);
-    -webkit-animation-name: slideinfromleft; }
+    -webkit-animation-name: slideinfromright; }
   &.out.reverse {
     -webkit-transform: translateX(100%);
-    -webkit-animation-name: slideouttoright; } }
+    -webkit-animation-name: slideouttoright; }
+  &.in.reverse {
+    -webkit-transform: translateX(0);
+    -webkit-animation-name: slideinfromleft; } }
 
 .slideup {
+  &.out {
+    -webkit-animation-name: dontmove;
+    z-index: 0; }
   &.in {
     -webkit-transform: translateY(0);
     -webkit-animation-name: slideinfrombottom;
-    z-index: 10; }
-  &.out {
-    -webkit-animation-name: dontmove;
-    z-index: 0;
+    z-index: 10;
     &.reverse {
-      -webkit-transform: translateY(100%);
-      z-index: 10;
-      -webkit-animation-name: slideouttobottom; } }
-  &.in.reverse {
-    z-index: 0;
-    -webkit-animation-name: dontmove; } }
+      z-index: 0;
+      -webkit-animation-name: dontmove; } }
+  &.out.reverse {
+    -webkit-transform: translateY(100%);
+    z-index: 10;
+    -webkit-animation-name: slideouttobottom; } }
 
 .slidedown {
+  &.out {
+    -webkit-animation-name: dontmove;
+    z-index: 0; }
   &.in {
     -webkit-transform: translateY(0);
     -webkit-animation-name: slideinfromtop;
-    z-index: 10; }
-  &.out {
-    -webkit-animation-name: dontmove;
-    z-index: 0;
+    z-index: 10;
     &.reverse {
-      -webkit-transform: translateY(-100%);
-      z-index: 10;
-      -webkit-animation-name: slideouttotop; } }
-  &.in.reverse {
-    z-index: 0;
-    -webkit-animation-name: dontmove; } }
+      z-index: 0;
+      -webkit-animation-name: dontmove; } }
+  &.out.reverse {
+    -webkit-transform: translateY(-100%);
+    z-index: 10;
+    -webkit-animation-name: slideouttotop; } }
 
 @-webkit-keyframes slideinfromright {
   from {
@@ -404,13 +392,13 @@ Built by David Kaneda and maintained by Jonathan Stark.
 
 
 .fade {
+  &.out {
+    z-index: 0;
+    -webkit-animation-name: fadeout; }
   &.in {
     opacity: 1;
     z-index: 10;
-    -webkit-animation-name: fadein; }
-  &.out {
-    z-index: 0;
-    -webkit-animation-name: fadeout; } }
+    -webkit-animation-name: fadein; } }
 
 /* The properties in this rule are only necessary for the 'flip' transition.
  * We need specify the perspective to create a projection matrix. This will add
@@ -437,18 +425,18 @@ Built by David Kaneda and maintained by Jonathan Stark.
   -webkit-backface-visibility: hidden;
   -webkit-transform: translateX(0);
   /* Needed to work around an iOS 3.1 bug that causes listview thumbs to disappear when -webkit-visibility:hidden is used. */
-  &.in {
-    -webkit-transform: rotateY(0) scale(1);
-    -webkit-animation-name: flipinfromleft; }
   &.out {
     -webkit-transform: rotateY(-180deg) scale(0.8);
     -webkit-animation-name: flipouttoleft; }
-  &.in.reverse {
+  &.in {
     -webkit-transform: rotateY(0) scale(1);
-    -webkit-animation-name: flipinfromright; }
+    -webkit-animation-name: flipinfromleft; }
   &.out.reverse {
     -webkit-transform: rotateY(180deg) scale(0.8);
-    -webkit-animation-name: flipouttoright; } }
+    -webkit-animation-name: flipouttoright; }
+  &.in.reverse {
+    -webkit-transform: rotateY(0) scale(1);
+    -webkit-animation-name: flipinfromright; } }
 
 /* Shake it all about */
 
@@ -493,15 +481,15 @@ Built by David Kaneda and maintained by Jonathan Stark.
     -webkit-transform: scale(1);
     opacity: 1;
     -webkit-animation-name: popin;
-    z-index: 10; }
+    z-index: 10;
+    &.reverse {
+      z-index: 0;
+      -webkit-animation-name: dontmove; } }
   &.out.reverse {
     -webkit-transform: scale(0.2);
     opacity: 0;
     -webkit-animation-name: popout;
-    z-index: 10; }
-  &.in.reverse {
-    z-index: 0;
-    -webkit-animation-name: dontmove; } }
+    z-index: 10; } }
 
 @-webkit-keyframes popin {
   from {
@@ -752,12 +740,10 @@ Built by David Kaneda and maintained by Jonathan Stark.
   padding: .4em 8px .5em; }
 
 .ui-btn-icon-notext {
-  width: 20px;
-  height: 20px;
-  padding: 2px 1px 2px 3px;
-  text-indent: -9999px;
+  width: 24px;
+  height: 24px;
   .ui-btn-inner {
-    padding: 0; }
+    padding: 2px 1px 2px 3px; }
   .ui-btn-text {
     position: absolute;
     left: -999px; } }
@@ -807,6 +793,12 @@ Built by David Kaneda and maintained by Jonathan Stark.
 .ui-btn-icon-right .ui-icon {
   right: 10px; }
 
+.ui-btn-icon-top .ui-icon {
+  top: 10px; }
+
+.ui-btn-icon-bottom .ui-icon {
+  bottom: 10px; }
+
 .ui-header .ui-btn-icon-left .ui-icon, .ui-footer .ui-btn-icon-left .ui-icon, .ui-bar .ui-btn-icon-left .ui-icon {
   left: 4px; }
 
@@ -818,12 +810,6 @@ Built by David Kaneda and maintained by Jonathan Stark.
 
 .ui-header .ui-btn-icon-bottom .ui-icon, .ui-footer .ui-btn-icon-bottom .ui-icon, .ui-bar .ui-btn-icon-bottom .ui-icon {
   bottom: 4px; }
-
-.ui-btn-icon-top .ui-icon {
-  top: 5px; }
-
-.ui-btn-icon-bottom .ui-icon {
-  bottom: 5px; }
 
 /*hiding native button,inputs */
 
@@ -935,11 +921,12 @@ Built by David Kaneda and maintained by Jonathan Stark.
 
 .ui-controlgroup-horizontal {
   padding: 0;
-  .ui-btn, .ui-checkbox, .ui-radio {
+  .ui-btn {
     display: inline-block;
-    margin: 0 -1px 0 0; }
+    margin: 0 -5px 0 0; }
   .ui-checkbox, .ui-radio {
-    float: left; }
+    float: left;
+    margin: 0 -1px 0 0; }
   .ui-checkbox .ui-btn, .ui-radio .ui-btn, .ui-checkbox:last-child, .ui-radio:last-child, .ui-controlgroup-last {
     margin-right: 0; } }
 
@@ -1068,10 +1055,14 @@ Built by David Kaneda and maintained by Jonathan Stark.
       left: 0;
       top: 0;
       width: 100%;
-      height: 100%;
+      min-height: 1.5em;
+      min-height: 100%;
+      height: 3em;
+      max-height: 100%;
       opacity: 0;
       -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
       filter: alpha(opacity = 0);
+      z-index: 2;
       &.ui-select-nativeonly {
         opacity: 1;
         text-indent: 0; } } }
@@ -1193,9 +1184,20 @@ textarea.ui-input-text {
 .ui-input-search {
   padding: 0 30px;
   width: 77%;
-  background-position: 8px 50%;
-  background-repeat: no-repeat;
-  position: relative;
+  background-image: none;
+  position: relative; }
+
+.ui-icon-searchfield:after {
+  position: absolute;
+  left: 7px;
+  top: 50%;
+  margin-top: -9px;
+  content: "";
+  width: 18px;
+  height: 18px;
+  opacity: .5; }
+
+.ui-input-search {
   input.ui-input-text {
     border: none;
     width: 98%;
@@ -1423,16 +1425,22 @@ ol.ui-listview .ui-li-jsnumbering:before {
   right: 0;
   margin: 0;
   padding: 0;
+  z-index: 2;
   .ui-btn {
     overflow: hidden;
     position: absolute;
     right: 8px;
     top: 50%;
     margin: -11px 0 0 0;
-    border-bottom-width: 1px; }
+    border-bottom-width: 1px;
+    z-index: -1; }
   .ui-btn-inner {
     padding: 0;
-    position: static; }
+    height: 100%;
+    position: absolute;
+    width: 100%;
+    top: 0;
+    left: 0; }
   .ui-btn .ui-icon {
     right: 50%;
     margin-right: -9px; } }
