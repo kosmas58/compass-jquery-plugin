@@ -1,5 +1,5 @@
 /*!
- * jQuery UI Widget 1.0rc1
+ * jQuery UI Widget 1.0rc2pre
  *
  * Copyright 2010, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -412,7 +412,7 @@
 
 
   $.extend($.support, {
-    orientation: "orientation" in window,
+    orientation: "orientation" in window && "onorientationchange" in window,
     touch: "ontouchend" in document,
     cssTransitions: "WebKitTransitionEvent" in window,
     pushState: "pushState" in history && "replaceState" in history,
@@ -1159,7 +1159,7 @@
       setup: function() {
         // If the event is supported natively, return false so that jQuery
         // will bind to the event using DOM methods.
-        if ($.support.orientation) {
+        if ($.support.orientation && $.mobile.orientationChangeEnabled) {
           return false;
         }
 
@@ -1173,7 +1173,7 @@
       teardown: function() {
         // If the event is not supported natively, return false so that
         // jQuery will unbind the event using DOM methods.
-        if ($.support.orientation) {
+        if ($.support.orientation && $.mobile.orientationChangeEnabled) {
           return false;
         }
 
@@ -1184,6 +1184,7 @@
       add: function(handleObj) {
         // Save a reference to the bound event handler.
         var old_handler = handleObj.handler;
+
 
         handleObj.handler = function(event) {
           // Modify event object, adding the .orientation property.
@@ -1213,8 +1214,22 @@
     // Get the current page orientation. This method is exposed publicly, should it
     // be needed, as jQuery.event.special.orientationchange.orientation()
     $.event.special.orientationchange.orientation = get_orientation = function() {
-      var elem = document.documentElement;
-      return elem && elem.clientWidth / elem.clientHeight < 1.1 ? "portrait" : "landscape";
+      var isPortrait = true, elem = document.documentElement;
+
+      // prefer window orientation to the calculation based on screensize as
+      // the actual screen resize takes place before or after the orientation change event
+      // has been fired depending on implementation (eg android 2.3 is before, iphone after).
+      // More testing is required to determine if a more reliable method of determining the new screensize
+      // is possible when orientationchange is fired. (eg, use media queries + element + opacity)
+      if ($.support.orientation) {
+        // if the window orientation registers as 0 or 180 degrees report
+        // portrait, otherwise landscape
+        isPortrait = window.orientation % 180 == 0;
+      } else {
+        isPortrait = elem && elem.clientWidth / elem.clientHeight < 1.1;
+      }
+
+      return isPortrait ? "portrait" : "landscape";
     };
 
   })(jQuery, window);
@@ -1708,7 +1723,7 @@
 
 
 /*!
- * jQuery Mobile v1.0rc1
+ * jQuery Mobile v1.0rc2pre
  * http://jquerymobile.com/
  *
  * Copyright 2010, jQuery Project
@@ -1761,6 +1776,9 @@
     autoInitializePage: true,
 
     pushStateEnabled: true,
+
+    // turn of binding to the native orientationchange due to android orientation behavior
+    orientationChangeEnabled: true,
 
     // Support conditions that must be met in order to proceed
     // default enhanced qualifications are media query support OR IE 7+
@@ -3501,7 +3519,7 @@
 })(jQuery, this);
 
 /*!
- * jQuery Mobile v1.0rc1
+ * jQuery Mobile v1.0rc2pre
  * http://jquerymobile.com/
  *
  * Copyright 2010, jQuery Project
@@ -3904,7 +3922,7 @@
           collapsibleHeading
                   .toggleClass("ui-collapsible-heading-collapsed", isCollapse)
                   .find(".ui-collapsible-heading-status")
-                  .text(o.expandCueText)
+                  .text(isCollapse ? o.expandCueText : o.collapseCueText)
                   .end()
                   .find(".ui-icon")
                   .toggleClass("ui-icon-minus", !isCollapse)
@@ -6696,7 +6714,7 @@
 
 
 /*!
- * jQuery Mobile v1.0rc1
+ * jQuery Mobile v1.0rc2pre
  * http://jquerymobile.com/
  *
  * Copyright 2010, jQuery Project

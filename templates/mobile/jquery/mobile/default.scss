@@ -34,7 +34,9 @@
     color: white; }
   .ui-link {
     color: #7cc4e7;
-    font-weight: bold; } }
+    font-weight: bold;
+    &:hover, &:active, &:visited {
+      color: #2489ce; } } }
 
 .ui-body-a {
   border: 1px solid #2a2a2a;
@@ -60,7 +62,9 @@
     color: white; }
   .ui-link {
     color: #2489ce;
-    font-weight: bold; } }
+    font-weight: bold;
+    &:hover, &:active, &:visited {
+      color: #2489ce; } } }
 
 .ui-br {
   border-bottom: rgb(130, 130, 130);
@@ -158,8 +162,10 @@
   .ui-link-inherit {
     color: white; }
   .ui-link {
-    color: #7cc4e7;
-    font-weight: bold; } }
+    color: #ddf0f8;
+    font-weight: bold;
+    &:hover, &:active, &:visited {
+      color: #ddf0f8; } } }
 
 .ui-body-b {
   border: 1px solid #c6c6c6;
@@ -185,7 +191,9 @@
     color: #333333; }
   .ui-link {
     color: #2489ce;
-    font-weight: bold; } }
+    font-weight: bold;
+    &:hover, &:active, &:visited {
+      color: #2489ce; } } }
 
 .ui-btn-up-b {
   border: 1px solid #145072;
@@ -271,9 +279,13 @@
   background-image: -o-linear-gradient(top, #f0f0f0, #e9eaeb);
   /* Opera 11.10+ */
   background-image: linear-gradient(top, #f0f0f0, #e9eaeb);
+  .ui-link-inherit {
+    color: #3e3e3e; }
   .ui-link {
-    color: #2489ce;
-    font-weight: bold; }
+    color: #7cc4e7;
+    font-weight: bold;
+    &:hover, &:active, &:visited {
+      color: #2489ce; } }
   font-family: Helvetica, Arial, sans-serif;
   input, select, textarea, button {
     font-family: Helvetica, Arial, sans-serif; } }
@@ -301,7 +313,9 @@
     color: #333333; }
   .ui-link {
     color: #2489ce;
-    font-weight: bold; } }
+    font-weight: bold;
+    &:hover, &:active, &:visited {
+      color: #2489ce; } } }
 
 .ui-btn-up-c {
   border: 1px solid #cccccc;
@@ -393,7 +407,9 @@
     color: #333333; }
   .ui-link {
     color: #2489ce;
-    font-weight: bold; } }
+    font-weight: bold;
+    &:hover, &:active, &:visited {
+      color: #2489ce; } } }
 
 .ui-body-d {
   border: 1px solid #cccccc;
@@ -418,7 +434,9 @@
     color: #333333; }
   .ui-link {
     color: #2489ce;
-    font-weight: bold; } }
+    font-weight: bold;
+    &:hover, &:active, &:visited {
+      color: #2489ce; } } }
 
 .ui-btn-up-d {
   border: 1px solid #cccccc;
@@ -511,7 +529,9 @@
     color: #333333; }
   .ui-link {
     color: #2489ce;
-    font-weight: bold; } }
+    font-weight: bold;
+    &:hover, &:active, &:visited {
+      color: #2489ce; } } }
 
 .ui-body-e {
   border: 1px solid #f7c942;
@@ -536,7 +556,9 @@
     color: #333333; }
   .ui-link {
     color: #2489ce;
-    font-weight: bold; } }
+    font-weight: bold;
+    &:hover, &:active, &:visited {
+      color: #2489ce; } } }
 
 .ui-btn-up-e {
   border: 1px solid #f7c942;
@@ -609,14 +631,6 @@
 
 a.ui-link-inherit {
   text-decoration: none !important; }
-
-/* links and their different states
------------------------------------------------------------------------------------------------------------*/
-
-.ui-link {
-  color: #2489ce;
-  &:hover, &:active, &:visited {
-    color: #2489ce; } }
 
 /* Active class used as the "on" state across all themes
 -----------------------------------------------------------------------------------------------------------*/

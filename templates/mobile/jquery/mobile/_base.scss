@@ -70,6 +70,21 @@
     -ms-overflow-scrolling: touch;
     overflow-scrolling: touch; } }
 
+/*orientations from js are available */
+@media screen and (orientation: portrait) {
+  .ui-mobile {
+    min-height: 420px;
+    .ui-page {
+      min-height: 420px; } } }
+
+
+@media screen and (orientation: landscape) {
+  .ui-mobile {
+    min-height: 300px;
+    .ui-page {
+      min-height: 300px; } } }
+
+
 /* native overflow scrolling */
 
 .ui-mobile-touch-overflow.ui-native-fixed .ui-content {
