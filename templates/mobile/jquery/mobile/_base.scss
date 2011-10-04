@@ -1596,7 +1596,10 @@ span {
 
 @charset "utf-8";
 
-.ui-scrollview-clip, .ui-scrollview-view {}
+.ui-scrollview-clip {
+  position: relative; }
+
+.ui-scrollview-view {}
 
 .ui-scrolllistview .ui-li-divider {
   z-index: 10; }
