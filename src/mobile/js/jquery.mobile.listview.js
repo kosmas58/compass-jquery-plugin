@@ -92,6 +92,7 @@
                 .addClass("ui-corner-tr")
                 .end()
                 .find(".ui-li-thumb")
+                .not(".ui-li-icon")
                 .addClass("ui-corner-tl");
 
         // Select the last visible li element
@@ -103,6 +104,7 @@
                 .addClass("ui-corner-br")
                 .end()
                 .find(".ui-li-thumb")
+                .not(".ui-li-icon")
                 .addClass("ui-corner-bl");
       }
     },
@@ -160,7 +162,7 @@
               splittheme = listsplittheme || last.jqmData("theme") || o.splitTheme;
 
               last.appendTo(item)
-                      .attr("title", last.text())
+                      .attr("title", last.getEncodedText())
                       .addClass("ui-li-link-alt")
                       .empty()
                       .buttonMarkup({
@@ -242,7 +244,7 @@
                         parent = list.parent(),
                         nodeEls = $(list.prevAll().toArray().reverse()),
                         nodeEls = nodeEls.length ? nodeEls : $("<span>" + $.trim(parent.contents()[ 0 ].nodeValue) + "</span>"),
-                        title = nodeEls.first().text(),//url limits to first 30 chars of text
+                        title = nodeEls.first().getEncodedText(),//url limits to first 30 chars of text
                         id = ( parentUrl || "" ) + "&" + $.mobile.subPageUrlKey + "=" + listId,
                         theme = list.jqmData("theme") || o.theme,
                         countTheme = list.jqmData("counttheme") || parentList.jqmData("counttheme") || o.countTheme,

@@ -3025,7 +3025,7 @@
     }
 
     //if title element wasn't found, try the page div data attr too
-    var newPageTitle = toPage.jqmData("title") || toPage.children(":jqmData(role='header')").find(".ui-title").text();
+    var newPageTitle = toPage.jqmData("title") || toPage.children(":jqmData(role='header')").find(".ui-title").getEncodedText();
     if (!!newPageTitle && pageTitle == document.title) {
       pageTitle = newPageTitle;
     }
@@ -4183,6 +4183,7 @@
                 .addClass("ui-corner-tr")
                 .end()
                 .find(".ui-li-thumb")
+                .not(".ui-li-icon")
                 .addClass("ui-corner-tl");
 
         // Select the last visible li element
@@ -4194,6 +4195,7 @@
                 .addClass("ui-corner-br")
                 .end()
                 .find(".ui-li-thumb")
+                .not(".ui-li-icon")
                 .addClass("ui-corner-bl");
       }
     },
@@ -4251,7 +4253,7 @@
               splittheme = listsplittheme || last.jqmData("theme") || o.splitTheme;
 
               last.appendTo(item)
-                      .attr("title", last.text())
+                      .attr("title", last.getEncodedText())
                       .addClass("ui-li-link-alt")
                       .empty()
                       .buttonMarkup({
@@ -4333,7 +4335,7 @@
                         parent = list.parent(),
                         nodeEls = $(list.prevAll().toArray().reverse()),
                         nodeEls = nodeEls.length ? nodeEls : $("<span>" + $.trim(parent.contents()[ 0 ].nodeValue) + "</span>"),
-                        title = nodeEls.first().text(),//url limits to first 30 chars of text
+                        title = nodeEls.first().getEncodedText(),//url limits to first 30 chars of text
                         id = ( parentUrl || "" ) + "&" + $.mobile.subPageUrlKey + "=" + listId,
                         theme = list.jqmData("theme") || o.theme,
                         countTheme = list.jqmData("counttheme") || parentList.jqmData("counttheme") || o.countTheme,
@@ -4924,7 +4926,7 @@
           $("<div class='ui-slider-labelbg ui-slider-labelbg-" + side + theme + " ui-btn-corner-" + corners + "'></div>")
                   .prependTo(slider);
 
-          $("<span class='ui-slider-label ui-slider-label-" + side + theme + " ui-btn-corner-" + corners + "' role='img'>" + $(this).text() + "</span>")
+          $("<span class='ui-slider-label ui-slider-label-" + side + theme + " ui-btn-corner-" + corners + "' role='img'>" + $(this).getEncodedText() + "</span>")
                   .prependTo(handle);
         });
 
@@ -5104,7 +5106,7 @@
       this.handle.css("left", percent + "%");
       this.handle.attr({
         "aria-valuenow": cType === "input" ? newval : control.find("option").eq(newval).attr("value"),
-        "aria-valuetext": cType === "input" ? newval : control.find("option").eq(newval).text(),
+        "aria-valuetext": cType === "input" ? newval : control.find("option").eq(newval).getEncodedText(),
         title: newval
       });
 
@@ -6083,7 +6085,7 @@
         buttonClass += " ui-btn-icon-" + o.iconpos;
 
         if (o.iconpos == "notext" && !el.attr("title")) {
-          el.attr("title", el.text());
+          el.attr("title", el.getEncodedText());
         }
       }
 
@@ -6099,7 +6101,7 @@
       el.attr("data-" + $.mobile.ns + "theme", o.theme)
               .addClass(buttonClass);
 
-      wrap = ( "<D class='" + innerClass + "'><D class='ui-btn-text'></D>" +
+      wrap = ( "<D class='" + innerClass + "' aria-hidden='true'><D class='ui-btn-text'></D>" +
               ( o.icon ? "<span class='" + iconClass + "'></span>" : "" ) +
               "</D>" ).replace(/D/g, o.wrapperEls);
 
