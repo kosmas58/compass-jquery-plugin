@@ -758,10 +758,15 @@ Built by David Kaneda and maintained by Jonathan Stark.
   width: 24px;
   height: 24px;
   .ui-btn-inner {
-    padding: 2px 1px 2px 3px; }
-  .ui-btn-text {
-    position: absolute;
-    left: -999px; } }
+    padding: 2px 1px 2px 3px; } }
+
+.ui-btn-text {
+  position: relative;
+  z-index: 1; }
+
+.ui-btn-icon-notext .ui-btn-text {
+  position: absolute;
+  left: -999px; }
 
 .ui-btn-icon-left .ui-btn-inner {
   padding-left: 33px; }
@@ -1225,7 +1230,7 @@ textarea.ui-input-text {
     position: absolute;
     right: 0;
     top: 50%;
-    margin-top: -14px; }
+    margin-top: -13px; }
   .ui-input-clear-hidden {
     display: none; } }
 
@@ -1287,8 +1292,7 @@ textarea.ui-input-text {
     border-width: 0;
     border-top-width: 1px; }
   .ui-btn-text {
-    position: relative;
-    z-index: 1;
+    z-index: 0;
     a.ui-link-inherit {
       text-overflow: ellipsis;
       overflow: hidden;

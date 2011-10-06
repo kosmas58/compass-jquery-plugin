@@ -247,7 +247,8 @@
 // in-memory storage
 // fallback for all browsers to enable the API even if we can't persist data
   (function() {
-    var memory = {};
+    var memory = {},
+            timeout = {};
 
     function copy(obj) {
       return obj === undefined ? undefined : JSON.parse(JSON.stringify(obj));
@@ -262,6 +263,11 @@
         return copy(memory[ key ]);
       }
 
+      if (timeout[ key ]) {
+        clearTimeout(timeout[ key ]);
+        delete timeout[ key ];
+      }
+
       if (value === null) {
         delete memory[ key ];
         return null;
@@ -269,8 +275,9 @@
 
       memory[ key ] = value;
       if (options.expires) {
-        setTimeout(function() {
+        timeout[ key ] = setTimeout(function() {
           delete memory[ key ];
+          delete timeout[ key ];
         }, options.expires);
       }
 

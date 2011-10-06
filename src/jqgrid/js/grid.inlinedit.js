@@ -282,17 +282,18 @@
         } else {
           $("#lui_" + $t.p.id).show();
           if ($t.p.restful) {
-            mtype = "PUT";
+            o.mtype = "PUT";
             o.url = o.url + "/" + rowid;
           }
           else {
-            mtype = "POST";
+            o.mtype = "POST";
           }
           tmp3 = $.extend({}, tmp, tmp3);
+          tmp3[idname] = $.jgrid.stripPref($t.p.idPrefix, tmp3[idname]);
           $.ajax($.extend({
             url:o.url,
             data: $.isFunction($t.p.serializeRowData) ? $t.p.serializeRowData.call($t, tmp3) : tmp3,
-            type: mytype,
+            type: o.mtype,
             async : false, //?!?
             complete: function(res, stat) {
               $("#lui_" + $t.p.id).hide();
