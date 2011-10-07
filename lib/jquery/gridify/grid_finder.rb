@@ -168,7 +168,7 @@ module Gridify
     def params_to_rules(params)
       #debugger
       if params[:_search]=='true' || params[:_search]==true
-        if params[:filters]
+        if params[:filters] && !params[:filters].blank?
           # advanced search
           filters = ActiveSupport::JSON.decode(params[:filters])
           self.search_rules = filters['rules']
