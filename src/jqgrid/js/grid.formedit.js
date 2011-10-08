@@ -737,13 +737,18 @@
             }
 
             postdata[idname] = $.jgrid.stripPref($t.p.idPrefix, postdata[idname]);
+
             if ($t.p.restful) {
-              rp_ge.mtype = postdata.id == "_empty" ? "POST" : "PUT";
-              rp_ge.url = postdata.id == "_empty" ? $t.p.url : $t.p.url + "/" + postdata.id;
+              theUrl = postdata.id == "_empty" ? $t.p.url : $t.p.url + "/" + postdata.id;
+              theType = postdata.id == "_empty" ? "POST" : "PUT";
+            } else {
+              theUrl: rp_ge[$t.p.id].url ? rp_ge[$t.p.id].url : $($t).jqGrid('getGridParam', 'editurl');
+              thrType: rp_ge[$t.p.id].mtype;
             }
+
             var ajaxOptions = $.extend({
-              url: rp_ge[$t.p.id].url ? rp_ge[$t.p.id].url : $($t).jqGrid('getGridParam', 'editurl'),
-              type: rp_ge[$t.p.id].mtype,
+              url: theUrl,
+              type: theType,
               data: $.isFunction(rp_ge[$t.p.id].serializeEditData) ? rp_ge[$t.p.id].serializeEditData(postdata) : postdata,
               complete:function(data, Status) {
                 postdata[idname] = $t.p.idPrefix + postdata[idname];
@@ -1798,14 +1803,18 @@
                 }
               }
               postd[idname] = postdata.join();
+
               if ($t.p.restful) {
-                p.mtype = "DELETE";
-                rp_ge.url = $t.p.url + "/" + postdata;
+                theUrl = $t.p.url + "/" + postdata;
+                theType = "DELETE";
+              } else {
+                theUrl = rp_ge[$t.p.id].url ? rp_ge[$t.p.id].url : $($t).jqGrid('getGridParam', 'editurl');
+                type   = rp_ge[$t.p.id].mtype;
               }
 
               var ajaxOptions = $.extend({
-                url: rp_ge[$t.p.id].url ? rp_ge[$t.p.id].url : $($t).jqGrid('getGridParam', 'editurl'),
-                type: rp_ge[$t.p.id].mtype,
+                url: theUrl,
+                type: theType,
                 data: $.isFunction(rp_ge[$t.p.id].serializeDelData) ? rp_ge[$t.p.id].serializeDelData(postd) : postd,
                 complete:function(data, Status) {
                   if (Status != "success") {

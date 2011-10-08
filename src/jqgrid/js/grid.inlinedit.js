@@ -281,6 +281,9 @@
           $(ind).unbind("keydown");
         } else {
           $("#lui_" + $t.p.id).show();
+          tmp3 = $.extend({}, tmp, tmp3);
+          tmp3[idname] = $.jgrid.stripPref($t.p.idPrefix, tmp3[idname]);
+
           if ($t.p.restful) {
             o.mtype = "PUT";
             o.url = o.url + "/" + rowid;
@@ -288,8 +291,7 @@
           else {
             o.mtype = "POST";
           }
-          tmp3 = $.extend({}, tmp, tmp3);
-          tmp3[idname] = $.jgrid.stripPref($t.p.idPrefix, tmp3[idname]);
+
           $.ajax($.extend({
             url:o.url,
             data: $.isFunction($t.p.serializeRowData) ? $t.p.serializeRowData.call($t, tmp3) : tmp3,

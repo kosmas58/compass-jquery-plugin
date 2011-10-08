@@ -3239,22 +3239,22 @@
           return false;
         });
       }
-      /* if ($.isFunction(this.p.onRightClickRow)) {
-       $(this).bind('contextmenu', function(e) {
-       td = e.target;
-       ptr = $(td, ts.rows).closest("tr.jqgrow");
-       if ($(ptr).length === 0) {
-       return false;
-       }
-       if (!ts.p.multiselect) {
-       $(ts).jqGrid("setSelection", ptr[0].id, true);
-       }
-       ri = ptr[0].rowIndex;
-       ci = $.jgrid.getCellIndex(td);
-       ts.p.onRightClickRow.call(ts, $(ptr).attr("id"), ri, ci, e);
-       return false;
-       });
-       }*/
+      /*if ($.isFunction(this.p.onRightClickRow)) {
+        $(this).bind('contextmenu', function(e) {
+          td = e.target;
+          ptr = $(td, ts.rows).closest("tr.jqgrow");
+          if ($(ptr).length === 0) {
+            return false;
+          }
+          if (!ts.p.multiselect) {
+            $(ts).jqGrid("setSelection", ptr[0].id, true);
+          }
+          ri = ptr[0].rowIndex;
+          ci = $.jgrid.getCellIndex(td);
+          ts.p.onRightClickRow.call(ts, $(ptr).attr("id"), ri, ci, e);
+          return false;
+        });
+      }*/
       grid.bDiv = document.createElement("div");
       if (isMSIE) {
         if (String(ts.p.height).toLowerCase() === "auto") {
@@ -8870,13 +8870,18 @@ var xmlJsonClass = {
             }
 
             postdata[idname] = $.jgrid.stripPref($t.p.idPrefix, postdata[idname]);
+
             if ($t.p.restful) {
-              rp_ge.mtype = postdata.id == "_empty" ? "POST" : "PUT";
-              rp_ge.url = postdata.id == "_empty" ? $t.p.url : $t.p.url + "/" + postdata.id;
+              theUrl = postdata.id == "_empty" ? $t.p.url : $t.p.url + "/" + postdata.id;
+              theType = postdata.id == "_empty" ? "POST" : "PUT";
+            } else {
+              theUrl: rp_ge[$t.p.id].url ? rp_ge[$t.p.id].url : $($t).jqGrid('getGridParam', 'editurl');
+              thrType: rp_ge[$t.p.id].mtype;
             }
+
             var ajaxOptions = $.extend({
-              url: rp_ge[$t.p.id].url ? rp_ge[$t.p.id].url : $($t).jqGrid('getGridParam', 'editurl'),
-              type: rp_ge[$t.p.id].mtype,
+              url: theUrl,
+              type: theType,
               data: $.isFunction(rp_ge[$t.p.id].serializeEditData) ? rp_ge[$t.p.id].serializeEditData(postdata) : postdata,
               complete:function(data, Status) {
                 postdata[idname] = $t.p.idPrefix + postdata[idname];
@@ -9931,14 +9936,18 @@ var xmlJsonClass = {
                 }
               }
               postd[idname] = postdata.join();
+
               if ($t.p.restful) {
-                p.mtype = "DELETE";
-                rp_ge.url = $t.p.url + "/" + postdata;
+                theUrl = $t.p.url + "/" + postdata;
+                theType = "DELETE";
+              } else {
+                theUrl = rp_ge[$t.p.id].url ? rp_ge[$t.p.id].url : $($t).jqGrid('getGridParam', 'editurl');
+                type   = rp_ge[$t.p.id].mtype;
               }
 
               var ajaxOptions = $.extend({
-                url: rp_ge[$t.p.id].url ? rp_ge[$t.p.id].url : $($t).jqGrid('getGridParam', 'editurl'),
-                type: rp_ge[$t.p.id].mtype,
+                url: theUrl,
+                type: theType,
                 data: $.isFunction(rp_ge[$t.p.id].serializeDelData) ? rp_ge[$t.p.id].serializeDelData(postd) : postd,
                 complete:function(data, Status) {
                   if (Status != "success") {
@@ -10779,6 +10788,9 @@ var xmlJsonClass = {
           $(ind).unbind("keydown");
         } else {
           $("#lui_" + $t.p.id).show();
+          tmp3 = $.extend({}, tmp, tmp3);
+          tmp3[idname] = $.jgrid.stripPref($t.p.idPrefix, tmp3[idname]);
+
           if ($t.p.restful) {
             o.mtype = "PUT";
             o.url = o.url + "/" + rowid;
@@ -10786,8 +10798,7 @@ var xmlJsonClass = {
           else {
             o.mtype = "POST";
           }
-          tmp3 = $.extend({}, tmp, tmp3);
-          tmp3[idname] = $.jgrid.stripPref($t.p.idPrefix, tmp3[idname]);
+
           $.ajax($.extend({
             url:o.url,
             data: $.isFunction($t.p.serializeRowData) ? $t.p.serializeRowData.call($t, tmp3) : tmp3,
