@@ -730,9 +730,7 @@ Built by David Kaneda and maintained by Jonathan Stark.
   cursor: pointer;
   position: relative;
   margin: .5em 5px;
-  padding: 0;
-  &:focus, &:active {
-    outline: none; } }
+  padding: 0; }
 
 .ui-header .ui-btn, .ui-footer .ui-btn, .ui-bar .ui-btn {
   display: inline-block;

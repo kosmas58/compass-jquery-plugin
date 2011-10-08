@@ -54,7 +54,7 @@
         return this.each(function() {
           var $el = $(this);
           var settings = $el.data('settings');
-          var wHeight = $('html').prop('clientHeight'); // WRONG
+          var wHeight = $('html').attr('clientHeight'); // WRONG
 
           var newY = window.pageYOffset +
                   ((settings.align == 'top') ?

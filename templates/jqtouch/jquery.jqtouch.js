@@ -51,6 +51,7 @@
               cacheGetRequests: true,
               debug: false,
               fallback2dAnimation: 'fade',
+              defaultAnimation: 'slideleft',
               fixedViewport: true,
               formSelector: 'form',
               fullScreen: true,
@@ -620,7 +621,7 @@
 
       // Init some vars
       var target = $el.attr('target'),
-              hash = $el.attr('hash'),
+              hash = $el.attr('hash') || ($el.prop && $el.prop('hash')), // jQuery 1.6+ attr vs. prop
               animation = null;
 
       if ($el.isExternalLink()) {
@@ -657,8 +658,8 @@
         ;
 
         if (!animation) {
-          _log('Animation could not be found. Using slideleft.');
-          animation = 'slideleft';
+          _log('Animation could not be found. Using ' + jQTSettings.defaultAnimation + '.');
+          animation = jQTSettings.defaultAnimation;
         }
 
         if (hash && hash !== '#') {
@@ -710,11 +711,9 @@
               deltaY = 0,
               deltaT = 0;
 
-      if (event.changedTouches && event.changedTouches.length) {
-        touch = event.changedTouches[0];
-        startX = touch.pageX;
-        startY = touch.pageY;
-      }
+      touch = (e.changedTouches && e.event.changedTouches.length) ? e.changedTouches[0] : e;
+      startX = touch.clientX;
+      startY = touch.clientY;
 
       // Prep the element
       $el.bind('touchmove', touchMoveHandler).bind('touchend', touchEndHandler).bind('touchcancel', touchCancelHandler);
@@ -740,7 +739,7 @@
 
       function touchEndHandler(e) {
         _debug();
-        // updateChanges();
+        // updateChanges(e);
         $el.unbind('touchend', touchEndHandler).unbind('touchcancel', touchCancelHandler);
         clearTimeout(hoverTimeout);
         clearTimeout(pressTimeout);
@@ -755,7 +754,7 @@
 
       function touchMoveHandler(e) {
         // _debug();
-        updateChanges();
+        updateChanges(e);
         var absX = Math.abs(deltaX);
         var absY = Math.abs(deltaY);
         var direction;
@@ -775,11 +774,11 @@
         }
       }
 
-      function updateChanges() {
+      function updateChanges(e) {
         // _debug();
-        var firstFinger = event.changedTouches[0] || null;
-        deltaX = firstFinger.pageX - startX;
-        deltaY = firstFinger.pageY - startY;
+        var firstFinger = e.changedTouches ? e.changedTouches[0] : e;
+        deltaX = firstFinger.clientX - startX;
+        deltaY = firstFinger.clientY - startY;
         deltaT = (new Date).getTime() - startTime;
         // _debug('deltaX:'+deltaX+';deltaY:'+deltaY+';');
       }
@@ -969,6 +968,7 @@
   }
 
 })(jQuery);
+
 
 /*
 
@@ -5392,7 +5392,7 @@ function changeBack(target) {
         return this.each(function() {
           var $el = $(this);
           var settings = $el.data('settings');
-          var wHeight = $('html').prop('clientHeight'); // WRONG
+          var wHeight = $('html').attr('clientHeight'); // WRONG
 
           var newY = window.pageYOffset +
                   ((settings.align == 'top') ?
@@ -6195,7 +6195,7 @@ function changeBack(target) {
         return navigator.onLine;
       }
 
-      if (!$('html').prop('manifest')) {
+      if (!$('html').attr('manifest')) {
         console.log('No Cache Manifest listed on the <html> tag.')
       }
 

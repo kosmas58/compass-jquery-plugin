@@ -274,6 +274,16 @@
 (function($, undefined) {
 
   $.widget("mobile.widget", {
+    // decorate the parent _createWidget to trigger `widgetinit` for users
+    // who wish to do post post `widgetcreate` alterations/additions
+    //
+    // TODO create a pull request for jquery ui to trigger this event
+    // in the original _createWidget
+    _createWidget: function() {
+      $.Widget.prototype._createWidget.apply(this, arguments);
+      this._trigger('init');
+    },
+
     _getCreateOptions: function() {
 
       var elem = this.element,
@@ -6660,7 +6670,7 @@
 (function($, undefined) {
 
 // Enable touch overflow scrolling when it's natively supported
-  $.mobile.touchOverflowEnabled = true;
+  $.mobile.touchOverflowEnabled = false;
 
 // Enabled zoom when touch overflow is enabled. Can cause usability issues, unfortunately
   $.mobile.touchOverflowZoomEnabled = false;
