@@ -742,8 +742,8 @@
               theUrl = postdata.id == "_empty" ? $t.p.url : $t.p.url + "/" + postdata.id;
               theType = postdata.id == "_empty" ? "POST" : "PUT";
             } else {
-              theUrl: rp_ge[$t.p.id].url ? rp_ge[$t.p.id].url : $($t).jqGrid('getGridParam', 'editurl');
-              thrType: rp_ge[$t.p.id].mtype;
+              theUrl = rp_ge[$t.p.id].url ? rp_ge[$t.p.id].url : $($t).jqGrid('getGridParam', 'editurl');
+              theType = rp_ge[$t.p.id].mtype;
             }
 
             var ajaxOptions = $.extend({
@@ -1809,7 +1809,7 @@
                 theType = "DELETE";
               } else {
                 theUrl = rp_ge[$t.p.id].url ? rp_ge[$t.p.id].url : $($t).jqGrid('getGridParam', 'editurl');
-                type   = rp_ge[$t.p.id].mtype;
+                theType = rp_ge[$t.p.id].mtype;
               }
 
               var ajaxOptions = $.extend({
@@ -1828,6 +1828,8 @@
                     // data is posted successful
                     // execute aftersubmit with the returned data from server
                     if ($.isFunction(rp_ge[$t.p.id].afterSubmit)) {
+                      alert(data);
+                      alert(postd);
                       ret = rp_ge[$t.p.id].afterSubmit(data, postd);
                     }
                   }
