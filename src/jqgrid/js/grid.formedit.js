@@ -1828,8 +1828,6 @@
                     // data is posted successful
                     // execute aftersubmit with the returned data from server
                     if ($.isFunction(rp_ge[$t.p.id].afterSubmit)) {
-                      alert(data);
-                      alert(postd);
                       ret = rp_ge[$t.p.id].afterSubmit(data, postd);
                     }
                   }
@@ -1863,7 +1861,7 @@
                   }
                   rp_ge[$t.p.id].processing = false;
                   $("#dData", "#" + dtbl + "_2").removeClass('ui-state-active');
-                  if (ret[0]) {
+                  if (ret[0] || ret) {
                     $.jgrid.hideModal("#" + IDs.themodal, {gb:"#gbox_" + gID,jqm:p.jqModal, onClose: rp_ge[$t.p.id].onClose});
                   }
                 }
