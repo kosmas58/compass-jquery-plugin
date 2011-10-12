@@ -17,13 +17,13 @@ A Sass-based Meta-Framework for Compass that allows you to mix and match any of 
 * jquery.jstree.js V1.0rc3
 * jquery.dynatree.js V1.1.1
 * jquery.ribbon.js
-* jquery.jqGrid.js V4.1.2 (with minor changes to make it RESTful)
+* jquery.jqGrid.js V4.2.0 (with minor changes to make it RESTful)
 * jquery.marktitup.js V1.1.2
 * jquery.tinymce.js V3.4.5
 
 and for mobile devices <i>(using pure haml/sass without compass)</i>:
 
-* jquery.mobile.js 1.0b3
+* jquery.mobile.js 1.0rc1
 * jquery.jqtouch.js V1.0b3
 
 This library requires [Compass][3].

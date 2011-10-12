@@ -31,10 +31,6 @@
     border-top-width: 1px;
 }
 
-.ui-li .ui-btn-text {
-    z-index: 0;
-}
-
 .ui-li .ui-btn-text a.ui-link-inherit {
     text-overflow: ellipsis;
     overflow: hidden;
@@ -105,6 +101,10 @@ ol.ui-listview .ui-li-jsnumbering:before {
 
 .ui-li-has-arrow.ui-li-has-count .ui-btn-inner a.ui-link-inherit, .ui-li-static.ui-li-has-arrow.ui-li-has-count {
     padding-right: 75px;
+}
+
+.ui-li-has-count .ui-btn-text {
+    padding-right: 15px;
 }
 
 .ui-li-heading {

@@ -302,6 +302,15 @@
       });
 
       return options;
+    },
+
+    enhanceWithin: function(target) {
+      // TODO remove dependency on the page widget for the keepNative.
+      // Currently the keepNative value is defined on the page prototype so
+      // the method is as well
+      var keepNative = $.mobile.page.prototype.keepNativeSelector();
+
+      $(this.options.initSelector, target).not(keepNative)[ this.widgetName ]();
     }
   });
 
@@ -1716,7 +1725,8 @@
   $.widget("mobile.page", $.mobile.widget, {
     options: {
       theme: "c",
-      domCache: false
+      domCache: false,
+      keepNativeDefault: ":jqmData(role='none'), :jqmData(role='nojs')"
     },
 
     _create: function() {
@@ -1726,9 +1736,19 @@
       this.element
               .attr("tabindex", "0")
               .addClass("ui-page ui-body-" + this.options.theme);
+    },
+
+    keepNativeSelector: function() {
+      var options = this.options,
+              keepNativeDefined = options.keepNative && $.trim(options.keepNative);
+
+      if (keepNativeDefined && options.keepNative !== options.keepNativeDefault) {
+        return [options.keepNative, options.keepNativeDefault].join(", ");
+      }
+
+      return options.keepNativeDefault;
     }
   });
-
 })(jQuery);
 
 
@@ -2957,6 +2977,14 @@
       return;
     }
 
+    // If we are going to the first-page of the application, we need to make
+    // sure settings.dataUrl is set to the application document url. This allows
+    // us to avoid generating a document url with an id hash in the case where the
+    // first-page of the document has an id attribute specified.
+    if (toPage[ 0 ] === $.mobile.firstPage[ 0 ] && !settings.dataUrl) {
+      settings.dataUrl = documentUrl.hrefNoHash;
+    }
+
     // The caller passed us a real page DOM element. Update our
     // internal state and then trigger a transition to the page.
     var fromPage = settings.fromPage,
@@ -3290,10 +3318,13 @@
     $(".ui-page").live("pageshow.prefetch", function() {
       var urls = [];
       $(this).find("a:jqmData(prefetch)").each(function() {
-        var url = $(this).attr("href");
+        var $link = $(this),
+                url = $link.attr("href");
+
         if (url && $.inArray(url, urls) === -1) {
           urls.push(url);
-          $.mobile.loadPage(url);
+
+          $.mobile.loadPage(url, {role: $link.attr("data-" + $.mobile.ns + "rel")});
         }
       });
     });
@@ -3459,14 +3490,15 @@
 
       var href, state,
               hash = location.hash,
-              isPath = $.mobile.path.isPath(hash);
+              isPath = $.mobile.path.isPath(hash),
+              resolutionUrl = isPath ? location.href : $.mobile.getDocumentUrl();
       hash = isPath ? hash.replace("#", "") : hash;
 
       // propulate the hash when its not available
       state = self.state();
 
       // make the hash abolute with the current href
-      href = $.mobile.path.makeUrlAbsolute(hash, location.href);
+      href = $.mobile.path.makeUrlAbsolute(hash, resolutionUrl);
 
       if (isPath) {
         href = self.resetUIKeys(href);
@@ -4738,9 +4770,7 @@
 
 //auto self-init widgets
   $(document).bind("pagecreate create", function(e) {
-    $($.mobile.checkboxradio.prototype.options.initSelector, e.target)
-            .not(":jqmData(role='none'), :jqmData(role='nojs')")
-            .checkboxradio();
+    $.mobile.checkboxradio.prototype.enhanceWithin(e.target);
   });
 
 })(jQuery);
@@ -4837,9 +4867,7 @@
 
 //auto self-init widgets
   $(document).bind("pagecreate create", function(e) {
-    $($.mobile.button.prototype.options.initSelector, e.target)
-            .not(":jqmData(role='none'), :jqmData(role='nojs')")
-            .button();
+    $.mobile.button.prototype.enhanceWithin(e.target);
   });
 
 })(jQuery);
@@ -5164,11 +5192,7 @@
 
 //auto self-init widgets
   $(document).bind("pagecreate create", function(e) {
-
-    $($.mobile.slider.prototype.options.initSelector, e.target)
-            .not(":jqmData(role='none'), :jqmData(role='nojs')")
-            .slider();
-
+    $.mobile.slider.prototype.enhanceWithin(e.target);
   });
 
 })(jQuery);
@@ -5288,6 +5312,12 @@
           clearTimeout(keyupTimeout);
           keyupTimeout = setTimeout(keyup, keyupTimeoutBuffer);
         });
+
+        // Issue 509: the browser is not giving scrollHeight properly until after the document
+        // is ready.
+        if ($.trim(input.text())) {
+          $(keyup);
+        }
       }
     },
 
@@ -5304,11 +5334,7 @@
 
 //auto self-init widgets
   $(document).bind("pagecreate create", function(e) {
-
-    $($.mobile.textinput.prototype.options.initSelector, e.target)
-            .not(":jqmData(role='none'), :jqmData(role='nojs')")
-            .textinput();
-
+    $.mobile.textinput.prototype.enhanceWithin(e.target);
   });
 
 })(jQuery);
@@ -5535,9 +5561,7 @@
 
 //auto self-init widgets
   $(document).bind("pagecreate create", function(e) {
-    $($.mobile.selectmenu.prototype.options.initSelector, e.target)
-            .not(":jqmData(role='none'), :jqmData(role='nojs')")
-            .selectmenu();
+    $.mobile.selectmenu.prototype.enhanceWithin(e.target);
   });
 })(jQuery);
 

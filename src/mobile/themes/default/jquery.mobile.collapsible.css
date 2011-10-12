@@ -46,7 +46,7 @@
 }
 
 .ui-collapsible-heading-status {
-    position: absolute;
+    position: fixed;
     left: -9999px;
 }
 

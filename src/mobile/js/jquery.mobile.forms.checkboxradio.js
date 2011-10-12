@@ -186,9 +186,7 @@
 
 //auto self-init widgets
   $(document).bind("pagecreate create", function(e) {
-    $($.mobile.checkboxradio.prototype.options.initSelector, e.target)
-            .not(":jqmData(role='none'), :jqmData(role='nojs')")
-            .checkboxradio();
+    $.mobile.checkboxradio.prototype.enhanceWithin(e.target);
   });
 
 })(jQuery);

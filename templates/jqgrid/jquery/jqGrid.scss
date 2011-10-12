@@ -36,7 +36,6 @@
     margin: 0em;
     padding: 0em;
     overflow-x: hidden;
-    overflow-y: auto;
     border-left: 0px none !important;
     border-top: 0px none !important;
     border-right: 0px none !important; }
@@ -68,12 +67,16 @@
 .ui-th-ltr, .ui-jqgrid .ui-jqgrid-htable th.ui-th-ltr {
   border-left: 0px none; }
 
-.ui-th-rtl {
+.ui-th-rtl, .ui-jqgrid .ui-jqgrid-htable th.ui-th-rtl {
   border-right: 0px none; }
 
+.ui-first-th-ltr {
+  border-right: 1px solid; }
+
+.ui-first-th-rtl {
+  border-left: 1px solid; }
+
 .ui-jqgrid {
-  .ui-jqgrid-htable th.ui-th-rtl {
-    border-right: 0px none; }
   .ui-th-div-ie {
     white-space: nowrap;
     zoom: 1;

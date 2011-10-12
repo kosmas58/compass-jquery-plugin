@@ -2,12 +2,12 @@
 // @compilation_level SIMPLE_OPTIMIZATIONS
 
 /**
- * @license jqGrid  4.1.2  - jQuery Grid
+ * @license jqGrid  4.2.0  - jQuery Grid
  * Copyright (c) 2008, Tony Tomov, tony@trirand.com
  * Dual licensed under the MIT and GPL licenses
  * http://www.opensource.org/licenses/mit-license.php
  * http://www.gnu.org/licenses/gpl-2.0.html
- * Date: 2011-07-20
+ * Date: 2011-10-11
  */
 //jsHint options
 /*global document, window, jQuery, DOMParser, ActiveXObject $ */
@@ -2909,7 +2909,7 @@
           return false;
         });
       }
-      /*if ($.isFunction(this.p.onRightClickRow)) {
+     /* if ($.isFunction(this.p.onRightClickRow)) {
         $(this).bind('contextmenu', function(e) {
           td = e.target;
           ptr = $(td, ts.rows).closest("tr.jqgrow");
@@ -3601,7 +3601,11 @@
           colname = [colname];
         }
         show = show != "none" ? "" : "none";
-        var sw = show === "" ? true : false;
+        var sw = show === "" ? true : false,
+                gh = $t.p.groupHeader && (typeof $t.p.groupHeader === 'object' || $.isFunction($t.p.groupHeader) );
+        if (gh) {
+          $($t).jqGrid('destroyGroupHeader', false);
+        }
         $(this.p.colModel).each(function(i) {
           if ($.inArray(this.name, colname) !== -1 && this.hidden === sw) {
             $("tr", $t.grid.hDiv).each(function() {
@@ -3626,8 +3630,8 @@
         if (fndh === true) {
           $($t).jqGrid("setGridWidth", $t.p.shrinkToFit === true ? $t.p.tblwidth : $t.p.width);
         }
-        if ($t.p.groupHeader && (typeof $t.p.groupHeader === 'object' || $.isFunction($t.p.groupHeader) )) {
-          $($t).jqGrid('updateGroupHeader');
+        if (gh) {
+          $($t).jqGrid('setGroupHeaders', $t.p.groupHeader);
         }
       });
     },
