@@ -425,7 +425,7 @@
               eval('(' + js + ')');
     },
     parseDate : function(format, date) {
-      var tsp = {m : 1, d : 1, y : 1970, h : 0, i : 0, s : 0},k,hl,dM, regdate = /[\\\/:_;.,\t\T\s-]/;
+      var tsp = {m : 1, d : 1, y : 1970, h : 0, i : 0, s : 0, u:0},k,hl,dM, regdate = /[\\\/:_;.,\t\T\s-]/;
       if (date && date !== null && date !== undefined) {
         date = $.trim(date);
         date = date.split(regdate);
@@ -485,7 +485,7 @@
           tsp.y = 2000 + tsp.y;
         }
       }
-      return new Date(tsp.y, tsp.m, tsp.d, tsp.h, tsp.i, tsp.s, 0);
+      return new Date(tsp.y, tsp.m, tsp.d, tsp.h, tsp.i, tsp.s, tsp.u);
     },
     jqID : function(sid) {
       return String(sid).replace(/[!"#$%&'()*+,.\/:;<=>?@\[\\\]\^`{|}~]/g, "\\$&");
@@ -3239,22 +3239,22 @@
           return false;
         });
       }
-     /* if ($.isFunction(this.p.onRightClickRow)) {
-        $(this).bind('contextmenu', function(e) {
-          td = e.target;
-          ptr = $(td, ts.rows).closest("tr.jqgrow");
-          if ($(ptr).length === 0) {
-            return false;
-          }
-          if (!ts.p.multiselect) {
-            $(ts).jqGrid("setSelection", ptr[0].id, true);
-          }
-          ri = ptr[0].rowIndex;
-          ci = $.jgrid.getCellIndex(td);
-          ts.p.onRightClickRow.call(ts, $(ptr).attr("id"), ri, ci, e);
-          return false;
-        });
-      }*/
+      /* if ($.isFunction(this.p.onRightClickRow)) {
+       $(this).bind('contextmenu', function(e) {
+       td = e.target;
+       ptr = $(td, ts.rows).closest("tr.jqgrow");
+       if ($(ptr).length === 0) {
+       return false;
+       }
+       if (!ts.p.multiselect) {
+       $(ts).jqGrid("setSelection", ptr[0].id, true);
+       }
+       ri = ptr[0].rowIndex;
+       ci = $.jgrid.getCellIndex(td);
+       ts.p.onRightClickRow.call(ts, $(ptr).attr("id"), ri, ci, e);
+       return false;
+       });
+       }*/
       grid.bDiv = document.createElement("div");
       if (isMSIE) {
         if (String(ts.p.height).toLowerCase() === "auto") {
@@ -4522,6 +4522,7 @@
    * http://trirand.com/blog/
    *
    * Wildraid wildraid@mail.ru
+   * Oleg Kiriljuk oleg.kiriljuk@ok-soft-gmbh.com
    * Dual licensed under the MIT and GPL licenses:
    * http://www.opensource.org/licenses/mit-license.php
    * http://www.gnu.org/licenses/gpl-2.0.html
@@ -5054,84 +5055,6 @@
         this.triggerToolbar = triggerToolbar;
         this.clearToolbar = clearToolbar;
         this.toggleToolbar = toggleToolbar;
-      });
-    },
-    //Wildraid group methods
-
-    'updateGroupHeader' : function() {
-      return this.each(function() {
-        var $t = this;
-        if (!$t.grid || !$t.p.groupHeader) {
-          return;
-        }
-
-        var $hDiv = $($t.grid.hDiv),
-                $labels = $hDiv.find('.ui-jqgrid-labels'),
-
-                $first_row = $labels
-                        .clone()
-                        .removeClass('ui-jqgrid-labels')
-                        .removeAttr('role')
-                        .addClass('ui-jqgrid-labels-firstrow'),
-
-
-                $group_row = $('<tr></tr>').addClass('ui-jqgrid-labels-grouprow'),
-
-                th = '<th class="ui-state-default ui-th-' + $t.p.direction + '"></th>',
-
-          //Iterate columns
-                colspan = 0,
-                prev_hgroup = null,
-                $th,
-                cm = $t.p.colModel,
-                col,
-                hgroup;
-
-        $first_row.find('th').height(0).html('').removeAttr('role').removeAttr('id');
-
-        for (var i in cm) {
-          col = cm[i];
-          hgroup = col.hgroup ? col.hgroup : '';
-
-          if (col.hidden) continue;
-          if (prev_hgroup === null) {
-            prev_hgroup = hgroup;
-          }//first non-hidden column becomes initial group
-
-          if (prev_hgroup == hgroup) {
-            colspan++;
-          }
-          else {
-            $th = $(th).attr('colspan', colspan);
-            if ($t.p.groupHeader[prev_hgroup]) $th.html($t.p.groupHeader[prev_hgroup].label);
-            $th.appendTo($group_row);
-
-            prev_hgroup = hgroup;
-            colspan = 1;
-          }
-        }
-
-        //Last th
-        if (colspan) {
-          $th = $(th).attr('colspan', colspan);
-          if ($t.p.groupHeader[prev_hgroup]) $th.html($t.p.groupHeader[prev_hgroup].label);
-          $th.appendTo($group_row);
-        }
-
-        //Update DOM
-        $hDiv.find('.ui-jqgrid-labels-firstrow, .ui-jqgrid-labels-grouprow').remove();
-        $labels.before($first_row).before($group_row);
-
-        //Preserve orig event
-        //we have to move it to the core of resizing
-        if ($.isFunction($t.p.resizeStop)) {
-          var resizeStop = $t.p.resizeStop;
-        }
-
-        $t.p.resizeStop = function(nw, idx) {
-          $first_row.find('th').eq(idx).width(nw);
-          if ($.isFunction(resizeStop)) resizeStop.call(this, nw, idx);
-        };
       });
     },
 
@@ -9225,7 +9148,7 @@ var xmlJsonClass = {
           bt += "<tr style='display:none' class='binfo'><td class='bottominfo' colspan='2'>" + rp_ge[$t.p.id].bottominfo + "</td></tr>";
           bt += "</tbody></table>";
           if (maxRows > 0) {
-            var sd = [], div = {};
+            var sd = [];
             $.each($(tbl)[0].rows, function(i, r) {
               sd[i] = r;
             });
@@ -9239,9 +9162,8 @@ var xmlJsonClass = {
               return 0;
             });
             $.each(sd, function(index, row) {
-              div.html += row;
+              $('tbody', tbl).append(row)
             });
-            $('tbody', tbl).append(div.html);
           }
           p.gbox = "#gbox_" + gID;
           var cle = false;
@@ -10796,7 +10718,7 @@ var xmlJsonClass = {
           $("#lui_" + $t.p.id).show();
           tmp3 = $.extend({}, tmp, tmp3);
           tmp3[idname] = $.jgrid.stripPref($t.p.idPrefix, tmp3[idname]);
-          
+
           if ($t.p.restful) {
             o.mtype = "PUT";
             o.url = o.url + "/" + rowid;

@@ -116,14 +116,14 @@ label.ui-select {
 }
 
 @media all and (min-width: 450px) {
-    label.ui-select {
+    .ui-field-contain label.ui-select {
         vertical-align: top;
         display: inline-block;
         width: 20%;
         margin: 0 2% 0 0;
     }
 
-    .ui-select {
+    .ui-field-contain .ui-select {
         width: 60%;
         display: inline-block;
     }

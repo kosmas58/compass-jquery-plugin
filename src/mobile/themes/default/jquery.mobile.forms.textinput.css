@@ -13,11 +13,11 @@ label.ui-input-text {
 
 input.ui-input-text, textarea.ui-input-text {
     background-image: none;
-    padding: .4em;
+    padding: .4em 1.5%;
     line-height: 1.4;
     font-size: 16px;
     display: block;
-    width: 95%;
+    width: 97%;
 }
 
 input.ui-input-text {
@@ -34,7 +34,6 @@ textarea.ui-input-text {
 
 .ui-input-search {
     padding: 0 30px;
-    width: 77%;
     background-image: none;
     position: relative;
 }
@@ -73,21 +72,21 @@ textarea.ui-input-text {
 
 /* orientation adjustments - incomplete!*/
 @media all and (min-width: 450px) {
-    label.ui-input-text {
+    .ui-field-contain label.ui-input-text {
         vertical-align: top;
         display: inline-block;
         width: 20%;
         margin: 0 2% 0 0
     }
 
-    input.ui-input-text,
-    textarea.ui-input-text,
-    .ui-input-search {
+    .ui-field-contain input.ui-input-text,
+    .ui-field-contain textarea.ui-input-text,
+    .ui-field-contain .ui-input-search {
         width: 60%;
         display: inline-block;
     }
 
-    .ui-input-search {
+    .ui-field-contain .ui-input-search {
         width: 50%;
     }
 

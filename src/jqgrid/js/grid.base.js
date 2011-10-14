@@ -95,7 +95,7 @@
               eval('(' + js + ')');
     },
     parseDate : function(format, date) {
-      var tsp = {m : 1, d : 1, y : 1970, h : 0, i : 0, s : 0},k,hl,dM, regdate = /[\\\/:_;.,\t\T\s-]/;
+      var tsp = {m : 1, d : 1, y : 1970, h : 0, i : 0, s : 0, u:0},k,hl,dM, regdate = /[\\\/:_;.,\t\T\s-]/;
       if (date && date !== null && date !== undefined) {
         date = $.trim(date);
         date = date.split(regdate);
@@ -155,7 +155,7 @@
           tsp.y = 2000 + tsp.y;
         }
       }
-      return new Date(tsp.y, tsp.m, tsp.d, tsp.h, tsp.i, tsp.s, 0);
+      return new Date(tsp.y, tsp.m, tsp.d, tsp.h, tsp.i, tsp.s, tsp.u);
     },
     jqID : function(sid) {
       return String(sid).replace(/[!"#$%&'()*+,.\/:;<=>?@\[\\\]\^`{|}~]/g, "\\$&");
@@ -2909,22 +2909,22 @@
           return false;
         });
       }
-     /* if ($.isFunction(this.p.onRightClickRow)) {
-        $(this).bind('contextmenu', function(e) {
-          td = e.target;
-          ptr = $(td, ts.rows).closest("tr.jqgrow");
-          if ($(ptr).length === 0) {
-            return false;
-          }
-          if (!ts.p.multiselect) {
-            $(ts).jqGrid("setSelection", ptr[0].id, true);
-          }
-          ri = ptr[0].rowIndex;
-          ci = $.jgrid.getCellIndex(td);
-          ts.p.onRightClickRow.call(ts, $(ptr).attr("id"), ri, ci, e);
-          return false;
-        });
-      }*/
+      /* if ($.isFunction(this.p.onRightClickRow)) {
+       $(this).bind('contextmenu', function(e) {
+       td = e.target;
+       ptr = $(td, ts.rows).closest("tr.jqgrow");
+       if ($(ptr).length === 0) {
+       return false;
+       }
+       if (!ts.p.multiselect) {
+       $(ts).jqGrid("setSelection", ptr[0].id, true);
+       }
+       ri = ptr[0].rowIndex;
+       ci = $.jgrid.getCellIndex(td);
+       ts.p.onRightClickRow.call(ts, $(ptr).attr("id"), ri, ci, e);
+       return false;
+       });
+       }*/
       grid.bDiv = document.createElement("div");
       if (isMSIE) {
         if (String(ts.p.height).toLowerCase() === "auto") {

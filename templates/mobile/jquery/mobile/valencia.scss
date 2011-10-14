@@ -893,7 +893,7 @@ a.ui-link-inherit {
 
 .ui-corner-tl, .ui-corner-tr, .ui-corner-bl, .ui-corner-br, .ui-corner-top, .ui-corner-bottom, .ui-corner-right, .ui-corner-left, .ui-corner-all, .ui-btn-corner-tl, .ui-btn-corner-tr, .ui-btn-corner-bl, .ui-btn-corner-br, .ui-btn-corner-top, .ui-btn-corner-bottom, .ui-btn-corner-right, .ui-btn-corner-left, .ui-btn-corner-all {
   -webkit-background-clip: padding-box;
-  -moz-background-clip: padding-box;
+  -moz-background-clip: padding;
   background-clip: padding-box; }
 
 /* Overlays */

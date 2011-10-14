@@ -3068,6 +3068,11 @@
       pageTitle = newPageTitle;
     }
 
+    // Make sure we have a transition defined.
+    settings.transition = settings.transition
+            || ( ( historyDir && !activeIsInitialPage ) ? active.transition : undefined )
+            || ( isDialog ? $.mobile.defaultDialogTransition : $.mobile.defaultPageTransition );
+
     //add page to history stack if it's not back or forward
     if (!historyDir) {
       urlHistory.addNew(url, settings.transition, pageTitle, pageUrl, settings.role);
@@ -3078,11 +3083,6 @@
 
     //set "toPage" as activePage
     $.mobile.activePage = toPage;
-
-    // Make sure we have a transition defined.
-    settings.transition = settings.transition
-            || ( ( historyDir && !activeIsInitialPage ) ? active.transition : undefined )
-            || ( isDialog ? $.mobile.defaultDialogTransition : $.mobile.defaultPageTransition );
 
     // If we're navigating back in the URL history, set reverse accordingly.
     settings.reverse = settings.reverse || historyDir < 0;
@@ -3786,35 +3786,32 @@
 
         var thisTheme = theme || ( role === "header" ? o.headerTheme : o.footerTheme ) || pageTheme;
 
-        //add theme class
-        $this.addClass("ui-bar-" + thisTheme);
-
-        // Add ARIA role
-        $this.attr("role", role === "header" ? "banner" : "contentinfo");
+        $this
+          //add theme class
+                .addClass("ui-bar-" + thisTheme)
+          // Add ARIA role
+                .attr("role", role === "header" ? "banner" : "contentinfo");
 
         // Right,left buttons
         $headeranchors = $this.children("a");
         leftbtn = $headeranchors.hasClass("ui-btn-left");
         rightbtn = $headeranchors.hasClass("ui-btn-right");
 
-        if (!leftbtn) {
-          leftbtn = $headeranchors.eq(0).not(".ui-btn-right").addClass("ui-btn-left").length;
-        }
+        leftbtn = leftbtn || $headeranchors.eq(0).not(".ui-btn-right").addClass("ui-btn-left").length;
 
-        if (!rightbtn) {
-          rightbtn = $headeranchors.eq(1).addClass("ui-btn-right").length;
-        }
+        rightbtn = rightbtn || $headeranchors.eq(1).addClass("ui-btn-right").length;
 
         // Auto-add back btn on pages beyond first view
-        if (o.addBackBtn && role === "header" &&
+        if (o.addBackBtn &&
+                role === "header" &&
                 $(".ui-page").length > 1 &&
                 $this.jqmData("url") !== $.mobile.path.stripHash(location.hash) &&
                 !leftbtn) {
 
-          backBtn = $("<a href='#' class='ui-btn-left' data-" + $.mobile.ns + "rel='back' data-" + $.mobile.ns + "icon='arrow-l'>" + o.backBtnText + "</a>").prependTo($this);
-
-          // If theme is provided, override default inheritance
-          backBtn.attr("data-" + $.mobile.ns + "theme", o.backBtnTheme || thisTheme);
+          backBtn = $("<a href='#' class='ui-btn-left' data-" + $.mobile.ns + "rel='back' data-" + $.mobile.ns + "icon='arrow-l'>" + o.backBtnText + "</a>")
+            // If theme is provided, override default inheritance
+                  .attr("data-" + $.mobile.ns + "theme", o.backBtnTheme || thisTheme)
+                  .prependTo($this);
         }
 
         // Page title
@@ -3828,14 +3825,12 @@
                 });
 
       } else if (role === "content") {
-
         if (theme || o.contentTheme) {
           $this.addClass("ui-body-" + ( theme || o.contentTheme ));
         }
 
         // Add ARIA role
         $this.attr("role", "main");
-
       }
     });
   });
@@ -3979,6 +3974,7 @@
                     .toggleClass("ui-corner-bottom", isCollapse);
             collapsibleContent.toggleClass("ui-corner-bottom", !isCollapse);
           }
+          collapsibleContent.trigger("contentmodified");
         }
       })
               .trigger(o.collapsed ? "collapse" : "expand");
@@ -4239,6 +4235,9 @@
                 .find(".ui-li-thumb")
                 .not(".ui-li-icon")
                 .addClass("ui-corner-bl");
+      }
+      if (!create) {
+        this.element.trigger("contentmodified");
       }
     },
 
@@ -6448,7 +6447,7 @@
                 stateBefore = null;
               });
 
-      $window.bind("resize", showEventCallback);
+      $window.bind("resize contentmodified", showEventCallback);
     });
 
     // 1. Before page is shown, check for duplicate footer

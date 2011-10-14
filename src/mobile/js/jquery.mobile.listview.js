@@ -107,6 +107,9 @@
                 .not(".ui-li-icon")
                 .addClass("ui-corner-bl");
       }
+      if (!create) {
+        this.element.trigger("contentmodified");
+      }
     },
 
     refresh: function(create) {

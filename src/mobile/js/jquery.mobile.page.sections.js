@@ -36,35 +36,32 @@
 
         var thisTheme = theme || ( role === "header" ? o.headerTheme : o.footerTheme ) || pageTheme;
 
-        //add theme class
-        $this.addClass("ui-bar-" + thisTheme);
-
-        // Add ARIA role
-        $this.attr("role", role === "header" ? "banner" : "contentinfo");
+        $this
+          //add theme class
+                .addClass("ui-bar-" + thisTheme)
+          // Add ARIA role
+                .attr("role", role === "header" ? "banner" : "contentinfo");
 
         // Right,left buttons
         $headeranchors = $this.children("a");
         leftbtn = $headeranchors.hasClass("ui-btn-left");
         rightbtn = $headeranchors.hasClass("ui-btn-right");
 
-        if (!leftbtn) {
-          leftbtn = $headeranchors.eq(0).not(".ui-btn-right").addClass("ui-btn-left").length;
-        }
+        leftbtn = leftbtn || $headeranchors.eq(0).not(".ui-btn-right").addClass("ui-btn-left").length;
 
-        if (!rightbtn) {
-          rightbtn = $headeranchors.eq(1).addClass("ui-btn-right").length;
-        }
+        rightbtn = rightbtn || $headeranchors.eq(1).addClass("ui-btn-right").length;
 
         // Auto-add back btn on pages beyond first view
-        if (o.addBackBtn && role === "header" &&
+        if (o.addBackBtn &&
+                role === "header" &&
                 $(".ui-page").length > 1 &&
                 $this.jqmData("url") !== $.mobile.path.stripHash(location.hash) &&
                 !leftbtn) {
 
-          backBtn = $("<a href='#' class='ui-btn-left' data-" + $.mobile.ns + "rel='back' data-" + $.mobile.ns + "icon='arrow-l'>" + o.backBtnText + "</a>").prependTo($this);
-
-          // If theme is provided, override default inheritance
-          backBtn.attr("data-" + $.mobile.ns + "theme", o.backBtnTheme || thisTheme);
+          backBtn = $("<a href='#' class='ui-btn-left' data-" + $.mobile.ns + "rel='back' data-" + $.mobile.ns + "icon='arrow-l'>" + o.backBtnText + "</a>")
+            // If theme is provided, override default inheritance
+                  .attr("data-" + $.mobile.ns + "theme", o.backBtnTheme || thisTheme)
+                  .prependTo($this);
         }
 
         // Page title
@@ -78,14 +75,12 @@
                 });
 
       } else if (role === "content") {
-
         if (theme || o.contentTheme) {
           $this.addClass("ui-body-" + ( theme || o.contentTheme ));
         }
 
         // Add ARIA role
         $this.attr("role", "main");
-
       }
     });
   });

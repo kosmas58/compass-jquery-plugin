@@ -283,7 +283,7 @@
           $("#lui_" + $t.p.id).show();
           tmp3 = $.extend({}, tmp, tmp3);
           tmp3[idname] = $.jgrid.stripPref($t.p.idPrefix, tmp3[idname]);
-          
+
           if ($t.p.restful) {
             o.mtype = "PUT";
             o.url = o.url + "/" + rowid;

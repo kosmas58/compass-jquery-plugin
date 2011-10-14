@@ -199,7 +199,8 @@
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
-  outline: 0 !important; }
+  outline: 0 !important;
+  margin: .6em 15px .8em; }
 
 /*content area*/
 
@@ -930,7 +931,7 @@ Built by David Kaneda and maintained by Jonathan Stark.
 
 .ui-controlgroup-controls {
   display: block;
-  width: 95%; }
+  width: 100%; }
 
 .ui-controlgroup li {
   list-style: none; }
@@ -963,14 +964,15 @@ Built by David Kaneda and maintained by Jonathan Stark.
 */
 
 @media all and (min-width: 450px) {
-  .ui-controlgroup-label {
-    vertical-align: top;
-    display: inline-block;
-    width: 20%;
-    margin: 0 2% 0 0; }
-  .ui-controlgroup-controls {
-    width: 60%;
-    display: inline-block; } }
+  .ui-field-contain {
+    .ui-controlgroup-label {
+      vertical-align: top;
+      display: inline-block;
+      width: 20%;
+      margin: 0 2% 0 0; }
+    .ui-controlgroup-controls {
+      width: 60%;
+      display: inline-block; } } }
 
 
 /*
@@ -1161,14 +1163,15 @@ label.ui-select {
     visibility: hidden; } }
 
 @media all and (min-width: 450px) {
-  label.ui-select {
-    vertical-align: top;
-    display: inline-block;
-    width: 20%;
-    margin: 0 2% 0 0; }
-  .ui-select {
-    width: 60%;
-    display: inline-block; } }
+  .ui-field-contain {
+    label.ui-select {
+      vertical-align: top;
+      display: inline-block;
+      width: 20%;
+      margin: 0 2% 0 0; }
+    .ui-select {
+      width: 60%;
+      display: inline-block; } } }
 
 
 /* when no placeholder is defined in a multiple select, the header height doesn't even extend past the close button.  this shim's content in there */
@@ -1188,11 +1191,11 @@ label.ui-input-text {
 
 input.ui-input-text, textarea.ui-input-text {
   background-image: none;
-  padding: .4em;
+  padding: .4em 1.5%;
   line-height: 1.4;
   font-size: 16px;
   display: block;
-  width: 95%; }
+  width: 97%; }
 
 input.ui-input-text {
   -webkit-appearance: none; }
@@ -1206,7 +1209,6 @@ textarea.ui-input-text {
 
 .ui-input-search {
   padding: 0 30px;
-  width: 77%;
   background-image: none;
   position: relative; }
 
@@ -1239,21 +1241,22 @@ textarea.ui-input-text {
 
 /* orientation adjustments - incomplete!*/
 @media all and (min-width: 450px) {
-  label.ui-input-text {
-    vertical-align: top;
-    display: inline-block;
-    width: 20%;
-    margin: 0 2% 0 0; }
-  input.ui-input-text, textarea.ui-input-text {
-    width: 60%;
-    display: inline-block; }
-  .ui-input-search {
-    width: 60%;
-    display: inline-block;
-    width: 50%;
-    input.ui-input-text {
-      width: 98%;
-      /*echos rule from above*/ } } }
+  .ui-field-contain {
+    label.ui-input-text {
+      vertical-align: top;
+      display: inline-block;
+      width: 20%;
+      margin: 0 2% 0 0; }
+    input.ui-input-text, textarea.ui-input-text {
+      width: 60%;
+      display: inline-block; }
+    .ui-input-search {
+      width: 60%;
+      display: inline-block;
+      width: 50%; } }
+  .ui-input-search input.ui-input-text {
+    width: 98%;
+    /*echos rule from above*/ } }
 
 
 /*
@@ -1502,22 +1505,25 @@ ol.ui-listview .ui-li-jsnumbering:before {
 label.ui-slider {
   display: block; }
 
-input.ui-slider-input {
+input.ui-slider-input, .ui-field-contain input.ui-slider-input {
   display: inline-block;
   width: 50px; }
 
 select.ui-slider-switch {
   display: none; }
 
-div.ui-slider {
-  position: relative;
-  display: inline-block;
-  overflow: visible;
-  height: 15px;
-  padding: 0;
-  margin: 0 2% 0 20px;
-  top: 4px;
-  width: 66%; }
+div {
+  &.ui-slider {
+    position: relative;
+    display: inline-block;
+    overflow: visible;
+    height: 15px;
+    padding: 0;
+    margin: 0 2% 0 20px;
+    top: 4px;
+    width: 70%; }
+  &.ui-slider-switch {
+    width: 99.8%; } }
 
 a.ui-slider-handle {
   position: absolute;
@@ -1532,13 +1538,14 @@ a.ui-slider-handle {
     padding-right: 0; } }
 
 @media all and (min-width: 480px) {
-  label.ui-slider {
-    vertical-align: top;
-    display: inline-block;
-    width: 20%;
-    margin: 0 2% 0 0; }
-  div.ui-slider {
-    width: 45%; } }
+  .ui-field-contain {
+    label.ui-slider {
+      vertical-align: top;
+      display: inline-block;
+      width: 20%;
+      margin: 0 2% 0 0; }
+    div.ui-slider {
+      width: 45%; } } }
 
 
 div {

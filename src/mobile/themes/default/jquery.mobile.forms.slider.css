@@ -7,7 +7,8 @@ label.ui-slider {
     display: block;
 }
 
-input.ui-slider-input {
+input.ui-slider-input,
+.ui-field-contain input.ui-slider-input {
     display: inline-block;
     width: 50px;
 }
@@ -24,7 +25,11 @@ div.ui-slider {
     padding: 0;
     margin: 0 2% 0 20px;
     top: 4px;
-    width: 66%;
+    width: 70%;
+}
+
+div.ui-slider-switch {
+    width: 99.8%;
 }
 
 a.ui-slider-handle {
@@ -43,14 +48,14 @@ a.ui-slider-handle .ui-btn-inner {
 }
 
 @media all and (min-width: 480px) {
-    label.ui-slider {
+    .ui-field-contain label.ui-slider {
         vertical-align: top;
         display: inline-block;
         width: 20%;
         margin: 0 2% 0 0;
     }
 
-    div.ui-slider {
+    .ui-field-contain div.ui-slider {
         width: 45%;
     }
 }
