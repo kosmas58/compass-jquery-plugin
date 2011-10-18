@@ -3239,22 +3239,22 @@
           return false;
         });
       }
-      /* if ($.isFunction(this.p.onRightClickRow)) {
-       $(this).bind('contextmenu', function(e) {
-       td = e.target;
-       ptr = $(td, ts.rows).closest("tr.jqgrow");
-       if ($(ptr).length === 0) {
-       return false;
-       }
-       if (!ts.p.multiselect) {
-       $(ts).jqGrid("setSelection", ptr[0].id, true);
-       }
-       ri = ptr[0].rowIndex;
-       ci = $.jgrid.getCellIndex(td);
-       ts.p.onRightClickRow.call(ts, $(ptr).attr("id"), ri, ci, e);
-       return false;
-       });
-       }*/
+     /* if ($.isFunction(this.p.onRightClickRow)) {
+        $(this).bind('contextmenu', function(e) {
+          td = e.target;
+          ptr = $(td, ts.rows).closest("tr.jqgrow");
+          if ($(ptr).length === 0) {
+            return false;
+          }
+          if (!ts.p.multiselect) {
+            $(ts).jqGrid("setSelection", ptr[0].id, true);
+          }
+          ri = ptr[0].rowIndex;
+          ci = $.jgrid.getCellIndex(td);
+          ts.p.onRightClickRow.call(ts, $(ptr).attr("id"), ri, ci, e);
+          return false;
+        });
+      }*/
       grid.bDiv = document.createElement("div");
       if (isMSIE) {
         if (String(ts.p.height).toLowerCase() === "auto") {
@@ -6202,11 +6202,13 @@ var xmlJsonClass = {
   $.fn.fmatter.select = function (cellval, opts, rwd, act) {
     // jqGrid specific
     cellval = cellval + "";
-    var oSelect = false, ret = [];
+    var oSelect = false, ret = [], sep;
     if (!$.fmatter.isUndefined(opts.colModel.formatoptions)) {
       oSelect = opts.colModel.formatoptions.value;
+      sep = opts.colModel.formatoptions.separator === undefined ? ":" : opts.colModel.formatoptions.separator;
     } else if (!$.fmatter.isUndefined(opts.colModel.editoptions)) {
       oSelect = opts.colModel.editoptions.value;
+      sep = opts.colModel.editoptions.separator === undefined ? ":" : opts.colModel.editoptions.separator;
     }
     if (oSelect) {
       var msl = opts.colModel.editoptions.multiple === true ? true : false,
@@ -6221,7 +6223,7 @@ var xmlJsonClass = {
         // mybe here we can use some caching with care ????
         var so = oSelect.split(";"), j = 0;
         for (var i = 0; i < so.length; i++) {
-          sv = so[i].split(":");
+          sv = so[i].split(sep);
           if (sv.length > 2) {
             sv[1] = jQuery.map(sv,
                     function(n, i) {
@@ -6934,11 +6936,12 @@ var xmlJsonClass = {
             if (typeof options.value === 'function') {
               options.value = options.value();
             }
-            var so,sv, ov;
+            var so,sv, ov,
+                    sep = options.separator === undefined ? ":" : options.separator;
             if (typeof options.value === 'string') {
               so = options.value.split(";");
               for (i = 0; i < so.length; i++) {
-                sv = so[i].split(":");
+                sv = so[i].split(sep);
                 if (sv.length > 2) {
                   sv[1] = $.map(sv,
                           function(n, ii) {

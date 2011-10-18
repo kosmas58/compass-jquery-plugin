@@ -2,8 +2,8 @@ require 'fileutils'
 require 'find'
 
 GEM_ROOT = File.expand_path(File.join(File.dirname(__FILE__), '..'))
-GOOGLE_JS_COMPRESSOR = File.join(GEM_ROOT, 'lib', 'google-compiler-20110615.jar')
-YUI_JS_COMPRESSOR = File.join(GEM_ROOT, 'lib', 'yuicompressor-2.4.4.jar')
+GOOGLE_JS_COMPRESSOR = File.join(GEM_ROOT, 'lib', 'google-compiler-20111003.jar')
+YUI_JS_COMPRESSOR = File.join(GEM_ROOT, 'lib', 'yuicompressor-2.4.6.jar')
 
 def compress_js(scripts, compressor)
   min_js = ''

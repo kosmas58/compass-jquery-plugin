@@ -735,8 +735,10 @@ a.ui-link-inherit {
 
 .ui-disabled {
   opacity: .3;
+  pointer-events: none;
   cursor: default;
   a {
+    pointer-events: none;
     cursor: default; } }
 
 /* Icons

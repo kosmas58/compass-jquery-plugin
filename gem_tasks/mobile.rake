@@ -7,7 +7,8 @@ MOBILE_SRC_CONFIG = File.join(MOBILE_SRC, 'config', 'initializers')
 MOBILE_SRC_IMAGES = File.join(MOBILE_SRC, 'images')
 MOBILE_SRC_GLYPHISH = File.join(MOBILE_SRC_IMAGES, 'glyphish')
 MOBILE_SRC_TASKS = File.join(MOBILE_SRC, 'lib', 'tasks')
-MOBILE_SRC_THEMES = File.join(MOBILE_SRC, 'themes')
+MOBILE_SRC_CSS = File.join(MOBILE_SRC, 'css')
+MOBILE_SRC_THEMES = File.join(MOBILE_SRC_CSS, 'themes')
 
 MOBILE_DEST_TEMPLATES = File.join(GEM_ROOT, 'templates', 'mobile')
 MOBILE_DEST_CONFIG = File.join(MOBILE_DEST_TEMPLATES, 'config', 'initializers')
@@ -112,7 +113,7 @@ namespace :build do
           'jquery.mobile.listview.css',
           'jquery.mobile.forms.slider.css',
           'jquery.mobile.scrollview.css'
-      ].collect { |filename| File.read(File.join(MOBILE_SRC_THEMES, 'default', filename)) }.join "\n\n"
+      ].collect { |filename| File.read(File.join(MOBILE_SRC_CSS, 'structure', filename)) }.join "\n\n"
 
       FileUtils.mkdir_p(MOBILE_DEST_THEMES)
       open File.join(MOBILE_DEST_THEMES, '_base.scss'), 'w' do |f|

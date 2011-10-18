@@ -263,6 +263,14 @@
   position: absolute;
   left: -9999px; }
 
+/* accessible content hiding */
+
+.ui-hide-label label, .ui-hidden-accessible {
+  position: absolute !important;
+  left: -9999px;
+  clip: rect(1px 1px 1px 1px);
+  clip: rect(1px, 1px, 1px, 1px); }
+
 /*
 * jQuery Mobile Framework
 * Copyright (c) jQuery Project
@@ -939,13 +947,18 @@ Built by David Kaneda and maintained by Jonathan Stark.
 .ui-controlgroup-vertical {
   .ui-btn, .ui-checkbox, .ui-radio {
     margin: 0;
-    border-bottom-width: 0; }
-  .ui-controlgroup-last {
-    border-bottom-width: 1px; } }
+    border-bottom-width: 0; } }
+
+.ui-controlgroup-controls label.ui-select {
+  position: absolute;
+  left: -9999px; }
+
+.ui-controlgroup-vertical .ui-controlgroup-last {
+  border-bottom-width: 1px; }
 
 .ui-controlgroup-horizontal {
   padding: 0;
-  .ui-btn {
+  .ui-btn, .ui-select {
     display: inline-block;
     margin: 0 -5px 0 0; }
   .ui-checkbox, .ui-radio {
@@ -972,7 +985,11 @@ Built by David Kaneda and maintained by Jonathan Stark.
       margin: 0 2% 0 0; }
     .ui-controlgroup-controls {
       width: 60%;
-      display: inline-block; } } }
+      display: inline-block; }
+    .ui-controlgroup .ui-select {
+      width: 100%; }
+    .ui-controlgroup-horizontal .ui-select {
+      width: auto; } } }
 
 
 /*
@@ -984,11 +1001,16 @@ Built by David Kaneda and maintained by Jonathan Stark.
 .ui-dialog {
   min-height: 480px;
   .ui-header, .ui-content, .ui-footer {
-    margin: 15px;
+    max-width: 500px;
+    margin: 15px auto;
+    padding: 15px;
+    width: 85%;
     position: relative; }
-  .ui-header, .ui-footer {
-    z-index: 10;
-    width: auto; }
+  .ui-header {
+    padding: 0 15px;
+    z-index: 10; }
+  .ui-footer {
+    z-index: 10; }
   .ui-content, .ui-footer {
     margin-top: -15px; } }
 
@@ -1254,6 +1276,10 @@ textarea.ui-input-text {
       width: 60%;
       display: inline-block;
       width: 50%; } }
+  .ui-hide-label {
+    input.ui-input-text, textarea.ui-input-text, .ui-input-search {
+      padding: .4em 1.5%;
+      width: 97%; } }
   .ui-input-search input.ui-input-text {
     width: 98%;
     /*echos rule from above*/ } }
@@ -1503,6 +1529,10 @@ ol.ui-listview .ui-li-jsnumbering:before {
 */
 
 label.ui-slider {
+  font-size: 16px;
+  line-height: 1.4;
+  font-weight: normal;
+  margin: 0 0 .3em;
   display: block; }
 
 input.ui-slider-input, .ui-field-contain input.ui-slider-input {
@@ -1521,7 +1551,7 @@ div {
     padding: 0;
     margin: 0 2% 0 20px;
     top: 4px;
-    width: 70%; }
+    width: 66%; }
   &.ui-slider-switch {
     width: 99.8%; } }
 
@@ -1545,7 +1575,7 @@ a.ui-slider-handle {
       width: 20%;
       margin: 0 2% 0 0; }
     div.ui-slider {
-      width: 45%; } } }
+      width: 43%; } } }
 
 
 div {

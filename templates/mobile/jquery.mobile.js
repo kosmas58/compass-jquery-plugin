@@ -308,9 +308,10 @@
       // TODO remove dependency on the page widget for the keepNative.
       // Currently the keepNative value is defined on the page prototype so
       // the method is as well
-      var keepNative = $.mobile.page.prototype.keepNativeSelector();
+      var page = $(target).data("page"),
+              keepNative = page && page.keepNativeSelector();
 
-      $(this.options.initSelector, target).not(keepNative)[ this.widgetName ]();
+      $(this.options.initSelector, target).not(keepNative || "")[ this.widgetName ]();
     }
   });
 
@@ -405,9 +406,9 @@
       href = base.attr("href");
     }
 
-    link = $("<a href='testurl'></a>").prependTo(fakeBody);
+    link = $("<a href='testurl' />").prependTo(fakeBody);
     rebase = link[ 0 ].href;
-    base[ 0 ].href = href ? href : location.pathname;
+    base[ 0 ].href = href || location.pathname;
 
     if (fauxEle) {
       fauxEle.remove();
@@ -474,7 +475,7 @@
 // This simply reappends the CSS in place, which for some reason makes it apply
   if (nokiaLTE7_3) {
     $(function() {
-      $("head link[rel=stylesheet]").attr("rel", "alternate stylesheet").attr("rel", "stylesheet");
+      $("head link[rel='stylesheet']").attr("rel", "alternate stylesheet").attr("rel", "stylesheet");
     });
   }
 
@@ -484,6 +485,7 @@
   }
 
 })(jQuery);
+
 
 /*
  * jQuery Mobile Framework : "mouse" plugin
@@ -1879,6 +1881,20 @@
       }
 
       return $.camelCase($.mobile.ns + prop);
+    },
+
+    getInheritedTheme: function(el, defaultTheme) {
+      // Find the closest parent with a theme class on it.
+      var themedParent = el.closest("[class*='ui-bar-'],[class*='ui-body-']"),
+
+        // If there's a themed parent, extract the theme letter
+        // from the theme class	.
+              ltr = ( themedParent.length && /ui-(bar|body)-([a-z])\b/.exec(themedParent.attr("class"))[ 2 ] || "" ) || "";
+
+      // Return the theme letter we found, if none, return the
+      // specified default.
+
+      return ltr || defaultTheme || "a";
     }
   });
 
@@ -3637,22 +3653,25 @@
     week: false
   };
 
-  $.mobile.page.prototype.options.keepNative = ":jqmData(role='none'), :jqmData(role='nojs')";
-
 
 //auto self-init widgets
-  $(document).bind("pagecreate enhance", function(e) {
+  $(document).bind("pagecreate create", function(e) {
 
-    var page = $(e.target).data("page"),
-            o = page.options;
+    var page = $(e.target).closest(':jqmData(role="page")').data("page"), options;
+
+    if (!page) {
+      return;
+    }
+
+    options = page.options;
 
     // degrade inputs to avoid poorly implemented native functionality
-    $(e.target).find("input").not(o.keepNative).each(function() {
+    $(e.target).find("input").not(page.keepNativeSelector()).each(function() {
       var $this = $(this),
               type = this.getAttribute("type"),
-              optType = o.degradeInputs[ type ] || "text";
+              optType = options.degradeInputs[ type ] || "text";
 
-      if (o.degradeInputs[ type ]) {
+      if (options.degradeInputs[ type ]) {
         var html = $("<div>").html($this.clone()).html(),
           // In IE browsers, the type sometimes doesn't exist in the cloned markup, so we replace the closing tag instead
                 hasType = html.indexOf(" type=") > -1,
@@ -4805,6 +4824,7 @@
       // Add ARIA role
       this.button = $("<div></div>")
               .text($el.text() || $el.val())
+              .insertBefore($el)
               .buttonMarkup({
                 theme: o.theme,
                 icon: o.icon,
@@ -4814,7 +4834,6 @@
                 shadow: o.shadow,
                 iconshadow: o.iconshadow
               })
-              .insertBefore($el)
               .append($el.addClass("ui-btn-hidden"));
 
       type = $el.attr("type");
@@ -4895,13 +4914,11 @@
 
               control = this.element,
 
-              parentTheme = control.parents("[class*='ui-bar-'],[class*='ui-body-']").eq(0),
+              parentTheme = $.mobile.getInheritedTheme(control, "c"),
 
-              parentTheme = parentTheme.length ? parentTheme.attr("class").match(/ui-(bar|body)-([a-z])/)[ 2 ] : "c",
+              theme = this.options.theme || parentTheme,
 
-              theme = this.options.theme ? this.options.theme : parentTheme,
-
-              trackTheme = this.options.trackTheme ? this.options.trackTheme : parentTheme,
+              trackTheme = this.options.trackTheme || parentTheme,
 
               cType = control[ 0 ].nodeName.toLowerCase(),
 
@@ -5088,7 +5105,9 @@
     },
 
     refresh: function(val, isfromControl, preventInputUpdate) {
-      if (this.options.disabled) {
+
+      if (this.options.disabled || this.element.attr('disabled')) {
+        this.slider.addClass('ui-disabled');
         return;
       }
 
@@ -5209,7 +5228,7 @@
   $.widget("mobile.textinput", $.mobile.widget, {
     options: {
       theme: null,
-      initSelector: "input[type='text'], input[type='search'], :jqmData(type='search'), input[type='number'], :jqmData(type='number'), input[type='password'], input[type='email'], input[type='url'], input[type='tel'], textarea, input:not([type])"
+      initSelector: "input[type='text'], input[type='search'], :jqmData(type='search'), input[type='number'], :jqmData(type='number'), input[type='password'], input[type='email'], input[type='url'], input[type='tel'], textarea, input[type='time'], input[type='date'], input[type='month'], input[type='week'], input[type='datetime'], input[type='datetime-local'], input[type='color'], input:not([type])"
     },
 
     _create: function() {
@@ -5217,19 +5236,17 @@
       var input = this.element,
               o = this.options,
               theme = o.theme,
-              themedParent, themeclass, themeLetter, focusedEl, clearbtn;
+              themeclass, focusedEl, clearbtn;
 
       if (!theme) {
-        themedParent = this.element.closest("[class*='ui-bar-'],[class*='ui-body-']");
-        themeLetter = themedParent.length && /ui-(bar|body)-([a-z])/.exec(themedParent.attr("class"));
-        theme = themeLetter && themeLetter[2] || "c";
+        theme = $.mobile.getInheritedTheme(this.element, "c");
       }
 
       themeclass = " ui-body-" + theme;
 
       $("label[for='" + input.attr("id") + "']").addClass("ui-input-text");
 
-      input.addClass("ui-input-text ui-body-" + o.theme);
+      input.addClass("ui-input-text ui-body-" + theme);
 
       focusedEl = input;
 
@@ -5370,22 +5387,6 @@
       return $("<div/>");
     },
 
-    _theme: function() {
-      if (this.options.theme) {
-        return this.options.theme;
-      }
-
-      var themedParent, theme;
-      // if no theme is defined, try to find closest theme container
-      // TODO move to core as something like findCurrentTheme
-      themedParent = this.select.closest("[class*='ui-bar-'], [class*='ui-body-']");
-      theme = themedParent.length ?
-              /ui-(bar|body)-([a-z])/.exec(themedParent.attr("class"))[2] :
-              "c";
-
-      return theme;
-    },
-
     _setDisabled: function(value) {
       this.element.attr("disabled", value);
       this.button.attr("aria-disabled", value);
@@ -5410,7 +5411,9 @@
       this.selectID = this.select.attr("id");
       this.label = $("label[for='" + this.selectID + "']").addClass("ui-select");
       this.isMultiple = this.select[ 0 ].multiple;
-      this.options.theme = this._theme();
+      if (!this.options.theme) {
+        this.options.theme = $.mobile.getInheritedTheme(this.select, "c");
+      }
     },
 
     _create: function() {
@@ -5463,7 +5466,7 @@
       }
 
       // Disable if specified
-      if (options.disabled) {
+      if (options.disabled || this.element.attr('disabled')) {
         this.disable();
       }
 
@@ -5913,6 +5916,7 @@
 
           self.menuType = "page";
           self.menuPageContent.append(self.list);
+          self.menuPage.find("div .ui-title").text(self.label.text());
           $.mobile.changePage(self.menuPage, {
             transition: $.mobile.defaultDialogTransition
           });
@@ -6077,13 +6081,16 @@
                 icon: el.jqmData("icon"),
                 iconpos: el.jqmData("iconpos"),
                 theme: el.jqmData("theme"),
-                inline: el.jqmData("inline")
+                inline: el.jqmData("inline"),
+                shadow: el.jqmData("shadow"),
+                corners: el.jqmData("corners"),
+                iconshadow: el.jqmData("iconshadow")
               }, options),
 
         // Classes Defined
               innerClass = "ui-btn-inner",
               buttonClass, iconClass,
-              themedParent, wrap;
+              wrap;
 
       if (attachEvents) {
         attachEvents();
@@ -6091,10 +6098,7 @@
 
       // if not, try to find closest theme container
       if (!o.theme) {
-        themedParent = el.closest("[class*='ui-bar-'],[class*='ui-body-']");
-        o.theme = themedParent.length ?
-                /ui-(bar|body)-([a-z])/.exec(themedParent.attr("class"))[2] :
-                "c";
+        o.theme = $.mobile.getInheritedTheme(el, "c");
       }
 
       buttonClass = "ui-btn ui-btn-up-" + o.theme;

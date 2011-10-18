@@ -23,22 +23,25 @@
     week: false
   };
 
-  $.mobile.page.prototype.options.keepNative = ":jqmData(role='none'), :jqmData(role='nojs')";
-
 
 //auto self-init widgets
-  $(document).bind("pagecreate enhance", function(e) {
+  $(document).bind("pagecreate create", function(e) {
 
-    var page = $(e.target).data("page"),
-            o = page.options;
+    var page = $(e.target).closest(':jqmData(role="page")').data("page"), options;
+
+    if (!page) {
+      return;
+    }
+
+    options = page.options;
 
     // degrade inputs to avoid poorly implemented native functionality
-    $(e.target).find("input").not(o.keepNative).each(function() {
+    $(e.target).find("input").not(page.keepNativeSelector()).each(function() {
       var $this = $(this),
               type = this.getAttribute("type"),
-              optType = o.degradeInputs[ type ] || "text";
+              optType = options.degradeInputs[ type ] || "text";
 
-      if (o.degradeInputs[ type ]) {
+      if (options.degradeInputs[ type ]) {
         var html = $("<div>").html($this.clone()).html(),
           // In IE browsers, the type sometimes doesn't exist in the cloned markup, so we replace the closing tag instead
                 hasType = html.indexOf(" type=") > -1,
