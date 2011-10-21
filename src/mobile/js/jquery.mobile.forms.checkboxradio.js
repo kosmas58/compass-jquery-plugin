@@ -58,9 +58,9 @@
               .wrapAll("<div class='ui-" + inputtype + "'></div>");
 
       label.bind({
-        vmouseover: function() {
+        vmouseover: function(event) {
           if ($(this).parent().is(".ui-disabled")) {
-            return false;
+            event.stopPropagation();
           }
         },
 
@@ -133,6 +133,7 @@
       if (this.inputtype == "checkbox") {
         return this.element;
       }
+
       return this.element.closest("form,fieldset,:jqmData(role='page')")
               .find("input[name='" + this.element.attr("name") + "'][type='" + this.inputtype + "']");
     },

@@ -23,7 +23,7 @@ A Sass-based Meta-Framework for Compass that allows you to mix and match any of 
 
 and for mobile devices <i>(using pure haml/sass without compass)</i>:
 
-* jquery.mobile.js 1.0rc1
+* jquery.mobile.js 1.0rc2
 * jquery.jqtouch.js V1.0b3
 
 This library requires [Compass][3].

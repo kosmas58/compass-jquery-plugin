@@ -896,6 +896,14 @@ a.ui-link-inherit {
   -moz-background-clip: padding;
   background-clip: padding-box; }
 
+/* Form field separator */
+
+.ui-br {
+  border-bottom: rgb(130, 130, 130);
+  border-bottom: rgba(130, 130, 130, 0.3);
+  border-bottom-width: 1px;
+  border-bottom-style: solid; }
+
 /* Overlays */
 
 .ui-overlay {

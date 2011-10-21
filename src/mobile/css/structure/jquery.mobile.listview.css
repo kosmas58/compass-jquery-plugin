@@ -127,7 +127,7 @@ ol.ui-listview .ui-li-jsnumbering:before {
     white-space: nowrap;
 }
 
-.ui-li-thumb, .ui-li-icon {
+.ui-li-thumb, .ui-listview .ui-li-icon {
     position: absolute;
     left: 1px;
     top: 0;
@@ -135,14 +135,14 @@ ol.ui-listview .ui-li-jsnumbering:before {
     max-width: 80px;
 }
 
-.ui-li-icon {
+.ui-listview .ui-li-icon {
     max-height: 40px;
     max-width: 40px;
     left: 10px;
     top: .9em;
 }
 
-.ui-li-thumb, .ui-li-icon, .ui-li-content {
+.ui-li-thumb, .ui-listview .ui-li-icon, .ui-li-content {
     float: left;
     margin-right: 10px;
 }

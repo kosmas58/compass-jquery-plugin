@@ -1,5 +1,5 @@
 /*!
- * jQuery UI Widget 1.0rc2pre
+ * jQuery UI Widget 1.0rc2
  *
  * Copyright 2010, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -1755,7 +1755,7 @@
 
 
 /*!
- * jQuery Mobile v1.0rc2pre
+ * jQuery Mobile v1.0rc2
  * http://jquerymobile.com/
  *
  * Copyright 2010, jQuery Project
@@ -1787,6 +1787,9 @@
 
     // Automatically load and show pages based on location.hash
     hashListeningEnabled: true,
+
+    // disable to prevent jquery from bothering with links
+    linkBindingEnabled: true,
 
     // Set default page transition - 'none' for no transitions
     defaultPageTransition: "slide",
@@ -3218,7 +3221,7 @@
     $(document).bind("vclick", function(event) {
       // if this isn't a left click we don't care. Its important to note
       // that when the virtual event is generated it will create
-      if (event.which > 1) {
+      if (event.which > 1 || !$.mobile.linkBindingEnabled) {
         return;
       }
 
@@ -3235,6 +3238,10 @@
 
     // click routing - direct to HTTP or Ajax, accordingly
     $(document).bind("click", function(event) {
+      if (!$.mobile.linkBindingEnabled) {
+        return;
+      }
+
       var link = findClosestLink(event.target);
 
       // If there is no link associated with the click or its not a left
@@ -3577,7 +3584,7 @@
 })(jQuery, this);
 
 /*!
- * jQuery Mobile v1.0rc2pre
+ * jQuery Mobile v1.0rc2
  * http://jquerymobile.com/
  *
  * Copyright 2010, jQuery Project
@@ -3697,7 +3704,7 @@
   $.widget("mobile.dialog", $.mobile.widget, {
     options: {
       closeBtnText   : "Close",
-      theme      : "a",
+      dialogTheme  : "a",
       initSelector  : ":jqmData(role='dialog')"
     },
     _create: function() {
@@ -3710,7 +3717,7 @@
         $el.removeClass(pageTheme[ 0 ]);
       }
 
-      $el.addClass("ui-body-" + this.options.theme);
+      $el.addClass("ui-body-" + this.options.dialogTheme);
 
       // Class the markup for dialog styling
       // Set aria role
@@ -3993,7 +4000,7 @@
                     .toggleClass("ui-corner-bottom", isCollapse);
             collapsibleContent.toggleClass("ui-corner-bottom", !isCollapse);
           }
-          collapsibleContent.trigger("contentmodified");
+          collapsibleContent.trigger("updatelayout");
         }
       })
               .trigger(o.collapsed ? "collapse" : "expand");
@@ -4256,7 +4263,7 @@
                 .addClass("ui-corner-bl");
       }
       if (!create) {
-        this.element.trigger("contentmodified");
+        this.element.trigger("updatelayout");
       }
     },
 
@@ -4660,9 +4667,9 @@
               .wrapAll("<div class='ui-" + inputtype + "'></div>");
 
       label.bind({
-        vmouseover: function() {
+        vmouseover: function(event) {
           if ($(this).parent().is(".ui-disabled")) {
-            return false;
+            event.stopPropagation();
           }
         },
 
@@ -4735,6 +4742,7 @@
       if (this.inputtype == "checkbox") {
         return this.element;
       }
+
       return this.element.closest("form,fieldset,:jqmData(role='page')")
               .find("input[name='" + this.element.attr("name") + "'][type='" + this.inputtype + "']");
     },
@@ -6451,7 +6459,7 @@
                 stateBefore = null;
               });
 
-      $window.bind("resize contentmodified", showEventCallback);
+      $window.bind("resize updatelayout", showEventCallback);
     });
 
     // 1. Before page is shown, check for duplicate footer
@@ -6753,7 +6761,7 @@
 
 
 /*!
- * jQuery Mobile v1.0rc2pre
+ * jQuery Mobile v1.0rc2
  * http://jquerymobile.com/
  *
  * Copyright 2010, jQuery Project

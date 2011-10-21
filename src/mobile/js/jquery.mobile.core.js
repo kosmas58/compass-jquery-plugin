@@ -32,6 +32,9 @@
     // Automatically load and show pages based on location.hash
     hashListeningEnabled: true,
 
+    // disable to prevent jquery from bothering with links
+    linkBindingEnabled: true,
+
     // Set default page transition - 'none' for no transitions
     defaultPageTransition: "slide",
 

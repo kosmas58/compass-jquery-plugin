@@ -1002,7 +1002,7 @@ Built by David Kaneda and maintained by Jonathan Stark.
   min-height: 480px;
   .ui-header, .ui-content, .ui-footer {
     max-width: 500px;
-    margin: 15px auto;
+    margin: 10% auto 15px auto;
     padding: 15px;
     width: 85%;
     position: relative; }
@@ -1420,7 +1420,7 @@ ol.ui-listview .ui-li-jsnumbering:before {
   max-height: 80px;
   max-width: 80px; }
 
-.ui-li-icon {
+.ui-listview .ui-li-icon {
   position: absolute;
   left: 1px;
   top: 0;
@@ -1431,7 +1431,7 @@ ol.ui-listview .ui-li-jsnumbering:before {
   left: 10px;
   top: .9em; }
 
-.ui-li-thumb, .ui-li-icon, .ui-li-content {
+.ui-li-thumb, .ui-listview .ui-li-icon, .ui-li-content {
   float: left;
   margin-right: 10px; }
 

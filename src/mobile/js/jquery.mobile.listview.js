@@ -108,7 +108,7 @@
                 .addClass("ui-corner-bl");
       }
       if (!create) {
-        this.element.trigger("contentmodified");
+        this.element.trigger("updatelayout");
       }
     },
 

@@ -135,7 +135,7 @@
                     .toggleClass("ui-corner-bottom", isCollapse);
             collapsibleContent.toggleClass("ui-corner-bottom", !isCollapse);
           }
-          collapsibleContent.trigger("contentmodified");
+          collapsibleContent.trigger("updatelayout");
         }
       })
               .trigger(o.collapsed ? "collapse" : "expand");

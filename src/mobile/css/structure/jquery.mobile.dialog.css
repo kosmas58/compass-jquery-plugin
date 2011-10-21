@@ -9,7 +9,7 @@
 
 .ui-dialog .ui-header, .ui-dialog .ui-content, .ui-dialog .ui-footer {
     max-width: 500px;
-    margin: 15px auto;
+    margin: 10% auto 15px auto;
     padding: 15px;
     width: 85%;
     position: relative;
