@@ -308,10 +308,11 @@
       // TODO remove dependency on the page widget for the keepNative.
       // Currently the keepNative value is defined on the page prototype so
       // the method is as well
-      var page = $(target).data("page"),
-              keepNative = page && page.keepNativeSelector();
+      var page = $(target).closest(":jqmData(role='page')").data("page"),
+              keepNative = (page && page.keepNativeSelector()) || "";
 
-      $(this.options.initSelector, target).not(keepNative || "")[ this.widgetName ]();
+
+      $(this.options.initSelector, target).not(keepNative)[ this.widgetName ]();
     }
   });
 
@@ -2544,7 +2545,7 @@
 
   //simply set the active page's minimum height to screen height, depending on orientation
   function getScreenHeight() {
-    var orientation = jQuery.event.special.orientationchange.orientation(),
+    var orientation = $.event.special.orientationchange.orientation(),
             port = orientation === "portrait",
             winMin = port ? 480 : 320,
             screenHeight = port ? screen.availHeight : screen.availWidth,
@@ -4518,8 +4519,7 @@
 
                       // Change val as lastval for next execution
                       $this.jqmData("lastval", val);
-
-                      change = val.replace(new RegExp("^" + lastval), "");
+                      change = val.substr(0, lastval.length - 1).replace(lastval, "");
 
                       if (val.length < lastval.length || change.length != ( val.length - lastval.length )) {
 
@@ -6163,13 +6163,16 @@
   };
 
   function closestEnabledButton(element) {
+    var cname;
+
     while (element) {
-      var $ele = $(element);
-      if ($ele.hasClass("ui-btn") && !$ele.hasClass("ui-disabled")) {
+      cname = element.className && element.className.split(' ');
+      if (cname && cname.indexOf("ui-btn") > -1 && cname.indexOf("ui-disabled") < 0) {
         break;
       }
       element = element.parentNode;
     }
+
     return element;
   }
 

@@ -42,10 +42,11 @@
       // TODO remove dependency on the page widget for the keepNative.
       // Currently the keepNative value is defined on the page prototype so
       // the method is as well
-      var page = $(target).data("page"),
-              keepNative = page && page.keepNativeSelector();
+      var page = $(target).closest(":jqmData(role='page')").data("page"),
+              keepNative = (page && page.keepNativeSelector()) || "";
 
-      $(this.options.initSelector, target).not(keepNative || "")[ this.widgetName ]();
+
+      $(this.options.initSelector, target).not(keepNative)[ this.widgetName ]();
     }
   });
 
