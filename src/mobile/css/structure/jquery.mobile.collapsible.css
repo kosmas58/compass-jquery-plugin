@@ -46,9 +46,9 @@
 }
 
 .ui-collapsible-heading-status {
-    position: fixed;
-    top: 0;
-    left: -9999px;
+    position: absolute;
+    top: -9999px;
+    left: 0px;
 }
 
 .ui-collapsible-content {

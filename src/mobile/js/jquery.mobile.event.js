@@ -1,9 +1,10 @@
 /*
- * jQuery Mobile Framework : events
+ * jQuery Mobile Framework : "events" plugin - Handles events
  * Copyright (c) jQuery Project
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * http://jquery.org/license
  */
+
 (function($, window, undefined) {
 
 // add new event shortcuts
@@ -239,8 +240,6 @@
         win.trigger("orientationchange");
       }
     }
-
-    ;
 
     // Get the current page orientation. This method is exposed publicly, should it
     // be needed, as jQuery.event.special.orientationchange.orientation()

@@ -74,6 +74,13 @@
 
           input.prop("checked", inputtype === "radio" && true || !input.prop("checked"));
 
+          // trigger click handler's bound directly to the input as a substitute for
+          // how label clicks behave normally in the browsers
+          // TODO: it would be nice to let the browser's handle the clicks and pass them
+          //       through to the associate input. we can swallow that click at the parent
+          //       wrapper element level
+          input.triggerHandler('click');
+
           // Input set for common radio buttons will contain all the radio
           // buttons, but will not for checkboxes. clearing the checked status
           // of other radios ensures the active button state is applied properly
@@ -92,7 +99,6 @@
         },
 
         vclick: function() {
-
           var $this = $(this);
 
           // Adds checked attribute to checked input when keyboard is used

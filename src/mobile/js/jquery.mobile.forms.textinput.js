@@ -17,20 +17,13 @@
 
       var input = this.element,
               o = this.options,
-              theme = o.theme,
-              themeclass, focusedEl, clearbtn;
-
-      if (!theme) {
-        theme = $.mobile.getInheritedTheme(this.element, "c");
-      }
-
-      themeclass = " ui-body-" + theme;
+              theme = o.theme || $.mobile.getInheritedTheme(this.element, "c"),
+              themeclass = " ui-body-" + theme,
+              focusedEl, clearbtn;
 
       $("label[for='" + input.attr("id") + "']").addClass("ui-input-text");
 
-      input.addClass("ui-input-text ui-body-" + theme);
-
-      focusedEl = input;
+      focusedEl = input.addClass("ui-input-text ui-body-" + theme);
 
       // XXX: Temporary workaround for issue 785 (Apple bug 8910589).
       //      Turn off autocorrect and autocomplete on non-iOS 5 devices
@@ -67,17 +60,14 @@
                 });
 
         function toggleClear() {
-          if (!input.val()) {
-            clearbtn.addClass("ui-input-clear-hidden");
-          } else {
-            clearbtn.removeClass("ui-input-clear-hidden");
-          }
+          setTimeout(function() {
+            clearbtn.toggleClass("ui-input-clear-hidden", !input.val());
+          }, 0);
         }
 
         toggleClear();
 
-        input.keyup(toggleClear)
-                .focus(toggleClear);
+        input.bind('paste cut keyup focus change blur', toggleClear);
 
       } else {
         input.addClass("ui-corner-all ui-shadow-inset" + themeclass);

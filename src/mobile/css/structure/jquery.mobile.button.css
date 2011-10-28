@@ -167,7 +167,9 @@
     -webkit-appearance: button;
     opacity: .1;
     cursor: pointer;
-    background: transparent;
+    background: #fff;
+    background: rgba(255, 255, 255, 0);
+    filter: Alpha(Opacity = .0001);
     font-size: 1px;
     border: none;
     line-height: 999px;

@@ -1,5 +1,5 @@
 /*
- * jQuery Mobile Framework : plugin for making button-like links
+ * jQuery Mobile Framework : "buttons" plugin - for making button-like links
  * Copyright (c) jQuery Project
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * http://jquery.org/license
@@ -91,7 +91,7 @@
 
     while (element) {
       cname = element.className && element.className.split(' ');
-      if (cname && cname.indexOf("ui-btn") > -1 && cname.indexOf("ui-disabled") < 0) {
+      if (cname && $.inArray("ui-btn", cname) > -1 && $.inArray("ui-disabled", cname) < 0) {
         break;
       }
       element = element.parentNode;

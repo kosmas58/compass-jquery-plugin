@@ -4,6 +4,7 @@
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * http://jquery.org/license
  */
+
 ( function($, undefined) {
 
   //define vars for interal use
@@ -739,13 +740,19 @@
     // attribute and in need of enhancement.
     if (page.length === 0 && dataUrl && !path.isPath(dataUrl)) {
       page = settings.pageContainer.children("#" + dataUrl)
-              .attr("data-" + $.mobile.ns + "url", dataUrl)
+              .attr("data-" + $.mobile.ns + "url", dataUrl);
     }
 
     // If we failed to find a page in the DOM, check the URL to see if it
-    // refers to the first page in the application.
-    if (page.length === 0 && $.mobile.firstPage && path.isFirstPageUrl(fileUrl)) {
-      page = $($.mobile.firstPage);
+    // refers to the first page in the application. If it isn't a reference
+    // to the first page and refers to non-existent embedded page, error out.
+    if (page.length === 0) {
+      if ($.mobile.firstPage && path.isFirstPageUrl(fileUrl)) {
+        page = $($.mobile.firstPage);
+      } else if (path.isEmbeddedPage(fileUrl)) {
+        deferred.reject(absUrl, options);
+        return deferred.promise();
+      }
     }
 
     // Reset base to the default document base.
@@ -805,7 +812,7 @@
         type: settings.type,
         data: settings.data,
         dataType: "html",
-        success: function(html) {
+        success: function(html, textStatus, xhr) {
           //pre-parse html to check for a data-url,
           //use it as the new fileUrl, base path, etc
           var all = $("<div></div>"),
@@ -891,7 +898,9 @@
             hideMsg();
           }
 
-          // Add the page reference to our triggerData.
+          // Add the page reference and xhr to our triggerData.
+          triggerData.xhr = xhr;
+          triggerData.textStatus = textStatus;
           triggerData.page = page;
 
           // Let listeners know the page loaded successfully.
@@ -899,11 +908,16 @@
 
           deferred.resolve(absUrl, options, page, dupCachedPage);
         },
-        error: function() {
+        error: function(xhr, textStatus, errorThrown) {
           //set base back to current path
           if (base) {
             base.set(path.get());
           }
+
+          // Add error info to our triggerData.
+          triggerData.xhr = xhr;
+          triggerData.textStatus = textStatus;
+          triggerData.errorThrown = errorThrown;
 
           var plfEvent = new $.Event("pageloadfailed");
 
@@ -1102,8 +1116,9 @@
       path.set(url);
     }
 
-    //if title element wasn't found, try the page div data attr too
-    var newPageTitle = toPage.jqmData("title") || toPage.children(":jqmData(role='header')").find(".ui-title").getEncodedText();
+    // if title element wasn't found, try the page div data attr too
+    // If this is a deep-link or a reload ( active === undefined ) then just use pageTitle
+    var newPageTitle = ( !active ) ? pageTitle : toPage.jqmData("title") || toPage.children(":jqmData(role='header')").find(".ui-title").getEncodedText();
     if (!!newPageTitle && pageTitle == document.title) {
       pageTitle = newPageTitle;
     }

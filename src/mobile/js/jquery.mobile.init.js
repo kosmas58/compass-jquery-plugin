@@ -1,8 +1,6 @@
-/*!
- * jQuery Mobile v@VERSION
- * http://jquerymobile.com/
- *
- * Copyright 2010, jQuery Project
+/*
+ * jQuery Mobile Framework : "init" - Initialize the framework
+ * Copyright (c) jQuery Project
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * http://jquery.org/license
  */
