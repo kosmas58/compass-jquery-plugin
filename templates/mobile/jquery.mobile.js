@@ -7,6 +7,7 @@
  *
  * http://docs.jquery.com/UI/Widget
  */
+
 (function($, undefined) {
 
 // jQuery 1.4+
@@ -325,6 +326,7 @@
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * http://jquery.org/license
  */
+
 (function($, undefined) {
 
   var $window = $(window),
@@ -366,6 +368,7 @@
   })();
 
 })(jQuery);
+
 
 /*
  * jQuery Mobile Framework : support tests
@@ -990,11 +993,12 @@
 
 
 /*
- * jQuery Mobile Framework : events
+ * jQuery Mobile Framework : "events" plugin - Handles events
  * Copyright (c) jQuery Project
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * http://jquery.org/license
  */
+
 (function($, window, undefined) {
 
 // add new event shortcuts
@@ -1230,8 +1234,6 @@
         win.trigger("orientationchange");
       }
     }
-
-    ;
 
     // Get the current page orientation. This method is exposed publicly, should it
     // be needed, as jQuery.event.special.orientationchange.orientation()
@@ -1755,14 +1757,13 @@
 })(jQuery);
 
 
-/*!
- * jQuery Mobile v1.0rc2
- * http://jquerymobile.com/
- *
- * Copyright 2010, jQuery Project
+/*
+ * jQuery Mobile Framework : "core" - The base file for jQm
+ * Copyright (c) jQuery Project
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * http://jquery.org/license
  */
+
 
 (function($, window, undefined) {
 
@@ -1984,6 +1985,7 @@
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * http://jquery.org/license
  */
+
 ( function($, undefined) {
 
   //define vars for interal use
@@ -2719,13 +2721,19 @@
     // attribute and in need of enhancement.
     if (page.length === 0 && dataUrl && !path.isPath(dataUrl)) {
       page = settings.pageContainer.children("#" + dataUrl)
-              .attr("data-" + $.mobile.ns + "url", dataUrl)
+              .attr("data-" + $.mobile.ns + "url", dataUrl);
     }
 
     // If we failed to find a page in the DOM, check the URL to see if it
-    // refers to the first page in the application.
-    if (page.length === 0 && $.mobile.firstPage && path.isFirstPageUrl(fileUrl)) {
-      page = $($.mobile.firstPage);
+    // refers to the first page in the application. If it isn't a reference
+    // to the first page and refers to non-existent embedded page, error out.
+    if (page.length === 0) {
+      if ($.mobile.firstPage && path.isFirstPageUrl(fileUrl)) {
+        page = $($.mobile.firstPage);
+      } else if (path.isEmbeddedPage(fileUrl)) {
+        deferred.reject(absUrl, options);
+        return deferred.promise();
+      }
     }
 
     // Reset base to the default document base.
@@ -2785,7 +2793,7 @@
         type: settings.type,
         data: settings.data,
         dataType: "html",
-        success: function(html) {
+        success: function(html, textStatus, xhr) {
           //pre-parse html to check for a data-url,
           //use it as the new fileUrl, base path, etc
           var all = $("<div></div>"),
@@ -2871,7 +2879,9 @@
             hideMsg();
           }
 
-          // Add the page reference to our triggerData.
+          // Add the page reference and xhr to our triggerData.
+          triggerData.xhr = xhr;
+          triggerData.textStatus = textStatus;
           triggerData.page = page;
 
           // Let listeners know the page loaded successfully.
@@ -2879,11 +2889,16 @@
 
           deferred.resolve(absUrl, options, page, dupCachedPage);
         },
-        error: function() {
+        error: function(xhr, textStatus, errorThrown) {
           //set base back to current path
           if (base) {
             base.set(path.get());
           }
+
+          // Add error info to our triggerData.
+          triggerData.xhr = xhr;
+          triggerData.textStatus = textStatus;
+          triggerData.errorThrown = errorThrown;
 
           var plfEvent = new $.Event("pageloadfailed");
 
@@ -3082,8 +3097,9 @@
       path.set(url);
     }
 
-    //if title element wasn't found, try the page div data attr too
-    var newPageTitle = toPage.jqmData("title") || toPage.children(":jqmData(role='header')").find(".ui-title").getEncodedText();
+    // if title element wasn't found, try the page div data attr too
+    // If this is a deep-link or a reload ( active === undefined ) then just use pageTitle
+    var newPageTitle = ( !active ) ? pageTitle : toPage.jqmData("title") || toPage.children(":jqmData(role='header')").find(".ui-title").getEncodedText();
     if (!!newPageTitle && pageTitle == document.title) {
       pageTitle = newPageTitle;
     }
@@ -3453,6 +3469,7 @@
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * http://jquery.org/license
  */
+
 ( function($, window) {
   // For now, let's Monkeypatch this onto the end of $.mobile._registerInternalEvents
   // Scope self to pushStateHandler so we can reference it sanely within the
@@ -3584,11 +3601,10 @@
   });
 })(jQuery, this);
 
-/*!
- * jQuery Mobile v1.0rc2
- * http://jquerymobile.com/
- *
- * Copyright 2010, jQuery Project
+
+/*
+ * jQuery Mobile Framework : "transitions" plugin - Page change tranistions
+ * Copyright (c) jQuery Project
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * http://jquery.org/license
  */
@@ -4243,8 +4259,11 @@
         $topli = $visibleli.first()
                 .addClass("ui-corner-top");
 
-        $topli.add($topli.find(".ui-btn-inner"))
-                .find(".ui-li-link-alt")
+        $topli.add($topli.find(".ui-btn-inner")
+                .not(".ui-li-link-alt span:first-child"))
+                .addClass("ui-corner-top")
+                .end()
+                .find(".ui-li-link-alt, .ui-li-link-alt span:first-child")
                 .addClass("ui-corner-tr")
                 .end()
                 .find(".ui-li-thumb")
@@ -4683,6 +4702,13 @@
 
           input.prop("checked", inputtype === "radio" && true || !input.prop("checked"));
 
+          // trigger click handler's bound directly to the input as a substitute for
+          // how label clicks behave normally in the browsers
+          // TODO: it would be nice to let the browser's handle the clicks and pass them
+          //       through to the associate input. we can swallow that click at the parent
+          //       wrapper element level
+          input.triggerHandler('click');
+
           // Input set for common radio buttons will contain all the radio
           // buttons, but will not for checkboxes. clearing the checked status
           // of other radios ensures the active button state is applied properly
@@ -4701,7 +4727,6 @@
         },
 
         vclick: function() {
-
           var $this = $(this);
 
           // Adds checked attribute to checked input when keyboard is used
@@ -4970,12 +4995,16 @@
         handle: handle,
         dragging: false,
         beforeStart: null,
-        userModified: false
+        userModified: false,
+        mouseMoved: false
       });
 
       if (cType == "select") {
 
         slider.wrapInner("<div class='ui-slider-inneroffset'></div>");
+
+        // make the handle move with a smooth transition
+        handle.addClass("ui-slider-handle-snapping");
 
         options = control.find("option");
 
@@ -4999,7 +5028,10 @@
       // monitor the input for updated values
       control.addClass(cType === "input" ? "ui-slider-input" : "ui-slider-switch")
               .change(function() {
-                self.refresh(val(), true);
+                // if the user dragged the handle, the "change" event was triggered from inside refresh(); don't call refresh() again
+                if (!self.mouseMoved) {
+                  self.refresh(val(), true);
+                }
               })
               .keyup(function() { // necessary?
                 self.refresh(val(), true, true);
@@ -5011,8 +5043,18 @@
       // prevent screen drag when slider activated
       $(document).bind("vmousemove", function(event) {
         if (self.dragging) {
+          // self.mouseMoved must be updated before refresh() because it will be used in the control "change" event
+          self.mouseMoved = true;
+
+          if (cType === "select") {
+            // make the handle move in sync with the mouse
+            handle.removeClass("ui-slider-handle-snapping");
+          }
+
           self.refresh(event);
-          self.userModified = self.userModified || self.beforeStart !== control[0].selectedIndex;
+
+          // only after refresh() you can calculate self.userModified
+          self.userModified = self.beforeStart !== control[0].selectedIndex;
           return false;
         }
       });
@@ -5020,10 +5062,12 @@
       slider.bind("vmousedown", function(event) {
         self.dragging = true;
         self.userModified = false;
+        self.mouseMoved = false;
 
         if (cType === "select") {
           self.beforeStart = control[0].selectedIndex;
         }
+
         self.refresh(event);
         return false;
       });
@@ -5036,12 +5080,29 @@
 
                   if (cType === "select") {
 
-                    if (!self.userModified) {
-                      //tap occurred, but value didn't change. flip it!
-                      handle.addClass("ui-slider-handle-snapping");
-                      self.refresh(!self.beforeStart ? 1 : 0);
+                    // make the handle move with a smooth transition
+                    handle.addClass("ui-slider-handle-snapping");
+
+                    if (self.mouseMoved) {
+
+                      // this is a drag, change the value only if user dragged enough
+                      if (self.userModified) {
+                        self.refresh(self.beforeStart == 0 ? 1 : 0);
+                      }
+                      else {
+                        self.refresh(self.beforeStart);
+                      }
+
                     }
+                    else {
+                      // this is just a click, change the value
+                      self.refresh(self.beforeStart == 0 ? 1 : 0);
+                    }
+
                   }
+
+                  self.mouseMoved = false;
+
                   return false;
                 }
               });
@@ -5115,8 +5176,7 @@
     refresh: function(val, isfromControl, preventInputUpdate) {
 
       if (this.options.disabled || this.element.attr('disabled')) {
-        this.slider.addClass('ui-disabled');
-        return;
+        this.disable();
       }
 
       var control = this.element, percent,
@@ -5243,20 +5303,13 @@
 
       var input = this.element,
               o = this.options,
-              theme = o.theme,
-              themeclass, focusedEl, clearbtn;
-
-      if (!theme) {
-        theme = $.mobile.getInheritedTheme(this.element, "c");
-      }
-
-      themeclass = " ui-body-" + theme;
+              theme = o.theme || $.mobile.getInheritedTheme(this.element, "c"),
+              themeclass = " ui-body-" + theme,
+              focusedEl, clearbtn;
 
       $("label[for='" + input.attr("id") + "']").addClass("ui-input-text");
 
-      input.addClass("ui-input-text ui-body-" + theme);
-
-      focusedEl = input;
+      focusedEl = input.addClass("ui-input-text ui-body-" + theme);
 
       // XXX: Temporary workaround for issue 785 (Apple bug 8910589).
       //      Turn off autocorrect and autocomplete on non-iOS 5 devices
@@ -5293,17 +5346,14 @@
                 });
 
         function toggleClear() {
-          if (!input.val()) {
-            clearbtn.addClass("ui-input-clear-hidden");
-          } else {
-            clearbtn.removeClass("ui-input-clear-hidden");
-          }
+          setTimeout(function() {
+            clearbtn.toggleClass("ui-input-clear-hidden", !input.val());
+          }, 0);
         }
 
         toggleClear();
 
-        input.keyup(toggleClear)
-                .focus(toggleClear);
+        input.bind('paste cut keyup focus change blur', toggleClear);
 
       } else {
         input.addClass("ui-corner-all ui-shadow-inset" + themeclass);
@@ -6075,7 +6125,7 @@
 
 
 /*
- * jQuery Mobile Framework : plugin for making button-like links
+ * jQuery Mobile Framework : "buttons" plugin - for making button-like links
  * Copyright (c) jQuery Project
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * http://jquery.org/license
@@ -6167,7 +6217,7 @@
 
     while (element) {
       cname = element.className && element.className.split(' ');
-      if (cname && cname.indexOf("ui-btn") > -1 && cname.indexOf("ui-disabled") < 0) {
+      if (cname && $.inArray("ui-btn", cname) > -1 && $.inArray("ui-disabled", cname) < 0) {
         break;
       }
       element = element.parentNode;
@@ -6763,11 +6813,9 @@
 })(jQuery);
 
 
-/*!
- * jQuery Mobile v1.0rc2
- * http://jquerymobile.com/
- *
- * Copyright 2010, jQuery Project
+/*
+ * jQuery Mobile Framework : "init" - Initialize the framework
+ * Copyright (c) jQuery Project
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * http://jquery.org/license
  */

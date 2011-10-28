@@ -854,7 +854,9 @@ Built by David Kaneda and maintained by Jonathan Stark.
   -webkit-appearance: button;
   opacity: .1;
   cursor: pointer;
-  background: transparent;
+  background: #fff;
+  background: rgba(255, 255, 255, 0);
+  filter: Alpha(Opacity = 0.0);
   font-size: 1px;
   border: none;
   line-height: 999px; }
@@ -896,9 +898,9 @@ Built by David Kaneda and maintained by Jonathan Stark.
         margin-top: -10px; } } } }
 
 .ui-collapsible-heading-status {
-  position: fixed;
-  top: 0;
-  left: -9999px; }
+  position: absolute;
+  top: -9999px;
+  left: 0px; }
 
 .ui-collapsible-content {
   display: block;
@@ -1004,15 +1006,15 @@ Built by David Kaneda and maintained by Jonathan Stark.
   .ui-header, .ui-content, .ui-footer {
     max-width: 500px;
     margin: 10% auto 15px auto;
-    padding: 15px;
     width: 85%;
     position: relative; }
-  .ui-header {
+  .ui-header, .ui-footer {
     padding: 0 15px;
     z-index: 10; }
+  .ui-content {
+    padding: 15px;
+    margin-top: -15px; }
   .ui-footer {
-    z-index: 10; }
-  .ui-content, .ui-footer {
     margin-top: -15px; } }
 
 /*
@@ -1147,7 +1149,7 @@ label.ui-select {
 .ui-selectmenu {
   position: absolute;
   padding: 0;
-  z-index: 100 !important;
+  z-index: 1100 !important;
   width: 80%;
   max-width: 350px;
   padding: 6px;
@@ -1214,7 +1216,7 @@ label.ui-input-text {
 
 input.ui-input-text, textarea.ui-input-text {
   background-image: none;
-  padding: .4em 1.5%;
+  padding: .4em;
   line-height: 1.4;
   font-size: 16px;
   display: block;
@@ -1279,7 +1281,7 @@ textarea.ui-input-text {
       width: 50%; } }
   .ui-hide-label {
     input.ui-input-text, textarea.ui-input-text, .ui-input-search {
-      padding: .4em 1.5%;
+      padding: .4em;
       width: 97%; } }
   .ui-input-search input.ui-input-text {
     width: 98%;
@@ -1592,7 +1594,7 @@ div {
     width: 50%; } }
 
 a.ui-slider-handle-snapping {
-  -webkit-transition: left 100ms linear; }
+  -webkit-transition: left 70ms linear; }
 
 div {
   &.ui-slider-labelbg {
