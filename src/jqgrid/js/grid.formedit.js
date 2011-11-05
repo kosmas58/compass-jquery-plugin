@@ -163,6 +163,7 @@
             ruleButtons : p.multipleSearch,
             afterRedraw : p.afterRedraw,
             _gridsopt : $.jgrid.search.odata,
+            ajaxSelectOptions: $t.p.ajaxSelectOptions,
             onChange : function(sp) {
               if (this.p.showQuery) {
                 $('.query', this).html(this.toUserFriendlyString());
@@ -1860,7 +1861,7 @@
                   }
                   rp_ge[$t.p.id].processing = false;
                   $("#dData", "#" + dtbl + "_2").removeClass('ui-state-active');
-                  if (ret[0] || ret) {
+                  if (ret[0]) {
                     $.jgrid.hideModal("#" + IDs.themodal, {gb:"#gbox_" + gID,jqm:p.jqModal, onClose: rp_ge[$t.p.id].onClose});
                   }
                 }

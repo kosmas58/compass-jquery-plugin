@@ -3120,7 +3120,8 @@
               function(e) {
                 td = e.target;
                 ptr = $(td, ts.rows).closest("tr.jqgrow");
-                if ($(ptr).length === 0 || ptr[0].className.indexOf('ui-state-disabled') > -1) {
+                if ($(ptr).length === 0 || ptr[0].className.indexOf('ui-state-disabled') > -1 ||
+                        $(td, ts).closest("table.ui-jqgrid-btable")[0].id !== ts.id) {
                   return this;
                 }
                 var scb = $(td).hasClass("cbox"),
@@ -3239,7 +3240,7 @@
           return false;
         });
       }
-     /* if ($.isFunction(this.p.onRightClickRow)) {
+      /*if ($.isFunction(this.p.onRightClickRow)) {
         $(this).bind('contextmenu', function(e) {
           td = e.target;
           ptr = $(td, ts.rows).closest("tr.jqgrow");
@@ -4288,7 +4289,7 @@
       return ret;
     },
     getCol : function (col, obj, mathopr) {
-      var ret = [], val, sum = 0, min = 0, max = 0, v;
+      var ret = [], val, sum = 0, min, max, v;
       obj = typeof (obj) != 'boolean' ? false : obj;
       if (typeof mathopr == 'undefined') {
         mathopr = false;
@@ -4321,8 +4322,13 @@
                 if (mathopr) {
                   v = parseFloat(val);
                   sum += v;
-                  min = Math.min(min, v);
-                  max = Math.max(max, v);
+                  if (i === 0) {
+                    min = v;
+                    max = v;
+                  } else {
+                    min = Math.min(min, v);
+                    max = Math.max(max, v);
+                  }
                 }
                 else if (obj) {
                   ret.push({id:$t.rows[i].id,value:val});
@@ -5215,7 +5221,7 @@
           // One should not do this for hidden headers.
           $htable.find("div.ui-jqgrid-sortable").each(function () {
             var $ts = $(this), $parent = $ts.parent();
-            if ($parent.is(":visible")) {
+            if ($parent.is(":visible") && $parent.is(":has(span.ui-jqgrid-resize)")) {
               $ts.css('top', ($parent.height() - $ts.outerHeight()) / 2 + 'px');
             }
           });
@@ -8228,6 +8234,7 @@ var xmlJsonClass = {
             ruleButtons : p.multipleSearch,
             afterRedraw : p.afterRedraw,
             _gridsopt : $.jgrid.search.odata,
+            ajaxSelectOptions: $t.p.ajaxSelectOptions,
             onChange : function(sp) {
               if (this.p.showQuery) {
                 $('.query', this).html(this.toUserFriendlyString());
@@ -9925,7 +9932,7 @@ var xmlJsonClass = {
                   }
                   rp_ge[$t.p.id].processing = false;
                   $("#dData", "#" + dtbl + "_2").removeClass('ui-state-active');
-                  if (ret[0] || ret) {
+                  if (ret[0]) {
                     $.jgrid.hideModal("#" + IDs.themodal, {gb:"#gbox_" + gID,jqm:p.jqModal, onClose: rp_ge[$t.p.id].onClose});
                   }
                 }
