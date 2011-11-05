@@ -312,7 +312,6 @@
       var page = $(target).closest(":jqmData(role='page')").data("page"),
               keepNative = (page && page.keepNativeSelector()) || "";
 
-
       $(this.options.initSelector, target).not(keepNative)[ this.widgetName ]();
     }
   });
@@ -1889,12 +1888,26 @@
     },
 
     getInheritedTheme: function(el, defaultTheme) {
-      // Find the closest parent with a theme class on it.
-      var themedParent = el.closest("[class*='ui-bar-'],[class*='ui-body-']"),
 
-        // If there's a themed parent, extract the theme letter
-        // from the theme class	.
-              ltr = ( themedParent.length && /ui-(bar|body)-([a-z])\b/.exec(themedParent.attr("class"))[ 2 ] || "" ) || "";
+      // Find the closest parent with a theme class on it. Note that
+      // we are not using $.fn.closest() on purpose here because this
+      // method gets called quite a bit and we need it to be as fast
+      // as possible.
+
+      var e = el[ 0 ],
+              ltr = "",
+              re = /ui-(bar|body)-([a-z])\b/,
+              c, m;
+
+      while (e) {
+        var c = e.className || "";
+        if (( m = re.exec(c) ) && ( ltr = m[ 2 ] )) {
+          // We found a parent with a theme class
+          // on it so bail from this loop.
+          break;
+        }
+        e = e.parentNode;
+      }
 
       // Return the theme letter we found, if none, return the
       // specified default.
@@ -2729,7 +2742,17 @@
     // to the first page and refers to non-existent embedded page, error out.
     if (page.length === 0) {
       if ($.mobile.firstPage && path.isFirstPageUrl(fileUrl)) {
-        page = $($.mobile.firstPage);
+        // Check to make sure our cached-first-page is actually
+        // in the DOM. Some user deployed apps are pruning the first
+        // page from the DOM for various reasons, we check for this
+        // case here because we don't want a first-page with an id
+        // falling through to the non-existent embedded page error
+        // case. If the first-page is not in the DOM, then we let
+        // things fall through to the ajax loading code below so
+        // that it gets reloaded.
+        if ($.mobile.firstPage.parent().length) {
+          page = $($.mobile.firstPage);
+        }
       } else if (path.isEmbeddedPage(fileUrl)) {
         deferred.reject(absUrl, options);
         return deferred.promise();
@@ -2829,6 +2852,9 @@
           }
 
           if (newPageTitle && !page.jqmData("title")) {
+            if (~newPageTitle.indexOf("&")) {
+              newPageTitle = $("<div>" + newPageTitle + "</div>").text();
+            }
             page.jqmData("title", newPageTitle);
           }
 
@@ -3721,20 +3747,15 @@
   $.widget("mobile.dialog", $.mobile.widget, {
     options: {
       closeBtnText   : "Close",
-      theme  : "a",
+      overlayTheme  : "a",
       initSelector  : ":jqmData(role='dialog')"
     },
     _create: function() {
       var self = this,
               $el = this.element,
-              pageTheme = $el.attr("class").match(/ui-body-[a-z]/),
               headerCloseButton = $("<a href='#' data-" + $.mobile.ns + "icon='delete' data-" + $.mobile.ns + "iconpos='notext'>" + this.options.closeBtnText + "</a>");
 
-      if (pageTheme.length) {
-        $el.removeClass(pageTheme[ 0 ]);
-      }
-
-      $el.addClass("ui-body-" + this.options.theme);
+      $el.addClass("ui-overlay-" + this.options.overlayTheme);
 
       // Class the markup for dialog styling
       // Set aria role
@@ -3745,8 +3766,9 @@
               .prepend(headerCloseButton)
               .end()
               .find(":jqmData(role='content'),:jqmData(role='footer')")
+              .addClass("ui-overlay-shadow")
               .last()
-              .addClass("ui-corner-bottom ui-overlay-shadow");
+              .addClass("ui-corner-bottom");
 
       // this must be an anonymous function so that select menu dialogs can replace
       // the close method. This is a change from previously just defining data-rel=back
@@ -3817,6 +3839,7 @@
       var $this = $(this),
               role = $this.jqmData("role"),
               theme = $this.jqmData("theme"),
+              contentTheme = theme || o.contentTheme || pageTheme,
               $headeranchors,
               leftbtn,
               rightbtn,
@@ -3868,8 +3891,8 @@
                 });
 
       } else if (role === "content") {
-        if (theme || o.contentTheme) {
-          $this.addClass("ui-body-" + ( theme || o.contentTheme ));
+        if (contentTheme) {
+          $this.addClass("ui-body-" + ( contentTheme ));
         }
 
         // Add ARIA role
@@ -4211,20 +4234,13 @@
       var $countli = item.find(".ui-li-count");
       if ($countli.length) {
         item.addClass("ui-li-has-count");
+        $countli.addClass("ui-btn-up-" + ( $list.jqmData("counttheme") || this.options.countTheme ) + " ui-btn-corner-all");
       }
-      $countli.addClass("ui-btn-up-" + ( $list.jqmData("counttheme") || this.options.countTheme ) + " ui-btn-corner-all");
 
       // TODO class has to be defined in markup
-      item.find("h1, h2, h3, h4, h5, h6").addClass("ui-li-heading").end()
-              .find("p, dl").addClass("ui-li-desc").end()
-              .find(">img:eq(0), .ui-link-inherit>img:eq(0)").addClass("ui-li-thumb").each(
-              function() {
-                item.addClass($(this).is(".ui-li-icon") ? "ui-li-has-icon" : "ui-li-has-thumb");
-              }).end()
-              .find(".ui-li-aside").each(function() {
-                var $this = $(this);
-                $this.prependTo($this.parent()); //shift aside to front for css float
-              });
+      item.find(">img:eq(0), .ui-link-inherit>img:eq(0)").addClass("ui-li-thumb").each(function() {
+        item.addClass($(this).is(".ui-li-icon") ? "ui-li-has-icon" : "ui-li-has-thumb");
+      });
     },
 
     _removeCorners: function(li, which) {
@@ -4387,6 +4403,14 @@
 
         self._itemApply($list, item);
       }
+
+      $list.find("h1, h2, h3, h4, h5, h6").addClass("ui-li-heading").end()
+              .find("p, dl").addClass("ui-li-desc").end()
+              .find(".ui-li-aside").each(function() {
+                var $this = $(this);
+                $this.prependTo($this.parent()); //shift aside to front for css float
+              });
+
 
       this._refreshCorners(create);
     },
@@ -4723,7 +4747,7 @@
       input
               .bind({
         vmousedown: function() {
-          this._cacheVals();
+          self._cacheVals();
         },
 
         vclick: function() {
@@ -4908,11 +4932,17 @@
     },
 
     refresh: function() {
-      if (this.element.attr("disabled")) {
+      var $el = this.element;
+
+      if ($el.prop("disabled")) {
         this.disable();
       } else {
         this.enable();
       }
+
+      // the textWrapper is stored as a data element on the button object
+      // to prevent referencing by it's implementation details (eg 'class')
+      this.button.data('textWrapper').text($el.text() || $el.val());
     }
   });
 
@@ -5645,14 +5675,14 @@
             isMultiple = widget.isMultiple = widget.select[ 0 ].multiple,
             buttonId = selectID + "-button",
             menuId = selectID + "-menu",
-            menuPage = $("<div data-" + $.mobile.ns + "role='dialog' data-" + $.mobile.ns + "theme='" + widget.options.overlayTheme + "'>" +
+            menuPage = $("<div data-" + $.mobile.ns + "role='dialog' data-" + $.mobile.ns + "theme='" + widget.options.theme + "' data-" + $.mobile.ns + "overlay-theme='" + widget.options.overlayTheme + "'>" +
                     "<div data-" + $.mobile.ns + "role='header'>" +
                     "<div class='ui-title'>" + label.getEncodedText() + "</div>" +
                     "</div>" +
                     "<div data-" + $.mobile.ns + "role='content'></div>" +
                     "</div>").appendTo($.mobile.pageContainer).page(),
 
-            listbox = $("<div>", { "class": "ui-selectmenu ui-selectmenu-hidden ui-overlay-shadow ui-corner-all ui-body-" + widget.options.overlayTheme + " " + $.mobile.defaultDialogTransition }).insertAfter(screen),
+            listbox = $("<div>", { "class": "ui-selectmenu ui-selectmenu-hidden ui-overlay-shadow ui-corner-all ui-overlay-" + widget.options.overlayTheme + " " + $.mobile.defaultDialogTransition }).insertAfter(screen),
 
             list = $("<ul>", {
               "class": "ui-selectmenu-list",
@@ -5661,9 +5691,7 @@
               "aria-labelledby": buttonId
             }).attr("data-" + $.mobile.ns + "theme", widget.options.theme).appendTo(listbox),
 
-            header = $("<div>", {
-              "class": "ui-header ui-bar-" + widget.options.theme
-            }).prependTo(listbox),
+            header = $("<div>").attr("data-" + $.mobile.ns + "theme", widget.options.theme).prependTo(listbox),
 
             headerTitle = $("<h1>", {
               "class": "ui-title"
@@ -6133,22 +6161,30 @@
 ( function($, undefined) {
 
   $.fn.buttonMarkup = function(options) {
-    return this.each(function() {
-      var el = $(this),
+    options = options || {};
+
+    for (var i = 0; i < this.length; i++) {
+      var el = this.eq(i),
+              e = el[ 0 ],
               o = $.extend({}, $.fn.buttonMarkup.defaults, {
-                icon: el.jqmData("icon"),
-                iconpos: el.jqmData("iconpos"),
-                theme: el.jqmData("theme"),
-                inline: el.jqmData("inline"),
-                shadow: el.jqmData("shadow"),
-                corners: el.jqmData("corners"),
-                iconshadow: el.jqmData("iconshadow")
+                icon:       options.icon !== undefined ? options.icon : el.jqmData("icon"),
+                iconpos:    options.iconpos !== undefined ? options.iconpos : el.jqmData("iconpos"),
+                theme:      options.theme !== undefined ? options.theme : el.jqmData("theme"),
+                inline:     options.inline !== undefined ? options.inline : el.jqmData("inline"),
+                shadow:     options.shadow !== undefined ? options.shadow : el.jqmData("shadow"),
+                corners:    options.corners !== undefined ? options.corners : el.jqmData("corners"),
+                iconshadow: options.iconshadow !== undefined ? options.iconshadow : el.jqmData("iconshadow")
               }, options),
 
         // Classes Defined
               innerClass = "ui-btn-inner",
+              textClass = "ui-btn-text",
               buttonClass, iconClass,
-              wrap;
+
+        // Button inner markup
+              buttonInner = document.createElement(o.wrapperEls),
+              buttonText = document.createElement(o.wrapperEls),
+              buttonIcon = o.icon ? document.createElement("span") : null;
 
       if (attachEvents) {
         attachEvents();
@@ -6196,12 +6232,30 @@
       el.attr("data-" + $.mobile.ns + "theme", o.theme)
               .addClass(buttonClass);
 
-      wrap = ( "<D class='" + innerClass + "' aria-hidden='true'><D class='ui-btn-text'></D>" +
-              ( o.icon ? "<span class='" + iconClass + "'></span>" : "" ) +
-              "</D>" ).replace(/D/g, o.wrapperEls);
+      buttonInner.className = innerClass;
+      buttonInner.setAttribute("aria-hidden", "true");
 
-      el.wrapInner(wrap);
-    });
+      buttonText.className = textClass;
+      buttonInner.appendChild(buttonText);
+
+      if (buttonIcon) {
+        buttonIcon.className = iconClass;
+        buttonInner.appendChild(buttonIcon);
+      }
+
+      while (e.firstChild) {
+        buttonText.appendChild(e.firstChild);
+      }
+
+      e.appendChild(buttonInner);
+
+      // TODO obviously it would be nice to pull this element out instead of
+      // retrieving it from the DOM again, but this change is much less obtrusive
+      // and 1.0 draws nigh
+      el.data('textWrapper', $(buttonText));
+    }
+
+    return this;
   };
 
   $.fn.buttonMarkup.defaults = {

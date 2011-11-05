@@ -79,11 +79,17 @@
     },
 
     refresh: function() {
-      if (this.element.attr("disabled")) {
+      var $el = this.element;
+
+      if ($el.prop("disabled")) {
         this.disable();
       } else {
         this.enable();
       }
+
+      // the textWrapper is stored as a data element on the button object
+      // to prevent referencing by it's implementation details (eg 'class')
+      this.button.data('textWrapper').text($el.text() || $el.val());
     }
   });
 

@@ -45,7 +45,6 @@
       var page = $(target).closest(":jqmData(role='page')").data("page"),
               keepNative = (page && page.keepNativeSelector()) || "";
 
-
       $(this.options.initSelector, target).not(keepNative)[ this.widgetName ]();
     }
   });

@@ -27,6 +27,11 @@
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
+/* Issue #2066 */
+form.ui-mobile-viewport {
+    overflow-x: visible;
+}
+
 /* "page" containers - full-screen views, one should always be in view post-pageload */
 .ui-mobile [data-role=page], .ui-mobile [data-role=dialog], .ui-page {
     top: 0;

@@ -39,20 +39,13 @@
       var $countli = item.find(".ui-li-count");
       if ($countli.length) {
         item.addClass("ui-li-has-count");
+        $countli.addClass("ui-btn-up-" + ( $list.jqmData("counttheme") || this.options.countTheme ) + " ui-btn-corner-all");
       }
-      $countli.addClass("ui-btn-up-" + ( $list.jqmData("counttheme") || this.options.countTheme ) + " ui-btn-corner-all");
 
       // TODO class has to be defined in markup
-      item.find("h1, h2, h3, h4, h5, h6").addClass("ui-li-heading").end()
-              .find("p, dl").addClass("ui-li-desc").end()
-              .find(">img:eq(0), .ui-link-inherit>img:eq(0)").addClass("ui-li-thumb").each(
-              function() {
-                item.addClass($(this).is(".ui-li-icon") ? "ui-li-has-icon" : "ui-li-has-thumb");
-              }).end()
-              .find(".ui-li-aside").each(function() {
-                var $this = $(this);
-                $this.prependTo($this.parent()); //shift aside to front for css float
-              });
+      item.find(">img:eq(0), .ui-link-inherit>img:eq(0)").addClass("ui-li-thumb").each(function() {
+        item.addClass($(this).is(".ui-li-icon") ? "ui-li-has-icon" : "ui-li-has-thumb");
+      });
     },
 
     _removeCorners: function(li, which) {
@@ -215,6 +208,14 @@
 
         self._itemApply($list, item);
       }
+
+      $list.find("h1, h2, h3, h4, h5, h6").addClass("ui-li-heading").end()
+              .find("p, dl").addClass("ui-li-desc").end()
+              .find(".ui-li-aside").each(function() {
+                var $this = $(this);
+                $this.prependTo($this.parent()); //shift aside to front for css float
+              });
+
 
       this._refreshCorners(create);
     },

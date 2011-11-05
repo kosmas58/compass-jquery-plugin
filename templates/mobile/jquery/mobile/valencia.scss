@@ -19,15 +19,15 @@
   text-shadow: 0 -1px 0px #94440f;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#e9a015), to(#e98a15));
   /* Saf4+, Chrome */
-  background-image: -webkit-linear-gradient(top, #e9a015, #e98a15);
+  background-image: -webkit-linear-gradient(#e9a015, #e98a15);
   /* Chrome 10+, Saf5.1+ */
-  background-image: -moz-linear-gradient(top, #e9a015, #e98a15);
+  background-image: -moz-linear-gradient(#e9a015, #e98a15);
   /* FF3.6 */
-  background-image: -ms-linear-gradient(top, #e9a015, #e98a15);
+  background-image: -ms-linear-gradient(#e9a015, #e98a15);
   /* IE10 */
-  background-image: -o-linear-gradient(top, #e9a015, #e98a15);
+  background-image: -o-linear-gradient(#e9a015, #e98a15);
   /* Opera 11.10+ */
-  background-image: linear-gradient(top, #e9a015, #e98a15); }
+  background-image: linear-gradient(#e9a015, #e98a15); }
 
 .ui-btn-up-a {
   border: 1px solid #BD610D;
@@ -35,15 +35,15 @@
   color: #fff;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#ea9e0c), to(#e68510));
   /* Saf4+, Chrome */
-  background-image: -webkit-linear-gradient(top, #ea9e0c, #e68510);
+  background-image: -webkit-linear-gradient(#ea9e0c, #e68510);
   /* Chrome 10+, Saf5.1+ */
-  background-image: -moz-linear-gradient(top, #ea9e0c, #e68510);
+  background-image: -moz-linear-gradient(#ea9e0c, #e68510);
   /* FF3.6 */
-  background-image: -ms-linear-gradient(top, #ea9e0c, #e68510);
+  background-image: -ms-linear-gradient(#ea9e0c, #e68510);
   /* IE10 */
-  background-image: -o-linear-gradient(top, #ea9e0c, #e68510);
+  background-image: -o-linear-gradient(#ea9e0c, #e68510);
   /* Opera 11.10+ */
-  background-image: linear-gradient(top, #ea9e0c, #e68510);
+  background-image: linear-gradient(#ea9e0c, #e68510);
   a.ui-link-inherit {
     color: #fff; } }
 
@@ -53,15 +53,15 @@
   color: #fff;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#edab30), to(#ed9730));
   /* Saf4+, Chrome */
-  background-image: -webkit-linear-gradient(top, #edab30, #ed9730);
+  background-image: -webkit-linear-gradient(#edab30, #ed9730);
   /* Chrome 10+, Saf5.1+ */
-  background-image: -moz-linear-gradient(top, #edab30, #ed9730);
+  background-image: -moz-linear-gradient(#edab30, #ed9730);
   /* FF3.6 */
-  background-image: -ms-linear-gradient(top, #edab30, #ed9730);
+  background-image: -ms-linear-gradient(#edab30, #ed9730);
   /* IE10 */
-  background-image: -o-linear-gradient(top, #edab30, #ed9730);
+  background-image: -o-linear-gradient(#edab30, #ed9730);
   /* Opera 11.10+ */
-  background-image: linear-gradient(top, #edab30, #ed9730);
+  background-image: linear-gradient(#edab30, #ed9730);
   a.ui-link-inherit {
     color: #fff; } }
 
@@ -71,15 +71,15 @@
   color: #fff;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#ba8011), to(#ba6e11));
   /* Saf4+, Chrome */
-  background-image: -webkit-linear-gradient(top, #ba8011, #ba6e11);
+  background-image: -webkit-linear-gradient(#ba8011, #ba6e11);
   /* Chrome 10+, Saf5.1+ */
-  background-image: -moz-linear-gradient(top, #ba8011, #ba6e11);
+  background-image: -moz-linear-gradient(#ba8011, #ba6e11);
   /* FF3.6 */
-  background-image: -ms-linear-gradient(top, #ba8011, #ba6e11);
+  background-image: -ms-linear-gradient(#ba8011, #ba6e11);
   /* IE10 */
-  background-image: -o-linear-gradient(top, #ba8011, #ba6e11);
+  background-image: -o-linear-gradient(#ba8011, #ba6e11);
   /* Opera 11.10+ */
-  background-image: linear-gradient(top, #ba8011, #ba6e11); }
+  background-image: linear-gradient(#ba8011, #ba6e11); }
 
 .ui-btn-up-a, .ui-btn-hover-a, .ui-btn-down-a {
   text-shadow: 0 -1px 0px #94440f;
@@ -98,7 +98,7 @@
     color: #7cc4e7;
     font-weight: bold; } }
 
-.ui-body-a {
+.ui-body-a, .ui-dialog.ui-overlay-a {
   font-weight: normal;
   border: 1px solid #222;
   background: #444;
@@ -106,15 +106,17 @@
   text-shadow: 0 -1px 0px black;
   background-image: -webkit-gradient(linear, center top, center bottom, from(#333333), color-stop(5%, #333333), color-stop(15%, #444444), color-stop(60%, #444444), to(#222222));
   /* Saf4+, Chrome */
-  background-image: -webkit-linear-gradient(top, #333333 0%, #333333 5%, #444444 15%, #444444 60%, #222222 100%);
+  background-image: -webkit-linear-gradient(#333333 0%, #333333 5%, #444444 15%, #444444 60%, #222222 100%);
   /* Chrome 10+, Saf5.1+ */
-  background-image: -moz-linear-gradient(top, #333333 0%, #333333 5%, #444444 15%, #444444 60%, #222222 100%);
+  background-image: -moz-linear-gradient(#333333 0%, #333333 5%, #444444 15%, #444444 60%, #222222 100%);
   /* FF3.6 */
-  background-image: -ms-linear-gradient(top, #333333 0%, #333333 5%, #444444 15%, #444444 60%, #222222 100%);
+  background-image: -ms-linear-gradient(#333333 0%, #333333 5%, #444444 15%, #444444 60%, #222222 100%);
   /* IE10 */
-  background-image: -o-linear-gradient(top, #333333 0%, #333333 5%, #444444 15%, #444444 60%, #222222 100%);
+  background-image: -o-linear-gradient(#333333 0%, #333333 5%, #444444 15%, #444444 60%, #222222 100%);
   /* Opera 11.10+ */
-  background-image: linear-gradient(top, #333333 0%, #333333 5%, #444444 15%, #444444 60%, #222222 100%);
+  background-image: linear-gradient(#333333 0%, #333333 5%, #444444 15%, #444444 60%, #222222 100%); }
+
+.ui-body-a {
   font-family: Helvetica, Arial, sans-serif;
   input, select, textarea, button {
     font-family: Helvetica, Arial, sans-serif; }
@@ -138,15 +140,15 @@
   text-shadow: 0 -1px 0px #111111;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#555555), to(#333333));
   /* Saf4+, Chrome */
-  background-image: -webkit-linear-gradient(top, #555555, #333333);
+  background-image: -webkit-linear-gradient(#555555, #333333);
   /* Chrome 10+, Saf5.1+ */
-  background-image: -moz-linear-gradient(top, #555555, #333333);
+  background-image: -moz-linear-gradient(#555555, #333333);
   /* FF3.6 */
-  background-image: -ms-linear-gradient(top, #555555, #333333);
+  background-image: -ms-linear-gradient(#555555, #333333);
   /* IE10 */
-  background-image: -o-linear-gradient(top, #555555, #333333);
+  background-image: -o-linear-gradient(#555555, #333333);
   /* Opera 11.10+ */
-  background-image: linear-gradient(top, #555555, #333333); }
+  background-image: linear-gradient(#555555, #333333); }
 
 .ui-btn-up-b {
   border: 1px solid #232323;
@@ -154,15 +156,15 @@
   color: #eee;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#5e5e5e), to(#393939));
   /* Saf4+, Chrome */
-  background-image: -webkit-linear-gradient(top, #5e5e5e, #393939);
+  background-image: -webkit-linear-gradient(#5e5e5e, #393939);
   /* Chrome 10+, Saf5.1+ */
-  background-image: -moz-linear-gradient(top, #5e5e5e, #393939);
+  background-image: -moz-linear-gradient(#5e5e5e, #393939);
   /* FF3.6 */
-  background-image: -ms-linear-gradient(top, #5e5e5e, #393939);
+  background-image: -ms-linear-gradient(#5e5e5e, #393939);
   /* IE10 */
-  background-image: -o-linear-gradient(top, #5e5e5e, #393939);
+  background-image: -o-linear-gradient(#5e5e5e, #393939);
   /* Opera 11.10+ */
-  background-image: linear-gradient(top, #5e5e5e, #393939);
+  background-image: linear-gradient(#5e5e5e, #393939);
   a.ui-link-inherit {
     color: #eee; } }
 
@@ -172,15 +174,15 @@
   color: #fff;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#6e6e6e), to(#494949));
   /* Saf4+, Chrome */
-  background-image: -webkit-linear-gradient(top, #6e6e6e, #494949);
+  background-image: -webkit-linear-gradient(#6e6e6e, #494949);
   /* Chrome 10+, Saf5.1+ */
-  background-image: -moz-linear-gradient(top, #6e6e6e, #494949);
+  background-image: -moz-linear-gradient(#6e6e6e, #494949);
   /* FF3.6 */
-  background-image: -ms-linear-gradient(top, #6e6e6e, #494949);
+  background-image: -ms-linear-gradient(#6e6e6e, #494949);
   /* IE10 */
-  background-image: -o-linear-gradient(top, #6e6e6e, #494949);
+  background-image: -o-linear-gradient(#6e6e6e, #494949);
   /* Opera 11.10+ */
-  background-image: linear-gradient(top, #6e6e6e, #494949);
+  background-image: linear-gradient(#6e6e6e, #494949);
   a.ui-link-inherit {
     color: #fff; } }
 
@@ -190,15 +192,15 @@
   color: #fff;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#4e4e4e), to(#292929));
   /* Saf4+, Chrome */
-  background-image: -webkit-linear-gradient(top, #4e4e4e, #292929);
+  background-image: -webkit-linear-gradient(#4e4e4e, #292929);
   /* Chrome 10+, Saf5.1+ */
-  background-image: -moz-linear-gradient(top, #4e4e4e, #292929);
+  background-image: -moz-linear-gradient(#4e4e4e, #292929);
   /* FF3.6 */
-  background-image: -ms-linear-gradient(top, #4e4e4e, #292929);
+  background-image: -ms-linear-gradient(#4e4e4e, #292929);
   /* IE10 */
-  background-image: -o-linear-gradient(top, #4e4e4e, #292929);
+  background-image: -o-linear-gradient(#4e4e4e, #292929);
   /* Opera 11.10+ */
-  background-image: linear-gradient(top, #4e4e4e, #292929);
+  background-image: linear-gradient(#4e4e4e, #292929);
   a.ui-link-inherit {
     color: #fff; } }
 
@@ -219,13 +221,15 @@
     color: #7cc4e7;
     font-weight: bold; } }
 
-.ui-body-b {
+.ui-body-b, .ui-dialog.ui-overlay-b {
   font-weight: normal;
   border: 1px solid #999;
   background-color: #e5e5e5;
   color: #666;
   text-shadow: 0 1px 0px #fff;
-  background-image: image_url("jquery/mobile/valencia/texture_075.png");
+  background-image: image_url("jquery/mobile/valencia/texture_075.png"); }
+
+.ui-body-b {
   font-family: Helvetica, Arial, sans-serif;
   input, select, textarea, button {
     font-family: Helvetica, Arial, sans-serif; }
@@ -249,15 +253,15 @@
   text-shadow: 0 1px 0px #fff;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#eeeeee), to(#e5e5e5));
   /* Saf4+, Chrome */
-  background-image: -webkit-linear-gradient(top, #eeeeee, #e5e5e5);
+  background-image: -webkit-linear-gradient(#eeeeee, #e5e5e5);
   /* Chrome 10+, Saf5.1+ */
-  background-image: -moz-linear-gradient(top, #eeeeee, #e5e5e5);
+  background-image: -moz-linear-gradient(#eeeeee, #e5e5e5);
   /* FF3.6 */
-  background-image: -ms-linear-gradient(top, #eeeeee, #e5e5e5);
+  background-image: -ms-linear-gradient(#eeeeee, #e5e5e5);
   /* IE10 */
-  background-image: -o-linear-gradient(top, #eeeeee, #e5e5e5);
+  background-image: -o-linear-gradient(#eeeeee, #e5e5e5);
   /* Opera 11.10+ */
-  background-image: linear-gradient(top, #eeeeee, #e5e5e5);
+  background-image: linear-gradient(#eeeeee, #e5e5e5);
   font-family: Helvetica, Arial, sans-serif;
   input, select, textarea, button {
     font-family: Helvetica, Arial, sans-serif; } }
@@ -275,15 +279,15 @@
   color: #444;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#eeeeee), to(#e5e5e5));
   /* Saf4+, Chrome */
-  background-image: -webkit-linear-gradient(top, #eeeeee, #e5e5e5);
+  background-image: -webkit-linear-gradient(#eeeeee, #e5e5e5);
   /* Chrome 10+, Saf5.1+ */
-  background-image: -moz-linear-gradient(top, #eeeeee, #e5e5e5);
+  background-image: -moz-linear-gradient(#eeeeee, #e5e5e5);
   /* FF3.6 */
-  background-image: -ms-linear-gradient(top, #eeeeee, #e5e5e5);
+  background-image: -ms-linear-gradient(#eeeeee, #e5e5e5);
   /* IE10 */
-  background-image: -o-linear-gradient(top, #eeeeee, #e5e5e5);
+  background-image: -o-linear-gradient(#eeeeee, #e5e5e5);
   /* Opera 11.10+ */
-  background-image: linear-gradient(top, #eeeeee, #e5e5e5);
+  background-image: linear-gradient(#eeeeee, #e5e5e5);
   a.ui-link-inherit {
     color: #444; } }
 
@@ -293,15 +297,15 @@
   color: #222;
   background-image: -webkit-gradient(linear, left top, left bottom, from(white), to(#f5f5f5));
   /* Saf4+, Chrome */
-  background-image: -webkit-linear-gradient(top, white, #f5f5f5);
+  background-image: -webkit-linear-gradient(white, #f5f5f5);
   /* Chrome 10+, Saf5.1+ */
-  background-image: -moz-linear-gradient(top, white, #f5f5f5);
+  background-image: -moz-linear-gradient(white, #f5f5f5);
   /* FF3.6 */
-  background-image: -ms-linear-gradient(top, white, #f5f5f5);
+  background-image: -ms-linear-gradient(white, #f5f5f5);
   /* IE10 */
-  background-image: -o-linear-gradient(top, white, #f5f5f5);
+  background-image: -o-linear-gradient(white, #f5f5f5);
   /* Opera 11.10+ */
-  background-image: linear-gradient(top, white, #f5f5f5);
+  background-image: linear-gradient(white, #f5f5f5);
   a.ui-link-inherit {
     color: #222; } }
 
@@ -311,24 +315,26 @@
   color: #111;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#dddddd), to(#d5d5d5));
   /* Saf4+, Chrome */
-  background-image: -webkit-linear-gradient(top, #dddddd, #d5d5d5);
+  background-image: -webkit-linear-gradient(#dddddd, #d5d5d5);
   /* Chrome 10+, Saf5.1+ */
-  background-image: -moz-linear-gradient(top, #dddddd, #d5d5d5);
+  background-image: -moz-linear-gradient(#dddddd, #d5d5d5);
   /* FF3.6 */
-  background-image: -ms-linear-gradient(top, #dddddd, #d5d5d5);
+  background-image: -ms-linear-gradient(#dddddd, #d5d5d5);
   /* IE10 */
-  background-image: -o-linear-gradient(top, #dddddd, #d5d5d5);
+  background-image: -o-linear-gradient(#dddddd, #d5d5d5);
   /* Opera 11.10+ */
-  background-image: linear-gradient(top, #dddddd, #d5d5d5);
+  background-image: linear-gradient(#dddddd, #d5d5d5);
   a.ui-link-inherit {
     color: #111; } }
 
-.ui-body-c {
+.ui-body-c, .ui-dialog.ui-overlay-c {
   border: 1px solid #ddd;
   color: #333333;
   text-shadow: 0 1px 0px #fff;
   background: #fff;
-  background-image: image_url("jquery/mobile/valencia/texture_075.png");
+  background-image: image_url("jquery/mobile/valencia/texture_075.png"); }
+
+.ui-body-c {
   font-family: Helvetica, Arial, sans-serif;
   input, select, textarea, button {
     font-family: Helvetica, Arial, sans-serif; }
@@ -352,15 +358,15 @@
   text-shadow: 0 1px 0px #fff;
   background-image: -webkit-gradient(linear, center top, center bottom, from(#dddddd), color-stop(5%, #cccccc), color-stop(15%, #bbbbbb), color-stop(95%, #dddddd), to(#cccccc));
   /* Saf4+, Chrome */
-  background-image: -webkit-linear-gradient(top, #dddddd 0%, #cccccc 5%, #bbbbbb 15%, #dddddd 95%, #cccccc 100%);
+  background-image: -webkit-linear-gradient(#dddddd 0%, #cccccc 5%, #bbbbbb 15%, #dddddd 95%, #cccccc 100%);
   /* Chrome 10+, Saf5.1+ */
-  background-image: -moz-linear-gradient(top, #dddddd 0%, #cccccc 5%, #bbbbbb 15%, #dddddd 95%, #cccccc 100%);
+  background-image: -moz-linear-gradient(#dddddd 0%, #cccccc 5%, #bbbbbb 15%, #dddddd 95%, #cccccc 100%);
   /* FF3.6 */
-  background-image: -ms-linear-gradient(top, #dddddd 0%, #cccccc 5%, #bbbbbb 15%, #dddddd 95%, #cccccc 100%);
+  background-image: -ms-linear-gradient(#dddddd 0%, #cccccc 5%, #bbbbbb 15%, #dddddd 95%, #cccccc 100%);
   /* IE10 */
-  background-image: -o-linear-gradient(top, #dddddd 0%, #cccccc 5%, #bbbbbb 15%, #dddddd 95%, #cccccc 100%);
+  background-image: -o-linear-gradient(#dddddd 0%, #cccccc 5%, #bbbbbb 15%, #dddddd 95%, #cccccc 100%);
   /* Opera 11.10+ */
-  background-image: linear-gradient(top, #dddddd 0%, #cccccc 5%, #bbbbbb 15%, #dddddd 95%, #cccccc 100%);
+  background-image: linear-gradient(#dddddd 0%, #cccccc 5%, #bbbbbb 15%, #dddddd 95%, #cccccc 100%);
   font-family: Helvetica, Arial, sans-serif;
   input, select, textarea, button {
     font-family: Helvetica, Arial, sans-serif; }
@@ -376,15 +382,15 @@
   color: #666;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#d5d5d5), to(#dddddd));
   /* Saf4+, Chrome */
-  background-image: -webkit-linear-gradient(top, #d5d5d5, #dddddd);
+  background-image: -webkit-linear-gradient(#d5d5d5, #dddddd);
   /* Chrome 10+, Saf5.1+ */
-  background-image: -moz-linear-gradient(top, #d5d5d5, #dddddd);
+  background-image: -moz-linear-gradient(#d5d5d5, #dddddd);
   /* FF3.6 */
-  background-image: -ms-linear-gradient(top, #d5d5d5, #dddddd);
+  background-image: -ms-linear-gradient(#d5d5d5, #dddddd);
   /* IE10 */
-  background-image: -o-linear-gradient(top, #d5d5d5, #dddddd);
+  background-image: -o-linear-gradient(#d5d5d5, #dddddd);
   /* Opera 11.10+ */
-  background-image: linear-gradient(top, #d5d5d5, #dddddd);
+  background-image: linear-gradient(#d5d5d5, #dddddd);
   a.ui-link-inherit {
     color: #666; } }
 
@@ -394,15 +400,15 @@
   color: #666;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#c5c5c5), to(#cccccc));
   /* Saf4+, Chrome */
-  background-image: -webkit-linear-gradient(top, #c5c5c5, #cccccc);
+  background-image: -webkit-linear-gradient(#c5c5c5, #cccccc);
   /* Chrome 10+, Saf5.1+ */
-  background-image: -moz-linear-gradient(top, #c5c5c5, #cccccc);
+  background-image: -moz-linear-gradient(#c5c5c5, #cccccc);
   /* FF3.6 */
-  background-image: -ms-linear-gradient(top, #c5c5c5, #cccccc);
+  background-image: -ms-linear-gradient(#c5c5c5, #cccccc);
   /* IE10 */
-  background-image: -o-linear-gradient(top, #c5c5c5, #cccccc);
+  background-image: -o-linear-gradient(#c5c5c5, #cccccc);
   /* Opera 11.10+ */
-  background-image: linear-gradient(top, #c5c5c5, #cccccc);
+  background-image: linear-gradient(#c5c5c5, #cccccc);
   a.ui-link-inherit {
     color: #666; } }
 
@@ -412,15 +418,15 @@
   color: #444;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#b5b5b5), to(#bbbbbb));
   /* Saf4+, Chrome */
-  background-image: -webkit-linear-gradient(top, #b5b5b5, #bbbbbb);
+  background-image: -webkit-linear-gradient(#b5b5b5, #bbbbbb);
   /* Chrome 10+, Saf5.1+ */
-  background-image: -moz-linear-gradient(top, #b5b5b5, #bbbbbb);
+  background-image: -moz-linear-gradient(#b5b5b5, #bbbbbb);
   /* FF3.6 */
-  background-image: -ms-linear-gradient(top, #b5b5b5, #bbbbbb);
+  background-image: -ms-linear-gradient(#b5b5b5, #bbbbbb);
   /* IE10 */
-  background-image: -o-linear-gradient(top, #b5b5b5, #bbbbbb);
+  background-image: -o-linear-gradient(#b5b5b5, #bbbbbb);
   /* Opera 11.10+ */
-  background-image: linear-gradient(top, #b5b5b5, #bbbbbb); }
+  background-image: linear-gradient(#b5b5b5, #bbbbbb); }
 
 .ui-btn-up-d {
   a.ui-link {
@@ -450,18 +456,36 @@
   background: #eee;
   background-image: -webkit-gradient(linear, left top, left bottom, from(white), color-stop(15%, #f5f5f5), to(#eeeeee));
   /* Saf4+, Chrome */
-  background-image: -webkit-linear-gradient(top, white 0%, #f5f5f5 15%, #eeeeee 100%);
+  background-image: -webkit-linear-gradient(white 0%, #f5f5f5 15%, #eeeeee 100%);
   /* Chrome 10+, Saf5.1+ */
-  background-image: -moz-linear-gradient(top, white 0%, #f5f5f5 15%, #eeeeee 100%);
+  background-image: -moz-linear-gradient(white 0%, #f5f5f5 15%, #eeeeee 100%);
   /* FF3.6 */
-  background-image: -ms-linear-gradient(top, white 0%, #f5f5f5 15%, #eeeeee 100%);
+  background-image: -ms-linear-gradient(white 0%, #f5f5f5 15%, #eeeeee 100%);
   /* IE10 */
-  background-image: -o-linear-gradient(top, white 0%, #f5f5f5 15%, #eeeeee 100%);
+  background-image: -o-linear-gradient(white 0%, #f5f5f5 15%, #eeeeee 100%);
   /* Opera 11.10+ */
-  background-image: linear-gradient(top, white 0%, #f5f5f5 15%, #eeeeee 100%);
-  .ui-link {
-    font-weight: bold;
-    color: #e98a15; } }
+  background-image: linear-gradient(white 0%, #f5f5f5 15%, #eeeeee 100%); }
+
+.ui-dialog.ui-overlay-d {
+  border: 1px solid #aaa;
+  color: #666;
+  text-shadow: 0 1px 0px #fff;
+  background: #eee;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(white), color-stop(15%, #f5f5f5), to(#eeeeee));
+  /* Saf4+, Chrome */
+  background-image: -webkit-linear-gradient(white 0%, #f5f5f5 15%, #eeeeee 100%);
+  /* Chrome 10+, Saf5.1+ */
+  background-image: -moz-linear-gradient(white 0%, #f5f5f5 15%, #eeeeee 100%);
+  /* FF3.6 */
+  background-image: -ms-linear-gradient(white 0%, #f5f5f5 15%, #eeeeee 100%);
+  /* IE10 */
+  background-image: -o-linear-gradient(white 0%, #f5f5f5 15%, #eeeeee 100%);
+  /* Opera 11.10+ */
+  background-image: linear-gradient(white 0%, #f5f5f5 15%, #eeeeee 100%); }
+
+.ui-body-d .ui-link {
+  font-weight: bold;
+  color: #e98a15; }
 
 .ui-body-c {
   .ui-link-inherit {
@@ -484,15 +508,15 @@
   text-shadow: 0 1px 0px #fff;
   background-image: -webkit-gradient(linear, left top, left bottom, from(white), color-stop(50%, #cccccc), color-stop(50%, #b5b5b5), to(#eeeeee));
   /* Saf4+, Chrome */
-  background-image: -webkit-linear-gradient(top, white 0%, #cccccc 50%, #b5b5b5 50%, #eeeeee 100%);
+  background-image: -webkit-linear-gradient(white 0%, #cccccc 50%, #b5b5b5 50%, #eeeeee 100%);
   /* Chrome 10+, Saf5.1+ */
-  background-image: -moz-linear-gradient(top, white 0%, #cccccc 50%, #b5b5b5 50%, #eeeeee 100%);
+  background-image: -moz-linear-gradient(white 0%, #cccccc 50%, #b5b5b5 50%, #eeeeee 100%);
   /* FF3.6 */
-  background-image: -ms-linear-gradient(top, white 0%, #cccccc 50%, #b5b5b5 50%, #eeeeee 100%);
+  background-image: -ms-linear-gradient(white 0%, #cccccc 50%, #b5b5b5 50%, #eeeeee 100%);
   /* IE10 */
-  background-image: -o-linear-gradient(top, white 0%, #cccccc 50%, #b5b5b5 50%, #eeeeee 100%);
+  background-image: -o-linear-gradient(white 0%, #cccccc 50%, #b5b5b5 50%, #eeeeee 100%);
   /* Opera 11.10+ */
-  background-image: linear-gradient(top, white 0%, #cccccc 50%, #b5b5b5 50%, #eeeeee 100%);
+  background-image: linear-gradient(white 0%, #cccccc 50%, #b5b5b5 50%, #eeeeee 100%);
   font-family: Helvetica, Arial, sans-serif;
   input, select, textarea {
     font-family: Helvetica, Arial, sans-serif; } }
@@ -514,15 +538,15 @@
   text-shadow: 0 1px 0px #fff;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#f5f5f5), color-stop(50%, #cccccc), color-stop(50%, #b5b5b5), to(#f5f5f5));
   /* Saf4+, Chrome */
-  background-image: -webkit-linear-gradient(top, #f5f5f5 0%, #cccccc 50%, #b5b5b5 50%, #f5f5f5 100%);
+  background-image: -webkit-linear-gradient(#f5f5f5 0%, #cccccc 50%, #b5b5b5 50%, #f5f5f5 100%);
   /* Chrome 10+, Saf5.1+ */
-  background-image: -moz-linear-gradient(top, #f5f5f5 0%, #cccccc 50%, #b5b5b5 50%, #f5f5f5 100%);
+  background-image: -moz-linear-gradient(#f5f5f5 0%, #cccccc 50%, #b5b5b5 50%, #f5f5f5 100%);
   /* FF3.6 */
-  background-image: -ms-linear-gradient(top, #f5f5f5 0%, #cccccc 50%, #b5b5b5 50%, #f5f5f5 100%);
+  background-image: -ms-linear-gradient(#f5f5f5 0%, #cccccc 50%, #b5b5b5 50%, #f5f5f5 100%);
   /* IE10 */
-  background-image: -o-linear-gradient(top, #f5f5f5 0%, #cccccc 50%, #b5b5b5 50%, #f5f5f5 100%);
+  background-image: -o-linear-gradient(#f5f5f5 0%, #cccccc 50%, #b5b5b5 50%, #f5f5f5 100%);
   /* Opera 11.10+ */
-  background-image: linear-gradient(top, #f5f5f5 0%, #cccccc 50%, #b5b5b5 50%, #f5f5f5 100%);
+  background-image: linear-gradient(#f5f5f5 0%, #cccccc 50%, #b5b5b5 50%, #f5f5f5 100%);
   a.ui-link-inherit {
     color: #333; } }
 
@@ -533,15 +557,15 @@
   text-shadow: 0 1px 0px #fff;
   background-image: -webkit-gradient(linear, left top, left bottom, from(white), color-stop(50%, #dddddd), color-stop(50%, #cccccc), to(white));
   /* Saf4+, Chrome */
-  background-image: -webkit-linear-gradient(top, white 0%, #dddddd 50%, #cccccc 50%, white 100%);
+  background-image: -webkit-linear-gradient(white 0%, #dddddd 50%, #cccccc 50%, white 100%);
   /* Chrome 10+, Saf5.1+ */
-  background-image: -moz-linear-gradient(top, white 0%, #dddddd 50%, #cccccc 50%, white 100%);
+  background-image: -moz-linear-gradient(white 0%, #dddddd 50%, #cccccc 50%, white 100%);
   /* FF3.6 */
-  background-image: -ms-linear-gradient(top, white 0%, #dddddd 50%, #cccccc 50%, white 100%);
+  background-image: -ms-linear-gradient(white 0%, #dddddd 50%, #cccccc 50%, white 100%);
   /* IE10 */
-  background-image: -o-linear-gradient(top, white 0%, #dddddd 50%, #cccccc 50%, white 100%);
+  background-image: -o-linear-gradient(white 0%, #dddddd 50%, #cccccc 50%, white 100%);
   /* Opera 11.10+ */
-  background-image: linear-gradient(top, white 0%, #dddddd 50%, #cccccc 50%, white 100%);
+  background-image: linear-gradient(white 0%, #dddddd 50%, #cccccc 50%, white 100%);
   a.ui-link-inherit {
     color: #333; } }
 
@@ -551,15 +575,15 @@
   color: #333;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#dddddd), color-stop(50%, #cccccc), color-stop(50%, #bbbbbb), to(#dddddd));
   /* Saf4+, Chrome */
-  background-image: -webkit-linear-gradient(top, #dddddd 0%, #cccccc 50%, #bbbbbb 50%, #dddddd 100%);
+  background-image: -webkit-linear-gradient(#dddddd 0%, #cccccc 50%, #bbbbbb 50%, #dddddd 100%);
   /* Chrome 10+, Saf5.1+ */
-  background-image: -moz-linear-gradient(top, #dddddd 0%, #cccccc 50%, #bbbbbb 50%, #dddddd 100%);
+  background-image: -moz-linear-gradient(#dddddd 0%, #cccccc 50%, #bbbbbb 50%, #dddddd 100%);
   /* FF3.6 */
-  background-image: -ms-linear-gradient(top, #dddddd 0%, #cccccc 50%, #bbbbbb 50%, #dddddd 100%);
+  background-image: -ms-linear-gradient(#dddddd 0%, #cccccc 50%, #bbbbbb 50%, #dddddd 100%);
   /* IE10 */
-  background-image: -o-linear-gradient(top, #dddddd 0%, #cccccc 50%, #bbbbbb 50%, #dddddd 100%);
+  background-image: -o-linear-gradient(#dddddd 0%, #cccccc 50%, #bbbbbb 50%, #dddddd 100%);
   /* Opera 11.10+ */
-  background-image: linear-gradient(top, #dddddd 0%, #cccccc 50%, #bbbbbb 50%, #dddddd 100%);
+  background-image: linear-gradient(#dddddd 0%, #cccccc 50%, #bbbbbb 50%, #dddddd 100%);
   a.ui-link-inherit {
     color: #333; } }
 
@@ -570,13 +594,15 @@
   text-decoration: none;
   text-shadow: 0 1px 0px #fff; }
 
-.ui-body-e {
+.ui-body-e, .ui-dialog.ui-overlay-e {
   font-weight: normal;
   border: 1px solid #aaa;
   background: #ccc;
   color: #111;
   text-shadow: 0 1px 0px #fff;
-  background-image: image_url("jquery/mobile/valencia/texture_075.png");
+  background-image: image_url("jquery/mobile/valencia/texture_075.png"); }
+
+.ui-body-e {
   font-family: Helvetica, Arial, sans-serif;
   input, select, textarea, button {
     font-family: Helvetica, Arial, sans-serif; }
@@ -607,15 +633,15 @@ a.ui-link-inherit {
   text-shadow: 0 1px 0px #eee;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#ffdc52), to(#ffbc19));
   /* Saf4+, Chrome */
-  background-image: -webkit-linear-gradient(top, #ffdc52, #ffbc19);
+  background-image: -webkit-linear-gradient(#ffdc52, #ffbc19);
   /* Chrome 10+, Saf5.1+ */
-  background-image: -moz-linear-gradient(top, #ffdc52, #ffbc19);
+  background-image: -moz-linear-gradient(#ffdc52, #ffbc19);
   /* FF3.6 */
-  background-image: -ms-linear-gradient(top, #ffdc52, #ffbc19);
+  background-image: -ms-linear-gradient(#ffdc52, #ffbc19);
   /* IE10 */
-  background-image: -o-linear-gradient(top, #ffdc52, #ffbc19);
+  background-image: -o-linear-gradient(#ffdc52, #ffbc19);
   /* Opera 11.10+ */
-  background-image: linear-gradient(top, #ffdc52, #ffbc19);
+  background-image: linear-gradient(#ffdc52, #ffbc19);
   a.ui-link-inherit {
     color: #333; } }
 
