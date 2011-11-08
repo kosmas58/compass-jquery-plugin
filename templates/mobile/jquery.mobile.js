@@ -1766,6 +1766,8 @@
 
 (function($, window, undefined) {
 
+  var nsNormalizeDict = {};
+
   // jQuery.mobile configurable options
   $.extend($.mobile, {
 
@@ -1877,14 +1879,18 @@
       }, 150);
     },
 
+    // Expose our cache for testing purposes.
+    nsNormalizeDict: nsNormalizeDict,
+
     // Take a data attribute property, prepend the namespace
-    // and then camel case the attribute string
+    // and then camel case the attribute string. Add the result
+    // to our nsNormalizeDict so we don't have to do this again.
     nsNormalize: function(prop) {
       if (!prop) {
         return;
       }
 
-      return $.camelCase($.mobile.ns + prop);
+      return nsNormalizeDict[ prop ] || ( nsNormalizeDict[ prop ] = $.camelCase($.mobile.ns + prop) );
     },
 
     getInheritedTheme: function(el, defaultTheme) {
@@ -1971,10 +1977,11 @@
   };
 
   // Monkey-patching Sizzle to filter the :jqmData selector
-  var oldFind = $.find;
+  var oldFind = $.find,
+          jqmDataRE = /:jqmData\(([^)]*)\)/g;
 
   $.find = function(selector, context, ret, extra) {
-    selector = selector.replace(/:jqmData\(([^)]*)\)/g, "[data-" + ( $.mobile.ns || "" ) + "$1]");
+    selector = selector.replace(jqmDataRE, "[data-" + ( $.mobile.ns || "" ) + "$1]");
 
     return oldFind.call(this, selector, context, ret, extra);
   };
@@ -4230,19 +4237,6 @@
       t.refresh(true);
     },
 
-    _itemApply: function($list, item) {
-      var $countli = item.find(".ui-li-count");
-      if ($countli.length) {
-        item.addClass("ui-li-has-count");
-        $countli.addClass("ui-btn-up-" + ( $list.jqmData("counttheme") || this.options.countTheme ) + " ui-btn-corner-all");
-      }
-
-      // TODO class has to be defined in markup
-      item.find(">img:eq(0), .ui-link-inherit>img:eq(0)").addClass("ui-li-thumb").each(function() {
-        item.addClass($(this).is(".ui-li-icon") ? "ui-li-has-icon" : "ui-li-has-thumb");
-      });
-    },
-
     _removeCorners: function(li, which) {
       var top = "ui-corner-top ui-corner-tr ui-corner-tl",
               bot = "ui-corner-bottom ui-corner-br ui-corner-bl";
@@ -4400,17 +4394,29 @@
         }
 
         item.add(item.children(".ui-btn-inner")).addClass(itemClass);
-
-        self._itemApply($list, item);
       }
 
-      $list.find("h1, h2, h3, h4, h5, h6").addClass("ui-li-heading").end()
-              .find("p, dl").addClass("ui-li-desc").end()
+      $list.find("h1, h2, h3, h4, h5, h6").addClass("ui-li-heading")
+              .end()
+
+              .find("p, dl").addClass("ui-li-desc")
+              .end()
+
               .find(".ui-li-aside").each(function() {
                 var $this = $(this);
                 $this.prependTo($this.parent()); //shift aside to front for css float
-              });
+              })
+              .end()
 
+              .find(".ui-li-count").each(
+              function() {
+                $(this).closest("li").addClass("ui-li-has-count");
+              }).addClass("ui-btn-up-" + ( $list.jqmData("counttheme") || this.options.countTheme) + " ui-btn-corner-all");
+
+      li.find(".ui-link-inherit>img:eq(0)").add(li.children("img:eq(0)")).addClass("ui-li-thumb").each(function() {
+        var $this = $(this);
+        $this.closest("li").addClass($this.is(".ui-li-icon") ? "ui-li-has-icon" : "ui-li-has-thumb");
+      });
 
       this._refreshCorners(create);
     },
@@ -5682,7 +5688,7 @@
                     "<div data-" + $.mobile.ns + "role='content'></div>" +
                     "</div>").appendTo($.mobile.pageContainer).page(),
 
-            listbox = $("<div>", { "class": "ui-selectmenu ui-selectmenu-hidden ui-overlay-shadow ui-corner-all ui-overlay-" + widget.options.overlayTheme + " " + $.mobile.defaultDialogTransition }).insertAfter(screen),
+            listbox = $("<div>", { "class": "ui-selectmenu ui-selectmenu-hidden ui-overlay-shadow ui-corner-all ui-body-" + widget.options.overlayTheme + " " + $.mobile.defaultDialogTransition }).insertAfter(screen),
 
             list = $("<ul>", {
               "class": "ui-selectmenu-list",
