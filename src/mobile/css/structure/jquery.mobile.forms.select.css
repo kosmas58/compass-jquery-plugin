@@ -1,8 +1,3 @@
-/*
-* jQuery Mobile Framework
-* Copyright (c) jQuery Project
-* Dual licensed under the MIT (MIT-LICENSE.txt) or GPL (GPL-LICENSE.txt) licenses.
-*/
 .ui-select {
     display: block;
     position: relative;
@@ -18,6 +13,11 @@
     overflow: hidden;
 }
 
+.ui-select .ui-btn {
+    opacity: 1;
+}
+
+/* Fixes #2588 — When Windows Phone 7.5 (Mango) tries to calculate a numeric opacity for a select—including “inherit”—without explicitly specifying an opacity on the parent to give it context, a bug appears where clicking elsewhere on the page after opening the select will open the select again. */
 .ui-select .ui-btn select {
     cursor: pointer;
     -webkit-appearance: button;

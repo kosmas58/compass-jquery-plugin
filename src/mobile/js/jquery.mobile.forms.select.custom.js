@@ -1,8 +1,5 @@
 /*
- * jQuery Mobile Framework : custom "selectmenu" plugin
- * Copyright (c) jQuery Project
- * Dual licensed under the MIT or GPL Version 2 licenses.
- * http://jquery.org/license
+ * custom "selectmenu" plugin
  */
 
 (function($, undefined) {
@@ -33,7 +30,9 @@
               "aria-labelledby": buttonId
             }).attr("data-" + $.mobile.ns + "theme", widget.options.theme).appendTo(listbox),
 
-            header = $("<div>").attr("data-" + $.mobile.ns + "theme", widget.options.theme).prependTo(listbox),
+            header = $("<div>", {
+              "class": "ui-header ui-bar-" + widget.options.theme
+            }).prependTo(listbox),
 
             headerTitle = $("<h1>", {
               "class": "ui-title"

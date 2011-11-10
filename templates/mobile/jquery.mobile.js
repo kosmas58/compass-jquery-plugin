@@ -1,3 +1,14 @@
+/*
+ * jQuery Mobile Framework v1.0rc2
+ * http://jquerymobile.com
+ *
+ * Copyright 2011 (c) jQuery Project
+ * Dual licensed under the MIT or GPL Version 2 licenses.
+ * http://jquery.org/license
+ *
+ */
+
+
 /*!
  * jQuery UI Widget 1.0rc2
  *
@@ -266,10 +277,7 @@
 
 
 /*
- * jQuery Mobile Framework : widget factory extentions for mobile
- * Copyright (c) jQuery Project
- * Dual licensed under the MIT or GPL Version 2 licenses.
- * http://jquery.org/license
+ * widget factory extentions for mobile
  */
 
 (function($, undefined) {
@@ -320,10 +328,7 @@
 
 
 /*
- * jQuery Mobile Framework : a workaround for window.matchMedia
- * Copyright (c) jQuery Project
- * Dual licensed under the MIT or GPL Version 2 licenses.
- * http://jquery.org/license
+ * a workaround for window.matchMedia
  */
 
 (function($, undefined) {
@@ -370,9 +375,7 @@
 
 
 /*
- * jQuery Mobile Framework : support tests
- * Copyright (c) jQuery Project
- * Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
+ * support tests
  */
 
 (function($, undefined) {
@@ -491,10 +494,7 @@
 
 
 /*
- * jQuery Mobile Framework : "mouse" plugin
- * Copyright (c) jQuery Project
- * Dual licensed under the MIT or GPL Version 2 licenses.
- * http://jquery.org/license
+ * "mouse" plugin
  */
 
 // This plugin is an experiment for abstracting away the touch and mouse
@@ -991,11 +991,8 @@
 })(jQuery, window, document);
 
 
-/*
- * jQuery Mobile Framework : "events" plugin - Handles events
- * Copyright (c) jQuery Project
- * Dual licensed under the MIT or GPL Version 2 licenses.
- * http://jquery.org/license
+/* 
+ * "events" plugin - Handles events
  */
 
 (function($, window, undefined) {
@@ -1314,17 +1311,8 @@
 })(jQuery, this);
 
 
-/*!
- * jQuery hashchange event - v1.3 - 7/21/2010
- * http://benalman.com/projects/jquery-hashchange-plugin/
- * 
- * Copyright (c) 2010 "Cowboy" Ben Alman
- * Dual licensed under the MIT and GPL licenses.
- * http://benalman.com/about/license/
- */
-
 // Script: jQuery hashchange event
-//
+// 
 // *Version: 1.3, Last updated: 7/21/2010*
 // 
 // Project Home - http://benalman.com/projects/jquery-hashchange-plugin/
@@ -1718,10 +1706,7 @@
 
 
 /*
- * jQuery Mobile Framework : "page" plugin
- * Copyright (c) jQuery Project
- * Dual licensed under the MIT or GPL Version 2 licenses.
- * http://jquery.org/license
+ * "page" plugin
  */
 
 (function($, undefined) {
@@ -1756,13 +1741,9 @@
 })(jQuery);
 
 
-/*
- * jQuery Mobile Framework : "core" - The base file for jQm
- * Copyright (c) jQuery Project
- * Dual licensed under the MIT or GPL Version 2 licenses.
- * http://jquery.org/license
+/* 
+ * "core" - The base file for jQm
  */
-
 
 (function($, window, undefined) {
 
@@ -2000,10 +1981,7 @@
 
 
 /*
- * jQuery Mobile Framework : core utilities for auto ajax navigation, base tag mgmt,
- * Copyright (c) jQuery Project
- * Dual licensed under the MIT or GPL Version 2 licenses.
- * http://jquery.org/license
+ * core utilities for auto ajax navigation, base tag mgmt,
  */
 
 ( function($, undefined) {
@@ -3136,6 +3114,9 @@
     if (!!newPageTitle && pageTitle == document.title) {
       pageTitle = newPageTitle;
     }
+    if (!toPage.jqmData("title")) {
+      toPage.jqmData("title", pageTitle);
+    }
 
     // Make sure we have a transition defined.
     settings.transition = settings.transition
@@ -3497,10 +3478,7 @@
 
 
 /*
- * jQuery Mobile Framework : history.pushState support, layered on top of hashchange
- * Copyright (c) jQuery Project
- * Dual licensed under the MIT or GPL Version 2 licenses.
- * http://jquery.org/license
+ * history.pushState support, layered on top of hashchange
  */
 
 ( function($, window) {
@@ -3636,10 +3614,7 @@
 
 
 /*
- * jQuery Mobile Framework : "transitions" plugin - Page change tranistions
- * Copyright (c) jQuery Project
- * Dual licensed under the MIT or GPL Version 2 licenses.
- * http://jquery.org/license
+ * "transitions" plugin - Page change tranistions
  */
 
 (function($, window, undefined) {
@@ -3686,10 +3661,7 @@
 
 
 /*
- * jQuery Mobile Framework : "degradeInputs" plugin - degrades inputs to another type after custom enhancements are made.
- * Copyright (c) jQuery Project
- * Dual licensed under the MIT or GPL Version 2 licenses.
- * http://jquery.org/license
+ * "degradeInputs" plugin - degrades inputs to another type after custom enhancements are made.
  */
 
 (function($, undefined) {
@@ -3744,9 +3716,7 @@
 })(jQuery);
 
 /*
- * jQuery Mobile Framework : "dialog" plugin.
- * Copyright (c) jQuery Project
- * Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
+ * "dialog" plugin.
  */
 
 (function($, window, undefined) {
@@ -3821,10 +3791,7 @@
 
 
 /*
- * jQuery Mobile Framework : This plugin handles theming and layout of headers, footers, and content areas
- * Copyright (c) jQuery Project
- * Dual licensed under the MIT or GPL Version 2 licenses.
- * http://jquery.org/license
+ * This plugin handles theming and layout of headers, footers, and content areas
  */
 
 (function($, undefined) {
@@ -3911,11 +3878,9 @@
 })(jQuery);
 
 /*
- * jQuery Mobile Framework : "collapsible" plugin
- * Copyright (c) jQuery Project
- * Dual licensed under the MIT or GPL Version 2 licenses.
- * http://jquery.org/license
+ * "collapsible" plugin
  */
+
 (function($, undefined) {
 
   $.widget("mobile.collapsible", $.mobile.widget, {
@@ -3923,7 +3888,7 @@
       expandCueText: " click to expand contents",
       collapseCueText: " click to collapse contents",
       collapsed: true,
-      heading: ">:header,>legend",
+      heading: "h1,h2,h3,h4,h5,h6,legend",
       theme: null,
       contentTheme: null,
       iconTheme: "d",
@@ -3934,10 +3899,10 @@
       var $el = this.element,
               o = this.options,
               collapsible = $el.addClass("ui-collapsible"),
-              collapsibleHeading = $el.find(o.heading).eq(0),
+              collapsibleHeading = $el.children(o.heading).first(),
               collapsibleContent = collapsible.wrapInner("<div class='ui-collapsible-content'></div>").find(".ui-collapsible-content"),
               collapsibleSet = $el.closest(":jqmData(role='collapsible-set')").addClass("ui-collapsible-set"),
-              colllapsiblesInSet = collapsibleSet.children(":jqmData(role='collapsible')");
+              collapsiblesInSet = collapsibleSet.children(":jqmData(role='collapsible')");
 
       // Replace collapsibleHeading if it's a legend
       if (collapsibleHeading.is("legend")) {
@@ -3966,7 +3931,8 @@
               .addClass("ui-collapsible-heading")
               .append("<span class='ui-collapsible-heading-status'></span>")
               .wrapInner("<a href='#' class='ui-collapsible-heading-toggle'></a>")
-              .find("a:eq(0)")
+              .find("a")
+              .first()
               .buttonMarkup({
                 shadow: false,
                 corners: false,
@@ -3977,7 +3943,7 @@
 
       if (!collapsibleSet.length) {
         collapsibleHeading
-                .find("a:eq(0), .ui-btn-inner")
+                .find("a").first().add(collapsibleHeading.find(".ui-btn-inner"))
                 .addClass("ui-corner-top ui-corner-bottom");
       } else {
         // If we are in a collapsible set
@@ -3997,15 +3963,17 @@
                   });
         }
 
-        colllapsiblesInSet.first()
-                .find("a:eq(0)")
+        collapsiblesInSet.first()
+                .find("a")
+                .first()
                 .addClass("ui-corner-top")
                 .find(".ui-btn-inner")
                 .addClass("ui-corner-top");
 
-        colllapsiblesInSet.last()
+        collapsiblesInSet.last()
                 .jqmData("collapsible-last", true)
-                .find("a:eq(0)")
+                .find("a")
+                .first()
                 .addClass("ui-corner-bottom")
                 .find(".ui-btn-inner")
                 .addClass("ui-corner-bottom");
@@ -4013,7 +3981,7 @@
 
         if (collapsible.jqmData("collapsible-last")) {
           collapsibleHeading
-                  .find("a:eq(0), .ui-btn-inner")
+                  .find("a").first().add(collapsibleHeading.find(".ui-btn-inner"))
                   .addClass("ui-corner-bottom");
         }
       }
@@ -4043,7 +4011,7 @@
 
           if (contentTheme && ( !collapsibleSet.length || collapsible.jqmData("collapsible-last") )) {
             collapsibleHeading
-                    .find("a:eq(0), .ui-btn-inner")
+                    .find("a").first().add(collapsibleHeading.find(".ui-btn-inner"))
                     .toggleClass("ui-corner-bottom", isCollapse);
             collapsibleContent.toggleClass("ui-corner-bottom", !isCollapse);
           }
@@ -4074,10 +4042,7 @@
 
 
 /*
- * jQuery Mobile Framework : "fieldcontain" plugin - simple class additions to make form row separators
- * Copyright (c) jQuery Project
- * Dual licensed under the MIT or GPL Version 2 licenses.
- * http://jquery.org/license
+ * "fieldcontain" plugin - simple class additions to make form row separators
  */
 
 (function($, undefined) {
@@ -4094,10 +4059,7 @@
 })(jQuery);
 
 /*
- * jQuery Mobile Framework : plugin for creating CSS grids
- * Copyright (c) jQuery Project
- * Dual licensed under the MIT or GPL Version 2 licenses.
- * http://jquery.org/license
+ * plugin for creating CSS grids
  */
 
 (function($, undefined) {
@@ -4148,10 +4110,7 @@
 })(jQuery);
 
 /*
- * jQuery Mobile Framework : "navbar" plugin
- * Copyright (c) jQuery Project
- * Dual licensed under the MIT or GPL Version 2 licenses.
- * http://jquery.org/license
+ * "navbar" plugin
  */
 
 (function($, undefined) {
@@ -4201,10 +4160,7 @@
 
 
 /*
- * jQuery Mobile Framework : "listview" plugin
- * Copyright (c) jQuery Project
- * Dual licensed under the MIT or GPL Version 2 licenses.
- * http://jquery.org/license
+ * "listview" plugin
  */
 
 (function($, undefined) {
@@ -4310,7 +4266,7 @@
               li = $list.children("li"),
               counter = $.support.cssPseudoElement || !$.nodeName($list[ 0 ], "ol") ? 0 : 1,
               item, itemClass, itemTheme,
-              a, last, splittheme, countParent, icon;
+              a, last, splittheme, countParent, icon, imgParents, img;
 
       if (counter) {
         $list.find(".ui-li-dec").remove();
@@ -4413,10 +4369,26 @@
                 $(this).closest("li").addClass("ui-li-has-count");
               }).addClass("ui-btn-up-" + ( $list.jqmData("counttheme") || this.options.countTheme) + " ui-btn-corner-all");
 
-      li.find(".ui-link-inherit>img:eq(0)").add(li.children("img:eq(0)")).addClass("ui-li-thumb").each(function() {
-        var $this = $(this);
-        $this.closest("li").addClass($this.is(".ui-li-icon") ? "ui-li-has-icon" : "ui-li-has-thumb");
-      });
+      // The idea here is to look at the first image in the list item
+      // itself, and any .ui-link-inherit element it may contain, so we
+      // can place the appropriate classes on the image and list item.
+      // Note that we used to use something like:
+      //
+      //    li.find(">img:eq(0), .ui-link-inherit>img:eq(0)").each( ... );
+      //
+      // But executing a find() like that on Windows Phone 7.5 took a
+      // really long time. Walking things manually with the code below
+      // allows the 400 listview item page to load in about 3 seconds as
+      // opposed to 30 seconds.
+
+      imgParents = li.add($list.find(".ui-link-inherit"));
+
+      for (pos = 0; pos < imgParents.length; pos++) {
+        img = imgParents.eq(pos).children("img").first();
+        if (img.length) {
+          img.addClass("ui-li-thumb").closest("li").addClass(img.is(".ui-li-icon") ? "ui-li-has-icon" : "ui-li-has-thumb");
+        }
+      }
 
       this._refreshCorners(create);
     },
@@ -4523,10 +4495,7 @@
 
 
 /*
- * jQuery Mobile Framework : "listview" filter extension
- * Copyright (c) jQuery Project
- * Dual licensed under the MIT or GPL Version 2 licenses.
- * http://jquery.org/license
+ * "listview" filter extension
  */
 
 (function($, undefined) {
@@ -4641,10 +4610,7 @@
 })(jQuery);
 
 /*
- * jQuery Mobile Framework : "nojs" plugin - class to make elements hidden to A grade browsers
- * Copyright (c) jQuery Project
- * Dual licensed under the MIT or GPL Version 2 licenses.
- * http://jquery.org/license
+ * "nojs" plugin - class to make elements hidden to A grade browsers
  */
 
 (function($, undefined) {
@@ -4657,10 +4623,7 @@
 })(jQuery);
 
 /*
- * jQuery Mobile Framework : "checkboxradio" plugin
- * Copyright (c) jQuery Project
- * Dual licensed under the MIT or GPL Version 2 licenses.
- * http://jquery.org/license
+ * "checkboxradio" plugin
  */
 
 (function($, undefined) {
@@ -4858,10 +4821,7 @@
 
 
 /*
- * jQuery Mobile Framework : "button" plugin - links that proxy to native input/buttons
- * Copyright (c) jQuery Project
- * Dual licensed under the MIT or GPL Version 2 licenses.
- * http://jquery.org/license
+ * "button" plugin - links that proxy to native input/buttons
  */
 
 (function($, undefined) {
@@ -4960,10 +4920,7 @@
 })(jQuery);
 
 /*
- * jQuery Mobile Framework : "slider" plugin
- * Copyright (c) jQuery Project
- * Dual licensed under the MIT or GPL Version 2 licenses.
- * http://jquery.org/license
+ * "slider" plugin
  */
 
 ( function($, undefined) {
@@ -5321,10 +5278,7 @@
 
 
 /*
- * jQuery Mobile Framework : "textinput" plugin for text inputs, textareas
- * Copyright (c) jQuery Project
- * Dual licensed under the MIT or GPL Version 2 licenses.
- * http://jquery.org/license
+ * "textinput" plugin for text inputs, textareas
  */
 
 (function($, undefined) {
@@ -5411,9 +5365,7 @@
                           clientHeight = input[ 0 ].clientHeight;
 
                   if (clientHeight < scrollHeight) {
-                    input.css({
-                      height: (scrollHeight + extraLineHeight)
-                    });
+                    input.height(scrollHeight + extraLineHeight);
                   }
                 },
                 keyupTimeout;
@@ -5423,10 +5375,15 @@
           keyupTimeout = setTimeout(keyup, keyupTimeoutBuffer);
         });
 
-        // Issue 509: the browser is not giving scrollHeight properly until after the document
-        // is ready.
-        if ($.trim(input.text())) {
-          $(keyup);
+        // Issue 509: the browser is not providing scrollHeight properly until the styles load
+        if ($.trim(input.val())) {
+          // bind to the window load to make sure the height is calculated based on BOTH
+          // the DOM and CSS
+          $(window).load(keyup);
+
+          // binding to pagechange here ensures that for pages loaded via
+          // ajax the height is recalculated without user input
+          $(document).one("pagechange", keyup);
         }
       }
     },
@@ -5451,10 +5408,7 @@
 
 
 /*
- * jQuery Mobile Framework : "selectmenu" plugin
- * Copyright (c) jQuery Project
- * Dual licensed under the MIT or GPL Version 2 licenses.
- * http://jquery.org/license
+ * "selectmenu" plugin
  */
 
 (function($, undefined) {
@@ -5663,10 +5617,7 @@
 
 
 /*
- * jQuery Mobile Framework : custom "selectmenu" plugin
- * Copyright (c) jQuery Project
- * Dual licensed under the MIT or GPL Version 2 licenses.
- * http://jquery.org/license
+ * custom "selectmenu" plugin
  */
 
 (function($, undefined) {
@@ -5697,7 +5648,9 @@
               "aria-labelledby": buttonId
             }).attr("data-" + $.mobile.ns + "theme", widget.options.theme).appendTo(listbox),
 
-            header = $("<div>").attr("data-" + $.mobile.ns + "theme", widget.options.theme).prependTo(listbox),
+            header = $("<div>", {
+              "class": "ui-header ui-bar-" + widget.options.theme
+            }).prependTo(listbox),
 
             headerTitle = $("<h1>", {
               "class": "ui-title"
@@ -6159,11 +6112,9 @@
 
 
 /*
- * jQuery Mobile Framework : "buttons" plugin - for making button-like links
- * Copyright (c) jQuery Project
- * Dual licensed under the MIT or GPL Version 2 licenses.
- * http://jquery.org/license
+ * "buttons" plugin - for making button-like links
  */
+
 ( function($, undefined) {
 
   $.fn.buttonMarkup = function(options) {
@@ -6325,7 +6276,7 @@
         if (btn) {
           $btn = $(btn);
           theme = $btn.attr("data-" + $.mobile.ns + "theme");
-          $btn.removeClass("ui-btn-hover-" + theme).addClass("ui-btn-up-" + theme);
+          $btn.removeClass("ui-btn-hover-" + theme + " ui-btn-down-" + theme).addClass("ui-btn-up-" + theme);
         }
       }
     });
@@ -6345,12 +6296,10 @@
 })(jQuery);
 
 
-/*
- * jQuery Mobile Framework: "controlgroup" plugin - corner-rounding for groups of buttons, checks, radios, etc
- * Copyright (c) jQuery Project
- * Dual licensed under the MIT or GPL Version 2 licenses.
- * http://jquery.org/license
+/* 
+ * "controlgroup" plugin - corner-rounding for groups of buttons, checks, radios, etc
  */
+
 (function($, undefined) {
 
   $.fn.controlgroup = function(options) {
@@ -6402,10 +6351,7 @@
 })(jQuery);
 
 /*
- * jQuery Mobile Framework : "links" plugin - simple class additions for links
- * Copyright (c) jQuery Project
- * Dual licensed under the MIT or GPL Version 2 licenses.
- * http://jquery.org/license
+ * "links" plugin - simple class additions for links
  */
 
 (function($, undefined) {
@@ -6423,10 +6369,7 @@
 })(jQuery);
 
 /*
- * jQuery Mobile Framework : "fixHeaderFooter" plugin - on-demand positioning for headers,footers
- * Copyright (c) jQuery Project
- * Dual licensed under the MIT or GPL Version 2 licenses.
- * http://jquery.org/license
+ * "fixHeaderFooter" plugin - on-demand positioning for headers,footers
  */
 
 (function($, undefined) {
@@ -6809,10 +6752,7 @@
 
 
 /*
- * jQuery Mobile Framework : "fixHeaderFooter" native plugin - Behavior for "fixed" headers,footers, and scrolling inner content
- * Copyright (c) jQuery Project
- * Dual licensed under the MIT or GPL Version 2 licenses.
- * http://jquery.org/license
+ * "fixHeaderFooter" native plugin - Behavior for "fixed" headers,footers, and scrolling inner content
  */
 
 (function($, undefined) {
@@ -6874,10 +6814,7 @@
 
 
 /*
- * jQuery Mobile Framework : "init" - Initialize the framework
- * Copyright (c) jQuery Project
- * Dual licensed under the MIT or GPL Version 2 licenses.
- * http://jquery.org/license
+ * "init" - Initialize the framework
  */
 
 (function($, window, undefined) {
