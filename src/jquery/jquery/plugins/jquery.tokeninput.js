@@ -470,8 +470,7 @@
               });
 
       // Store data on the token
-      var token_data = {"id": item.id};
-      token_data[settings.propertyToSearch] = item[settings.propertyToSearch];
+      var token_data = item;
       $.data(this_token.get(0), "tokeninput", item);
 
       // Save this token for duplicate checking
@@ -622,6 +621,9 @@
     // Update the hidden input box value
     function update_hidden_input(saved_tokens, hidden_input) {
       var token_values = $.map(saved_tokens, function (el) {
+        if (typeof settings.tokenValue == 'function')
+          return settings.tokenValue.call(this, el);
+
         return el[settings.tokenValue];
       });
       hidden_input.val(token_values.join(settings.tokenDelimiter));

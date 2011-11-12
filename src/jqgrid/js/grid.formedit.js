@@ -97,9 +97,6 @@
             butleft = " style='text-align:left'";
             fil.attr("dir", "rtl");
           }
-          if ($.isFunction(p.onInitializeSearch)) {
-            p.onInitializeSearch($("#" + fid));
-          }
           var columns = $.extend([], $t.p.colModel),
                   bS = "<a href='javascript:void(0)' id='" + fid + "_search' class='fm-button ui-state-default ui-corner-all fm-button-icon-right ui-reset'><span class='ui-icon ui-icon-search'></span>" + p.Find + "</a>",
                   bC = "<a href='javascript:void(0)' id='" + fid + "_reset' class='fm-button ui-state-default ui-corner-all fm-button-icon-left ui-search'><span class='ui-icon ui-icon-arrowreturnthick-1-w'></span>" + p.Reset + "</a>",

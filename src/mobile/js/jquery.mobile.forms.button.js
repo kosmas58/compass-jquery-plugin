@@ -49,12 +49,15 @@
               type: "hidden",
               name: $el.attr("name"),
               value: $el.attr("value")
-            })
-                    .insertBefore($el);
+            }).insertBefore($el);
 
             // Bind to doc to remove after submit handling
-            $(document).submit(function() {
+            $(document).one("submit", function() {
               $buttonPlaceholder.remove();
+
+              // reset the local var so that the hidden input
+              // will be re-added on subsequent clicks
+              $buttonPlaceholder = undefined;
             });
           }
         });

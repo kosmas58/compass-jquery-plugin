@@ -165,7 +165,7 @@
       _debug();
 
       // Error check for target page
-      if (toPage.length === 0) {
+      if (toPage == undefined || toPage.length === 0) {
         $.fn.unselect();
         _debug('Target element is missing.');
         return false;
@@ -711,7 +711,7 @@
               deltaY = 0,
               deltaT = 0;
 
-      touch = (e.changedTouches && e.event.changedTouches.length) ? e.changedTouches[0] : e;
+      touch = (e.changedTouches && e.changedTouches.length) ? e.changedTouches[0] : e;
       startX = touch.clientX;
       startY = touch.clientY;
 

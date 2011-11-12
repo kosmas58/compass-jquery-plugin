@@ -3241,21 +3241,21 @@
         });
       }
       /*if ($.isFunction(this.p.onRightClickRow)) {
-        $(this).bind('contextmenu', function(e) {
-          td = e.target;
-          ptr = $(td, ts.rows).closest("tr.jqgrow");
-          if ($(ptr).length === 0) {
-            return false;
-          }
-          if (!ts.p.multiselect) {
-            $(ts).jqGrid("setSelection", ptr[0].id, true);
-          }
-          ri = ptr[0].rowIndex;
-          ci = $.jgrid.getCellIndex(td);
-          ts.p.onRightClickRow.call(ts, $(ptr).attr("id"), ri, ci, e);
-          return false;
-        });
-      }*/
+       $(this).bind('contextmenu', function(e) {
+       td = e.target;
+       ptr = $(td, ts.rows).closest("tr.jqgrow");
+       if ($(ptr).length === 0) {
+       return false;
+       }
+       if (!ts.p.multiselect) {
+       $(ts).jqGrid("setSelection", ptr[0].id, true);
+       }
+       ri = ptr[0].rowIndex;
+       ci = $.jgrid.getCellIndex(td);
+       ts.p.onRightClickRow.call(ts, $(ptr).attr("id"), ri, ci, e);
+       return false;
+       });
+       }*/
       grid.bDiv = document.createElement("div");
       if (isMSIE) {
         if (String(ts.p.height).toLowerCase() === "auto") {
@@ -4787,7 +4787,7 @@
             switch (this.stype) {
               case 'select' :
                 var v1;
-                $("#gs_" + $.jgrid.jqID(nm) + " option", $t.grid.hDiv).each(function (i) {
+                $("#gs_" + $.jgrid.jqID(this.name) + " option", $t.grid.hDiv).each(function (i) {
                   if (i === 0) {
                     this.selected = true;
                   }
@@ -4809,7 +4809,7 @@
                 }
                 break;
               case 'text':
-                $("#gs_" + $.jgrid.jqID(nm), $t.grid.hDiv).val(v);
+                $("#gs_" + $.jgrid.jqID(this.name), $t.grid.hDiv).val(v);
                 if (v) {
                   sdata[nm] = v;
                   j++;
@@ -8167,9 +8167,6 @@ var xmlJsonClass = {
             align = "right";
             butleft = " style='text-align:left'";
             fil.attr("dir", "rtl");
-          }
-          if ($.isFunction(p.onInitializeSearch)) {
-            p.onInitializeSearch($("#" + fid));
           }
           var columns = $.extend([], $t.p.colModel),
                   bS = "<a href='javascript:void(0)' id='" + fid + "_search' class='fm-button ui-state-default ui-corner-all fm-button-icon-right ui-reset'><span class='ui-icon ui-icon-search'></span>" + p.Find + "</a>",

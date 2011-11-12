@@ -15,6 +15,7 @@
 
     var $page = $(this),
             o = $page.data("page").options,
+            pageRole = $page.jqmData("role"),
             pageTheme = o.theme;
 
     $(":jqmData(role='header'), :jqmData(role='footer'), :jqmData(role='content')", this).each(function() {
@@ -73,7 +74,7 @@
                 });
 
       } else if (role === "content") {
-        if (contentTheme) {
+        if (contentTheme && pageRole === "dialog") {
           $this.addClass("ui-body-" + ( contentTheme ));
         }
 

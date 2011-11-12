@@ -264,7 +264,7 @@
             switch (this.stype) {
               case 'select' :
                 var v1;
-                $("#gs_" + $.jgrid.jqID(nm) + " option", $t.grid.hDiv).each(function (i) {
+                $("#gs_" + $.jgrid.jqID(this.name) + " option", $t.grid.hDiv).each(function (i) {
                   if (i === 0) {
                     this.selected = true;
                   }
@@ -286,7 +286,7 @@
                 }
                 break;
               case 'text':
-                $("#gs_" + $.jgrid.jqID(nm), $t.grid.hDiv).val(v);
+                $("#gs_" + $.jgrid.jqID(this.name), $t.grid.hDiv).val(v);
                 if (v) {
                   sdata[nm] = v;
                   j++;
