@@ -4587,7 +4587,7 @@
 
                       if (val.length < lastval.length || change.length != ( val.length - lastval.length )) {
 
-                        // Removed chars or pasted something totaly different, check all items
+                        // Removed chars or pasted something totally different, check all items
                         listItems = list.children();
                       } else {
 
@@ -4617,7 +4617,7 @@
                             item.toggleClass("ui-filter-hidequeue", true);
                           } else {
 
-                            // There"s a shown item in the bucket
+                            // There's a shown item in the bucket
                             childItems = true;
                           }
                         }
