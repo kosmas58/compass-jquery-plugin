@@ -11,7 +11,7 @@
 
   $.widget("mobile.listview", $.mobile.widget, {
     options: {
-      theme: "c",
+      theme: null,
       countTheme: "c",
       headerTheme: "b",
       dividerTheme: "b",
@@ -151,11 +151,16 @@
               listspliticon = $list.jqmData("spliticon"),
               li = this._getChildrenByTagName($list[ 0 ], "li", "LI"),
               counter = $.support.cssPseudoElement || !$.nodeName($list[ 0 ], "ol") ? 0 : 1,
+              itemClassDict = {},
               item, itemClass, itemTheme,
               a, last, splittheme, countParent, icon, imgParents, img;
 
       if (counter) {
         $list.find(".ui-li-dec").remove();
+      }
+
+      if (!o.theme) {
+        o.theme = $.mobile.getInheritedTheme(this.element, "c");
       }
 
       for (var pos = 0, numli = li.length; pos < numli; pos++) {
@@ -235,7 +240,26 @@
                   .prepend("<span class='ui-li-dec'>" + (counter++) + ". </span>");
         }
 
-        item.addClass(itemClass).children(".ui-btn-inner").addClass(itemClass);
+        // Instead of setting item class directly on the list item and its
+        // btn-inner at this point in time, push the item into a dictionary
+        // that tells us what class to set on it so we can do this after this
+        // processing loop is finished.
+
+        if (!itemClassDict[ itemClass ]) {
+          itemClassDict[ itemClass ] = [];
+        }
+
+        itemClassDict[ itemClass ].push(item[ 0 ]);
+      }
+
+      // Set the appropriate listview item classes on each list item
+      // and their btn-inner elements. The main reason we didn't do this
+      // in the for-loop above is because we can eliminate per-item function overhead
+      // by calling addClass() and children() once or twice afterwards. This
+      // can give us a significant boost on platforms like WP7.5.
+
+      for (itemClass in itemClassDict) {
+        $(itemClassDict[ itemClass ]).addClass(itemClass).children(".ui-btn-inner").addClass(itemClass);
       }
 
       $list.find("h1, h2, h3, h4, h5, h6").addClass("ui-li-heading")
