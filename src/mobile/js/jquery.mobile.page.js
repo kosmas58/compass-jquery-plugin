@@ -4,31 +4,31 @@
 
 (function($, undefined) {
 
-  $.widget("mobile.page", $.mobile.widget, {
-    options: {
-      theme: "c",
-      domCache: false,
-      keepNativeDefault: ":jqmData(role='none'), :jqmData(role='nojs')"
-    },
+    $.widget("mobile.page", $.mobile.widget, {
+        options: {
+            theme: "c",
+            domCache: false,
+            keepNativeDefault: ":jqmData(role='none'), :jqmData(role='nojs')"
+        },
 
-    _create: function() {
+        _create: function() {
 
-      this._trigger("beforecreate");
+            this._trigger("beforecreate");
 
-      this.element
-              .attr("tabindex", "0")
-              .addClass("ui-page ui-body-" + this.options.theme);
-    },
+            this.element
+                .attr("tabindex", "0")
+                .addClass("ui-page ui-body-" + this.options.theme);
+        },
 
-    keepNativeSelector: function() {
-      var options = this.options,
-              keepNativeDefined = options.keepNative && $.trim(options.keepNative);
+        keepNativeSelector: function() {
+            var options = this.options,
+                keepNativeDefined = options.keepNative && $.trim(options.keepNative);
 
-      if (keepNativeDefined && options.keepNative !== options.keepNativeDefault) {
-        return [options.keepNative, options.keepNativeDefault].join(", ");
-      }
+            if (keepNativeDefined && options.keepNative !== options.keepNativeDefault) {
+                return [options.keepNative, options.keepNativeDefault].join(", ");
+            }
 
-      return options.keepNativeDefault;
-    }
-  });
+            return options.keepNativeDefault;
+        }
+    });
 })(jQuery);
