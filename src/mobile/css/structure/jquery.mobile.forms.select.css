@@ -34,6 +34,10 @@
     z-index: 2;
 }
 
+.ui-select .ui-disabled {
+    opacity: .3;
+}
+
 @-moz-document url-prefix() {.ui-select .ui-btn select { opacity: 0.0001; }}
 .ui-select .ui-btn select.ui-select-nativeonly {
     opacity: 1;

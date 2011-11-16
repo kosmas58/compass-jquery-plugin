@@ -1047,10 +1047,12 @@ Built by David Kaneda and maintained by Jonathan Stark.
       opacity: 0;
       -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
       filter: alpha(opacity = 0);
-      z-index: 2;
-      &.ui-select-nativeonly {
-        opacity: 1;
-        text-indent: 0; } } }
+      z-index: 2; } }
+  .ui-disabled {
+    opacity: .3; }
+  .ui-btn select.ui-select-nativeonly {
+    opacity: 1;
+    text-indent: 0; }
   .ui-btn-icon-right {
     .ui-btn-inner {
       padding-right: 45px; }
