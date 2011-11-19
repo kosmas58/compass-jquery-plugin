@@ -1,5 +1,5 @@
 /*
- * jQuery Mobile Framework v1.0rc3
+ * jQuery Mobile Framework v1.0
  * http://jquerymobile.com
  *
  * Copyright 2011 (c) jQuery Project
@@ -10,7 +10,7 @@
 
 
 /*!
- * jQuery UI Widget 1.0rc3
+ * jQuery UI Widget 1.0
  *
  * Copyright 2010, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -384,6 +384,7 @@
           fbCSS = fakeBody[ 0 ].style,
           vendors = [ "Webkit", "Moz", "O" ],
           webos = "palmGetResource" in window, //only used to rule out scrollTop
+          operamini = window.operamini && ({}).toString.call(window.operamini) === "[object OperaMini]",
           bb = window.blackberry; //only used to rule out box shadow, as it's filled opaque on BB
 
 // thx Modernizr
@@ -446,7 +447,7 @@
     cssPseudoElement: !!propExists("content"),
     touchOverflow: !!propExists("overflowScrolling"),
     boxShadow: !!propExists("boxShadow") && !bb,
-    scrollTop: ( "pageXOffset" in window || "scrollTop" in document.documentElement || "scrollTop" in fakeBody[ 0 ] ) && !webos,
+    scrollTop: ( "pageXOffset" in window || "scrollTop" in document.documentElement || "scrollTop" in fakeBody[ 0 ] ) && !webos && !operamini,
     dynamicBaseTag: baseTagTest()
   });
 
@@ -472,7 +473,7 @@
     // BlackBerry browsers, pre-webkit
           window.blackberry && !window.WebKitPoint ||
             // Opera Mini
-                  window.operamini && Object.prototype.toString.call(window.operamini) === "[object OperaMini]" ||
+                  operamini ||
             // Symbian webkits pre 7.3
                   nokiaLTE7_3;
 
@@ -6019,7 +6020,7 @@
           // fall into a black hole
           self.thisPage.unbind("pagehide.remove");
 
-          //for webos (set lastscroll using button offset)
+          //for WebOS/Opera Mini (set lastscroll using button offset)
           if (scrollTop == 0 && btnOffset > screenHeight) {
             self.thisPage.one("pagehide", function() {
               $(this).jqmData("lastScroll", btnOffset);
