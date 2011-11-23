@@ -74,6 +74,7 @@ namespace :build do
           'effects.js',
           'offset.js',
           'dimensions.js',
+          'exports.js',
           'outro.js'
       ].collect { |filename| File.read(File.join(JQUERY_SRC, 'js', filename)) }.join "\n\n"
 

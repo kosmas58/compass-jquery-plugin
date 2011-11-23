@@ -12,7 +12,7 @@ Description
 
 A Sass-based Meta-Framework for Compass that allows you to mix and match any of the following:
 
-* jquery-rails with jQuery 1.7.0 and jQuery.UI 1.8.16 including themes
+* jquery-rails with jQuery 1.7.1 and jQuery.UI 1.8.16 including themes
 * jQuery Tools 1.2.6
 * jquery.jstree.js V1.0rc3
 * jquery.dynatree.js V1.1.1
