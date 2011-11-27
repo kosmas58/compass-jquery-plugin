@@ -1,16 +1,6 @@
-/*
- * jQuery Mobile Framework v1.0
- * http://jquerymobile.com
- *
- * Copyright 2011 (c) jQuery Project
- * Dual licensed under the MIT or GPL Version 2 licenses.
- * http://jquery.org/license
- *
- */
-
-
 /*!
- * jQuery UI Widget 1.0
+ * jQuery UI Widget 1.1pre
+
  *
  * Copyright 2010, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -3069,11 +3059,11 @@
     // the forward/back button and will try to match the transition accordingly.
     if (settings.fromHashChange) {
       urlHistory.directHashChange({
-        currentUrl:    url,
-        isBack:        function() {
+        currentUrl:  url,
+        isBack:    function() {
           historyDir = -1;
         },
-        isForward:    function() {
+        isForward:  function() {
           historyDir = 1;
         }
       });
@@ -3081,7 +3071,7 @@
 
     // Kill the keyboard.
     // XXX_jblas: We need to stop crawling the entire document to kill focus. Instead,
-    //            we should be tracking focus with a live() handler so we already have
+    //            we should be tracking focus with a delegate() handler so we already have
     //            the element in hand at this point.
     // Wrap this in a try/catch block since IE9 throw "Unspecified error" if document.activeElement
     // is undefined when we are in an IFrame.
@@ -3212,7 +3202,7 @@
   $.mobile._registerInternalEvents = function() {
 
     //bind to form submit events, handle with Ajax
-    $("form").live('submit', function(event) {
+    $(document).delegate("form", "submit", function(event) {
       var $this = $(this);
       if (!$.mobile.ajaxEnabled ||
               $this.is(":jqmData(ajax='false')")) {
@@ -3250,11 +3240,11 @@
       $.mobile.changePage(
               url,
               {
-                type:        type && type.length && type.toLowerCase() || "get",
-                data:        $this.serialize(),
-                transition:    $this.jqmData("transition"),
-                direction:    $this.jqmData("direction"),
-                reloadPage:    true
+                type:    type && type.length && type.toLowerCase() || "get",
+                data:    $this.serialize(),
+                transition:  $this.jqmData("transition"),
+                direction:  $this.jqmData("direction"),
+                reloadPage:  true
               }
       );
       event.preventDefault();
@@ -3381,7 +3371,7 @@
     });
 
     //prefetch pages when anchors with data-prefetch are encountered
-    $(".ui-page").live("pageshow.prefetch", function() {
+    $(document).delegate(".ui-page", "pageshow.prefetch", function() {
       var urls = [];
       $(this).find("a:jqmData(prefetch)").each(function() {
         var $link = $(this),
@@ -3452,7 +3442,7 @@
               // as most of this is lost by the domCache cleaning
               $.extend(changePageOptions, {
                 role: active.role,
-                transition:     active.transition,
+                transition:   active.transition,
                 reverse: isBack
               });
             }
@@ -3795,7 +3785,7 @@
   });
 
 //auto self-init widgets
-  $($.mobile.dialog.prototype.options.initSelector).live("pagecreate", function() {
+  $(document).delegate($.mobile.dialog.prototype.options.initSelector, "pagecreate", function() {
     $(this).dialog();
   });
 
@@ -3815,7 +3805,7 @@
   $.mobile.page.prototype.options.footerTheme = "a";
   $.mobile.page.prototype.options.contentTheme = null;
 
-  $(":jqmData(role='page'), :jqmData(role='dialog')").live("pagecreate", function(e) {
+  $(document).delegate(":jqmData(role='page'), :jqmData(role='dialog')", "pagecreate", function(e) {
 
     var $page = $(this),
             o = $page.data("page").options,
@@ -3914,8 +3904,7 @@
               collapsible = $el.addClass("ui-collapsible"),
               collapsibleHeading = $el.children(o.heading).first(),
               collapsibleContent = collapsible.wrapInner("<div class='ui-collapsible-content'></div>").find(".ui-collapsible-content"),
-              collapsibleSet = $el.closest(":jqmData(role='collapsible-set')").addClass("ui-collapsible-set"),
-              collapsiblesInSet = collapsibleSet.children(":jqmData(role='collapsible')");
+              collapsibleSet = $el.closest(":jqmData(role='collapsible-set')").addClass("ui-collapsible-set");
 
       // Replace collapsibleHeading if it's a legend
       if (collapsibleHeading.is("legend")) {
@@ -3952,52 +3941,9 @@
                 iconPos: "left",
                 icon: "plus",
                 theme: o.theme
-              });
-
-      if (!collapsibleSet.length) {
-        collapsibleHeading
-                .find("a").first().add(collapsibleHeading.find(".ui-btn-inner"))
-                .addClass("ui-corner-top ui-corner-bottom");
-      } else {
-        // If we are in a collapsible set
-
-        // Initialize the collapsible set if it's not already initialized
-        if (!collapsibleSet.jqmData("collapsiblebound")) {
-
-          collapsibleSet
-                  .jqmData("collapsiblebound", true)
-                  .bind("expand", function(event) {
-
-                    $(event.target)
-                            .closest(".ui-collapsible")
-                            .siblings(".ui-collapsible")
-                            .trigger("collapse");
-
-                  });
-        }
-
-        collapsiblesInSet.first()
-                .find("a")
-                .first()
-                .addClass("ui-corner-top")
-                .find(".ui-btn-inner")
-                .addClass("ui-corner-top");
-
-        collapsiblesInSet.last()
-                .jqmData("collapsible-last", true)
-                .find("a")
-                .first()
-                .addClass("ui-corner-bottom")
-                .find(".ui-btn-inner")
-                .addClass("ui-corner-bottom");
-
-
-        if (collapsible.jqmData("collapsible-last")) {
-          collapsibleHeading
-                  .find("a").first().add(collapsibleHeading.find(".ui-btn-inner"))
-                  .addClass("ui-corner-bottom");
-        }
-      }
+              })
+              .add(".ui-btn-inner")
+              .addClass("ui-corner-top ui-corner-bottom");
 
       //events
       collapsible
@@ -4049,6 +3995,90 @@
 //auto self-init widgets
   $(document).bind("pagecreate create", function(e) {
     $($.mobile.collapsible.prototype.options.initSelector, e.target).collapsible();
+  });
+
+})(jQuery);
+
+
+/*
+ * "collapsibleset" plugin
+ */
+
+(function($, undefined) {
+
+  $.widget("mobile.collapsibleset", $.mobile.widget, {
+    options: {
+      initSelector: ":jqmData(role='collapsible-set')"
+    },
+    _create: function() {
+      var $el = this.element.addClass("ui-collapsible-set"),
+              o = this.options,
+              collapsiblesInSet = $el.children(":jqmData(role='collapsible')");
+
+      // Inherit the theme from collapsible-set
+      if (!o.theme) {
+        o.theme = $el.jqmData("theme");
+      }
+      // Inherit the content-theme from collapsible-set
+      if (!o.contentTheme) {
+        o.contentTheme = $el.jqmData("content-theme");
+      }
+
+      // Initialize the collapsible set if it's not already initialized
+      if (!$el.jqmData("collapsiblebound")) {
+
+        $el
+                .jqmData("collapsiblebound", true)
+                .bind("expand collapse", function(event) {
+                  var isCollapse = ( event.type === "collapse" ),
+                          collapsible = $(event.target).closest(".ui-collapsible"),
+                          widget = collapsible.data("collapsible"),
+                          contentTheme = widget.options.contentTheme;
+                  if (contentTheme && collapsible.jqmData("collapsible-last")) {
+                    collapsible.find(widget.options.heading).first()
+                            .find("a").first()
+                            .add(".ui-btn-inner")
+                            .toggleClass("ui-corner-bottom", isCollapse);
+                    collapsible.find(".ui-collapsible-content").toggleClass("ui-corner-bottom", !isCollapse);
+                  }
+                })
+                .bind("expand", function(event) {
+                  $(event.target)
+                          .closest(".ui-collapsible")
+                          .siblings(".ui-collapsible")
+                          .trigger("collapse");
+
+                });
+
+        // clean up borders
+        collapsiblesInSet.each(function() {
+          $(this).find($.mobile.collapsible.prototype.options.heading)
+                  .find("a").first()
+                  .add(".ui-btn-inner")
+                  .removeClass("ui-corner-top ui-corner-bottom");
+        });
+
+        collapsiblesInSet.first()
+                .find("a")
+                .first()
+                .addClass("ui-corner-top")
+                .find(".ui-btn-inner")
+                .addClass("ui-corner-top");
+
+        collapsiblesInSet.last()
+                .jqmData("collapsible-last", true)
+                .find("a")
+                .first()
+                .addClass("ui-corner-bottom")
+                .find(".ui-btn-inner")
+                .addClass("ui-corner-bottom");
+      }
+    }
+  });
+
+//auto self-init widgets
+  $(document).bind("pagecreate create", function(e) {
+    $($.mobile.collapsibleset.prototype.options.initSelector, e.target).collapsibleset();
   });
 
 })(jQuery);
@@ -4158,8 +4188,10 @@
       });
 
       $navbar.delegate("a", "vclick", function(event) {
-        $navbtns.not(".ui-state-persist").removeClass($.mobile.activeBtnClass);
-        $(this).addClass($.mobile.activeBtnClass);
+        if (!$(event.target).hasClass("ui-disabled")) {
+          $navbtns.not(".ui-state-persist").removeClass($.mobile.activeBtnClass);
+          $(this).addClass($.mobile.activeBtnClass);
+        }
       });
     }
   });
@@ -4585,7 +4617,7 @@
     return text.toLowerCase().indexOf(searchValue) === -1;
   };
 
-  $(":jqmData(role='listview')").live("listviewcreate", function() {
+  $(document).delegate(":jqmData(role='listview')", "listviewcreate", function() {
 
     var list = $(this),
             listview = list.data("listview");
@@ -4716,7 +4748,7 @@
               input = this.element,
         // NOTE: Windows Phone could not find the label through a selector
         // filter works though.
-              label = input.closest("form,fieldset,:jqmData(role='page')").find("label[for='" + input[ 0 ].id + "']"),
+              label = input.closest("form,fieldset,:jqmData(role='page')").find("label").filter("[for='" + input[ 0 ].id + "']"),
               inputtype = input.attr("type"),
               checkedState = inputtype + "-on",
               uncheckedState = inputtype + "-off",
@@ -5256,7 +5288,8 @@
       var control = this.element, percent,
               cType = control[0].nodeName.toLowerCase(),
               min = cType === "input" ? parseFloat(control.attr("min")) : 0,
-              max = cType === "input" ? parseFloat(control.attr("max")) : control.find("option").length - 1;
+              max = cType === "input" ? parseFloat(control.attr("max")) : control.find("option").length - 1,
+              step = (cType === "input" && parseFloat(control.attr("step")) > 0) ? parseFloat(control.attr("step")) : 1;
 
       if (typeof val === "object") {
         var data = val,
@@ -5287,7 +5320,18 @@
         percent = 100;
       }
 
-      var newval = Math.round(( percent / 100 ) * ( max - min )) + min;
+      var newval = ( percent / 100 ) * ( max - min ) + min;
+
+      //from jQuery UI slider, the following source will round to the nearest step
+      var valModStep = ( newval - min ) % step;
+      var alignValue = newval - valModStep;
+
+      if (Math.abs(valModStep) * 2 >= step) {
+        alignValue += ( valModStep > 0 ) ? step : ( -step );
+      }
+      // Since JavaScript has problems with large floats, round
+      // the final value to 5 digits after the decimal point (see jQueryUI: #4124)
+      newval = parseFloat(alignValue.toFixed(5));
 
       if (newval < min) {
         newval = min;
@@ -5456,15 +5500,15 @@
           keyupTimeout = setTimeout(keyup, keyupTimeoutBuffer);
         });
 
+        // binding to pagechange here ensures that for pages loaded via
+        // ajax the height is recalculated without user input
+        $(document).one("pagechange", keyup);
+
         // Issue 509: the browser is not providing scrollHeight properly until the styles load
         if ($.trim(input.val())) {
           // bind to the window load to make sure the height is calculated based on BOTH
           // the DOM and CSS
           $(window).load(keyup);
-
-          // binding to pagechange here ensures that for pages loaded via
-          // ajax the height is recalculated without user input
-          $(document).one("pagechange", keyup);
         }
       }
     },
@@ -6182,7 +6226,7 @@
     });
   };
 
-  $("select").live("selectmenubeforecreate", function() {
+  $(document).delegate("select", "selectmenubeforecreate", function() {
     var selectmenuWidget = $(this).data("selectmenu");
 
     if (!selectmenuWidget.options.nativeMenu) {
@@ -6200,7 +6244,6 @@
 
   $.fn.buttonMarkup = function(options) {
     options = options || {};
-
     for (var i = 0; i < this.length; i++) {
       var el = this.eq(i),
               e = el[ 0 ],
@@ -6312,12 +6355,11 @@
       // handed could be in an SVG DOM where className on SVG elements is defined to
       // be of a different type (SVGAnimatedString). We only operate on HTML DOM
       // elements, so we look for plain "string".
-
-      cname = ( typeof element.className === 'string' ) && element.className.split(' ');
-
-      if (cname && $.inArray("ui-btn", cname) > -1 && $.inArray("ui-disabled", cname) < 0) {
+      cname = ( typeof element.className === 'string' ) && (element.className + ' ');
+      if (cname && cname.indexOf("ui-btn ") > -1 && cname.indexOf("ui-disabled ") < 0) {
         break;
       }
+
       element = element.parentNode;
     }
 
@@ -6607,27 +6649,23 @@
 
     // 1. Before page is shown, check for duplicate footer
     // 2. After page is shown, append footer to new page
-    $(".ui-page")
-            .live("pagebeforeshow", function(event, ui) {
+    $(document).delegate(".ui-page", "pagebeforeshow", function(event, ui) {
+      var page = $(event.target),
+              footer = page.find(":jqmData(role='footer')"),
+              id = footer.data("id"),
+              prevPage = ui.prevPage,
+              prevFooter = prevPage && prevPage.find(":jqmData(role='footer')"),
+              prevFooterMatches = prevFooter.length && prevFooter.jqmData("id") === id;
 
-              var page = $(event.target),
-                      footer = page.find(":jqmData(role='footer')"),
-                      id = footer.data("id"),
-                      prevPage = ui.prevPage,
-                      prevFooter = prevPage && prevPage.find(":jqmData(role='footer')"),
-                      prevFooterMatches = prevFooter.length && prevFooter.jqmData("id") === id;
-
-              if (id && prevFooterMatches) {
-                stickyFooter = footer;
-                setTop(stickyFooter.removeClass("fade in out").appendTo($.mobile.pageContainer));
-              }
-            })
-            .live("pageshow", function(event, ui) {
-
+      if (id && prevFooterMatches) {
+        stickyFooter = footer;
+        setTop(stickyFooter.removeClass("fade in out").appendTo($.mobile.pageContainer));
+      }
+    })
+            .delegate(".ui-page", "pageshow", function(event, ui) {
               var $this = $(this);
 
               if (stickyFooter && stickyFooter.length) {
-
                 setTimeout(function() {
                   setTop(stickyFooter.appendTo($this).addClass("fade"));
                   stickyFooter = null;
@@ -6638,7 +6676,7 @@
             });
 
     // When a collapsiable is hidden or shown we need to trigger the fixed toolbar to reposition itself (#1635)
-    $(".ui-collapsible-contain").live("collapse expand", showEventCallback);
+    $(document).delegate(".ui-collapsible-contain", "collapse expand", showEventCallback);
 
     // element.getBoundingClientRect() is broken in iOS 3.2.1 on the iPad. The
     // coordinates inside of the rect it returns don't have the page scroll position

@@ -66,7 +66,7 @@
   });
 
 //auto self-init widgets
-  $($.mobile.dialog.prototype.options.initSelector).live("pagecreate", function() {
+  $(document).delegate($.mobile.dialog.prototype.options.initSelector, "pagecreate", function() {
     $(this).dialog();
   });
 

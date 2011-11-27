@@ -18,7 +18,6 @@ MOBILE_DEST_THEMES = File.join(MOBILE_DEST_TEMPLATES, 'jquery', 'mobile')
 MOBILE_DEST_IMAGES = File.join(MOBILE_DEST_THEMES)
 
 all_scripts = [
-    'js/jquery.mobile.intro.js',
     'js/jquery.ui.widget.js',
     'js/jquery.mobile.widget.js',
     'js/jquery.mobile.media.js',
@@ -35,6 +34,7 @@ all_scripts = [
     'js/jquery.mobile.dialog.js',
     'js/jquery.mobile.page.sections.js',
     'js/jquery.mobile.collapsible.js',
+    'js/jquery.mobile.collapsibleSet.js',
     'js/jquery.mobile.fieldContain.js',
     'js/jquery.mobile.grid.js',
     'js/jquery.mobile.navbar.js',

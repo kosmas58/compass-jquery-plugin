@@ -63,6 +63,8 @@ body.ui-mobile-viewport, div.ui-mobile-viewport {
   &.ui-mobile-touch-overflow {
     overflow: auto;
     height: 100%;
+    left: 0;
+    right: 0;
     -webkit-overflow-scrolling: touch;
     -moz-overflow-scrolling: touch;
     -o-overflow-scrolling: touch;
@@ -89,6 +91,8 @@ body.ui-mobile-viewport, div.ui-mobile-viewport {
 .ui-mobile-touch-overflow.ui-native-fixed .ui-content {
   overflow: auto;
   height: 100%;
+  left: 0;
+  right: 0;
   -webkit-overflow-scrolling: touch;
   -moz-overflow-scrolling: touch;
   -o-overflow-scrolling: touch;
