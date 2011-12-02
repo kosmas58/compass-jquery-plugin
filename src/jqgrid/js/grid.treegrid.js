@@ -485,8 +485,9 @@
         if (!this.grid || !this.p.treeGrid) {
           return;
         }
-        if (rc.expanded) {
-          rc.expanded = false;
+        var expanded = this.p.treeReader.expanded_field;
+        if (rc[expanded]) {
+          rc[expanded] = false;
           var id = $.jgrid.getAccessor(rc, this.p.localReader.id);
           var rc1 = $("#" + id, this.grid.bDiv)[0];
           $("div.treeclick", rc1).removeClass(this.p.treeIcons.minus + " tree-minus").addClass(this.p.treeIcons.plus + " tree-plus");

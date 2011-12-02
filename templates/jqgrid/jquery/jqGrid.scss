@@ -188,7 +188,8 @@ tr.ui-search-toolbar {
     height: 100px;
     overflow: hidden;
     display: none;
-    border: 0 none; }
+    border: 0 none;
+    z-index: 99999; }
   .ui-jqgrid-sdiv {
     position: relative;
     margin: 0em;
@@ -276,9 +277,6 @@ tr.ui-search-toolbar {
     .ui-pg-div {
       padding: 1px 0;
       float: left;
-      list-style-image: none;
-      list-style-position: outside;
-      list-style-type: none;
       position: relative; }
     .ui-pg-button {
       cursor: pointer; }
@@ -300,7 +298,16 @@ tr.ui-search-toolbar {
     position: relative;
     height: 25px !important;
     white-space: nowrap;
-    overflow: hidden; }
+    overflow: hidden;
+    .ui-pg-div {
+      padding: 1px 0;
+      float: left;
+      position: relative; }
+    .ui-pg-button {
+      cursor: pointer; }
+    .ui-pg-div span.ui-icon {
+      float: left;
+      margin: 0 2px; } }
   .ui-jqgrid-btable .ui-sgcollapsed span {
     display: block; }
   .ui-subgrid {

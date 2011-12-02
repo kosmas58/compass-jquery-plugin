@@ -253,6 +253,7 @@ tr.ui-search-toolbar select {
     overflow: hidden;
     display: none;
     border: 0 none;
+    z-index: 99999;
 }
 
 /* footer */
@@ -376,9 +377,6 @@ tr.ui-search-toolbar select {
 .ui-jqgrid .ui-jqgrid-pager .ui-pg-div {
     padding: 1px 0;
     float: left;
-    list-style-image: none;
-    list-style-position: outside;
-    list-style-type: none;
     position: relative;
 }
 
@@ -410,6 +408,21 @@ tr.ui-search-toolbar select {
     height: 25px !important;
     white-space: nowrap;
     overflow: hidden;
+}
+
+.ui-jqgrid .ui-jqgrid-toppager .ui-pg-div {
+    padding: 1px 0;
+    float: left;
+    position: relative;
+}
+
+.ui-jqgrid .ui-jqgrid-toppager .ui-pg-button {
+    cursor: pointer;
+}
+
+.ui-jqgrid .ui-jqgrid-toppager .ui-pg-div  span.ui-icon {
+    float: left;
+    margin: 0 2px;
 }
 
 /*subgrid*/
