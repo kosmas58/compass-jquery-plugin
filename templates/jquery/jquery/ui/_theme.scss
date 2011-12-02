@@ -1,5 +1,5 @@
 /*
- * jQuery UI CSS Framework 1.8.16
+ * jQuery UI CSS Framework 1.8.17
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -28,24 +28,16 @@
   font-size: 100%;
   list-style: none; }
 
+.ui-helper-clearfix:before, .ui-helper-clearfix:after {
+  content: "";
+  display: table; }
+
 .ui-helper-clearfix:after {
-  content: ".";
-  display: block;
-  height: 0;
-  clear: both;
-  visibility: hidden; }
+  clear: both; }
 
 .ui-helper-clearfix {
-  display: inline-block; }
+  zoom: 1; }
 
-/* required comment for clearfix to work in Opera \*/
-* html .ui-helper-clearfix {
-  height: 1%; }
-
-.ui-helper-clearfix {
-  display: block; }
-
-/* end clearfix */
 .ui-helper-zfix {
   width: 100%;
   height: 100%;
@@ -83,7 +75,7 @@
 
 
 /*
- * jQuery UI Accordion 1.8.16
+ * jQuery UI Accordion 1.8.17
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -137,7 +129,7 @@
 
 
 /*
- * jQuery UI Autocomplete 1.8.16
+ * jQuery UI Autocomplete 1.8.17
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -156,7 +148,7 @@
 /* without this, the menu expands to 100% in IE6 */
 
 /*
- * jQuery UI Menu 1.8.16
+ * jQuery UI Menu 1.8.17
  *
  * Copyright 2010, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -196,7 +188,7 @@
 
 
 /*
- * jQuery UI Button 1.8.16
+ * jQuery UI Button 1.8.17
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -292,7 +284,7 @@ button.ui-button::-moz-focus-inner {
 
 
 /*
- * jQuery UI Datepicker 1.8.16
+ * jQuery UI Datepicker 1.8.17
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -492,7 +484,7 @@ button.ui-button::-moz-focus-inner {
 
 
 /*
- * jQuery UI Dialog 1.8.16
+ * jQuery UI Dialog 1.8.17
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -628,7 +620,7 @@ button.ui-button::-moz-focus-inner {
 
 
 /*
- * jQuery UI Progressbar 1.8.16
+ * jQuery UI Progressbar 1.8.17
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -638,7 +630,8 @@ button.ui-button::-moz-focus-inner {
  */
 .ui-progressbar {
   height: 2em;
-  text-align: left; }
+  text-align: left;
+  overflow: hidden; }
 
 .ui-progressbar .ui-progressbar-value {
   margin: -1px;
@@ -646,7 +639,7 @@ button.ui-button::-moz-focus-inner {
 
 
 /*
- * jQuery UI Resizable 1.8.16
+ * jQuery UI Resizable 1.8.17
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -724,7 +717,7 @@ button.ui-button::-moz-focus-inner {
 
 
 /*
- * jQuery UI Selectable 1.8.16
+ * jQuery UI Selectable 1.8.17
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -862,7 +855,7 @@ button.ui-button::-moz-focus-inner {
 
 
 /*
- * jQuery UI Slider 1.8.16
+ * jQuery UI Slider 1.8.17
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -927,7 +920,7 @@ button.ui-button::-moz-focus-inner {
 
 
 /*
- * jQuery UI Tabs 1.8.16
+ * jQuery UI Tabs 1.8.17
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -982,7 +975,7 @@ button.ui-button::-moz-focus-inner {
 
 
 /*
-* jQuery UI CSS Framework 1.8.16
+* jQuery UI CSS Framework 1.8.17
 *
 * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
 * Dual licensed under the MIT or GPL Version 2 licenses.
