@@ -2,16 +2,16 @@
  * "listview" filter extension
  */
 
-(function($, undefined) {
+(function ($, undefined) {
 
   $.mobile.listview.prototype.options.filter = false;
   $.mobile.listview.prototype.options.filterPlaceholder = "Filter items...";
   $.mobile.listview.prototype.options.filterTheme = "c";
-  $.mobile.listview.prototype.options.filterCallback = function(text, searchValue) {
+  $.mobile.listview.prototype.options.filterCallback = function (text, searchValue) {
     return text.toLowerCase().indexOf(searchValue) === -1;
   };
 
-  $(document).delegate(":jqmData(role='listview')", "listviewcreate", function() {
+  $(document).delegate(":jqmData(role='listview')", "listviewcreate", function () {
 
     var list = $(this),
             listview = list.data("listview");
@@ -21,15 +21,15 @@
     }
 
     var wrapper = $("<form>", {
-      "class": "ui-listview-filter ui-bar-" + listview.options.filterTheme,
-      "role": "search"
+      "class":"ui-listview-filter ui-bar-" + listview.options.filterTheme,
+      "role":"search"
     }),
             search = $("<input>", {
-              placeholder: listview.options.filterPlaceholder
+              placeholder:listview.options.filterPlaceholder
             })
                     .attr("data-" + $.mobile.ns + "type", "search")
                     .jqmData("lastval", "")
-                    .bind("keyup change", function() {
+                    .bind("keyup change", function () {
 
                       var $this = $(this),
                               val = this.value.toLowerCase(),
@@ -37,13 +37,11 @@
                               lastval = $this.jqmData("lastval") + "",
                               childItems = false,
                               itemtext = "",
-                              item, change;
+                              item;
 
                       // Change val as lastval for next execution
                       $this.jqmData("lastval", val);
-                      change = val.substr(0, lastval.length - 1).replace(lastval, "");
-
-                      if (val.length < lastval.length || change.length != ( val.length - lastval.length )) {
+                      if (val.length < lastval.length || val.indexOf(lastval) !== 0) {
 
                         // Removed chars or pasted something totally different, check all items
                         listItems = list.children();
@@ -105,7 +103,7 @@
       wrapper.addClass("ui-listview-filter-inset");
     }
 
-    wrapper.bind("submit", function() {
+    wrapper.bind("submit", function () {
       return false;
     })
             .insertBefore(list);

@@ -17,7 +17,7 @@
 // The current version exposes the following virtual events to jQuery bind methods:
 // "vmouseover vmousedown vmousemove vmouseup vclick vmouseout vmousecancel"
 
-(function($, window, document, undefined) {
+(function ($, window, document, undefined) {
 
   var dataPropertyName = "virtualMouseBindings",
           touchTargetPropertyName = "virtualTouchID",
@@ -37,9 +37,9 @@
           lastTouchID = 0;
 
   $.vmouse = {
-    moveDistanceThreshold: 10,
-    clickDistanceThreshold: 10,
-    resetTimerDuration: 1500
+    moveDistanceThreshold:10,
+    clickDistanceThreshold:10,
+    resetTimerDuration:1500
   };
 
   function getNativeEvent(event) {
@@ -65,7 +65,7 @@
     // this would happen if we could call $.event.fix instead of $.Event
     // but we don't have a way to force an event to be fixed multiple times
     if (oe) {
-      for (i = props.length,prop; i;) {
+      for (i = props.length, prop; i;) {
         prop = props[ --i ];
         event[ prop ] = oe[ prop ];
       }
@@ -84,7 +84,7 @@
       touch = ( t && t.length ) ? t[0] : ( (ct && ct.length) ? ct[ 0 ] : undefined );
 
       if (touch) {
-        for (j = 0,len = touchEventProps.length; j < len; j++) {
+        for (j = 0, len = touchEventProps.length; j < len; j++) {
           prop = touchEventProps[ j ];
           event[ prop ] = touch[ prop ];
         }
@@ -153,7 +153,7 @@
 
   function startResetTimer() {
     clearResetTimer();
-    resetTimerID = setTimeout(function() {
+    resetTimerID = setTimeout(function () {
       resetTimerID = 0;
       enableMouseBindings();
     }, $.vmouse.resetTimerDuration);
@@ -283,9 +283,9 @@
         // any click that is generated.
         t = getNativeEvent(event).changedTouches[ 0 ];
         clickBlockList.push({
-          touchID: lastTouchID,
-          x: t.clientX,
-          y: t.clientY
+          touchID:lastTouchID,
+          x:t.clientX,
+          y:t.clientY
         });
 
         // Prevent any mouse events that follow from triggering
@@ -320,7 +320,7 @@
     var realType = eventType.substr(1);
 
     return {
-      setup: function(data, namespace) {
+      setup:function (data, namespace) {
         // If this is the first virtual mouse binding for this element,
         // add a bindings object to its data.
 
@@ -375,7 +375,7 @@
         }
       },
 
-      teardown: function(data, namespace) {
+      teardown:function (data, namespace) {
         // If this is the last virtual binding for this eventType,
         // remove its global handler from the document.
 
@@ -435,7 +435,7 @@
 // Note that we require event capture support for this so if the device
 // doesn't support it, we punt for now and rely solely on mouse events.
   if (eventCaptureSupported) {
-    document.addEventListener("click", function(e) {
+    document.addEventListener("click", function (e) {
       var cnt = clickBlockList.length,
               target = e.target,
               x, y, ele, i, o, touchID;

@@ -8,12 +8,12 @@
  * http://docs.jquery.com/UI/Widget
  */
 
-(function($, undefined) {
+(function ($, undefined) {
 
 // jQuery 1.4+
   if ($.cleanData) {
     var _cleanData = $.cleanData;
-    $.cleanData = function(elems) {
+    $.cleanData = function (elems) {
       for (var i = 0, elem; (elem = elems[i]) != null; i++) {
         $(elem).triggerHandler("remove");
       }
@@ -21,11 +21,11 @@
     };
   } else {
     var _remove = $.fn.remove;
-    $.fn.remove = function(selector, keepData) {
-      return this.each(function() {
+    $.fn.remove = function (selector, keepData) {
+      return this.each(function () {
         if (!keepData) {
           if (!selector || $.filter(selector, [ this ]).length) {
-            $("*", this).add([ this ]).each(function() {
+            $("*", this).add([ this ]).each(function () {
               $(this).triggerHandler("remove");
             });
           }
@@ -35,7 +35,7 @@
     };
   }
 
-  $.widget = function(name, base, prototype) {
+  $.widget = function (name, base, prototype) {
     var namespace = name.split(".")[ 0 ],
             fullName;
     name = name.split(".")[ 1 ];
@@ -47,12 +47,12 @@
     }
 
     // create selector for plugin
-    $.expr[ ":" ][ fullName ] = function(elem) {
+    $.expr[ ":" ][ fullName ] = function (elem) {
       return !!$.data(elem, name);
     };
 
     $[ namespace ] = $[ namespace ] || {};
-    $[ namespace ][ name ] = function(options, element) {
+    $[ namespace ][ name ] = function (options, element) {
       // allow instantiation without initializing for simple inheritance
       if (arguments.length) {
         this._createWidget(options, element);
@@ -70,17 +70,17 @@
 //	});
     basePrototype.options = $.extend(true, {}, basePrototype.options);
     $[ namespace ][ name ].prototype = $.extend(true, basePrototype, {
-      namespace: namespace,
-      widgetName: name,
-      widgetEventPrefix: $[ namespace ][ name ].prototype.widgetEventPrefix || name,
-      widgetBaseClass: fullName
+      namespace:namespace,
+      widgetName:name,
+      widgetEventPrefix:$[ namespace ][ name ].prototype.widgetEventPrefix || name,
+      widgetBaseClass:fullName
     }, prototype);
 
     $.widget.bridge(name, $[ namespace ][ name ]);
   };
 
-  $.widget.bridge = function(name, object) {
-    $.fn[ name ] = function(options) {
+  $.widget.bridge = function (name, object) {
+    $.fn[ name ] = function (options) {
       var isMethodCall = typeof options === "string",
               args = Array.prototype.slice.call(arguments, 1),
               returnValue = this;
@@ -96,7 +96,7 @@
       }
 
       if (isMethodCall) {
-        this.each(function() {
+        this.each(function () {
           var instance = $.data(this, name);
           if (!instance) {
             throw "cannot call methods on " + name + " prior to initialization; " +
@@ -112,7 +112,7 @@
           }
         });
       } else {
-        this.each(function() {
+        this.each(function () {
           var instance = $.data(this, name);
           if (instance) {
             instance.option(options || {})._init();
@@ -126,7 +126,7 @@
     };
   };
 
-  $.Widget = function(options, element) {
+  $.Widget = function (options, element) {
     // allow instantiation without initializing for simple inheritance
     if (arguments.length) {
       this._createWidget(options, element);
@@ -134,12 +134,12 @@
   };
 
   $.Widget.prototype = {
-    widgetName: "widget",
-    widgetEventPrefix: "",
-    options: {
-      disabled: false
+    widgetName:"widget",
+    widgetEventPrefix:"",
+    options:{
+      disabled:false
     },
-    _createWidget: function(options, element) {
+    _createWidget:function (options, element) {
       // $.widget.bridge stores the plugin instance, but we do it anyway
       // so that it's stored even before the _create function runs
       $.data(element, this.widgetName, this);
@@ -150,7 +150,7 @@
               options);
 
       var self = this;
-      this.element.bind("remove." + this.widgetName, function() {
+      this.element.bind("remove." + this.widgetName, function () {
         self.destroy();
       });
 
@@ -158,19 +158,19 @@
       this._trigger("create");
       this._init();
     },
-    _getCreateOptions: function() {
+    _getCreateOptions:function () {
       var options = {};
       if ($.metadata) {
         options = $.metadata.get(element)[ this.widgetName ];
       }
       return options;
     },
-    _create: function() {
+    _create:function () {
     },
-    _init: function() {
+    _init:function () {
     },
 
-    destroy: function() {
+    destroy:function () {
       this.element
               .unbind("." + this.widgetName)
               .removeData(this.widgetName);
@@ -182,11 +182,11 @@
                       "ui-state-disabled");
     },
 
-    widget: function() {
+    widget:function () {
       return this.element;
     },
 
-    option: function(key, value) {
+    option:function (key, value) {
       var options = key;
 
       if (arguments.length === 0) {
@@ -206,15 +206,15 @@
 
       return this;
     },
-    _setOptions: function(options) {
+    _setOptions:function (options) {
       var self = this;
-      $.each(options, function(key, value) {
+      $.each(options, function (key, value) {
         self._setOption(key, value);
       });
 
       return this;
     },
-    _setOption: function(key, value) {
+    _setOption:function (key, value) {
       this.options[ key ] = value;
 
       if (key === "disabled") {
@@ -228,14 +228,14 @@
       return this;
     },
 
-    enable: function() {
+    enable:function () {
       return this._setOption("disabled", false);
     },
-    disable: function() {
+    disable:function () {
       return this._setOption("disabled", true);
     },
 
-    _trigger: function(type, event, data) {
+    _trigger:function (type, event, data) {
       var callback = this.options[ type ];
 
       event = $.Event(event);

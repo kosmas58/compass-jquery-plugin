@@ -2,7 +2,7 @@
  * a workaround for window.matchMedia
  */
 
-(function($, undefined) {
+(function ($, undefined) {
 
   var $window = $(window),
           $html = $("html");
@@ -14,13 +14,13 @@
    $.mobile.media('screen and (min-width: 480px)') //>> tests for screen media type with window width > 480px
    $.mobile.media('@media screen and (-webkit-min-device-pixel-ratio: 2)') //>> tests for webkit 2x pixel ratio (iPhone 4)
    */
-  $.mobile.media = (function() {
+  $.mobile.media = (function () {
     // TODO: use window.matchMedia once at least one UA implements it
     var cache = {},
             testDiv = $("<div id='jquery-mediatest'>"),
             fakeBody = $("<body>").append(testDiv);
 
-    return function(query) {
+    return function (query) {
       if (!( query in cache )) {
         var styleBlock = document.createElement("style"),
                 cssrule = "@media " + query + " { #jquery-mediatest { position:absolute; } }";

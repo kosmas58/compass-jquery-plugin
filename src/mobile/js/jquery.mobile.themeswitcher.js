@@ -1,12 +1,12 @@
 //quick & dirty theme switcher, written to potentially work as a bookmarklet
-(function($) {
-  $.themeswitcher = function() {
+(function ($) {
+  $.themeswitcher = function () {
     if ($('[data-' + $.mobile.ns + '-url=themeswitcher]').length) {
       return;
     }
     //var themesDir = 'http://jquerymobile.com/test/themes/',
     var themesDir = '/stylesheets/compiled/jquery/mobile/',
-            themes = ['default','valencia'],
+            themes = ['default', 'valencia'],
             currentPage = $.mobile.activePage,
             menuPage = $('<div data-' + $.mobile.ns + 'url="themeswitcher" data-' + $.mobile.ns + 'role=\'dialog\' data-' + $.mobile.ns + 'theme=\'a\'>' +
                     '<div data-' + $.mobile.ns + 'role=\'header\' data-' + $.mobile.ns + 'theme=\'b\'>' +
@@ -18,9 +18,9 @@
             menu = menuPage.find('ul');
 
     //menu items
-    $.each(themes, function(i) {
+    $.each(themes, function (i) {
       $('<li><a href="#" data-' + $.mobile.ns + 'rel="back">' + themes[ i ].charAt(0).toUpperCase() + themes[ i ].substr(1) + '</a></li>')
-              .bind("vclick", function() {
+              .bind("vclick", function () {
                 addTheme(themes[i]);
                 menuPage.dialog("close");
                 return false;

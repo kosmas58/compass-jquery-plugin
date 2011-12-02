@@ -78,13 +78,11 @@ body.ui-mobile-viewport, div.ui-mobile-viewport {
     .ui-page {
       min-height: 420px; } } }
 
-
 @media screen and (orientation: landscape) {
   .ui-mobile {
     min-height: 300px;
     .ui-page {
       min-height: 300px; } } }
-
 
 /* native overflow scrolling */
 
@@ -108,6 +106,12 @@ body.ui-mobile-viewport, div.ui-mobile-viewport {
       -webkit-transform: rotateY(0); } }
   &.ui-mobile-pre-transition {
     display: block; } }
+
+.ui-mobile-touch-overflow.ui-native-fixed .ui-content {
+  .ui-listview {
+    margin-top: 0; }
+  .ui-listview-inset {
+    margin-top: 1em; } }
 
 /* loading screen */
 
@@ -956,7 +960,6 @@ Built by David Kaneda and maintained by Jonathan Stark.
     .ui-controlgroup-horizontal .ui-select {
       width: auto; } } }
 
-
 .ui-dialog {
   min-height: 480px;
   .ui-header, .ui-content, .ui-footer {
@@ -1026,7 +1029,6 @@ Built by David Kaneda and maintained by Jonathan Stark.
     border-width: 0;
     padding: 0;
     margin: 1em 0; } }
-
 
 .ui-select {
   display: block;
@@ -1141,7 +1143,6 @@ label.ui-select {
       width: 60%;
       display: inline-block; } } }
 
-
 /* when no placeholder is defined in a multiple select, the header height doesn't even extend past the close button.  this shim's content in there */
 
 label.ui-input-text {
@@ -1223,7 +1224,6 @@ textarea.ui-input-text {
   .ui-input-search input.ui-input-text {
     width: 98%;
     /*echos rule from above*/ } }
-
 
 .ui-listview {
   margin: 0;
@@ -1379,7 +1379,6 @@ ol.ui-listview .ui-li-jsnumbering:before {
   .ui-li-aside {
     width: 45%; } }
 
-
 .ui-li-divider {
   cursor: default; }
 
@@ -1455,7 +1454,6 @@ ol.ui-listview .ui-li-jsnumbering:before {
   .ui-li .ui-btn-text {
     overflow: visible; } }
 
-
 label.ui-slider {
   font-size: 16px;
   line-height: 1.4;
@@ -1504,7 +1502,6 @@ a.ui-slider-handle {
       margin: 0 2% 0 0; }
     div.ui-slider {
       width: 43%; } } }
-
 
 div {
   &.ui-slider-switch {

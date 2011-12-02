@@ -2,13 +2,13 @@
  * "collapsibleset" plugin
  */
 
-(function($, undefined) {
+(function ($, undefined) {
 
   $.widget("mobile.collapsibleset", $.mobile.widget, {
-    options: {
-      initSelector: ":jqmData(role='collapsible-set')"
+    options:{
+      initSelector:":jqmData(role='collapsible-set')"
     },
-    _create: function() {
+    _create:function () {
       var $el = this.element.addClass("ui-collapsible-set"),
               o = this.options,
               collapsiblesInSet = $el.children(":jqmData(role='collapsible')");
@@ -27,7 +27,7 @@
 
         $el
                 .jqmData("collapsiblebound", true)
-                .bind("expand collapse", function(event) {
+                .bind("expand collapse", function (event) {
                   var isCollapse = ( event.type === "collapse" ),
                           collapsible = $(event.target).closest(".ui-collapsible"),
                           widget = collapsible.data("collapsible"),
@@ -40,7 +40,7 @@
                     collapsible.find(".ui-collapsible-content").toggleClass("ui-corner-bottom", !isCollapse);
                   }
                 })
-                .bind("expand", function(event) {
+                .bind("expand", function (event) {
                   $(event.target)
                           .closest(".ui-collapsible")
                           .siblings(".ui-collapsible")
@@ -49,7 +49,7 @@
                 });
 
         // clean up borders
-        collapsiblesInSet.each(function() {
+        collapsiblesInSet.each(function () {
           $(this).find($.mobile.collapsible.prototype.options.heading)
                   .find("a").first()
                   .add(".ui-btn-inner")
@@ -75,7 +75,7 @@
   });
 
 //auto self-init widgets
-  $(document).bind("pagecreate create", function(e) {
+  $(document).bind("pagecreate create", function (e) {
     $($.mobile.collapsibleset.prototype.options.initSelector, e.target).collapsibleset();
   });
 

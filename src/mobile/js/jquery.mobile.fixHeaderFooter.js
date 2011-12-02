@@ -2,7 +2,7 @@
  * "fixHeaderFooter" plugin - on-demand positioning for headers,footers
  */
 
-(function($, undefined) {
+(function ($, undefined) {
 
   var slideDownClass = "ui-header-fixed ui-fixed-inline fade",
           slideUpClass = "ui-footer-fixed ui-fixed-inline fade",
@@ -10,13 +10,13 @@
           slideDownSelector = ".ui-header:jqmData(position='fixed')",
           slideUpSelector = ".ui-footer:jqmData(position='fixed')";
 
-  $.fn.fixHeaderFooter = function(options) {
+  $.fn.fixHeaderFooter = function (options) {
 
     if (!$.support.scrollTop || ( $.support.touchOverflow && $.mobile.touchOverflowEnabled )) {
       return this;
     }
 
-    return this.each(function() {
+    return this.each(function () {
       var $this = $(this);
 
       if ($this.jqmData("fullscreen")) {
@@ -32,7 +32,7 @@
   };
 
 // single controller for all showing,hiding,toggling
-  $.mobile.fixedToolbars = (function() {
+  $.mobile.fixedToolbars = (function () {
 
     if (!$.support.scrollTop || ( $.support.touchOverflow && $.mobile.touchOverflowEnabled )) {
       return;
@@ -71,17 +71,17 @@
       }
     }
 
-    $(function() {
+    $(function () {
       var $document = $(document),
               $window = $(window);
 
       $document
-              .bind("vmousedown", function(event) {
+              .bind("vmousedown", function (event) {
         if (touchToggleEnabled) {
           stateBefore = currentstate;
         }
       })
-              .bind("vclick", function(event) {
+              .bind("vclick", function (event) {
                 if (touchToggleEnabled) {
 
                   if ($(event.target).closest(ignoreTargets).length) {
@@ -106,7 +106,7 @@
       // Needs work either way : BB5, Opera Mobile (iOS)
 
       ( ( $document.scrollTop() === 0 ) ? $window : $document )
-              .bind("scrollstart", function(event) {
+              .bind("scrollstart", function (event) {
 
         scrollTriggered = true;
 
@@ -130,7 +130,7 @@
           }
         }
       })
-              .bind("scrollstop", function(event) {
+              .bind("scrollstop", function (event) {
 
                 if ($(event.target).closest(ignoreTargets).length) {
                   return;
@@ -150,7 +150,7 @@
 
     // 1. Before page is shown, check for duplicate footer
     // 2. After page is shown, append footer to new page
-    $(document).delegate(".ui-page", "pagebeforeshow", function(event, ui) {
+    $(document).delegate(".ui-page", "pagebeforeshow", function (event, ui) {
       var page = $(event.target),
               footer = page.find(":jqmData(role='footer')"),
               id = footer.data("id"),
@@ -163,11 +163,11 @@
         setTop(stickyFooter.removeClass("fade in out").appendTo($.mobile.pageContainer));
       }
     })
-            .delegate(".ui-page", "pageshow", function(event, ui) {
+            .delegate(".ui-page", "pageshow", function (event, ui) {
               var $this = $(this);
 
               if (stickyFooter && stickyFooter.length) {
-                setTimeout(function() {
+                setTimeout(function () {
                   setTop(stickyFooter.appendTo($this).addClass("fade"));
                   stickyFooter = null;
                 }, 500);
@@ -176,7 +176,7 @@
               $.mobile.fixedToolbars.show(true, this);
             });
 
-    // When a collapsiable is hidden or shown we need to trigger the fixed toolbar to reposition itself (#1635)
+    // When a collapsible is hidden or shown we need to trigger the fixed toolbar to reposition itself (#1635)
     $(document).delegate(".ui-collapsible-contain", "collapse expand", showEventCallback);
 
     // element.getBoundingClientRect() is broken in iOS 3.2.1 on the iPad. The
@@ -240,7 +240,7 @@
     // Exposed methods
     return {
 
-      show: function(immediately, page) {
+      show:function (immediately, page) {
 
         $.mobile.fixedToolbars.clearShowTimer();
 
@@ -250,7 +250,7 @@
                 ( $.mobile.activePage ? $.mobile.activePage :
                         $(".ui-page-active") );
 
-        return $ap.children(toolbarSelector).each(function() {
+        return $ap.children(toolbarSelector).each(function () {
 
           var el = $(this),
                   fromTop = $(window).scrollTop(),
@@ -266,7 +266,7 @@
 
           if (!alreadyVisible && !immediately) {
             el.animationComplete(
-                    function() {
+                    function () {
                       el.removeClass("in");
                     }).addClass("in");
           }
@@ -274,14 +274,14 @@
         });
       },
 
-      hide: function(immediately) {
+      hide:function (immediately) {
 
         currentstate = "inline";
 
         var $ap = $.mobile.activePage ? $.mobile.activePage :
                 $(".ui-page-active");
 
-        return $ap.children(toolbarSelector).each(function() {
+        return $ap.children(toolbarSelector).each(function () {
 
           var el = $(this),
                   thisCSStop = el.css("top"),
@@ -304,7 +304,7 @@
                 classes = "out reverse";
 
                 el.animationComplete(
-                        function() {
+                        function () {
                           el.removeClass(classes).css("top", 0);
                         }).addClass(classes);
               }
@@ -313,26 +313,26 @@
         });
       },
 
-      startShowTimer: function() {
+      startShowTimer:function () {
 
         $.mobile.fixedToolbars.clearShowTimer();
 
         var args = [].slice.call(arguments);
 
-        delayTimer = setTimeout(function() {
+        delayTimer = setTimeout(function () {
           delayTimer = undefined;
           $.mobile.fixedToolbars.show.apply(null, args);
         }, showDelay);
       },
 
-      clearShowTimer: function() {
+      clearShowTimer:function () {
         if (delayTimer) {
           clearTimeout(delayTimer);
         }
         delayTimer = undefined;
       },
 
-      toggle: function(from) {
+      toggle:function (from) {
         if (from) {
           currentstate = from;
         }
@@ -340,18 +340,18 @@
                 $.mobile.fixedToolbars.show();
       },
 
-      setTouchToggleEnabled: function(enabled) {
+      setTouchToggleEnabled:function (enabled) {
         touchToggleEnabled = enabled;
       }
     };
   })();
 
 //auto self-init widgets
-  $(document).bind("pagecreate create", function(event) {
+  $(document).bind("pagecreate create", function (event) {
 
     if ($(":jqmData(position='fixed')", event.target).length) {
 
-      $(event.target).each(function() {
+      $(event.target).each(function () {
 
         if (!$.support.scrollTop || ( $.support.touchOverflow && $.mobile.touchOverflowEnabled )) {
           return this;

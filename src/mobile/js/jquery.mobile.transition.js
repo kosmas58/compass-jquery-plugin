@@ -2,14 +2,14 @@
  * "transitions" plugin - Page change tranistions
  */
 
-(function($, window, undefined) {
+(function ($, window, undefined) {
 
   function css3TransitionHandler(name, reverse, $to, $from) {
 
     var deferred = new $.Deferred(),
             reverseClass = reverse ? " reverse" : "",
             viewportClass = "ui-mobile-viewport-transitioning viewport-" + name,
-            doneFunc = function() {
+            doneFunc = function () {
 
               $to.add($from).removeClass("out in reverse " + name);
 

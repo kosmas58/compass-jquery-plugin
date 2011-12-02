@@ -2,7 +2,7 @@
  * This plugin handles theming and layout of headers, footers, and content areas
  */
 
-(function($, undefined) {
+(function ($, undefined) {
 
   $.mobile.page.prototype.options.backBtnText = "Back";
   $.mobile.page.prototype.options.addBackBtn = false;
@@ -11,14 +11,14 @@
   $.mobile.page.prototype.options.footerTheme = "a";
   $.mobile.page.prototype.options.contentTheme = null;
 
-  $(document).delegate(":jqmData(role='page'), :jqmData(role='dialog')", "pagecreate", function(e) {
+  $(document).delegate(":jqmData(role='page'), :jqmData(role='dialog')", "pagecreate", function (e) {
 
     var $page = $(this),
             o = $page.data("page").options,
             pageRole = $page.jqmData("role"),
             pageTheme = o.theme;
 
-    $(":jqmData(role='header'), :jqmData(role='footer'), :jqmData(role='content')", this).each(function() {
+    $(":jqmData(role='header'), :jqmData(role='footer'), :jqmData(role='content')", this).each(function () {
       var $this = $(this),
               role = $this.jqmData("role"),
               theme = $this.jqmData("theme"),
@@ -68,9 +68,9 @@
                 .addClass("ui-title")
           // Regardless of h element number in src, it becomes h1 for the enhanced page
                 .attr({
-                  "tabindex": "0",
-                  "role": "heading",
-                  "aria-level": "1"
+                  "tabindex":"0",
+                  "role":"heading",
+                  "aria-level":"1"
                 });
 
       } else if (role === "content") {

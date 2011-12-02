@@ -2,7 +2,7 @@
  * history.pushState support, layered on top of hashchange
  */
 
-( function($, window) {
+( function ($, window) {
   // For now, let's Monkeypatch this onto the end of $.mobile._registerInternalEvents
   // Scope self to pushStateHandler so we can reference it sanely within the
   // methods handed off as event handlers
@@ -13,26 +13,26 @@
 
   $.extend(pushStateHandler, {
     // TODO move to a path helper, this is rather common functionality
-    initialFilePath: (function() {
+    initialFilePath:(function () {
       return url.pathname + url.search;
     })(),
 
-    initialHref: url.hrefNoHash,
+    initialHref:url.hrefNoHash,
 
     // Flag for tracking if a Hashchange naturally occurs after each popstate + replace
-    hashchangeFired: false,
+    hashchangeFired:false,
 
-    state: function() {
+    state:function () {
       return {
-        hash: location.hash || "#" + self.initialFilePath,
-        title: document.title,
+        hash:location.hash || "#" + self.initialFilePath,
+        title:document.title,
 
         // persist across refresh
-        initialHref: self.initialHref
+        initialHref:self.initialHref
       };
     },
 
-    resetUIKeys: function(url) {
+    resetUIKeys:function (url) {
       var dialog = $.mobile.dialogHashKey,
               subkey = "&" + $.mobile.subPageUrlKey,
               dialogIndex = url.indexOf(dialog);
@@ -47,7 +47,7 @@
     },
 
     // TODO sort out a single barrier to hashchange functionality
-    nextHashChangePrevented: function(value) {
+    nextHashChangePrevented:function (value) {
       $.mobile.urlHistory.ignoreNextHashChange = value;
       self.onHashChangeDisabled = value;
     },
@@ -55,7 +55,7 @@
     // on hash change we want to clean up the url
     // NOTE this takes place *after* the vanilla navigation hash change
     // handling has taken place and set the state of the DOM
-    onHashChange: function(e) {
+    onHashChange:function (e) {
       // disable this hash change
       if (self.onHashChangeDisabled) {
         return;
@@ -92,7 +92,7 @@
 
     // on popstate (ie back or forward) we need to replace the hash that was there previously
     // cleaned up by the additional hash handling
-    onPopState: function(e) {
+    onPopState:function (e) {
       var poppedState = e.originalEvent.state, holdnexthashchange = false;
 
       // if there's no state its not a popstate we care about, ie chrome's initial popstate
@@ -103,7 +103,7 @@
 
         // defer our manual hashchange until after the browser fired
         // version has come and gone
-        setTimeout(function() {
+        setTimeout(function () {
           // make sure that the manual hash handling takes place
           self.nextHashChangePrevented(false);
 
@@ -113,7 +113,7 @@
       }
     },
 
-    init: function() {
+    init:function () {
       $win.bind("hashchange", self.onHashChange);
 
       // Handle popstate events the occur through history changes
@@ -126,7 +126,7 @@
     }
   });
 
-  $(function() {
+  $(function () {
     if ($.mobile.pushStateEnabled && $.support.pushState) {
       pushStateHandler.init();
     }

@@ -2,16 +2,16 @@
  * "page" plugin
  */
 
-(function($, undefined) {
+(function ($, undefined) {
 
   $.widget("mobile.page", $.mobile.widget, {
-    options: {
-      theme: "c",
-      domCache: false,
-      keepNativeDefault: ":jqmData(role='none'), :jqmData(role='nojs')"
+    options:{
+      theme:"c",
+      domCache:false,
+      keepNativeDefault:":jqmData(role='none'), :jqmData(role='nojs')"
     },
 
-    _create: function() {
+    _create:function () {
 
       this._trigger("beforecreate");
 
@@ -20,7 +20,7 @@
               .addClass("ui-page ui-body-" + this.options.theme);
     },
 
-    keepNativeSelector: function() {
+    keepNativeSelector:function () {
       var options = this.options,
               keepNativeDefined = options.keepNative && $.trim(options.keepNative);
 

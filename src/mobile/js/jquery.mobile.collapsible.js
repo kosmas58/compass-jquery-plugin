@@ -2,20 +2,20 @@
  * "collapsible" plugin
  */
 
-(function($, undefined) {
+(function ($, undefined) {
 
   $.widget("mobile.collapsible", $.mobile.widget, {
-    options: {
-      expandCueText: " click to expand contents",
-      collapseCueText: " click to collapse contents",
-      collapsed: true,
-      heading: "h1,h2,h3,h4,h5,h6,legend",
-      theme: null,
-      contentTheme: null,
-      iconTheme: "d",
-      initSelector: ":jqmData(role='collapsible')"
+    options:{
+      expandCueText:" click to expand contents",
+      collapseCueText:" click to collapse contents",
+      collapsed:true,
+      heading:"h1,h2,h3,h4,h5,h6,legend",
+      theme:null,
+      contentTheme:null,
+      iconTheme:"d",
+      initSelector:":jqmData(role='collapsible')"
     },
-    _create: function() {
+    _create:function () {
 
       var $el = this.element,
               o = this.options,
@@ -54,18 +54,18 @@
               .find("a")
               .first()
               .buttonMarkup({
-                shadow: false,
-                corners: false,
-                iconPos: "left",
-                icon: "plus",
-                theme: o.theme
+                shadow:false,
+                corners:false,
+                iconPos:"left",
+                icon:"plus",
+                theme:o.theme
               })
               .add(".ui-btn-inner")
               .addClass("ui-corner-top ui-corner-bottom");
 
       //events
       collapsible
-              .bind("expand collapse", function(event) {
+              .bind("expand collapse", function (event) {
         if (!event.isDefaultPrevented()) {
 
           event.preventDefault();
@@ -98,7 +98,7 @@
               .trigger(o.collapsed ? "collapse" : "expand");
 
       collapsibleHeading
-              .bind("click", function(event) {
+              .bind("click", function (event) {
 
         var type = collapsibleHeading.is(".ui-collapsible-heading-collapsed") ?
                 "expand" : "collapse";
@@ -111,7 +111,7 @@
   });
 
 //auto self-init widgets
-  $(document).bind("pagecreate create", function(e) {
+  $(document).bind("pagecreate create", function (e) {
     $($.mobile.collapsible.prototype.options.initSelector, e.target).collapsible();
   });
 

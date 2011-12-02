@@ -2,17 +2,17 @@
  * "controlgroup" plugin - corner-rounding for groups of buttons, checks, radios, etc
  */
 
-(function($, undefined) {
+(function ($, undefined) {
 
-  $.fn.controlgroup = function(options) {
+  $.fn.controlgroup = function (options) {
 
-    return this.each(function() {
+    return this.each(function () {
 
       var $el = $(this),
               o = $.extend({
-                direction: $el.jqmData("type") || "vertical",
-                shadow: false,
-                excludeInvisible: true
+                direction:$el.jqmData("type") || "vertical",
+                shadow:false,
+                excludeInvisible:true
               }, options),
               groupheading = $el.children("legend"),
               flCorners = o.direction == "horizontal" ? [ "ui-corner-left", "ui-corner-right" ] : [ "ui-corner-top", "ui-corner-bottom" ],
@@ -46,8 +46,8 @@
   };
 
 //auto self-init widgets
-  $(document).bind("pagecreate create", function(e) {
-    $(":jqmData(role='controlgroup')", e.target).controlgroup({ excludeInvisible: false });
+  $(document).bind("pagecreate create", function (e) {
+    $(":jqmData(role='controlgroup')", e.target).controlgroup({ excludeInvisible:false });
   });
 
 })(jQuery);

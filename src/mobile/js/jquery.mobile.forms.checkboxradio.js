@@ -2,14 +2,14 @@
  * "checkboxradio" plugin
  */
 
-(function($, undefined) {
+(function ($, undefined) {
 
   $.widget("mobile.checkboxradio", $.mobile.widget, {
-    options: {
-      theme: null,
-      initSelector: "input[type='checkbox'],input[type='radio']"
+    options:{
+      theme:null,
+      initSelector:"input[type='checkbox'],input[type='radio']"
     },
-    _create: function() {
+    _create:function () {
       var self = this,
               input = this.element,
         // NOTE: Windows Phone could not find the label through a selector
@@ -31,12 +31,12 @@
 
       // Expose for other methods
       $.extend(this, {
-        label: label,
-        inputtype: inputtype,
-        checkedClass: checkedClass,
-        uncheckedClass: uncheckedClass,
-        checkedicon: checkedicon,
-        uncheckedicon: uncheckedicon
+        label:label,
+        inputtype:inputtype,
+        checkedClass:checkedClass,
+        uncheckedClass:uncheckedClass,
+        checkedicon:checkedicon,
+        uncheckedicon:uncheckedicon
       });
 
       // If there's no selected theme...
@@ -45,9 +45,9 @@
       }
 
       label.buttonMarkup({
-        theme: this.options.theme,
-        icon: icon,
-        shadow: false
+        theme:this.options.theme,
+        icon:icon,
+        shadow:false
       });
 
       // Wrap the input + label in a div
@@ -55,13 +55,13 @@
               .wrapAll("<div class='ui-" + inputtype + "'></div>");
 
       label.bind({
-        vmouseover: function(event) {
+        vmouseover:function (event) {
           if ($(this).parent().is(".ui-disabled")) {
             event.stopPropagation();
           }
         },
 
-        vclick: function(event) {
+        vclick:function (event) {
           if (input.is(":disabled")) {
             event.preventDefault();
             return;
@@ -91,11 +91,11 @@
 
       input
               .bind({
-        vmousedown: function() {
+        vmousedown:function () {
           self._cacheVals();
         },
 
-        vclick: function() {
+        vclick:function () {
           var $this = $(this);
 
           // Adds checked attribute to checked input when keyboard is used
@@ -111,11 +111,11 @@
           self._updateAll();
         },
 
-        focus: function() {
+        focus:function () {
           label.addClass("ui-focus");
         },
 
-        blur: function() {
+        blur:function () {
           label.removeClass("ui-focus");
         }
       });
@@ -123,8 +123,8 @@
       this.refresh();
     },
 
-    _cacheVals: function() {
-      this._getInputSet().each(function() {
+    _cacheVals:function () {
+      this._getInputSet().each(function () {
         var $this = $(this);
 
         $this.jqmData("cacheVal", $this.is(":checked"));
@@ -132,7 +132,7 @@
     },
 
     //returns either a set of radios with the same name attribute, or a single checkbox
-    _getInputSet: function() {
+    _getInputSet:function () {
       if (this.inputtype == "checkbox") {
         return this.element;
       }
@@ -141,10 +141,10 @@
               .find("input[name='" + this.element.attr("name") + "'][type='" + this.inputtype + "']");
     },
 
-    _updateAll: function() {
+    _updateAll:function () {
       var self = this;
 
-      this._getInputSet().each(function() {
+      this._getInputSet().each(function () {
         var $this = $(this);
 
         if ($this.is(":checked") || self.inputtype === "checkbox") {
@@ -154,7 +154,7 @@
               .checkboxradio("refresh");
     },
 
-    refresh: function() {
+    refresh:function () {
       var input = this.element,
               label = this.label,
               icon = label.find(".ui-icon");
@@ -179,17 +179,17 @@
       }
     },
 
-    disable: function() {
+    disable:function () {
       this.element.prop("disabled", true).parent().addClass("ui-disabled");
     },
 
-    enable: function() {
+    enable:function () {
       this.element.prop("disabled", false).parent().removeClass("ui-disabled");
     }
   });
 
 //auto self-init widgets
-  $(document).bind("pagecreate create", function(e) {
+  $(document).bind("pagecreate create", function (e) {
     $.mobile.checkboxradio.prototype.enhanceWithin(e.target);
   });
 

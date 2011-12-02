@@ -2,14 +2,14 @@
  * plugin for creating CSS grids
  */
 
-(function($, undefined) {
+(function ($, undefined) {
 
-  $.fn.grid = function(options) {
-    return this.each(function() {
+  $.fn.grid = function (options) {
+    return this.each(function () {
 
       var $this = $(this),
               o = $.extend({
-                grid: null
+                grid:null
               }, options),
               $kids = $this.children(),
               gridCols = {solo:1, a:2, b:3, c:4, d:5},

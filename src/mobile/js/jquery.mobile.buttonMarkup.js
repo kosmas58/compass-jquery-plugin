@@ -2,21 +2,21 @@
  * "buttons" plugin - for making button-like links
  */
 
-( function($, undefined) {
+( function ($, undefined) {
 
-  $.fn.buttonMarkup = function(options) {
+  $.fn.buttonMarkup = function (options) {
     options = options || {};
     for (var i = 0; i < this.length; i++) {
       var el = this.eq(i),
               e = el[ 0 ],
               o = $.extend({}, $.fn.buttonMarkup.defaults, {
-                icon:       options.icon !== undefined ? options.icon : el.jqmData("icon"),
-                iconpos:    options.iconpos !== undefined ? options.iconpos : el.jqmData("iconpos"),
-                theme:      options.theme !== undefined ? options.theme : el.jqmData("theme"),
-                inline:     options.inline !== undefined ? options.inline : el.jqmData("inline"),
-                shadow:     options.shadow !== undefined ? options.shadow : el.jqmData("shadow"),
-                corners:    options.corners !== undefined ? options.corners : el.jqmData("corners"),
-                iconshadow: options.iconshadow !== undefined ? options.iconshadow : el.jqmData("iconshadow")
+                icon:options.icon !== undefined ? options.icon : el.jqmData("icon"),
+                iconpos:options.iconpos !== undefined ? options.iconpos : el.jqmData("iconpos"),
+                theme:options.theme !== undefined ? options.theme : el.jqmData("theme"),
+                inline:options.inline !== undefined ? options.inline : el.jqmData("inline"),
+                shadow:options.shadow !== undefined ? options.shadow : el.jqmData("shadow"),
+                corners:options.corners !== undefined ? options.corners : el.jqmData("corners"),
+                iconshadow:options.iconshadow !== undefined ? options.iconshadow : el.jqmData("iconshadow")
               }, options),
 
         // Classes Defined
@@ -102,11 +102,11 @@
   };
 
   $.fn.buttonMarkup.defaults = {
-    corners: true,
-    shadow: true,
-    iconshadow: true,
-    inline: false,
-    wrapperEls: "span"
+    corners:true,
+    shadow:true,
+    iconshadow:true,
+    inline:false,
+    wrapperEls:"span"
   };
 
   function closestEnabledButton(element) {
@@ -128,9 +128,9 @@
     return element;
   }
 
-  var attachEvents = function() {
+  var attachEvents = function () {
     $(document).bind({
-      "vmousedown": function(event) {
+      "vmousedown":function (event) {
         var btn = closestEnabledButton(event.target),
                 $btn, theme;
 
@@ -140,7 +140,7 @@
           $btn.removeClass("ui-btn-up-" + theme).addClass("ui-btn-down-" + theme);
         }
       },
-      "vmousecancel vmouseup": function(event) {
+      "vmousecancel vmouseup":function (event) {
         var btn = closestEnabledButton(event.target),
                 $btn, theme;
 
@@ -150,7 +150,7 @@
           $btn.removeClass("ui-btn-down-" + theme).addClass("ui-btn-up-" + theme);
         }
       },
-      "vmouseover focus": function(event) {
+      "vmouseover focus":function (event) {
         var btn = closestEnabledButton(event.target),
                 $btn, theme;
 
@@ -160,7 +160,7 @@
           $btn.removeClass("ui-btn-up-" + theme).addClass("ui-btn-hover-" + theme);
         }
       },
-      "vmouseout blur": function(event) {
+      "vmouseout blur":function (event) {
         var btn = closestEnabledButton(event.target),
                 $btn, theme;
 
@@ -177,7 +177,7 @@
 
 //links in bars, or those with  data-role become buttons
 //auto self-init widgets
-  $(document).bind("pagecreate create", function(e) {
+  $(document).bind("pagecreate create", function (e) {
 
     $(":jqmData(role='button'), .ui-bar > a, .ui-header > a, .ui-footer > a, .ui-bar > :jqmData(role='controlgroup') > a", e.target)
             .not(".ui-btn, :jqmData(role='none'), :jqmData(role='nojs')")

@@ -2,20 +2,20 @@
  * "button" plugin - links that proxy to native input/buttons
  */
 
-(function($, undefined) {
+(function ($, undefined) {
 
   $.widget("mobile.button", $.mobile.widget, {
-    options: {
-      theme: null,
-      icon: null,
-      iconpos: null,
-      inline: null,
-      corners: true,
-      shadow: true,
-      iconshadow: true,
-      initSelector: "button, [type='button'], [type='submit'], [type='reset'], [type='image']"
+    options:{
+      theme:null,
+      icon:null,
+      iconpos:null,
+      inline:null,
+      corners:true,
+      shadow:true,
+      iconshadow:true,
+      initSelector:"button, [type='button'], [type='submit'], [type='reset'], [type='image']"
     },
-    _create: function() {
+    _create:function () {
       var $el = this.element,
               o = this.options,
               type,
@@ -27,13 +27,13 @@
               .text($el.text() || $el.val())
               .insertBefore($el)
               .buttonMarkup({
-                theme: o.theme,
-                icon: o.icon,
-                iconpos: o.iconpos,
-                inline: o.inline,
-                corners: o.corners,
-                shadow: o.shadow,
-                iconshadow: o.iconshadow
+                theme:o.theme,
+                icon:o.icon,
+                iconpos:o.iconpos,
+                inline:o.inline,
+                corners:o.corners,
+                shadow:o.shadow,
+                iconshadow:o.iconshadow
               })
               .append($el.addClass("ui-btn-hidden"));
 
@@ -42,17 +42,17 @@
 
       // Add hidden input during submit if input type="submit" has a name.
       if (type !== "button" && type !== "reset" && name) {
-        $el.bind("vclick", function() {
+        $el.bind("vclick", function () {
           // Add hidden input if it doesn’t already exist.
           if ($buttonPlaceholder === undefined) {
             $buttonPlaceholder = $("<input>", {
-              type: "hidden",
-              name: $el.attr("name"),
-              value: $el.attr("value")
+              type:"hidden",
+              name:$el.attr("name"),
+              value:$el.attr("value")
             }).insertBefore($el);
 
             // Bind to doc to remove after submit handling
-            $(document).one("submit", function() {
+            $(document).one("submit", function () {
               $buttonPlaceholder.remove();
 
               // reset the local var so that the hidden input
@@ -66,19 +66,19 @@
       this.refresh();
     },
 
-    enable: function() {
+    enable:function () {
       this.element.attr("disabled", false);
       this.button.removeClass("ui-disabled").attr("aria-disabled", false);
       return this._setOption("disabled", false);
     },
 
-    disable: function() {
+    disable:function () {
       this.element.attr("disabled", true);
       this.button.addClass("ui-disabled").attr("aria-disabled", true);
       return this._setOption("disabled", true);
     },
 
-    refresh: function() {
+    refresh:function () {
       var $el = this.element;
 
       if ($el.prop("disabled")) {
@@ -94,7 +94,7 @@
   });
 
 //auto self-init widgets
-  $(document).bind("pagecreate create", function(e) {
+  $(document).bind("pagecreate create", function (e) {
     $.mobile.button.prototype.enhanceWithin(e.target);
   });
 

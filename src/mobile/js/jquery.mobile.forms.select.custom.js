@@ -2,14 +2,14 @@
  * custom "selectmenu" plugin
  */
 
-(function($, undefined) {
-  var extendSelect = function(widget) {
+(function ($, undefined) {
+  var extendSelect = function (widget) {
 
     var select = widget.select,
             selectID = widget.selectID,
             label = widget.label,
             thisPage = widget.select.closest(".ui-page"),
-            screen = $("<div>", {"class": "ui-selectmenu-screen ui-screen-hidden"}).appendTo(thisPage),
+            screen = $("<div>", {"class":"ui-selectmenu-screen ui-screen-hidden"}).appendTo(thisPage),
             selectOptions = widget._selectOptions(),
             isMultiple = widget.isMultiple = widget.select[ 0 ].multiple,
             buttonId = selectID + "-button",
@@ -21,27 +21,27 @@
                     "<div data-" + $.mobile.ns + "role='content'></div>" +
                     "</div>").appendTo($.mobile.pageContainer).page(),
 
-            listbox = $("<div>", { "class": "ui-selectmenu ui-selectmenu-hidden ui-overlay-shadow ui-corner-all ui-body-" + widget.options.overlayTheme + " " + $.mobile.defaultDialogTransition }).insertAfter(screen),
+            listbox = $("<div>", { "class":"ui-selectmenu ui-selectmenu-hidden ui-overlay-shadow ui-corner-all ui-body-" + widget.options.overlayTheme + " " + $.mobile.defaultDialogTransition }).insertAfter(screen),
 
             list = $("<ul>", {
-              "class": "ui-selectmenu-list",
-              "id": menuId,
-              "role": "listbox",
-              "aria-labelledby": buttonId
+              "class":"ui-selectmenu-list",
+              "id":menuId,
+              "role":"listbox",
+              "aria-labelledby":buttonId
             }).attr("data-" + $.mobile.ns + "theme", widget.options.theme).appendTo(listbox),
 
             header = $("<div>", {
-              "class": "ui-header ui-bar-" + widget.options.theme
+              "class":"ui-header ui-bar-" + widget.options.theme
             }).prependTo(listbox),
 
             headerTitle = $("<h1>", {
-              "class": "ui-title"
+              "class":"ui-title"
             }).appendTo(header),
 
             headerClose = $("<a>", {
-              "text": widget.options.closeText,
-              "href": "#",
-              "class": "ui-btn-left"
+              "text":widget.options.closeText,
+              "href":"#",
+              "class":"ui-btn-left"
             }).attr("data-" + $.mobile.ns + "iconpos", "notext").attr("data-" + $.mobile.ns + "icon", "delete").appendTo(header).buttonMarkup(),
 
             menuPageContent = menuPage.find(".ui-content"),
@@ -50,39 +50,39 @@
 
 
     $.extend(widget, {
-      select: widget.select,
-      selectID: selectID,
-      buttonId: buttonId,
-      menuId: menuId,
-      thisPage: thisPage,
-      menuPage: menuPage,
-      label: label,
-      screen: screen,
-      selectOptions: selectOptions,
-      isMultiple: isMultiple,
-      theme: widget.options.theme,
-      listbox: listbox,
-      list: list,
-      header: header,
-      headerTitle: headerTitle,
-      headerClose: headerClose,
-      menuPageContent: menuPageContent,
-      menuPageClose: menuPageClose,
-      placeholder: "",
+      select:widget.select,
+      selectID:selectID,
+      buttonId:buttonId,
+      menuId:menuId,
+      thisPage:thisPage,
+      menuPage:menuPage,
+      label:label,
+      screen:screen,
+      selectOptions:selectOptions,
+      isMultiple:isMultiple,
+      theme:widget.options.theme,
+      listbox:listbox,
+      list:list,
+      header:header,
+      headerTitle:headerTitle,
+      headerClose:headerClose,
+      menuPageContent:menuPageContent,
+      menuPageClose:menuPageClose,
+      placeholder:"",
 
-      build: function() {
+      build:function () {
         var self = this;
 
         // Create list from select, update state
         self.refresh();
 
-        self.select.attr("tabindex", "-1").focus(function() {
+        self.select.attr("tabindex", "-1").focus(function () {
           $(this).blur();
           self.button.focus();
         });
 
         // Button events
-        self.button.bind("vclick keydown", function(event) {
+        self.button.bind("vclick keydown", function (event) {
           if (event.type == "vclick" ||
                   event.keyCode && ( event.keyCode === $.mobile.keyCode.ENTER ||
                           event.keyCode === $.mobile.keyCode.SPACE )) {
@@ -94,13 +94,13 @@
 
         // Events for list items
         self.list.attr("role", "listbox")
-                .delegate(".ui-li>a", "focusin", function() {
+                .delegate(".ui-li>a", "focusin", function () {
                   $(this).attr("tabindex", "0");
                 })
-                .delegate(".ui-li>a", "focusout", function() {
+                .delegate(".ui-li>a", "focusout", function () {
                   $(this).attr("tabindex", "-1");
                 })
-                .delegate("li:not(.ui-disabled, .ui-li-divider)", "click", function(event) {
+                .delegate("li:not(.ui-disabled, .ui-li-divider)", "click", function (event) {
 
                   // index of option tag to be selected
                   var oldIndex = self.select[ 0 ].selectedIndex,
@@ -129,7 +129,7 @@
 
                   event.preventDefault();
                 })
-                .keydown(function(event) {  //keyboard events for menu items
+                .keydown(function (event) {  //keyboard events for menu items
                   var target = $(event.target),
                           li = target.closest("li"),
                           prev, next;
@@ -180,7 +180,7 @@
 
         // button refocus ensures proper height calculation
         // by removing the inline style and ensuring page inclusion
-        self.menuPage.bind("pagehide", function() {
+        self.menuPage.bind("pagehide", function () {
           self.list.appendTo(self.listbox);
           self._focusButton();
 
@@ -200,12 +200,12 @@
         });
 
         // Events on "screen" overlay
-        self.screen.bind("vclick", function(event) {
+        self.screen.bind("vclick", function (event) {
           self.close();
         });
 
         // Close button on small overlays
-        self.headerClose.click(function() {
+        self.headerClose.click(function () {
           if (self.menuType == "overlay") {
             self.close();
             return false;
@@ -217,7 +217,7 @@
         self.thisPage.addDependents(this.menuPage);
       },
 
-      _isRebuildRequired: function() {
+      _isRebuildRequired:function () {
         var list = this.list.find("li"),
                 options = this._selectOptions();
 
@@ -227,7 +227,7 @@
         return options.text() !== list.text();
       },
 
-      refresh: function(forceRebuild, foo) {
+      refresh:function (forceRebuild, foo) {
         var self = this,
                 select = this.element,
                 isMultiple = this.isMultiple,
@@ -246,7 +246,7 @@
         self.list.find("li:not(.ui-li-divider)")
                 .removeClass($.mobile.activeBtnClass)
                 .attr("aria-selected", false)
-                .each(function(i) {
+                .each(function (i) {
 
                   if ($.inArray(i, indicies) > -1) {
                     var item = $(this);
@@ -264,7 +264,7 @@
                 });
       },
 
-      close: function() {
+      close:function () {
         if (this.options.disabled || !this.isOpen) {
           return;
         }
@@ -287,7 +287,7 @@
         self.isOpen = false;
       },
 
-      open: function() {
+      open:function () {
         if (this.options.disabled) {
           return;
         }
@@ -307,7 +307,7 @@
         self.button.addClass($.mobile.activeBtnClass);
 
         //remove after delay
-        setTimeout(function() {
+        setTimeout(function () {
           self.button.removeClass($.mobile.activeBtnClass);
         }, 300);
 
@@ -323,18 +323,18 @@
 
           //for WebOS/Opera Mini (set lastscroll using button offset)
           if (scrollTop == 0 && btnOffset > screenHeight) {
-            self.thisPage.one("pagehide", function() {
+            self.thisPage.one("pagehide", function () {
               $(this).jqmData("lastScroll", btnOffset);
             });
           }
 
-          self.menuPage.one("pageshow", function() {
+          self.menuPage.one("pageshow", function () {
             // silentScroll() is called whenever a page is shown to restore
             // any previous scroll position the page may have had. We need to
             // wait for the "silentscroll" event before setting focus to avoid
             // the browser"s "feature" which offsets rendering to make sure
             // whatever has focus is in view.
-            $(window).one("silentscroll", function() {
+            $(window).one("silentscroll", function () {
               focusMenuItem();
             });
 
@@ -345,7 +345,7 @@
           self.menuPageContent.append(self.list);
           self.menuPage.find("div .ui-title").text(self.label.text());
           $.mobile.changePage(self.menuPage, {
-            transition: $.mobile.defaultDialogTransition
+            transition:$.mobile.defaultDialogTransition
           });
         } else {
           self.menuType = "overlay";
@@ -386,8 +386,8 @@
           self.listbox.append(self.list)
                   .removeClass("ui-selectmenu-hidden")
                   .css({
-                    top: newtop,
-                    left: newleft
+                    top:newtop,
+                    left:newleft
                   })
                   .addClass("in");
 
@@ -398,7 +398,7 @@
         }
       },
 
-      _buildList: function() {
+      _buildList:function () {
         var self = this,
                 o = this.options,
                 placeholder = this.placeholder,
@@ -409,7 +409,7 @@
         self.list.empty().filter(".ui-listview").listview("destroy");
 
         // Populate menu with options from select element
-        self.select.find("option").each(function(i) {
+        self.select.find("option").each(function (i) {
           var $this = $(this),
                   $parent = $this.parent(),
                   text = $this.getEncodedText(),
@@ -449,7 +449,7 @@
         self.list.html(lis.join(" "));
 
         self.list.find("li")
-                .attr({ "role": "option", "tabindex": "-1" })
+                .attr({ "role":"option", "tabindex":"-1" })
                 .first().attr("tabindex", "0");
 
         // Hide header close link for single selects
@@ -468,22 +468,22 @@
         self.list.listview();
       },
 
-      _button: function() {
+      _button:function () {
         return $("<a>", {
-          "href": "#",
-          "role": "button",
+          "href":"#",
+          "role":"button",
           // TODO value is undefined at creation
-          "id": this.buttonId,
-          "aria-haspopup": "true",
+          "id":this.buttonId,
+          "aria-haspopup":"true",
 
           // TODO value is undefined at creation
-          "aria-owns": this.menuId
+          "aria-owns":this.menuId
         });
       }
     });
   };
 
-  $(document).delegate("select", "selectmenubeforecreate", function() {
+  $(document).delegate("select", "selectmenubeforecreate", function () {
     var selectmenuWidget = $(this).data("selectmenu");
 
     if (!selectmenuWidget.options.nativeMenu) {

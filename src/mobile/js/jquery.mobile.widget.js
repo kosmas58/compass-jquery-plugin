@@ -2,7 +2,7 @@
  * widget factory extentions for mobile
  */
 
-(function($, undefined) {
+(function ($, undefined) {
 
   $.widget("mobile.widget", {
     // decorate the parent _createWidget to trigger `widgetinit` for users
@@ -10,19 +10,19 @@
     //
     // TODO create a pull request for jquery ui to trigger this event
     // in the original _createWidget
-    _createWidget: function() {
+    _createWidget:function () {
       $.Widget.prototype._createWidget.apply(this, arguments);
       this._trigger('init');
     },
 
-    _getCreateOptions: function() {
+    _getCreateOptions:function () {
 
       var elem = this.element,
               options = {};
 
-      $.each(this.options, function(option) {
+      $.each(this.options, function (option) {
 
-        var value = elem.jqmData(option.replace(/[A-Z]/g, function(c) {
+        var value = elem.jqmData(option.replace(/[A-Z]/g, function (c) {
           return "-" + c.toLowerCase();
         })
         );
@@ -35,7 +35,7 @@
       return options;
     },
 
-    enhanceWithin: function(target) {
+    enhanceWithin:function (target) {
       // TODO remove dependency on the page widget for the keepNative.
       // Currently the keepNative value is defined on the page prototype so
       // the method is as well

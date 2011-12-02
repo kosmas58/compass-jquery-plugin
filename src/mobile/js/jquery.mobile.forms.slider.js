@@ -2,17 +2,17 @@
  * "slider" plugin
  */
 
-( function($, undefined) {
+( function ($, undefined) {
 
   $.widget("mobile.slider", $.mobile.widget, {
-    options: {
-      theme: null,
-      trackTheme: null,
-      disabled: false,
-      initSelector: "input[type='range'], :jqmData(type='range'), :jqmData(role='slider')"
+    options:{
+      theme:null,
+      trackTheme:null,
+      disabled:false,
+      initSelector:"input[type='range'], :jqmData(type='range'), :jqmData(role='slider')"
     },
 
-    _create: function() {
+    _create:function () {
 
       // TODO: Each of these should have comments explain what they're for
       var self = this,
@@ -35,7 +35,7 @@
 
               label = $("[for='" + controlID + "']").attr("id", labelID),
 
-              val = function() {
+              val = function () {
                 return  cType == "input" ? parseFloat(control.val()) : control[0].selectedIndex;
               },
 
@@ -50,25 +50,25 @@
 
               handle = $("<a href='#' class='ui-slider-handle'></a>")
                       .appendTo(slider)
-                      .buttonMarkup({ corners: true, theme: theme, shadow: true })
+                      .buttonMarkup({ corners:true, theme:theme, shadow:true })
                       .attr({
-                        "role": "slider",
-                        "aria-valuemin": min,
-                        "aria-valuemax": max,
-                        "aria-valuenow": val(),
-                        "aria-valuetext": val(),
-                        "title": val(),
-                        "aria-labelledby": labelID
+                        "role":"slider",
+                        "aria-valuemin":min,
+                        "aria-valuemax":max,
+                        "aria-valuenow":val(),
+                        "aria-valuetext":val(),
+                        "title":val(),
+                        "aria-labelledby":labelID
                       }),
               options;
 
       $.extend(this, {
-        slider: slider,
-        handle: handle,
-        dragging: false,
-        beforeStart: null,
-        userModified: false,
-        mouseMoved: false
+        slider:slider,
+        handle:handle,
+        dragging:false,
+        beforeStart:null,
+        userModified:false,
+        mouseMoved:false
       });
 
       if (cType == "select") {
@@ -80,7 +80,7 @@
 
         options = control.find("option");
 
-        control.find("option").each(function(i) {
+        control.find("option").each(function (i) {
 
           var side = !i ? "b" : "a",
                   corners = !i ? "right" : "left",
@@ -99,21 +99,21 @@
 
       // monitor the input for updated values
       control.addClass(cType === "input" ? "ui-slider-input" : "ui-slider-switch")
-              .change(function() {
+              .change(function () {
                 // if the user dragged the handle, the "change" event was triggered from inside refresh(); don't call refresh() again
                 if (!self.mouseMoved) {
                   self.refresh(val(), true);
                 }
               })
-              .keyup(function() { // necessary?
+              .keyup(function () { // necessary?
                 self.refresh(val(), true, true);
               })
-              .blur(function() {
+              .blur(function () {
                 self.refresh(val(), true);
               });
 
       // prevent screen drag when slider activated
-      $(document).bind("vmousemove", function(event) {
+      $(document).bind("vmousemove", function (event) {
         if (self.dragging) {
           // self.mouseMoved must be updated before refresh() because it will be used in the control "change" event
           self.mouseMoved = true;
@@ -131,7 +131,7 @@
         }
       });
 
-      slider.bind("vmousedown", function(event) {
+      slider.bind("vmousedown", function (event) {
         self.dragging = true;
         self.userModified = false;
         self.mouseMoved = false;
@@ -145,7 +145,7 @@
       });
 
       slider.add(document)
-              .bind("vmouseup", function() {
+              .bind("vmouseup", function () {
                 if (self.dragging) {
 
                   self.dragging = false;
@@ -183,13 +183,13 @@
 
       // NOTE force focus on handle
       this.handle
-              .bind("vmousedown", function() {
+              .bind("vmousedown", function () {
         $(this).focus();
       })
               .bind("vclick", false);
 
       this.handle
-              .bind("keydown", function(event) {
+              .bind("keydown", function (event) {
         var index = val();
 
         if (self.options.disabled) {
@@ -235,7 +235,7 @@
             break;
         }
       })// remove active mark
-              .keyup(function(event) {
+              .keyup(function (event) {
                 if (self._keySliding) {
                   self._keySliding = false;
                   $(this).removeClass("ui-state-active");
@@ -245,7 +245,7 @@
       this.refresh(undefined, undefined, true);
     },
 
-    refresh: function(val, isfromControl, preventInputUpdate) {
+    refresh:function (val, isfromControl, preventInputUpdate) {
 
       if (this.options.disabled || this.element.attr('disabled')) {
         this.disable();
@@ -313,9 +313,9 @@
       }
       this.handle.css("left", percent + "%");
       this.handle.attr({
-        "aria-valuenow": cType === "input" ? newval : control.find("option").eq(newval).attr("value"),
-        "aria-valuetext": cType === "input" ? newval : control.find("option").eq(newval).getEncodedText(),
-        title: newval
+        "aria-valuenow":cType === "input" ? newval : control.find("option").eq(newval).attr("value"),
+        "aria-valuetext":cType === "input" ? newval : control.find("option").eq(newval).getEncodedText(),
+        title:newval
       });
 
       // add/remove classes for flip toggle switch
@@ -346,13 +346,13 @@
       }
     },
 
-    enable: function() {
+    enable:function () {
       this.element.attr("disabled", false);
       this.slider.removeClass("ui-disabled").attr("aria-disabled", false);
       return this._setOption("disabled", false);
     },
 
-    disable: function() {
+    disable:function () {
       this.element.attr("disabled", true);
       this.slider.addClass("ui-disabled").attr("aria-disabled", true);
       return this._setOption("disabled", true);
@@ -361,7 +361,7 @@
   });
 
 //auto self-init widgets
-  $(document).bind("pagecreate create", function(e) {
+  $(document).bind("pagecreate create", function (e) {
     $.mobile.slider.prototype.enhanceWithin(e.target);
   });
 

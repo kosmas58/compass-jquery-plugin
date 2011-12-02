@@ -2,7 +2,7 @@
  * "init" - Initialize the framework
  */
 
-(function($, window, undefined) {
+(function ($, window, undefined) {
   var $html = $("html"),
           $head = $("head"),
           $window = $(window);
@@ -32,7 +32,7 @@
 
   $.extend($.mobile, {
     // turn on/off page loading message.
-    showPageLoadingMsg: function() {
+    showPageLoadingMsg:function () {
       if ($.mobile.loadingMessage) {
         var activeBtn = $("." + $.mobile.activeBtnClass).first();
 
@@ -43,7 +43,7 @@
                 .appendTo($.mobile.pageContainer)
           // position at y center (if scrollTop supported), above the activeBtn (if defined), or just 100px from top
                 .css({
-                  top: $.support.scrollTop && $window.scrollTop() + $window.height() / 2 ||
+                  top:$.support.scrollTop && $window.scrollTop() + $window.height() / 2 ||
                           activeBtn.length && activeBtn.offset().top || 100
                 });
       }
@@ -51,12 +51,12 @@
       $html.addClass("ui-loading");
     },
 
-    hidePageLoadingMsg: function() {
+    hidePageLoadingMsg:function () {
       $html.removeClass("ui-loading");
     },
 
     // find and enhance the pages in the dom and transition to the first page.
-    initializePage: function() {
+    initializePage:function () {
       // find present pages
       var $pages = $(":jqmData(role='page')");
 
@@ -66,7 +66,7 @@
       }
 
       // add dialogs, set data-url attrs
-      $pages.add(":jqmData(role='dialog')").each(function() {
+      $pages.add(":jqmData(role='dialog')").each(function () {
         var $this = $(this);
 
         // unless the data url is already set set it to the pathname
@@ -90,7 +90,7 @@
 
       // if hashchange listening is disabled or there's no hash deeplink, change to the first page in the DOM
       if (!$.mobile.hashListeningEnabled || !$.mobile.path.stripHash(location.hash)) {
-        $.mobile.changePage($.mobile.firstPage, { transition: "none", reverse: true, changeHash: false, fromHashChange: true });
+        $.mobile.changePage($.mobile.firstPage, { transition:"none", reverse:true, changeHash:false, fromHashChange:true });
       }
       // otherwise, trigger a hashchange to load a deeplink
       else {
@@ -108,7 +108,7 @@
       meta.attr("content", meta.attr("content") + ", " + cont);
     }
     else {
-      $("head").prepend("<meta>", { "name": "viewport", "content": cont });
+      $("head").prepend("<meta>", { "name":"viewport", "content":cont });
     }
   }
 
@@ -123,7 +123,7 @@
   // check which scrollTop value should be used by scrolling to 1 immediately at domready
   // then check what the scroll top is. Android will report 0... others 1
   // note that this initial scroll won't hide the address bar. It's just for the check.
-  $(function() {
+  $(function () {
     window.scrollTo(0, 1);
 
     // if defaultHomeScroll hasn't been set yet, see if scrollTop is 1

@@ -2,15 +2,15 @@
  * "dialog" plugin.
  */
 
-(function($, window, undefined) {
+(function ($, window, undefined) {
 
   $.widget("mobile.dialog", $.mobile.widget, {
-    options: {
-      closeBtnText   : "Close",
-      overlayTheme  : "a",
-      initSelector  : ":jqmData(role='dialog')"
+    options:{
+      closeBtnText:"Close",
+      overlayTheme:"a",
+      initSelector:":jqmData(role='dialog')"
     },
-    _create: function() {
+    _create:function () {
       var self = this,
               $el = this.element,
               headerCloseButton = $("<a href='#' data-" + $.mobile.ns + "icon='delete' data-" + $.mobile.ns + "iconpos='notext'>" + this.options.closeBtnText + "</a>");
@@ -33,7 +33,7 @@
       // this must be an anonymous function so that select menu dialogs can replace
       // the close method. This is a change from previously just defining data-rel=back
       // on the button and letting nav handle it
-      headerCloseButton.bind("vclick", function() {
+      headerCloseButton.bind("vclick", function () {
         self.close();
       });
 
@@ -42,7 +42,7 @@
        unless a data-transition is specified on the link/form
        - if the click was on the close button, or the link has a data-rel="back" it'll go back in history naturally
        */
-      $el.bind("vclick submit", function(event) {
+      $el.bind("vclick submit", function (event) {
         var $target = $(event.target).closest(event.type === "vclick" ? "a" : "form"),
                 active;
 
@@ -54,19 +54,19 @@
                   .attr("data-" + $.mobile.ns + "direction", "reverse");
         }
       })
-              .bind("pagehide", function() {
+              .bind("pagehide", function () {
                 $(this).find("." + $.mobile.activeBtnClass).removeClass($.mobile.activeBtnClass);
               });
     },
 
     // Close method goes back in history
-    close: function() {
+    close:function () {
       window.history.back();
     }
   });
 
 //auto self-init widgets
-  $(document).delegate($.mobile.dialog.prototype.options.initSelector, "pagecreate", function() {
+  $(document).delegate($.mobile.dialog.prototype.options.initSelector, "pagecreate", function () {
     $(this).dialog();
   });
 

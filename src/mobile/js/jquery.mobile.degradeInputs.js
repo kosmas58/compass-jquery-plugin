@@ -2,27 +2,27 @@
  * "degradeInputs" plugin - degrades inputs to another type after custom enhancements are made.
  */
 
-(function($, undefined) {
+(function ($, undefined) {
 
   $.mobile.page.prototype.options.degradeInputs = {
-    color: false,
-    date: false,
-    datetime: false,
-    "datetime-local": false,
-    email: false,
-    month: false,
-    number: false,
-    range: "number",
-    search: "text",
-    tel: false,
-    time: false,
-    url: false,
-    week: false
+    color:false,
+    date:false,
+    datetime:false,
+    "datetime-local":false,
+    email:false,
+    month:false,
+    number:false,
+    range:"number",
+    search:"text",
+    tel:false,
+    time:false,
+    url:false,
+    week:false
   };
 
 
 //auto self-init widgets
-  $(document).bind("pagecreate create", function(e) {
+  $(document).bind("pagecreate create", function (e) {
 
     var page = $(e.target).closest(':jqmData(role="page")').data("page"), options;
 
@@ -33,7 +33,7 @@
     options = page.options;
 
     // degrade inputs to avoid poorly implemented native functionality
-    $(e.target).find("input").not(page.keepNativeSelector()).each(function() {
+    $(e.target).find("input").not(page.keepNativeSelector()).each(function () {
       var $this = $(this),
               type = this.getAttribute("type"),
               optType = options.degradeInputs[ type ] || "text";

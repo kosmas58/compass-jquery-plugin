@@ -4,41 +4,41 @@
  * Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
  * Note: Code is in draft form and is subject to change
  */
-(function($, window, document, undefined) {
+(function ($, window, document, undefined) {
 
   jQuery.widget("mobile.scrollview", jQuery.mobile.widget, {
-    options: {
-      fps:               60,    // Frames per second in msecs.
-      direction:         null,  // "x", "y", or null for both.
+    options:{
+      fps:60, // Frames per second in msecs.
+      direction:null, // "x", "y", or null for both.
 
-      scrollDuration:    2000,  // Duration of the scrolling animation in msecs.
-      overshootDuration: 250,   // Duration of the overshoot animation in msecs.
-      snapbackDuration:  500,   // Duration of the snapback animation in msecs.
+      scrollDuration:2000, // Duration of the scrolling animation in msecs.
+      overshootDuration:250, // Duration of the overshoot animation in msecs.
+      snapbackDuration:500, // Duration of the snapback animation in msecs.
 
-      moveThreshold:     10,   // User must move this many pixels in any direction to trigger a scroll.
-      moveIntervalThreshold:     150,   // Time between mousemoves must not exceed this threshold.
+      moveThreshold:10, // User must move this many pixels in any direction to trigger a scroll.
+      moveIntervalThreshold:150, // Time between mousemoves must not exceed this threshold.
 
-      scrollMethod:      "translate",  // "translate", "position", "scroll"
+      scrollMethod:"translate", // "translate", "position", "scroll"
 
-      startEventName:    "scrollstart",
-      updateEventName:   "scrollupdate",
-      stopEventName:     "scrollstop",
+      startEventName:"scrollstart",
+      updateEventName:"scrollupdate",
+      stopEventName:"scrollstop",
 
-      eventType:         $.support.touch ? "touch" : "mouse",
+      eventType:$.support.touch ? "touch" : "mouse",
 
-      showScrollBars:    true,
+      showScrollBars:true,
 
-      pagingEnabled:     false,
-      delayedClickSelector: "a,input,textarea,select,button,.ui-btn",
-      delayedClickEnabled: false
+      pagingEnabled:false,
+      delayedClickSelector:"a,input,textarea,select,button,.ui-btn",
+      delayedClickEnabled:false
     },
 
-    _makePositioned: function($ele) {
+    _makePositioned:function ($ele) {
       if ($ele.css("position") == "static")
         $ele.css("position", "relative");
     },
 
-    _create: function() {
+    _create:function () {
       this._$clip = $(this.element).addClass("ui-scrollview-clip");
       var $child = this._$clip.children();
       if ($child.length > 1) {
@@ -61,7 +61,7 @@
       // on the fly.
 
       this._makePositioned(this._$view);
-      this._$view.css({ left: 0, top: 0 });
+      this._$view.css({ left:0, top:0 });
 
       this._sx = 0;
       this._sy = 0;
@@ -74,14 +74,14 @@
       this._timerID = 0;
 
       var self = this;
-      this._timerCB = function() {
+      this._timerCB = function () {
         self._handleMomentumScroll();
       };
 
       this._addBehaviors();
     },
 
-    _startMScroll: function(speedX, speedY) {
+    _startMScroll:function (speedX, speedY) {
       this._stopMScroll();
       this._showScrollBars();
 
@@ -112,7 +112,7 @@
         this._stopMScroll();
     },
 
-    _stopMScroll: function() {
+    _stopMScroll:function () {
       if (this._timerID) {
         this._$clip.trigger(this.options.stopEventName);
         clearTimeout(this._timerID);
@@ -128,7 +128,7 @@
       this._hideScrollBars();
     },
 
-    _handleMomentumScroll: function() {
+    _handleMomentumScroll:function () {
       var keepGoing = false;
       var v = this._$view;
 
@@ -150,7 +150,7 @@
 
       this._setScrollPosition(x, y);
       this._$clip.trigger(this.options.updateEventName, [
-        { x: x, y: y }
+        { x:x, y:y }
       ]);
 
       if (keepGoing)
@@ -159,7 +159,7 @@
         this._stopMScroll();
     },
 
-    _setScrollPosition: function(x, y) {
+    _setScrollPosition:function (x, y) {
       this._sx = x;
       this._sy = y;
 
@@ -172,7 +172,7 @@
           setElementTransform($v, x + "px", y + "px");
           break;
         case "position":
-          $v.css({left: x + "px", top: y + "px"});
+          $v.css({left:x + "px", top:y + "px"});
           break;
         case "scroll":
           var c = this._$clip[0];
@@ -201,7 +201,7 @@
       }
     },
 
-    scrollTo: function(x, y, duration) {
+    scrollTo:function (x, y, duration) {
       this._stopMScroll();
       if (!duration)
         return this._setScrollPosition(x, y);
@@ -216,7 +216,7 @@
       var sy = this._sy;
       var dx = x - sx;
       var dy = y - sy;
-      var tfunc = function() {
+      var tfunc = function () {
         var elapsed = getCurrentTime() - start;
         if (elapsed >= duration) {
           self._timerID = 0;
@@ -232,20 +232,20 @@
       this._timerID = setTimeout(tfunc, this._timerInterval);
     },
 
-    getScrollPosition: function() {
-      return { x: -this._sx, y: -this._sy };
+    getScrollPosition:function () {
+      return { x:-this._sx, y:-this._sy };
     },
 
-    _getScrollHierarchy: function() {
+    _getScrollHierarchy:function () {
       var svh = [];
-      this._$clip.parents(".ui-scrollview-clip").each(function() {
+      this._$clip.parents(".ui-scrollview-clip").each(function () {
         var d = $(this).jqmData("scrollview");
         if (d) svh.unshift(d);
       });
       return svh;
     },
 
-    _getAncestorByDirection: function(dir) {
+    _getAncestorByDirection:function (dir) {
       var svh = this._getScrollHierarchy();
       var n = svh.length;
       while (0 < n--) {
@@ -258,9 +258,9 @@
       return null;
     },
 
-    _handleDragStart: function(e, ex, ey) {
+    _handleDragStart:function (e, ex, ey) {
       // Stop any scrolling of elements in our parent hierarcy.
-      $.each(this._getScrollHierarchy(), function(i, sv) {
+      $.each(this._getScrollHierarchy(), function (i, sv) {
         sv._stopMScroll();
       });
       this._stopMScroll();
@@ -324,7 +324,7 @@
       e.stopPropagation();
     },
 
-    _propagateDragMove: function(sv, e, ex, ey, dir) {
+    _propagateDragMove:function (sv, e, ex, ey, dir) {
       this._hideScrollBars();
       this._disableTracking();
       sv._handleDragStart(e, ex, ey);
@@ -332,7 +332,7 @@
       sv._didDrag = this._didDrag;
     },
 
-    _handleDragMove: function(e, ex, ey) {
+    _handleDragMove:function (e, ex, ey) {
       this._lastMove = getCurrentTime();
 
       var v = this._$view;
@@ -451,7 +451,7 @@
       return false;
     },
 
-    _handleDragStop: function(e) {
+    _handleDragStop:function (e) {
       var l = this._lastMove;
       var t = getCurrentTime();
       var doScroll = l && (t - l) <= this.options.moveIntervalThreshold;
@@ -492,62 +492,62 @@
       return this._didDrag ? false : undefined;
     },
 
-    _enableTracking: function() {
+    _enableTracking:function () {
       $(document).bind(this._dragMoveEvt, this._dragMoveCB);
       $(document).bind(this._dragStopEvt, this._dragStopCB);
     },
 
-    _disableTracking: function() {
+    _disableTracking:function () {
       $(document).unbind(this._dragMoveEvt, this._dragMoveCB);
       $(document).unbind(this._dragStopEvt, this._dragStopCB);
     },
 
-    _showScrollBars: function() {
+    _showScrollBars:function () {
       var vclass = "ui-scrollbar-visible";
       if (this._$vScrollBar) this._$vScrollBar.addClass(vclass);
       if (this._$hScrollBar) this._$hScrollBar.addClass(vclass);
     },
 
-    _hideScrollBars: function() {
+    _hideScrollBars:function () {
       var vclass = "ui-scrollbar-visible";
       if (this._$vScrollBar) this._$vScrollBar.removeClass(vclass);
       if (this._$hScrollBar) this._$hScrollBar.removeClass(vclass);
     },
 
-    _addBehaviors: function() {
+    _addBehaviors:function () {
       var self = this;
       if (this.options.eventType === "mouse") {
         this._dragStartEvt = "mousedown";
-        this._dragStartCB = function(e) {
+        this._dragStartCB = function (e) {
           return self._handleDragStart(e, e.clientX, e.clientY);
         };
 
         this._dragMoveEvt = "mousemove";
-        this._dragMoveCB = function(e) {
+        this._dragMoveCB = function (e) {
           return self._handleDragMove(e, e.clientX, e.clientY);
         };
 
         this._dragStopEvt = "mouseup";
-        this._dragStopCB = function(e) {
+        this._dragStopCB = function (e) {
           return self._handleDragStop(e);
         };
       }
       else // "touch"
       {
         this._dragStartEvt = "touchstart";
-        this._dragStartCB = function(e) {
+        this._dragStartCB = function (e) {
           var t = e.originalEvent.targetTouches[0];
           return self._handleDragStart(e, t.pageX, t.pageY);
         };
 
         this._dragMoveEvt = "touchmove";
-        this._dragMoveCB = function(e) {
+        this._dragMoveCB = function (e) {
           var t = e.originalEvent.targetTouches[0];
           return self._handleDragMove(e, t.pageX, t.pageY);
         };
 
         this._dragStopEvt = "touchend";
-        this._dragStopCB = function(e) {
+        this._dragStopCB = function (e) {
           return self._handleDragStop(e);
         };
       }
@@ -573,9 +573,9 @@
   function setElementTransform($ele, x, y) {
     var v = "translate3d(" + x + "," + y + ", 0px)";
     $ele.css({
-      "-moz-transform": v,
-      "-webkit-transform": v,
-      "transform": v
+      "-moz-transform":v,
+      "-webkit-transform":v,
+      "transform":v
     });
   }
 
@@ -587,10 +587,10 @@
   }
 
   var tstates = {
-    scrolling: 0,
-    overshot:  1,
-    snapback:  2,
-    done:      3
+    scrolling:0,
+    overshot:1,
+    snapback:2,
+    done:3
   };
 
   function getCurrentTime() {
@@ -598,7 +598,7 @@
   }
 
   $.extend(MomentumTracker.prototype, {
-    start: function(pos, speed, duration, minPos, maxPos) {
+    start:function (pos, speed, duration, minPos, maxPos) {
       this.state = (speed != 0) ? ((pos < minPos || pos > maxPos) ? tstates.snapback : tstates.scrolling) : tstates.done;
       this.pos = pos;
       this.speed = speed;
@@ -612,7 +612,7 @@
       this.startTime = getCurrentTime();
     },
 
-    reset: function() {
+    reset:function () {
       this.state = tstates.done;
       this.pos = 0;
       this.speed = 0;
@@ -621,7 +621,7 @@
       this.duration = 0;
     },
 
-    update: function() {
+    update:function () {
       var state = this.state;
       if (state == tstates.done)
         return this.pos;
@@ -674,20 +674,20 @@
       return this.pos;
     },
 
-    done: function() {
+    done:function () {
       return this.state == tstates.done;
     },
-    getPosition: function() {
+    getPosition:function () {
       return this.pos;
     }
   });
 
   jQuery.widget("mobile.scrolllistview", jQuery.mobile.scrollview, {
-    options: {
-      direction: "y"
+    options:{
+      direction:"y"
     },
 
-    _create: function() {
+    _create:function () {
       $.mobile.scrollview.prototype._create.call(this);
 
       // Cache the dividers so we don't have to search for them everytime the
@@ -700,7 +700,7 @@
       this._lastDivider = null;
     },
 
-    _setScrollPosition: function(x, y) {
+    _setScrollPosition:function (x, y) {
       // Let the view scroll like it normally does.
 
       $.mobile.scrollview.prototype._setScrollPosition.call(this, x, y);

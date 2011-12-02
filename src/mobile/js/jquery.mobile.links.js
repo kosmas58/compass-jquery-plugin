@@ -2,9 +2,9 @@
  * "links" plugin - simple class additions for links
  */
 
-(function($, undefined) {
+(function ($, undefined) {
 
-  $(document).bind("pagecreate create", function(e) {
+  $(document).bind("pagecreate create", function (e) {
 
     //links within content areas
     $(e.target)

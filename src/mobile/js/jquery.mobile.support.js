@@ -2,7 +2,7 @@
  * support tests
  */
 
-(function($, undefined) {
+(function ($, undefined) {
 
   var fakeBody = $("<body>").prependTo("html"),
           fbCSS = fakeBody[ 0 ].style,
@@ -32,7 +32,7 @@
             link, rebase;
 
     if (!base.length) {
-      base = fauxEle = $("<base>", { "href": fauxBase }).appendTo("head");
+      base = fauxEle = $("<base>", { "href":fauxBase }).appendTo("head");
     } else {
       href = base.attr("href");
     }
@@ -51,28 +51,28 @@
 // non-UA-based IE version check by James Padolsey, modified by jdalton - from http://gist.github.com/527683
 // allows for inclusion of IE 6+, including Windows Mobile 7
   $.mobile.browser = {};
-  $.mobile.browser.ie = (function() {
+  $.mobile.browser.ie = (function () {
     var v = 3,
             div = document.createElement("div"),
             a = div.all || [];
 
-    while (div.innerHTML = "<!--[if gt IE " + ( ++v ) + "]><br><![endif]-->",a[ 0 ]);
+    while (div.innerHTML = "<!--[if gt IE " + ( ++v ) + "]><br><![endif]-->", a[ 0 ]);
 
     return v > 4 ? v : !v;
   })();
 
 
   $.extend($.support, {
-    orientation: "orientation" in window && "onorientationchange" in window,
-    touch: "ontouchend" in document,
-    cssTransitions: "WebKitTransitionEvent" in window,
-    pushState: "pushState" in history && "replaceState" in history,
-    mediaquery: $.mobile.media("only all"),
-    cssPseudoElement: !!propExists("content"),
-    touchOverflow: !!propExists("overflowScrolling"),
-    boxShadow: !!propExists("boxShadow") && !bb,
-    scrollTop: ( "pageXOffset" in window || "scrollTop" in document.documentElement || "scrollTop" in fakeBody[ 0 ] ) && !webos && !operamini,
-    dynamicBaseTag: baseTagTest()
+    orientation:"orientation" in window && "onorientationchange" in window,
+    touch:"ontouchend" in document,
+    cssTransitions:"WebKitTransitionEvent" in window,
+    pushState:"pushState" in history && "replaceState" in history,
+    mediaquery:$.mobile.media("only all"),
+    cssPseudoElement:!!propExists("content"),
+    touchOverflow:!!propExists("overflowScrolling"),
+    boxShadow:!!propExists("boxShadow") && !bb,
+    scrollTop:( "pageXOffset" in window || "scrollTop" in document.documentElement || "scrollTop" in fakeBody[ 0 ] ) && !webos && !operamini,
+    dynamicBaseTag:baseTagTest()
   });
 
   fakeBody.remove();
@@ -82,7 +82,7 @@
 // or that generally work better browsing in regular http for full page refreshes (Opera Mini)
 // Note: This detection below is used as a last resort.
 // We recommend only using these detection methods when all other more reliable/forward-looking approaches are not possible
-  var nokiaLTE7_3 = (function() {
+  var nokiaLTE7_3 = (function () {
 
     var ua = window.navigator.userAgent;
 
@@ -105,7 +105,7 @@
 // to render the stylesheets when they're referenced before this script, as we'd recommend doing.
 // This simply reappends the CSS in place, which for some reason makes it apply
   if (nokiaLTE7_3) {
-    $(function() {
+    $(function () {
       $("head link[rel='stylesheet']").attr("rel", "alternate stylesheet").attr("rel", "stylesheet");
     });
   }
