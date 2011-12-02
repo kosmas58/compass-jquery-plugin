@@ -1,5 +1,5 @@
 /*
- * jQuery UI Selectable 1.8.16
+ * jQuery UI Selectable 1.8.17
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -33,6 +33,7 @@
       var selectees;
       this.refresh = function() {
         selectees = $(self.options.filter, self.element[0]);
+        selectees.addClass("ui-selectee");
         selectees.each(function() {
           var $this = $(this);
           var pos = $this.offset();
@@ -102,7 +103,7 @@
       this.selectees.filter('.ui-selected').each(function() {
         var selectee = $.data(this, "selectable-item");
         selectee.startselected = true;
-        if (!event.metaKey) {
+        if (!event.metaKey && !event.ctrlKey) {
           selectee.$element.removeClass('ui-selected');
           selectee.selected = false;
           selectee.$element.addClass('ui-unselecting');
@@ -117,7 +118,7 @@
       $(event.target).parents().andSelf().each(function() {
         var selectee = $.data(this, "selectable-item");
         if (selectee) {
-          var doSelect = !event.metaKey || !selectee.$element.hasClass('ui-selected');
+          var doSelect = (!event.metaKey && !event.ctrlKey) || !selectee.$element.hasClass('ui-selected');
           selectee.$element
                   .removeClass(doSelect ? "ui-unselecting" : "ui-selected")
                   .addClass(doSelect ? "ui-selecting" : "ui-unselecting");
@@ -195,7 +196,7 @@
         } else {
           // UNSELECT
           if (selectee.selecting) {
-            if (event.metaKey && selectee.startselected) {
+            if ((event.metaKey || event.ctrlKey) && selectee.startselected) {
               selectee.$element.removeClass('ui-selecting');
               selectee.selecting = false;
               selectee.$element.addClass('ui-selected');
@@ -214,7 +215,7 @@
             }
           }
           if (selectee.selected) {
-            if (!event.metaKey && !selectee.startselected) {
+            if (!event.metaKey && !event.ctrlKey && !selectee.startselected) {
               selectee.$element.removeClass('ui-selected');
               selectee.selected = false;
 
@@ -268,7 +269,7 @@
   });
 
   $.extend($.ui.selectable, {
-    version: "1.8.16"
+    version: "1.8.17"
   });
 
 })(jQuery);
