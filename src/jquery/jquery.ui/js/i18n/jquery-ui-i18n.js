@@ -183,6 +183,29 @@ jQuery(function($) {
     yearSuffix: ''};
   $.datepicker.setDefaults($.datepicker.regional['cs']);
 });
+/* Welsh/UK initialisation for the jQuery UI date picker plugin. */
+/* Written by William Griffiths. */
+jQuery(function($) {
+  $.datepicker.regional['cy-GB'] = {
+    closeText: 'Done',
+    prevText: 'Prev',
+    nextText: 'Next',
+    currentText: 'Today',
+    monthNames: ['Ionawr','Chwefror','Mawrth','Ebrill','Mai','Mehefin',
+      'Gorffennaf','Awst','Medi','Hydref','Tachwedd','Rhagfyr'],
+    monthNamesShort: ['Ion', 'Chw', 'Maw', 'Ebr', 'Mai', 'Meh',
+      'Gor', 'Aws', 'Med', 'Hyd', 'Tac', 'Rha'],
+    dayNames: ['Dydd Sul', 'Dydd Llun', 'Dydd Mawrth', 'Dydd Mercher', 'Dydd Iau', 'Dydd Gwener', 'Dydd Sadwrn'],
+    dayNamesShort: ['Sul', 'Llu', 'Maw', 'Mer', 'Iau', 'Gwe', 'Sad'],
+    dayNamesMin: ['Su','Ll','Ma','Me','Ia','Gw','Sa'],
+    weekHeader: 'Wy',
+    dateFormat: 'dd/mm/yy',
+    firstDay: 1,
+    isRTL: false,
+    showMonthAfterYear: false,
+    yearSuffix: ''};
+  $.datepicker.setDefaults($.datepicker.regional['cy-GB']);
+});
 /* Danish initialisation for the jQuery UI date picker plugin. */
 /* Written by Jan Christensen ( deletestuff@gmail.com). */
 jQuery(function($) {
@@ -603,19 +626,19 @@ jQuery(function($) {
 /* Written by Istvan Karaszi (jquery@spam.raszi.hu). */
 jQuery(function($) {
   $.datepicker.regional['hu'] = {
-    closeText: 'bezárás',
-    prevText: '&laquo;&nbsp;vissza',
-    nextText: 'előre&nbsp;&raquo;',
+    closeText: 'bezár',
+    prevText: 'vissza',
+    nextText: 'előre',
     currentText: 'ma',
     monthNames: ['Január', 'Február', 'Március', 'Április', 'Május', 'Június',
       'Július', 'Augusztus', 'Szeptember', 'Október', 'November', 'December'],
     monthNamesShort: ['Jan', 'Feb', 'Már', 'Ápr', 'Máj', 'Jún',
       'Júl', 'Aug', 'Szep', 'Okt', 'Nov', 'Dec'],
-    dayNames: ['Vasárnap', 'Hétfö', 'Kedd', 'Szerda', 'Csütörtök', 'Péntek', 'Szombat'],
+    dayNames: ['Vasárnap', 'Hétfő', 'Kedd', 'Szerda', 'Csütörtök', 'Péntek', 'Szombat'],
     dayNamesShort: ['Vas', 'Hét', 'Ked', 'Sze', 'Csü', 'Pén', 'Szo'],
     dayNamesMin: ['V', 'H', 'K', 'Sze', 'Cs', 'P', 'Szo'],
-    weekHeader: 'Hé',
-    dateFormat: 'yy-mm-dd',
+    weekHeader: 'Hét',
+    dateFormat: 'yy.mm.dd.',
     firstDay: 1,
     isRTL: false,
     showMonthAfterYear: true,
@@ -737,6 +760,29 @@ jQuery(function($) {
     yearSuffix: '年'};
   $.datepicker.setDefaults($.datepicker.regional['ja']);
 });
+/* Kazakh (UTF-8) initialisation for the jQuery UI date picker plugin. */
+/* Written by Dmitriy Karasyov (dmitriy.karasyov@gmail.com). */
+jQuery(function($) {
+  $.datepicker.regional['kk'] = {
+    closeText: 'Жабу',
+    prevText: '&#x3c;Алдыңғы',
+    nextText: 'Келесі&#x3e;',
+    currentText: 'Бүгін',
+    monthNames: ['Қаңтар','Ақпан','Наурыз','Сәуір','Мамыр','Маусым',
+      'Шілде','Тамыз','Қыркүйек','Қазан','Қараша','Желтоқсан'],
+    monthNamesShort: ['Қаң','Ақп','Нау','Сәу','Мам','Мау',
+      'Шіл','Там','Қыр','Қаз','Қар','Жел'],
+    dayNames: ['Жексенбі','Дүйсенбі','Сейсенбі','Сәрсенбі','Бейсенбі','Жұма','Сенбі'],
+    dayNamesShort: ['жкс','дсн','ссн','срс','бсн','жма','снб'],
+    dayNamesMin: ['Жк','Дс','Сс','Ср','Бс','Жм','Сн'],
+    weekHeader: 'Не',
+    dateFormat: 'dd.mm.yy',
+    firstDay: 1,
+    isRTL: false,
+    showMonthAfterYear: false,
+    yearSuffix: ''};
+  $.datepicker.setDefaults($.datepicker.regional['kk']);
+});
 /* Korean initialisation for the jQuery calendar extension. */
 /* Written by DaeKwon Kang (ncrash.dk@gmail.com). */
 jQuery(function($) {
@@ -760,28 +806,28 @@ jQuery(function($) {
     yearSuffix: '년'};
   $.datepicker.setDefaults($.datepicker.regional['ko']);
 });
-/* Kazakh (UTF-8) initialisation for the jQuery UI date picker plugin. */
-/* Written by Dmitriy Karasyov (dmitriy.karasyov@gmail.com). */
+/* Luxembourgish initialisation for the jQuery UI date picker plugin. */
+/* Written by Michel Weimerskirch <michel@weimerskirch.net> */
 jQuery(function($) {
-  $.datepicker.regional['kz'] = {
-    closeText: 'Жабу',
-    prevText: '&#x3c;Алдыңғы',
-    nextText: 'Келесі&#x3e;',
-    currentText: 'Бүгін',
-    monthNames: ['Қаңтар','Ақпан','Наурыз','Сәуір','Мамыр','Маусым',
-      'Шілде','Тамыз','Қыркүйек','Қазан','Қараша','Желтоқсан'],
-    monthNamesShort: ['Қаң','Ақп','Нау','Сәу','Мам','Мау',
-      'Шіл','Там','Қыр','Қаз','Қар','Жел'],
-    dayNames: ['Жексенбі','Дүйсенбі','Сейсенбі','Сәрсенбі','Бейсенбі','Жұма','Сенбі'],
-    dayNamesShort: ['жкс','дсн','ссн','срс','бсн','жма','снб'],
-    dayNamesMin: ['Жк','Дс','Сс','Ср','Бс','Жм','Сн'],
-    weekHeader: 'Не',
+  $.datepicker.regional['lb'] = {
+    closeText: 'Fäerdeg',
+    prevText: 'Zréck',
+    nextText: 'Weider',
+    currentText: 'Haut',
+    monthNames: ['Januar','Februar','Mäerz','Abrëll','Mee','Juni',
+      'Juli','August','September','Oktober','November','Dezember'],
+    monthNamesShort: ['Jan', 'Feb', 'Mäe', 'Abr', 'Mee', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'],
+    dayNames: ['Sonndeg', 'Méindeg', 'Dënschdeg', 'Mëttwoch', 'Donneschdeg', 'Freideg', 'Samschdeg'],
+    dayNamesShort: ['Son', 'Méi', 'Dën', 'Mët', 'Don', 'Fre', 'Sam'],
+    dayNamesMin: ['So','Mé','Dë','Më','Do','Fr','Sa'],
+    weekHeader: 'W',
     dateFormat: 'dd.mm.yy',
     firstDay: 1,
     isRTL: false,
     showMonthAfterYear: false,
     yearSuffix: ''};
-  $.datepicker.setDefaults($.datepicker.regional['kz']);
+  $.datepicker.setDefaults($.datepicker.regional['lb']);
 });
 /* Lithuanian (UTF-8) initialisation for the jQuery UI date picker plugin. */
 /* @author Arturas Paleicikas <arturas@avalon.lt> */
@@ -829,6 +875,29 @@ jQuery(function($) {
     yearSuffix: ''};
   $.datepicker.setDefaults($.datepicker.regional['lv']);
 });
+/* Macedonian i18n for the jQuery UI date picker plugin. */
+/* Written by Stojce Slavkovski. */
+jQuery(function($) {
+  $.datepicker.regional['mk'] = {
+    closeText: 'Затвори',
+    prevText: '&#x3C;',
+    nextText: '&#x3E;',
+    currentText: 'Денес',
+    monthNames: ['Јануари','Фебруари','Март','Април','Мај','Јуни',
+      'Јули','Август','Септември','Октомври','Ноември','Декември'],
+    monthNamesShort: ['Јан','Феб','Мар','Апр','Мај','Јун',
+      'Јул','Авг','Сеп','Окт','Ное','Дек'],
+    dayNames: ['Недела','Понеделник','Вторник','Среда','Четврток','Петок','Сабота'],
+    dayNamesShort: ['Нед','Пон','Вто','Сре','Чет','Пет','Саб'],
+    dayNamesMin: ['Не','По','Вт','Ср','Че','Пе','Са'],
+    weekHeader: 'Сед',
+    dateFormat: 'dd/mm/yy',
+    firstDay: 1,
+    isRTL: false,
+    showMonthAfterYear: false,
+    yearSuffix: ''};
+  $.datepicker.setDefaults($.datepicker.regional['mk']);
+});
 /* Malayalam (UTF-8) initialisation for the jQuery UI date picker plugin. */
 /* Written by Saji Nediyanchath (saji89@gmail.com). */
 jQuery(function($) {
@@ -874,6 +943,29 @@ jQuery(function($) {
     showMonthAfterYear: false,
     yearSuffix: ''};
   $.datepicker.setDefaults($.datepicker.regional['ms']);
+});
+﻿/* Dutch (Belgium) initialisation for the jQuery UI date picker plugin. */
+/* David De Sloovere @DavidDeSloovere */
+jQuery(function($) {
+  $.datepicker.regional['nl-BE'] = {
+    closeText: 'Sluiten',
+    prevText: '←',
+    nextText: '→',
+    currentText: 'Vandaag',
+    monthNames: ['januari', 'februari', 'maart', 'april', 'mei', 'juni',
+      'juli', 'augustus', 'september', 'oktober', 'november', 'december'],
+    monthNamesShort: ['jan', 'feb', 'mrt', 'apr', 'mei', 'jun',
+      'jul', 'aug', 'sep', 'okt', 'nov', 'dec'],
+    dayNames: ['zondag', 'maandag', 'dinsdag', 'woensdag', 'donderdag', 'vrijdag', 'zaterdag'],
+    dayNamesShort: ['zon', 'maa', 'din', 'woe', 'don', 'vri', 'zat'],
+    dayNamesMin: ['zo', 'ma', 'di', 'wo', 'do', 'vr', 'za'],
+    weekHeader: 'Wk',
+    dateFormat: 'dd/mm/yy',
+    firstDay: 1,
+    isRTL: false,
+    showMonthAfterYear: false,
+    yearSuffix: ''};
+  $.datepicker.setDefaults($.datepicker.regional['nl-BE']);
 });
 /* Dutch (UTF-8) initialisation for the jQuery UI date picker plugin. */
 /* Written by Mathias Bynens <http://mathiasbynens.be/> */
@@ -1292,6 +1384,7 @@ jQuery(function($) {
 });
 /* Ukrainian (UTF-8) initialisation for the jQuery UI date picker plugin. */
 /* Written by Maxim Drogobitskiy (maxdao@gmail.com). */
+/* Corrected by Igor Milla (igor.fsp.milla@gmail.com). */
 jQuery(function($) {
   $.datepicker.regional['uk'] = {
     closeText: 'Закрити',
@@ -1305,7 +1398,7 @@ jQuery(function($) {
     dayNames: ['неділя','понеділок','вівторок','середа','четвер','п’ятниця','субота'],
     dayNamesShort: ['нед','пнд','вів','срд','чтв','птн','сбт'],
     dayNamesMin: ['Нд','Пн','Вт','Ср','Чт','Пт','Сб'],
-    weekHeader: 'Не',
+    weekHeader: 'Тиж',
     dateFormat: 'dd/mm/yy',
     firstDay: 1,
     isRTL: false,
