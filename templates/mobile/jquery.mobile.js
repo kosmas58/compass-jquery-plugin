@@ -307,7 +307,7 @@
       // TODO remove dependency on the page widget for the keepNative.
       // Currently the keepNative value is defined on the page prototype so
       // the method is as well
-      var page = $(target).closest(":jqmData(role='page')").data("page"),
+      var page = $.mobile.closestPageData($(target)),
               keepNative = (page && page.keepNativeSelector()) || "";
 
       $(this.options.initSelector, target).not(keepNative)[ this.widgetName ]();
@@ -422,7 +422,11 @@
             div = document.createElement("div"),
             a = div.all || [];
 
-    while (div.innerHTML = "<!--[if gt IE " + ( ++v ) + "]><br><![endif]-->", a[ 0 ]);
+    // added {} to silence closure compiler warnings. registering my dislike of all things
+    // overly clever here for future reference
+    while (div.innerHTML = "<!--[if gt IE " + ( ++v ) + "]><br><![endif]-->", a[ 0 ]) {
+    }
+    ;
 
     return v > 4 ? v : !v;
   })();
@@ -509,6 +513,7 @@
           touchTargetPropertyName = "virtualTouchID",
           virtualEventNames = "vmouseover vmousedown vmousemove vmouseup vclick vmouseout vmousecancel".split(" "),
           touchEventProps = "clientX clientY pageX pageY screenX screenY".split(" "),
+          mouseEventProps = $.event.props.concat($.event.mouseHooks.props),
           activeDocHandlers = {},
           resetTimerID = 0,
           startX = 0,
@@ -546,6 +551,12 @@
 
     oe = event.originalEvent;
     props = $.event.props;
+
+    // addresses separation of $.event.props in to $.event.mouseHook.props and Issue 3280
+    // https://github.com/jquery/jquery-mobile/issues/3280
+    if (t.search(/mouse/) > -1) {
+      props = mouseEventProps;
+    }
 
     // copy original event properties over to the new event
     // this would happen if we could call $.event.fix instead of $.Event
@@ -1381,8 +1392,6 @@
 //         part of jQuery BBQ, but also be available separately.
 
 (function ($, window, undefined) {
-  '$:nomunge'; // Used by YUI compressor.
-
   // Reused string.
   var str_hashchange = 'hashchange',
 
@@ -1407,17 +1416,17 @@
   ;
 
   // Method: jQuery.fn.hashchange
-  //
+  // 
   // Bind a handler to the window.onhashchange event or trigger all bound
   // window.onhashchange event handlers. This behavior is consistent with
   // jQuery's built-in event handlers.
-  //
+  // 
   // Usage:
-  //
+  // 
   // > jQuery(window).hashchange( [ handler ] );
-  //
+  // 
   // Arguments:
-  //
+  // 
   //  handler - (Function) Optional handler to be bound to the hashchange
   //    event. This is a "shortcut" for the more verbose form:
   //    jQuery(window).bind( 'hashchange', handler ). If handler is omitted,
@@ -1425,9 +1434,9 @@
   //    is a shortcut for the more verbose
   //    jQuery(window).trigger( 'hashchange' ). These forms are described in
   //    the <hashchange event> section.
-  //
+  // 
   // Returns:
-  //
+  // 
   //  (jQuery) The initial jQuery collection of elements.
 
   // Allow the "shortcut" format $(elem).hashchange( fn ) for binding and
@@ -1437,38 +1446,38 @@
   };
 
   // Property: jQuery.fn.hashchange.delay
-  //
+  // 
   // The numeric interval (in milliseconds) at which the <hashchange event>
   // polling loop executes. Defaults to 50.
 
   // Property: jQuery.fn.hashchange.domain
-  //
+  // 
   // If you're setting document.domain in your JavaScript, and you want hash
   // history to work in IE6/7, not only must this property be set, but you must
   // also set document.domain BEFORE jQuery is loaded into the page. This
   // property is only applicable if you are supporting IE6/7 (or IE8 operating
   // in "IE7 compatibility" mode).
-  //
+  // 
   // In addition, the <jQuery.fn.hashchange.src> property must be set to the
   // path of the included "document-domain.html" file, which can be renamed or
   // modified if necessary (note that the document.domain specified must be the
   // same in both your main JavaScript as well as in this file).
-  //
+  // 
   // Usage:
-  //
+  // 
   // jQuery.fn.hashchange.domain = document.domain;
 
   // Property: jQuery.fn.hashchange.src
-  //
+  // 
   // If, for some reason, you need to specify an Iframe src file (for example,
   // when setting document.domain as in <jQuery.fn.hashchange.domain>), you can
   // do so using this property. Note that when using this property, history
   // won't be recorded in IE6/7 until the Iframe src file loads. This property
   // is only applicable if you are supporting IE6/7 (or IE8 operating in "IE7
   // compatibility" mode).
-  //
+  // 
   // Usage:
-  //
+  // 
   // jQuery.fn.hashchange.src = 'path/to/file.html';
 
   $.fn[ str_hashchange ].delay = 50;
@@ -1478,43 +1487,43 @@
    */
 
   // Event: hashchange event
-  //
+  // 
   // Fired when location.hash changes. In browsers that support it, the native
   // HTML5 window.onhashchange event is used, otherwise a polling loop is
   // initialized, running every <jQuery.fn.hashchange.delay> milliseconds to
   // see if the hash has changed. In IE6/7 (and IE8 operating in "IE7
   // compatibility" mode), a hidden Iframe is created to allow the back button
   // and hash-based history to work.
-  //
+  // 
   // Usage as described in <jQuery.fn.hashchange>:
-  //
+  // 
   // > // Bind an event handler.
   // > jQuery(window).hashchange( function(e) {
   // >   var hash = location.hash;
   // >   ...
   // > });
-  // >
+  // > 
   // > // Manually trigger the event handler.
   // > jQuery(window).hashchange();
-  //
+  // 
   // A more verbose usage that allows for event namespacing:
-  //
+  // 
   // > // Bind an event handler.
   // > jQuery(window).bind( 'hashchange', function(e) {
   // >   var hash = location.hash;
   // >   ...
   // > });
-  // >
+  // > 
   // > // Manually trigger the event handler.
   // > jQuery(window).trigger( 'hashchange' );
-  //
+  // 
   // Additional Notes:
-  //
+  // 
   // * The polling loop and Iframe are not created until at least one handler
   //   is actually bound to the 'hashchange' event.
   // * If you need the bound handler(s) to execute immediately, in cases where
   //   a location.hash exists on page load, via bookmark or page refresh for
-  //   example, use jQuery(window).hashchange() or the more verbose
+  //   example, use jQuery(window).hashchange() or the more verbose 
   //   jQuery(window).trigger( 'hashchange' ).
   // * The event can be bound before DOM ready, but since it won't be usable
   //   before then in IE6/7 (due to the necessary Iframe), recommended usage is
@@ -1732,7 +1741,7 @@
 })(jQuery);
 
 
-/* 
+/*
  * "core" - The base file for jQm
  */
 
@@ -1891,6 +1900,19 @@
       // specified default.
 
       return ltr || defaultTheme || "a";
+    },
+
+    // TODO the following $ and $.fn extensions can/probably should be moved into jquery.mobile.core.helpers
+    //
+    // Find the closest javascript page element to gather settings data jsperf test
+    // http://jsperf.com/single-complex-selector-vs-many-complex-selectors/edit
+    // possibly naive, but it shows that the parsing overhead for *just* the page selector vs
+    // the page and dialog selector is negligable. This could probably be speed up by
+    // doing a similar parent node traversal to the one found in the inherited theme code above
+    closestPageData:function ($target) {
+      return $target
+              .closest(':jqmData(role="page"), :jqmData(role="dialog")')
+              .data("page");
     }
   });
 
@@ -2509,8 +2531,6 @@
       //reset toPage height back
       if (!touchOverflow) {
         toPage.height("");
-        // Send focus to the newly shown page
-        reFocus(toPage);
       }
 
       // Jump to top or prev scroll, sometimes on iOS the page has not rendered yet.
@@ -3144,6 +3164,12 @@
               //remove initial build class (only present on first pageshow)
               $html.removeClass("ui-mobile-rendering");
 
+              // Send focus to the newly shown page. Moved from promise .done binding in transitionPages
+              // itself to avoid ie bug that reports offsetWidth as > 0 (core check for visibility)
+              // despite visibility: hidden addresses issue #2965
+              // https://github.com/jquery/jquery-mobile/issues/2965
+              reFocus(toPage);
+
               releasePageTransitionLock();
 
               // Let listeners know we're all done changing the current page.
@@ -3688,7 +3714,7 @@
 //auto self-init widgets
   $(document).bind("pagecreate create", function (e) {
 
-    var page = $(e.target).closest(':jqmData(role="page")').data("page"), options;
+    var page = $.mobile.closestPageData($(e.target));
 
     if (!page) {
       return;
@@ -5301,7 +5327,7 @@
         percent = Math.round(( ( data.pageX - this.slider.offset().left ) / this.slider.width() ) * 100);
       } else {
         if (val == null) {
-          val = cType === "input" ? parseFloat(control.val()) : control[0].selectedIndex;
+          val = cType === "input" ? parseFloat(control.val() || 0) : control[0].selectedIndex;
         }
         percent = ( parseFloat(val) - min ) / ( max - min ) * 100;
       }
@@ -5339,15 +5365,11 @@
         newval = max;
       }
 
-      // Flip the stack of the bg colors
-      if (percent > 60 && cType === "select") {
-        // TODO: Dead path?
-      }
       this.handle.css("left", percent + "%");
       this.handle.attr({
         "aria-valuenow":cType === "input" ? newval : control.find("option").eq(newval).attr("value"),
         "aria-valuetext":cType === "input" ? newval : control.find("option").eq(newval).getEncodedText(),
-        title:newval
+        title:cType === "input" ? newval : control.find("option").eq(newval).getEncodedText()
       });
 
       // add/remove classes for flip toggle switch
@@ -6312,7 +6334,6 @@
       el.addClass(buttonClass);
 
       buttonInner.className = innerClass;
-      buttonInner.setAttribute("aria-hidden", "true");
 
       buttonText.className = textClass;
       buttonInner.appendChild(buttonText);

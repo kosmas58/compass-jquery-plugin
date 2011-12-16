@@ -109,11 +109,14 @@ body.ui-mobile-viewport, div.ui-mobile-viewport {
   &.ui-mobile-pre-transition {
     display: block; } }
 
-.ui-mobile-touch-overflow.ui-native-fixed .ui-content {
-  .ui-listview {
-    margin-top: 0; }
-  .ui-listview-inset {
-    margin-top: 1em; } }
+.ui-mobile-touch-overflow.ui-native-fixed {
+  .ui-content {
+    .ui-listview {
+      margin-top: 0; }
+    .ui-listview-inset {
+      margin-top: 1em; } }
+  .ui-header .ui-btn {
+    z-index: 10; } }
 
 /* loading screen */
 

@@ -76,7 +76,6 @@
       el.addClass(buttonClass);
 
       buttonInner.className = innerClass;
-      buttonInner.setAttribute("aria-hidden", "true");
 
       buttonText.className = textClass;
       buttonInner.appendChild(buttonText);
