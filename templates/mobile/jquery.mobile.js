@@ -6564,8 +6564,8 @@
             toolbarSelector = ".ui-header-fixed:first, .ui-footer-fixed:not(.ui-footer-duplicate):last",
       // for storing quick references to duplicate footers
             supportTouch = $.support.touch,
-            touchStartEvent = supportTouch ? "touchstart" : "mousedown",
-            touchStopEvent = supportTouch ? "touchend" : "mouseup",
+            touchStartEvent = supportTouch ? "touchstart.toolbar" : "mousedown.toolbar",
+            touchStopEvent = supportTouch ? "touchend.toolbar" : "mouseup.toolbar",
             stateBefore = null,
             scrollTriggered = false,
             touchToggleEnabled = true;
@@ -6594,12 +6594,13 @@
               $window = $(window);
 
       $document
-              .bind("vmousedown", function (event) {
+              .bind("vmousedown.toolbar", function (event) {
         if (touchToggleEnabled) {
           stateBefore = currentstate;
         }
       })
-              .bind("vclick", function (event) {
+              .bind("vclick.toolbar", function (event) {
+
                 if (touchToggleEnabled) {
 
                   if ($(event.target).closest(ignoreTargets).length) {
@@ -6612,7 +6613,7 @@
                   }
                 }
               })
-              .bind("silentscroll", showEventCallback);
+              .bind("silentscroll.toolbar", showEventCallback);
 
 
       // The below checks first for a $(document).scrollTop() value, and if zero, binds scroll events to $(window) instead.
@@ -6624,7 +6625,7 @@
       // Needs work either way : BB5, Opera Mobile (iOS)
 
       ( ( $document.scrollTop() === 0 ) ? $window : $document )
-              .bind("scrollstart", function (event) {
+              .bind("scrollstart.toolbar", function (event) {
 
         scrollTriggered = true;
 
@@ -6648,7 +6649,7 @@
           }
         }
       })
-              .bind("scrollstop", function (event) {
+              .bind("scrollstop.toolbar", function (event) {
 
                 if ($(event.target).closest(ignoreTargets).length) {
                   return;
@@ -6663,12 +6664,12 @@
                 stateBefore = null;
               });
 
-      $window.bind("resize updatelayout", showEventCallback);
+      $window.bind("resize.toolbar updatelayout", showEventCallback);
     });
 
     // 1. Before page is shown, check for duplicate footer
     // 2. After page is shown, append footer to new page
-    $(document).delegate(".ui-page", "pagebeforeshow", function (event, ui) {
+    $(document).delegate(".ui-page", "pagebeforeshow.toolbar", function (event, ui) {
       var page = $(event.target),
               footer = page.find(":jqmData(role='footer')"),
               id = footer.data("id"),
@@ -6681,7 +6682,7 @@
         setTop(stickyFooter.removeClass("fade in out").appendTo($.mobile.pageContainer));
       }
     })
-            .delegate(".ui-page", "pageshow", function (event, ui) {
+            .delegate(".ui-page", "pageshow.toolbar", function (event, ui) {
               var $this = $(this);
 
               if (stickyFooter && stickyFooter.length) {
