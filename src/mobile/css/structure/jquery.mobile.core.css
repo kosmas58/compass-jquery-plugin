@@ -9,7 +9,7 @@
 }
 
 .ui-mobile a img, .ui-mobile fieldset {
-    border: 0;
+    border-width: 0;
 }
 
 /* responsive page widths */

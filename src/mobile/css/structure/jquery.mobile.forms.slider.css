@@ -24,11 +24,15 @@ div.ui-slider {
     padding: 0;
     margin: 0 2% 0 20px;
     top: 4px;
-    width: 60%;
+    width: 65%;
 }
 
 div.ui-slider-switch {
     width: 99.8%;
+}
+
+.ui-field-contain div.ui-slider-switch {
+    width: 50%;
 }
 
 a.ui-slider-handle {
@@ -56,6 +60,10 @@ a.ui-slider-handle .ui-btn-inner {
 
     .ui-field-contain div.ui-slider {
         width: 43%;
+    }
+
+    .ui-field-contain div.ui-slider-switch {
+        width: 35%;
     }
 }
 
@@ -106,10 +114,10 @@ div.ui-slider-switch div.ui-slider-labelbg-b {
 
 div.ui-slider-switch a.ui-slider-handle {
     z-index: 20;
-    width: 101%;
-    height: 32px;
-    margin-top: -18px;
-    margin-left: -101%;
+    width: 100%;
+    height: 30px;
+    margin-top: -17px;
+    margin-left: -100%;
 }
 
 span.ui-slider-label {
@@ -118,7 +126,7 @@ span.ui-slider-label {
     height: 32px;
     font-size: 16px;
     text-align: center;
-    line-height: 2;
+    line-height: 1.8;
     background: none;
     border-color: transparent;
 }

@@ -15,7 +15,7 @@
 
 .ui-mobile {
   a img, fieldset {
-    border: 0; } }
+    border-width: 0; } }
 
 /* responsive page widths */
 
@@ -900,7 +900,7 @@ Built by David Kaneda and maintained by Jonathan Stark.
 
 .ui-controlgroup, fieldset.ui-controlgroup {
   padding: 0;
-  margin: .5em 0 1em; }
+  margin: 0em 0 .5em; }
 
 .ui-bar .ui-controlgroup {
   margin: 0 .3em; }
@@ -909,7 +909,7 @@ Built by David Kaneda and maintained by Jonathan Stark.
   font-size: 16px;
   line-height: 1.4;
   font-weight: normal;
-  margin: 0 0 .3em; }
+  margin: 0 0 .4em 0; }
 
 .ui-controlgroup-controls {
   display: block;
@@ -1022,16 +1022,17 @@ Built by David Kaneda and maintained by Jonathan Stark.
   outline: 0 !important;
   z-index: 1; }
 
-.ui-field-contain {
-  padding: 1.5em 0;
+.ui-field-contain, fieldset.ui-field-contain {
+  padding: .8em 0;
   margin: 0;
-  border-bottom-width: 1px;
-  overflow: visible;
-  &:first-child {
-    border-top-width: 0; } }
+  border-width: 0 0 1px 0;
+  overflow: visible; }
+
+.ui-field-contain:first-child {
+  border-top-width: 0; }
 
 @media all and (min-width: 450px) {
-  .ui-field-contain {
+  .ui-field-contain, .ui-mobile fieldset.ui-field-contain {
     border-width: 0;
     padding: 0;
     margin: 1em 0; } }
@@ -1488,9 +1489,12 @@ div {
     padding: 0;
     margin: 0 2% 0 20px;
     top: 4px;
-    width: 60%; }
+    width: 65%; }
   &.ui-slider-switch {
     width: 99.8%; } }
+
+.ui-field-contain div.ui-slider-switch {
+  width: 50%; }
 
 a.ui-slider-handle {
   position: absolute;
@@ -1511,8 +1515,11 @@ a.ui-slider-handle {
       display: inline-block;
       width: 20%;
       margin: 0 2% 0 0; }
-    div.ui-slider {
-      width: 43%; } } }
+    div {
+      &.ui-slider {
+        width: 43%; }
+      &.ui-slider-switch {
+        width: 35%; } } } }
 
 
 div {
@@ -1554,10 +1561,10 @@ div {
 
 div.ui-slider-switch a.ui-slider-handle {
   z-index: 20;
-  width: 101%;
-  height: 32px;
-  margin-top: -18px;
-  margin-left: -101%; }
+  width: 100%;
+  height: 30px;
+  margin-top: -17px;
+  margin-left: -100%; }
 
 span {
   &.ui-slider-label {
@@ -1566,7 +1573,7 @@ span {
     height: 32px;
     font-size: 16px;
     text-align: center;
-    line-height: 2;
+    line-height: 1.8;
     background: none;
     border-color: transparent; }
   &.ui-slider-label-a {
